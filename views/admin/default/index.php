@@ -13,13 +13,17 @@ use yii\widgets\Pjax;
 
 
 
+<?php // echo $this->render('_search', ['model' => $searchModel]);  ?>
+
+
 <?php
 
-// echo $this->render('_search', ['model' => $searchModel]);  ?>
-
-
-<?php Pjax::begin(); ?>
+Pjax::begin([
+    'id' => 'pjax-container',
+]);
+?>
 <?=
+
 SortableGridView::widget([
     'tableOptions' => ['class' => 'table table-striped'],
     'dataProvider' => $dataProvider,
@@ -32,9 +36,40 @@ SortableGridView::widget([
         ],
         'name',
         'price',
-        ['class' => 'panix\engine\grid\ActionColumn'],
-    ],
-]);
-?>
-<?php Pjax::end(); ?>
+        [
+            'class' => 'panix\engine\grid\ActionColumn',
+            'template' => '{update} {delete}',
+            'buttons' => [
+                /* 'delete' => function($url, $model) {
+                  return Html::a('<i class="icon-delete"></i>', ['delete', 'id' => $model->id], [
+                  'class' => 'btn btn-danger',
+                  'data' => [
+                  'confirm' => 'Are you absolutely sure ? You will lose all the information about this user with this action.',
+                  'method' => 'post',
+                  'pjax' => 0,
+                  ],
+                  ]);
+                  } */
+                'delete' => function ($url) {
+                    return Html::a(Yii::t('yii', 'Delete'), '#', [
+                                'title' => Yii::t('yii', 'Delete'),
+                                'aria-label' => Yii::t('yii', 'Delete'),
+                                'onclick' => "
+                                if (confirm('" . Yii::t('app', 'DELETE_COMFIRM') . "')) {
+                                    $.ajax('$url', {
+                                        type: 'POST'
+                                    }).done(function(data) {
+                                        $.pjax.reload({container: '#pjax-container'});
+                                    });
+                                }
+                                return false;
+                            ",
+                    ]);
+                },
+                    ]
+                ],
+            ],
+        ]);
+        ?>
+        <?php Pjax::end(); ?>
 

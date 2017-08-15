@@ -87,6 +87,12 @@ class ShopProduct extends WebModel {
                             'full_description'
                         ]
                     ],
+                    'verbs' => [
+                        'class' => \yii\filters\VerbFilter::className(),
+                        'actions' => [
+                            'delete' => ['post'],
+                        ],
+                    ],
                     'image' => [
                         'class' => AttachImageBehavior::className(),
                         'attributeName' => 'image',

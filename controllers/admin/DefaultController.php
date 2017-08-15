@@ -17,6 +17,10 @@ class DefaultController extends AdminController {
                 'class' => SortableGridAction::className(),
                 'modelName' => ShopProduct::className(),
             ],
+            'delete' => [
+                'class' => 'panix\engine\grid\actions\DeleteAction',
+                'modelClass' => ShopProduct::className(),
+            ],
         ];
     }
 
@@ -44,7 +48,7 @@ class DefaultController extends AdminController {
 
     public function actionUpdate($id = false) {
 
-        
+
         if ($id === true) {
             $model = Yii::$app->getModule("shop")->model("ShopProduct");
         } else {
@@ -68,27 +72,25 @@ class DefaultController extends AdminController {
             'label' => Yii::t('shop/admin', 'PRODUCTS'),
             'url' => ['index']
         ];
-        $this->breadcrumbs[] = Yii::t('app','UPDATE');
+        $this->breadcrumbs[] = Yii::t('app', 'UPDATE');
 
-                    
+
 
         //$model->setScenario("admin");
         $post = Yii::$app->request->post();
         if ($model->load($post) && $model->validate()) {
-            
 
-            
+
+
             $model->save();
             Yii::$app->session->addFlash('success', \Yii::t('app', 'SUCCESS_CREATE'));
             return Yii::$app->getResponse()->redirect(['/admin/shop']);
         }
 
         echo $this->render('update', [
-                    'model' => $model,
+            'model' => $model,
         ]);
     }
-
- 
 
     protected function findModel($id) {
         $model = Yii::$app->getModule("shop")->model("ShopProduct");
