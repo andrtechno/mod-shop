@@ -1,10 +1,10 @@
 <?php
 
-namespace app\system\modules\shop\controllers\admin;
+namespace panix\shop\controllers\admin;
 
 use Yii;
 use panix\engine\controllers\AdminController;
-use app\system\modules\shop\models\SettingsForm;
+use panix\shop\models\SettingsForm;
 
 class SettingsController extends AdminController {
 

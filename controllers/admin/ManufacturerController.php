@@ -1,10 +1,10 @@
 <?php
 
-namespace app\system\modules\shop\controllers\admin;
+namespace panix\shop\controllers\admin;
 
 use Yii;
-use app\system\modules\shop\models\ShopManufacturer;
-use app\system\modules\shop\models\search\ShopManufacturerSearch;
+use panix\shop\models\ShopManufacturer;
+use panix\shop\models\search\ShopManufacturerSearch;
 use panix\engine\controllers\AdminController;
 use panix\engine\grid\sortable\SortableGridAction;
 

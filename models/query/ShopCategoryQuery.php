@@ -1,5 +1,5 @@
 <?php
-namespace app\system\modules\shop\models\query;
+namespace panix\shop\models\query;
 
 use panix\engine\behaviors\NestedSetsQueryBehavior;
 

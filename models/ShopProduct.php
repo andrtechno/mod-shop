@@ -1,10 +1,10 @@
 <?php
 
-namespace app\system\modules\shop\models;
+namespace panix\shop\models;
 
 use app\models\User;
-use app\system\modules\shop\models\query\ShopProductQuery;
-use app\system\modules\shop\models\translate\ShopProductTranslate;
+use panix\shop\models\query\ShopProductQuery;
+use panix\shop\models\translate\ShopProductTranslate;
 use panix\engine\WebModel;
 use yii\helpers\ArrayHelper;
 use panix\engine\behaviors\TranslateBehavior;

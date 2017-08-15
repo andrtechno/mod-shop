@@ -1,9 +1,9 @@
 <?php
 
-namespace app\system\modules\shop\models;
+namespace panix\shop\models;
 
 use app\models\User;
-use app\system\modules\shop\models\query\ShopManufacturerQuery;
+use panix\shop\models\query\ShopManufacturerQuery;
 use panix\engine\WebModel;
 use panix\engine\behaviors\MultilingualBehavior;
 

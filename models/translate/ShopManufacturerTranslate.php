@@ -1,6 +1,6 @@
 <?php
 
-namespace app\system\modules\shop\models\translate;
+namespace panix\shop\models\translate;
 
 
 

@@ -1,11 +1,11 @@
 <?php
 
-namespace app\system\modules\shop\controllers\admin;
+namespace panix\shop\controllers\admin;
 
 use Yii;
 use panix\engine\controllers\AdminController;
 use yii\filters\VerbFilter;
-use app\system\modules\shop\models\ShopCategory;
+use panix\shop\models\ShopCategory;
 
 
 /**
@@ -17,19 +17,19 @@ class CategoryController extends AdminController {
         return [
             'moveNode' => [
                 'class' => 'panix\engine\behaviors\nestedsets\actions\MoveNodeAction',
-                'modelClass' => 'app\system\modules\shop\models\ShopCategory',
+                'modelClass' => 'panix\shop\models\ShopCategory',
             ],
             'deleteNode' => [
                 'class' => 'panix\engine\behaviors\nestedsets\actions\DeleteNodeAction',
-                'modelClass' => 'app\system\modules\shop\models\ShopCategory',
+                'modelClass' => 'panix\shop\models\ShopCategory',
             ],
             'updateNode' => [
                 'class' => 'panix\engine\behaviors\nestedsets\actions\UpdateNodeAction',
-                'modelClass' => 'app\system\modules\shop\models\ShopCategory',
+                'modelClass' => 'panix\shop\models\ShopCategory',
             ],
             'createNode' => [
                 'class' => 'panix\engine\behaviors\nestedsets\actions\CreateNodeAction',
-                'modelClass' => 'app\system\modules\shop\models\ShopCategory',
+                'modelClass' => 'panix\shop\models\ShopCategory',
             ],
         ];
     }

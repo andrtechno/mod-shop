@@ -1,6 +1,6 @@
 <?php
 
-namespace app\system\modules\shop;
+namespace panix\shop;
 
 use Yii;
 use panix\engine\WebModule;
@@ -50,12 +50,12 @@ class Module extends WebModule {
 
     protected function getDefaultModelClasses() {
         return [
-            'ShopProduct' => 'app\system\modules\shop\models\ShopProduct',
-            'ShopProductSearch' => 'app\system\modules\shop\models\search\ShopProductSearch',
-            'ShopCategory' => 'app\system\modules\shop\models\ShopCategory',
-            'ShopCategorySearch' => 'app\system\modules\shop\models\search\ShopCategorySearch',
-            'ShopManufacturer' => 'app\system\modules\shop\models\ShopManufacturer',
-            'ShopManufacturerSearch' => 'app\system\modules\shop\models\search\ShopManufacturerSearch',
+            'ShopProduct' => 'panix\shop\models\ShopProduct',
+            'ShopProductSearch' => 'panix\shop\models\search\ShopProductSearch',
+            'ShopCategory' => 'panix\shop\models\ShopCategory',
+            'ShopCategorySearch' => 'panix\shop\models\search\ShopCategorySearch',
+            'ShopManufacturer' => 'panix\shop\models\ShopManufacturer',
+            'ShopManufacturerSearch' => 'panix\shop\models\search\ShopManufacturerSearch',
         ];
     }
 

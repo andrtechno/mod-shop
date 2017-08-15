@@ -1,13 +1,13 @@
 <?php
 
-namespace app\system\modules\shop\models;
+namespace panix\shop\models;
 
 //use Yii;
 use panix\engine\WebModel;
 use panix\engine\behaviors\TranslateBehavior;
 use panix\engine\behaviors\NestedSetsBehavior;
-use app\system\modules\shop\models\translate\ShopCategoryTranslate;
-use app\system\modules\shop\models\query\ShopCategoryQuery;
+use panix\shop\models\translate\ShopCategoryTranslate;
+use panix\shop\models\query\ShopCategoryQuery;
 
 class ShopCategory extends WebModel {
 

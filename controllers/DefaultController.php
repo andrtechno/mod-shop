@@ -1,10 +1,10 @@
 <?php
 
-namespace app\modules\pages\controllers;
+namespace panix\shop\controllers;
 
 use Yii;
 use app\cms\controllers\WebController;
-use app\modules\shop\models\Pages;
+use panix\shop\models\ShopProduct;
 use yii\web\NotFoundHttpException;
 
 class DefaultController extends WebController {
