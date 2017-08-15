@@ -13,7 +13,9 @@ use yii\widgets\Pjax;
 
 
 
-<?php // echo $this->render('_search', ['model' => $searchModel]);  ?>
+<?php
+
+// echo $this->render('_search', ['model' => $searchModel]);  ?>
 
 
 <?php Pjax::begin(); ?>
