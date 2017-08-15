@@ -24,3 +24,9 @@ or add
 
 to the require section of your `composer.json` file.
 
+Add to web config.
+```
+'modules' => [
+    'shop' => ['class' => 'panix\shop\Module'],
+],
+```
