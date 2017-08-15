@@ -7,6 +7,7 @@ return [
     'PRICE' => 'Цена',
     'TEXT' => 'Описание товара',
     'MANUFACTURER_ID' => 'Производитель',
-    'CATEGORY_ID'=>'Категория'
+    'CATEGORY_ID'=>'Категория',
+    'FULL_DESCRIPTION'=>'Описание товара'
 ];
 ?>

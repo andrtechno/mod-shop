@@ -3,28 +3,45 @@
 namespace panix\shop\controllers\admin;
 
 use Yii;
-use panix\shop\models\ShopProduct;
-use panix\shop\models\search\ShopProductSearch;
+use panix\shop\models\ShopCurrency;
+use panix\shop\models\search\ShopCurrencySearch;
 use panix\engine\controllers\AdminController;
 use panix\engine\grid\sortable\SortableGridAction;
-use panix\engine\UploadForm;
 
-class DefaultController extends AdminController {
+class CurrencyController extends AdminController {
 
     public function actions() {
         return [
             'dnd_sort' => [
                 'class' => SortableGridAction::className(),
-                'modelName' => ShopProduct::className(),
+                'modelName' => ShopCurrency::className(),
             ],
         ];
     }
 
+    public function actionActive($id) {
+        $model = $this->findModel($id);
+        if ($model->switch == 0)
+            $model->switch = 1;
+        else
+            $model->switch = 0;
+
+        if (!$model->save()) {
+            Yii::$app->session->addFlash("error", "Error saving");
+        }
+        $model->refresh();
+
+        if (Yii::$app->request->isAjax) { // Render the index view
+            return $this->actionIndex();
+        } else
+            return $this->redirect(['manufacturer/index']);
+    }
+
     public function actionIndex() {
-        $this->pageName = Yii::t('shop/admin', 'PRODUCTS');
+        $this->pageName = Yii::t('shop/admin', 'CURRENCY');
         $this->buttons = [
             [
-                'label' => '<i class="icon-add"></i> ' . Yii::t('shop/admin', 'CREATE_PRODUCT'),
+                'label' => '<i class="icon-add"></i> ' . Yii::t('shop/admin', 'CREATE_CURRENCY'),
                 'url' => ['create'],
                 'options' => ['class' => 'btn btn-success']
             ]
@@ -33,7 +50,7 @@ class DefaultController extends AdminController {
             $this->pageName
         ];
 
-        $searchModel = new ShopProductSearch();
+        $searchModel = new ShopCurrencySearch();
         $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams());
 
         return $this->render('index', [
@@ -44,18 +61,18 @@ class DefaultController extends AdminController {
 
     public function actionUpdate($id = false) {
 
-        
+
         if ($id === true) {
-            $model = Yii::$app->getModule("shop")->model("ShopProduct");
+            $model = Yii::$app->getModule("shop")->model("ShopCurrency");
         } else {
             $model = $this->findModel($id);
         }
 
 
-        $this->pageName = Yii::t('shop/default', 'MODULE_NAME');
+        $this->pageName = Yii::t('shop/admin', 'CURRENCY');
         $this->buttons = [
             [
-                'label' => '<i class="icon-add"></i> ' . Yii::t('shop/admin', 'CREATE_PRODUCT'),
+                'label' => '<i class="icon-add"></i> ' . Yii::t('shop/admin', 'CREATE_CURRENCY'),
                 'url' => ['create'],
                 'options' => ['class' => 'btn btn-success']
             ]
@@ -68,30 +85,24 @@ class DefaultController extends AdminController {
             'label' => Yii::t('shop/admin', 'PRODUCTS'),
             'url' => ['index']
         ];
-        $this->breadcrumbs[] = Yii::t('app','UPDATE');
+        $this->breadcrumbs[] = Yii::t('app', 'UPDATE');
 
-                    
 
         //$model->setScenario("admin");
         $post = Yii::$app->request->post();
         if ($model->load($post) && $model->validate()) {
-            
-
-            
             $model->save();
             Yii::$app->session->addFlash('success', \Yii::t('app', 'SUCCESS_CREATE'));
-            return Yii::$app->getResponse()->redirect(['/admin/shop']);
+            return Yii::$app->getResponse()->redirect(['/admin/shop/currency']);
         }
 
         echo $this->render('update', [
-                    'model' => $model,
+            'model' => $model,
         ]);
     }
 
- 
-
     protected function findModel($id) {
-        $model = Yii::$app->getModule("shop")->model("ShopProduct");
+        $model = Yii::$app->getModule("shop")->model("ShopCurrency");
         if (($model = $model::findOne($id)) !== null) {
             return $model;
         } else {

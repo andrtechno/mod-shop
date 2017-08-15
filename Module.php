@@ -25,6 +25,11 @@ class Module extends WebModule {
                 'icon' => 'icon-folder-open'
             ],
             [
+                'label' => Yii::t('shop/admin','CURRENCY'),
+                "url" => ['/admin/shop/currency'],
+                'icon' => 'icon-currencies'
+            ],
+            [
                 'label' => Yii::t('shop/admin','MANUFACTURER'),
                 "url" => ['/admin/shop/manufacturer'],
                 'icon' => 'icon-apple'
@@ -52,6 +57,8 @@ class Module extends WebModule {
         return [
             'ShopProduct' => 'panix\shop\models\ShopProduct',
             'ShopProductSearch' => 'panix\shop\models\search\ShopProductSearch',
+            'ShopCurrency' => 'panix\shop\models\ShopCurrency',
+            'ShopCurrencySearch' => 'panix\shop\models\search\ShopCurrencySearch',
             'ShopCategory' => 'panix\shop\models\ShopCategory',
             'ShopCategorySearch' => 'panix\shop\models\search\ShopCategorySearch',
             'ShopManufacturer' => 'panix\shop\models\ShopManufacturer',

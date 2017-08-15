@@ -1,17 +1,4 @@
-<?php
-//use Yii;
-use panix\shop\Module;
-
-?>
-
 <h1><?= $model->name ?></h1>
-<p><?= $model->text ?></p>
-<?php
-//print_r($model->user)
-echo Yii::t('app','Param');
-echo '<br>';
-echo \Yii::$app->language;;
-echo Module::t('default','MODNAME');
+<p><?= $model->full_description ?></p>
 
-?>
-
+<p><?= $model->category->name ?></p>

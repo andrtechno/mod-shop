@@ -1,0 +1,50 @@
+<?php
+
+namespace panix\shop\models;
+
+//use panix\shop\models\query\ShopManufacturerQuery;
+use panix\engine\WebModel;
+use yii\helpers\ArrayHelper;
+
+
+class ShopCurrency extends WebModel {
+
+    const MODULE_ID = 'shop';
+
+    //public static function find() {
+       // return new ShopManufacturerQuery(get_called_class());
+    //}
+
+
+
+    public function transactions() {
+        return [
+            self::SCENARIO_DEFAULT => self::OP_INSERT | self::OP_UPDATE,
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function tableName() {
+        return '{{%shop_currency}}';
+    }
+
+
+    /**
+     * @inheritdoc
+     */
+    public function rules() {
+        return [
+            [['name', 'rate','symbol','iso'], 'required'],
+            [['name'], 'trim'],
+            [['is_main','is_default'], 'boolean'],
+            [['name'], 'string', 'max' => 255],
+            [['ordern'], 'integer'],
+            [['name', 'rate','symbol','iso'], 'safe'],
+        ];
+    }
+
+
+
+}

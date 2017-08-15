@@ -28,7 +28,10 @@ class DefaultController extends WebController {
 
     protected function findModel($url) {
         $model = Yii::$app->getModule("shop")->model("ShopProduct");
-        if (($this->model = $model::find()->where(['seo_alias' => $url])->one()) !== null) {
+        if (($this->model = $model::find()
+               // ->getCategory()
+                ->where(['seo_alias' => $url])
+                ->one()) !== null) {
             return $this->model;
         } else {
             throw new NotFoundHttpException('product not found');

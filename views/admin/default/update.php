@@ -1,7 +1,7 @@
 <?php
 
 use yii\helpers\Html;
-use yii\widgets\ActiveForm;
+use yii\bootstrap\ActiveForm; //widgets
 use yii\helpers\ArrayHelper;
 use panix\shop\models\ShopManufacturer;
 use panix\shop\models\ShopCategory;
@@ -16,7 +16,8 @@ use yii\bootstrap\Dropdown;
     <div class="panel-body">
         <?php
         $form = ActiveForm::begin([
-         /*           'layout' => 'horizontal',
+
+                   'layout' => 'horizontal',
                     'fieldConfig' => [
                         'horizontalCssClasses' => [
                             'label' => 'col-sm-4',
@@ -26,13 +27,20 @@ use yii\bootstrap\Dropdown;
                             'hint' => '',
                         ],
                     ],
-                    'options' => ['class' => 'form-horizontal']*/
+                    'options' => ['class' => 'form-horizontal','enctype' => 'multipart/form-data']
         ]);
         ?>
         <?= $form->field($model, 'name')->textInput(['maxlength' => 255]) ?>
         <?= $form->field($model, 'seo_alias')->textInput(['maxlength' => 255]) ?>
         <?= $form->field($model, 'sku')->textInput(['maxlength' => 255]) ?>
         <?= $form->field($model, 'price')->textInput(['maxlength' => 10]) ?>
+
+<?= $form->field($model, 'image')->fileInput() ?>
+
+
+<?= Html::img($model->getBehavior('image')->getUrl('thumb')); ?>
+<?= Html::img($model->getBehavior('image')->getUrl('background')); ?>
+        <?= Html::img($model->getBehavior('image')->getUrl('main')); ?>
 
 <?php
 

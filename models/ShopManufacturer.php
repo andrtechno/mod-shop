@@ -2,10 +2,11 @@
 
 namespace panix\shop\models;
 
-use app\models\User;
 use panix\shop\models\query\ShopManufacturerQuery;
 use panix\engine\WebModel;
-use panix\engine\behaviors\MultilingualBehavior;
+use panix\engine\behaviors\TranslateBehavior;
+use yii\helpers\ArrayHelper;
+use panix\shop\models\translate\ShopManufacturerTranslate;
 
 class ShopManufacturer extends WebModel {
 
@@ -14,8 +15,8 @@ class ShopManufacturer extends WebModel {
     public static function find() {
         return new ShopManufacturerQuery(get_called_class());
     }
-        public static function dropdown()
-    {
+
+    public static function dropdown() {
         // get and cache data
         static $dropdown;
         if ($dropdown === null) {
@@ -29,6 +30,17 @@ class ShopManufacturer extends WebModel {
 
         return $dropdown;
     }
+
+    public function getUrl() {
+        return ['/shop/manufacturer/view', 'url' => $this->seo_alias];
+    }
+
+    public function transactions() {
+        return [
+            self::SCENARIO_DEFAULT => self::OP_INSERT | self::OP_UPDATE,
+        ];
+    }
+
     /**
      * @inheritdoc
      */
@@ -36,18 +48,34 @@ class ShopManufacturer extends WebModel {
         return '{{%shop_manufacturer}}';
     }
 
+    public function getTranslations() {
+        return $this->hasMany(ShopManufacturerTranslate::className(), ['object_id' => 'id']);
+    }
+
     /**
      * @inheritdoc
      */
     public function rules() {
         return [
+            [['name', 'seo_alias'], 'required'],
             [['name', 'seo_alias'], 'trim'],
+            [['description'], 'string'],
             [['name', 'seo_alias'], 'string', 'max' => 255],
             [['ordern'], 'integer'],
             [['name', 'seo_alias'], 'safe'],
         ];
     }
 
-
+    public function behaviors() {
+        return ArrayHelper::merge([
+                    'translate' => [
+                        'class' => TranslateBehavior::className(),
+                        'translationAttributes' => [
+                            'name',
+                            'description'
+                        ]
+                    ],
+                        ], parent::behaviors());
+    }
 
 }
