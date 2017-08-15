@@ -12,8 +12,8 @@ class DefaultController extends WebController {
     public $model;
 
     public function actionIndex() {
-        $all = Pages::find()->all();
-        $one = Pages::findOne(3);
+        $all = ShopProduct::find()->all();
+        $one = ShopProduct::findOne(3);
         echo Yii::$app->request->getQueryParam('language');
         return $this->render('index', [
                     'model' => $all,
@@ -28,7 +28,7 @@ class DefaultController extends WebController {
     }
 
     protected function findModel($url) {
-        $model = Yii::$app->getModule("pages")->model("Pages");
+        $model = Yii::$app->getModule("shop")->model("ShopProduct");
         if (($this->model = $model::find()->where(['seo_alias' => $url])->one()) !== null) {
             return $this->model;
         } else {

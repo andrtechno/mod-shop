@@ -9,7 +9,7 @@ class Module extends WebModule {
 
 
     //public $routes = [
-    //    'page/<url>' => 'pages/default/view',
+    //    'shop/<url>' => 'shop/default/view',
     //];
 
     public function getNav() {

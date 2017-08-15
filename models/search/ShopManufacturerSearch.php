@@ -8,7 +8,7 @@ use yii\data\ActiveDataProvider;
 use panix\shop\models\ShopManufacturer;
 
 /**
- * PagesSearch represents the model behind the search form about `app\modules\pages\models\Pages`.
+ * ShopManufacturerSearch represents the model behind the search form about `panix\shop\models\ShopManufacturer`.
  */
 class ShopManufacturerSearch extends ShopManufacturer {
 

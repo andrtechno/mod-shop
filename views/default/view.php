@@ -1,6 +1,6 @@
 <?php
 //use Yii;
-use app\modules\pages\Module;
+use panix\shop\Module;
 
 ?>
 
