@@ -18,7 +18,7 @@ class ShopCurrencySearch extends ShopCurrency {
     public function rules() {
         return [
             [['id'], 'integer'],
-            [['name','seo_alias'], 'safe'],
+            [['name','seo_alias','is_default'], 'safe'],
         ];
     }
 
@@ -61,6 +61,7 @@ class ShopCurrencySearch extends ShopCurrency {
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name]);
+        $query->andFilterWhere(['like', 'is_default', $this->is_default]);
 
         return $dataProvider;
     }

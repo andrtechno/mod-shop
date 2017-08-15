@@ -25,6 +25,30 @@ SortableGridView::widget([
             'contentOptions' => ['class' => 'text-center']
         ],
         'name',
+        [
+            'attribute' => 'is_default',
+            'format' => 'raw',
+            'contentOptions' => ['class' => 'text-center'],
+            'value' => function($model) {
+                return $model->is_default == 1 ? Yii::t('app','YES') : Yii::t('app','NO');
+            }
+        ],
+        [
+            'attribute' => 'is_main',
+            'format' => 'raw',
+            'contentOptions' => ['class' => 'text-center'],
+            'value' => function($model) {
+                return $model->is_main == 1 ? Yii::t('app','YES') : Yii::t('app','NO');
+            }
+        ],
+        [
+            'attribute' => 'rate',
+            'format' => 'raw',
+            'contentOptions' => ['class' => 'text-center'],
+            'value' => function($model) {
+                return $model->rate;
+            }
+        ],
         ['class' => 'panix\engine\grid\ActionColumn',
             'template' => '{update}{delete}',
             'buttons' => [
