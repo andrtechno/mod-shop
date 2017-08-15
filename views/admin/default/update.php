@@ -3,13 +3,11 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
-use app\system\modules\shop\models\ShopManufacturer;
-use app\system\modules\shop\models\ShopCategory;
+use panix\shop\models\ShopManufacturer;
+use panix\shop\models\ShopCategory;
 use panix\tinymce\TinyMce;
 use yii\bootstrap\Dropdown;
 
-/* @var $this yii\web\View */
-/* @var $model app\modules\pages\models\Pages */
 ?>
 <div class="panel panel-default">
     <div class="panel-heading">

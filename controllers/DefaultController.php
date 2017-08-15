@@ -3,7 +3,7 @@
 namespace panix\shop\controllers;
 
 use Yii;
-use app\cms\controllers\WebController;
+use panix\engine\controllers\WebController;
 use panix\shop\models\ShopProduct;
 use yii\web\NotFoundHttpException;
 
@@ -22,7 +22,6 @@ class DefaultController extends WebController {
     }
 
     public function actionView($url) {
-        die('z');
         $this->findModel($url);
         return $this->render('view', ['model' => $this->model]);
     }
@@ -32,7 +31,7 @@ class DefaultController extends WebController {
         if (($this->model = $model::find()->where(['seo_alias' => $url])->one()) !== null) {
             return $this->model;
         } else {
-            throw new NotFoundHttpException('page not found');
+            throw new NotFoundHttpException('product not found');
         }
     }
 

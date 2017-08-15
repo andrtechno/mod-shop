@@ -8,9 +8,9 @@ use panix\engine\WebModule;
 class Module extends WebModule {
 
 
-    //public $routes = [
-    //    'shop/<url>' => 'shop/default/view',
-    //];
+    public $routes = [
+        'product/<url>' => 'shop/default/view',
+    ];
 
     public function getNav() {
         return [
