@@ -1,9 +1,8 @@
 <?php
 
 use yii\helpers\Html;
-use panix\engine\grid\AdminGridView;
-use app\system\modules\shop\models\ShopCategory;
-use app\system\modules\shop\models\ShopCategoryNode;
+use panix\shop\models\ShopCategory;
+use panix\shop\models\ShopCategoryNode;
 
 $user = Yii::$app->getModule("shop")->model("ShopProduct");
 $manufacturer = Yii::$app->getModule("shop")->model("ShopManufacturer");

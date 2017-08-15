@@ -55,7 +55,7 @@ class CategoryController extends AdminController {
             ]
         ];
 
-        return $this->render('index', [
+        echo $this->render('index', [
  
         ]);
     }

@@ -3,11 +3,11 @@
 namespace panix\shop\models;
 
 use app\models\User;
+use panix\engine\WebModel;
+use panix\engine\behaviors\TranslateBehavior;
 use panix\shop\models\query\ShopProductQuery;
 use panix\shop\models\translate\ShopProductTranslate;
-use panix\engine\WebModel;
 use yii\helpers\ArrayHelper;
-use panix\engine\behaviors\TranslateBehavior;
 
 class ShopProduct extends WebModel {
 
@@ -36,7 +36,7 @@ class ShopProduct extends WebModel {
 
     public function getTranslations() {
         return $this->hasMany(ShopProductTranslate::className(), ['object_id' => 'id']);
-    }
+   }
 
     /**
      * @inheritdoc
@@ -66,7 +66,7 @@ class ShopProduct extends WebModel {
                         // это модель для таблицы object_attribute_value
                         'valueClass' => \mirocow\eav\models\EavAttributeValue::className(),
                     ],
-                    'TranslateBehavior' => [ // name it the way you want
+                    'translate' => [
                         'class' => TranslateBehavior::className(),
                         'translationAttributes' => [
                             'name',
