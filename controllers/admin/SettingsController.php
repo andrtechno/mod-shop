@@ -4,7 +4,7 @@ namespace panix\mod\shop\controllers\admin;
 
 use Yii;
 use panix\engine\controllers\AdminController;
-use panix\mod\shop\models\SettingsForm;
+use panix\mod\shop\models\forms\SettingsForm;
 
 class SettingsController extends AdminController {
 

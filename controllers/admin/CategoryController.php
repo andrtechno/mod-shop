@@ -17,19 +17,19 @@ class CategoryController extends AdminController {
         return [
             'moveNode' => [
                 'class' => 'panix\engine\behaviors\nestedsets\actions\MoveNodeAction',
-                'modelClass' => 'panix\shop\models\ShopCategory',
+                'modelClass' => 'panix\mod\shop\models\ShopCategory',
             ],
             'deleteNode' => [
                 'class' => 'panix\engine\behaviors\nestedsets\actions\DeleteNodeAction',
-                'modelClass' => 'panix\shop\models\ShopCategory',
+                'modelClass' => 'panix\mod\shop\models\ShopCategory',
             ],
             'updateNode' => [
                 'class' => 'panix\engine\behaviors\nestedsets\actions\UpdateNodeAction',
-                'modelClass' => 'panix\shop\models\ShopCategory',
+                'modelClass' => 'panix\mod\shop\models\ShopCategory',
             ],
             'createNode' => [
                 'class' => 'panix\engine\behaviors\nestedsets\actions\CreateNodeAction',
-                'modelClass' => 'panix\shop\models\ShopCategory',
+                'modelClass' => 'panix\mod\shop\models\ShopCategory',
             ],
         ];
     }
