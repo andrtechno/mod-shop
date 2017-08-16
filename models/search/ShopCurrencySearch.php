@@ -5,7 +5,7 @@ namespace panix\mod\shop\models\search;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use panix\shop\models\ShopCurrency;
+use panix\mod\shop\models\ShopCurrency;
 
 /**
  * ShopManufacturerSearch represents the model behind the search form about `panix\shop\models\ShopManufacturer`.
