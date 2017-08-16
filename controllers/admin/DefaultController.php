@@ -97,7 +97,7 @@ class DefaultController extends AdminController {
         if (($model = $model::findOne($id)) !== null) {
             return $model;
         } else {
-            throw new NotFoundHttpException('The requested page does not exist.');
+            throw new \yii\web\NotFoundHttpException('The requested page does not exist.');
         }
     }
 
