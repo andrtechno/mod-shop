@@ -1,11 +1,11 @@
 <?php
 
-namespace panix\shop\controllers\admin;
+namespace panix\mod\shop\controllers\admin;
 
 use Yii;
 use panix\engine\controllers\AdminController;
+use panix\mod\shop\models\ShopCategory;
 use yii\filters\VerbFilter;
-use panix\shop\models\ShopCategory;
 
 
 /**
