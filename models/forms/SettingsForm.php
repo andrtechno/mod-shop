@@ -1,6 +1,6 @@
 <?php
 
-namespace panix\shop\models\forms;
+namespace panix\mod\shop\models\forms;
 
 use panix\engine\SettingsModel;
 
