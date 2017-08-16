@@ -1,6 +1,6 @@
 <?php
 
-namespace panix\shop\models\query;
+namespace panix\mod\shop\models\query;
 
 use yii\db\ActiveQuery;
 

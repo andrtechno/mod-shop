@@ -1,6 +1,6 @@
 <?php
 
-namespace panix\shop\models\translate;
+namespace panix\mod\shop\models\translate;
 
 class ShopProductTranslate extends \yii\db\ActiveRecord {
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace panix\shop\models\search;
+namespace panix\mod\shop\models\search;
 
 use Yii;
 use yii\base\Model;

@@ -1,9 +1,9 @@
 <?php
-namespace panix\shop\models;
+namespace panix\mod\shop\models;
 
 use Yii;
 use yii\base\Component;
-use panix\shop\models\ShopCategory;
+use panix\mod\shop\models\ShopCategory;
 use yii\helpers\ArrayHelper;
 /**
  * Present ShopCategory as JsTree node.

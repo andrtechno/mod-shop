@@ -1,12 +1,12 @@
 <?php
 
-namespace panix\shop\models;
+namespace panix\mod\shop\models;
 
-use panix\shop\models\query\ShopManufacturerQuery;
+use panix\mod\shop\models\query\ShopManufacturerQuery;
 use panix\engine\WebModel;
 use panix\engine\behaviors\TranslateBehavior;
 use yii\helpers\ArrayHelper;
-use panix\shop\models\translate\ShopManufacturerTranslate;
+use panix\mod\shop\models\translate\ShopManufacturerTranslate;
 
 class ShopManufacturer extends WebModel {
 

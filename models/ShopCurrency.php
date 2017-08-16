@@ -1,6 +1,6 @@
 <?php
 
-namespace panix\shop\models;
+namespace panix\mod\shop\models;
 
 //use panix\shop\models\query\ShopManufacturerQuery;
 use panix\engine\WebModel;

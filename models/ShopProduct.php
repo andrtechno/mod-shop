@@ -1,14 +1,14 @@
 <?php
 
-namespace panix\shop\models;
+namespace panix\mod\shop\models;
 
 use Yii;
 use panix\engine\WebModel;
 use panix\engine\behaviors\TranslateBehavior;
-use panix\shop\models\ShopCategory;
-use panix\shop\models\ShopManufacturer;
-use panix\shop\models\query\ShopProductQuery;
-use panix\shop\models\translate\ShopProductTranslate;
+use panix\mod\shop\models\ShopCategory;
+use panix\mod\shop\models\ShopManufacturer;
+use panix\mod\shop\models\query\ShopProductQuery;
+use panix\mod\shop\models\translate\ShopProductTranslate;
 use yii\helpers\ArrayHelper;
 use salopot\attach\behaviors\AttachFileBehavior;
 use salopot\attach\behaviors\AttachImageBehavior;

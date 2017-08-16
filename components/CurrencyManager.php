@@ -1,10 +1,10 @@
 <?php
 
-namespace panix\shop\components;
+namespace panix\mod\shop\components;
 
 use Yii;
 use yii\base\Component;
-use panix\shop\models\ShopCurrency;
+use panix\mod\shop\models\ShopCurrency;
 
 /**
  * Class to work with currencies
