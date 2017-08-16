@@ -3,9 +3,9 @@
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm; //widgets
 use yii\helpers\ArrayHelper;
-use panix\shop\models\ShopManufacturer;
-use panix\shop\models\ShopCategory;
-use panix\tinymce\TinyMce;
+use panix\mod\shop\models\ShopManufacturer;
+use panix\mod\shop\models\ShopCategory;
+use panix\ext\tinymce\TinyMce;
 use yii\bootstrap\Dropdown;
 
 ?>
