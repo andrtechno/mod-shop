@@ -43,9 +43,9 @@ class ShopProductSearch extends ShopProduct {
         $dataProvider = new ActiveDataProvider([
                     'query' => $query,
                     'sort'=> ['defaultOrder' => ['ordern'=>SORT_DESC]],
-                    'pagination' => [
-                        'pageSize' => Yii::$app->params['pagenum'],
-                        ],
+                   // 'pagination' => [
+                     //   'pageSize' => Yii::$app->params['pagenum'],
+                       // ],
                 ]);
 
         $this->load($params);

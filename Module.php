@@ -7,9 +7,9 @@ use panix\engine\WebModule;
 
 class Module extends WebModule {
 
-
     public $routes = [
         'product/<url>' => 'shop/default/view',
+        //['class' => 'panix\mod\shop\components\ShopCategoryUrlRule']
     ];
 
     public function getNav() {
@@ -20,22 +20,22 @@ class Module extends WebModule {
                 'icon' => 'icon-shopcart'
             ],
             [
-                'label' => Yii::t('shop/admin','CATEGORIES'),
+                'label' => Yii::t('shop/admin', 'CATEGORIES'),
                 "url" => ['/admin/shop/category'],
                 'icon' => 'icon-folder-open'
             ],
             [
-                'label' => Yii::t('shop/admin','CURRENCY'),
+                'label' => Yii::t('shop/admin', 'CURRENCY'),
                 "url" => ['/admin/shop/currency'],
                 'icon' => 'icon-currencies'
             ],
             [
-                'label' => Yii::t('shop/admin','MANUFACTURER'),
+                'label' => Yii::t('shop/admin', 'MANUFACTURER'),
                 "url" => ['/admin/shop/manufacturer'],
                 'icon' => 'icon-apple'
             ],
             [
-                'label' => Yii::t('app','SETTINGS'),
+                'label' => Yii::t('app', 'SETTINGS'),
                 "url" => ['/admin/shop/settings'],
                 'icon' => 'icon-settings'
             ]

@@ -20,10 +20,11 @@ class SettingsController extends AdminController {
         $model = new SettingsForm();
         if ($model->load(Yii::$app->request->post())) {
             $model->save();
+            return Yii::$app->getResponse()->redirect(['/admin/shop/settings']);
         }
         return $this->render('index', [
                     'model' => $model
-                ]);
+        ]);
     }
 
 }

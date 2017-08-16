@@ -1,12 +1,15 @@
 <?php
 
-class ShopCategoryUrlRule extends CBaseUrlRule {
+namespace panix\mod\shop\components;
 
-    public $connectionID = 'db';
-    public $urlSuffix = '';
+use Yii;
 
-    public function createUrl($manager, $route, $params, $ampersand) {
-        if ($route === 'shop/category/view') {
+class ShopCategoryUrlRule extends \yii\web\UrlRule {
+
+
+
+    public function createUrl($manager, $route, $params) {
+       /* if ($route === 'shop/category/view') {
             if(isset($params['seo_alias'])){
             $url = trim($params['seo_alias'], '/');
             unset($params['seo_alias']);
@@ -19,8 +22,8 @@ class ShopCategoryUrlRule extends CBaseUrlRule {
                     $parts[] = $key . '/' . $val;
                 
                 // for ajax mode
-                if (Yii::app()->request->isAjaxRequest && Yii::app()->settings->get('shop','ajax_mode')) {
-                    if (!Yii::app()->request->getParam('ajax')) {
+                if (Yii::$app->request->isAjax) {
+                    if (!Yii::$app->request->get('ajax')) {
                         $url .= '/' . implode('/', $parts);
                     } else {
                        // $url .= implode('/', $parts);
@@ -32,22 +35,19 @@ class ShopCategoryUrlRule extends CBaseUrlRule {
 
             return $url . $this->urlSuffix;
         }
-        return false;
+        return false;*/
+        return  ['pattern' => 'admin/auth', 'route' => 'admin/auth'];
     }
 
-    public function parseUrl($manager, $request, $pathInfo, $rawPathInfo) {
-        if (empty($pathInfo))
-            return false;
+    public function parseRequest222($manager, $request) {
 
-        if ($this->urlSuffix)
-            $pathInfo = strtr($pathInfo, array($this->urlSuffix => ''));
 
         foreach ($this->getAllPaths() as $path) {
             if ($path !== '' && strpos($pathInfo, $path) === 0) {
                 $_GET['seo_alias'] = $path;
 
                 $params = ltrim(substr($pathInfo, strlen($path)), '/');
-                Yii::app()->urlManager->parsePathInfo($params);
+                Yii::$app->urlManager->parsePathInfo($params);
 
                 return 'shop/category/view';
             }
@@ -57,20 +57,28 @@ class ShopCategoryUrlRule extends CBaseUrlRule {
     }
 
     protected function getAllPaths() {
-        $allPaths = Yii::app()->cache->get('ShopCategoryUrlRule');
+        $allPaths = Yii::$app->cache->get('ShopCategoryUrlRule');
 
         if ($allPaths === false) {
-            $allPaths = Yii::app()->db->createCommand()
+            
+            
+            $allPaths = (new \yii\db\Query())
+    ->select(['full_path'])
+    ->from('{{%shop_category}}')
+    ->all();
+            
+            
+           /* $allPaths = Yii::app()->db->createCommand()
                     ->from('{{shop_category}}')
                     ->select('full_path')
-                    ->queryColumn();
+                    ->queryColumn();*/
 
             // Sort paths by length.
             usort($allPaths, function($a, $b) {
                         return strlen($b) - strlen($a);
                     });
 
-            Yii::app()->cache->set('ShopCategoryUrlRule', $allPaths,Yii::app()->settings->get('app','cache_time'));
+            Yii::$app->cache->set('ShopCategoryUrlRule', $allPaths,Yii::$app->settings->get('app','cache_time'));
         }
 
         return $allPaths;
