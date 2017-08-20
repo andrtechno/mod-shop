@@ -11,5 +11,7 @@ class ShopCategoryQuery extends \yii\db\ActiveQuery {
             NestedSetsQueryBehavior::className(),
         ];
     }
-
+    public function published($state = 1) {
+        return $this->andWhere(['switch' => $state]);
+    }
 }

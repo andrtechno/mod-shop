@@ -6,6 +6,7 @@ namespace panix\mod\shop\models;
 use panix\engine\WebModel;
 use panix\engine\behaviors\TranslateBehavior;
 use panix\engine\behaviors\NestedSetsBehavior;
+use panix\engine\behaviors\MenuArrayBehavior;
 use panix\mod\shop\models\translate\ShopCategoryTranslate;
 use panix\mod\shop\models\query\ShopCategoryQuery;
 
@@ -37,6 +38,12 @@ class ShopCategory extends WebModel {
                     'description'
                 ]
             ],
+            'MenuArrayBehavior' => array(
+                'class' => MenuArrayBehavior::className(),
+                'labelAttr' => 'name',
+                // 'countProduct'=>false,
+                'urlExpression' => '["/shop/category/view", "seo_alias"=>$model->full_path]',
+            ),
             'tree' => [
                 'class' => NestedSetsBehavior::className(),
             // 'treeAttribute' => 'tree',
