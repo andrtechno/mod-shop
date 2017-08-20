@@ -9,6 +9,7 @@ class Module extends WebModule {
 
     public $routes = [
         'product/<url>' => 'shop/default/view',
+        'catalog/<url>' => 'shop/category/view',
         //['class' => 'panix\mod\shop\components\ShopCategoryUrlRule']
     ];
 

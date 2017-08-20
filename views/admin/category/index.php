@@ -1,8 +1,8 @@
 <?php
 
 use yii\helpers\Html;
-use panix\shop\models\ShopCategory;
-use panix\shop\models\ShopCategoryNode;
+use panix\mod\shop\models\ShopCategory;
+use panix\mod\shop\models\ShopCategoryNode;
 
 $user = Yii::$app->getModule("shop")->model("ShopProduct");
 $manufacturer = Yii::$app->getModule("shop")->model("ShopManufacturer");
@@ -20,7 +20,7 @@ foreach(ShopCategoryNode::fromArray(ShopCategory::findOne(1)->children()->all(),
     }
 }
 
-echo \panix\jstree\JsTree::widget([
+echo \panix\ext\jstree\JsTree::widget([
    // 'attribute' => 'attribute_name',
    // 'model' => $model,
     'name'=>'jstree',
