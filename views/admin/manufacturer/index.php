@@ -26,7 +26,7 @@ SortableGridView::widget([
             'contentOptions' => ['class' => 'text-center']
         ],
         'name',
-['class' => 'panix\engine\grid\ActionColumn',
+['class' => 'panix\engine\grid\columns\ActionColumn',
     'template'=>'{update}{active}',
         'buttons' => [
    "active" => function ($url, $model) {
@@ -41,7 +41,7 @@ SortableGridView::widget([
    },
         ]
     ],
-       // ['class' => 'panix\engine\grid\ActionColumn'],
+       // ['class' => 'panix\engine\grid\columns\ActionColumn'],
     ],
 ]);
 ?>

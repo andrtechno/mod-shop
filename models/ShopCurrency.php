@@ -41,6 +41,7 @@ class ShopCurrency extends WebModel {
             [['is_main','is_default'], 'boolean'],
             [['name'], 'string', 'max' => 255],
             [['ordern'], 'integer'],
+            [['rate'], 'number'],
             [['name', 'rate','symbol','iso'], 'safe'],
         ];
     }

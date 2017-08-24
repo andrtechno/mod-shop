@@ -81,4 +81,27 @@ class ShopCategory extends WebModel {
         return $result;
     }
 
+    public function beforeSave($insert) {
+        $this->rebuildFullPath();
+        return parent::beforeSave($insert);
+    }
+
+    public function rebuildFullPath() {
+        // Create category full path.
+        $ancestors = $this->find()->leaves()->all();
+        if (sizeof($ancestors)) {
+            // Remove root category from path
+            unset($ancestors[0]);
+
+            $parts = array();
+            foreach ($ancestors as $ancestor)
+                $parts[] = $ancestor->seo_alias;
+
+            $parts[] = $this->seo_alias;
+            $this->full_path = implode('/', array_filter($parts));
+        }
+
+        return $this;
+    }
+
 }

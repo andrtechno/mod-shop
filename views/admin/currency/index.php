@@ -49,7 +49,7 @@ SortableGridView::widget([
                 return $model->rate;
             }
         ],
-        ['class' => 'panix\engine\grid\ActionColumn',
+        ['class' => 'panix\engine\grid\columns\ActionColumn',
             'template' => '{update}{delete}',
             'buttons' => [
                 "active" => function ($url, $model) {
@@ -66,7 +66,7 @@ SortableGridView::widget([
                 },
                     ]
                 ],
-            // ['class' => 'panix\engine\grid\ActionColumn'],
+            // ['class' => 'panix\engine\grid\columns\ActionColumn'],
             ],
         ]);
         ?>

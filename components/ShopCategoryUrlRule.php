@@ -3,43 +3,44 @@
 namespace panix\mod\shop\components;
 
 use Yii;
+use yii\base\Object;
+use yii\web\UrlRuleInterface;
 
-class ShopCategoryUrlRule extends \yii\web\UrlRule {
-
-
+class ShopCategoryUrlRule  extends \yii\web\UrlRule {
+//class ShopCategoryUrlRule  extends Object implements UrlRuleInterface {
 
     public function createUrl($manager, $route, $params) {
-       /* if ($route === 'shop/category/view') {
-            if(isset($params['seo_alias'])){
-            $url = trim($params['seo_alias'], '/');
-            unset($params['seo_alias']);
-            }else{
-               $url=''; 
-            }
-            $parts = array();
-            if (!empty($params)) {
-                foreach ($params as $key => $val)
-                    $parts[] = $key . '/' . $val;
-                
-                // for ajax mode
-                if (Yii::$app->request->isAjax) {
-                    if (!Yii::$app->request->get('ajax')) {
-                        $url .= '/' . implode('/', $parts);
-                    } else {
-                       // $url .= implode('/', $parts);
-                    }
-                } else {
-                    $url .= '/' . implode('/', $parts);
-                }
-            }
+        /* if ($route === 'shop/category/view') {
+          if(isset($params['seo_alias'])){
+          $url = trim($params['seo_alias'], '/');
+          unset($params['seo_alias']);
+          }else{
+          $url='';
+          }
+          $parts = array();
+          if (!empty($params)) {
+          foreach ($params as $key => $val)
+          $parts[] = $key . '/' . $val;
 
-            return $url . $this->urlSuffix;
-        }
-        return false;*/
-        return  ['pattern' => 'admin/auth', 'route' => 'admin/auth'];
+          // for ajax mode
+          if (Yii::$app->request->isAjax) {
+          if (!Yii::$app->request->get('ajax')) {
+          $url .= '/' . implode('/', $parts);
+          } else {
+          // $url .= implode('/', $parts);
+          }
+          } else {
+          $url .= '/' . implode('/', $parts);
+          }
+          }
+
+          return $url . $this->urlSuffix;
+          }
+          return false; */
+        return ['pattern' => 'ttttttttttttttttttt', 'route' => 'admin/auth'];
     }
 
-    public function parseRequest222($manager, $request) {
+    public function parseRequest($manager, $request) {
 
 
         foreach ($this->getAllPaths() as $path) {
@@ -60,25 +61,25 @@ class ShopCategoryUrlRule extends \yii\web\UrlRule {
         $allPaths = Yii::$app->cache->get('ShopCategoryUrlRule');
 
         if ($allPaths === false) {
-            
-            
+
+
             $allPaths = (new \yii\db\Query())
-    ->select(['full_path'])
-    ->from('{{%shop_category}}')
-    ->all();
-            
-            
-           /* $allPaths = Yii::app()->db->createCommand()
-                    ->from('{{shop_category}}')
-                    ->select('full_path')
-                    ->queryColumn();*/
+                    ->select(['full_path'])
+                    ->from('{{%shop_category}}')
+                    ->all();
+
+
+            /* $allPaths = Yii::app()->db->createCommand()
+              ->from('{{shop_category}}')
+              ->select('full_path')
+              ->queryColumn(); */
 
             // Sort paths by length.
             usort($allPaths, function($a, $b) {
-                        return strlen($b) - strlen($a);
-                    });
+                return strlen($b) - strlen($a);
+            });
 
-            Yii::$app->cache->set('ShopCategoryUrlRule', $allPaths,Yii::$app->settings->get('app','cache_time'));
+            Yii::$app->cache->set('ShopCategoryUrlRule', $allPaths);
         }
 
         return $allPaths;

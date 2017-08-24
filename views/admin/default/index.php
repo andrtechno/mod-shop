@@ -19,7 +19,7 @@ use yii\widgets\Pjax;
 <?php
 
 Pjax::begin([
-    'id' => 'pjax-container',
+    'id' => 'pjax-container', 'enablePushState' => false,
 ]);
 ?>
 <?=
@@ -37,38 +37,24 @@ SortableGridView::widget([
         'name',
         'price',
         [
-            'class' => 'panix\engine\grid\ActionColumn',
-            'template' => '{update} {delete}',
+            'class' => 'panix\engine\grid\columns\ActionColumn',
+            'template' => '{view} {update} {switch} {delete}',
             'buttons' => [
-                /* 'delete' => function($url, $model) {
-                  return Html::a('<i class="icon-delete"></i>', ['delete', 'id' => $model->id], [
-                  'class' => 'btn btn-danger',
-                  'data' => [
-                  'confirm' => 'Are you absolutely sure ? You will lose all the information about this user with this action.',
-                  'method' => 'post',
-                  'pjax' => 0,
-                  ],
-                  ]);
-                  } */
-                'delete' => function ($url) {
-                    return Html::a(Yii::t('yii', 'Delete'), '#', [
+                'view' => function ($url, $model, $key) {
+                    return Html::a('<i class="icon-search"></i>', $model->getUrl(), [
                                 'title' => Yii::t('yii', 'Delete'),
-                                'aria-label' => Yii::t('yii', 'Delete'),
-                                'onclick' => "
-                                if (confirm('" . Yii::t('app', 'DELETE_COMFIRM') . "')) {
-                                    $.ajax('$url', {
-                                        type: 'POST'
-                                    }).done(function(data) {
-                                        $.pjax.reload({container: '#pjax-container'});
-                                    });
-                                }
-                                return false;
-                            ",
+                                'target' => '_blank'
                     ]);
                 },
-                    ]
-                ],
-            ],
+                    ],
+                /* 'urlCreator' => function ($action, $model, $key, $index) {
+                  if ($action === 'view') {
+                  $url = $model->getUrl(); // your own url generation logic
+                  return $url;
+                  }
+                  } */
+                ]
+            ]
         ]);
         ?>
         <?php Pjax::end(); ?>

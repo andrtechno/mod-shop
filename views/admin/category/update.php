@@ -6,28 +6,20 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
-use panix\shop\models\ShopCategory;
+use panix\mod\shop\models\ShopCategory;
 
-$countries = ShopCategory::findOne(['seo_alias' => 'root']);
-$children = $countries->children()->all();
+//$countries = ShopCategory::findOne(['seo_alias' => 'root']);
+//$children = $countries->children()->all();
 //print_r($children);
-foreach($children as $r){
-    echo $r->seo_alias .' - '.$r->id;
-    echo '<br>';
-}
+//foreach($children as $r){
+  // echo $r->seo_alias .' - '.$r->id;
+   // echo '<br>';
+//}
 //$australia = new ShopCategory(['seo_alias' => 'sssss222']);
 //$australia->appendTo($countries);
 
 //$russia = new ShopCategory(['seo_alias' => 'Russia']);
 //$russia->prependTo($countries);
-
-?>
-
-
-
-
-<?php
-
 
 ?>
 

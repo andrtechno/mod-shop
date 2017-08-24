@@ -2,22 +2,19 @@
 
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm; //widgets
-use yii\helpers\ArrayHelper;
-use panix\mod\shop\models\ShopManufacturer;
-use panix\mod\shop\models\ShopCategory;
-use panix\ext\tinymce\TinyMce;
 use yii\bootstrap\Dropdown;
-
 ?>
 <div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title"><?= Html::encode($this->context->pageName) ?></h3>
     </div>
     <div class="panel-body">
+
+
         <?php
         $form = ActiveForm::begin([
 
-                   'layout' => 'horizontal',
+                    'layout' => 'horizontal',
                     'fieldConfig' => [
                         'horizontalCssClasses' => [
                             'label' => 'col-sm-4',
@@ -27,77 +24,68 @@ use yii\bootstrap\Dropdown;
                             'hint' => '',
                         ],
                     ],
-                    'options' => ['class' => 'form-horizontal','enctype' => 'multipart/form-data']
+                    'options' => ['class' => 'form-horizontal', 'enctype' => 'multipart/form-data']
         ]);
         ?>
-        <?= $form->field($model, 'name')->textInput(['maxlength' => 255]) ?>
-        <?= $form->field($model, 'seo_alias')->textInput(['maxlength' => 255]) ?>
-        <?= $form->field($model, 'sku')->textInput(['maxlength' => 255]) ?>
-        <?= $form->field($model, 'price')->textInput(['maxlength' => 10]) ?>
-
-<?= $form->field($model, 'image')->fileInput() ?>
-
-
-<?= Html::img($model->getBehavior('image')->getUrl('thumb')); ?>
-<?= Html::img($model->getBehavior('image')->getUrl('background')); ?>
-        <?= Html::img($model->getBehavior('image')->getUrl('main')); ?>
-
-<?php
-
-
-    echo $form->field($model, 'manufacturer_id')->dropDownList(ArrayHelper::map(ShopManufacturer::find()->all(),'id','name'),[
-        'prompt' => 'Укажите производителя'
-    ]);
-    
-    
-    echo $form->field($model, 'category_id')->dropDownList(ShopCategory::flatTree(),[
-        'prompt' => 'Укажите категорию'
-    ]);
-?>
-        <?=
-        $form->field($model, 'full_description')->widget(TinyMce::className(), [
-            'options' => ['rows' => 6],
-            'clientOptions' => [
-                'plugins' => [
-                    "advlist autolink lists link charmap print preview anchor",
-                    "searchreplace visualblocks code fullscreen",
-                    "insertdatetime media table contextmenu paste"
-                ],
-                'toolbar' => "undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image"
-            ]
-        ]);
-        ?>
-<div class="dropdown">
-    <a href="#" data-toggle="dropdown" class="dropdown-toggle">Label <b class="caret"></b></a>
-    <?php
-        echo Dropdown::widget([
+        <?php
+        echo yii\bootstrap\Tabs::widget([
             'items' => [
-                ['label' => 'DropdownA', 'url' => '/'],
-                ['label' => 'DropdownB', 'url' => '#'],
+                [
+                    'label' => $model::t('TAB_MAIN'),
+                    'content' => $this->render('tabs/_main', ['form' => $form, 'model' => $model]),
+                    'active' => true,
+                    'options' => ['id' => 'main'],
+                ],
+                [
+                    'label' => 'Изображение',
+                    'content' => $this->render('tabs/_images', ['form' => $form, 'model' => $model]),
+                    'headerOptions' => [],
+                    'options' => ['id' => 'images'],
+                ],
+                [
+                    'label' => 'Example',
+                    'url' => 'http://www.corner-cms.com',
+                ],
+                [
+                    'label' => 'Dropdown',
+                    'items' => [
+                        [
+                            'label' => 'DropdownA',
+                            'content' => 'DropdownA, Anim pariatur cliche...',
+                        ],
+                        [
+                            'label' => 'DropdownB',
+                            'content' => 'DropdownB, Anim pariatur cliche...',
+                        ],
+                    ],
+                ],
             ],
         ]);
-    ?>
-</div>
+        ?>
+
+
+
+
+
+
+
+
 
         <div class="form-group text-center">
             <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'CREATE') : Yii::t('app', 'UPDATE'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
         </div>
 
-        
 
 
-<?php
-	foreach($model->getEavAttributes()->all() as $attr){
-		//print_r($attr);
+
+        <?php
+        foreach ($model->getEavAttributes()->all() as $attr) {
+            //print_r($attr);
             echo $attr->name;
-               echo  $form->field($model,$attr->name, ['class' => '\mirocow\eav\widgets\ActiveField'])->eavInput();
-	}
+            echo $form->field($model, $attr->name, ['class' => '\mirocow\eav\widgets\ActiveField'])->eavInput();
+        }
+        ?>
 
-
-	
-
-?>
-        
         <?php ActiveForm::end(); ?>
 
 
@@ -106,9 +94,10 @@ use yii\bootstrap\Dropdown;
 </div>
 
 
-<?= \mirocow\eav\admin\widgets\Fields::widget([
-		'model' => $model,
-		'categoryId' => $model->id,
-		'entityName' => 'product',
-		'entityModel' => 'app\system\modules\shop\models\ShopProduct',
+<?=
+\mirocow\eav\admin\widgets\Fields::widget([
+    'model' => $model,
+    'categoryId' => $model->id,
+    'entityName' => 'product',
+    'entityModel' => 'app\system\modules\shop\models\ShopProduct',
 ])?>
