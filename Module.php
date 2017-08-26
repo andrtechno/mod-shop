@@ -65,6 +65,7 @@ class Module extends WebModule {
             'ShopCategorySearch' => 'panix\mod\shop\models\search\ShopCategorySearch',
             'ShopManufacturer' => 'panix\mod\shop\models\ShopManufacturer',
             'ShopManufacturerSearch' => 'panix\mod\shop\models\search\ShopManufacturerSearch',
+            'ShopRelatedProduct' => 'panix\mod\shop\models\ShopRelatedProduct',
         ];
     }
 

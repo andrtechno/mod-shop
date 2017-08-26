@@ -59,7 +59,12 @@ class ShopProductSearch extends ShopProduct {
         $query->andFilterWhere([
             'id' => $this->id,
         ]);
-
+        // Id of product to exclude from search
+        if ($this->exclude){
+           // $criteria->compare('t.id !', array(':id' => $this->exclude));
+            $query->andFilterWhere(['id !', array(':id' => $this->exclude)]);
+        }
+        
         $query->andFilterWhere(['like', 'name', $this->name]);
 
         return $dataProvider;

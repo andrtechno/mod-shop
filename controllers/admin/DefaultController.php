@@ -78,13 +78,23 @@ class DefaultController extends AdminController {
 
         //$model->setScenario("admin");
         $post = Yii::$app->request->post();
-        if ($model->load($post) && $model->validate()) {
 
+
+        if ($model->load($post) && $model->validate()) {
+            $model->setRelatedProducts(Yii::$app->request->post('RelatedProductId'),[]);
 
 
             $model->save();
+            
+
+
             Yii::$app->session->addFlash('success', \Yii::t('app', 'SUCCESS_CREATE'));
-            return Yii::$app->getResponse()->redirect(['/admin/shop']);
+            if($model->isNewRecord){
+                return Yii::$app->getResponse()->redirect(['/admin/shop']);
+            }else{
+                return Yii::$app->getResponse()->redirect(['/admin/shop/default/update','id'=>$model->id]);
+            }
+            
         }
 
         echo $this->render('update', [

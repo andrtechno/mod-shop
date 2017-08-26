@@ -35,7 +35,14 @@ SortableGridView::widget([
             'contentOptions' => ['class' => 'text-center']
         ],
         'name',
-        'price',
+        [
+            'attribute'=>'price',
+            'format'=>'html',
+            'contentOptions'=>['class'=>'text-center'],
+            'value' => function($model){
+                return $model::formatPrice($model->price).' '.Yii::$app->currency->main->symbol;
+            }
+        ],
         [
             'class' => 'panix\engine\grid\columns\ActionColumn',
             'template' => '{view} {update} {switch} {delete}',

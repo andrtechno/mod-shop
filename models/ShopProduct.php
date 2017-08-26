@@ -9,12 +9,15 @@ use panix\mod\shop\models\ShopCategory;
 use panix\mod\shop\models\ShopManufacturer;
 use panix\mod\shop\models\query\ShopProductQuery;
 use panix\mod\shop\models\translate\ShopProductTranslate;
+use panix\mod\shop\models\ShopRelatedProduct;
 use yii\helpers\ArrayHelper;
 use salopot\attach\behaviors\AttachFileBehavior;
 use salopot\attach\behaviors\AttachImageBehavior;
 
 class ShopProduct extends WebModel {
 
+    private $_related;
+    public $exclude = null;
     const MODULE_ID = 'shop';
 
     public static function find() {
@@ -73,6 +76,66 @@ class ShopProduct extends WebModel {
         return $this->hasMany(ShopProductTranslate::className(), ['object_id' => 'id']);
     }
 
+    public function getRelated2() {
+        return $this->hasMany(ShopRelatedProduct::className(), ['product_id' => 'id']);
+    }
+
+    public function getRelatedProductCount() {
+        return $this->hasMany(ShopRelatedProduct::className(), ['product_id' => 'id'])->count();
+    }
+
+    public function getRelatedProducts________() {
+      //  return $this->hasMany(ShopProduct::className(), ['id' => 'product_id'])->via('related');
+        return $this->hasMany(ShopProduct::className(), ['related_id' => 'id'])
+                ->via('related');
+                //->viaTable(ShopRelatedProduct::tableName(), ['product_id' => 'id']);
+    }
+    
+    public function getRelatedProducts() {
+        return $this->hasMany(ShopRelatedProduct::className(), ['related_id' => 'id'])
+              ->via('related2');
+               // ->viaTable(ShopProduct::tableName(), ['id' => 'product_id']);
+    }
+
+    public function setRelatedProducts($ids = []) {
+        $this->_related = $ids;
+    }
+
+    private function clearRelatedProducts() {
+        return ShopRelatedProduct::deleteAll('product_id=:id', ['id' => $this->id]);
+    }
+
+    public function afterSave($insert, $changedAttributes) {
+
+        // Process related products
+        if ($this->_related !== null) {
+            $this->clearRelatedProducts();
+
+            foreach ($this->_related as $id) {
+                $related = Yii::$app->getModule("shop")->model("ShopRelatedProduct");
+                $related->product_id = $this->id;
+                $related->related_id = $id;
+                $related->save();
+
+                //двустороннюю связь между товарами
+                if (Yii::$app->settings->get('shop', 'product_related_bilateral')) {
+                    $related = Yii::$app->getModule("shop")->model("ShopRelatedProduct");
+                    $related->product_id = $id;
+                    $related->related_id = $this->id;
+                    $related->save();
+                }
+            }
+        }
+ 
+        parent::afterSave($insert, $changedAttributes);
+    }
+
+    /*
+      // 'related' => array(self::HAS_MANY, 'ShopRelatedProduct', 'product_id'),
+      'relatedProducts' => array(self::HAS_MANY, 'ShopProduct', array('related_id' => 'id'), 'through' => 'related'),
+      //'relatedProductCount' => array(self::STAT, 'ShopRelatedProduct', 'product_id'),
+     *  */
+
     public function behaviors() {
         return ArrayHelper::merge([
                     'eav' => [
@@ -128,6 +191,11 @@ class ShopProduct extends WebModel {
                         ),
                     ]
                         ], parent::behaviors());
+    }
+
+    public static function formatPrice($price) {
+        $c = Yii::$app->settings->get('shop');
+        return iconv("windows-1251", "UTF-8", number_format($price, $c['price_penny'], chr($c['price_thousand']), chr($c['price_decimal'])));
     }
 
     /**

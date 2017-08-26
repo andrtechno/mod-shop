@@ -1,9 +1,30 @@
 <?php
 
 use yii\helpers\Html;
-use yii\bootstrap\ActiveForm; //widgets
+use panix\engine\bootstrap\ActiveForm;
 use yii\bootstrap\Dropdown;
 ?>
+
+
+<?php
+$formatter = Yii::$app->formatter;
+
+echo $formatter->asCurrency($model->price, 'UAH', [
+    NumberFormatter::MIN_FRACTION_DIGITS => 0,
+    NumberFormatter::MAX_FRACTION_DIGITS => 0,
+        ], [NumberFormatter::NEGATIVE_PREFIX => 1]);
+
+/* ().
+  $formatter->decimalSeparator = '';
+  $formatter->thousandSeparator = '';
+
+  echo $formatter->asPercent(100, 0,[
+  NumberFormatter::MIN_FRACTION_DIGITS => 0,
+  NumberFormatter::MAX_FRACTION_DIGITS => 1
+  ]);
+ */
+?>
+
 <div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title"><?= Html::encode($this->context->pageName) ?></h3>
@@ -13,17 +34,6 @@ use yii\bootstrap\Dropdown;
 
         <?php
         $form = ActiveForm::begin([
-
-                    'layout' => 'horizontal',
-                    'fieldConfig' => [
-                        'horizontalCssClasses' => [
-                            'label' => 'col-sm-4',
-                            'offset' => 'col-sm-offset-4',
-                            'wrapper' => 'col-sm-8',
-                            'error' => '',
-                            'hint' => '',
-                        ],
-                    ],
                     'options' => ['class' => 'form-horizontal', 'enctype' => 'multipart/form-data']
         ]);
         ?>
@@ -41,6 +51,12 @@ use yii\bootstrap\Dropdown;
                     'content' => $this->render('tabs/_images', ['form' => $form, 'model' => $model]),
                     'headerOptions' => [],
                     'options' => ['id' => 'images'],
+                ],
+                [
+                    'label' => 'Связи товаров',
+                    'content' => $this->render('tabs/_related', ['form' => $form, 'model' => $model]),
+                    'headerOptions' => [],
+                    'options' => ['id' => 'related'],
                 ],
                 [
                     'label' => 'Example',
