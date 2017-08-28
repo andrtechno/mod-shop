@@ -41,11 +41,14 @@ class ShopProduct extends WebModel {
         ];
     }
 
+    public $file;
+
     /**
      * @inheritdoc
      */
     public function rules() {
         return [
+            [['file'], 'file', 'maxFiles' => 10],
             [['origin_name'], 'string', 'max' => 255],
             [['image'], 'image'],
             [['name', 'seo_alias'], 'trim'],
@@ -138,8 +141,13 @@ class ShopProduct extends WebModel {
     public function afterDelete() {
         $this->clearRelatedProducts();
         ShopRelatedProduct::deleteAll('related_id=:id', array('id' => $this->id));
+        $this->removeImages();
         parent::afterDelete();
     }
+
+   // public function getMainImageUrl() {
+      //  return $this->getImage()->getUrl('50x50');
+   // }
 
     /*
       // 'related' => array(self::HAS_MANY, 'ShopRelatedProduct', 'product_id'),
@@ -149,6 +157,9 @@ class ShopProduct extends WebModel {
 
     public function behaviors() {
         return ArrayHelper::merge([
+                    'imagesBehavior' => [
+                        'class' => \rico\yii2images\behaviors\ImageBehave::className(),
+                    ],
                     'eav' => [
                         'class' => \mirocow\eav\EavBehavior::className(),
                         // это модель для таблицы object_attribute_value
@@ -167,40 +178,6 @@ class ShopProduct extends WebModel {
                             'delete' => ['post'],
                         ],
                     ],
-                    'image' => [
-                        'class' => AttachImageBehavior::className(),
-                        'attributeName' => 'image',
-                        'relativeTypeDir' => '/uploads',
-                        'types' => array(
-                            'thumb' => array(
-                                //'format' => 'gif', //"gif", "jpeg", "png", "wbmp", "xbm"
-                                'process' => function($behavior, $image) {
-                                    return $image->thumbnail(new \Imagine\Image\Box(500, 500));
-                                }
-                            ),
-                            'background' => array(
-                                'process' => function($behavior, $image) {
-                                    $image = $image->thumbnail(new \Imagine\Image\Box(500, 500));
-                                    $image->effects()->grayscale();
-                                    return $image;
-                                },
-                            ),
-                            'main' => array(
-                                //'processOn' => AttachImageBehavior::PT_DEMAND, //PT_RENDER, PT_BASE64_ENCODED,
-                                'process' => function($behavior, $image) {
-                                    $watermark = \yii\imagine\Image::getImagine()->open(Yii::getAlias('@webroot/uploads') . DIRECTORY_SEPARATOR . 'watermark.png');
-                                    $size = $image->getSize();
-                                    $wSize = $watermark->getSize();
-                                    $bottomRight = new \Imagine\Image\Point($size->getWidth() - $wSize->getWidth(), $size->getHeight() - $wSize->getHeight());
-                                    //$top_left = new \Imagine\Image\Point(0, 0);
-                                    //$position_center = new \Imagine\Image\Point($size->getWidth() / 2 - $wSize->getWidth() / 2, $size->getHeight() / 2 - $wSize->getHeight() / 2);
-                                    $image->paste($watermark, $bottomRight);
-                                    $image = $image->thumbnail(new \Imagine\Image\Box(500, 500));
-                                    return $image;
-                                },
-                            ),
-                        ),
-                    ]
                         ], parent::behaviors());
     }
 

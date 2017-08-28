@@ -81,20 +81,29 @@ class DefaultController extends AdminController {
 
 
         if ($model->load($post) && $model->validate()) {
-            $model->setRelatedProducts(Yii::$app->request->post('RelatedProductId'),[]);
+            $model->setRelatedProducts(Yii::$app->request->post('RelatedProductId'), []);
+
+
 
 
             $model->save();
-            
+
+            $model->file = \yii\web\UploadedFile::getInstances($model, 'file');
+            if ($model->file) {
+                foreach ($model->file as $file) {
+                    $file->saveAs('uploads/dassdasda_' . $file->baseName . '.' . $file->extension);
+                    $model->attachImage('uploads/dassdasda_' . $file->baseName . '.' . $file->extension);
+                }
+            }
+
 
 
             Yii::$app->session->addFlash('success', \Yii::t('app', 'SUCCESS_CREATE'));
-            if($model->isNewRecord){
+            if ($model->isNewRecord) {
                 return Yii::$app->getResponse()->redirect(['/admin/shop']);
-            }else{
-                return Yii::$app->getResponse()->redirect(['/admin/shop/default/update','id'=>$model->id]);
+            } else {
+                return Yii::$app->getResponse()->redirect(['/admin/shop/default/update', 'id' => $model->id]);
             }
-            
         }
 
         echo $this->render('update', [

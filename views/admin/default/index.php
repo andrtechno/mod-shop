@@ -11,7 +11,7 @@ use yii\widgets\Pjax;
 ?>
 
 
-
+<?=  \panix\ext\fancybox\Fancybox::widget(['target' => '.image a']); ?>
 
 <?php // echo $this->render('_search', ['model' => $searchModel]);  ?>
 
@@ -34,14 +34,23 @@ SortableGridView::widget([
             'class' => 'yii\grid\SerialColumn',
             'contentOptions' => ['class' => 'text-center']
         ],
+        [
+            'format' => 'raw',
+            'contentOptions' => ['class' => 'text-center image'],
+            'value' => function($model) {
+      //  return $model->getMainImageUrl();
+        return Html::a(Html::img($model->getImage()->getUrl('50x50')),$model->getImage()->getUrl());
+        //return $model->getImage()->getPath('50x50');
+    },
+        ],
         'name',
         [
-            'attribute'=>'price',
-            'format'=>'html',
-            'contentOptions'=>['class'=>'text-center'],
-            'value' => function($model){
-                return $model::formatPrice($model->price).' '.Yii::$app->currency->main->symbol;
-            }
+            'attribute' => 'price',
+            'format' => 'html',
+            'contentOptions' => ['class' => 'text-center'],
+            'value' => function($model) {
+        return $model::formatPrice($model->price) . ' ' . Yii::$app->currency->main->symbol;
+    }
         ],
         [
             'class' => 'panix\engine\grid\columns\ActionColumn',

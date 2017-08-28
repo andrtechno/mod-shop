@@ -13,7 +13,8 @@
         }
     ],
     "require": {
-        "panix/engine": "*"
+        "panix/engine": "*",
+        "panix/wgt-fancybox": "*"
     },
     "autoload": {
         "psr-4": {
