@@ -8,10 +8,10 @@ use panix\engine\WebModule;
 class Module extends WebModule {
 
     public $routes = [
-         '<url>' => 'shop/category/view',
+        //   '<url>' => 'shop/category/view',
         'product/<url>' => 'shop/default/view',
-       
-        ['class' => 'panix\mod\shop\components\ShopCategoryUrlRule', 'pattern' => '<url>', 'route' => 'shop/category/view']
+        ['class' => 'panix\mod\shop\components\CategoryUrlRule']
+            // ['class' => 'panix\mod\shop\components\ShopCategoryUrlRule', 'pattern' => '<url>', 'route' => 'shop/category/view']
     ];
 
     public function getNav() {

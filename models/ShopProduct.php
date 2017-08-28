@@ -141,13 +141,20 @@ class ShopProduct extends WebModel {
     public function afterDelete() {
         $this->clearRelatedProducts();
         ShopRelatedProduct::deleteAll('related_id=:id', array('id' => $this->id));
-        $this->removeImages();
+        //  $this->removeImages();
+        $image = $this->getImages();
+
+        if ($image) {
+            //get path to resized image
+            $this->removeImages();
+        }
+
         parent::afterDelete();
     }
 
-   // public function getMainImageUrl() {
-      //  return $this->getImage()->getUrl('50x50');
-   // }
+    // public function getMainImageUrl() {
+    //  return $this->getImage()->getUrl('50x50');
+    // }
 
     /*
       // 'related' => array(self::HAS_MANY, 'ShopRelatedProduct', 'product_id'),

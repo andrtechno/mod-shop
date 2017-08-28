@@ -21,16 +21,16 @@ class CategoryController extends WebController {
                 ]);
     }
 
-    public function actionView($url) {
-        $this->findModel($url);
+    public function actionView($seo_alias) {
+
+        $this->findModel($seo_alias);
         return $this->render('view', ['model' => $this->model]);
     }
 
-    protected function findModel($url) {
+    protected function findModel($seo_alias) {
         $model = Yii::$app->getModule("shop")->model("ShopCategory");
         if (($this->model = $model::find()
-               // ->getCategory()
-                ->where(['seo_alias' => $url])
+                ->where(['full_path' => $seo_alias])
                 ->one()) !== null) {
             return $this->model;
         } else {
