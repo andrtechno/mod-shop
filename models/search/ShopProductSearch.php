@@ -12,13 +12,15 @@ use panix\mod\shop\models\ShopProduct;
  */
 class ShopProductSearch extends ShopProduct {
 
+    public $exclude = null;
+
     /**
      * @inheritdoc
      */
     public function rules() {
         return [
             [['id'], 'integer'],
-            [['name','seo_alias'], 'safe'],
+            [['name', 'seo_alias'], 'safe'],
         ];
     }
 
@@ -41,12 +43,12 @@ class ShopProductSearch extends ShopProduct {
         $query = ShopProduct::find();
 
         $dataProvider = new ActiveDataProvider([
-                    'query' => $query,
-                    'sort'=> ['defaultOrder' => ['ordern'=>SORT_DESC]],
-                   // 'pagination' => [
-                     //   'pageSize' => Yii::$app->params['pagenum'],
-                       // ],
-                ]);
+            'query' => $query,
+            'sort' => ['defaultOrder' => ['ordern' => SORT_DESC]],
+                // 'pagination' => [
+                //   'pageSize' => Yii::$app->params['pagenum'],
+                // ],
+        ]);
 
         $this->load($params);
 
@@ -60,11 +62,13 @@ class ShopProductSearch extends ShopProduct {
             'id' => $this->id,
         ]);
         // Id of product to exclude from search
-        if ($this->exclude){
-           // $criteria->compare('t.id !', array(':id' => $this->exclude));
-            $query->andFilterWhere(['id !', array(':id' => $this->exclude)]);
+        if ($this->exclude) {
+            
+            foreach($this->exclude as $id){
+                  $query->andFilterWhere(['!=', 'id', $id]);
+            }
         }
-        
+
         $query->andFilterWhere(['like', 'name', $this->name]);
 
         return $dataProvider;

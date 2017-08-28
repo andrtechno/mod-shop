@@ -13,7 +13,7 @@ use yii\widgets\Pjax;
 
 <table class="table table-striped table-bordered" id="relatedProductsTable">
 <?php
-//print_r($model->relatedProducts);
+//print_r($model->relatedProducts2);
 ?>
         <?php foreach ($model->relatedProducts as $related) { ?>
 
@@ -46,13 +46,18 @@ use yii\widgets\Pjax;
 <?php
 
 
-if (!isset($model)) {
-
-    $model->exclude = $exclude;
-}
 
 $searchModel = new panix\mod\shop\models\search\ShopProductSearch();
+$searchModel->exclude = [$exclude];
+
+foreach($model->relatedProducts as $d){
+  //  $searchModel->exclude[] = $d->id;
+}
+
 $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams());
+
+
+
 echo \yii\grid\GridView::widget([
     'id' => 'RelatedProductsGrid',
     'tableOptions' => ['class' => 'table table-striped'],

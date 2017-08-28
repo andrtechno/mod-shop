@@ -17,7 +17,7 @@ use salopot\attach\behaviors\AttachImageBehavior;
 class ShopProduct extends WebModel {
 
     private $_related;
-    public $exclude = null;
+
     const MODULE_ID = 'shop';
 
     public static function find() {
@@ -76,25 +76,26 @@ class ShopProduct extends WebModel {
         return $this->hasMany(ShopProductTranslate::className(), ['object_id' => 'id']);
     }
 
-    public function getRelated2() {
-        return $this->hasMany(ShopRelatedProduct::className(), ['product_id' => 'id']);
+    public function getRelated() {
+        return $this->hasMany(ShopRelatedProduct::className(), ['related_id' => 'id']);
     }
 
     public function getRelatedProductCount() {
         return $this->hasMany(ShopRelatedProduct::className(), ['product_id' => 'id'])->count();
     }
 
-    public function getRelatedProducts________() {
-      //  return $this->hasMany(ShopProduct::className(), ['id' => 'product_id'])->via('related');
-        return $this->hasMany(ShopProduct::className(), ['related_id' => 'id'])
-                ->via('related');
-                //->viaTable(ShopRelatedProduct::tableName(), ['product_id' => 'id']);
-    }
-    
     public function getRelatedProducts() {
-        return $this->hasMany(ShopRelatedProduct::className(), ['related_id' => 'id'])
-              ->via('related2');
-               // ->viaTable(ShopProduct::tableName(), ['id' => 'product_id']);
+        //  return $this->hasMany(ShopProduct::className(), ['id' => 'product_id'])->via('related');
+        return $this->hasMany(ShopProduct::className(), ['id' => 'product_id'])
+                        // ->via('related');
+                        ->viaTable(ShopRelatedProduct::tableName(), ['related_id' => 'id']);
+    }
+
+    public function getRelatedProductsHZ() {
+        //  return $this->hasMany(ShopProduct::className(), ['id' => 'product_id'])->via('related');
+        return $this->hasMany(ShopProduct::className(), ['id' => 'related_id'])
+                        // ->via('related');
+                        ->viaTable(ShopRelatedProduct::tableName(), ['product_id' => 'id']);
     }
 
     public function setRelatedProducts($ids = []) {
@@ -102,32 +103,42 @@ class ShopProduct extends WebModel {
     }
 
     private function clearRelatedProducts() {
-        return ShopRelatedProduct::deleteAll('product_id=:id', ['id' => $this->id]);
+        ShopRelatedProduct::deleteAll('product_id=:id', ['id' => $this->id]);
+        if (Yii::$app->settings->get('shop', 'product_related_bilateral')) {
+            ShopRelatedProduct::deleteAll('related_id=:id', ['id' => $this->id]);
+        }
     }
 
     public function afterSave($insert, $changedAttributes) {
-
         // Process related products
         if ($this->_related !== null) {
             $this->clearRelatedProducts();
 
             foreach ($this->_related as $id) {
-                $related = Yii::$app->getModule("shop")->model("ShopRelatedProduct");
+                $related = new ShopRelatedProduct;
                 $related->product_id = $this->id;
-                $related->related_id = $id;
-                $related->save();
+                $related->related_id = (int) $id;
+                if ($related->save()) {
+                    //двустороннюю связь между товарами
+                    if (Yii::$app->settings->get('shop', 'product_related_bilateral')) {
+                        $related = new ShopRelatedProduct;
 
-                //двустороннюю связь между товарами
-                if (Yii::$app->settings->get('shop', 'product_related_bilateral')) {
-                    $related = Yii::$app->getModule("shop")->model("ShopRelatedProduct");
-                    $related->product_id = $id;
-                    $related->related_id = $this->id;
-                    $related->save();
+                        $related->product_id = (int) $id;
+                        $related->related_id = $this->id;
+                        if (!$related->save()) {
+                            throw new \yii\base\Exception('Error save product relation');
+                        }
+                    }
                 }
             }
         }
- 
         parent::afterSave($insert, $changedAttributes);
+    }
+
+    public function afterDelete() {
+        $this->clearRelatedProducts();
+        ShopRelatedProduct::deleteAll('related_id=:id', array('id' => $this->id));
+        parent::afterDelete();
     }
 
     /*

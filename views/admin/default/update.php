@@ -54,7 +54,7 @@ echo $formatter->asCurrency($model->price, 'UAH', [
                 ],
                 [
                     'label' => 'Связи товаров',
-                    'content' => $this->render('tabs/_related', ['form' => $form, 'model' => $model]),
+                    'content' => $this->render('tabs/_related', ['exclude' => $model->id, 'form' => $form, 'model' => $model]),
                     'headerOptions' => [],
                     'options' => ['id' => 'related'],
                 ],
