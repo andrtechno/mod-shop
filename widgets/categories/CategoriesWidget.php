@@ -39,6 +39,7 @@ class CategoriesWidget extends \panix\engine\data\Widget {
         if (isset($data)) {
             $html .= Html::beginTag('ul');
             foreach ($data as $obj) {
+
                 $i++;
                 if (isset($_GET['seo_alias']) && stripos($_GET['seo_alias'], $obj['url']['seo_alias']) !== false) {
                     $ariaExpanded = 'true';
@@ -47,7 +48,12 @@ class CategoriesWidget extends \panix\engine\data\Widget {
                     $ariaExpanded = 'false';
                     $collapseClass = 'collapse';
                 }
-                $activeClass = ($obj['url']['seo_alias'] === $_GET['seo_alias']) ? 'active' : '';
+                if(Yii::$app->request->get('seo_alias')){
+                        $activeClass = ($obj['url']['seo_alias'] === $_GET['seo_alias']) ? 'active' : '';
+                }else{
+                    $activeClass='';
+                }
+            
 
                 $html .= Html::beginTag('li', array('class' => $activeClass));
                 if (isset($obj['items'])) {
@@ -63,7 +69,8 @@ class CategoriesWidget extends \panix\engine\data\Widget {
                     $html .= Html::endTag('div');
                 } else {
 
-                    $html .= Html::a($obj['label'], Yii::$app->urlManager->createUrl($obj['url'][0], array('seo_alias' => $obj['url']['seo_alias'])));
+                   // $html .= Html::a($obj['label'], Yii::$app->urlManager->createUrl([$obj['url'][0], ['seo_alias' => $obj['url']['seo_alias']]]));
+                    $html .= Html::a($obj['label'], Yii::$app->urlManager->createUrl($obj['url']));
                 }
                 $html .= Html::endTag('li');
             }

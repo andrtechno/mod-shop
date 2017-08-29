@@ -8,7 +8,7 @@ class SettingsForm extends SettingsModel {
 
     protected $category = 'shop';
     protected $module = 'shop';
-    public $pagenum;
+    public $per_page;
     public $price_decimal;
     public $price_thousand;
     public $price_penny;
@@ -16,7 +16,7 @@ class SettingsForm extends SettingsModel {
 
     public function rules() {
         return [
-            [['pagenum','price_decimal','price_thousand'], "required"],
+            [['per_page','price_decimal','price_thousand'], "required"],
             [['product_related_bilateral','price_penny'],'boolean']
         ];
     }

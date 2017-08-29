@@ -84,9 +84,11 @@ class DefaultController extends AdminController {
             $model->setRelatedProducts(Yii::$app->request->post('RelatedProductId'), []);
 
 
-
-
             $model->save();
+       $mainCategoryId = 1;
+                if (isset($_POST['ShopProduct']['category_id']))
+                    $mainCategoryId = $_POST['ShopProduct']['category_id'];
+                $model->setCategories(Yii::$app->request->post('categories', []), $mainCategoryId);
 
             $model->file = \yii\web\UploadedFile::getInstances($model, 'file');
             if ($model->file) {

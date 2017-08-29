@@ -11,7 +11,15 @@ class ShopCategoryQuery extends \yii\db\ActiveQuery {
             NestedSetsQueryBehavior::className(),
         ];
     }
+
     public function published($state = 1) {
         return $this->andWhere(['switch' => $state]);
     }
+
+    public function excludeRoot() {
+       // $this->addWhere(['condition' => 'id != 1']);
+        $this->andWhere(['!=', 'id', 1]);
+        return $this;
+    }
+
 }
