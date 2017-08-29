@@ -15,7 +15,8 @@
     "require": {
         "panix/engine": "*",
         "mirocow/yii2-eav": "*",
-        "panix/wgt-fancybox": "*"
+        "panix/wgt-fancybox": "*",
+        "panix/mod-images": "*"
     },
     "autoload": {
         "psr-4": {

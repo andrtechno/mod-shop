@@ -266,7 +266,7 @@ class ShopProduct extends WebModel {
     public function behaviors() {
         return ArrayHelper::merge([
                     'imagesBehavior' => [
-                        'class' => \rico\yii2images\behaviors\ImageBehave::className(),
+                        'class' => \panix\mod\images\behaviors\ImageBehave::className(),
                     ],
                     'eav' => [
                         'class' => \mirocow\eav\EavBehavior::className(),
