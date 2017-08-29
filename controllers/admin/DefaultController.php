@@ -28,7 +28,8 @@ class DefaultController extends AdminController {
         $this->pageName = Yii::t('shop/admin', 'PRODUCTS');
         $this->buttons = [
             [
-                'label' => '<i class="icon-add"></i> ' . Yii::t('shop/admin', 'CREATE_PRODUCT'),
+                'icon'=>'icon-add',
+                'label' => Yii::t('shop/admin', 'CREATE_PRODUCT'),
                 'url' => ['create'],
                 'options' => ['class' => 'btn btn-success']
             ]
@@ -59,7 +60,8 @@ class DefaultController extends AdminController {
         $this->pageName = Yii::t('shop/default', 'MODULE_NAME');
         $this->buttons = [
             [
-                'label' => '<i class="icon-add"></i> ' . Yii::t('shop/admin', 'CREATE_PRODUCT'),
+                'icon'=>'icon-add',
+                'label' => Yii::t('shop/admin', 'CREATE_PRODUCT'),
                 'url' => ['create'],
                 'options' => ['class' => 'btn btn-success']
             ]

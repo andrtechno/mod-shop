@@ -38,7 +38,8 @@ public function actionActive($id)
         $this->pageName = Yii::t('shop/admin', 'MANUFACTURER');
         $this->buttons = [
             [
-                'label' => '<i class="icon-add"></i> ' . Yii::t('shop/admin', 'CREATE_MANUFACTURER'),
+                'icon'=>'icon-add',
+                'label' => Yii::t('shop/admin', 'CREATE_MANUFACTURER'),
                 'url' => ['create'],
                 'options' => ['class' => 'btn btn-success']
             ]
@@ -69,7 +70,8 @@ public function actionActive($id)
         $this->pageName = Yii::t('shop/admin', 'MANUFACTURER');
         $this->buttons = [
             [
-                'label' => '<i class="icon-add"></i> ' . Yii::t('shop/admin', 'CREATE_MANUFACTURER'),
+                'icon'=>'icon-add',
+                'label' => Yii::t('shop/admin', 'CREATE_MANUFACTURER'),
                 'url' => ['create'],
                 'options' => ['class' => 'btn btn-success']
             ]

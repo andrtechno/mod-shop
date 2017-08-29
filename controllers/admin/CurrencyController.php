@@ -41,7 +41,8 @@ class CurrencyController extends AdminController {
         $this->pageName = Yii::t('shop/admin', 'CURRENCY');
         $this->buttons = [
             [
-                'label' => '<i class="icon-add"></i> ' . Yii::t('shop/admin', 'CREATE_CURRENCY'),
+                'icon'=>'icon-add',
+                'label' => Yii::t('shop/admin', 'CREATE_CURRENCY'),
                 'url' => ['create'],
                 'options' => ['class' => 'btn btn-success']
             ]
@@ -72,7 +73,8 @@ class CurrencyController extends AdminController {
         $this->pageName = Yii::t('shop/admin', 'CURRENCY');
         $this->buttons = [
             [
-                'label' => '<i class="icon-add"></i> ' . Yii::t('shop/admin', 'CREATE_CURRENCY'),
+                'icon'=>'icon-add',
+                'label' => Yii::t('shop/admin', 'CREATE_CURRENCY'),
                 'url' => ['create'],
                 'options' => ['class' => 'btn btn-success']
             ]
