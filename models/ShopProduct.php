@@ -11,7 +11,6 @@ use panix\mod\shop\models\query\ShopProductQuery;
 use panix\mod\shop\models\translate\ShopProductTranslate;
 use panix\mod\shop\models\ShopRelatedProduct;
 use panix\mod\shop\models\ShopProductCategoryRef;
-
 use yii\helpers\ArrayHelper;
 use salopot\attach\behaviors\AttachFileBehavior;
 use salopot\attach\behaviors\AttachImageBehavior;
@@ -25,19 +24,20 @@ class ShopProduct extends WebModel {
     public static function find() {
         return new ShopProductQuery(get_called_class());
     }
-    public static function getCSort() {
- $sort = new \yii\data\Sort([
-        'attributes' => [
-            'age',
-            'name' => [
-                'asc' => ['first_name' => SORT_ASC, 'last_name' => SORT_ASC],
-                'desc' => ['first_name' => SORT_DESC, 'last_name' => SORT_DESC],
 
+    public static function getCSort() {
+        $sort = new \yii\data\Sort([
+            'attributes' => [
+                'age',
+                'name' => [
+                    'asc' => ['first_name' => SORT_ASC, 'last_name' => SORT_ASC],
+                    'desc' => ['first_name' => SORT_DESC, 'last_name' => SORT_DESC],
+                ],
             ],
-        ],
-    ]);
+        ]);
         return $sort;
     }
+
     /**
      * @inheritdoc
      */
@@ -46,7 +46,7 @@ class ShopProduct extends WebModel {
     }
 
     public function getUrl() {
-        return ['/shop/product/view', 'url' => $this->seo_alias];
+        return ['/shop/default/view', 'url' => $this->seo_alias];
     }
 
     public function transactions() {
@@ -97,7 +97,6 @@ class ShopProduct extends WebModel {
         return $this->hasMany(ShopRelatedProduct::className(), ['related_id' => 'id']);
     }
 
-   
     public function getRelatedProductCount() {
         return $this->hasMany(ShopRelatedProduct::className(), ['product_id' => 'id'])->count();
     }
@@ -116,16 +115,14 @@ class ShopProduct extends WebModel {
                         ->viaTable(ShopRelatedProduct::tableName(), ['product_id' => 'id']);
     }
 
-    
-        public function getCategorization2() {
+    public function getCategorization2() {
         return $this->hasMany(ShopProductCategoryRef::className(), ['product' => 'id']);
     }
-    
-        
-        public function getCategorization() {
+
+    public function getCategorization() {
         return $this->hasMany(ShopProductCategoryRef::className(), ['id' => 'product']);
     }
-    
+
     /**
      * Set product categories and main category
      * @param array $categories ids.
@@ -134,8 +131,8 @@ class ShopProduct extends WebModel {
     public function setCategories(array $categories, $main_category) {
         $dontDelete = array();
 
- 
-       // if (!ShopCategory::model()->countByAttributes(array('id' => $main_category)))
+
+        // if (!ShopCategory::model()->countByAttributes(array('id' => $main_category)))
         //    $main_category = 1;
 
         if (!in_array($main_category, $categories))
@@ -143,17 +140,17 @@ class ShopProduct extends WebModel {
 
 
         foreach ($categories as $c) {
-            /*$count = ShopProductCategoryRef::model()->countByAttributes(array(
-                'category' => $c,
-                'product' => $this->id,
-            ));*/
+            /* $count = ShopProductCategoryRef::model()->countByAttributes(array(
+              'category' => $c,
+              'product' => $this->id,
+              )); */
             $count = ShopProductCategoryRef::find()->where(array(
-                'category' => $c,
-                'product' => $this->id,
-            ))->count();
+                        'category' => $c,
+                        'product' => $this->id,
+                    ))->count();
 
-            
-            
+
+
             if ($count == 0) {
                 $record = new ShopProductCategoryRef;
                 $record->category = (int) $c;
@@ -168,7 +165,7 @@ class ShopProduct extends WebModel {
         // Clear main category
         ShopProductCategoryRef::updateAll([
             'is_main' => 0,
-           // 'switch' => $this->switch
+                // 'switch' => $this->switch
                 ], 'product=:p', array(':p' => $this->id));
 
         // Set main category
@@ -179,29 +176,24 @@ class ShopProduct extends WebModel {
 
         // Delete not used relations
         if (sizeof($dontDelete) > 0) {
-           // $cr = new CDbCriteria;
-           // $cr->addNotInCondition('category', $dontDelete);
-
-        //    $query = ShopProductCategoryRef::deleteAll(['product=:id','category NOT IN (:cats)'],[':id'=>$this->id,':cats'=>implode(',',$dontDelete)]);
-             $query = ShopProductCategoryRef::deleteAll(
-                     ['AND',
-                         'product=:id',
-                         ['NOT IN', 'category', $dontDelete]
-         
-                         ],[':id'=>$this->id]);
-                   // ->andWhere(['not in','category',$dontDelete]);
-          //  foreach($query as $q){
-                
-           // }
+            // $cr = new CDbCriteria;
+            // $cr->addNotInCondition('category', $dontDelete);
+            //    $query = ShopProductCategoryRef::deleteAll(['product=:id','category NOT IN (:cats)'],[':id'=>$this->id,':cats'=>implode(',',$dontDelete)]);
+            $query = ShopProductCategoryRef::deleteAll(
+                            ['AND',
+                        'product=:id',
+                        ['NOT IN', 'category', $dontDelete]
+                            ], [':id' => $this->id]);
+            // ->andWhere(['not in','category',$dontDelete]);
+            //  foreach($query as $q){
+            // }
         } else {
-                        
+
             // Delete all relations 
-            ShopProductCategoryRef::deleteAll('product=:id',[':id'=>$this->id]);
+            ShopProductCategoryRef::deleteAll('product=:id', [':id' => $this->id]);
         }
     }
-    
-    
-    
+
     public function setRelatedProducts($ids = []) {
         $this->_related = $ids;
     }
@@ -266,7 +258,7 @@ class ShopProduct extends WebModel {
     public function behaviors() {
         return ArrayHelper::merge([
                     'imagesBehavior' => [
-                        'class' => \panix\mod\images\behaviors\ImageBehave::className(),
+                        'class' => \panix\mod\images\behaviors\ImageBehavior::className(),
                     ],
                     'eav' => [
                         'class' => \mirocow\eav\EavBehavior::className(),

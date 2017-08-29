@@ -10,10 +10,11 @@ use yii\helpers\Html;
 
 $images = $model->getImages();
 foreach ($images as $img) {
+    print_r($img->getUrl('300x'));
     //retun url to full image
     // echo Html::img($img->getUrl());
     //return url to proportionally resized image by width
-    // echo Html::img($img->getUrl('300x'));
+     echo Html::img($img->getUrl('300x'));
     //return url to proportionally resized image by height
     //echo Html::img($img->getUrl('x100'));
     //return url to resized and cropped (center) image by width and height
