@@ -58,14 +58,22 @@ class DefaultController extends AdminController {
 
 
         $this->pageName = Yii::t('shop/default', 'MODULE_NAME');
-        $this->buttons = [
-            [
-                'icon' => 'icon-add',
-                'label' => Yii::t('shop/admin', 'CREATE_PRODUCT'),
-                'url' => ['create'],
-                'options' => ['class' => 'btn btn-success']
-            ]
+        if (!$model->isNewRecord) {
+            $this->buttons[] = [
+                'icon' => 'icon-eye',
+                'label' => Yii::t('shop/admin', 'VIEW_PRODUCT'),
+                'url' => $model->getUrl(),
+                'options' => ['class' => 'btn btn-info', 'target' => '_blank']
+            ];
+        }
+
+        $this->buttons[] = [
+                    'icon' => 'icon-add',
+                    'label' => Yii::t('shop/admin', 'CREATE_PRODUCT'),
+                    'url' => ['create'],
+                    'options' => ['class' => 'btn btn-success']
         ];
+
         $this->breadcrumbs[] = [
             'label' => $this->pageName,
             'url' => ['index']
