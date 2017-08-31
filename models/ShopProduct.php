@@ -18,6 +18,7 @@ use salopot\attach\behaviors\AttachImageBehavior;
 class ShopProduct extends WebModel {
 
     private $_related;
+    public $file;
 
     const MODULE_ID = 'shop';
 
@@ -54,8 +55,6 @@ class ShopProduct extends WebModel {
             self::SCENARIO_DEFAULT => self::OP_INSERT | self::OP_UPDATE,
         ];
     }
-
-    public $file;
 
     /**
      * @inheritdoc
@@ -298,5 +297,36 @@ class ShopProduct extends WebModel {
                         ])
                         ->orderBy(['order' => SORT_ASC]);
     }
+    public static function calculatePrices($product, array $variants, $configuration) {
+        if (($product instanceof ShopProduct) === false)
+            $product = ShopProduct::model()->findByPk($product);
 
+        //if (($configuration instanceof ShopProduct) === false && $configuration > 0)
+        //    $configuration = ShopProduct::model()->findByPk($configuration);
+
+        if ($configuration instanceof ShopProduct) {
+            $result = $configuration->price;
+        } else {
+            //  if ($product->currency_id) {
+            //      $result = $product->price;
+            //  } else {
+            $result = $product->price;
+            // $result = $product->getFrontPrice();
+            //   }
+        }
+
+        // if $variants contains not models
+        if (!empty($variants) && ($variants[0] instanceof ShopProductVariant) === false)
+            $variants = ShopProductVariant::model()->findAllByPk($variants);
+
+        foreach ($variants as $variant) {
+            // Price is percent
+            if ($variant->price_type == 1)
+                $result += ($result / 100 * $variant->price);
+            else
+                $result += $variant->price;
+        }
+
+        return $result;
+    }
 }

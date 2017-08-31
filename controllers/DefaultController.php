@@ -18,7 +18,7 @@ class DefaultController extends WebController {
         return $this->render('index', [
                     'model' => $all,
                     'one' => $one
-                ]);
+        ]);
     }
 
     public function actionView($url) {
@@ -29,7 +29,7 @@ class DefaultController extends WebController {
     protected function findModel($url) {
         $model = Yii::$app->getModule("shop")->model("ShopProduct");
         if (($this->model = $model::find()
-               // ->getCategory()
+                // ->getCategory()
                 ->where(['seo_alias' => $url])
                 ->one()) !== null) {
             return $this->model;

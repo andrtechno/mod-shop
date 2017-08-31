@@ -28,7 +28,7 @@ class DefaultController extends AdminController {
         $this->pageName = Yii::t('shop/admin', 'PRODUCTS');
         $this->buttons = [
             [
-                'icon'=>'icon-add',
+                'icon' => 'icon-add',
                 'label' => Yii::t('shop/admin', 'CREATE_PRODUCT'),
                 'url' => ['create'],
                 'options' => ['class' => 'btn btn-success']
@@ -60,7 +60,7 @@ class DefaultController extends AdminController {
         $this->pageName = Yii::t('shop/default', 'MODULE_NAME');
         $this->buttons = [
             [
-                'icon'=>'icon-add',
+                'icon' => 'icon-add',
                 'label' => Yii::t('shop/admin', 'CREATE_PRODUCT'),
                 'url' => ['create'],
                 'options' => ['class' => 'btn btn-success']
@@ -87,16 +87,17 @@ class DefaultController extends AdminController {
 
 
             $model->save();
-       $mainCategoryId = 1;
-                if (isset($_POST['ShopProduct']['category_id']))
-                    $mainCategoryId = $_POST['ShopProduct']['category_id'];
-                $model->setCategories(Yii::$app->request->post('categories', []), $mainCategoryId);
+            $mainCategoryId = 1;
+            if (isset($_POST['ShopProduct']['category_id']))
+                $mainCategoryId = $_POST['ShopProduct']['category_id'];
+            $model->setCategories(Yii::$app->request->post('categories', []), $mainCategoryId);
 
             $model->file = \yii\web\UploadedFile::getInstances($model, 'file');
             if ($model->file) {
                 foreach ($model->file as $file) {
-                    $file->saveAs('uploads/dassdasda_' . $file->baseName . '.' . $file->extension);
-                    $model->attachImage('uploads/dassdasda_' . $file->baseName . '.' . $file->extension);
+                    $uniqueName = \panix\engine\CMS::gen(10);
+                    $file->saveAs('uploads/' . $uniqueName . '_' . $file->baseName . '.' . $file->extension);
+                    $model->attachImage('uploads/' . $uniqueName . '_' . $file->baseName . '.' . $file->extension);
                 }
             }
 
