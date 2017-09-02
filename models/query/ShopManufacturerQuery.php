@@ -10,4 +10,8 @@ class ShopManufacturerQuery extends ActiveQuery {
         return $this->andWhere(['switch' => $state]);
     }
 
+    public function productsCount() {
+        // return $this->hasOne(ShopProduct::className(), ['manufacturer_id' => 'id'])->addSelect('count(id)');
+    }
+
 }

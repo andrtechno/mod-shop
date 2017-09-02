@@ -13,7 +13,7 @@ use yii\helpers\Html;
                 <?php echo $this->context->dataModel->description ?>
             </div>
         <?php } ?>
-
+          <?php echo $this->context->dataModel->productsCount ?>
 
         <?php
         echo \yii\widgets\ListView::widget([

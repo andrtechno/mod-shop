@@ -9,7 +9,7 @@ use yii\web\NotFoundHttpException;
 use yii\helpers\Url;
 class CategoryController extends WebController {
 
-    public $model;
+
     public $allowedPageLimit = [];
     public $query;
     public $provider;
@@ -18,12 +18,11 @@ class CategoryController extends WebController {
     /**
      * @var string
      */
-    private $_minPrice;
+    private $_maxPrice,$_minPrice;
 
     /**
      * @var string
      */
-    private $_maxPrice;
     public $maxprice, $minprice;
 
     public function beforeAction($action) {
@@ -49,9 +48,9 @@ class CategoryController extends WebController {
     }
 
     public function actionView() {
-        $this->model = $this->findModel(Yii::$app->request->getQueryParam('seo_alias'));
+        $this->dataModel = $this->findModel(Yii::$app->request->getQueryParam('seo_alias'));
         // $this->canonical = Yii::$app->createAbsoluteUrl($this->model->getUrl());
-        $this->doSearch($this->model, 'view');
+        $this->doSearch($this->dataModel, 'view');
     }
 
     public function doSearch($data, $view) {
@@ -74,7 +73,7 @@ class CategoryController extends WebController {
             //)));
 
 
-            $this->query->applyCategories($this->model);
+            $this->query->applyCategories($this->dataModel);
             //  $this->query->with('manufacturerActive');
         } else {
             /* $cr = new CDbCriteria;
@@ -91,7 +90,7 @@ class CategoryController extends WebController {
 
         // Filter by manufacturer
         if (Yii::$app->request->get('manufacturer')) {
-            $manufacturers = explode(',', Yii::$app->request->getParam('manufacturer', ''));
+            $manufacturers = explode(',', Yii::$app->request->get('manufacturer', ''));
             $this->query->applyManufacturers($manufacturers);
         }
 
@@ -123,7 +122,7 @@ class CategoryController extends WebController {
             $c = Yii::$app->settings->get('shop');
 
 
-            $ancestors = $this->model->leaves()->all();
+            $ancestors = $this->dataModel->leaves()->all();
             $this->breadcrumbs[] = [
                 'label' => Yii::t('shop/default', 'BC_SHOP'),
                 'url' => array('/shop')
@@ -175,75 +174,16 @@ class CategoryController extends WebController {
 
     protected function findModel($seo_alias) {
         $model = Yii::$app->getModule("shop")->model("ShopCategory");
-        if (($this->model = $model::find()
+        if (($this->dataModel = $model::find()
                 ->where(['full_path' => $seo_alias])
                 ->one()) !== null) {
-            return $this->model;
+            return $this->dataModel;
         } else {
             throw new NotFoundHttpException('product not found');
         }
     }
 
-    /**
-     * 
-     * 
-     * 
-     * 
-     * 
-     * by FILTER function
-     * 
-     * 
-     * 
-     * 
-     * 
-     * 
-     * 
-     * 
-     * 
-     * 
-     * 
-     * 
-     * 
-     * 
-     * 
-     */
 
-    /**
-     * @var string min price in the query
-     */
-    private $_currentMinPrice = null;
 
-    /**
-     * @var string max price in the query
-     */
-    private $_currentMaxPrice = null;
-
-    public function getCurrentMaxPrice() {
-        if ($this->_currentMaxPrice !== null)
-            return $this->_currentMaxPrice;
-
-        if (Yii::$app->request->get('max_price')) {
-            $this->_currentMaxPrice = Yii::$app->request->get('max_price');
-        } else {
-            $this->_currentMaxPrice = Yii::$app->currency->convert($this->maxprice);
-            //$this->_currentMaxPrice = $this->maxprice;
-        }
-
-        return $this->_currentMaxPrice;
-    }
-
-    public function getCurrentMinPrice() {
-        if ($this->_currentMinPrice !== null)
-            return $this->_currentMinPrice;
-
-        if (Yii::$app->request->get('min_price')) {
-            $this->_currentMinPrice = Yii::$app->request->get('min_price');
-        } else {
-          //  $this->_currentMinPrice = $this->minprice;
-            $this->_currentMinPrice = Yii::$app->currency->convert($this->minprice);
-        }
-
-        return $this->_currentMinPrice;
-    }
 
 }

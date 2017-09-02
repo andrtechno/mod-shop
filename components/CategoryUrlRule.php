@@ -4,13 +4,19 @@ namespace panix\mod\shop\components;
 
 use yii\web\UrlRuleInterface;
 use yii\base\Object;
+use yii\web\UrlRule;
 
+class CategoryUrlRule extends UrlRule {
 
-class CategoryUrlRule extends Object implements UrlRuleInterface {
+//class CategoryUrlRule extends Object implements UrlRuleInterface {
+    public $connectionID = 'db';
+    public $pattern = 'shop';
+    public $route = 'shop/category/view';
 
     public function createUrl($manager, $route, $params) {
 
         if ($route === 'shop/category/view') {
+
             if (isset($params['seo_alias'])) {
                 $url = trim($params['seo_alias'], '/');
                 unset($params['seo_alias']);
@@ -19,14 +25,11 @@ class CategoryUrlRule extends Object implements UrlRuleInterface {
             }
             $parts = [];
             if (!empty($params)) {
-                foreach ($params as $key => $val){
-           
-                $parts[] = $key . '/' . $val;
-
+                foreach ($params as $key => $val) {
+                    $parts[] = $key . '/' . $val;
                 }
                 $url .= '/' . implode('/', $parts);
             }
-
             return $url . \Yii::$app->urlManager->suffix;
         }
         return false;
@@ -48,19 +51,12 @@ class CategoryUrlRule extends Object implements UrlRuleInterface {
                 $_GET['seo_alias'] = $path['full_path'];
 
                 $params['seo_alias'] = ltrim($path['full_path']);
-              //  var_dump($params);
-                  // die;
-                //// \Yii::$app->urlManager->parsePathInfo($params);
-                // \Yii::$app->urlManager->parseRequest($params);
+
                 return ['shop/category/view', $params];
             }
         }
-        // check $matches[1] and $matches[3] to see
-        // if they match a manufacturer and a model in the database.
-        // If so, set $params['manufacturer'] and/or $params['model']
-        // and return ['car/index', $params]
-        // }
-        return false; // this rule does not apply
+
+        return false;
     }
 
     protected function getAllPaths() {
@@ -76,7 +72,7 @@ class CategoryUrlRule extends Object implements UrlRuleInterface {
             // Sort paths by length.
             usort($allPaths, function($a, $b) {
                 return strlen($b['full_path']) - strlen($a['full_path']);
-             });
+            });
 
             \Yii::$app->cache->set(__CLASS__, $allPaths);
         }

@@ -51,6 +51,10 @@ class ShopManufacturer extends WebModel {
     public function getTranslations() {
         return $this->hasMany(ShopManufacturerTranslate::className(), ['object_id' => 'id']);
     }
+    public function getProductsCount() {
+        return $this->hasOne(ShopProduct::className(), ['manufacturer_id' => 'id'])->count();
+    }
+
 
     /**
      * @inheritdoc
