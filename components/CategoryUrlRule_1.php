@@ -16,12 +16,13 @@ class CategoryUrlRule extends Object implements UrlRuleInterface {
             } else {
                 $url = '';
             }
-            $parts = array();
+            $parts = [];
             if (!empty($params)) {
-                foreach ($params as $key => $val)
-                    $parts[] = $key . '/' . $val;
+                foreach ($params as $key => $val){
+           
+                $parts[] = $key . '/' . $val;
 
-
+                }
                 $url .= '/' . implode('/', $parts);
             }
 

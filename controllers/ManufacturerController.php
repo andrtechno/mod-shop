@@ -40,6 +40,7 @@ class ManufacturerController extends WebController {
         $query->applyManufacturers($this->dataModel->id);
 
 
+
         $provider = new \panix\engine\data\ActiveDataProvider([
             'query'=>$query, 
             'id' => false,

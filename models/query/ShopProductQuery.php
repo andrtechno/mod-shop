@@ -46,6 +46,28 @@ class ShopProductQuery extends ActiveQuery {
     }
 
     /**
+     * Filter products by min_price
+     * @param $value
+     */
+    public function applyMinPrice($value) {
+        if ($value) {
+            $this->andWhere(['>=', 'price', (int) $value]);
+        }
+        return $this;
+    }
+
+    /**
+     * Filter products by max_price
+     * @param $value
+     */
+    public function applyMaxPrice($value) {
+        if ($value) {
+            $this->andWhere(['<=', 'price', (int) $value]);
+        }
+        return $this;
+    }
+
+    /**
      * Product by manufacturer
      *
      * @return $this

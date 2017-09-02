@@ -5,6 +5,7 @@ namespace panix\mod\shop\components;
 use yii\web\UrlRuleInterface;
 use yii\base\Object;
 
+
 class CategoryUrlRule extends Object implements UrlRuleInterface {
 
     public function createUrl($manager, $route, $params) {
@@ -18,7 +19,6 @@ class CategoryUrlRule extends Object implements UrlRuleInterface {
             }
             $parts = [];
             if (!empty($params)) {
-                print_r($params);
                 foreach ($params as $key => $val){
            
                 $parts[] = $key . '/' . $val;
@@ -43,6 +43,7 @@ class CategoryUrlRule extends Object implements UrlRuleInterface {
             $pathInfo = strtr($pathInfo, array(\Yii::$app->urlManager->suffix => ''));
         //if (preg_match('%^(\w+)(/(\w+))?$%', $pathInfo, $matches)) {
         foreach ($this->getAllPaths() as $path) {
+
             if ($path['full_path'] !== '' && strpos($pathInfo, $path['full_path']) === 0) {
                 $_GET['seo_alias'] = $path['full_path'];
 
