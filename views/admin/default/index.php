@@ -37,7 +37,7 @@ SortableGridView::widget([
             'contentOptions' => ['class' => 'text-center image'],
             'value' => function($model) {
         //  return $model->getMainImageUrl();
-        return Html::a(Html::img($model->getImage()->getUrl('50x50')), $model->getImage()->getUrl());
+        return ($model->getImage())?Html::a(Html::img($model->getImage()->getUrl('50x50')), $model->getImage()->getUrl()):'no image';
         //return $model->getImage()->getPath('50x50');
     },
         ],
