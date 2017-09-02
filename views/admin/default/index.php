@@ -36,9 +36,7 @@ SortableGridView::widget([
             'format' => 'raw',
             'contentOptions' => ['class' => 'text-center image'],
             'value' => function($model) {
-        //  return $model->getMainImageUrl();
-        return ($model->getImage())?Html::a(Html::img($model->getImage()->getUrl('50x50')), $model->getImage()->getUrl()):'no image';
-        //return $model->getImage()->getPath('50x50');
+        return $model->renderGridImage('50x50');
     },
         ],
         'name',
@@ -581,7 +579,7 @@ SortableGridView::widget([
 
 
 
-<?php echo Html::submitButton('ss');?>
+        <?php echo Html::submitButton('ss'); ?>
 
 
 
@@ -610,7 +608,7 @@ SortableGridView::widget([
                         type: form.attr("method"),
                         data: formData,
                         success: function (data) {
-                           // alert('Test');
+                            // alert('Test');
                         },
                         error: function () {
                             alert("Something went wrong");
@@ -629,37 +627,37 @@ SortableGridView::widget([
         ?>
 
 <script>
-$(function () {
-/* var $image = $('#image');
-var cropBoxData;
-var canvasData;
-
-$('#modal').on('shown.bs.modal', function () {
-$image.cropper({
-//  autoCropArea: 0.5,
-aspectRatio: 16 / 9,
-//ready: function () {
-//  $image.cropper('setCanvasData', canvasData);
-//  $image.cropper('setCropBoxData', cropBoxData);
-// },
-crop: function(e) {
-
-
-$('#cropperform-x').val(Math.round(e.x));
-$('#cropperform-y').val(Math.round(e.y));
-
-$('#cropperform-width').val(Math.round(e.width));
-$('#cropperform-height').val(Math.round(e.height));
-$('#cropperform-scaley').val(e.scaleY);
-$('#cropperform-scalex').val(e.scaleX);
-$('#cropperform-rotate').val(e.rotate);
-
-}
-});
-}).on('hidden.bs.modal', function () {
-cropBoxData = $image.cropper('getCropBoxData');
-canvasData = $image.cropper('getCanvasData');
-$image.cropper('destroy');
-});*/
-});
+    $(function () {
+        /* var $image = $('#image');
+         var cropBoxData;
+         var canvasData;
+         
+         $('#modal').on('shown.bs.modal', function () {
+         $image.cropper({
+         //  autoCropArea: 0.5,
+         aspectRatio: 16 / 9,
+         //ready: function () {
+         //  $image.cropper('setCanvasData', canvasData);
+         //  $image.cropper('setCropBoxData', cropBoxData);
+         // },
+         crop: function(e) {
+         
+         
+         $('#cropperform-x').val(Math.round(e.x));
+         $('#cropperform-y').val(Math.round(e.y));
+         
+         $('#cropperform-width').val(Math.round(e.width));
+         $('#cropperform-height').val(Math.round(e.height));
+         $('#cropperform-scaley').val(e.scaleY);
+         $('#cropperform-scalex').val(e.scaleX);
+         $('#cropperform-rotate').val(e.rotate);
+         
+         }
+         });
+         }).on('hidden.bs.modal', function () {
+         cropBoxData = $image.cropper('getCropBoxData');
+         canvasData = $image.cropper('getCanvasData');
+         $image.cropper('destroy');
+         });*/
+    });
 </script>

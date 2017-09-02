@@ -4,6 +4,7 @@ namespace panix\mod\shop\models;
 
 use Yii;
 use panix\engine\WebModel;
+use panix\engine\CMS;
 use panix\engine\behaviors\TranslateBehavior;
 use panix\mod\shop\models\ShopCategory;
 use panix\mod\shop\models\ShopManufacturer;
@@ -12,8 +13,7 @@ use panix\mod\shop\models\translate\ShopProductTranslate;
 use panix\mod\shop\models\ShopRelatedProduct;
 use panix\mod\shop\models\ShopProductCategoryRef;
 use yii\helpers\ArrayHelper;
-use salopot\attach\behaviors\AttachFileBehavior;
-use salopot\attach\behaviors\AttachImageBehavior;
+use yii\helpers\Html;
 
 class ShopProduct extends WebModel {
 
@@ -37,6 +37,28 @@ class ShopProduct extends WebModel {
             ],
         ]);
         return $sort;
+    }
+
+    public function getMainImageTitle() {
+        if ($this->getImage())
+            return ($this->getImage()->name) ? $this->getImage()->name : $this->name;
+    }
+
+    public function getMainImageUrl($size = false) {
+        if ($this->getImage()) {
+
+            if ($size) {
+                return $this->getImage()->getUrl($size);
+            } else {
+                return $this->getImage()->getUrl();
+            }
+        } else {
+            return CMS::placeholderUrl(array('size' => $size));
+        }
+    }
+
+    public function renderGridImage() {
+        return ($this->getImage()) ? Html::a(Html::img($this->getMainImageUrl("50x50"), ['alt' => $this->getMainImageTitle(), 'class' => 'img-thumbnail']), $this->getMainImageUrl(), ['title' => $this->name, 'data-fancybox' => 'gallery']) : Html::img($this->getMainImageUrl("50x50"), ['alt' => $this->getMainImageTitle(), 'class' => 'img-thumbnail']);
     }
 
     /**
@@ -297,6 +319,7 @@ class ShopProduct extends WebModel {
                         ])
                         ->orderBy(['order' => SORT_ASC]);
     }
+
     public static function calculatePrices($product, array $variants, $configuration) {
         if (($product instanceof ShopProduct) === false)
             $product = ShopProduct::model()->findByPk($product);
@@ -329,4 +352,5 @@ class ShopProduct extends WebModel {
 
         return $result;
     }
+
 }
