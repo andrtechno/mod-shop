@@ -179,10 +179,9 @@ class FiltersWidget extends \panix\engine\data\Widget {
             return $this->_currentMaxPrice;
 
         if (Yii::$app->request->get('max_price')) {
-            $this->_currentMaxPrice = Yii::$app->request->get('max_price');
+            $this->_currentMaxPrice = Yii::$app->currency->convert(Yii::$app->request->get('max_price'));
         } else {
             $this->_currentMaxPrice = Yii::$app->currency->convert($this->_maxprice);
-            //$this->_currentMaxPrice = $this->maxprice;
         }
 
         return $this->_currentMaxPrice;
@@ -193,9 +192,8 @@ class FiltersWidget extends \panix\engine\data\Widget {
             return $this->_currentMinPrice;
 
         if (Yii::$app->request->get('min_price')) {
-            $this->_currentMinPrice = Yii::$app->request->get('min_price');
+            $this->_currentMinPrice = Yii::$app->currency->convert(Yii::$app->request->get('min_price'));
         } else {
-            //  $this->_currentMinPrice = $this->minprice;
             $this->_currentMinPrice = Yii::$app->currency->convert($this->_minprice);
         }
 
