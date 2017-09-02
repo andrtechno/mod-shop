@@ -19,6 +19,7 @@ use yii\widgets\Pjax;
 <?php
 Pjax::begin([
     'id' => 'pjax-container', 'enablePushState' => false,
+    'linkSelector' => 'a:not(.linkTarget)'
 ]);
 ?>
 <?=
@@ -55,7 +56,8 @@ SortableGridView::widget([
                 'view' => function ($url, $model, $key) {
                     return Html::a('<i class="icon-search"></i>', $model->getUrl(), [
                                 'title' => Yii::t('yii', 'Delete'),
-                                'target' => '_blank'
+                                'target' => '_blank',
+                                'class' => 'linkTarget'
                     ]);
                 },
                     ],

@@ -72,11 +72,11 @@ class ShopProduct extends WebModel {
         return ['/shop/default/view', 'url' => $this->seo_alias];
     }
 
-    public function transactions() {
+    /*public function transactions() {
         return [
             self::SCENARIO_DEFAULT => self::OP_INSERT | self::OP_UPDATE,
         ];
-    }
+    }*/
 
     /**
      * @inheritdoc
@@ -102,12 +102,12 @@ class ShopProduct extends WebModel {
         return $this->hasOne(User::className(), ['id' => 'user_id']);
     }
 
-    public function getCategory2() {
+    /*public function getCategory2() {
         return $this->hasOne(ShopCategory::className(), ['id' => 'category_id']);
-    }
+    }*/
 
     public function getManufacturer() {
-        return $this->hasOne(ShopManufacturer::className(), ['id' => 'category_id']);
+        return $this->hasOne(ShopManufacturer::className(), ['id' => 'manufacturer_id']);
     }
 
     public function getTranslations() {
@@ -123,25 +123,24 @@ class ShopProduct extends WebModel {
     }
 
     public function getRelatedProducts() {
-        //  return $this->hasMany(ShopProduct::className(), ['id' => 'product_id'])->via('related');
         return $this->hasMany(ShopProduct::className(), ['id' => 'product_id'])
-                        // ->via('related');
                         ->viaTable(ShopRelatedProduct::tableName(), ['related_id' => 'id']);
     }
 
-    public function getRelatedProductsHZ() {
-        //  return $this->hasMany(ShopProduct::className(), ['id' => 'product_id'])->via('related');
-        return $this->hasMany(ShopProduct::className(), ['id' => 'related_id'])
-                        // ->via('related');
-                        ->viaTable(ShopRelatedProduct::tableName(), ['product_id' => 'id']);
-    }
-
-    public function getCategorization2() {
-        return $this->hasMany(ShopProductCategoryRef::className(), ['product' => 'id']);
-    }
 
     public function getCategorization() {
-        return $this->hasMany(ShopProductCategoryRef::className(), ['id' => 'product']);
+        return $this->hasMany(ShopProductCategoryRef::className(), ['product' => 'id']);
+    }
+    public function getCategories() {
+        return $this->hasMany(ShopCategory::className(), ['id' => 'category'])->via('categorization');
+    }
+
+
+    public function getMainCategory() {
+        return $this->hasOne(ShopCategory::className(), ['id' => 'category'])
+                        ->via('categorization', function($query) {
+                            $query->where(['is_main' => 1]);
+                        });
     }
 
     /**

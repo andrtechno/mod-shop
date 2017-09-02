@@ -19,7 +19,7 @@ use yii\widgets\Pjax;
 
             <tr>
             <input type="hidden" value="<?php echo $related->id ?>" name="RelatedProductId[]">
-            <td class="image text-center relatedProductLine<?php echo $related->id ?>">ads</td>
+            <td class="image text-center relatedProductLine<?php echo $related->id ?>"><?php echo $related->renderGridImage('50x50'); ?></td>
             <td><?php
                 echo Html::a($related->name, array('/admin/shop/products/update', 'id' => $related->id), array(
                     'target' => '_blank'
@@ -68,7 +68,13 @@ echo \yii\grid\GridView::widget([
     },*/
     //'layout' => $this->render('@app/web/themes/admin/views/layouts/_grid_layout', ['title' => $this->context->pageName]), //'{items}{pager}{summary}'
     'columns' => [
-        //   'name',
+        [
+            'format' => 'raw',
+            'contentOptions' => ['class' => 'text-center image'],
+            'value' => function($model) {
+        return $model->renderGridImage('50x50');
+    },
+        ],
         [
             'attribute' => 'name',
             'format' => 'raw',

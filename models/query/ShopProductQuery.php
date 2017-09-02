@@ -20,6 +20,17 @@ class ShopProductQuery extends ActiveQuery {
         return $this;
     }
 
+    public function applyManufacturers($manufacturers) {
+        if (!is_array($manufacturers))
+            $manufacturers = array($manufacturers);
+
+        if (empty($manufacturers))
+            return $this;
+
+        $this->andWhere(['`manufacturer_id`' => $manufacturers]);
+        return $this;
+    }
+
     public function applyCategories($categories) {
         if ($categories instanceof \panix\mod\shop\models\ShopCategory)
             $categories = array($categories->id);
@@ -28,17 +39,8 @@ class ShopProductQuery extends ActiveQuery {
                 $categories = array($categories);
         }
 
-       // $criteria = new CDbCriteria;
-
-        //if ($select)
-       //     $criteria->select = $select;
-        //$criteria->join = 'LEFT JOIN `{{shop_product_category_ref}}` `categorization` ON (`categorization`.`product`=`t`.`id`)';
-        //$criteria->addInCondition('categorization.category', $categories);
-        //$this->getDbCriteria()->mergeWith($criteria);
-      //  die($this->tableAlias);
-        //$this->joinWith(['categorization']);
-        $this->leftJoin('{{%shop_product_category_ref}}','{{%shop_product_category_ref}}.`product`={{%shop_product}}.`id`');
-        $this->andWhere(['{{%shop_product_category_ref}}.`category`' => $categories]); 
+        $this->leftJoin('{{%shop_product_category_ref}}', '{{%shop_product_category_ref}}.`product`={{%shop_product}}.`id`');
+        $this->andWhere(['{{%shop_product_category_ref}}.`category`' => $categories]);
 
         return $this;
     }

@@ -21,7 +21,9 @@ class ShopCategory extends WebModel {
     public static function find() {
         return new ShopCategoryQuery(get_called_class());
     }
-
+    public function getUrl() {
+        return ['/shop/category/view', 'seo_alias' => $this->seo_alias];
+    }
     public function rules() {
         return [
             [['seo_alias'], 'required'],

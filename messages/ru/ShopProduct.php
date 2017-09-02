@@ -8,7 +8,7 @@ return [
     'TEXT' => 'Описание товара',
     'MANUFACTURER_ID' => 'Производитель',
     'CATEGORY_ID'=>'Категория',
-    'FULL_DESCRIPTION'=>'Описание товара',
+    'FULL_DESCRIPTION'=>'Описание',
     'TAB_MAIN'=>'Основное'
 ];
 ?>

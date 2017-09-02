@@ -32,7 +32,7 @@ class ShopManufacturer extends WebModel {
     }
 
     public function getUrl() {
-        return ['/shop/manufacturer/view', 'url' => $this->seo_alias];
+        return ['/shop/manufacturer/index', 'url' => $this->seo_alias];
     }
 
     public function transactions() {
