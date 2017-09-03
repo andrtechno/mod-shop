@@ -7,8 +7,9 @@ use panix\engine\controllers\WebController;
 use panix\mod\shop\models\ShopProduct;
 use yii\web\NotFoundHttpException;
 use yii\helpers\Url;
-class CategoryController extends WebController {
+use panix\mod\shop\models\ShopCategory;
 
+class CategoryController extends WebController {
 
     public $allowedPageLimit = [];
     public $query;
@@ -18,7 +19,7 @@ class CategoryController extends WebController {
     /**
      * @var string
      */
-    private $_maxPrice,$_minPrice;
+    private $_maxPrice, $_minPrice;
 
     /**
      * @var string
@@ -39,7 +40,7 @@ class CategoryController extends WebController {
             if ($this->action->id === 'search') {
                 return $this->redirect(Yii::$app->request->addUrlParam('/shop/category/search', $data));
             } else {
-                if (!Yii::$app->request->isAjax){
+                if (!Yii::$app->request->isAjax) {
                     return $this->redirect(Url::toRoute(Yii::$app->request->addUrlParam('/shop/category/view', $data)));
                 }
             }
@@ -122,14 +123,19 @@ class CategoryController extends WebController {
             $c = Yii::$app->settings->get('shop');
 
 
-            $ancestors = $this->dataModel->leaves()->all();
+            $ancestors = $this->dataModel->ancestors()->addOrderBy('depth')->excludeRoot()->all();
+
             $this->breadcrumbs[] = [
                 'label' => Yii::t('shop/default', 'BC_SHOP'),
                 'url' => array('/shop')
             ];
-            //foreach ($ancestors as $c)
-            //     $this->breadcrumbs[$c->name] = $c->getUrl();
-            // $this->breadcrumbs[] = $this->model->name;
+            foreach ($ancestors as $c) {
+                $this->breadcrumbs[] = [
+                    'label' => $c->name,
+                    'url' => $c->getUrl()
+                ];
+            }
+            $this->breadcrumbs[] = $this->dataModel->name;
         }
         $itemView = '_view_grid';
         /* if (isset($_GET['view'])) {
@@ -173,7 +179,7 @@ class CategoryController extends WebController {
     }
 
     protected function findModel($seo_alias) {
-        $model = Yii::$app->getModule("shop")->model("ShopCategory");
+        $model = new ShopCategory;
         if (($this->dataModel = $model::find()
                 ->where(['full_path' => $seo_alias])
                 ->one()) !== null) {
@@ -182,8 +188,5 @@ class CategoryController extends WebController {
             throw new NotFoundHttpException('product not found');
         }
     }
-
-
-
 
 }

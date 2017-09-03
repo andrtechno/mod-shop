@@ -2,7 +2,7 @@
 
 use yii\helpers\Html;
 ?>
-
+<?php if($manufacturers['filters']) { ?>
 <div class="panel panel-default filter-block">
     <div class="panel-heading">
         <div class="panel-title"><?= Yii::t('shop/default', 'FILTER_BY_MANUFACTURER') ?></div>
@@ -33,3 +33,4 @@ use yii\helpers\Html;
         </ul>
     </div>
 </div>
+<?php } ?>

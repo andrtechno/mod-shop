@@ -4,22 +4,18 @@
  * @author CORNER CMS <dev@corner-cms.com>
  * @link http://www.corner-cms.com/
  */
-namespace panix\mod\shop\assets;
+namespace panix\mod\shop\assets\admin;
 
 use yii\web\AssetBundle;
 
-class AdminAsset extends AssetBundle
+class CategoryAsset extends AssetBundle
 {
     public $sourcePath = '@vendor/panix/mod-shop/assets/admin';
     public $jsOptions = array(
-        'position' => \yii\web\View::POS_HEAD
+        'position' => \yii\web\View::POS_BEGIN
     );
     public $js = [
-        'js/relatedProductsTab.js',
-        'js/products.js',
+        'js/category.js',
     ];
-    
- /* public $depends = [
-        'panix\engine\assets\TinyMceAsset'
-    ];*/
+
 }

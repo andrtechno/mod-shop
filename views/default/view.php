@@ -43,7 +43,7 @@ foreach($model->categories as $cat){
             <div class="price">
                 <span><?= Yii::$app->currency->convert($model->price); ?></span>
                 <sub><?= Yii::$app->currency->active->symbol; ?></sub>
-
+      </div>
                 <?php
                 echo Html::beginForm(['/cart/add'], 'post', ['id' => 'form-add-cart-' . $model->id]);
 
@@ -64,7 +64,7 @@ foreach($model->categories as $cat){
                 ?>
 
                 <?php echo Html::endForm(); ?>
-            </div>
+      
 
         </div>
     </div>

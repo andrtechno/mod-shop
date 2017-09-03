@@ -17,6 +17,7 @@
     $max = (int) ceil($getMax2);
     //  echo $cm->convert($getMin);
     ?>
+<?php if (($getMin2 > 0 && $getMax2 > 0) && ($getMin2 != $getMax2)){ ?>
 <div class="panel panel-default" id="filter-current">
 
     <div class="panel-heading">
@@ -66,3 +67,4 @@
     ?>
     </div>
 </div>
+<?php } ?>

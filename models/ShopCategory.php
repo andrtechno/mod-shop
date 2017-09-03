@@ -5,7 +5,7 @@ namespace panix\mod\shop\models;
 //use Yii;
 use panix\engine\WebModel;
 use panix\engine\behaviors\TranslateBehavior;
-use panix\engine\behaviors\NestedSetsBehavior;
+use panix\engine\behaviors\nestedsets\NestedSetsBehavior;
 use panix\engine\behaviors\MenuArrayBehavior;
 use panix\mod\shop\models\translate\ShopCategoryTranslate;
 use panix\mod\shop\models\query\ShopCategoryQuery;
@@ -14,6 +14,8 @@ class ShopCategory extends WebModel {
 
     const MODULE_ID = 'shop';
 
+    public $parent_id;
+
     public static function tableName() {
         return '{{%shop_category}}';
     }
@@ -21,12 +23,14 @@ class ShopCategory extends WebModel {
     public static function find() {
         return new ShopCategoryQuery(get_called_class());
     }
+
     public function getUrl() {
         return ['/shop/category/view', 'seo_alias' => $this->full_path];
     }
+
     public function rules() {
         return [
-            [['seo_alias'], 'required'],
+            [['name', 'seo_alias'], 'required'],
             [['name'], 'string', 'max' => 255]
         ];
     }
@@ -58,7 +62,7 @@ class ShopCategory extends WebModel {
 
     public function transactions() {
         return [
-            self::SCENARIO_DEFAULT => self::OP_INSERT | self::OP_UPDATE,
+            self::SCENARIO_DEFAULT => self::OP_ALL,
         ];
     }
 
@@ -88,14 +92,31 @@ class ShopCategory extends WebModel {
         return parent::beforeSave($insert);
     }
 
+    public function afterSave($insert, $changedAttributes) {
+        \Yii::$app->cache->delete('CategoryUrlRule');
+        return parent::afterSave($insert, $changedAttributes);
+    }
+
     public function rebuildFullPath() {
-        // Create category full path.
-        $ancestors = $this->find()->leaves()->all();
+
+        //test=   ShopCategory::findOne($this->id);
+        $ancestors = $this->ancestors()->addOrderBy('depth')->all();
+        // $ancestors = $this->find()->leaves()->all();
+        // $ancestors= $this->parent_id->getLeaves()->all();
+        // if($this->parent_id > 1){
+        //     $test = ShopCategory::findOne($this->parent_id);
+        //     $ancestors =  $test->leaves()->all();
+        // }
+        // 
+        //   print_r($ancestors);
+
+
         if (sizeof($ancestors)) {
             // Remove root category from path
+            //  if($this->parent_id == 1){
             unset($ancestors[0]);
-
-            $parts = array();
+            // }
+            $parts = [];
             foreach ($ancestors as $ancestor)
                 $parts[] = $ancestor->seo_alias;
 
@@ -103,7 +124,8 @@ class ShopCategory extends WebModel {
             $this->full_path = implode('/', array_filter($parts));
         }
 
-        return $this;
+//print_r($this->full_path);die;
+        // return $this;
     }
 
 }

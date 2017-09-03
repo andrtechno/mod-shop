@@ -41,10 +41,8 @@ class ShopCategoryNode extends Component implements \ArrayAccess {
     protected $_children;
     protected $options = array();
 
-    /**
-     * @param ShopCategory $model
-     */
-    public function __construct($model, $options) {
+
+        public function __construct($model, $options = []) {
         $this->options = & $options;
         $this->model = & $model;
         return $this;
@@ -56,11 +54,11 @@ class ShopCategoryNode extends Component implements \ArrayAccess {
      * @param array $model
      * @return array
      */
-    public static function fromArray($model, $options) {
+    public static function fromArray($model, $options = []) {
         $result = array();
         foreach ($model as $row){
             //if(isset($options['switch'])){
-            if($row->switch) //$options['switch'] || 
+           // if($row->switch) //$options['switch'] || 
                 $result[] = new ShopCategoryNode($row, $options);
            // }
         }

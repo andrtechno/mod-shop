@@ -9,7 +9,9 @@ use yii\web\NotFoundHttpException;
 
 class DefaultController extends WebController {
 
-
+    public function actionIndex(){
+        return $this->render('index');
+    }
 
     public function actionView($url) {
         $this->findModel($url);

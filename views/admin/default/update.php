@@ -59,6 +59,12 @@ echo $formatter->asCurrency($model->price, 'UAH', [
                     'options' => ['id' => 'related'],
                 ],
                 [
+                    'label' => 'Категории',
+                    'content' => $this->render('tabs/_tree', ['exclude' => $model->id, 'form' => $form, 'model' => $model]),
+                    'headerOptions' => [],
+                    'options' => ['id' => 'tree'],
+                ],
+                [
                     'label' => 'Example',
                     'url' => 'http://www.corner-cms.com',
                 ],

@@ -2,13 +2,17 @@
 
 namespace panix\mod\shop\models\query;
 
-use panix\engine\behaviors\NestedSetsQueryBehavior;
+
+use panix\engine\behaviors\nestedsets\NestedSetsQueryBehavior;
 
 class ShopCategoryQuery extends \yii\db\ActiveQuery {
 
+    // use NestedSetsQueryTrait;
     public function behaviors() {
         return [
-            NestedSetsQueryBehavior::className(),
+            [
+                'class' => NestedSetsQueryBehavior::className(),
+            ]
         ];
     }
 
@@ -17,7 +21,7 @@ class ShopCategoryQuery extends \yii\db\ActiveQuery {
     }
 
     public function excludeRoot() {
-       // $this->addWhere(['condition' => 'id != 1']);
+        // $this->addWhere(['condition' => 'id != 1']);
         $this->andWhere(['!=', 'id', 1]);
         return $this;
     }

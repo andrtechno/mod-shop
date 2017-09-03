@@ -86,15 +86,18 @@ class DefaultController extends AdminController {
 
 
 
+           
         //$model->setScenario("admin");
         $post = Yii::$app->request->post();
 
 
         if ($model->load($post) && $model->validate()) {
+
+            
             $model->setRelatedProducts(Yii::$app->request->post('RelatedProductId'), []);
 
-
-            $model->save();
+           // print_r($_POST);die;
+            //$model->save();
             $mainCategoryId = 1;
             if (isset($_POST['ShopProduct']['category_id']))
                 $mainCategoryId = $_POST['ShopProduct']['category_id'];
