@@ -30,6 +30,7 @@ use yii\helpers\Html;
         'emptyText' => 'Empty',
         'options' => ['class' => 'row'],
         'itemOptions' => ['class' => 'col-sm-4'],
+          'pager' => ['class' => \kop\y2sp\ScrollPager::className()],
         'emptyTextOptions' => ['class' => 'alert alert-info']
     ]);
     ?>

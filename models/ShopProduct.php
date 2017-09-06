@@ -19,7 +19,7 @@ class ShopProduct extends WebModel {
 
     private $_related;
     public $file;
-
+    public $main_category_id;
     const MODULE_ID = 'shop';
 
     public static function find() {
@@ -89,7 +89,7 @@ class ShopProduct extends WebModel {
             [['name', 'seo_alias'], 'trim'],
             [['full_description'], 'string'],
             [['sku', 'full_description'], 'default'], // установим ... как NULL, если они пустые
-            [['name', 'seo_alias', 'price', 'category_id'], 'required'],
+            [['name', 'seo_alias', 'price', 'main_category_id'], 'required'],
             [['name', 'seo_alias'], 'string', 'max' => 255],
             [['manufacturer_id', 'quantity', 'views', 'added_to_cart_count', 'ordern', 'category_id'], 'integer'],
             [['name', 'seo_alias', 'full_description'], 'safe'],
@@ -254,6 +254,13 @@ class ShopProduct extends WebModel {
     public function afterDelete() {
         $this->clearRelatedProducts();
         ShopRelatedProduct::deleteAll('related_id=:id', array('id' => $this->id));
+        
+        // Delete categorization
+        ShopProductCategoryRef::find()->deleteAll([
+            'product' => $this->id
+        ]);
+
+        
         //  $this->removeImages();
         $image = $this->getImages();
 

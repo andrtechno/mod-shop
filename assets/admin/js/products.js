@@ -2,9 +2,10 @@
 // Process checked categories
 
 $("#ShopProduct").submit(function () {
-    var checked = $("#ShopCategoryTree li a.jstree-checked");
+    var checked = $("#jsTree_ShopCategoryTree li a.jstree-checked");
     checked.each(function (i, el) {
         var id = $(el).attr("id").replace('node_', '').replace('_anchor', '');
+        console.log(id);
         $("#ShopProduct").append('<input type="hidden" name="categories[]" value="' + id + '" />');
     });
 

@@ -27,6 +27,16 @@ class Module extends WebModule {
                 'icon' => 'icon-folder-open'
             ],
             [
+                'label' => Yii::t('shop/admin', 'ATTRIBUTES'),
+                "url" => ['/admin/shop/attribute'],
+                'icon' => 'icon-filter'
+            ],
+            [
+                'label' => Yii::t('shop/admin', 'TYPE_PRODUCTS'),
+                "url" => ['/admin/shop/type'],
+                'icon' => 'icon-t'
+            ],
+            [
                 'label' => Yii::t('shop/admin', 'CURRENCY'),
                 "url" => ['/admin/shop/currency'],
                 'icon' => 'icon-currencies'

@@ -17,6 +17,7 @@ class AdminAsset extends AssetBundle
     public $js = [
         'js/relatedProductsTab.js',
         'js/products.js',
+       // 'js/products.index.js',
     ];
     
  /* public $depends = [

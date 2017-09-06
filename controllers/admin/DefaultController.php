@@ -7,7 +7,7 @@ use panix\mod\shop\models\ShopProduct;
 use panix\mod\shop\models\search\ShopProductSearch;
 use panix\engine\controllers\AdminController;
 use panix\engine\grid\sortable\SortableGridAction;
-use panix\engine\UploadForm;
+
 
 class DefaultController extends AdminController {
 
@@ -85,7 +85,8 @@ class DefaultController extends AdminController {
         $this->breadcrumbs[] = Yii::t('app', 'UPDATE');
 
 
-
+        if ($model->mainCategory)
+            $model->main_category_id = $model->mainCategory->id;
            
         //$model->setScenario("admin");
         $post = Yii::$app->request->post();
@@ -96,11 +97,11 @@ class DefaultController extends AdminController {
             
             $model->setRelatedProducts(Yii::$app->request->post('RelatedProductId'), []);
 
-           // print_r($_POST);die;
-            //$model->save();
+
+            $model->save();
             $mainCategoryId = 1;
-            if (isset($_POST['ShopProduct']['category_id']))
-                $mainCategoryId = $_POST['ShopProduct']['category_id'];
+            if (isset($_POST['ShopProduct']['main_category_id']))
+                $mainCategoryId = $_POST['ShopProduct']['main_category_id'];
             $model->setCategories(Yii::$app->request->post('categories', []), $mainCategoryId);
 
             $model->file = \yii\web\UploadedFile::getInstances($model, 'file');
@@ -132,7 +133,7 @@ class DefaultController extends AdminController {
         if (($model = $model::findOne($id)) !== null) {
             return $model;
         } else {
-            throw new \yii\web\NotFoundHttpException('The requested page does not exist.');
+            $this->error404();
         }
     }
 

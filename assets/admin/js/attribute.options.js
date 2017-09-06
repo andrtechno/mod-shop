@@ -2,10 +2,11 @@
 $(function() {
 
     // Add new row
-    $(".optionsEditTable .plusOne").click(function(){
+    $(".plusOne").click(function(){
+
         var option_name = Math.random();
-        var row = $(".optionsEditTable .copyMe").clone().removeClass('copyMe');
-        row.appendTo(".optionsEditTable tbody");
+        var row = $(".copyMe").clone().removeClass('copyMe');
+        row.prependTo(".optionsEditTable tbody");
         row.find(".value").each(function(i, el){
             $(el).attr('name', 'options['+option_name+'][]');
             console.log('find');
@@ -52,12 +53,12 @@ $(function() {
         {
             $(optionsTab).show();
 
-            $(".field_use_in_filter").show();
-            $(".field_select_many").show();
+            $(".field-attribute-use_in_filter").show();
+            $(".field-attribute-select_many").show();
         }else{
             $(optionsTab).hide();
-            $(".field_use_in_filter").hide();
-            $(".field_select_many").hide();
+            $(".field-attribute-use_in_filter").hide();
+            $(".field-attribute-select_many").hide();
         }
     }
 

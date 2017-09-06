@@ -17,7 +17,7 @@ use panix\ext\tinymce\TinyMce;
 ]); ?>
 
 
-<?= $form->field($model, 'category_id')->dropDownList(ShopCategory::flatTree(), [
+<?= $form->field($model, 'main_category_id')->dropDownList(ShopCategory::flatTree(), [
     'prompt' => 'Укажите категорию'
 ]); ?>
 <?= $form->field($model, 'full_description')->widget(TinyMce::className(), [

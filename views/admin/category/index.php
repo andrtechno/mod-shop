@@ -13,24 +13,14 @@ echo \panix\ext\jstree\JsTree::widget([
     'name' => 'jstree',
     'data' => ShopCategoryNode::fromArray(ShopCategory::findOne(1)->children()->all(), ['switch' => true]),
     'core' => [
-
         'force_text' => true,
         'animation' => 0,
-        'strings' => array('Loading ...' => 'Please wait ...'),
-        "themes" => array("stripes" => true, 'responsive' => true),
-        "check_callback" => new yii\web\JsExpression('function (operation, node, parent, position, more) {
-      console.log(operation);
-      if(operation === "copy_node" || operation === "move_node") {
-
-      } else if (operation === "delete_node"){
-
-      } else if (operation === "rename_node") {
-
-      }
-      return true; // allow everything else
-      }
-
-      ')],
+        'strings' => [
+            'Loading ...' => Yii::t('app', 'LOADING')
+        ],
+        "themes" => ["stripes" => true, 'responsive' => true,"variant" => "large"],
+        'check_callback' => true
+    ],
     'plugins' => ['dnd', 'contextmenu', 'search', 'wholerow', 'state'],
     'contextmenu' => [
         'items' => new yii\web\JsExpression('function($node) {
@@ -65,6 +55,7 @@ echo \panix\ext\jstree\JsTree::widget([
                         "icon":"icon-rename",
                         "label": "' . Yii::t('app', 'RENAME') . '",
                         "action": function (obj) {
+                            console.log($node);
                             tree.edit($node);
                         }
                     },                         

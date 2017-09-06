@@ -67,7 +67,7 @@ class CategoryController extends AdminController {
             $model = ShopCategory::findOne($id);
         }
         if (!$model) {
-            throw new NotFoundHttpException('The requested page does not exist.');
+            $this->error404();
         }
 
 

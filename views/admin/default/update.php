@@ -34,11 +34,16 @@ echo $formatter->asCurrency($model->price, 'UAH', [
 
         <?php
         $form = ActiveForm::begin([
-                    'options' => ['class' => 'form-horizontal', 'enctype' => 'multipart/form-data']
+              'id'=>  basename(get_class($model)),
+                    'options' => [
+                        'class' => 'form-horizontal',
+                        'enctype' => 'multipart/form-data'
+                        ]
         ]);
         ?>
         <?php
         echo yii\bootstrap\Tabs::widget([
+          
             'items' => [
                 [
                     'label' => $model::t('TAB_MAIN'),

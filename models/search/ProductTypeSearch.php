@@ -5,12 +5,12 @@ namespace panix\mod\shop\models\search;
 use Yii;
 use yii\base\Model;
 use panix\engine\data\ActiveDataProvider;
-use panix\mod\shop\models\ShopProduct;
+use panix\mod\shop\models\ProductType;
 
 /**
  * PagesSearch represents the model behind the search form about `app\modules\pages\models\Pages`.
  */
-class ShopProductSearch extends ShopProduct {
+class ProductTypeSearch extends ProductType {
 
     public $exclude = null;
 
@@ -40,15 +40,10 @@ class ShopProductSearch extends ShopProduct {
      * @return ActiveDataProvider
      */
     public function search($params) {
-        $query = ShopProduct::find();
+        $query = ProductType::find();
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-            'sort' => ['defaultOrder' => ['ordern' => SORT_DESC]],
-
-                // 'pagination' => [
-                //   'pageSize' => Yii::$app->params['pagenum'],
-                // ],
         ]);
 
         $this->load($params);
@@ -70,8 +65,7 @@ class ShopProductSearch extends ShopProduct {
         }
 
         $query->andFilterWhere(['like', 'name', $this->name]);
-        $query->andFilterWhere(['like', 'sku', $this->sku]);
-        $query->andFilterWhere(['like', 'price', $this->price]);
+
 
         return $dataProvider;
     }
