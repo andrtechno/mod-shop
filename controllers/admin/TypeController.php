@@ -9,7 +9,6 @@ use panix\mod\shop\models\ProductType;
 use panix\mod\shop\models\search\ProductTypeSearch;
 use panix\mod\shop\models\Attribute;
 
-
 class TypeController extends AdminController {
 
     public $icon = 'icon-t';
@@ -22,12 +21,12 @@ class TypeController extends AdminController {
 
         $this->pageName = Yii::t('shop/admin', 'TYPE_PRODUCTS');
         $this->breadcrumbs[] = [
-            'label'=>Yii::t('shop/default', 'MODULE_NAME'),
-            'url'=>['/admin/shop']
+            'label' => Yii::t('shop/default', 'MODULE_NAME'),
+            'url' => ['/admin/shop']
         ];
-$this->breadcrumbs[]=$this->pageName;
-       // $this->topButtons = array(array('label' => Yii::t('shop/admin', 'Создать тип'),
-       //         'url' => $this->createUrl('create'), 'htmlOptions' => array('class' => 'btn btn-success')));
+        $this->breadcrumbs[] = $this->pageName;
+        // $this->topButtons = array(array('label' => Yii::t('shop/admin', 'Создать тип'),
+        //         'url' => $this->createUrl('create'), 'htmlOptions' => array('class' => 'btn btn-success')));
 
         $searchModel = new ProductTypeSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams());
@@ -35,8 +34,8 @@ $this->breadcrumbs[]=$this->pageName;
 
 
         return $this->render('index', array(
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
+                    'searchModel' => $searchModel,
+                    'dataProvider' => $dataProvider,
         ));
     }
 
@@ -46,6 +45,14 @@ $this->breadcrumbs[]=$this->pageName;
      * @throws CHttpException
      */
     public function actionUpdate($id = false) {
+
+
+        /* $this->breadcrumbs = array(
+          Yii::t('shop/default', 'MODULE_NAME') => array('/admin/shop'),
+          Yii::t('shop/admin', 'TYPE_PRODUCTS') => $this->createUrl('index'),
+          $this->pageName
+          ); */
+
         if ($id === true)
             $model = new ProductType;
         else
@@ -54,30 +61,22 @@ $this->breadcrumbs[]=$this->pageName;
         if (!$model)
             $this->error404(Yii::t('shop/admin', 'NO_FOUND_TYPEPRODUCT'));
 
-
-
-
-      \panix\mod\shop\assets\admin\ProductTypeAsset::register($this->view);
-
         $this->pageName = ($model->isNewRecord) ? Yii::t('shop/admin', 'Создание нового типа продукта') :
                 Yii::t('shop/admin', 'Редактирование типа продукта');
 
-       /* $this->breadcrumbs = array(
-            Yii::t('shop/default', 'MODULE_NAME') => array('/admin/shop'),
-            Yii::t('shop/admin', 'TYPE_PRODUCTS') => $this->createUrl('index'),
-            $this->pageName
-        );*/
 
 
+
+        \panix\mod\shop\assets\admin\ProductTypeAsset::register($this->view);
 
         $post = Yii::$app->request->post();
 
 
         if ($model->load($post) && $model->validate()) {
 
-            if (isset($_POST['categories']) && !empty($_POST['categories'])) {
-                $model->categories_preset = serialize($_POST['categories']);
-                $model->main_category = $_POST['main_category'];
+            if (Yii::$app->request->post('categories')) {
+                $model->categories_preset = serialize(Yii::$app->request->post('categories'));
+                $model->main_category = Yii::$app->request->post('main_category');
             } else {
                 //return defaults when all checkboxes were checked off
                 $model->categories_preset = null;
@@ -87,26 +86,18 @@ $this->breadcrumbs[]=$this->pageName;
             if ($model->validate()) {
                 $model->save();
                 // Set type attributes
-                $model->useAttributes(Yii::$app->request->post('attributes', array()));
+                $model->useAttributes(Yii::$app->request->post('attributes', []));
                 return $this->redirect('index');
             }
         }
 
-        // Select available(not used) attributes
-        //die(print_r(Html::listData($model->attributeRelation, 'attribute_id', 'attribute_id')));
-        //
-        //$cr = new CDbCriteria;
-        //$cr->addNotInCondition('t.id', Html::listData($model->attributeRelation, 'attribute_id', 'attribute_id')); //ShopAttribute.id
-       // $allAttributes = ShopAttribute::model()->findAll($cr);
+        $allAttributes = Attribute::find()
+                ->where(['NOT IN', 'id', ArrayHelper::map($model->attributeRelation, 'attribute_id', 'attribute_id')])
+                ->all();
 
-                        $allAttributes = Attribute::findAll(
-                            [
-                        ['NOT IN', 'id', ArrayHelper::map($model->attributeRelation, 'attribute_id', 'attribute_id')]
-                            ]);
-        
         return $this->render('update', array(
-            'model' => $model,
-            'attributes' => $allAttributes,
+                    'model' => $model,
+                    'attributes' => $allAttributes,
         ));
     }
 
@@ -129,7 +120,7 @@ $this->breadcrumbs[]=$this->pageName;
             }
 
             if (!Yii::$app->request->isAjax)
-               return $this->redirect('index');
+                return $this->redirect('index');
         }
     }
 

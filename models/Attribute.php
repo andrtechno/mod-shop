@@ -47,7 +47,7 @@ class Attribute extends \panix\engine\WebModel {
         return '{{%shop_attribute}}';
     }
 
-    public function getAttrTranslate() {
+    public function getAttrtranslate() {
         return $this->hasMany(AttributeTranslate::className(), ['object_id' => 'id']);
     }
 
@@ -73,7 +73,7 @@ class Attribute extends \panix\engine\WebModel {
         return ArrayHelper::merge([
                     'translate' => [
                         'class' => \panix\engine\behaviors\TranslateBehavior::className(),
-                        'translationRelation' => 'attrTranslate',
+                        'translationRelation' => 'attrtranslate',
                         'translationAttributes' => [
                             'title',
                             'abbreviation'

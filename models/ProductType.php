@@ -61,7 +61,7 @@ class ProductType extends WebModel {
             [['name'], 'trim'],
             [['name'], 'required'],
             [['name'], 'string', 'max' => 255],
-            [['name',], 'safe'],
+            [['name','categories_preset'], 'safe'],
         ];
     }
     public function relations2222() {
@@ -80,42 +80,13 @@ class ProductType extends WebModel {
         return $this->hasMany(TypeAttribute::className(), ['type_id' => 'id']);
     }
     public function getShopAttributes() {
-        return $this->hasMany(Attribute::className(), ['attribute_id' => 'id'])->via('attributeRelation');
+        return $this->hasMany(Attribute::className(), ['id' => 'attribute_id'])->via('attributeRelation');
     }
     public function getShopConfigurableAttributes() {
-        return $this->hasMany(Attribute::className(), ['attribute_id' => 'id'])->andWhere('use_in_variants=1')->via('attributeRelation');
+        return $this->hasMany(Attribute::className(), ['id' => 'attribute_id'])->andWhere('use_in_variants=1')->via('attributeRelation');
     }
 
 
-
-    public function getRelated() {
-        return $this->hasMany(ShopRelatedProduct::className(), ['related_id' => 'id']);
-    }
-
-    public function getRelatedProductCount() {
-        return $this->hasMany(ShopRelatedProduct::className(), ['product_id' => 'id'])->count();
-    }
-
-    public function getRelatedProducts() {
-        return $this->hasMany(ShopProduct::className(), ['id' => 'product_id'])
-                        ->viaTable(ShopRelatedProduct::tableName(), ['related_id' => 'id']);
-    }
-
-
-    public function getCategorization() {
-        return $this->hasMany(ShopProductCategoryRef::className(), ['product' => 'id']);
-    }
-    public function getCategories() {
-        return $this->hasMany(ShopCategory::className(), ['id' => 'category'])->via('categorization');
-    }
-
-
-    public function getMainCategory() {
-        return $this->hasOne(ShopCategory::className(), ['id' => 'category'])
-                        ->via('categorization', function($query) {
-                            $query->where(['is_main' => 1]);
-                        });
-    }
 
 
 

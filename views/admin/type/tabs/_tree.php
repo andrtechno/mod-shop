@@ -17,20 +17,21 @@ echo \panix\ext\jstree\JsTree::widget([
     'id' => 'ShopTypeCategoryTree',
     'name' => 'jstree',
     'data' => ShopCategoryNode::fromArray(ShopCategory::findOne(1)->children()->all()),
-    'options' => array(
+
         'core' => array(
             'strings' => array('Loading ...' => Yii::t('app', 'LOADING')),
             'check_callback' => true,
             "themes" => array("variant" => "large","stripes" => true, 'responsive' => true),
         ),
-        'plugins' => array('search', 'checkbox'),
+
+
+            'plugins' => array('search', 'checkbox'),
         'checkbox' => array(
             'three_state' => false,
             'tie_selection' => false,
             'whole_node' => false,
             "keep_selected_style" => true
         ),
-    ),
 ]);
 
 // Check tree nodes

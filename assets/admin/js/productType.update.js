@@ -17,7 +17,7 @@ $("#box1View").delegate('option', 'dblclick', function(){
 $("#ShopProductTypeForm").submit(function(){
 
     $("#box2View option").prop('selected', true);
-    var checked = $("#ShopTypeCategoryTree li a.jstree-checked");
+    var checked = $("#jsTree_ShopTypeCategoryTree li a.jstree-checked");
     checked.each(function(i, el){
         var id = $(el).attr("id").replace('node_', '').replace('_anchor', '');
         $("#ShopProductTypeForm").append('<input type="hidden" name="categories[]" value="' + id + '" />');
@@ -37,11 +37,11 @@ $("#ShopProductTypeForm").submit(function(){
 
 
 // Process main category
-$('#ShopTypeCategoryTree').delegate("a", "click", function (event) {
+$('#jsTree_ShopTypeCategoryTree').delegate("a", "click", function (event) {
 
-    $('#ShopTypeCategoryTree').jstree(true).check_node($(this).attr('id').replace('_anchor', ''));
+    $('#jsTree_ShopTypeCategoryTree').jstree(true).check_node($(this).attr('id').replace('_anchor', ''));
   //  $('#ShopTypeCategoryTree').jstree(true).select_node($(this).attr('id').replace('_anchor', ''));
     var id = $(this).parent("li").attr('id').replace('node_', '');
-    console.log(id);
+
     $('#main_category').val(id);
 });

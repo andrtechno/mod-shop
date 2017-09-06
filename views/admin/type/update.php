@@ -6,9 +6,9 @@ echo Html::beginForm('', 'post', array(
     'id' => 'ShopProductTypeForm',
     'class' => 'form-horizontal'
 ));
-echo Html::errorSummary($model);
+//echo Html::errorSummary($model);
 
-echo Html::hiddenInput('main_category', $model->main_category);
+echo Html::hiddenInput('main_category', $model->main_category,['id'=>'main_category']);
 
 
         echo yii\bootstrap\Tabs::widget([
