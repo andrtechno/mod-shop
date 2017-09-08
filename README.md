@@ -35,6 +35,16 @@ to the require section of your `composer.json` file.
 ],
 ```
 
+## See also
+- [CORNER CMS](https://corner-cms.com)
+- [Module discounts Github](https://https://github.com/andrtechno/mod-discounts)
+- [Module compare Github](https://https://github.com/andrtechno/mod-compare)
+- [Module wishlist Github](https://https://github.com/andrtechno/mod-wishlist)
+- [Module cart Github](https://https://github.com/andrtechno/mod-cart)
+- [Module sitemap Github](https://https://github.com/andrtechno/mod-sitemap)
+
+
+
 > [![CORNER CMS!](https://commerce.corner-cms.com/placeholder?size=100x100&text=f002&fg=333&padding=0 "CORNER CMS")](https://corner-cms.com)  
 <i>Content Management System "CORNER CMS"</i>  
 [www.corner-cms.com](https://corner-cms.com)
