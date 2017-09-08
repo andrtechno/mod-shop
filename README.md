@@ -48,8 +48,8 @@ php yii migrate --migrationPath=vendor/panix/mod-shop/migrations
 - [Module wishlist Github](https://https://github.com/andrtechno/mod-wishlist)
 - [Module cart Github](https://https://github.com/andrtechno/mod-cart)
 - [Module sitemap Github](https://https://github.com/andrtechno/mod-sitemap)
-* [Module cart Github](https://https://github.com/andrtechno/mod-cart)
-* [Module sitemap Github](https://https://github.com/andrtechno/mod-sitemap)
+    * [Module cart Github](https://https://github.com/andrtechno/mod-cart)
+    * [Module sitemap Github](https://https://github.com/andrtechno/mod-sitemap)
 + [Module cart Github](https://https://github.com/andrtechno/mod-cart)
 + [Module sitemap Github](https://https://github.com/andrtechno/mod-sitemap)
 
