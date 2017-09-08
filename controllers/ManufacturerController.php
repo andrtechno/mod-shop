@@ -28,11 +28,11 @@ class ManufacturerController extends WebController {
     /**
      * Display products by manufacturer
      *
-     * @param $url
+     * @param $seo_alias
      * @throws CHttpException
      */
-    public function actionIndex($url) {
-        $this->findModel($url);
+    public function actionIndex($seo_alias) {
+        $this->findModel($seo_alias);
 
         $query = ShopProduct::find();
         $query->attachBehaviors($query->behaviors());
@@ -53,11 +53,11 @@ class ManufacturerController extends WebController {
         ));
     }
 
-    protected function findModel($url) {
+    protected function findModel($seo_alias) {
         $model = new ShopManufacturer;
         if (($this->dataModel = $model::find()
                 ->published()
-                ->where(['seo_alias' => $url])
+                ->where(['seo_alias' => $seo_alias])
                 ->one()) !== null) {
             return $this->dataModel;
         } else {

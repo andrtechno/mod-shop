@@ -13,8 +13,8 @@ class DefaultController extends WebController {
         return $this->render('index');
     }
 
-    public function actionView($url) {
-        $this->findModel($url);
+    public function actionView($seo_alias) {
+        $this->findModel($seo_alias);
 
         if ($this->dataModel->mainCategory) {
             $ancestors = $this->dataModel->mainCategory->ancestors()->excludeRoot()->addOrderBy('depth')->all();
