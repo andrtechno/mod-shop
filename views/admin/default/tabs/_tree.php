@@ -8,6 +8,7 @@ use panix\mod\shop\models\ShopCategory;
 echo \panix\ext\jstree\JsTree::widget([
     'id' => 'ShopCategoryTree',
     'name' => 'jstree',
+    'allOpen'=>true,
     'data' => ShopCategoryNode::fromArray(ShopCategory::findOne(1)->children()->all()),
     'core' => [
         'strings' => [
