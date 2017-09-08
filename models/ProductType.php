@@ -79,6 +79,7 @@ class ProductType extends WebModel {
     public function getAttributeRelation() {
         return $this->hasMany(TypeAttribute::className(), ['type_id' => 'id']);
     }
+
     public function getShopAttributes() {
         return $this->hasMany(Attribute::className(), ['id' => 'attribute_id'])->via('attributeRelation');
     }

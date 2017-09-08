@@ -1,8 +1,7 @@
 <?php
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
-//$cs = Yii::app()->clientScript;
-//$cs->registerScriptFile(Yii::app()->getModule('admin')->assetsUrl . '/js/jquery.dualListBox.js');
+
 ?>
 <script>
     $(function () {

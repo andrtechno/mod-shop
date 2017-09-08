@@ -26,15 +26,15 @@ $("#ShopProduct").submit(function () {
 })(jQuery);
 
 // On change `use configurations` select - load available attributes
-$('#ShopProduct_use_configurations, #ShopProduct_type_id').change(function () {
+$('#shopproduct-use_configurations, #shopproduct-type_id').change(function () {
     var attrs_block = $('#availableAttributes');
-    var type_id = $('#ShopProduct_type_id').val();
+    var type_id = $('#shopproduct-type_id').val();
     attrs_block.html('');
 
-    if ($('#ShopProduct_use_configurations').val() == '0')
+    if ($('#shopproduct-use_configurations').val() == '0')
         return;
 
-    $.getJSON('/admin/shop/products/loadConfigurableOptions?type_id=' + type_id, function (data) {
+    $.getJSON('/admin/shop/default/load-configurable-options?type_id=' + type_id, function (data) {
         var items = [];
         if (data.status === 'success') {
             $.each(data.response, function (key, option) {

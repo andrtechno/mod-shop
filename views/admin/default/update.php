@@ -2,28 +2,13 @@
 
 use yii\helpers\Html;
 use panix\engine\bootstrap\ActiveForm;
-use yii\bootstrap\Dropdown;
+//use yii\widgets\ActiveForm;
+use yii\helpers\ArrayHelper;
+use panix\mod\shop\models\ProductType;
 ?>
 
 
-<?php
-$formatter = Yii::$app->formatter;
 
-echo $formatter->asCurrency($model->price, 'UAH', [
-    NumberFormatter::MIN_FRACTION_DIGITS => 0,
-    NumberFormatter::MAX_FRACTION_DIGITS => 0,
-        ], [NumberFormatter::NEGATIVE_PREFIX => 1]);
-
-/* ().
-  $formatter->decimalSeparator = '';
-  $formatter->thousandSeparator = '';
-
-  echo $formatter->asPercent(100, 0,[
-  NumberFormatter::MIN_FRACTION_DIGITS => 0,
-  NumberFormatter::MAX_FRACTION_DIGITS => 1
-  ]);
- */
-?>
 
 <div class="panel panel-default">
     <div class="panel-heading">
@@ -32,99 +17,116 @@ echo $formatter->asCurrency($model->price, 'UAH', [
     <div class="panel-body">
 
 
+
         <?php
-        $form = ActiveForm::begin([
-              'id'=>  basename(get_class($model)),
-                    'options' => [
-                        'class' => 'form-horizontal',
-                        'enctype' => 'multipart/form-data'
-                        ]
-        ]);
-        ?>
-        <?php
-        echo yii\bootstrap\Tabs::widget([
-          
-            'items' => [
-                [
-                    'label' => $model::t('TAB_MAIN'),
-                    'content' => $this->render('tabs/_main', ['form' => $form, 'model' => $model]),
-                    'active' => true,
-                    'options' => ['id' => 'main'],
-                ],
-                [
-                    'label' => 'Изображение',
-                    'content' => $this->render('tabs/_images', ['form' => $form, 'model' => $model]),
-                    'headerOptions' => [],
-                    'options' => ['id' => 'images'],
-                ],
-                [
-                    'label' => 'Связи товаров',
-                    'content' => $this->render('tabs/_related', ['exclude' => $model->id, 'form' => $form, 'model' => $model]),
-                    'headerOptions' => [],
-                    'options' => ['id' => 'related'],
-                ],
-                [
-                    'label' => 'Категории',
-                    'content' => $this->render('tabs/_tree', ['exclude' => $model->id, 'form' => $form, 'model' => $model]),
-                    'headerOptions' => [],
-                    'options' => ['id' => 'tree'],
-                ],
-                [
-                    'label' => 'Example',
-                    'url' => 'http://www.corner-cms.com',
-                ],
-                [
-                    'label' => 'Dropdown',
+        if (!$model->isNewRecord && Yii::$app->settings->get('shop', 'auto_gen_url')) {
+            echo Yii::t('shop/admin', 'ENABLE_AUTOURL_MODE');
+        }
+
+
+
+        $typesList = ProductType::find()->all();
+        if (count($typesList) > 0) {
+// If selected `configurable` product without attributes display error
+            if ($model->isNewRecord && $model->use_configurations == true && empty($model->configurable_attributes))
+                $attributeError = true;
+            else
+                $attributeError = false;
+
+            if ($model->isNewRecord && !$model->type_id || $attributeError === true) {
+                // Display "choose type" form
+                echo Html::beginForm('', 'get', array('class' => 'form-horizontal'));
+                panix\mod\shop\assets\admin\ProductAsset::register($this);
+
+                if ($attributeError) {
+                    echo Yii::t('shop/admin', 'Выберите атрибуты для конфигурации продуктов.');
+                }
+                ?>
+                <div class="form-group">
+                    <div class="col-sm-4"><?= Html::activeLabel($model, 'type_id', array('class' => 'control-label')); ?></div>
+                    <div class="col-sm-8">
+                        <?php echo Html::activeDropDownList($model, 'type_id', ArrayHelper::map($typesList, 'id', 'name')); ?>
+
+
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-4"><?= Html::activeLabel($model, 'use_configurations', array('class' => 'control-label')); ?></div>
+                    <div class="col-sm-8">
+                        <?php echo Html::activeDropDownList($model, 'use_configurations', array(0 => Yii::t('app', 'NO'), 1 => Yii::t('app', 'YES'))); ?>
+
+
+                    </div>
+                </div>
+
+                <div id="availableAttributes" class="form-group hidden"></div>
+
+                <div class="form-group text-center">
+                    <?= Html::submitButton(Yii::t('app', 'CREATE', 0), array('name' => false, 'class' => 'btn btn-success')); ?>
+                </div>
+                <?php
+                echo Html::endForm();
+            } else {
+
+
+                $form = ActiveForm::begin([
+                            'id' => basename(get_class($model)),
+                            'options' => [
+                                'class' => 'form-horizontal',
+                                'enctype' => 'multipart/form-data'
+                            ]
+                ]);
+
+                echo yii\bootstrap\Tabs::widget([
+
                     'items' => [
                         [
-                            'label' => 'DropdownA',
-                            'content' => 'DropdownA, Anim pariatur cliche...',
+                            'label' => $model::t('TAB_MAIN'),
+                            'content' => $this->render('tabs/_main', ['form' => $form, 'model' => $model]),
+                            'active' => true,
+                            'options' => ['id' => 'main'],
                         ],
                         [
-                            'label' => 'DropdownB',
-                            'content' => 'DropdownB, Anim pariatur cliche...',
+                            'label' => 'Изображение',
+                            'content' => $this->render('tabs/_images', ['form' => $form, 'model' => $model]),
+                            'headerOptions' => [],
+                            'options' => ['id' => 'images'],
+                        ],
+                        [
+                            'label' => 'Связи товаров',
+                            'content' => $this->render('tabs/_related', ['exclude' => $model->id, 'form' => $form, 'model' => $model]),
+                            'headerOptions' => [],
+                            'options' => ['id' => 'related'],
+                        ],
+                        [
+                            'label' => 'Категории',
+                            'content' => $this->render('tabs/_tree', ['exclude' => $model->id, 'form' => $form, 'model' => $model]),
+                            'headerOptions' => [],
+                            'options' => ['id' => 'tree'],
+                        ],
+                        [
+                            'label' => 'Характеристики',
+                            'content' => $this->render('tabs/_attributes', ['form' => $form, 'model' => $model]),
+                            'headerOptions' => [],
+                            'options' => ['id' => 'attributes'],
                         ],
                     ],
-                ],
-            ],
-        ]);
-        ?>
+                ]);
+                ?>
+                <div class="form-group text-center">
+                    <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'CREATE') : Yii::t('app', 'UPDATE'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+                </div>
 
 
 
-
-
-
-
-
-
-        <div class="form-group text-center">
-            <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'CREATE') : Yii::t('app', 'UPDATE'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
-        </div>
-
-
-
-
-        <?php
-        foreach ($model->getEavAttributes()->all() as $attr) {
-            //print_r($attr);
-            echo $attr->name;
-            echo $form->field($model, $attr->name, ['class' => '\mirocow\eav\widgets\ActiveField'])->eavInput();
+                <?php
+                ActiveForm::end();
+            }
+        } else {
+            echo 'Для начало необходимо создать Тип товара';
         }
         ?>
-
-        <?php ActiveForm::end(); ?>
-
-
-
     </div>
 </div>
 
-
-<?=
-\mirocow\eav\admin\widgets\Fields::widget([
-    'model' => $model,
-    'categoryId' => $model->id,
-    'entityName' => 'product',
-    'entityModel' => 'app\system\modules\shop\models\ShopProduct',
-])?>

@@ -86,6 +86,7 @@ class TypeController extends AdminController {
             if ($model->validate()) {
                 $model->save();
                 // Set type attributes
+
                 $model->useAttributes(Yii::$app->request->post('attributes', []));
                 return $this->redirect('index');
             }

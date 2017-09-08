@@ -12,14 +12,26 @@ use panix\mod\shop\models\query\ShopProductQuery;
 use panix\mod\shop\models\translate\ShopProductTranslate;
 use panix\mod\shop\models\ShopRelatedProduct;
 use panix\mod\shop\models\ShopProductCategoryRef;
+use panix\mod\shop\models\ProductVariant;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
 class ShopProduct extends WebModel {
 
+    /**
+     * @var array of attributes used to configure product
+     */
+    private $_configurable_attributes;
+    private $_configurable_attribute_changed = false;
+
+    /**
+     * @var array
+     */
+    private $_configurations;
     private $_related;
     public $file;
     public $main_category_id;
+
     const MODULE_ID = 'shop';
 
     public static function find() {
@@ -72,11 +84,11 @@ class ShopProduct extends WebModel {
         return ['/shop/default/view', 'url' => $this->seo_alias];
     }
 
-    /*public function transactions() {
-        return [
-            self::SCENARIO_DEFAULT => self::OP_INSERT | self::OP_UPDATE,
-        ];
-    }*/
+    /* public function transactions() {
+      return [
+      self::SCENARIO_DEFAULT => self::OP_INSERT | self::OP_UPDATE,
+      ];
+      } */
 
     /**
      * @inheritdoc
@@ -88,26 +100,43 @@ class ShopProduct extends WebModel {
             [['image'], 'image'],
             [['name', 'seo_alias'], 'trim'],
             [['full_description'], 'string'],
+            ['use_configurations', 'boolean', 'on' => 'insert'],
             [['sku', 'full_description'], 'default'], // установим ... как NULL, если они пустые
             [['name', 'seo_alias', 'price', 'main_category_id'], 'required'],
             [['name', 'seo_alias'], 'string', 'max' => 255],
-            [['manufacturer_id', 'quantity', 'views', 'added_to_cart_count', 'ordern', 'category_id'], 'integer'],
+            [['manufacturer_id', 'type_id', 'quantity', 'views', 'added_to_cart_count', 'ordern', 'category_id'], 'integer'],
             [['name', 'seo_alias', 'full_description'], 'safe'],
                 //  [['c1'], 'required'], // Attribute field
                 // [['c1'], 'string', 'max' => 255], // Attribute field
         ];
     }
 
+    public function beforeValidate() {
+        // For configurable product set 0 price
+        if ($this->use_configurations)
+            $this->price = 0;
+
+        return parent::beforeValidate();
+    }
+
     public function getUser() {
         return $this->hasOne(User::className(), ['id' => 'user_id']);
     }
 
-    /*public function getCategory2() {
-        return $this->hasOne(ShopCategory::className(), ['id' => 'category_id']);
-    }*/
+    /* public function getCategory2() {
+      return $this->hasOne(ShopCategory::className(), ['id' => 'category_id']);
+      } */
 
     public function getManufacturer() {
         return $this->hasOne(ShopManufacturer::className(), ['id' => 'manufacturer_id']);
+    }
+
+    public function getType() {
+        return $this->hasOne(ProductType::className(), ['id' => 'type_id']);
+    }
+
+    public function getType2() {
+        return $this->hasOne(ProductType::className(), ['type_id' => 'id']);
     }
 
     public function getTranslations() {
@@ -127,14 +156,13 @@ class ShopProduct extends WebModel {
                         ->viaTable(ShopRelatedProduct::tableName(), ['related_id' => 'id']);
     }
 
-
     public function getCategorization() {
         return $this->hasMany(ShopProductCategoryRef::className(), ['product' => 'id']);
     }
+
     public function getCategories() {
         return $this->hasMany(ShopCategory::className(), ['id' => 'category'])->via('categorization');
     }
-
 
     public function getMainCategory() {
         return $this->hasOne(ShopCategory::className(), ['id' => 'category'])
@@ -248,19 +276,105 @@ class ShopProduct extends WebModel {
                 }
             }
         }
+
+        // Save configurable attributes
+        if ($this->_configurable_attribute_changed === true) {
+            // Clear
+            Yii::$app->db->createCommand()->delete('{{%shop_product_configurable_attributes}}', 'product_id = :id', array(':id' => $this->id));
+
+            foreach ($this->_configurable_attributes as $attr_id) {
+                Yii::$app->db->createCommand()->insert('{{%shop_product_configurable_attributes}}', array(
+                    'product_id' => $this->id,
+                    'attribute_id' => $attr_id
+                ));
+            }
+        }
+
+        // Process min and max price for configurable product
+        if ($this->use_configurations)
+            $this->updatePrices($this);
+        else {
+            // Check if product is configuration
+            
+            $query = (new \yii\db\Query())
+    ->from('{{%shop_product_configurations}} t')
+    ->where(['in', 't.configurable_id', [$this->id]])
+    ->all();
+
+            
+            
+           /* $query = Yii::$app->db->createCommand()
+                    ->from('{{%shop_product_configurations}} t')
+                    ->where(['in', 't.configurable_id', [$this->id]])
+                    ->queryAll();
+*/
+            foreach ($query as $row) {
+                $model = ShopProduct::findOne($row['product_id']);
+                if ($model)
+                    $this->updatePrices($model);
+            }
+        }
+
+
         parent::afterSave($insert, $changedAttributes);
+    }
+    /**
+     * Update price and max_price for configurable product
+     * @param ShopProduct $model
+     */
+    public function updatePrices__(ShopProduct $model) {
+        // Get min and max prices
+        $query = Yii::$app->db->createCommand()
+                ->select('MIN(t.price) as min_price, MAX(t.price) as max_price')
+                ->from('{{%shop_product}} t')
+                ->where(array('in', 't.id', $model->getConfigurations(true)))
+                ->queryRow();
+
+        // Update
+        Yii::$app->db->createCommand()->update('{{%shop_product}}', array(
+                    'price' => $query['min_price'],
+                    'max_price' => $query['max_price']
+                        ), 'id=:id', array(':id' => $model->id));
+    }
+    public function updatePrices(ShopProduct $model) {
+                    $query = (new \yii\db\Query())
+                            ->select('MIN(t.price) as min_price, MAX(t.price) as max_price')
+    ->from('{{%shop_product}} t')
+    ->where(['in', 't.id', $model->getConfigurations(true)])
+    ->one();
+        
+        
+
+
+        // Update
+        Yii::$app->db->createCommand()->update('{{%shop_product}}', array(
+                    'price' => $query['min_price'],
+                    'max_price' => $query['max_price']
+                        ), 'id=:id', array(':id' => $model->id))->execute();
+    }
+    
+    
+    
+    public function priceRange() {
+        $price = $this->getFrontPrice();
+        $max_price = Yii::$app->currency->convert($this->max_price);
+
+        if ($this->use_configurations && $max_price > 0)
+            return self::formatPrice($price) . ' - ' . self::formatPrice($max_price);
+
+        return self::formatPrice($price);
     }
 
     public function afterDelete() {
         $this->clearRelatedProducts();
         ShopRelatedProduct::deleteAll('related_id=:id', array('id' => $this->id));
-        
+
         // Delete categorization
         ShopProductCategoryRef::find()->deleteAll([
             'product' => $this->id
         ]);
 
-        
+
         //  $this->removeImages();
         $image = $this->getImages();
 
@@ -282,11 +396,21 @@ class ShopProduct extends WebModel {
       //'relatedProductCount' => array(self::STAT, 'ShopRelatedProduct', 'product_id'),
      *  */
 
+    //use EavTrait; // need for full support label of fields
+
+    //public function getEavAttributes() {
+   //     return $this->hasMany(mazurva\eav\models\EavAttribute::className(), ['categoryId' => 'id']);
+   // }
+
     public function behaviors() {
         return ArrayHelper::merge([
                     'imagesBehavior' => [
                         'class' => \panix\mod\images\behaviors\ImageBehavior::className(),
                     ],
+                    /* 'eav' => [
+                      'class' => \mazurva\eav\EavBehavior::className(),
+                      'valueClass' => \mazurva\eav\models\EavAttributeValue::className(), // this model for table object_attribute_value
+                      ], */
                     'eav' => [
                         'class' => \mirocow\eav\EavBehavior::className(),
                         // это модель для таблицы object_attribute_value
@@ -328,10 +452,10 @@ class ShopProduct extends WebModel {
 
     public static function calculatePrices($product, array $variants, $configuration) {
         if (($product instanceof ShopProduct) === false)
-            $product = ShopProduct::model()->findByPk($product);
+            $product = ShopProduct::findOne($product);
 
-        //if (($configuration instanceof ShopProduct) === false && $configuration > 0)
-        //    $configuration = ShopProduct::model()->findByPk($configuration);
+        if (($configuration instanceof ShopProduct) === false && $configuration > 0)
+            $configuration = ShopProduct::findOne($configuration);
 
         if ($configuration instanceof ShopProduct) {
             $result = $configuration->price;
@@ -345,8 +469,8 @@ class ShopProduct extends WebModel {
         }
 
         // if $variants contains not models
-        if (!empty($variants) && ($variants[0] instanceof ShopProductVariant) === false)
-            $variants = ShopProductVariant::model()->findAllByPk($variants);
+        if (!empty($variants) && ($variants[0] instanceof ProductVariant) === false)
+            $variants = ProductVariant::findAll($variants);
 
         foreach ($variants as $variant) {
             // Price is percent
