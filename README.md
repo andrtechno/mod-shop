@@ -35,6 +35,12 @@ to the require section of your `composer.json` file.
 ],
 ```
 
+#### Migrate
+```
+php yii migrate --migrationPath=vendor/panix/mod-shop/migrations
+```
+
+
 ## See also
 - [CORNER CMS](https://corner-cms.com)
 - [Module discounts Github](https://https://github.com/andrtechno/mod-discounts)
