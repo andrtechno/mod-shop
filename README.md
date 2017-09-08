@@ -3,19 +3,18 @@
   <a href="https://corner-cms.com"><img src="https://commerce.corner-cms.com/placeholder?size=150x50&text=CORNER&fg=333&padding=0" alt="CORNER CMS"/></a>
 </p>
 
-mod-shop
-===========
+# Module shop
+
 Module for CORNER CMS
 
 [![Latest Stable Version](https://poser.pugx.org/panix/mod-shop/v/stable)](https://packagist.org/packages/panix/mod-shop) [![Total Downloads](https://poser.pugx.org/panix/mod-shop/downloads)](https://packagist.org/packages/panix/mod-shop) [![Monthly Downloads](https://poser.pugx.org/panix/mod-shop/d/monthly)](https://packagist.org/packages/panix/mod-shop) [![Daily Downloads](https://poser.pugx.org/panix/mod-shop/d/daily)](https://packagist.org/packages/panix/mod-shop) [![Latest Unstable Version](https://poser.pugx.org/panix/mod-shop/v/unstable)](https://packagist.org/packages/panix/mod-shop) [![License](https://poser.pugx.org/panix/mod-shop/license)](https://packagist.org/packages/panix/mod-shop)
 
 
-Installation
-------------
+## Installation
 
 The preferred way to install this extension is through [composer](http://getcomposer.org/download/).
 
-Either run
+#### Either run
 
 ```
 php composer.phar require --prefer-dist panix/mod-shop "*"
@@ -29,7 +28,7 @@ or add
 
 to the require section of your `composer.json` file.
 
-Add to web config.
+#### Add to web config.
 ```
 'modules' => [
     'shop' => ['class' => 'panix\mod\shop\Module'],
