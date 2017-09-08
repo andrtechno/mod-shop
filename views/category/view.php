@@ -15,7 +15,9 @@ use yii\helpers\Html;
         'model'=>$this->context->dataModel,
     ]) ?>
     
-
+<?php
+print_r($_GET);
+?>
     
 
 </div>   

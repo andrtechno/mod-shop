@@ -7,13 +7,13 @@ use yii\base\Object;
 use yii\web\UrlRule;
 
 class CategoryUrlRule extends UrlRule {
-
 //class CategoryUrlRule extends Object implements UrlRuleInterface {
-    public $connectionID = 'db';
+   // public $connectionID = 'db';
     public $pattern = 'shop';
     public $route = 'shop/category/view';
 
     public function createUrl($manager, $route, $params) {
+
 
         if ($route === 'shop/category/view') {
 
@@ -30,8 +30,10 @@ class CategoryUrlRule extends UrlRule {
                 }
                 $url .= '/' . implode('/', $parts);
             }
+  
             return $url . \Yii::$app->urlManager->suffix;
         }
+        
         return false;
     }
 
@@ -44,13 +46,14 @@ class CategoryUrlRule extends UrlRule {
 
         if (\Yii::$app->urlManager->suffix)
             $pathInfo = strtr($pathInfo, array(\Yii::$app->urlManager->suffix => ''));
-        //if (preg_match('%^(\w+)(/(\w+))?$%', $pathInfo, $matches)) {
+
         foreach ($this->getAllPaths() as $path) {
 
             if ($path['full_path'] !== '' && strpos($pathInfo, $path['full_path']) === 0) {
                 $_GET['seo_alias'] = $path['full_path'];
 
                 $params['seo_alias'] = ltrim($path['full_path']);
+
 
                 return ['shop/category/view', $params];
             }

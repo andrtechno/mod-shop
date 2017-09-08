@@ -17,9 +17,9 @@ class DefaultController extends WebController {
         $this->findModel($url);
 
         if ($this->dataModel->mainCategory) {
-            $ancestors = $this->dataModel->mainCategory->leaves()->all();
+            $ancestors = $this->dataModel->mainCategory->ancestors()->excludeRoot()->addOrderBy('depth')->all();
             $this->breadcrumbs[] = [
-                'label'=>Yii::t('cart/default', 'BC_SHOP'),
+                'label'=>Yii::t('shop/default', 'CATALOG'),
                     'url'=>['/shop']
             ];
             foreach ($ancestors as $c) {
@@ -52,7 +52,16 @@ class DefaultController extends WebController {
                 ->one()) !== null) {
             return $this->dataModel;
         } else {
-            throw new NotFoundHttpException('product not found');
+            $this->error404('product not found');
+        }
+    }
+    
+     protected function findModel2($url) {
+        $model = new ShopProduct;
+        if (($this->dataModel = $model::findOne(['seo_alias' => $url])) !== null) {
+            return $this->dataModel;
+        } else {
+            $this->error404('product not found');
         }
     }
 

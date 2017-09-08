@@ -41,9 +41,9 @@ class FiltersWidget extends \panix\engine\data\Widget {
         $manufacturers = $this->getCategoryManufacturers();
         $active = $this->getActiveFilters();
 
-        if (!empty($active)) {
-            echo $this->render('current', ['active' => $active]);
-        }
+       // if (!empty($active)) {
+       //     echo $this->render('current', ['active' => $active]);
+        //}
 
         echo $this->render('manufacturer', ['manufacturers' => $manufacturers]);
         echo $this->render('price');

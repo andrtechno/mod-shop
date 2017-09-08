@@ -295,19 +295,19 @@ class ShopProduct extends WebModel {
             $this->updatePrices($this);
         else {
             // Check if product is configuration
-            
-            $query = (new \yii\db\Query())
-    ->from('{{%shop_product_configurations}} t')
-    ->where(['in', 't.configurable_id', [$this->id]])
-    ->all();
 
-            
-            
-           /* $query = Yii::$app->db->createCommand()
+            $query = (new \yii\db\Query())
                     ->from('{{%shop_product_configurations}} t')
                     ->where(['in', 't.configurable_id', [$this->id]])
-                    ->queryAll();
-*/
+                    ->all();
+
+
+
+            /* $query = Yii::$app->db->createCommand()
+              ->from('{{%shop_product_configurations}} t')
+              ->where(['in', 't.configurable_id', [$this->id]])
+              ->queryAll();
+             */
             foreach ($query as $row) {
                 $model = ShopProduct::findOne($row['product_id']);
                 if ($model)
@@ -318,6 +318,7 @@ class ShopProduct extends WebModel {
 
         parent::afterSave($insert, $changedAttributes);
     }
+
     /**
      * Update price and max_price for configurable product
      * @param ShopProduct $model
@@ -332,31 +333,40 @@ class ShopProduct extends WebModel {
 
         // Update
         Yii::$app->db->createCommand()->update('{{%shop_product}}', array(
-                    'price' => $query['min_price'],
-                    'max_price' => $query['max_price']
-                        ), 'id=:id', array(':id' => $model->id));
+            'price' => $query['min_price'],
+            'max_price' => $query['max_price']
+                ), 'id=:id', array(':id' => $model->id));
     }
+
     public function updatePrices(ShopProduct $model) {
-                    $query = (new \yii\db\Query())
-                            ->select('MIN(t.price) as min_price, MAX(t.price) as max_price')
-    ->from('{{%shop_product}} t')
-    ->where(['in', 't.id', $model->getConfigurations(true)])
-    ->one();
-        
-        
+        $query = (new \yii\db\Query())
+                ->select('MIN(t.price) as min_price, MAX(t.price) as max_price')
+                ->from('{{%shop_product}} t')
+                ->where(['in', 't.id', $model->getConfigurations(true)])
+                ->one();
+
+
 
 
         // Update
         Yii::$app->db->createCommand()->update('{{%shop_product}}', array(
-                    'price' => $query['min_price'],
-                    'max_price' => $query['max_price']
-                        ), 'id=:id', array(':id' => $model->id))->execute();
+            'price' => $query['min_price'],
+            'max_price' => $query['max_price']
+                ), 'id=:id', array(':id' => $model->id))->execute();
     }
-    
-    
-    
+
+    public function getDisplayPrice($currency_id = null) {
+        $currency = Yii::$app->currency;
+        if ($this->appliedDiscount) {
+            $price = $currency->convert($this->discountPrice, $currency_id);
+        } else {
+            $price = $currency->convert($this->price, $currency_id);
+        }
+        return $price;
+    }
+
     public function priceRange() {
-        $price = $this->getFrontPrice();
+        $price = $this->getDisplayPrice();
         $max_price = Yii::$app->currency->convert($this->max_price);
 
         if ($this->use_configurations && $max_price > 0)
@@ -397,10 +407,9 @@ class ShopProduct extends WebModel {
      *  */
 
     //use EavTrait; // need for full support label of fields
-
     //public function getEavAttributes() {
-   //     return $this->hasMany(mazurva\eav\models\EavAttribute::className(), ['categoryId' => 'id']);
-   // }
+    //     return $this->hasMany(mazurva\eav\models\EavAttribute::className(), ['categoryId' => 'id']);
+    // }
 
     public function behaviors() {
         return ArrayHelper::merge([
@@ -423,11 +432,8 @@ class ShopProduct extends WebModel {
                             'full_description'
                         ]
                     ],
-                    'verbs' => [
-                        'class' => \yii\filters\VerbFilter::className(),
-                        'actions' => [
-                            'delete' => ['post'],
-                        ],
+                    'discountsBehavior' => [
+                        'class' => \panix\mod\discounts\components\DiscountBehavior::className()
                     ],
                         ], parent::behaviors());
     }

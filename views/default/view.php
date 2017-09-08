@@ -10,7 +10,7 @@ $this->registerJs("cart.spinnerRecount = false;", yii\web\View::POS_BEGIN, 'cart
 
 
 <?php
-foreach($model->categories as $cat){
+foreach ($model->categories as $cat) {
     echo $cat->name;
 }
 ?>
@@ -34,37 +34,40 @@ foreach($model->categories as $cat){
                 ?>
             </div>
             <h1><?= $model->name ?></h1>
-            
-            <?php if($model->manufacturer_id){ ?>
-             <?= Html::a($model->manufacturer->name,$model->manufacturer->getUrl()); ?>
+
+            <?php if ($model->manufacturer_id) { ?>
+                <?= Html::a($model->manufacturer->name, $model->manufacturer->getUrl()); ?>
             <?php } ?>
-           
-            
+
+            <?php if ($model->appliedDiscount) { ?>
+
+                <div class="product-price clearfix product-price-discount"><span><?= $model::formatPrice(Yii::$app->currency->convert($model->originalPrice)) ?></span><sup><?= Yii::$app->currency->active->symbol ?></sup></div>
+            <?php } ?>
             <div class="price">
-                <span><?= Yii::$app->currency->convert($model->price); ?></span>
+                <span><?= $model::formatPrice($model->getDisplayPrice()); ?></span>
                 <sub><?= Yii::$app->currency->active->symbol; ?></sub>
-      </div>
-                <?php
-                echo Html::beginForm(['/cart/add'], 'post', ['id' => 'form-add-cart-' . $model->id]);
+            </div>
+            <?php
+            echo Html::beginForm(['/cart/add'], 'post', ['id' => 'form-add-cart-' . $model->id]);
 
 
-                echo Html::hiddenInput('product_id', $model->id);
-                echo Html::hiddenInput('product_price', $model->price);
+            echo Html::hiddenInput('product_id', $model->id);
+            echo Html::hiddenInput('product_price', $model->price);
 
 
-                echo Html::a('<i class="icon-shopcart"></i>' . Yii::t('cart/default', 'BUY'), 'javascript:cart.add("#form-add-cart-' . $model->id . '")', array('class' => 'btn btn-primary'));
-                ?>
-                <?php
-                echo yii\jui\Spinner::widget([
-                    'name' => "quantity",
-                    'value' => 1,
-                    'clientOptions' => ['max' => 999],
-                    'options' => ['class' => 'cart-spinner']
-                ]);
-                ?>
+            echo Html::a('<i class="icon-shopcart"></i>' . Yii::t('cart/default', 'BUY'), 'javascript:cart.add("#form-add-cart-' . $model->id . '")', array('class' => 'btn btn-primary'));
+            ?>
+            <?php
+            echo yii\jui\Spinner::widget([
+                'name' => "quantity",
+                'value' => 1,
+                'clientOptions' => ['max' => 999],
+                'options' => ['class' => 'cart-spinner']
+            ]);
+            ?>
 
-                <?php echo Html::endForm(); ?>
-      
+            <?php echo Html::endForm(); ?>
+
 
         </div>
     </div>
