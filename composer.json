@@ -16,7 +16,10 @@
         "panix/engine": "*",
         "mirocow/yii2-eav": "*",
         "panix/wgt-fancybox": "*",
-        "panix/mod-images": "*"
+        "panix/mod-images": "*",
+        "panix/mod-discounts": "*",
+        "panix/mod-cart": "*",
+        "panix/mod-sitemap": "*"
     },
     "autoload": {
         "psr-4": {
