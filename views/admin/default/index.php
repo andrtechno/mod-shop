@@ -13,7 +13,7 @@ use yii\widgets\Pjax;
 
 <?= \panix\ext\fancybox\Fancybox::widget(['target' => '.image a']); ?>
 
-<?php // echo $this->render('_search', ['model' => $searchModel]);  ?>
+<?php  echo $this->render('_search', ['model' => $searchModel]);  ?>
 
 
 <?php

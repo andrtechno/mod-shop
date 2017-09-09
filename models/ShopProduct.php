@@ -31,7 +31,7 @@ class ShopProduct extends WebModel {
     private $_related;
     public $file;
     public $main_category_id;
-
+    const route = '/admin/shop/default';
     const MODULE_ID = 'shop';
 
     public static function find() {
@@ -81,7 +81,7 @@ class ShopProduct extends WebModel {
     }
 
     public function getUrl() {
-        return ['/shop/default/view', 'url' => $this->seo_alias];
+        return ['/shop/default/view', 'seo_alias' => $this->seo_alias];
     }
 
     /* public function transactions() {

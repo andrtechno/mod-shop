@@ -12,7 +12,7 @@ class Module extends WebModule {
         'product/<seo_alias>' => 'shop/default/view',
         'manufacturer/<seo_alias>' => 'shop/manufacturer/index',
         'shop/ajax/activateCurrency/<id>' => 'shop/ajax/activateCurrency',
-                ['class' => 'panix\mod\shop\components\CategoryUrlRule'],
+        ['class' => 'panix\mod\shop\components\CategoryUrlRule'],
     ];
 
     public function getNav() {

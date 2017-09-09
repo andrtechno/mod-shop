@@ -11,7 +11,7 @@ use panix\mod\shop\models\translate\ShopManufacturerTranslate;
 class ShopManufacturer extends WebModel {
 
     const MODULE_ID = 'shop';
-
+    const route = '/admin/shop/manufacturer';
     public static function find() {
         return new ShopManufacturerQuery(get_called_class());
     }

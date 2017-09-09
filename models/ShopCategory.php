@@ -13,7 +13,7 @@ use panix\mod\shop\models\query\ShopCategoryQuery;
 class ShopCategory extends WebModel {
 
     const MODULE_ID = 'shop';
-
+    const route = '/shop/admin/category';
     public $parent_id;
 
     public static function tableName() {
@@ -60,11 +60,6 @@ class ShopCategory extends WebModel {
         ];
     }
 
-    public function transactions() {
-        return [
-            self::SCENARIO_DEFAULT => self::OP_ALL,
-        ];
-    }
 
     public function getTranslations() {
         return $this->hasMany(ShopCategoryTranslate::className(), ['object_id' => 'id']);
