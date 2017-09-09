@@ -13,7 +13,6 @@
         }
     ],
     "require": {
-        "panix/engine": "*",
         "mirocow/yii2-eav": "*",
         "panix/wgt-fancybox": "*",
         "panix/mod-images": "*",
