@@ -36,7 +36,9 @@ class ShopProduct extends \panix\engine\db\ActiveRecord {
     public static function find() {
         return new ShopProductQuery(get_called_class());
     }
-
+    public function getIsAvailable() {
+        return $this->availability == 1;
+    }
     public static function getCSort() {
         $sort = new \yii\data\Sort([
             'attributes' => [
