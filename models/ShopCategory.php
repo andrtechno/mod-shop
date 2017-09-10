@@ -3,14 +3,13 @@
 namespace panix\mod\shop\models;
 
 //use Yii;
-use panix\engine\WebModel;
 use panix\engine\behaviors\TranslateBehavior;
 use panix\engine\behaviors\nestedsets\NestedSetsBehavior;
 use panix\engine\behaviors\MenuArrayBehavior;
 use panix\mod\shop\models\translate\ShopCategoryTranslate;
 use panix\mod\shop\models\query\ShopCategoryQuery;
 
-class ShopCategory extends WebModel {
+class ShopCategory extends \panix\engine\db\ActiveRecord {
 
     const MODULE_ID = 'shop';
     const route = '/shop/admin/category';

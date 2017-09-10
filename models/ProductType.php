@@ -3,7 +3,6 @@
 namespace panix\mod\shop\models;
 
 use Yii;
-use panix\engine\WebModel;
 use panix\engine\CMS;
 use panix\engine\behaviors\TranslateBehavior;
 use panix\mod\shop\models\ShopCategory;
@@ -15,7 +14,7 @@ use panix\mod\shop\models\ShopProductCategoryRef;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
-class ProductType extends WebModel {
+class ProductType extends \panix\engine\db\ActiveRecord {
 
 
     const MODULE_ID = 'shop';

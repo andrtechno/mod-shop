@@ -4,8 +4,6 @@ namespace panix\mod\shop\models\translate;
 
 
 
-use panix\engine\WebModel;
-use panix\engine\behaviors\TranslateBehavior;
 
 class ShopManufacturerTranslate extends \yii\db\ActiveRecord
 {

@@ -25,7 +25,7 @@ use panix\mod\shop\models\query\AttributeQuery;
  * @property boolean $select_many Allow to filter products on front by more than one option value.
  * @method ShopCategory useInFilter()
  */
-class Attribute extends \panix\engine\WebModel {
+class Attribute extends \panix\engine\db\ActiveRecord {
 
     const TYPE_TEXT = 1;
     const TYPE_TEXTAREA = 2;

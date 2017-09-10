@@ -3,12 +3,11 @@
 namespace panix\mod\shop\models;
 
 use panix\mod\shop\models\query\ShopManufacturerQuery;
-use panix\engine\WebModel;
 use panix\engine\behaviors\TranslateBehavior;
 use yii\helpers\ArrayHelper;
 use panix\mod\shop\models\translate\ShopManufacturerTranslate;
 
-class ShopManufacturer extends WebModel {
+class ShopManufacturer extends \panix\engine\db\ActiveRecord {
 
     const MODULE_ID = 'shop';
     const route = '/admin/shop/manufacturer';

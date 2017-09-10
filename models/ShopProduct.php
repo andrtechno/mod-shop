@@ -3,7 +3,6 @@
 namespace panix\mod\shop\models;
 
 use Yii;
-use panix\engine\WebModel;
 use panix\engine\CMS;
 use panix\engine\behaviors\TranslateBehavior;
 use panix\mod\shop\models\ShopCategory;
@@ -16,7 +15,7 @@ use panix\mod\shop\models\ProductVariant;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
-class ShopProduct extends WebModel {
+class ShopProduct extends \panix\engine\db\ActiveRecord {
 
     /**
      * @var array of attributes used to configure product

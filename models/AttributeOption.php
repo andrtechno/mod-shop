@@ -15,7 +15,7 @@ use panix\mod\shop\models\AttributeOptionTranslate;
  * @property string $value
  * @property integer $position
  */
-class AttributeOption extends \panix\engine\WebModel {
+class AttributeOption extends \panix\engine\db\ActiveRecord {
 
     /**
      * @return string the associated database table name
