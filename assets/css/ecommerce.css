@@ -1,0 +1,50 @@
+.filter-block li a.active {
+    color:black;
+}
+#filter-current li a:before{
+    font-family: Corner;
+    content:"\f029";;
+    position:absolute;
+    left:3px;
+    top:0;
+    color:#c9302c;
+    font-size:10px;
+}
+
+
+.filter-block ul,
+#filter-current ul{
+    margin: 0;
+    padding:0;
+    list-style: none;
+}
+.filter-block ul > li,
+#filter-current ul > li{
+    list-style: none;
+    margin-bottom:5px;
+}
+.filter-block ul li a,
+#filter-current ul li a{
+    padding-left: 25px;
+    position: relative;
+}
+.filter-block ul li a:before{
+    border:1px solid black;
+    border-radius:2px;
+    width:16px;
+    height:16px;
+    position:absolute;
+    left:0;
+    top:0;
+    content:'';
+    text-align:center;
+    line-height: 16px;
+}
+.filter-block ul li a.active:before{
+    font-family: Corner;
+    content:"\f055";
+    color:green;
+    font-size:10px;
+    border-color:green;
+
+}
