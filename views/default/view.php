@@ -65,7 +65,13 @@ foreach ($model->categories as $cat) {
                 'options' => ['class' => 'cart-spinner']
             ]);
             ?>
-
+<?php
+    if (Yii::$app->user->isGuest) {
+        echo Html::a(Yii::t('wishlist/default', 'BTN_WISHLIST'), ['/users/register'], []);
+    } else {
+        echo Html::a(Yii::t('wishlist/default', 'BTN_WISHLIST'), 'javascript:wishlist.add(' . $model->id . ');', []);
+    }
+?>
             <?php echo Html::endForm(); ?>
 
 
