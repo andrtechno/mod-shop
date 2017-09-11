@@ -31,7 +31,7 @@ class ShopManufacturer extends \panix\engine\db\ActiveRecord {
     }
 
     public function getUrl() {
-        return ['/shop/manufacturer/index', 'url' => $this->seo_alias];
+        return ['/shop/manufacturer/view', 'seo_alias' => $this->seo_alias];
     }
 
     public function transactions() {

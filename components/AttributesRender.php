@@ -5,6 +5,7 @@ namespace panix\mod\shop\components;
 use panix\mod\shop\models\Attribute;
 use panix\mod\shop\models\ShopProduct;
 use Yii;
+
 class AttributesRender extends \yii\base\Widget {
 
     public $list = '_list';
@@ -38,19 +39,18 @@ class AttributesRender extends \yii\base\Widget {
         $data = array();
         $groups = array();
         foreach ($this->getModels() as $model) {
-        
-            $data[$model->title] = $model->renderValue($this->_attributes[$model->name]);
-
-
+            if (isset($this->_attributes[$model->name])) {
+                $data[$model->title] = $model->renderValue($this->_attributes[$model->name]);
+            }
         }
 
 
-
+        if ($data) {
             return $this->render($this->list, array(
-                'data' => $data,
-                'groups' => $groups,
+                        'data' => $data,
+                        'groups' => $groups,
             ));
-
+        }
     }
 
     /**
@@ -89,7 +89,7 @@ class AttributesRender extends \yii\base\Widget {
         $this->_models = array();
         //$cr = new CDbCriteria;
         //$cr->addInCondition('t.name', array_keys($this->_attributes));
-        $query = Attribute::find(['IN','name',array_keys($this->_attributes)])
+        $query = Attribute::find(['IN', 'name', array_keys($this->_attributes)])
                 ->displayOnFront()
                 ->sorting()
                 ->all();
@@ -107,14 +107,14 @@ class AttributesRender extends \yii\base\Widget {
         $this->_models = array();
         //$cr = new CDbCriteria;
         //$cr->addInCondition('t.name', array_keys($this->_attributes));
-        $query = Attribute::find(['IN','name',array_keys($this->_attributes)])
+        $query = Attribute::find(['IN', 'name', array_keys($this->_attributes)])
                 //->language($lang)
                 ->displayOnFront()
                 ->sorting()
                 ->all();
-        
-        
-        
+
+
+
 
         foreach ($query as $m)
             $this->_models[$m->name] = $m;
@@ -124,7 +124,7 @@ class AttributesRender extends \yii\base\Widget {
 
     public function getData(ShopProduct $model) {
 
-        $cacheId = 'product_attributes_'.strtotime($model->date_update).'_'.strtotime($model->date_create);
+        $cacheId = 'product_attributes_' . strtotime($model->date_update) . '_' . strtotime($model->date_create);
         $result = Yii::app()->cache->get($cacheId);
         if ($result === false) {
             foreach (Yii::app()->languageManager->languages as $lang => $l) {
@@ -133,9 +133,8 @@ class AttributesRender extends \yii\base\Widget {
                 $this->_attributes = $productModel->getEavAttributes();
                 foreach ($this->getModelsLanguage($l->id) as $data) {
                     $result[$lang][$data->name] = (object) array(
-                        'name' => $data->title,
-                        'value' => $data->renderValue($this->_attributes[$data->name]),
-
+                                'name' => $data->title,
+                                'value' => $data->renderValue($this->_attributes[$data->name]),
                     );
                 }
             }

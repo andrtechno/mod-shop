@@ -9,7 +9,7 @@ class Module extends WebModule {
 
     public $routes = [
         'product/<seo_alias>' => 'shop/default/view',
-        'manufacturer/<seo_alias>' => 'shop/manufacturer/index',
+        'manufacturer/<seo_alias>' => 'shop/manufacturer/view',
         'shop/ajax/activateCurrency/<id>' => 'shop/ajax/activateCurrency',
         ['class' => 'panix\mod\shop\components\CategoryUrlRule'],
     ];

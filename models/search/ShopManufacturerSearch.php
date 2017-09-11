@@ -4,7 +4,7 @@ namespace panix\mod\shop\models\search;
 
 use Yii;
 use yii\base\Model;
-use yii\data\ActiveDataProvider;
+use panix\engine\data\ActiveDataProvider;
 use panix\mod\shop\models\ShopManufacturer;
 
 /**
@@ -43,9 +43,6 @@ class ShopManufacturerSearch extends ShopManufacturer {
         $dataProvider = new ActiveDataProvider([
                     'query' => $query,
                     'sort'=> ['defaultOrder' => ['ordern'=>SORT_DESC]],
-                    'pagination' => [
-                        'pageSize' => Yii::$app->params['pagenum'],
-                        ],
                 ]);
 
         $this->load($params);

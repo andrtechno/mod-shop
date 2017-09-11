@@ -31,7 +31,7 @@ class ManufacturerController extends WebController {
      * @param $seo_alias
      * @throws CHttpException
      */
-    public function actionIndex($seo_alias) {
+    public function actionView($seo_alias) {
         $this->findModel($seo_alias);
 
         $query = ShopProduct::find();
@@ -48,7 +48,7 @@ class ManufacturerController extends WebController {
                 'pageSize' => $this->allowedPageLimit[0],
             )
         ]);
-        return $this->render('index', array(
+        return $this->render('view', array(
                     'provider' => $provider,
         ));
     }
