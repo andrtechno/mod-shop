@@ -127,7 +127,7 @@ class DefaultController extends AdminController {
                 $model->configurable_attributes = $_GET['ShopProduct']['configurable_attributes'];
         }
 
-        if ($model->load($post) && $model->validate()) {
+        if ($model->load($post) && $model->validate()&& $this->validateAttributes($model)) {
 
 
             $model->setRelatedProducts(Yii::$app->request->post('RelatedProductId'), []);
@@ -147,7 +147,7 @@ class DefaultController extends AdminController {
                     $model->attachImage('uploads/' . $uniqueName . '_' . $file->baseName . '.' . $file->extension);
                 }
             }
-            //$this->processAttributes($model);
+            $this->processAttributes($model);
             // Process variants
             //$this->processVariants($model);
             $this->processConfigurations($model);
@@ -164,7 +164,31 @@ class DefaultController extends AdminController {
             'model' => $model,
         ]);
     }
+    /**
+     * Validate required shop attributes
+     * @param ShopProduct $model
+     * @return bool
+     */
+    public function validateAttributes(ShopProduct $model) {
+        $attributes = $model->type->shopAttributes;
 
+        if (empty($attributes) || $model->use_configurations) {
+            return true;
+        }
+
+
+        $errors = false;
+        foreach ($attributes as $attr) {
+
+            if ($attr->required && empty($_POST['Attribute'][$attr->name])) {
+
+                $errors = true;
+                $model->addError($attr->name, Yii::t('shop/admin', 'FIEND_REQUIRED', array('{FIELD}' => $attr->title)));
+            }
+        }
+
+        return !$errors;
+    }
     /**
      * Load attributes relative to type and available for product configurations.
      * Used on creating new product.
@@ -219,20 +243,20 @@ class DefaultController extends AdminController {
     }
 
     protected function processAttributes(ShopProduct $model) {
-        $attributes = new CMap(Yii::$app->request->post('ShopAttribute', array()));
+        $attributes = Yii::$app->request->post('Attribute', []);
         if (empty($attributes))
             return false;
 
         $deleteModel = ShopProduct::findOne($model->id);
-        $deleteModel->deleteEavAttributes(array(), true);
+        //$deleteModel->deleteEavAttributes(array(), true);
 
         // Delete empty values
-        foreach ($attributes as $key => $val) {
+        /*foreach ($attributes as $key => $val) {
             if (is_string($val) && $val === '')
                 $attributes->remove($key);
-        }
+        }*/
 
-        return $model->setEavAttributes($attributes->toArray(), true);
+        return $model->setEavAttributes($attributes, true);
     }
 
     /**

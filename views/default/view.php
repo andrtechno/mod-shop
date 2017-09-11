@@ -16,7 +16,7 @@ foreach ($model->categories as $cat) {
 ?>
 
 
-
+<div class="row">
 <div class="col-sm-12">
     <div class="row">
         <div class="col-sm-6">
@@ -106,5 +106,28 @@ foreach ($model->categories as $cat) {
     </div>
 </div>
 
+</div>
 
 
+
+<?php
+var_dump($model->eav_type_cable) ;
+foreach ($model->getEavAttributes() as $attr) { ?>
+
+    <?php print_r($attr); ?>
+
+<?php }
+
+echo panix\mod\shop\components\AttributesRender::widget([
+    'model' => $model,
+    'list' => '_attributes_list',
+    'htmlOptions' => array(
+        'class' => 'attributes'
+    ),
+ ]);
+
+
+
+
+
+?>

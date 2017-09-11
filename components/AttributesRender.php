@@ -1,17 +1,11 @@
 <?php
 
-/**
- * Render product attributes table.
- * Basically used on product view page.
- * Usage:
- *     $this->widget('application.modules.shop.widgets.SAttributesTableRenderer', array(
- *        // SProduct model
- *        'model'=>$model,
- *         // Optional. Html table attributes.
- *        'htmlOptions'=>array('class'=>'...', 'id'=>'...', etc...)
- *    ));
- */
-class AttributesRender extends CWidget {
+namespace panix\mod\shop\components;
+
+use panix\mod\shop\models\Attribute;
+use panix\mod\shop\models\ShopProduct;
+use Yii;
+class AttributesRender extends \yii\base\Widget {
 
     public $list = '_list';
 
@@ -44,22 +38,19 @@ class AttributesRender extends CWidget {
         $data = array();
         $groups = array();
         foreach ($this->getModels() as $model) {
-            /* if (isset($model->group)) {
-              $groups[$model->group->name][] = array(
-              'name' => $model->title,
-              'value' => $model->renderValue($this->_attributes[$model->name])
-              );
-              } else { */
+        
             $data[$model->title] = $model->renderValue($this->_attributes[$model->name]);
-            //}
+
+
         }
 
-        if (!empty($data)) {
-            Yii::app()->controller->renderPartial($this->list, array(
+
+
+            return $this->render($this->list, array(
                 'data' => $data,
                 'groups' => $groups,
             ));
-        }
+
     }
 
     /**
@@ -96,12 +87,12 @@ class AttributesRender extends CWidget {
             return $this->_models;
 
         $this->_models = array();
-        $cr = new CDbCriteria;
-        $cr->addInCondition('t.name', array_keys($this->_attributes));
-        $query = ShopAttribute::model()
+        //$cr = new CDbCriteria;
+        //$cr->addInCondition('t.name', array_keys($this->_attributes));
+        $query = Attribute::find(['IN','name',array_keys($this->_attributes)])
                 ->displayOnFront()
                 ->sorting()
-                ->findAll($cr);
+                ->all();
 
         foreach ($query as $m)
             $this->_models[$m->name] = $m;
@@ -114,13 +105,16 @@ class AttributesRender extends CWidget {
             return $this->_models;
 
         $this->_models = array();
-        $cr = new CDbCriteria;
-        $cr->addInCondition('t.name', array_keys($this->_attributes));
-        $query = ShopAttribute::model()
-                ->language($lang)
+        //$cr = new CDbCriteria;
+        //$cr->addInCondition('t.name', array_keys($this->_attributes));
+        $query = Attribute::find(['IN','name',array_keys($this->_attributes)])
+                //->language($lang)
                 ->displayOnFront()
                 ->sorting()
-                ->findAll($cr);
+                ->all();
+        
+        
+        
 
         foreach ($query as $m)
             $this->_models[$m->name] = $m;

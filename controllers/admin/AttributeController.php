@@ -6,7 +6,7 @@ use panix\engine\controllers\AdminController;
 use panix\mod\shop\models\Attribute;
 use panix\mod\shop\models\search\AttributeSearch;
 use panix\mod\shop\models\AttributeOption;
-
+use panix\mod\shop\models\ShopProduct;
 class AttributeController extends AdminController {
 
     public $icon = 'icon-filter';
@@ -16,7 +16,14 @@ class AttributeController extends AdminController {
 
         $searchModel = new AttributeSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams());
-
+        $this->buttons = [
+            [
+                'icon' => 'icon-add',
+                'label' => Yii::t('shop/admin', 'CREATE_ATTRIBUTE'),
+                'url' => ['create'],
+                'options' => ['class' => 'btn btn-success']
+            ]
+        ];
         
         $this->pageName = Yii::t('shop/admin', 'ATTRIBUTES');
         $this->breadcrumbs[] = [
@@ -105,8 +112,9 @@ class AttributeController extends AdminController {
                     $attributeOption->save(false);
 
                     foreach (Yii::$app->languageManager->languages as $lang) {
+
                         $attributeLangOption = AttributeOption::find()
-                                ->translate($lang->code)
+                                //->translate($lang->code)
                                 ->where(['id' => $attributeOption->id])
                                 ->one();
                         $attributeLangOption->value = $val[$index];
@@ -146,13 +154,13 @@ class AttributeController extends AdminController {
      */
     public function actionDelete($id = array()) {
         if (Yii::$app->request->isPost) {
-            $model = Attribute::model()->findAllByPk($_REQUEST['id']);
+            $model = Attribute::find(['id'=>$id])->all();
 
             if (!empty($model)) {
                 foreach ($model as $m) {
-                    $count = ShopProduct::find()->withEavAttributes(array($m->name))->count();
-                    if ($count)
-                        throw new CHttpException(503, Yii::t('shop/admin', 'ERR_DEL_ATTR'));
+                   // $count = ShopProduct::find()->withEavAttributes(array($m->name))->count();
+                    //if ($count)
+                    //    throw new \yii\web\HttpException(503, Yii::t('shop/admin', 'ERR_DEL_ATTR'));
                     $m->delete();
                 }
             }

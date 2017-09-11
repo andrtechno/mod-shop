@@ -411,20 +411,44 @@ class ShopProduct extends \panix\engine\db\ActiveRecord {
     //public function getEavAttributes() {
     //     return $this->hasMany(mazurva\eav\models\EavAttribute::className(), ['categoryId' => 'id']);
     // }
+    public function __get($name) {
+        if (substr($name, 0, 4) === 'eav_') {
+            if ($this->getIsNewRecord())
+                return null;
 
+            $attribute = substr($name, 4);
+
+            $eavData = $this->getEavAttributes();
+
+            if (isset($eavData[$attribute]))
+                $value = $eavData[$attribute];
+            else
+                return null;
+
+
+            $attributeModel = Attribute::find(['name' => $attribute])->one();
+            return $attributeModel->renderValue($value);
+        }
+        return parent::__get($name);
+    }
     public function behaviors() {
         return ArrayHelper::merge([
                     'imagesBehavior' => [
                         'class' => \panix\mod\images\behaviors\ImageBehavior::className(),
                     ],
-                    /* 'eav' => [
+                     /*'eav' => [
                       'class' => \mazurva\eav\EavBehavior::className(),
                       'valueClass' => \mazurva\eav\models\EavAttributeValue::className(), // this model for table object_attribute_value
-                      ], */
-                    'eav' => [
+                      ],*/ 
+                   /* 'eav' => [
                         'class' => \mirocow\eav\EavBehavior::className(),
                         // это модель для таблицы object_attribute_value
                         'valueClass' => \mirocow\eav\models\EavAttributeValue::className(),
+                    ],*/
+            'eav' => [
+                        'class' => \panix\mod\shop\components\EavBehavior::className(),
+                        'tableName' => '{{%shop_product_attribute_eav}}'
+
                     ],
                     'translate' => [
                         'class' => TranslateBehavior::className(),
@@ -447,7 +471,7 @@ class ShopProduct extends \panix\engine\db\ActiveRecord {
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getEavAttributes($attributes = []) {
+    public function getEavAttributes2($attributes = []) {
         return \mirocow\eav\models\EavAttribute::find()
                         ->joinWith('entity')
                         ->where([

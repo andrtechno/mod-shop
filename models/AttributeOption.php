@@ -29,7 +29,12 @@ class AttributeOption extends \panix\engine\db\ActiveRecord {
             array('id, value, attribute_id, ordern', 'safe', 'on' => 'search'),
         );
     }
-
+ public function transactions()
+    {
+        return [
+            self::SCENARIO_DEFAULT => self::OP_INSERT | self::OP_UPDATE,
+        ];
+    }
     public function getOptionTranslate() {
         return $this->hasMany(AttributeOptionTranslate::className(), ['object_id' => 'id']);
     }
@@ -46,31 +51,6 @@ class AttributeOption extends \panix\engine\db\ActiveRecord {
                         ], parent::behaviors());
     }
 
-    public function search() {
-        $criteria = new CDbCriteria;
 
-        $criteria->with = array('optionTranslate');
-
-        $criteria->compare('`t`.`id`', $this->id);
-        $criteria->compare('`option_translate`.`value`', $this->value, true);
-        $criteria->compare('`t`.`ordern`', $this->ordern);
-        if (isset($_GET['id'])) {
-            $criteria->compare('`t`.`attribute_id`', $_GET['id']);
-        }
-        $sort = new CSort;
-        $sort->defaultOrder = '`t`.`ordern` ASC';
-        $sort->attributes = array(
-            '*',
-            'value' => array(
-                'asc' => '`option_translate`.`value`',
-                'desc' => '`option_translate`.`value` DESC',
-            ),
-        );
-
-        return new ActiveDataProvider($this, array(
-            'criteria' => $criteria,
-            'sort' => $sort
-        ));
-    }
 
 }

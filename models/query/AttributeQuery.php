@@ -19,10 +19,9 @@ class AttributeQuery extends \yii\db\ActiveQuery {
     public function displayOnFront() {
         return $this->andWhere(['display_on_front' => 1]);
     }
+    public function sorting() {
+        return $this->orderBy(['ordern'=>SORT_DESC]);
+    }
 
 
-    /**
-
-      'sorting' => array('order' => $t . '.ordern DESC'),
-     */
 }

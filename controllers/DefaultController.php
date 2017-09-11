@@ -44,11 +44,11 @@ class DefaultController extends WebController {
         return $this->render('view', ['model' => $this->dataModel]);
     }
 
-    protected function findModel($url) {
+    protected function findModel($seo_alias) {
         $model = new ShopProduct;
         if (($this->dataModel = $model::find()
                 // ->getCategory()
-                ->where(['seo_alias' => $url])
+                ->where(['seo_alias' => $seo_alias])
                 ->one()) !== null) {
             return $this->dataModel;
         } else {

@@ -107,10 +107,11 @@ use panix\mod\shop\models\ProductType;
                         ],
                         [
                             'label' => 'Характеристики',
-                            'content' => $this->render('tabs/_attributes', ['form' => $form, 'model' => $model]),
+                            'content' => $this->render('tabs/_attributes_old', ['form' => $form, 'model' => $model]),
                             'headerOptions' => [],
                             'options' => ['id' => 'attributes'],
                         ],
+      
                     ],
                 ]);
                 ?>

@@ -40,6 +40,12 @@ class Attribute extends \panix\engine\db\ActiveRecord {
         return new AttributeQuery(get_called_class());
     }
 
+    public function transactions()
+    {
+        return [
+            self::SCENARIO_DEFAULT => self::OP_INSERT | self::OP_UPDATE,
+        ];
+    }
     /**
      * @return string the associated database table name
      */
@@ -50,7 +56,16 @@ class Attribute extends \panix\engine\db\ActiveRecord {
     public function getAttrtranslate() {
         return $this->hasMany(AttributeTranslate::className(), ['object_id' => 'id']);
     }
+    public function ___getAttrtranslateOne() {
+        return $this->hasOne(AttributeTranslate::className(), ['object_id' => 'id']);
+    }
+    public function getOptions() {
+        return $this->hasMany(AttributeOption::className(), ['attribute_id' => 'id']);
+    }
 
+    public function getTypes() {
+        return $this->hasMany(TypeAttribute::className(), ['attribute_id' => 'id']);
+    }
     /**
      * @return array validation rules for model attributes.
      */
@@ -82,13 +97,7 @@ class Attribute extends \panix\engine\db\ActiveRecord {
                         ], parent::behaviors());
     }
 
-    public function getOptions() {
-        return $this->hasMany(AttributeOption::className(), ['attribute_id' => 'id']);
-    }
 
-    public function getTypes() {
-        return $this->hasMany(TypeAttribute::className(), ['attribute_id' => 'id']);
-    }
 
     /**
      * Get types as key value list
@@ -111,6 +120,7 @@ class Attribute extends \panix\engine\db\ActiveRecord {
      * @return string html field based on attribute type
      */
     public function renderField($value = null) {
+
         $name = 'Attribute[' . $this->name . ']';
         switch ($this->type) {
             case self::TYPE_TEXT:
@@ -120,6 +130,7 @@ class Attribute extends \panix\engine\db\ActiveRecord {
                 return Html::textarea($name, $value, array('class' => 'form-control'));
                 break;
             case self::TYPE_DROPDOWN:
+
                 $data = ArrayHelper::map($this->options, 'id', 'value');
                 return Html::dropDownList($name, $value, $data, []);
                 //return Yii::app()->controller->widget('ext.bootstrap.selectinput.SelectInput',array('data'=>$data,'value'=>$value,'htmlOptions'=>array('name'=>$name,'empty'=>Yii::t('app','EMPTY_LIST'))),true);
@@ -152,7 +163,7 @@ class Attribute extends \panix\engine\db\ActiveRecord {
      * @return string attribute value
      */
     public function renderValue($value) {
-        switch ($this->type):
+        switch ($this->type){
             case self::TYPE_TEXT:
             case self::TYPE_TEXTAREA:
                 return $value;
@@ -185,7 +196,7 @@ class Attribute extends \panix\engine\db\ActiveRecord {
                 if (isset($data[$value]))
                     return $data[$value];
                 break;
-        endswitch;
+        }
     }
 
     /**
@@ -193,7 +204,7 @@ class Attribute extends \panix\engine\db\ActiveRecord {
      */
     public function getIdByName() {
         $name = 'Attribute[' . $this->name . ']';
-        return Html::getIdByName($name);
+        return Html::getInputId($this,$this->name);
     }
 
     /**
@@ -207,40 +218,6 @@ class Attribute extends \panix\engine\db\ActiveRecord {
         return $list[$type];
     }
 
-    /**
-     * Retrieves a list of models based on the current search/filter conditions.
-     * @return ActiveDataProvider the data provider that can return the models based on the search/filter conditions.
-     */
-    public function search2() {
-        $criteria = new CDbCriteria;
-
-        $criteria->with = array('attr_translate');
-
-        $criteria->compare('`t`.`id`', $this->id);
-        $criteria->compare('`t`.`name`', $this->name, true);
-        $criteria->compare('`attr_translate`.`title`', $this->title, true);
-        $criteria->compare('`attr_translate`.`abbreviation`', $this->abbreviation, true);
-        $criteria->compare('`t`.`type`', $this->type);
-        $criteria->compare('`t`.`ordern`', $this->ordern);
-        $sort = new CSort;
-        $sort->defaultOrder = '`t`.`ordern` DESC';
-        $sort->attributes = array(
-            '*',
-            'abbreviation' => array(
-                'asc' => '`attr_translate`.`abbreviation`',
-                'desc' => '`attr_translate`.`abbreviation` DESC',
-            ),
-            'title' => array(
-                'asc' => '`attr_translate`.`title`',
-                'desc' => '`attr_translate`.`title` DESC',
-            ),
-        );
-
-        return new ActiveDataProvider($this, array(
-            'criteria' => $criteria,
-            'sort' => $sort
-        ));
-    }
 
     public function afterDelete() {
         // Delete options
@@ -248,12 +225,12 @@ class Attribute extends \panix\engine\db\ActiveRecord {
             $o->delete();
 
         // Delete relations used in product type.
-        ShopTypeAttribute::model()->deleteAllByAttributes(array('attribute_id' => $this->id));
+        TypeAttribute::deleteAll(['attribute_id' => $this->id]);
 
         // Delete attributes assigned to products
-        $conn = $this->getDbConnection();
-        $command = $conn->createCommand("DELETE FROM `{{shop_product_attribute_eav}}` WHERE `attribute`='{$this->name}'");
-        $command->execute();
+        $conn = $this->getDb();
+        $conn->createCommand()->delete('{{%shop_product_attribute_eav}}', "`attribute`='{$this->name}'")->execute();
+
 
         return parent::afterDelete();
     }

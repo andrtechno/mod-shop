@@ -19,7 +19,8 @@ use yii\helpers\ArrayHelper;
 
         <?= Html::label(Yii::t('shop/admin', 'Атрибуты продукта'), 'box2View') ?>
         <br />
-        <?= Html::dropDownList('attributes[]', null, ArrayHelper::map($model->shopAttributes, 'id', 'title'), array('id' => 'box2View', 'multiple' => true, 'class' => 'form-control multiple attributesList', 'style' => 'height:300px;'));
+        <?php
+        echo Html::dropDownList('attributes[]', null, ArrayHelper::map($model->shopAttributes, 'id', 'title'), array('id' => 'box2View', 'multiple' => true, 'class' => 'form-control multiple attributesList', 'style' => 'height:300px;'));
         ?>
 
         <br/>
@@ -42,7 +43,9 @@ use yii\helpers\ArrayHelper;
     <div class="rightBox col-lg-5">
 
         <?= Html::label(Yii::t('shop/admin', 'Доступные атрибуты'),'box1View') ?><br />
-        <?= Html::dropDownList('allAttributes', null, ArrayHelper::map($attributes, 'id', 'title'), array('id' => 'box1View', 'multiple' => true, 'class' => 'form-control multiple attributesList', 'style' => 'height:300px;'));
+        <?php
+
+        echo Html::dropDownList('allAttributes', null, ArrayHelper::map($attributes, 'id', 'title'), array('id' => 'box1View', 'multiple' => true, 'class' => 'form-control multiple attributesList', 'style' => 'height:300px;'));
         ?>
 
         <br/>
