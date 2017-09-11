@@ -12,9 +12,7 @@ use panix\mod\shop\models\Attribute;
 class CategoryController extends WebController {
 
     public $allowedPageLimit = [];
-    public $query;
-    public $provider;
-    public $currentQuery;
+    public $query, $provider, $currentQuery;
     private $_eavAttributes;
 
     /**
