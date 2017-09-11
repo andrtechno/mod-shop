@@ -15,6 +15,28 @@ class Module extends WebModule {
         ['class' => 'panix\mod\shop\components\CategoryUrlRule'],
     ];
 
+    public function getAdminMenu() {
+        return array(
+            'shop' => array(
+                'label' => 'dsadsadsa',
+                'icon' => 'dsadsadsa',
+                'items' => array(
+                    array(
+                        'label' => Yii::t('app', 'PRODUCTS'),
+                        'url' => array('/admin/shop/products/index'),
+                    ),
+                ),
+            ),
+        );
+    }
+
+    public function getAdminSidebarMenu() {
+        Yii::import('mod.admin.widgets.EngineMainMenu');
+        $mod = new EngineMainMenu;
+        $items = $mod->findMenu($this->id);
+        return $items['items'];
+    }
+
     public function getNav() {
         return [
             [
@@ -57,7 +79,7 @@ class Module extends WebModule {
 
     public function getInfo() {
         return [
-            'name' => Yii::t('shop/default', 'MODULE_NAME'),
+            'label' => Yii::t('shop/default', 'MODULE_NAME'),
             'author' => 'andrew.panix@gmail.com',
             'version' => '1.0',
             'icon' => 'icon-shopcart',

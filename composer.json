@@ -18,7 +18,8 @@
         "panix/mod-images": "*",
         "panix/mod-discounts": "*",
         "panix/mod-cart": "*",
-        "panix/mod-sitemap": "*"
+        "panix/mod-sitemap": "*",
+        "panix/mod-wishlist": "*"
     },
     "autoload": {
         "psr-4": {

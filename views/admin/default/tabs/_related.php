@@ -66,7 +66,7 @@ echo \yii\grid\GridView::widget([
     /*'rowOptions' => function ($model, $key, $index, $grid) {
         return ['id' => $model['id']];
     },*/
-    //'layout' => $this->render('@app/web/themes/admin/views/layouts/_grid_layout', ['title' => $this->context->pageName]), //'{items}{pager}{summary}'
+    //'layout' => $this->render('@admin/views/layouts/_grid_layout', ['title' => $this->context->pageName]), //'{items}{pager}{summary}'
     'columns' => [
         [
             'format' => 'raw',
