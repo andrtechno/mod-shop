@@ -8,6 +8,7 @@ use panix\mod\shop\models\ShopProduct;
 use yii\web\NotFoundHttpException;
 use panix\mod\shop\models\ShopCategory;
 use panix\mod\shop\models\Attribute;
+
 class CategoryController extends WebController {
 
     public $allowedPageLimit = [];
@@ -15,6 +16,7 @@ class CategoryController extends WebController {
     public $provider;
     public $currentQuery;
     private $_eavAttributes;
+
     /**
      * @var string
      */
@@ -24,53 +26,45 @@ class CategoryController extends WebController {
      * @var string
      */
     public $maxprice, $minprice;
+
     public function getEavAttributes() {
         if (is_array($this->_eavAttributes))
             return $this->_eavAttributes;
 
         // Find category types
-      //  $model = new ShopProduct;
-        $criteria = ShopProduct::find()
-                ->applyCategories($this->dataModel)
-                ->published();
-                //->getDbCriteria();
 
-       // unset($model);
+        $model = ShopProduct::find();
+        $query = $model->applyCategories($this->dataModel)->published();
 
-       // $builder = new CDbCommandBuilder(Yii::app()->db->getSchema());
+        unset($model);
 
-       // $criteria->select = 'type_id';
-       // $criteria->group = 'type_id';
-       // $criteria->distinct = true;
-       // $typesUsed = $builder->createFindCommand(ShopProduct::model()->tableName(), $criteria)->queryColumn();
 
-        
-      //  $typesUsed = (new Query)->from('user');
-        
-        $typesUsed = [1];
-        
+        $query->addSelect(['type_id']);
+        $query->addGroupBy(['type_id']);
+        $query->distinct(true);
+
+        $typesIds = $query->createCommand()->queryColumn();
+
+
+
         // Find attributes by type
-        //$criteria = new CDbCriteria;
-       // $criteria->addInCondition('types.type_id', $typesUsed);
-        //$criteria->order = 't.ordern DESC';
-        $query = Attribute::find(['IN','`types`.type_id',$typesUsed])
-                ->useInFilter()
-                //->orderBy(['ordern'=>SORT_DESC])
-               // ->with(['types', 'options'])
 
+        $query = Attribute::find(['IN', '`types`.type_id', $typesIds])
+                ->useInFilter()
+                ->orderBy(['ordern' => SORT_DESC])
                 ->joinWith(['types', 'options'])
                 ->all();
 
-        
-        
-        
+
+
+
         $this->_eavAttributes = array();
         foreach ($query as $attr)
             $this->_eavAttributes[$attr->name] = $attr;
         return $this->_eavAttributes;
     }
-    
-        public function getActiveAttributes() {
+
+    public function getActiveAttributes() {
         $data = array();
 
         foreach (array_keys($_GET) as $key) {
@@ -84,7 +78,7 @@ class CategoryController extends WebController {
         }
         return $data;
     }
-    
+
     public function beforeAction($action) {
 
         $this->allowedPageLimit = explode(',', Yii::$app->settings->get('shop', 'per_page'));
@@ -94,10 +88,10 @@ class CategoryController extends WebController {
             $data2 = ['/shop/category/view'];
             if (Yii::$app->request->post('min_price'))
                 $data['min_price'] = (int) Yii::$app->request->post('min_price');
-                $data2['min_price'] = (int) Yii::$app->request->post('min_price');
+            $data2['min_price'] = (int) Yii::$app->request->post('min_price');
             if (Yii::$app->request->post('max_price'))
                 $data['max_price'] = (int) Yii::$app->request->post('max_price');
-             $data2['max_price'] = (int) Yii::$app->request->post('max_price');
+            $data2['max_price'] = (int) Yii::$app->request->post('max_price');
 
             if ($this->action->id === 'search') {
                 return $this->redirect(Yii::$app->urlManager->addUrlParam('/shop/category/search', $data))->send();
@@ -120,7 +114,7 @@ class CategoryController extends WebController {
         $this->query->attachBehaviors($this->query->behaviors());
         $this->query->applyAttributes($this->activeAttributes)->published();
 
-echo $this->query->createCommand()->getRawSql();
+        echo $this->query->createCommand()->getRawSql();
 
 
 
