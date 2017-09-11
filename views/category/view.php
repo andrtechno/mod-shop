@@ -13,6 +13,7 @@ use yii\helpers\Html;
     <?= CategoriesWidget::widget([]) ?>
     <?= FiltersWidget::widget([
         'model'=>$this->context->dataModel,
+                    'attributes' => $this->context->eavAttributes,
     ]) ?>
     
 <?php

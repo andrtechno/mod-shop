@@ -6,16 +6,15 @@ use Yii;
 use panix\engine\controllers\WebController;
 use panix\mod\shop\models\ShopProduct;
 use yii\web\NotFoundHttpException;
-use yii\helpers\Url;
 use panix\mod\shop\models\ShopCategory;
-
+use panix\mod\shop\models\Attribute;
 class CategoryController extends WebController {
 
     public $allowedPageLimit = [];
     public $query;
     public $provider;
     public $currentQuery;
-
+    private $_eavAttributes;
     /**
      * @var string
      */
@@ -25,7 +24,67 @@ class CategoryController extends WebController {
      * @var string
      */
     public $maxprice, $minprice;
+    public function getEavAttributes() {
+        if (is_array($this->_eavAttributes))
+            return $this->_eavAttributes;
 
+        // Find category types
+      //  $model = new ShopProduct;
+        $criteria = ShopProduct::find()
+                ->applyCategories($this->dataModel)
+                ->published();
+                //->getDbCriteria();
+
+       // unset($model);
+
+       // $builder = new CDbCommandBuilder(Yii::app()->db->getSchema());
+
+       // $criteria->select = 'type_id';
+       // $criteria->group = 'type_id';
+       // $criteria->distinct = true;
+       // $typesUsed = $builder->createFindCommand(ShopProduct::model()->tableName(), $criteria)->queryColumn();
+
+        
+      //  $typesUsed = (new Query)->from('user');
+        
+        $typesUsed = [1];
+        
+        // Find attributes by type
+        //$criteria = new CDbCriteria;
+       // $criteria->addInCondition('types.type_id', $typesUsed);
+        //$criteria->order = 't.ordern DESC';
+        $query = Attribute::find(['IN','`types`.type_id',$typesUsed])
+                ->useInFilter()
+                //->orderBy(['ordern'=>SORT_DESC])
+               // ->with(['types', 'options'])
+
+                ->joinWith(['types', 'options'])
+                ->all();
+
+        
+        
+        
+        $this->_eavAttributes = array();
+        foreach ($query as $attr)
+            $this->_eavAttributes[$attr->name] = $attr;
+        return $this->_eavAttributes;
+    }
+    
+        public function getActiveAttributes() {
+        $data = array();
+
+        foreach (array_keys($_GET) as $key) {
+            if (array_key_exists($key, $this->eavAttributes)) {
+                if ((boolean) $this->eavAttributes[$key]->select_many === true) {
+                    $data[$key] = explode(',', $_GET[$key]);
+                } else {
+                    $data[$key] = array($_GET[$key]);
+                }
+            }
+        }
+        return $data;
+    }
+    
     public function beforeAction($action) {
 
         $this->allowedPageLimit = explode(',', Yii::$app->settings->get('shop', 'per_page'));
@@ -41,20 +100,9 @@ class CategoryController extends WebController {
              $data2['max_price'] = (int) Yii::$app->request->post('max_price');
 
             if ($this->action->id === 'search') {
-                die('seacrch atcion');
                 return $this->redirect(Yii::$app->urlManager->addUrlParam('/shop/category/search', $data))->send();
             } else {
-              //  return Yii::$app->getResponse()->redirect('site/about/kaka_tedla');
-               // print_r($data2);
-               // echo '<br>';
-               // print_r(['/shop/category/search','test'=>4]);
-              //  die;
-             //   die(Yii::$app->urlManager->addUrlParam('/shop/category/view', $data));
                 return $this->redirect(Yii::$app->urlManager->addUrlParam('/shop/category/view', $data))->send();
-              //return  Yii::$app->getResponse()->redirect($data2);
-                
-             //   return $this->redirect(Url::to($data2,true));
-
             }
         }
         return parent::beforeAction($action);
@@ -70,9 +118,9 @@ class CategoryController extends WebController {
         $this->query = ShopProduct::find();
 
         $this->query->attachBehaviors($this->query->behaviors());
-        // $this->query->applyAttributes($this->activeAttributes)->published();
+        $this->query->applyAttributes($this->activeAttributes)->published();
 
-
+echo $this->query->createCommand()->getRawSql();
 
 
 

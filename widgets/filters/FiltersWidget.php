@@ -37,6 +37,59 @@ class FiltersWidget extends \panix\engine\data\Widget {
         $this->_minprice = $view->context->minprice;
     }
 
+    /**
+     * @return array of attributes used in category
+     */
+    public function getCategoryAttributes() {
+        $data = array();
+
+        foreach ($this->attributes as $attribute) {
+            $data[$attribute->name] = array(
+                'title' => $attribute->title,
+                'selectMany' => (boolean) $attribute->select_many,
+                'filters' => array()
+            );
+            foreach ($attribute->options as $option) {
+                //  $count = ($this->typeFilter) ? $this->countAttributeProducts($attribute, $option) : $this->countAttributeProducts__old($attribute, $option);
+                // if (!$this->showEmpty && $count) {
+                $data[$attribute->name]['filters'][] = array(
+                    'title' => $option->value,
+                    //'count' => $count,
+                    'queryKey' => $attribute->name,
+                    'queryParam' => $option->id,
+                );
+                // }
+            }
+        }
+        return $data;
+    }
+
+    public function countAttributeProducts($attribute, $option) {
+
+
+        $model = new ShopProduct();
+        /* $sql = 'SELECT MAX(date_update) FROM {{shop_product}} 
+          LEFT JOIN {{shop_product_attribute_eav}} ON {{shop_product_attribute_eav}}.`entity`={{shop_product}}.`id`
+          LEFT JOIN {{shop_product_category_ref}} ON {{shop_product_category_ref}}.`product`={{shop_product}}.`id`
+          WHERE {{shop_product_attribute_eav}}.`attribute`="' . $attribute->name . '" AND {{shop_product_attribute_eav}}.`value`="' . $option->id . '" AND  {{shop_product_category_ref}}.`category`="' . $this->model->id . '" AND {{shop_product}}.`switch`="1"';
+          $dependency = new CDbCacheDependency($sql); */
+
+
+
+
+
+        $model->attachBehaviors($model->behaviors());
+        $model->published();
+        $model->applyCategories($this->model);
+        // $model->applyMinPrice($this->convertCurrency(Yii::app()->request->getQuery('min_price')));
+        // $model->applyMaxPrice($this->convertCurrency(Yii::app()->request->getQuery('max_price')));
+        //if (Yii::app()->request->getParam('manufacturer'))
+        //   $model->applyManufacturers(explode(',', Yii::app()->request->getParam('manufacturer')));
+        $newData = array();
+        $newData[$attribute->name][] = $option->id;
+        return $model->withEavAttributes($newData)->count();
+    }
+
     public function run() {
         $manufacturers = $this->getCategoryManufacturers();
         $active = $this->getActiveFilters();
@@ -44,7 +97,7 @@ class FiltersWidget extends \panix\engine\data\Widget {
         if (!empty($active)) {
             echo $this->render('current', ['active' => $active]);
         }
-
+        echo $this->render('attributes', ['attributes' => $this->getCategoryAttributes()]);
         echo $this->render('manufacturer', ['manufacturers' => $manufacturers]);
         echo $this->render('price');
     }
@@ -87,23 +140,23 @@ class FiltersWidget extends \panix\engine\data\Widget {
 
 
         // Process eav attributes
-        /* $activeAttributes = $this->getOwner()->activeAttributes;
-          if (!empty($activeAttributes)) {
-          foreach ($activeAttributes as $attributeName => $value) {
-          if (isset($this->getOwner()->eavAttributes[$attributeName])) {
-          $attribute = $this->getOwner()->eavAttributes[$attributeName];
-          foreach ($attribute->options as $option) {
-          if (isset($activeAttributes[$attribute->name]) && in_array($option->id, $activeAttributes[$attribute->name])) {
-          array_push($menuItems, array(
-          'label' => $option->value,
-          'linkOptions' => array('class' => 'remove'),
-          'url' => $request->removeUrlParam('/shop/category/view', $attribute->name, $option->id)
-          ));
-          }
-          }
-          }
-          }
-          } */
+        $activeAttributes = $this->view->context->activeAttributes;
+        if (!empty($activeAttributes)) {
+            foreach ($activeAttributes as $attributeName => $value) {
+                if (isset($this->view->context->eavAttributes[$attributeName])) {
+                    $attribute = $this->view->context->eavAttributes[$attributeName];
+                    foreach ($attribute->options as $option) {
+                        if (isset($activeAttributes[$attribute->name]) && in_array($option->id, $activeAttributes[$attribute->name])) {
+                            array_push($menuItems, array(
+                                'label' => $option->value,
+                                'linkOptions' => array('class' => 'remove'),
+                                'url' => Yii::$app->urlManager->removeUrlParam('/shop/category/view', $attribute->name, $option->id)
+                            ));
+                        }
+                    }
+                }
+            }
+        }
 
         return $menuItems;
     }

@@ -94,8 +94,9 @@ foreach ($model->options as $k => $o) {
 
 
     Pjax::begin([
-        'id' => 'pjax-container', 'enablePushState' => false,
-        'linkSelector' => 'a:not(.linkTarget)'
+        'id' => 'pjax-container',
+        //'enablePushState' => false,
+      //  'linkSelector' => 'a:not(.linkTarget)'
     ]);
     echo panix\engine\grid\GridView::widget([
         'tableOptions' => ['class' => 'table table-striped optionsEditTable'],
