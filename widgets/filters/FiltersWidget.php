@@ -16,7 +16,8 @@ class FiltersWidget extends \panix\engine\data\Widget {
     //public $countAttr = true;
     //public $countManufacturer = true;
     //public $prices = [];
-    //public $tagCount = 'sup';
+    public $tagCount = 'sup';
+    public $tagCountOptions = ['class'=>'filter-count'];
     //public $showEmpty = false;
     public $_manufacturer = [];
 
@@ -50,15 +51,15 @@ class FiltersWidget extends \panix\engine\data\Widget {
                 'filters' => array()
             );
             foreach ($attribute->options as $option) {
-                //  $count = ($this->typeFilter) ? $this->countAttributeProducts($attribute, $option) : $this->countAttributeProducts__old($attribute, $option);
-                // if (!$this->showEmpty && $count) {
-                $data[$attribute->name]['filters'][] = array(
-                    'title' => $option->value,
-                    //'count' => $count,
-                    'queryKey' => $attribute->name,
-                    'queryParam' => $option->id,
-                );
-                // }
+                $count = $this->countAttributeProducts($attribute, $option);
+                if ($count) {
+                    $data[$attribute->name]['filters'][] = array(
+                        'title' => $option->value,
+                        'count' => $count,
+                        'queryKey' => $attribute->name,
+                        'queryParam' => $option->id,
+                    );
+                }
             }
         }
         return $data;
@@ -67,17 +68,7 @@ class FiltersWidget extends \panix\engine\data\Widget {
     public function countAttributeProducts($attribute, $option) {
 
 
-        $model = new ShopProduct();
-        /* $sql = 'SELECT MAX(date_update) FROM {{shop_product}} 
-          LEFT JOIN {{shop_product_attribute_eav}} ON {{shop_product_attribute_eav}}.`entity`={{shop_product}}.`id`
-          LEFT JOIN {{shop_product_category_ref}} ON {{shop_product_category_ref}}.`product`={{shop_product}}.`id`
-          WHERE {{shop_product_attribute_eav}}.`attribute`="' . $attribute->name . '" AND {{shop_product_attribute_eav}}.`value`="' . $option->id . '" AND  {{shop_product_category_ref}}.`category`="' . $this->model->id . '" AND {{shop_product}}.`switch`="1"';
-          $dependency = new CDbCacheDependency($sql); */
-
-
-
-
-
+        $model = ShopProduct::find();
         $model->attachBehaviors($model->behaviors());
         $model->published();
         $model->applyCategories($this->model);
@@ -258,6 +249,11 @@ class FiltersWidget extends \panix\engine\data\Widget {
         if ($cm->active->id != $cm->main->id)
             return $cm->activeToMain($sum);
         return $sum;
+    }
+
+    public function getCount($filter) {
+        $result = ($filter['count'] > 0) ? $filter['count'] : 0;
+        return Html::tag($this->tagCount, $result, $this->tagCountOptions);
     }
 
 }

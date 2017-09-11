@@ -48,3 +48,7 @@
     border-color:green;
 
 }
+.filter-block ul li .filter-count{
+    left:5px;
+    font-weight: bold;
+}
