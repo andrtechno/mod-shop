@@ -30,7 +30,7 @@ class CategoryUrlRule extends UrlRule {
                 }
                 $url .= '/' . implode('/', $parts);
             }
-  
+
             return $url . \Yii::$app->urlManager->suffix;
         }
         
@@ -41,17 +41,31 @@ class CategoryUrlRule extends UrlRule {
 
         $params = [];
         $pathInfo = $request->getPathInfo();
+
         if (empty($pathInfo))
             return false;
 
         if (\Yii::$app->urlManager->suffix)
             $pathInfo = strtr($pathInfo, array(\Yii::$app->urlManager->suffix => ''));
 
+
+
         foreach ($this->getAllPaths() as $path) {
 
             if ($path['full_path'] !== '' && strpos($pathInfo, $path['full_path']) === 0) {
                 $_GET['seo_alias'] = $path['full_path'];
-
+                $uri = str_replace($path['full_path'],'',$pathInfo);
+            $parts = explode('/', $uri);
+            unset($parts[0]);
+             //$pathInfo = implode($parts, '/');
+         //   print_r(array_chunk($parts, 2));
+            $ss = array_chunk($parts, 2);
+            foreach($ss as $k=>$p){
+               // print_r($p);
+                $_GET[$p[0]] = $p[1];
+                $params[$p[0]]=$p[1];
+            }
+      // print_r($params); die;
                 $params['seo_alias'] = ltrim($path['full_path']);
 
 

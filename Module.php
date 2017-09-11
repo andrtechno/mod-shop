@@ -7,13 +7,20 @@ use panix\engine\WebModule;
 
 class Module extends WebModule {
 
-    public $routes = [
+    public function bootstrap($app) {
+        // add rules for admin/copy/auth controllers
+        $urlRule = new UrlRule([
+            //'prefix' => $this->id,
+            'rules' => [
+                'product/<seo_alias>' => 'shop/default/view',
+                'manufacturer/<seo_alias>' => 'shop/manufacturer/index',
+                'shop/ajax/activateCurrency/<id>' => 'shop/ajax/activateCurrency',
+                ['class' => 'panix\mod\shop\components\CategoryUrlRule'],
+            ],
+        ]);
+        $app->getUrlManager()->addRules($urlRule->rules, false);
+    }
 
-        'product/<seo_alias>' => 'shop/default/view',
-        'manufacturer/<seo_alias>' => 'shop/manufacturer/index',
-        'shop/ajax/activateCurrency/<id>' => 'shop/ajax/activateCurrency',
-        ['class' => 'panix\mod\shop\components\CategoryUrlRule'],
-    ];
 
     public function getAdminMenu() {
         return array(

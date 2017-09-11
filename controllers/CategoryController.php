@@ -32,17 +32,29 @@ class CategoryController extends WebController {
 
         if (Yii::$app->request->post('min_price') || Yii::$app->request->post('max_price')) {
             $data = [];
+            $data2 = ['/shop/category/view'];
             if (Yii::$app->request->post('min_price'))
                 $data['min_price'] = (int) Yii::$app->request->post('min_price');
+                $data2['min_price'] = (int) Yii::$app->request->post('min_price');
             if (Yii::$app->request->post('max_price'))
                 $data['max_price'] = (int) Yii::$app->request->post('max_price');
+             $data2['max_price'] = (int) Yii::$app->request->post('max_price');
 
             if ($this->action->id === 'search') {
-                return $this->redirect(Yii::$app->request->addUrlParam('/shop/category/search', $data));
+                die('seacrch atcion');
+                return $this->redirect(Yii::$app->urlManager->addUrlParam('/shop/category/search', $data))->send();
             } else {
-                if (!Yii::$app->request->isAjax) {
-                    return $this->redirect(Url::toRoute(Yii::$app->request->addUrlParam('/shop/category/view', $data)));
-                }
+              //  return Yii::$app->getResponse()->redirect('site/about/kaka_tedla');
+               // print_r($data2);
+               // echo '<br>';
+               // print_r(['/shop/category/search','test'=>4]);
+              //  die;
+             //   die(Yii::$app->urlManager->addUrlParam('/shop/category/view', $data));
+                return $this->redirect(Yii::$app->urlManager->addUrlParam('/shop/category/view', $data))->send();
+              //return  Yii::$app->getResponse()->redirect($data2);
+                
+             //   return $this->redirect(Url::to($data2,true));
+
             }
         }
         return parent::beforeAction($action);
@@ -126,7 +138,7 @@ class CategoryController extends WebController {
             $ancestors = $this->dataModel->ancestors()->addOrderBy('depth')->excludeRoot()->all();
 
             $this->breadcrumbs[] = [
-                'label' => Yii::t('shop/default', 'BC_SHOP'),
+                'label' => Yii::t('shop/default', 'CATALOG'),
                 'url' => array('/shop')
             ];
             foreach ($ancestors as $c) {

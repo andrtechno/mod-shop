@@ -41,9 +41,9 @@ class FiltersWidget extends \panix\engine\data\Widget {
         $manufacturers = $this->getCategoryManufacturers();
         $active = $this->getActiveFilters();
 
-       // if (!empty($active)) {
-       //     echo $this->render('current', ['active' => $active]);
-        //}
+        if (!empty($active)) {
+            echo $this->render('current', ['active' => $active]);
+        }
 
         echo $this->render('manufacturer', ['manufacturers' => $manufacturers]);
         echo $this->render('price');
@@ -63,7 +63,7 @@ class FiltersWidget extends \panix\engine\data\Widget {
             array_push($menuItems, array(
                 'linkOptions' => array('class' => 'remove'),
                 'label' => Yii::t('shop/default', 'FILTER_CURRENT_PRICE_MIN', ['min' => (int) $this->getCurrentMinPrice(), 'currency' => Yii::$app->currency->active->symbol]),
-                'url' => $request->removeUrlParam('/shop/category/view', 'min_price')
+                'url' => Yii::$app->urlManager->removeUrlParam('/shop/category/view', 'min_price')
             ));
         }
 
@@ -71,7 +71,7 @@ class FiltersWidget extends \panix\engine\data\Widget {
             array_push($menuItems, array(
                 'label' => Yii::t('shop/default', 'FILTER_CURRENT_PRICE_MAX', ['max' => (int) $this->getCurrentMaxPrice(), 'currency' => Yii::$app->currency->active->symbol]),
                 'linkOptions' => array('class' => 'remove'),
-                'url' => $request->removeUrlParam('/shop/category/view', 'max_price')
+                'url' => Yii::$app->urlManager->removeUrlParam('/shop/category/view', 'max_price')
             ));
         }
 
@@ -81,7 +81,7 @@ class FiltersWidget extends \panix\engine\data\Widget {
             array_push($menuItems, array(
                 'label' => $this->_manufacturer[$manufacturer]['label'],
                 'linkOptions' => array('class' => 'remove'),
-                'url' => $request->removeUrlParam('/shop/category/view', 'manufacturer', $id)
+                'url' => Yii::$app->urlManager->removeUrlParam('/shop/category/view', 'manufacturer', $id)
             ));
         }
 
