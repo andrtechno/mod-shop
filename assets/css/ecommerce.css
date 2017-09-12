@@ -52,3 +52,56 @@
     left:5px;
     font-weight: bold;
 }
+.ui-autocomplete .ui-menu-item.ui-state-focus,
+.ui-autocomplete .ui-menu-item.ui-state-active,
+.ui-autocomplete .ui-menu-item.ui-state-focus:hover,
+.ui-autocomplete .ui-menu-item.ui-state-active:hover{
+    margin: 0;
+
+}
+.ui-autocomplete .ui-menu-item{
+    background: none;
+    border-top: 1px solid #ccc;
+    padding:0;
+}
+
+.autocomplete-item{
+    position: relative;
+        height:60px;
+}
+.autocomplete-img{
+    width: 50px;
+    float: left;
+    margin-right: 5px;
+}
+
+#cart{
+    position: relative;
+    padding-left:40px;
+    height:40px;
+    line-height:40px;
+    float:right;
+    cursor: pointer;
+}
+#cart a:hover{
+    text-decoration: none;
+}
+#cart:before{
+    font-family: Corner;
+    content:"\f036";
+    position: absolute;
+    left:0;
+    top:0;
+    font-size:30px;
+}
+#cart .dropdown-menu {
+    border: 1px solid #e1e1e1;
+    border-radius: 0;
+    box-shadow: none;
+    float: right;
+    left: auto;
+    min-width: 0;
+    padding: 24px 22px;
+    right: 0;
+    width: 230px;
+}

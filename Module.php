@@ -11,6 +11,7 @@ class Module extends WebModule {
         'product/<seo_alias>' => 'shop/default/view',
         'manufacturer/<seo_alias>' => 'shop/manufacturer/view',
         'shop/ajax/activateCurrency/<id>' => 'shop/ajax/activateCurrency',
+        'products/search/<q>' => 'shop/category/search',
         ['class' => 'panix\mod\shop\components\CategoryUrlRule'],
     ];
 

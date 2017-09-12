@@ -4,7 +4,7 @@
     "keywords": ["corner-cms", "module", "shop"],
     "homepage": "https://github.com/andrtechno/mod-shop",
     "type": "yii2-extension",
-    "license": "BSD 3-Clause",
+    "license": "MIT",
     "authors": [
         {
             "name": "CORNER CMS",
@@ -13,13 +13,13 @@
         }
     ],
     "require": {
-        "mirocow/yii2-eav": "*",
         "panix/wgt-fancybox": "*",
         "panix/mod-images": "*",
         "panix/mod-discounts": "*",
         "panix/mod-cart": "*",
         "panix/mod-sitemap": "*",
-        "panix/mod-wishlist": "*"
+        "panix/mod-wishlist": "*",
+        "panix/mod-exchange1c": "*"
     },
     "autoload": {
         "psr-4": {

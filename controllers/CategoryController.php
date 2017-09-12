@@ -8,7 +8,8 @@ use panix\mod\shop\models\ShopProduct;
 use yii\web\NotFoundHttpException;
 use panix\mod\shop\models\ShopCategory;
 use panix\mod\shop\models\Attribute;
-
+use yii\helpers\Html;
+use yii\helpers\Url;
 class CategoryController extends WebController {
 
     public $allowedPageLimit = [];
@@ -102,8 +103,50 @@ class CategoryController extends WebController {
 
     public function actionView() {
         $this->dataModel = $this->findModel(Yii::$app->request->getQueryParam('seo_alias'));
-        // $this->canonical = Yii::$app->createAbsoluteUrl($this->model->getUrl());
+        // $this->canonical = Yii::$app->urlManager->createAbsoluteUrl($this->dataModel->getUrl());
         $this->doSearch($this->dataModel, 'view');
+    }
+
+    /**
+     * Search products
+     */
+    public function actionSearch() {
+ 
+        if (Yii::$app->request->isPost) {
+            return $this->redirect(Yii::$app->urlManager->addUrlParam('/shop/category/search', ['q' => Yii::$app->request->post('q')]))->send();
+        }
+        $q = Yii::$app->request->get('q');
+        if (empty($q)) {
+            $q = '+';
+        }
+
+
+        if (Yii::$app->request->isAjax && Yii::$app->request->get('q')) {
+            $res = [];
+            $model = ShopProduct::find();
+            $model->joinWith(['manufacturer', 'translations']); //manufacturerActive
+            $model->andWhere(['LIKE', '{{%shop_product}}.sku', Yii::$app->request->get('q')]);
+            $model->orWhere(['LIKE', '{{%shop_product_translate}}.name', Yii::$app->request->get('q')]);
+            //'fullurl'=>Html::a('FULL',Yii::$app->urlManager->createUrl(['/shop/category/search', 'q' => Yii::$app->request->post('q')])),
+            foreach ($model->all() as $m) {
+                $res[] = [
+                                'url' => Url::to($m->getUrl()),
+                    'renderItem'=>$this->renderPartial('@shop/widgets/search/views/_item',[
+                        'name' => $m->name,
+                        'price' => $m->getDisplayPrice(),
+                        'url' => $m->getUrl(),
+                        'image' => $m->getMainImageUrl('50x50'),
+                    ])
+                ];
+            }
+            echo \yii\helpers\Json::encode($res);
+            die;
+        }
+        if (!$q) {
+            return $this->render('search');
+        } else {
+            $this->doSearch($q, 'search');
+        }
     }
 
     public function doSearch($data, $view) {
@@ -112,7 +155,7 @@ class CategoryController extends WebController {
         $this->query->attachBehaviors($this->query->behaviors());
         $this->query->applyAttributes($this->activeAttributes)->published();
 
-        echo $this->query->createCommand()->getRawSql();
+
 
 
 
@@ -129,16 +172,11 @@ class CategoryController extends WebController {
             $this->query->applyCategories($this->dataModel);
             //  $this->query->with('manufacturerActive');
         } else {
-            /* $cr = new CDbCriteria;
-              $cr->with = array(
-              // 'manufacturerActive',
-              'translate' => array('together' => true),
-              );
+            $this->query->joinWith(['manufacturer', 'translations']); //manufacturerActive
+            $this->query->andWhere(['LIKE', '{{%shop_product}}.sku', $data]);
+            $this->query->orWhere(['LIKE', '{{%shop_product_translate}}.name', $data]);
 
-              $cr->addSearchCondition('t.sku', $data);
-              $cr->addSearchCondition('translate.name', $data, true, 'OR');
-
-              $this->query->getDbCriteria()->mergeWith($cr); */
+            //echo $this->query->createCommand()->getRawSql();
         }
 
         // Filter by manufacturer
