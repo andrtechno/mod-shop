@@ -42,13 +42,12 @@ class ShopProduct extends \panix\engine\db\ActiveRecord {
         return $this->availability == 1;
     }
 
-    public static function getCSort() {
+    public static function getSort() {
         $sort = new \yii\data\Sort([
             'attributes' => [
-                'age',
-                'name' => [
-                    'asc' => ['first_name' => SORT_ASC, 'last_name' => SORT_ASC],
-                    'desc' => ['first_name' => SORT_DESC, 'last_name' => SORT_DESC],
+                'price' => [
+                    'asc' => ['price' => SORT_ASC],
+                    'desc' => ['price' => SORT_DESC],
                 ],
             ],
         ]);

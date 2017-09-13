@@ -24,6 +24,7 @@ use yii\helpers\Html;
 <div class="col-sm-9">
     <?= Html::a('back', Url::previous()); ?>
     <h1><?= $this->context->dataModel->name ?></h1>
+    <?php echo $this->render('_sorting', array('itemView' => $itemView)); ?>
     <?php
     echo \yii\widgets\ListView::widget([
         'dataProvider' => $provider,

@@ -10,6 +10,7 @@ use panix\mod\shop\models\ShopCategory;
 use panix\mod\shop\models\Attribute;
 use yii\helpers\Html;
 use yii\helpers\Url;
+
 class CategoryController extends WebController {
 
     public $allowedPageLimit = [];
@@ -84,13 +85,10 @@ class CategoryController extends WebController {
 
         if (Yii::$app->request->post('min_price') || Yii::$app->request->post('max_price')) {
             $data = [];
-            $data2 = ['/shop/category/view'];
             if (Yii::$app->request->post('min_price'))
                 $data['min_price'] = (int) Yii::$app->request->post('min_price');
-            $data2['min_price'] = (int) Yii::$app->request->post('min_price');
             if (Yii::$app->request->post('max_price'))
                 $data['max_price'] = (int) Yii::$app->request->post('max_price');
-            $data2['max_price'] = (int) Yii::$app->request->post('max_price');
 
             if ($this->action->id === 'search') {
                 return $this->redirect(Yii::$app->urlManager->addUrlParam('/shop/category/search', $data))->send();
@@ -111,7 +109,7 @@ class CategoryController extends WebController {
      * Search products
      */
     public function actionSearch() {
- 
+
         if (Yii::$app->request->isPost) {
             return $this->redirect(Yii::$app->urlManager->addUrlParam('/shop/category/search', ['q' => Yii::$app->request->post('q')]))->send();
         }
@@ -130,8 +128,8 @@ class CategoryController extends WebController {
             //'fullurl'=>Html::a('FULL',Yii::$app->urlManager->createUrl(['/shop/category/search', 'q' => Yii::$app->request->post('q')])),
             foreach ($model->all() as $m) {
                 $res[] = [
-                                'url' => Url::to($m->getUrl()),
-                    'renderItem'=>$this->renderPartial('@shop/widgets/search/views/_item',[
+                    'url' => Url::to($m->getUrl()),
+                    'renderItem' => $this->renderPartial('@shop/widgets/search/views/_item', [
                         'name' => $m->name,
                         'price' => $m->getDisplayPrice(),
                         'url' => $m->getUrl(),
@@ -199,15 +197,17 @@ class CategoryController extends WebController {
         if (isset($_GET['per_page']) && in_array((int) $_GET['per_page'], $this->allowedPageLimit))
             $per_page = (int) $_GET['per_page'];
 
+
         $this->provider = new \panix\engine\data\ActiveDataProvider([
             'query' => $this->query,
+
             //  'id' => false,
             'pagination' => array(
                 'pageSize' => $per_page,
             )
         ]);
 
-        $this->provider->sort = ShopProduct::getCSort();
+        $this->provider->sort = ShopProduct::getSort();
         if ($view != 'search') {
 
             $c = Yii::$app->settings->get('shop');
@@ -239,7 +239,7 @@ class CategoryController extends WebController {
           } */
 
         if (isset($_GET['view'])) {
-            if (in_array($_GET['view'], array('list', 'table', 'grid'))) {
+            if (in_array($_GET['view'], ['list', 'table', 'grid'])) {
                 $itemView = '_view_' . $_GET['view'];
             } else {
                 $itemView = '_view_grid';
