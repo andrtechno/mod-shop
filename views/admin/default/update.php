@@ -1,6 +1,6 @@
 <?php
 
-use yii\helpers\Html;
+use panix\engine\Html;
 use panix\engine\bootstrap\ActiveForm;
 //use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
@@ -78,7 +78,7 @@ use panix\mod\shop\models\ProductType;
                 ]);
 
                 echo yii\bootstrap\Tabs::widget([
-
+                    //'encodeLabels'=>true,
                     'items' => [
                         [
                             'label' => $model::t('TAB_MAIN'),
@@ -105,12 +105,12 @@ use panix\mod\shop\models\ProductType;
                             'options' => ['id' => 'tree'],
                         ],
                         [
-                            'label' => 'Характеристики',
+                            'label' => (isset($this->context->tab_errors['attributes'])) ? Html::icon('warning', ['class' => 'text-danger']) . ' Характеристики' : 'Характеристики',
+                            'encode' => false,
                             'content' => $this->render('tabs/_attributes_old', ['form' => $form, 'model' => $model]),
-                            'headerOptions' => [],
+                            //'linkOptions' => ['class'=>'text-danger'],
                             'options' => ['id' => 'attributes'],
                         ],
-      
                     ],
                 ]);
                 ?>

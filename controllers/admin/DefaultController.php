@@ -12,7 +12,7 @@ use panix\mod\shop\models\ProductType;
 use panix\mod\shop\models\Attribute;
 
 class DefaultController extends AdminController {
-
+    public $tab_errors = [];
     public function actions() {
         return [
             'dnd_sort' => [
@@ -179,14 +179,12 @@ class DefaultController extends AdminController {
             return true;
         }
 
-
         $errors = false;
         foreach ($attributes as $attr) {
-
             if ($attr->required && empty($_POST['Attribute'][$attr->name])) {
-
+                $this->tab_errors['attributes'] = true;
                 $errors = true;
-                $model->addError($attr->name, Yii::t('shop/admin', 'FIEND_REQUIRED', array('{FIELD}' => $attr->title)));
+                $model->addError($attr->name, Yii::t('shop/admin', 'FIEND_REQUIRED', ['field' => $attr->title]));
             }
         }
 

@@ -2,6 +2,7 @@
 
 namespace panix\mod\shop\models;
 
+use Yii;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use panix\mod\shop\models\AttributeTranslate;
@@ -132,12 +133,12 @@ class Attribute extends \panix\engine\db\ActiveRecord {
             case self::TYPE_DROPDOWN:
 
                 $data = ArrayHelper::map($this->options, 'id', 'value');
-                return Html::dropDownList($name, $value, $data, []);
+                return Html::dropDownList($name, $value, $data, ['prompt'=>Yii::t('app','EMPTY_LIST')]);
                 //return Yii::app()->controller->widget('ext.bootstrap.selectinput.SelectInput',array('data'=>$data,'value'=>$value,'htmlOptions'=>array('name'=>$name,'empty'=>Yii::t('app','EMPTY_LIST'))),true);
                 break;
             case self::TYPE_SELECT_MANY:
                 $data = ArrayHelper::map($this->options, 'id', 'value');
-                return Html::dropDownList($name . '[]', $value, $data, ['multiple' => 'multiple']);
+                return Html::dropDownList($name . '[]', $value, $data, ['multiple' => 'multiple','prompt'=>Yii::t('app','EMPTY_LIST')]);
                 break;
             case self::TYPE_RADIO_LIST:
                 $data = ArrayHelper::map($this->options, 'id', 'value');

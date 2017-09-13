@@ -1,12 +1,12 @@
 
 
 <?php
+
 use panix\engine\Html;
 use panix\mod\shop\models\Attribute;
 
-
-$chosen = array(); // Array of ids to enable chosen
-$attributes = (isset($model->type->shopAttributes))?$model->type->shopAttributes:array();
+//$chosen = array(); // Array of ids to enable chosen
+$attributes = (isset($model->type->shopAttributes)) ? $model->type->shopAttributes : array();
 
 if (empty($attributes))
     echo Yii::t('shop/admin', 'Список свойств пустой');
@@ -21,7 +21,7 @@ else {
         $a->required ? $required = ' <span class="required">*</span>' : $required = null;
 
         if ($a->type == Attribute::TYPE_DROPDOWN) {
-            $chosen[] = $a->getIdByName();
+            //   $chosen[] = $a->getIdByName();
 
             $addOptionLink = Html::a(Html::icon('add'), '#', array(
                         'rel' => $a->id,
@@ -33,11 +33,13 @@ else {
         } else
             $addOptionLink = null;
 
+        // print_r($a);
+
+
         echo Html::beginTag('div', array('class' => 'form-group'));
         echo '<div class="col-sm-4">' . Html::label($a->title . $required, $a->name, array('class' => $a->required ? 'required' : 'control-label')) . '</div>';
-        echo '<div class="col-sm-8 rowInput eavInput">' . $a->renderField($value)  . $addOptionLink.'</div>';
+        echo '<div class="col-sm-8 rowInput eavInput">' . $a->renderField($value) . Html::error($model, $a->name, ['class' => 'text-danger']) . $addOptionLink . '</div>';
         echo Html::endTag('div');
-
     }
     //   }
 }
