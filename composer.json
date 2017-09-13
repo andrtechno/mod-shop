@@ -19,7 +19,8 @@
         "panix/mod-cart": "*",
         "panix/mod-sitemap": "*",
         "panix/mod-wishlist": "*",
-        "panix/mod-exchange1c": "*"
+        "panix/mod-exchange1c": "*",
+        "kop/yii2-scroll-pager": "*"
     },
     "autoload": {
         "psr-4": {
