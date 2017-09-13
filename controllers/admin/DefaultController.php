@@ -92,21 +92,24 @@ class DefaultController extends AdminController {
 
 
 
-
+        // Apply use_configurations, configurable_attributes, type_id
+        if (Yii::$app->request->get('ShopProduct'))
+            $model->attributes = Yii::$app->request->get('ShopProduct');
 
 
 
         if ($model->mainCategory)
             $model->main_category_id = $model->mainCategory->id;
-        
+
         
         // On create new product first display "Choose type" form first.
         if ($model->isNewRecord && isset($_GET['ShopProduct']['type_id'])) {
-            $type_id = $model->type_id;
+           // $type_id = $model->type_id;
+
             if (ProductType::find()->where(['id' => $model->type_id])->count() === 0)
                 $this->error404(Yii::t('shop/admin', 'ERR_PRODUCT_TYPE'));
         }
-        
+
         // Or set selected category from type pre-set.
         if ($model->type && !Yii::$app->request->isPost && $model->isNewRecord)
             $model->main_category_id = $model->type->main_category;
@@ -127,7 +130,7 @@ class DefaultController extends AdminController {
                 $model->configurable_attributes = $_GET['ShopProduct']['configurable_attributes'];
         }
 
-        if ($model->load($post) && $model->validate()&& $this->validateAttributes($model)) {
+        if ($model->load($post) && $model->validate() && $this->validateAttributes($model)) {
 
 
             $model->setRelatedProducts(Yii::$app->request->post('RelatedProductId'), []);

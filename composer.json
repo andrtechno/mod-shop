@@ -20,6 +20,7 @@
         "panix/mod-sitemap": "*",
         "panix/mod-wishlist": "*",
         "panix/mod-exchange1c": "*",
+        "panix/wgt-jstree": "*",
         "kop/yii2-scroll-pager": "*"
     },
     "autoload": {

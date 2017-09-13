@@ -23,7 +23,7 @@ use panix\mod\shop\models\ProductType;
             echo Yii::t('shop/admin', 'ENABLE_AUTOURL_MODE');
         }
 
-
+var_dump($model->configurable_attributes);
 
         $typesList = ProductType::find()->all();
         if (count($typesList) > 0) {

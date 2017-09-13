@@ -30,15 +30,18 @@ class ShopProduct extends \panix\engine\db\ActiveRecord {
     private $_related;
     public $file;
     public $main_category_id;
+
     const route = '/admin/shop/default';
     const MODULE_ID = 'shop';
 
     public static function find() {
         return new ShopProductQuery(get_called_class());
     }
+
     public function getIsAvailable() {
         return $this->availability == 1;
     }
+
     public static function getCSort() {
         $sort = new \yii\data\Sort([
             'attributes' => [
@@ -393,8 +396,44 @@ class ShopProduct extends \panix\engine\db\ActiveRecord {
             //get path to resized image
             $this->removeImages();
         }
+        // Clear configurable attributes
+        //Yii::app()->db->createCommand()->delete('{{shop_product_configurable_attributes}}', 'product_id=:id', array(':id' => $this->id));
+        // Delete configurations
+        //Yii::app()->db->createCommand()->delete('{{shop_product_configurations}}', 'product_id=:id', array(':id' => $this->id));
+        //Yii::app()->db->createCommand()->delete('{{shop_product_configurations}}', 'configurable_id=:id', array(':id' => $this->id));
 
         parent::afterDelete();
+    }
+
+    public function setConfigurable_attributes(array $ids) {
+        $this->_configurable_attributes = $ids;
+        $this->_configurable_attribute_changed = true;
+    }
+
+    /**
+     * @return array
+     */
+    public function getConfigurable_attributes() {
+        if ($this->_configurable_attribute_changed === true)
+            return $this->_configurable_attributes;
+
+        if ($this->_configurable_attributes === null) {
+
+            $query = new \yii\db\Query;
+            $query->select('attribute_id')
+                    ->from('{{%shop_product_configurable_attributes}}')
+                    ->where(['product_id' => $this->id])
+                    ->groupBy('attribute_id');
+            $this->_configurable_attributes = $query->createCommand()->queryColumn();
+            /*    $this->_configurable_attributes = Yii::app()->db->createCommand()
+              ->select('t.attribute_id')
+              ->from('{{shop_product_configurable_attributes}} t')
+              ->where('t.product_id=:id', array(':id' => $this->id))
+              ->group('t.attribute_id')
+              ->queryColumn(); */
+        }
+
+        return $this->_configurable_attributes;
     }
 
     // public function getMainImageUrl() {
@@ -431,24 +470,24 @@ class ShopProduct extends \panix\engine\db\ActiveRecord {
         }
         return parent::__get($name);
     }
+
     public function behaviors() {
         return ArrayHelper::merge([
                     'imagesBehavior' => [
                         'class' => \panix\mod\images\behaviors\ImageBehavior::className(),
                     ],
-                     /*'eav' => [
+                    /* 'eav' => [
                       'class' => \mazurva\eav\EavBehavior::className(),
                       'valueClass' => \mazurva\eav\models\EavAttributeValue::className(), // this model for table object_attribute_value
-                      ],*/ 
-                   /* 'eav' => [
-                        'class' => \mirocow\eav\EavBehavior::className(),
-                        // это модель для таблицы object_attribute_value
-                        'valueClass' => \mirocow\eav\models\EavAttributeValue::className(),
-                    ],*/
-            'eav' => [
+                      ], */
+                    /* 'eav' => [
+                      'class' => \mirocow\eav\EavBehavior::className(),
+                      // это модель для таблицы object_attribute_value
+                      'valueClass' => \mirocow\eav\models\EavAttributeValue::className(),
+                      ], */
+                    'eav' => [
                         'class' => \panix\mod\shop\components\EavBehavior::className(),
                         'tableName' => '{{%shop_product_attribute_eav}}'
-
                     ],
                     'translate' => [
                         'class' => TranslateBehavior::className(),
