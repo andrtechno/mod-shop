@@ -98,7 +98,7 @@ class EavBehavior extends \yii\base\Behavior {
         return [
             ActiveRecord::EVENT_AFTER_FIND => 'afterFind',
             ActiveRecord::EVENT_BEFORE_DELETE => 'beforeDelete',
-            ActiveRecord::EVENT_BEFORE_INSERT => 'beforeSave',
+            //ActiveRecord::EVENT_BEFORE_INSERT => 'beforeSave',
 
         ];
     }

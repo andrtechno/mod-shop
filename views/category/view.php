@@ -29,16 +29,11 @@ use yii\helpers\Html;
         'dataProvider' => $provider,
         'itemView' => $itemView,
         'layout' => '{summary}{items}{pager}',
+        'itemOptions' => ['class' => 'item'],
         'emptyText' => 'Empty',
         'options' => ['class' => 'row'],
         'itemOptions' => ['class' => 'col-sm-4'],
-        'pager' => [
-            'class' => \kop\y2sp\ScrollPager::className(),
-            'container' => '.grid-view tbody',
-            'item' => 'tr',
-            'paginationSelector' => '.grid-view .pagination',
-            'triggerTemplate' => '<tr class="ias-trigger"><td colspan="100%" style="text-align: center"><a style="cursor: pointer">{text}</a></td></tr>',
-        ],
+        'pager' => ['class' => \kop\y2sp\ScrollPager::className()],
         'emptyTextOptions' => ['class' => 'alert alert-info']
     ]);
     ?>
