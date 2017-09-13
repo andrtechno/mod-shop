@@ -3,17 +3,7 @@
 use yii\helpers\Html;
 use yii\helpers\HtmlPurifier;
 ?>
-    <?php
-echo Html::beginForm(['/cart/add'], 'post', ['id' => 'form-add-cart-' . $model->id]);
-
-
-echo Html::hiddenInput('product_id', $model->id);
-echo Html::hiddenInput('product_price', $model->price);
-echo Html::hiddenInput('quantity', 1);
-
-
-
-?>
+<?= $model->beginCartForm(); ?>
 <div class="col-sm-4 item">
 <div class="thumbnail ">
     <?php

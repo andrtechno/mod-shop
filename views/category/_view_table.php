@@ -79,13 +79,7 @@ use panix\engine\Html;
 
 </td>
 <td class="text-right">
-    <?php
-    echo Html::beginForm(array('/cart/add'), 'post', array('id' => 'form-add-cart-' . $model->id));
-    echo Html::hiddenInput('product_id', $model->id);
-    echo Html::hiddenInput('product_price', $model->price);
-    echo Html::hiddenInput('use_configurations', $model->use_configurations);
-    echo Html::hiddenInput('configurable_id', 0);
-    ?>
+            <?= $model->beginCartForm(); ?>
     <div class="product-action">
         <div class="btn-group btn-group-sm">
             <?php

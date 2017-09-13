@@ -47,13 +47,8 @@ foreach ($model->categories as $cat) {
                 <span><?= $model::formatPrice($model->getDisplayPrice()); ?></span>
                 <sub><?= Yii::$app->currency->active->symbol; ?></sub>
             </div>
+                            <?= $model->beginCartForm(); ?>
             <?php
-            echo Html::beginForm(['/cart/add'], 'post', ['id' => 'form-add-cart-' . $model->id]);
-
-
-            echo Html::hiddenInput('product_id', $model->id);
-            echo Html::hiddenInput('product_price', $model->price);
-
 
             echo Html::a('<i class="icon-shopcart"></i>' . Yii::t('cart/default', 'BUY'), 'javascript:cart.add("#form-add-cart-' . $model->id . '")', array('class' => 'btn btn-primary'));
             ?>

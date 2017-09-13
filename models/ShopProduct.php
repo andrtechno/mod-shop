@@ -42,6 +42,16 @@ class ShopProduct extends \panix\engine\db\ActiveRecord {
         return $this->availability == 1;
     }
 
+    public function beginCartForm() {
+        $html = '';
+        $html .= Html::beginForm(['/cart/add'], 'post', ['id' => 'form-add-cart-' . $this->id]);
+        $html .= Html::hiddenInput('product_id', $this->id);
+        $html .= Html::hiddenInput('product_price', $this->price);
+        $html .= Html::hiddenInput('use_configurations', $this->use_configurations);
+        $html .= Html::hiddenInput('configurable_id', 0);
+        return $html;
+    }
+
     public static function getSort() {
         $sort = new \yii\data\Sort([
             'attributes' => [
