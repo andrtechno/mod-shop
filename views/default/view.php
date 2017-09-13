@@ -4,7 +4,10 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 ?>
 <?php
-$this->registerJs("cart.spinnerRecount = false;", yii\web\View::POS_BEGIN, 'cart');
+$this->registerJs("
+cart.spinnerRecount = false;
+cart.skin = 'dropdown';
+", yii\web\View::POS_BEGIN, 'cart');
 ?>
 
 
