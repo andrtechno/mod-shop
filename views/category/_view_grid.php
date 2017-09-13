@@ -14,7 +14,8 @@ echo Html::hiddenInput('quantity', 1);
 
 
 ?>
-<div class="thumbnail">
+<div class="col-sm-4 item">
+<div class="thumbnail ">
     <?php
     echo Html::a(Html::img($model->getMainImageUrl('400x250'),['alt'=>$model->name,'class'=>'group list-group-image']), $model->getUrl());
     ?>
@@ -35,7 +36,7 @@ echo Html::hiddenInput('quantity', 1);
     </div>
    
 </div>
-
+</div>
 
 
 
