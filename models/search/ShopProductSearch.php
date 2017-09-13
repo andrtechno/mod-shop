@@ -41,14 +41,10 @@ class ShopProductSearch extends ShopProduct {
      */
     public function search($params) {
         $query = ShopProduct::find();
-
+        $query->joinWith('translations');
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-            'sort' => ['defaultOrder' => ['ordern' => SORT_DESC]],
-
-                // 'pagination' => [
-                //   'pageSize' => Yii::$app->params['pagenum'],
-                // ],
+            'sort'=>self::getSort()
         ]);
 
         $this->load($params);
@@ -64,8 +60,8 @@ class ShopProductSearch extends ShopProduct {
         ]);
         // Id of product to exclude from search
         if ($this->exclude) {
-            foreach($this->exclude as $id){
-                  $query->andFilterWhere(['!=', 'id', $id]);
+            foreach ($this->exclude as $id) {
+                $query->andFilterWhere(['!=', 'id', $id]);
             }
         }
 

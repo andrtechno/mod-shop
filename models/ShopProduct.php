@@ -50,6 +50,10 @@ class ShopProduct extends \panix\engine\db\ActiveRecord {
                     'asc' => ['price' => SORT_ASC],
                     'desc' => ['price' => SORT_DESC],
                 ],
+                'name' => [
+                    'asc' => ['name' => SORT_ASC],
+                    'desc' => ['name' => SORT_DESC],
+                ],
             ],
         ]);
         return $sort;
