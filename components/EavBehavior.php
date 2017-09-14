@@ -1,12 +1,11 @@
 <?php
+
 namespace panix\mod\shop\components;
 
 use Yii;
 use yii\db\ActiveRecord;
-use panix\mod\shop\components\yii\CAttributeCollection;
-use panix\mod\shop\components\yii\CList;
-
-
+use panix\mod\shop\components\collections\CAttributeCollection;
+use panix\mod\shop\components\collections\CList;
 
 class EavBehavior extends \yii\base\Behavior {
 
@@ -93,15 +92,15 @@ class EavBehavior extends \yii\base\Behavior {
      * @default TRUE
      */
     public $preload = TRUE;
-    public function events()
-    {
+
+    public function events() {
         return [
             ActiveRecord::EVENT_AFTER_FIND => 'afterFind',
             ActiveRecord::EVENT_BEFORE_DELETE => 'beforeDelete',
-            //ActiveRecord::EVENT_BEFORE_INSERT => 'beforeSave',
-
+                //ActiveRecord::EVENT_BEFORE_INSERT => 'beforeSave',
         ];
     }
+
     /**
      * Returns owner model id.
      * @access protected
@@ -200,9 +199,11 @@ class EavBehavior extends \yii\base\Behavior {
     public function __construct() {
         // Prepare attributes collection.
         $this->attributes = new CAttributeCollection;
-        $this->attributes->caseSensitive = TRUE;
+
+        $this->attributes->caseSensitive = true;
         // Prepare safe attributes list.
         $this->safeAttributes = new CList;
+
         // Prepare changed attributes list.
         $this->changedAttributes = new CList;
     }
@@ -218,14 +219,14 @@ class EavBehavior extends \yii\base\Behavior {
             throw new CException(self::t('yii', 'Property "{class}.{property}" is not defined.', array('{class}' => get_class($this), '{property}' => 'tableName')));
         }
         // Prepare translate component for behavior messages.
-      /*  if (!Yii::$app->hasComponent(__CLASS__ . 'Messages')) {
-            Yii::$app->setComponents(array(
-                __CLASS__ . 'Messages' => array(
-                    'class' => 'CPhpMessageSource',
-                    'basePath' => dirname(__FILE__) . DIRECTORY_SEPARATOR . 'messages',
-                )
-            ));
-        }*/
+        /*  if (!Yii::$app->hasComponent(__CLASS__ . 'Messages')) {
+          Yii::$app->setComponents(array(
+          __CLASS__ . 'Messages' => array(
+          'class' => 'CPhpMessageSource',
+          'basePath' => dirname(__FILE__) . DIRECTORY_SEPARATOR . 'messages',
+          )
+          ));
+          } */
         // Prepare cache component.
         $this->cache = Yii::$app->{$this->cacheId};
         if (!($this->cache instanceof ICache)) {
@@ -243,9 +244,9 @@ class EavBehavior extends \yii\base\Behavior {
     public function afterSave($event) {
         // TODO afterSave не срабатывает если модель не была изменена
         // Save changed attributes.
-      //  if ($this->changedAttributes->count > 0) {
-            $this->saveEavAttributes($this->changedAttributes->toArray());
-       // }
+        //  if ($this->changedAttributes->count > 0) {
+        $this->saveEavAttributes($this->changedAttributes->toArray());
+        // }
         // Call parent method for convenience.
         parent::afterSave($event);
     }
@@ -268,12 +269,12 @@ class EavBehavior extends \yii\base\Behavior {
     public function afterFind($event) {
         // Load attributes for model.
         if ($this->preload) {
-            if ($this->owner->getPrimaryKey()){
+            if ($this->owner->getPrimaryKey()) {
                 $this->loadEavAttributes($this->getSafeAttributesArray());
             }
         }
         // Call parent method for convenience.
-       // parent::afterFind($event);
+        // parent::afterFind($event);
     }
 
     /**
@@ -320,14 +321,14 @@ class EavBehavior extends \yii\base\Behavior {
     public function loadEavAttributes($attributes) {
         // If exists cache, return it.
         //$data = $this->cache->get($this->getCacheKey());
-      //  if ($data !== FALSE) {
-      //      $this->attributes->mergeWith($data, FALSE);
-      //      return $this->owner;
-     //   }
+        //  if ($data !== FALSE) {
+        //      $this->attributes->mergeWith($data, FALSE);
+        //      return $this->owner;
+        //   }
         // Query DB.
-        
-     
-       
+
+
+
 
         $data = $this->getLoadEavAttributesCommand($attributes)->all();
         foreach ($data as $row) {
@@ -430,7 +431,7 @@ class EavBehavior extends \yii\base\Behavior {
         // If array for loaded not empty, load attributes.
         if (!$this->preload && $loadQueue->count() > 0) {
             $this->loadEavAttributes($attributes);
-           foreach ($loadQueue as $attribute) {
+            foreach ($loadQueue as $attribute) {
                 $values[$attribute] = $this->attributes->itemAt($attribute);
             }
         }
@@ -447,7 +448,6 @@ class EavBehavior extends \yii\base\Behavior {
     public function getEavAttribute($attribute) {
         $values = $this->getEavAttributes(array($attribute));
         return $this->attributes->itemAt($attribute);
-
     }
 
     /**
@@ -481,9 +481,9 @@ class EavBehavior extends \yii\base\Behavior {
             $this->valueField => $value,
         );
         return $this->owner->db->createCommand()->insert($this->tableName, $data);
-        /*return $this->owner
-                        ->getCommandBuilder()
-                        ->createInsertCommand($this->tableName, $data);*/
+        /* return $this->owner
+          ->getCommandBuilder()
+          ->createInsertCommand($this->tableName, $data); */
     }
 
     /**
@@ -492,25 +492,25 @@ class EavBehavior extends \yii\base\Behavior {
      * @return CDbCommand
      */
     protected function getLoadEavAttributesCommand($attributes) {
-      //  print_r($attributes);
-       // return [];
-          //      $criteria->addCondition("{$this->entityField} = {$this->getModelId()}");
-       // if (!empty($attributes)) {
-       //     $criteria->addInCondition($this->attributeField, $attributes);
-       // }
+        //  print_r($attributes);
+        // return [];
+        //      $criteria->addCondition("{$this->entityField} = {$this->getModelId()}");
+        // if (!empty($attributes)) {
+        //     $criteria->addInCondition($this->attributeField, $attributes);
+        // }
         $query = new \yii\db\Query;
 // compose the query
-$query->from($this->tableName)->where([$this->entityField=>$this->getModelId()]);
-if (!empty($attributes)) {
-  $query->andWhere(['IN', $this->attributeField,$attributes ]);
-}
+        $query->from($this->tableName)->where([$this->entityField => $this->getModelId()]);
+        if (!empty($attributes)) {
+            $query->andWhere(['IN', $this->attributeField, $attributes]);
+        }
 
-return $query;
+        return $query;
 
-               
-       /* return $this->owner
-                        ->getCommandBuilder()
-                        ->createFindCommand($this->tableName, $this->getLoadEavAttributesCriteria($attributes));*/
+
+        /* return $this->owner
+          ->getCommandBuilder()
+          ->createFindCommand($this->tableName, $this->getLoadEavAttributesCriteria($attributes)); */
     }
 
     /**
@@ -521,15 +521,15 @@ return $query;
     protected function getDeleteCommand($attributes = array()) {
         $query = new \yii\db\Query;
 // compose the query
-$query->from($this->tableName)->where([$this->entityField=>$this->getModelId()]);
-if (!empty($attributes)) {
-  $query->andWhere(['IN', $this->attributeField,$attributes ]);
-}
+        $query->from($this->tableName)->where([$this->entityField => $this->getModelId()]);
+        if (!empty($attributes)) {
+            $query->andWhere(['IN', $this->attributeField, $attributes]);
+        }
 
-return $query->createCommand();
-       /* return $this->owner
-                        ->getCommandBuilder()
-                        ->createDeleteCommand($this->tableName, $this->getDeleteEavAttributesCriteria($attributes));*/
+        return $query->createCommand();
+        /* return $this->owner
+          ->getCommandBuilder()
+          ->createDeleteCommand($this->tableName, $this->getDeleteEavAttributesCriteria($attributes)); */
     }
 
     /**
@@ -555,8 +555,6 @@ return $query->createCommand();
         return $this->getLoadEavAttributesCriteria($attributes);
     }
 
-    
-    
     protected function getFindByEavAttributesCriteria($attributes) {
         $criteria = new CDbCriteria();
         $pk = $this->getModelTableFk();
@@ -576,10 +574,8 @@ return $query->createCommand();
                     $value = $conn->quoteValue($value);
                     $criteria->join .= "\nJOIN {$this->tableName} eavb$i"
                             . "\nON t.{$pk} = eavb$i.{$this->entityField}";
-                          //  . "\nAND eavb$i.{$this->attributeField} = $attribute"
-                          //  . "\nAND eavb$i.{$this->valueField} = $value";
-                    
-
+                    //  . "\nAND eavb$i.{$this->attributeField} = $attribute"
+                    //  . "\nAND eavb$i.{$this->valueField} = $value";
                     //$criteria->addCondition("eavb$i.{$this->attributeField}=$attribute");
                     $criteria->addInCondition("eavb$i.{$this->valueField}", $values);
 
@@ -600,8 +596,7 @@ return $query->createCommand();
         $criteria->group .= "t.{$pk}";
         return $criteria;
     }
-    
-    
+
     /**
      * @access protected
      * @param  $attributes
@@ -618,21 +613,19 @@ return $query->createCommand();
             if (is_string($attribute)) {
                 // Get attribute compare operator
                 $attribute = $conn->quoteValue($attribute);
-                if (!is_array($values)){
+                if (!is_array($values)) {
                     $values = array($values);
                 }
                 foreach ($values as $value) {
                     $value = $conn->quoteValue($value);
-                   $criteria->join .= "\nJOIN {$this->tableName} eavb$i"
+                    $criteria->join .= "\nJOIN {$this->tableName} eavb$i"
                             . "\nON t.{$pk} = eavb$i.{$this->entityField}"
                             . "\nAND eavb$i.{$this->attributeField} = $attribute"
                             . "\nAND eavb$i.{$this->valueField} = $value";
-                    
-             
-                    $i++;
 
+
+                    $i++;
                 }
-             
             }
             // If search models with attribute name with anything values.
             elseif (is_int($attribute)) {
