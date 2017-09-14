@@ -17,6 +17,7 @@ use yii\helpers\Html;
 
 class ShopProduct extends \panix\engine\db\ActiveRecord {
 
+
     /**
      * @var array of attributes used to configure product
      */

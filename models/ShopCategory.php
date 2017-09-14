@@ -2,7 +2,7 @@
 
 namespace panix\mod\shop\models;
 
-//use Yii;
+use Yii;
 use panix\engine\behaviors\TranslateBehavior;
 use panix\engine\behaviors\nestedsets\NestedSetsBehavior;
 use panix\engine\behaviors\MenuArrayBehavior;
@@ -54,7 +54,7 @@ class ShopCategory extends \panix\engine\db\ActiveRecord {
             // 'treeAttribute' => 'tree',
             // 'leftAttribute' => 'lft',
             // 'rightAttribute' => 'rgt',
-            // 'depthAttribute' => 'depth',
+            //'levelAttribute' => 'level',
             ],
         ];
     }

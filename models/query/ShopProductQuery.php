@@ -58,7 +58,7 @@ class ShopProductQuery extends ActiveQuery {
         }
 
         // $attributes be array of elements: $attribute => $values
-        return $this->getFindByEavAttributes($attributes);
+        return $this->getFindByEavAttributes2($attributes);
     }
 
     protected function getFindByEavAttributes($attributes) {
@@ -90,7 +90,47 @@ class ShopProductQuery extends ActiveQuery {
         // echo $this->createCommand()->getRawSql();die;
         return $this;
     }
+    protected function getFindByEavAttributes2($attributes) {
+        //$criteria = new CDbCriteria();
+        $pk = '{{%shop_product}}.id';
 
+       // $conn = $this->owner->getDbConnection();
+        $i = 0;
+        foreach ($attributes as $attribute => $values) {
+            // If search models with attribute name with specified values.
+            if (is_string($attribute)) {
+                // Get attribute compare operator
+                //$attribute = $conn->quoteValue($attribute);
+                if (!is_array($values)) {
+                    $values = array($values);
+                }
+                foreach ($values as $value) {
+                    //$value = $conn->quoteValue($value);
+                    $this->join('JOIN', '{{%shop_product_attribute_eav}} eavb' . $i, "$pk=eavb$i.`entity` AND eavb$i.`attribute` = '$attribute' AND eavb$i.`value` = '$value'");
+               //     $this->andWhere(['IN', "`eavb$i`.`value`", $values]);
+                    /*$criteria->join .= "\nJOIN {$this->tableName} eavb$i"
+                            . "\nON t.{$pk} = eavb$i.{$this->entityField}"
+                            . "\nAND eavb$i.{$this->attributeField} = $attribute"
+                            . "\nAND eavb$i.{$this->valueField} = $value";
+*/
+
+                    $i++;
+                }
+            }
+            // If search models with attribute name with anything values.
+            elseif (is_int($attribute)) {
+                //$values = $conn->quoteValue($values);
+                $criteria->join .= "\nJOIN {$this->tableName} eavb$i"
+                        . "\nON t.{$pk} = eavb$i.{$this->entityField}"
+                        . "\nAND eavb$i.{$this->attributeField} = $values";
+                $i++;
+            }
+        }
+        $this->distinct(true);
+        $this->groupBy("{$pk}");
+       // echo $this->createCommand()->getRawSql();die;
+        return $this;
+    }
     /**
      * Filter products by min_price
      * @param $value
