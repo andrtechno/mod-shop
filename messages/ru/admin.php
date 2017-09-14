@@ -5,6 +5,8 @@ return [
     'CREATE_MANUFACTURER' => 'Добавить производителя',
     'CREATE_CURRENCY' => 'Добавить валюту',
     'CURRENCY' => 'Валюта',
+    'CATEGORIES'=>'Категории',
+    'ATTRIBUTES'=>'Атрибуры',
     'PRODUCTS' => 'Продукция',
     'MANUFACTURER' => 'Производители',
     'CATEGORY_TREE_CREATE' => 'Категория успешно добавлена.',
