@@ -2,7 +2,7 @@
 
 namespace panix\mod\shop\components\collections;
 
-class CMap extends \yii\base\Component implements \IteratorAggregate, \ArrayAccess, \Countable {
+class CMap extends \yii\base\Component implements \ArrayAccess, \Countable {
 
     /**
      * @var array internal data storage
@@ -41,14 +41,6 @@ class CMap extends \yii\base\Component implements \IteratorAggregate, \ArrayAcce
         $this->_r = $value;
     }
 
-    /**
-     * Returns an iterator for traversing the items in the list.
-     * This method is required by the interface IteratorAggregate.
-     * @return CMapIterator an iterator for traversing the items in the list.
-     */
-    public function getIterator() {
-        return new CMapIterator($this->_d);
-    }
 
     /**
      * Returns the number of items in the map.

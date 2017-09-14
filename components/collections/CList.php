@@ -2,7 +2,7 @@
 
 namespace panix\mod\shop\components\collections;
 
-class CList extends \yii\base\Component implements \IteratorAggregate, \ArrayAccess, \Countable {
+class CList extends \yii\base\Component implements \ArrayAccess, \Countable {
 
     /**
      * @var array internal data storage
@@ -46,14 +46,7 @@ class CList extends \yii\base\Component implements \IteratorAggregate, \ArrayAcc
         $this->_r = $value;
     }
 
-    /**
-     * Returns an iterator for traversing the items in the list.
-     * This method is required by the interface IteratorAggregate.
-     * @return Iterator an iterator for traversing the items in the list.
-     */
-    public function getIterator() {
-        return new CListIterator($this->_d);
-    }
+
 
     /**
      * Returns the number of items in the list.
