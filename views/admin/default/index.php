@@ -1,13 +1,9 @@
 <?php
 
 use yii\helpers\Html;
-//use app\cms\grid\AdminGridView;
 use panix\engine\grid\sortable\SortableGridView;
 use yii\widgets\Pjax;
 
-/* @var $this yii\web\View */
-/* @var $searchModel app\modules\pages\models\PagesSearch */
-/* @var $dataProvider yii\data\ActiveDataProvider */
 ?>
 
 

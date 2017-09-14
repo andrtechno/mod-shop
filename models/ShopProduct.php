@@ -56,6 +56,8 @@ class ShopProduct extends \panix\engine\db\ActiveRecord {
         $sort = new \yii\data\Sort([
             'attributes' => [
                 'date_create',
+                'views',
+                'added_to_cart_count',
                 'price' => [
                     'asc' => ['price' => SORT_ASC],
                     'desc' => ['price' => SORT_DESC],

@@ -5,6 +5,7 @@
     "homepage": "https://github.com/andrtechno/mod-shop",
     "type": "yii2-extension",
     "license": "MIT",
+    "minimum-stability": "dev",
     "authors": [
         {
             "name": "CORNER CMS",
