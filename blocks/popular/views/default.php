@@ -12,11 +12,6 @@ use yii\widgets\Pjax;
 
 <?php
 
-Pjax::begin([
-    'id' => 'pjax-container',
-    'enablePushState' => false,
-    'linkSelector' => 'a:not(.linkTarget)'
-]);
 
 
 echo GridView::widget([
@@ -44,5 +39,5 @@ echo GridView::widget([
         ],
     ]
 ]);
-Pjax::end();
+
 ?>
