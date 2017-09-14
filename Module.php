@@ -74,9 +74,9 @@ class Module extends WebModule {
         ];
     }
 
-    public function getAdminSidebarMenu() {
-        Yii::import('mod.admin.widgets.EngineMainMenu');
-        $mod = new EngineMainMenu;
+    public function getAdminSidebar() {
+        
+        $mod = new \panix\engine\widgets\nav\Nav;
         $items = $mod->findMenu($this->id);
         return $items['items'];
     }

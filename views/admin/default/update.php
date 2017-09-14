@@ -7,7 +7,7 @@ use yii\helpers\ArrayHelper;
 use panix\mod\shop\models\ProductType;
 ?>
 
-
+<div id="test"></div>
 
 
 <div class="panel panel-default">

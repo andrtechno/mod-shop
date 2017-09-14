@@ -30,6 +30,21 @@ $('.attachment-delete').on('click', function(e) {
     });
         return false;
 });
+        
+        
+        
+        $('.copper').on('click', function(e) {
+      //  var id = $(this).attr('data-id');
+    $.ajax({
+       url: $(this).attr('href'),
+       type:'POST',
+      // data: {id: id},
+       success: function(data) {
+        $('#test').html(data);
+       }
+    });
+        return false;
+});
 JS;
 $this->registerJs($script); //$position
 ?>
@@ -60,7 +75,7 @@ $this->registerJs($script); //$position
 
                     <div class="btn-group btn-group-sm">
                         <?= Html::a(Html::icon('resize'), $img->getUrl(), array('class' => 'btn btn-default attachment-zoom', 'data-fancybox' => 'gallery')); ?>
-                        <?= Html::a(Html::icon('settings'), '#', array('class' => 'btn btn-default')); ?>
+                        <?= Html::a(Html::icon('settings'), ['/images/edit-crop', 'id' => $img->id], array('class' => 'btn btn-default copper')); ?>
                         <?= Html::a(Html::icon('delete'), ['/images/default/delete', 'id' => $img->id], array('class' => 'btn btn-danger attachment-delete', 'data-id' => $img->id)); ?>
 
 
