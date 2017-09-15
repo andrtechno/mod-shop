@@ -105,3 +105,9 @@
     right: 0;
     width: 230px;
 }
+/*pagination load more*/
+.ias-trigger,
+.ias-spinner{
+    display: block;
+    clear:both;
+}

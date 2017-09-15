@@ -51,7 +51,7 @@ class FiltersWidget extends \panix\engine\data\Widget {
                 'filters' => array()
             );
             foreach ($attribute->options as $option) {
-                $count = $this->countAttributeProducts($attribute, $option);
+                $count = $this->countAttributeProducts2($attribute, $option);
                 if ($count) {
                     $data[$attribute->name]['filters'][] = array(
                         'title' => $option->value,
@@ -64,7 +64,41 @@ class FiltersWidget extends \panix\engine\data\Widget {
         }
         return $data;
     }
+    public function countAttributeProducts2($attribute, $option) {
 
+
+           // $dependency = new CDbCacheDependency('SELECT MAX(date_update) FROM {{shop_product}}');
+
+            $model = ShopProduct::find();
+            $model->attachBehaviors($model->behaviors());
+            $model->published();
+            $model->applyCategories($this->model);
+            $model->applyMinPrice($this->convertCurrency(Yii::$app->request->getQueryParam('min_price')));
+            $model->applyMaxPrice($this->convertCurrency(Yii::$app->request->getQueryParam('max_price')));
+
+            if (Yii::$app->request->get('manufacturer'))
+                $model->applyManufacturers(explode(',', Yii::$app->request->get('manufacturer')));
+
+            //$data = array($attribute->name => $option->id);
+            $current = $this->view->context->activeAttributes;
+
+            $newData = array();
+
+            foreach ($current as $key => $row) {
+                if (!isset($newData[$key]))
+                    $newData[$key] = array();
+                if (is_array($row)) {
+                    foreach ($row as $v)
+                        $newData[$key][] = $v;
+                } else
+                    $newData[$key][] = $row;
+            }
+            //$model->cache($this->cache_time,$dependency);
+            $newData[$attribute->name][] = $option->id;
+
+            return $model->withEavAttributes($newData)->count();
+
+    }
     public function countAttributeProducts($attribute, $option) {
 
 

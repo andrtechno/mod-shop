@@ -15,6 +15,11 @@ use yii\helpers\HtmlPurifier;
         <div class="row">
             <div class="col-xs-12 col-md-6">
                 <div class="product-price">
+                    
+            <?php if ($model->appliedDiscount) { ?>
+
+                <div class="product-price clearfix product-price-discount"><span><?= $model::formatPrice(Yii::$app->currency->convert($model->originalPrice)) ?></span><sup><?= Yii::$app->currency->active->symbol ?></sup></div>
+            <?php } ?>
                     <?= Yii::$app->currency->convert($model->price); ?>
                     <sup><?= Yii::$app->currency->active->symbol; ?></sup>
                 </div>
