@@ -7,8 +7,16 @@ use yii\widgets\ActiveForm;
 $this->registerJs("
 cart.spinnerRecount = false;
 cart.skin = 'dropdown';
+
+$(document).ready(function() {
+    $('.carousel').carousel({
+        interval: 6000
+    });
+});
+
 ", yii\web\View::POS_BEGIN, 'cart');
 ?>
+
 
 
 
@@ -20,6 +28,7 @@ foreach ($model->categories as $cat) {
 
 
 <div class="row">
+
     <div class="col-sm-12">
         <div class="row">
             <div class="col-sm-6">

@@ -34,8 +34,6 @@ class ProductVariant extends \yii\db\ActiveRecord {
             //[['attribute_id', 'option_id', 'product_id', 'price_type'], 'numerical', 'integerOnly' => true],
             //['price', 'numerical'],
             ['sku', 'string', 'max' => 255],
-            // The following rule is used by search().
-            // Please remove those attributes that should not be searched.
             [['id', 'attribute_id', 'option_id', 'product_id', 'price', 'price_type', 'sku'], 'safe'],
         ];
     }
@@ -49,7 +47,9 @@ class ProductVariant extends \yii\db\ActiveRecord {
             'option' => array(self::BELONGS_TO, 'AttributeOption', 'option_id'),
         );
     }*/
-    public function getAttribute() {
+
+    
+    public function getProductAttribute() {
         return $this->hasOne(Attribute::className(), ['id' => 'attribute_id']);
     }
     

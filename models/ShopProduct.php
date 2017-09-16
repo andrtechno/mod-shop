@@ -191,6 +191,14 @@ class ShopProduct extends \panix\engine\db\ActiveRecord {
                             $query->where(['is_main' => 1]);
                         });
     }
+    public function getVariants() {
+        return $this->hasMany(ProductVariant::className(), ['product_id' => 'id'])
+                ->joinWith(['productAttribute', 'option'])
+                ->orderBy('{{%shop_attribute_option}}.ordern');
+    }
+
+    
+//'variants' => array(self::HAS_MANY, 'ShopProductVariant', array('product_id'), 'with' => array('attribute', 'option'), 'order' => 'option.ordern'),
 
     /**
      * Set product categories and main category

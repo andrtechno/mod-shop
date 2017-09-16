@@ -21,6 +21,7 @@
         "panix/mod-sitemap": "*",
         "panix/mod-wishlist": "*",
         "panix/mod-exchange1c": "*",
+        "panix/mod-csv": "*",
         "panix/wgt-jstree": "*",
         "kop/yii2-scroll-pager": "*"
     },
