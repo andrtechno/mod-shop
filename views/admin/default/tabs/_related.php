@@ -47,7 +47,7 @@ use yii\widgets\Pjax;
 
 
 
-$searchModel = new panix\mod\shop\models\search\ShopProductSearch();
+$searchModel = new panix\mod\shop\models\search\ProductSearch();
 $searchModel->exclude = [$exclude];
 
 foreach($model->relatedProducts as $d){

@@ -4,7 +4,7 @@ namespace panix\mod\shop\controllers;
 
 use Yii;
 use panix\engine\controllers\WebController;
-use panix\mod\shop\models\ShopProduct;
+use panix\mod\shop\models\Product;
 use yii\web\NotFoundHttpException;
 
 class DefaultController extends WebController {
@@ -45,7 +45,7 @@ class DefaultController extends WebController {
     }
 
     protected function findModel($seo_alias) {
-        $model = new ShopProduct;
+        $model = new Product;
         if (($this->dataModel = $model::find()
                 // ->getCategory()
                 ->where(['seo_alias' => $seo_alias])
@@ -57,7 +57,7 @@ class DefaultController extends WebController {
     }
     
      protected function findModel2($url) {
-        $model = new ShopProduct;
+        $model = new Product;
         if (($this->dataModel = $model::findOne(['seo_alias' => $url])) !== null) {
             return $this->dataModel;
         } else {

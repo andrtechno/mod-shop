@@ -1,16 +1,16 @@
 
 
 // Init tree
-$('#ShopCategoryTreeFilter').bind('loaded.jstree', function (event, data) {
+$('#CategoryTreeFilter').bind('loaded.jstree', function (event, data) {
     //data.inst.open_all(0);
 }).delegate("a", "click", function (event) {
     try {
-        var id = $(this).parent("li").attr('id').replace('ShopCategoryTreeFilterNode_', '');
+        var id = $(this).parent("li").attr('id').replace('CategoryTreeFilterNode_', '');
     } catch (err) {
         // 'All Categories' clicked
         var id = 0;
     }
-    var obj = $('#shopproduct-grid .filters td')[0];
+    var obj = $('#product-grid .filters td')[0];
     $(obj).append('<input name="category" type="hidden" value="' + id + '">');
     $('#productsListGrid .filters :input').first().trigger('change');
 });
@@ -27,11 +27,11 @@ function setProductsStatus(status_id, el)
         type: "post",
         data: {
             token: $(el).attr('data-token'),
-            ids: $.fn.yiiGridView.getSelection('shopproduct-grid'),
+            ids: $.fn.yiiGridView.getSelection('product-grid'),
             'switch': status_id
         },
         success: function (data) {
-            $.fn.yiiGridView.update('shopproduct-grid');
+            $.fn.yiiGridView.update('product-grid');
             common.notify(data,'success');
         },
         error: function (XHR, textStatus, errorThrown) {
@@ -128,11 +128,11 @@ function showCategoryAssignWindow(el_clicked)
                             token: common.token,
                             category_ids: ids,
                             main_category: $("#CategoryAssignTreeDialog .jstree-clicked").parent().attr('id').replace('node_', '').replace('_anchor', ''),
-                            product_ids: $.fn.yiiGridView.getSelection('shopproduct-grid')
+                            product_ids: $.fn.yiiGridView.getSelection('product-grid')
                         },
                         success: function () {
                             $(dialog).dialog("close");
-                            $.fn.yiiGridView.update('shopproduct-grid');
+                            $.fn.yiiGridView.update('product-grid');
 
                         },
                         error: function () {
@@ -171,13 +171,13 @@ function showDuplicateProductsWindow(link_clicked) {
                         type: "post",
                         data: {
                             token: $(link_clicked).attr('data-token'),
-                            products: $.fn.yiiGridView.getSelection('shopproduct-grid'),
+                            products: $.fn.yiiGridView.getSelection('product-grid'),
                             duplicate: $("#duplicate_products_dialog form").serialize()
                         },
                         success: function (data) {
                             $(dialog).dialog("close");
                             common.notify("Изменения сохранены. <a href='" + data + "'>Просмотреть копии продуктов.</a>",'success');
-                            $.fn.yiiGridView.update('shopproduct-grid');
+                            $.fn.yiiGridView.update('product-grid');
                         },
                         error: function () {
                             common.notify("Ошибка",'error');
@@ -223,12 +223,12 @@ function setProductsPrice(link_clicked) {
                         type: "post",
                         data: {
                             token: $(link_clicked).attr('data-token'),
-                            products: $.fn.yiiGridView.getSelection('shopproduct-grid'),
+                            products: $.fn.yiiGridView.getSelection('product-grid'),
                             data: $("#prices_products_dialog form").serialize()
                         },
                         success: function (data) {
                             $(dialog).dialog("close");
-                            $.fn.yiiGridView.update('shopproduct-grid');
+                            $.fn.yiiGridView.update('product-grid');
 
                         },
                         error: function () {

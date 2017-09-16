@@ -4,7 +4,7 @@ namespace panix\mod\shop\controllers\admin;
 
 use Yii;
 use panix\engine\controllers\AdminController;
-use panix\mod\shop\models\ShopCategory;
+use panix\mod\shop\models\Category;
 use yii\filters\VerbFilter;
 
 /**
@@ -16,19 +16,19 @@ class CategoryController extends AdminController {
         return [
             'moveNode' => [
                 'class' => 'panix\engine\behaviors\nestedsets\actions\MoveNodeAction',
-                'modelClass' => 'panix\mod\shop\models\ShopCategory',
+                'modelClass' => 'panix\mod\shop\models\Category',
             ],
             'deleteNode' => [
                 'class' => 'panix\engine\behaviors\nestedsets\actions\DeleteNodeAction',
-                'modelClass' => 'panix\mod\shop\models\ShopCategory',
+                'modelClass' => 'panix\mod\shop\models\Category',
             ],
             'updateNode' => [
                 'class' => 'panix\engine\behaviors\nestedsets\actions\UpdateNodeAction',
-                'modelClass' => 'panix\mod\shop\models\ShopCategory',
+                'modelClass' => 'panix\mod\shop\models\Category',
             ],
             'createNode' => [
                 'class' => 'panix\engine\behaviors\nestedsets\actions\CreateNodeAction',
-                'modelClass' => ShopCategory::className(),
+                'modelClass' => Category::className(),
             ],
         ];
     }
@@ -62,9 +62,9 @@ class CategoryController extends AdminController {
 
     public function actionUpdate($id) {
         if ($id === true) {
-            $model = new ShopCategory;
+            $model = new Category;
         } else {
-            $model = ShopCategory::findOne($id);
+            $model = Category::findOne($id);
         }
         if (!$model) {
             $this->error404();
@@ -81,9 +81,9 @@ class CategoryController extends AdminController {
 
             if ($model->getIsNewRecord()) {
                 if (Yii::$app->request->get('parent_id')) {
-                    $parent_id = ShopCategory::findOne(Yii::$app->request->get('parent_id'));
+                    $parent_id = Category::findOne(Yii::$app->request->get('parent_id'));
                 } else {
-                    $parent_id = ShopCategory::findOne(1);
+                    $parent_id = Category::findOne(1);
                 }
 
                 $model->appendTo($parent_id);
@@ -103,7 +103,7 @@ class CategoryController extends AdminController {
     }
 
     protected function findModel($id) {
-        $model = new ShopCategory;
+        $model = new Category;
         if (($model = $model::findOne($id)) !== null) {
             return $model;
         } else {
@@ -119,7 +119,7 @@ class CategoryController extends AdminController {
             $id = str_replace('j1_', '', $_GET['id']);
         }
 
-        $model = ShopCategory::findOne((int) $id);
+        $model = Category::findOne((int) $id);
         if ($model) {
             $model->name = $_GET['text'];
             $model->seo_alias = \panix\engine\CMS::translit($model->name);
@@ -137,8 +137,8 @@ class CategoryController extends AdminController {
     }
 
     public function actionCreateNode() {
-        $model = new ShopCategory;
-        $parent = ShopCategory::findOne($_GET['parent_id']);
+        $model = new Category;
+        $parent = Category::findOne($_GET['parent_id']);
 
         $model->name = $_GET['text'];
         $model->seo_alias = \panix\engine\CMS::translit($model->name);
@@ -158,13 +158,13 @@ class CategoryController extends AdminController {
      * Drag-n-drop nodes
      */
     public function actionMoveNode() {
-        $node = ShopCategory::findOne($_GET['id']);
-        $target = ShopCategory::findOne($_GET['ref']);
+        $node = Category::findOne($_GET['id']);
+        $target = Category::findOne($_GET['ref']);
 
         if ((int) $_GET['position'] > 0) {
             $pos = (int) $_GET['position'];
             $childs = $target->children()->all();
-            if (isset($childs[$pos - 1]) && $childs[$pos - 1] instanceof ShopCategory && $childs[$pos - 1]['id'] != $node->id)
+            if (isset($childs[$pos - 1]) && $childs[$pos - 1] instanceof Category && $childs[$pos - 1]['id'] != $node->id)
                 $node->moveAfter($childs[$pos - 1]);
         } else
             $node->moveAsFirst($target);
@@ -176,13 +176,13 @@ class CategoryController extends AdminController {
      * Redirect to category front.
      */
     public function actionRedirect() {
-        $node = ShopCategory::model()->findByPk($_GET['id']);
+        $node = Category::model()->findByPk($_GET['id']);
         $this->redirect($node->getViewUrl());
     }
 
     public function actionSwitchNode() {
         //$switch = $_GET['switch'];
-        $node = ShopCategory::findOne($_GET['id']);
+        $node = Category::findOne($_GET['id']);
         $node->switch = ($node->switch == 1) ? 0 : 1;
         $node->saveNode();
         echo \yii\helpers\Json::encode(array(
@@ -197,7 +197,7 @@ class CategoryController extends AdminController {
      * @throws CHttpException
      */
     public function actionDelete($id) {
-        $model = ShopCategory::findOne($id);
+        $model = Category::findOne($id);
 
         //Delete if not root node
         if ($model && $model->id != 1) {

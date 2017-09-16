@@ -95,15 +95,15 @@ class Module extends WebModule {
 
     protected function getDefaultModelClasses() {
         return [
-            'ShopProduct' => 'panix\mod\shop\models\ShopProduct',
-            'ShopProductSearch' => 'panix\mod\shop\models\search\ShopProductSearch',
-            'ShopCurrency' => 'panix\mod\shop\models\ShopCurrency',
-            'ShopCurrencySearch' => 'panix\mod\shop\models\search\ShopCurrencySearch',
-            'ShopCategory' => 'panix\mod\shop\models\ShopCategory',
-            'ShopCategorySearch' => 'panix\mod\shop\models\search\ShopCategorySearch',
-            'ShopManufacturer' => 'panix\mod\shop\models\ShopManufacturer',
-            'ShopManufacturerSearch' => 'panix\mod\shop\models\search\ShopManufacturerSearch',
-            'ShopRelatedProduct' => 'panix\mod\shop\models\ShopRelatedProduct',
+            'Product' => 'panix\mod\shop\models\Product',
+            'ProductSearch' => 'panix\mod\shop\models\search\ProductSearch',
+            'Currency' => 'panix\mod\shop\models\Currency',
+            'CurrencySearch' => 'panix\mod\shop\models\search\CurrencySearch',
+            'Category' => 'panix\mod\shop\models\Category',
+            'CategorySearch' => 'panix\mod\shop\models\search\CategorySearch',
+            'Manufacturer' => 'panix\mod\shop\models\Manufacturer',
+            'ManufacturerSearch' => 'panix\mod\shop\models\search\ManufacturerSearch',
+            'RelatedProduct' => 'panix\mod\shop\models\RelatedProduct',
         ];
     }
 

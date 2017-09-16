@@ -4,7 +4,7 @@ namespace panix\mod\shop\models\query;
 
 use yii\db\ActiveQuery;
 
-class ShopProductQuery extends ActiveQuery {
+class ProductQuery extends ActiveQuery {
 
     public function published($state = 1) {
         return $this->andWhere(['{{%shop_product}}.switch' => $state]);
@@ -32,7 +32,7 @@ class ShopProductQuery extends ActiveQuery {
     }
 
     public function applyCategories($categories) {
-        if ($categories instanceof \panix\mod\shop\models\ShopCategory)
+        if ($categories instanceof \panix\mod\shop\models\Category)
             $categories = array($categories->id);
         else {
             if (!is_array($categories))

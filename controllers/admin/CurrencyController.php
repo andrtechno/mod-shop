@@ -3,8 +3,8 @@
 namespace panix\mod\shop\controllers\admin;
 
 use Yii;
-use panix\mod\shop\models\ShopCurrency;
-use panix\mod\shop\models\search\ShopCurrencySearch;
+use panix\mod\shop\models\Currency;
+use panix\mod\shop\models\search\CurrencySearch;
 use panix\engine\controllers\AdminController;
 use panix\engine\grid\sortable\SortableGridAction;
 
@@ -14,7 +14,7 @@ class CurrencyController extends AdminController {
         return [
             'dnd_sort' => [
                 'class' => SortableGridAction::className(),
-                'modelName' => ShopCurrency::className(),
+                'modelName' => Currency::className(),
             ],
         ];
     }
@@ -51,7 +51,7 @@ class CurrencyController extends AdminController {
             $this->pageName
         ];
 
-        $searchModel = new ShopCurrencySearch();
+        $searchModel = new CurrencySearch();
         $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams());
 
         return $this->render('index', [
@@ -64,7 +64,7 @@ class CurrencyController extends AdminController {
 
 
         if ($id === true) {
-            $model = Yii::$app->getModule("shop")->model("ShopCurrency");
+            $model = Yii::$app->getModule("shop")->model("Currency");
         } else {
             $model = $this->findModel($id);
         }
@@ -104,7 +104,7 @@ class CurrencyController extends AdminController {
     }
 
     protected function findModel($id) {
-        $model = Yii::$app->getModule("shop")->model("ShopCurrency");
+        $model = Yii::$app->getModule("shop")->model("Currency");
         if (($model = $model::findOne($id)) !== null) {
             return $model;
         } else {

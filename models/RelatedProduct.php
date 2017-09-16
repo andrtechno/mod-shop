@@ -3,14 +3,14 @@
 namespace panix\mod\shop\models;
 
 /**
- * This is the model class for table "ShopRelatedProduct".
+ * This is the model class for table "RelatedProduct".
  *
- * The followings are the available columns in table 'ShopRelatedProduct':
+ * The followings are the available columns in table 'RelatedProduct':
  * @property integer $id
  * @property integer $product_id
  * @property integer $related_id
  */
-class ShopRelatedProduct extends \yii\db\ActiveRecord {
+class RelatedProduct extends \yii\db\ActiveRecord {
 
     /**
      * @return string the associated database table name

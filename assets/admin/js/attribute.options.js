@@ -26,14 +26,14 @@ $(function() {
     });
 
     // On change type toggle options tab
-    $("#ShopAttribute_type").change(function(){
+    $("#Attribute_type").change(function(){
         toggleOptionsTab($(this));
     });
-    $("#ShopAttribute_type").change();
+    $("#Attribute_type").change();
 
 
     $("#attributeUpdateForm").submit(function(){ //attributeUpdateForm
-        var el = $("#ShopAttribute_type");
+        var el = $("#Attribute_type");
         if($(el).val() != 3 && $(el).val() != 4 && $(el).val() != 5 && $(el).val() != 6)
         {
             $(".optionsEditTable").remove();

@@ -2,10 +2,10 @@
 
 namespace panix\mod\shop\models\translate;
 
-class ShopProductTranslate extends \yii\db\ActiveRecord {
+class CategoryTranslate extends \yii\db\ActiveRecord {
 
     public static function tableName() {
-        return '{{%shop_product_translate}}';
+        return '{{%shop_category_translate}}';
     }
 
 }

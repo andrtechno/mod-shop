@@ -2,8 +2,8 @@
 
 namespace panix\mod\shop\widgets\categories;
 
-use panix\mod\shop\models\ShopCategory;
-use panix\mod\shop\models\ShopCategoryNode;
+use panix\mod\shop\models\Category;
+use panix\mod\shop\models\CategoryNode;
 use yii\helpers\Html;
 use Yii;
 
@@ -20,7 +20,7 @@ class CategoriesWidget extends \panix\engine\data\Widget {
 
     public function run() {
 
-        $model = ShopCategory::findOne(1);
+        $model = Category::findOne(1);
 
         if (!$model) {
             die('err');

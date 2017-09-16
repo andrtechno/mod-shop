@@ -5,12 +5,12 @@ namespace panix\mod\shop\models\search;
 use Yii;
 use yii\base\Model;
 use panix\engine\data\ActiveDataProvider;
-use panix\mod\shop\models\ShopManufacturer;
+use panix\mod\shop\models\Currency;
 
 /**
- * ShopManufacturerSearch represents the model behind the search form about `panix\shop\models\ShopManufacturer`.
+ * CurrencySearch represents the model behind the search form about `panix\shop\models\Currency`.
  */
-class ShopManufacturerSearch extends ShopManufacturer {
+class CurrencySearch extends Currency {
 
     /**
      * @inheritdoc
@@ -18,7 +18,7 @@ class ShopManufacturerSearch extends ShopManufacturer {
     public function rules() {
         return [
             [['id'], 'integer'],
-            [['name','seo_alias'], 'safe'],
+            [['name','seo_alias','is_default'], 'safe'],
         ];
     }
 
@@ -38,11 +38,12 @@ class ShopManufacturerSearch extends ShopManufacturer {
      * @return ActiveDataProvider
      */
     public function search($params) {
-        $query = ShopManufacturer::find();
+        $query = Currency::find();
 
         $dataProvider = new ActiveDataProvider([
                     'query' => $query,
                     'sort'=> ['defaultOrder' => ['ordern'=>SORT_DESC]],
+
                 ]);
 
         $this->load($params);
@@ -58,6 +59,7 @@ class ShopManufacturerSearch extends ShopManufacturer {
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name]);
+        $query->andFilterWhere(['like', 'is_default', $this->is_default]);
 
         return $dataProvider;
     }

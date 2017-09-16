@@ -3,15 +3,15 @@
 namespace panix\mod\shop\models;
 
 /**
- * This is the model class for table "ShopProductCategoryRef".
+ * This is the model class for table "ProductCategoryRef".
  *
- * The followings are the available columns in table 'ShopProductCategoryRef':
+ * The followings are the available columns in table 'ProductCategoryRef':
  * @property integer $id
  * @property integer $category
  * @property integer $product
  * @property boolean $is_main
  */
-class ShopProductCategoryRef extends \yii\db\ActiveRecord {
+class ProductCategoryRef extends \yii\db\ActiveRecord {
 
 
 

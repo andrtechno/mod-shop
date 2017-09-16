@@ -6,7 +6,7 @@ namespace panix\mod\shop\models;
 use yii\helpers\ArrayHelper;
 
 
-class ShopCurrency extends \panix\engine\db\ActiveRecord {
+class Currency extends \panix\engine\db\ActiveRecord {
 
     const MODULE_ID = 'shop';
 

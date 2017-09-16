@@ -12,8 +12,8 @@
 
 // Create jstree
 $this->widget('ext.jstree.JsTree', array(
-    'id' => 'ShopCategoryTree',
-    'data' => ShopCategoryNode::fromArray(ShopCategory::model()->published()->findAllByPk(1)),
+    'id' => 'CategoryTree',
+    'data' => CategoryNode::fromArray(Category::model()->published()->findAllByPk(1)),
     'options' => array(
         'core' => array(
             'strings' => array('Loading ...' => 'Please wait ...'),
@@ -39,7 +39,7 @@ if ($model->type) {
 if (isset($_POST['categories']) && !empty($_POST['categories'])) {
     foreach ($_POST['categories'] as $id) {
         Yii::app()->getClientScript()->registerScript("checkNode{$id}", "
-			$('#ShopCategoryTree').checkNode({$id});
+			$('#CategoryTree').checkNode({$id});
 		");
     }
 } elseif ($model->isNewRecord && empty($_POST['categories']) && isset($presetCategories)) {
@@ -48,7 +48,7 @@ if (isset($_POST['categories']) && !empty($_POST['categories'])) {
             continue;
 
         Yii::app()->getClientScript()->registerScript("checkNode{$id}", "
-			$('#ShopCategoryTree').checkNode({$id});
+			$('#CategoryTree').checkNode({$id});
 		");
     }
 } else {
@@ -58,7 +58,7 @@ if (isset($_POST['categories']) && !empty($_POST['categories'])) {
             continue;
         echo $c->id;
         Yii::app()->getClientScript()->registerScript("checkNode{$c->id}", "
-			$('#ShopCategoryTree').checkNode({$c->id});
+			$('#CategoryTree').checkNode({$c->id});
 		");
     }
 }

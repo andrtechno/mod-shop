@@ -4,7 +4,7 @@ namespace panix\mod\shop\components;
 
 use Yii;
 use yii\base\Component;
-use panix\mod\shop\models\ShopCurrency;
+use panix\mod\shop\models\Currency;
 
 /**
  * Class to work with currencies
@@ -17,17 +17,17 @@ class CurrencyManager extends Component {
     private $_currencies = array();
 
     /**
-     * @var ShopCurrency main currency
+     * @var Currency main currency
      */
     private $_main;
 
     /**
-     * @var ShopCurrency current active currency
+     * @var Currency current active currency
      */
     private $_active;
 
     /**
-     * @var ShopCurrency default currency
+     * @var Currency default currency
      */
     private $_default;
 
@@ -63,7 +63,7 @@ class CurrencyManager extends Component {
     }
     /**
      * Detect user active currency
-     * @return ShopCurrency
+     * @return Currency
      */
     public function detectActive() {
         // Detect currency from session
@@ -88,14 +88,14 @@ class CurrencyManager extends Component {
 
     /**
      * get active currency
-     * @return ShopCurrency
+     * @return Currency
      */
     public function getActive() {
         return $this->_active;
     }
 
     /**
-     * @return ShopCurrency main currency
+     * @return Currency main currency
      */
     public function getMain() {
         return $this->_main;
@@ -104,7 +104,7 @@ class CurrencyManager extends Component {
     /**
      * Convert sum from main currency to selected currency
      * @param mixed $sum
-     * @param mixed $id ShopCurrency. If not set, sum will be converted to active currency
+     * @param mixed $id Currency. If not set, sum will be converted to active currency
      * @return float converted sum
      */
     public function convert($sum, $id = null) {
@@ -133,7 +133,7 @@ class CurrencyManager extends Component {
         $currencies = Yii::$app->cache->get($this->cacheKey);
 
         if (!$currencies) {
-            $currencies = ShopCurrency::find()
+            $currencies = Currency::find()
                     //->asArray()
                     ->all();
             Yii::$app->cache->set($this->cacheKey, $currencies,Yii::$app->settings->get('app','cache_time'));

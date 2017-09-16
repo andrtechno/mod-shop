@@ -5,12 +5,12 @@ namespace panix\mod\shop\models\search;
 use Yii;
 use yii\base\Model;
 use panix\engine\data\ActiveDataProvider;
-use panix\mod\shop\models\ShopProduct;
+use panix\mod\shop\models\Product;
 
 /**
  * PagesSearch represents the model behind the search form about `app\modules\pages\models\Pages`.
  */
-class ShopProductSearch extends ShopProduct {
+class ProductSearch extends Product {
 
     public $exclude = null;
 
@@ -40,7 +40,7 @@ class ShopProductSearch extends ShopProduct {
      * @return ActiveDataProvider
      */
     public function search($params) {
-        $query = ShopProduct::find();
+        $query = Product::find();
         $query->joinWith('translations');
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

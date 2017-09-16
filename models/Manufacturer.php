@@ -2,17 +2,17 @@
 
 namespace panix\mod\shop\models;
 
-use panix\mod\shop\models\query\ShopManufacturerQuery;
+use panix\mod\shop\models\query\ManufacturerQuery;
 use panix\engine\behaviors\TranslateBehavior;
 use yii\helpers\ArrayHelper;
-use panix\mod\shop\models\translate\ShopManufacturerTranslate;
+use panix\mod\shop\models\translate\ManufacturerTranslate;
 
-class ShopManufacturer extends \panix\engine\db\ActiveRecord {
+class Manufacturer extends \panix\engine\db\ActiveRecord {
 
     const MODULE_ID = 'shop';
     const route = '/admin/shop/manufacturer';
     public static function find() {
-        return new ShopManufacturerQuery(get_called_class());
+        return new ManufacturerQuery(get_called_class());
     }
 
     public static function dropdown() {
@@ -48,10 +48,10 @@ class ShopManufacturer extends \panix\engine\db\ActiveRecord {
     }
 
     public function getTranslations() {
-        return $this->hasMany(ShopManufacturerTranslate::className(), ['object_id' => 'id']);
+        return $this->hasMany(ManufacturerTranslate::className(), ['object_id' => 'id']);
     }
     public function getProductsCount() {
-        return $this->hasOne(ShopProduct::className(), ['manufacturer_id' => 'id'])->count();
+        return $this->hasOne(Product::className(), ['manufacturer_id' => 'id'])->count();
     }
 
 

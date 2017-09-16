@@ -4,13 +4,13 @@ namespace panix\mod\shop\widgets\filters;
 
 use yii\helpers\Html;
 use Yii;
-use panix\mod\shop\models\ShopProduct;
-use panix\mod\shop\models\ShopManufacturer;
+use panix\mod\shop\models\Product;
+use panix\mod\shop\models\Manufacturer;
 
 class FiltersWidget extends \panix\engine\data\Widget {
 
     /**
-     * @var array of ShopAttribute models
+     * @var array of Attribute models
      */
     public $attributes;
     //public $countAttr = true;
@@ -22,7 +22,7 @@ class FiltersWidget extends \panix\engine\data\Widget {
     public $_manufacturer = [];
 
     /**
-     * @var ShopCategory
+     * @var Category
      */
     public $model;
 
@@ -69,7 +69,7 @@ class FiltersWidget extends \panix\engine\data\Widget {
 
            // $dependency = new CDbCacheDependency('SELECT MAX(date_update) FROM {{shop_product}}');
 
-            $model = ShopProduct::find();
+            $model = Product::find();
             $model->attachBehaviors($model->behaviors());
             $model->published();
             $model->applyCategories($this->model);
@@ -102,7 +102,7 @@ class FiltersWidget extends \panix\engine\data\Widget {
     public function countAttributeProducts($attribute, $option) {
 
 
-        $model = ShopProduct::find();
+        $model = Product::find();
         $model->attachBehaviors($model->behaviors());
         $model->published();
         $model->applyCategories($this->model);
@@ -190,7 +190,7 @@ class FiltersWidget extends \panix\engine\data\Widget {
 
         //@todo: Fix manufacturer translation
         $dataModel = $this->model;
-        $manufacturers = ShopProduct::find()
+        $manufacturers = Product::find()
 
                 /* 'with' => array(
                   'productsCount' => array(
@@ -223,7 +223,7 @@ class FiltersWidget extends \panix\engine\data\Widget {
             foreach ($manufacturers as $m) {
                 $m = $m->manufacturer;
                 if ($m) {
-                    $model = ShopProduct::find();
+                    $model = Product::find();
                     $model->attachBehaviors($model->behaviors());
                     $model->published();
                     $model->applyCategories($dataModel);

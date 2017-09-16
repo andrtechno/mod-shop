@@ -29,7 +29,7 @@ use panix\engine\Html;
                                 if (Yii::$app->hasModule('discounts')) {
                                     if ($model->appliedDiscount) {
                                         ?>
-                                        <span class="price-before-discount"><?= ShopProduct::formatPrice(Yii::$app->currency->convert($model->originalPrice)) ?> <sup><?= Yii::$app->currency->active->symbol ?></sup></span>
+                                        <span class="price-before-discount"><?= Product::formatPrice(Yii::$app->currency->convert($model->originalPrice)) ?> <sup><?= Yii::$app->currency->active->symbol ?></sup></span>
                                         <?php
                                     }
                                 }

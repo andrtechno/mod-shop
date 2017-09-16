@@ -3,7 +3,7 @@
 use yii\helpers\Html;
 
 echo Html::beginForm('', 'post', array(
-    'id' => 'ShopProductTypeForm',
+    'id' => 'ProductTypeForm',
     'class' => 'form-horizontal'
 ));
 //echo Html::errorSummary($model);

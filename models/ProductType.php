@@ -5,12 +5,12 @@ namespace panix\mod\shop\models;
 use Yii;
 use panix\engine\CMS;
 use panix\engine\behaviors\TranslateBehavior;
-use panix\mod\shop\models\ShopCategory;
-use panix\mod\shop\models\ShopManufacturer;
-use panix\mod\shop\models\query\ShopProductQuery;
-use panix\mod\shop\models\translate\ShopProductTranslate;
-use panix\mod\shop\models\ShopRelatedProduct;
-use panix\mod\shop\models\ShopProductCategoryRef;
+use panix\mod\shop\models\Category;
+use panix\mod\shop\models\Manufacturer;
+use panix\mod\shop\models\query\ProductQuery;
+use panix\mod\shop\models\translate\ProductTranslate;
+use panix\mod\shop\models\RelatedProduct;
+use panix\mod\shop\models\ProductCategoryRef;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
@@ -72,7 +72,7 @@ class ProductType extends \panix\engine\db\ActiveRecord {
         );
     }
     public function getProductsCount() {
-        return $this->hasOne(ShopProduct::className(), ['id' => 'type_id'])->count();
+        return $this->hasOne(Product::className(), ['id' => 'type_id'])->count();
     }
 
     public function getAttributeRelation() {

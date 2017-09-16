@@ -24,7 +24,7 @@ use panix\mod\shop\models\query\AttributeQuery;
  * @property boolean $use_in_filter Display attribute options as filter on front
  * @property boolean $use_in_variants Use attribute and its options to configure products
  * @property boolean $select_many Allow to filter products on front by more than one option value.
- * @method ShopCategory useInFilter()
+ * @method Category useInFilter()
  */
 class Attribute extends \panix\engine\db\ActiveRecord {
 

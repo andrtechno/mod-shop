@@ -4,8 +4,8 @@ namespace panix\mod\shop\controllers;
 
 use Yii;
 use panix\engine\controllers\WebController;
-use panix\mod\shop\models\ShopManufacturer;
-use panix\mod\shop\models\ShopProduct;
+use panix\mod\shop\models\Manufacturer;
+use panix\mod\shop\models\Product;
 
 class ManufacturerController extends WebController {
 
@@ -34,7 +34,7 @@ class ManufacturerController extends WebController {
     public function actionView($seo_alias) {
         $this->findModel($seo_alias);
 
-        $query = ShopProduct::find();
+        $query = Product::find();
         $query->attachBehaviors($query->behaviors());
         $query->published();
         $query->applyManufacturers($this->dataModel->id);
@@ -54,7 +54,7 @@ class ManufacturerController extends WebController {
     }
 
     protected function findModel($seo_alias) {
-        $model = new ShopManufacturer;
+        $model = new Manufacturer;
         if (($this->dataModel = $model::find()
                 ->published()
                 ->where(['seo_alias' => $seo_alias])

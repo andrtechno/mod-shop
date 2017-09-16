@@ -1,6 +1,6 @@
 <?php
 
-Yii::import('mod.shop.models.*');
+
 
 class SProductsDuplicator extends CComponent {
 
@@ -36,7 +36,7 @@ class SProductsDuplicator extends CComponent {
         $new_ids = array();
 
         foreach ($ids as $id) {
-            $model = ShopProduct::model()->findByPk($id);
+            $model = Product::model()->findByPk($id);
 
             if ($model) {
                 $new_ids[] = $this->duplicateProduct($model)->id;
@@ -49,12 +49,12 @@ class SProductsDuplicator extends CComponent {
     /**
      * Duplicate one product and return model
      *
-     * @param ShopProduct $model
-     * @return ShopProduct
+     * @param Product $model
+     * @return Product
      */
-    public function duplicateProduct(ShopProduct $model) {
+    public function duplicateProduct(Product $model) {
 
-        $product = new ShopProduct();
+        $product = new Product();
         $product->attributes = $model->attributes;
 
         $behaviors = $model->behaviors();
@@ -92,10 +92,10 @@ class SProductsDuplicator extends CComponent {
     /**
      * Creates copy of product images
      *
-     * @param ShopProduct $original
-     * @param ShopProduct $copy
+     * @param Product $original
+     * @param Product $copy
      */
-    protected function copyImages(ShopProduct $original, ShopProduct $copy) {
+    protected function copyImages(Product $original, Product $copy) {
         $images = $original->attachments;
 
         if (!empty($images)) {
@@ -127,15 +127,15 @@ class SProductsDuplicator extends CComponent {
     /**
      * Creates copy of EAV attributes
      *
-     * @param ShopProduct $original
-     * @param ShopProduct $copy
+     * @param Product $original
+     * @param Product $copy
      */
-    protected function copyAttributes(ShopProduct $original, ShopProduct $copy) {
+    protected function copyAttributes(Product $original, Product $copy) {
         $attributes = $original->getEavAttributes();
 
         if (!empty($attributes)) {
             foreach ($attributes as $key => $val) {
-                Yii::app()->db->createCommand()->insert('{{shop_product_attribute_eav}}', array(
+                Yii::$app->db->createCommand()->insert('{{%shop_product_attribute_eav}}', array(
                     'entity' => $copy->id,
                     'attribute' => $key,
                     'value' => $val
@@ -147,24 +147,24 @@ class SProductsDuplicator extends CComponent {
     /**
      * Copy related products
      *
-     * @param ShopProduct $original
-     * @param ShopProduct $copy
+     * @param Product $original
+     * @param Product $copy
      */
-    protected function copyRelated(ShopProduct $original, ShopProduct $copy) {
+    protected function copyRelated(Product $original, Product $copy) {
         $related = $original->related;
 
         if (!empty($related)) {
             foreach ($related as $p) {
-                $model = new ShopRelatedProduct();
+                $model = new RelatedProduct();
                 $model->product_id = $copy->id;
                 $model->related_id = $p->related_id;
-                $model->save(false, false);
+                $model->save();
                 //двустороннюю связь между товарами
                 if (Yii::app()->settings->get('shop', 'product_related_bilateral')) {
-                    $related = new ShopRelatedProduct;
+                    $related = new RelatedProduct;
                     $related->product_id = $p->related_id;
                     $related->related_id = $copy->id;
-                    $related->save(false, false);
+                    $related->save();
                 }
             }
         }
@@ -173,22 +173,22 @@ class SProductsDuplicator extends CComponent {
     /**
      * Copy product variants
      *
-     * @param ShopProduct $original
-     * @param ShopProduct $copy
+     * @param Product $original
+     * @param Product $copy
      */
-    public function copyVariants(ShopProduct $original, ShopProduct $copy) {
+    public function copyVariants(Product $original, Product $copy) {
         $variants = $original->variants;
 
         if (!empty($variants)) {
             foreach ($variants as $v) {
-                $record = new ShopProductVariant();
+                $record = new ProductVariant();
                 $record->product_id = $copy->id;
                 $record->attribute_id = $v->attribute_id;
                 $record->option_id = $v->option_id;
                 $record->price = $v->price;
                 $record->price_type = $v->price_type;
                 $record->sku = $v->sku;
-                $record->save(false, false);
+                $record->save();
             }
         }
     }

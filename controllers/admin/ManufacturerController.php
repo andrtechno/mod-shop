@@ -3,8 +3,8 @@
 namespace panix\mod\shop\controllers\admin;
 
 use Yii;
-use panix\mod\shop\models\ShopManufacturer;
-use panix\mod\shop\models\search\ShopManufacturerSearch;
+use panix\mod\shop\models\Manufacturer;
+use panix\mod\shop\models\search\ManufacturerSearch;
 use panix\engine\controllers\AdminController;
 use panix\engine\grid\sortable\SortableGridAction;
 
@@ -14,7 +14,7 @@ class ManufacturerController extends AdminController {
         return [
             'dnd_sort' => [
                 'class' => SortableGridAction::className(),
-                'modelName' => ShopManufacturer::className(),
+                'modelName' => Manufacturer::className(),
             ],
         ];
     }
@@ -48,7 +48,7 @@ public function actionActive($id)
             $this->pageName
         ];
 
-        $searchModel = new ShopManufacturerSearch();
+        $searchModel = new ManufacturerSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams());
 
         return $this->render('index', [
@@ -61,7 +61,7 @@ public function actionActive($id)
 
         
         if ($id === true) {
-            $model = Yii::$app->getModule("shop")->model("ShopManufacturer");
+            $model = Yii::$app->getModule("shop")->model("Manufacturer");
         } else {
             $model = $this->findModel($id);
         }
@@ -103,7 +103,7 @@ public function actionActive($id)
  
 
     protected function findModel($id) {
-        $model = Yii::$app->getModule("shop")->model("ShopManufacturer");
+        $model = Yii::$app->getModule("shop")->model("Manufacturer");
         if (($model = $model::findOne($id)) !== null) {
             return $model;
         } else {

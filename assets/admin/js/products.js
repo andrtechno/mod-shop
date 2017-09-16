@@ -1,12 +1,12 @@
 
 // Process checked categories
 
-$("#ShopProduct").submit(function () {
-    var checked = $("#jsTree_ShopCategoryTree li a.jstree-checked");
+$("#Product").submit(function () {
+    var checked = $("#jsTree_CategoryTree li a.jstree-checked");
     checked.each(function (i, el) {
         var id = $(el).attr("id").replace('node_', '').replace('_anchor', '');
         console.log(id);
-        $("#ShopProduct").append('<input type="hidden" name="categories[]" value="' + id + '" />');
+        $("#Product").append('<input type="hidden" name="categories[]" value="' + id + '" />');
     });
 
 });
@@ -26,19 +26,19 @@ $("#ShopProduct").submit(function () {
 })(jQuery);
 
 // On change `use configurations` select - load available attributes
-$('#shopproduct-use_configurations, #shopproduct-type_id').change(function () {
+$('#product-use_configurations, #product-type_id').change(function () {
     var attrs_block = $('#availableAttributes');
     var type_id = $('#shopproduct-type_id').val();
     attrs_block.html('');
 
-    if ($('#shopproduct-use_configurations').val() == '0')
+    if ($('#product-use_configurations').val() == '0')
         return;
 
     $.getJSON('/admin/shop/default/load-configurable-options?type_id=' + type_id, function (data) {
         var items = [];
         if (data.status === 'success') {
             $.each(data.response, function (key, option) {
-                items.push('<li><label class="control-label"><input type="checkbox" class="check" name="ShopProduct[configurable_attributes][]" value="' + option.id + '" name=""> ' + option.title + '</label></li>');
+                items.push('<li><label class="control-label"><input type="checkbox" class="check" name="Product[configurable_attributes][]" value="' + option.id + '" name=""> ' + option.title + '</label></li>');
             });
             $('#availableAttributes').removeClass('hidden');
             $('<ul/>', {

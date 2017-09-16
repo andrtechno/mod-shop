@@ -5,7 +5,7 @@ namespace panix\mod\shop\models\query;
 
 use panix\engine\behaviors\nestedsets\NestedSetsQueryBehavior;
 
-class ShopCategoryQuery extends \yii\db\ActiveQuery {
+class CategoryQuery extends \yii\db\ActiveQuery {
 
     // use NestedSetsQueryTrait;
     public function behaviors() {

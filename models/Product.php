@@ -5,17 +5,17 @@ namespace panix\mod\shop\models;
 use Yii;
 use panix\engine\CMS;
 use panix\engine\behaviors\TranslateBehavior;
-use panix\mod\shop\models\ShopCategory;
-use panix\mod\shop\models\ShopManufacturer;
-use panix\mod\shop\models\query\ShopProductQuery;
-use panix\mod\shop\models\translate\ShopProductTranslate;
-use panix\mod\shop\models\ShopRelatedProduct;
-use panix\mod\shop\models\ShopProductCategoryRef;
+use panix\mod\shop\models\Category;
+use panix\mod\shop\models\Manufacturer;
+use panix\mod\shop\models\query\ProductQuery;
+use panix\mod\shop\models\translate\ProductTranslate;
+use panix\mod\shop\models\RelatedProduct;
+use panix\mod\shop\models\ProductCategoryRef;
 use panix\mod\shop\models\ProductVariant;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
-class ShopProduct extends \panix\engine\db\ActiveRecord {
+class Product extends \panix\engine\db\ActiveRecord {
 
 
     /**
@@ -36,7 +36,7 @@ class ShopProduct extends \panix\engine\db\ActiveRecord {
     const MODULE_ID = 'shop';
 
     public static function find() {
-        return new ShopProductQuery(get_called_class());
+        return new ProductQuery(get_called_class());
     }
 
     public function getIsAvailable() {
@@ -145,11 +145,11 @@ class ShopProduct extends \panix\engine\db\ActiveRecord {
     }
 
     /* public function getCategory2() {
-      return $this->hasOne(ShopCategory::className(), ['id' => 'category_id']);
+      return $this->hasOne(Category::className(), ['id' => 'category_id']);
       } */
 
     public function getManufacturer() {
-        return $this->hasOne(ShopManufacturer::className(), ['id' => 'manufacturer_id']);
+        return $this->hasOne(Manufacturer::className(), ['id' => 'manufacturer_id']);
     }
 
     public function getType() {
@@ -161,32 +161,32 @@ class ShopProduct extends \panix\engine\db\ActiveRecord {
     }
 
     public function getTranslations() {
-        return $this->hasMany(ShopProductTranslate::className(), ['object_id' => 'id']);
+        return $this->hasMany(ProductTranslate::className(), ['object_id' => 'id']);
     }
 
     public function getRelated() {
-        return $this->hasMany(ShopRelatedProduct::className(), ['related_id' => 'id']);
+        return $this->hasMany(RelatedProduct::className(), ['related_id' => 'id']);
     }
 
     public function getRelatedProductCount() {
-        return $this->hasMany(ShopRelatedProduct::className(), ['product_id' => 'id'])->count();
+        return $this->hasMany(RelatedProduct::className(), ['product_id' => 'id'])->count();
     }
 
     public function getRelatedProducts() {
-        return $this->hasMany(ShopProduct::className(), ['id' => 'product_id'])
-                        ->viaTable(ShopRelatedProduct::tableName(), ['related_id' => 'id']);
+        return $this->hasMany(Product::className(), ['id' => 'product_id'])
+                        ->viaTable(RelatedProduct::tableName(), ['related_id' => 'id']);
     }
 
     public function getCategorization() {
-        return $this->hasMany(ShopProductCategoryRef::className(), ['product' => 'id']);
+        return $this->hasMany(ProductCategoryRef::className(), ['product' => 'id']);
     }
 
     public function getCategories() {
-        return $this->hasMany(ShopCategory::className(), ['id' => 'category'])->via('categorization');
+        return $this->hasMany(Category::className(), ['id' => 'category'])->via('categorization');
     }
 
     public function getMainCategory() {
-        return $this->hasOne(ShopCategory::className(), ['id' => 'category'])
+        return $this->hasOne(Category::className(), ['id' => 'category'])
                         ->via('categorization', function($query) {
                             $query->where(['is_main' => 1]);
                         });
@@ -198,7 +198,7 @@ class ShopProduct extends \panix\engine\db\ActiveRecord {
     }
 
     
-//'variants' => array(self::HAS_MANY, 'ShopProductVariant', array('product_id'), 'with' => array('attribute', 'option'), 'order' => 'option.ordern'),
+//'variants' => array(self::HAS_MANY, 'ProductVariant', array('product_id'), 'with' => array('attribute', 'option'), 'order' => 'option.ordern'),
 
     /**
      * Set product categories and main category
@@ -209,7 +209,7 @@ class ShopProduct extends \panix\engine\db\ActiveRecord {
         $dontDelete = array();
 
 
-        // if (!ShopCategory::model()->countByAttributes(array('id' => $main_category)))
+        // if (!Category::model()->countByAttributes(array('id' => $main_category)))
         //    $main_category = 1;
 
         if (!in_array($main_category, $categories))
@@ -221,7 +221,7 @@ class ShopProduct extends \panix\engine\db\ActiveRecord {
               'category' => $c,
               'product' => $this->id,
               )); */
-            $count = ShopProductCategoryRef::find()->where(array(
+            $count = ProductCategoryRef::find()->where(array(
                         'category' => $c,
                         'product' => $this->id,
                     ))->count();
@@ -229,7 +229,7 @@ class ShopProduct extends \panix\engine\db\ActiveRecord {
 
 
             if ($count == 0) {
-                $record = new ShopProductCategoryRef;
+                $record = new ProductCategoryRef;
                 $record->category = (int) $c;
                 $record->product = $this->id;
                 //$record->switch = $this->switch; // new param
@@ -240,13 +240,13 @@ class ShopProduct extends \panix\engine\db\ActiveRecord {
         }
 
         // Clear main category
-        ShopProductCategoryRef::updateAll([
+        ProductCategoryRef::updateAll([
             'is_main' => 0,
                 // 'switch' => $this->switch
                 ], 'product=:p', array(':p' => $this->id));
 
         // Set main category
-        ShopProductCategoryRef::updateAll(array(
+        ProductCategoryRef::updateAll(array(
             'is_main' => 1,
             'switch' => $this->switch,
                 ), 'product=:p AND category=:c', array(':p' => $this->id, ':c' => $main_category));
@@ -256,7 +256,7 @@ class ShopProduct extends \panix\engine\db\ActiveRecord {
             // $cr = new CDbCriteria;
             // $cr->addNotInCondition('category', $dontDelete);
             //    $query = ShopProductCategoryRef::deleteAll(['product=:id','category NOT IN (:cats)'],[':id'=>$this->id,':cats'=>implode(',',$dontDelete)]);
-            $query = ShopProductCategoryRef::deleteAll(
+            $query = ProductCategoryRef::deleteAll(
                             ['AND',
                         'product=:id',
                         ['NOT IN', 'category', $dontDelete]
@@ -267,7 +267,7 @@ class ShopProduct extends \panix\engine\db\ActiveRecord {
         } else {
 
             // Delete all relations 
-            ShopProductCategoryRef::deleteAll('product=:id', [':id' => $this->id]);
+            ProductCategoryRef::deleteAll('product=:id', [':id' => $this->id]);
         }
     }
 
@@ -276,9 +276,9 @@ class ShopProduct extends \panix\engine\db\ActiveRecord {
     }
 
     private function clearRelatedProducts() {
-        ShopRelatedProduct::deleteAll('product_id=:id', ['id' => $this->id]);
+        RelatedProduct::deleteAll('product_id=:id', ['id' => $this->id]);
         if (Yii::$app->settings->get('shop', 'product_related_bilateral')) {
-            ShopRelatedProduct::deleteAll('related_id=:id', ['id' => $this->id]);
+            RelatedProduct::deleteAll('related_id=:id', ['id' => $this->id]);
         }
     }
 
@@ -288,13 +288,13 @@ class ShopProduct extends \panix\engine\db\ActiveRecord {
             $this->clearRelatedProducts();
 
             foreach ($this->_related as $id) {
-                $related = new ShopRelatedProduct;
+                $related = new RelatedProduct;
                 $related->product_id = $this->id;
                 $related->related_id = (int) $id;
                 if ($related->save()) {
                     //двустороннюю связь между товарами
                     if (Yii::$app->settings->get('shop', 'product_related_bilateral')) {
-                        $related = new ShopRelatedProduct;
+                        $related = new RelatedProduct;
 
                         $related->product_id = (int) $id;
                         $related->related_id = $this->id;
@@ -338,7 +338,7 @@ class ShopProduct extends \panix\engine\db\ActiveRecord {
               ->queryAll();
              */
             foreach ($query as $row) {
-                $model = ShopProduct::findOne($row['product_id']);
+                $model = Product::findOne($row['product_id']);
                 if ($model)
                     $this->updatePrices($model);
             }
@@ -350,9 +350,9 @@ class ShopProduct extends \panix\engine\db\ActiveRecord {
 
     /**
      * Update price and max_price for configurable product
-     * @param ShopProduct $model
+     * @param Product $model
      */
-    public function updatePrices__(ShopProduct $model) {
+    public function updatePrices__(Product $model) {
         // Get min and max prices
         $query = Yii::$app->db->createCommand()
                 ->select('MIN(t.price) as min_price, MAX(t.price) as max_price')
@@ -367,7 +367,7 @@ class ShopProduct extends \panix\engine\db\ActiveRecord {
                 ), 'id=:id', array(':id' => $model->id));
     }
 
-    public function updatePrices(ShopProduct $model) {
+    public function updatePrices(Product $model) {
         $query = (new \yii\db\Query())
                 ->select('MIN(t.price) as min_price, MAX(t.price) as max_price')
                 ->from('{{%shop_product}} t')
@@ -406,10 +406,10 @@ class ShopProduct extends \panix\engine\db\ActiveRecord {
 
     public function afterDelete() {
         $this->clearRelatedProducts();
-        ShopRelatedProduct::deleteAll('related_id=:id', array('id' => $this->id));
+        RelatedProduct::deleteAll('related_id=:id', array('id' => $this->id));
 
         // Delete categorization
-        ShopProductCategoryRef::find()->deleteAll([
+        ProductCategoryRef::find()->deleteAll([
             'product' => $this->id
         ]);
 
@@ -546,13 +546,13 @@ class ShopProduct extends \panix\engine\db\ActiveRecord {
     }
 
     public static function calculatePrices($product, array $variants, $configuration) {
-        if (($product instanceof ShopProduct) === false)
-            $product = ShopProduct::findOne($product);
+        if (($product instanceof Product) === false)
+            $product = Product::findOne($product);
 
-        if (($configuration instanceof ShopProduct) === false && $configuration > 0)
-            $configuration = ShopProduct::findOne($configuration);
+        if (($configuration instanceof Product) === false && $configuration > 0)
+            $configuration = Product::findOne($configuration);
 
-        if ($configuration instanceof ShopProduct) {
+        if ($configuration instanceof Product) {
             $result = $configuration->price;
         } else {
             //  if ($product->currency_id) {

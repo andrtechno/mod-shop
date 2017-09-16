@@ -1,7 +1,7 @@
 <?php
 
-use panix\mod\shop\models\ShopCategoryNode;
-use panix\mod\shop\models\ShopCategory;
+use panix\mod\shop\models\CategoryNode;
+use panix\mod\shop\models\Category;
 ?>
 
 <div class="form-group">
@@ -14,9 +14,9 @@ use panix\mod\shop\models\ShopCategory;
 <?php
 // Create jstree
 echo \panix\ext\jstree\JsTree::widget([
-    'id' => 'ShopTypeCategoryTree',
+    'id' => 'TypeCategoryTree',
     'name' => 'jstree',
-    'data' => ShopCategoryNode::fromArray(ShopCategory::findOne(1)->children()->all()),
+    'data' => CategoryNode::fromArray(Category::findOne(1)->children()->all()),
 
         'core' => array(
             'strings' => array('Loading ...' => Yii::t('app', 'LOADING')),
@@ -40,7 +40,7 @@ if (!is_array($categories))
     $categories = array();
 
 foreach ($categories as $id) {
-    $this->registerJs("$('#jsTree_ShopTypeCategoryTree').checkNode({$id});");
+    $this->registerJs("$('#jsTree_TypeCategoryTree').checkNode({$id});");
 }
 
 

@@ -2,14 +2,14 @@
 
 <?php
 
-use panix\mod\shop\models\ShopCategoryNode;
-use panix\mod\shop\models\ShopCategory;
+use panix\mod\shop\models\CategoryNode;
+use panix\mod\shop\models\Category;
 
 echo \panix\ext\jstree\JsTree::widget([
-    'id' => 'ShopCategoryTree',
+    'id' => 'CategoryTree',
     'name' => 'jstree',
     'allOpen'=>true,
-    'data' => ShopCategoryNode::fromArray(ShopCategory::findOne(1)->children()->all()),
+    'data' => CategoryNode::fromArray(Category::findOne(1)->children()->all()),
     'core' => [
         'strings' => [
             'Loading ...' => Yii::t('app', 'LOADING')
@@ -42,14 +42,14 @@ echo \panix\ext\jstree\JsTree::widget([
 if (isset($_POST['categories']) && !empty($_POST['categories'])) {
     foreach ($_POST['categories'] as $id) {
         Yii::app()->getClientScript()->registerScript("checkNode{$id}", "
-			$('#ShopCategoryTree').checkNode({$id});
+			$('#CategoryTree').checkNode({$id});
 		");
     }
 } elseif ($model->isNewRecord && empty($_POST['categories']) && isset($presetCategories)) {
     foreach ($presetCategories as $id) {
         if ($model->type && $id === $model->type->main_category)
             continue;
-        $this->registerJs("$('#jsTree_ShopCategoryTree').checkNode({$id});");
+        $this->registerJs("$('#jsTree_CategoryTree').checkNode({$id});");
     }
 } else {
     // Check tree nodes
@@ -57,7 +57,7 @@ if (isset($_POST['categories']) && !empty($_POST['categories'])) {
         if ($c->id === $model->main_category_id)
             continue;
 
-        $this->registerJs("$('#jsTree_ShopCategoryTree').checkNode({$c->id});");
+        $this->registerJs("$('#jsTree_CategoryTree').checkNode({$c->id});");
     }
 }
 

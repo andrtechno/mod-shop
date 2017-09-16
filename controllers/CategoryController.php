@@ -4,9 +4,9 @@ namespace panix\mod\shop\controllers;
 
 use Yii;
 use panix\engine\controllers\WebController;
-use panix\mod\shop\models\ShopProduct;
+use panix\mod\shop\models\Product;
 use yii\web\NotFoundHttpException;
-use panix\mod\shop\models\ShopCategory;
+use panix\mod\shop\models\Category;
 use panix\mod\shop\models\Attribute;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -33,7 +33,7 @@ class CategoryController extends WebController {
 
         // Find category types
 
-        $model = ShopProduct::find();
+        $model = Product::find();
         $query = $model->applyCategories($this->dataModel)->published();
 
         unset($model);
@@ -121,7 +121,7 @@ class CategoryController extends WebController {
 
         if (Yii::$app->request->isAjax && Yii::$app->request->get('q')) {
             $res = [];
-            $model = ShopProduct::find();
+            $model = Product::find();
             $model->joinWith(['manufacturer', 'translations']); //manufacturerActive
             $model->andWhere(['LIKE', '{{%shop_product}}.sku', Yii::$app->request->get('q')]);
             $model->orWhere(['LIKE', '{{%shop_product_translate}}.name', Yii::$app->request->get('q')]);
@@ -148,7 +148,7 @@ class CategoryController extends WebController {
     }
 
     public function doSearch($data, $view) {
-        $this->query = ShopProduct::find();
+        $this->query = Product::find();
 
         $this->query->attachBehaviors($this->query->behaviors());
         $this->query->applyAttributes($this->activeAttributes)->published();
@@ -158,7 +158,7 @@ class CategoryController extends WebController {
 
 
 
-        if ($data instanceof \panix\mod\shop\models\ShopCategory) {
+        if ($data instanceof \panix\mod\shop\models\Category) {
             //  $cr->with = array('manufacturerActive');
             // Скрывать товары если производитель скрыт.
             //TODO: если у товара не выбран производитель то он тоже скрывается!! need fix
@@ -207,7 +207,7 @@ class CategoryController extends WebController {
             )
         ]);
 
-        $this->provider->sort = ShopProduct::getSort();
+        $this->provider->sort = Product::getSort();
         if ($view != 'search') {
 
             $c = Yii::$app->settings->get('shop');
@@ -269,7 +269,7 @@ class CategoryController extends WebController {
     }
 
     protected function findModel($seo_alias) {
-        $model = new ShopCategory;
+        $model = new Category;
         if (($this->dataModel = $model::find()
                 ->where(['full_path' => $seo_alias])
                 ->one()) !== null) {

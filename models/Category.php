@@ -6,10 +6,10 @@ use Yii;
 use panix\engine\behaviors\TranslateBehavior;
 use panix\engine\behaviors\nestedsets\NestedSetsBehavior;
 use panix\engine\behaviors\MenuArrayBehavior;
-use panix\mod\shop\models\translate\ShopCategoryTranslate;
-use panix\mod\shop\models\query\ShopCategoryQuery;
+use panix\mod\shop\models\translate\CategoryTranslate;
+use panix\mod\shop\models\query\CategoryQuery;
 
-class ShopCategory extends \panix\engine\db\ActiveRecord {
+class Category extends \panix\engine\db\ActiveRecord {
 
     const MODULE_ID = 'shop';
     const route = '/shop/admin/category';
@@ -20,7 +20,7 @@ class ShopCategory extends \panix\engine\db\ActiveRecord {
     }
 
     public static function find() {
-        return new ShopCategoryQuery(get_called_class());
+        return new CategoryQuery(get_called_class());
     }
 
     public function getUrl() {
@@ -61,12 +61,12 @@ class ShopCategory extends \panix\engine\db\ActiveRecord {
 
 
     public function getTranslations() {
-        return $this->hasMany(ShopCategoryTranslate::className(), ['object_id' => 'id']);
+        return $this->hasMany(CategoryTranslate::className(), ['object_id' => 'id']);
     }
 
     public static function flatTree() {
         $result = [];
-        $categories = ShopCategory::find()->orderBy(['lft' => SORT_ASC])->all();
+        $categories = Category::find()->orderBy(['lft' => SORT_ASC])->all();
         array_shift($categories);
 
         foreach ($categories as $c) {

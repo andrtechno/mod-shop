@@ -140,7 +140,7 @@ class EavController extends AdminController {
 
             if (!empty($model)) {
                 foreach ($model as $m) {
-                    $count = ShopProduct::find()->withEavAttributes(array($m->name))->count();
+                    $count = Product::find()->withEavAttributes(array($m->name))->count();
                     if ($count)
                         throw new CHttpException(503, Yii::t('shop/admin', 'ERR_DEL_ATTR'));
                     $m->delete();

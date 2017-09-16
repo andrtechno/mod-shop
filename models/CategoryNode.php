@@ -3,15 +3,15 @@ namespace panix\mod\shop\models;
 
 use Yii;
 use yii\base\Component;
-use panix\mod\shop\models\ShopCategory;
+use panix\mod\shop\models\Category;
 use yii\helpers\ArrayHelper;
 /**
- * Present ShopCategory as JsTree node.
+ * Present Category as JsTree node.
  */
-class ShopCategoryNode extends Component implements \ArrayAccess {
+class CategoryNode extends Component implements \ArrayAccess {
 
     /**
-     * @var ShopCategory
+     * @var Category
      */
     protected $model;
 
@@ -59,7 +59,7 @@ class ShopCategoryNode extends Component implements \ArrayAccess {
         foreach ($model as $row){
             //if(isset($options['switch'])){
            // if($row->switch) //$options['switch'] || 
-                $result[] = new ShopCategoryNode($row, $options);
+                $result[] = new CategoryNode($row, $options);
            // }
         }
         return $result;

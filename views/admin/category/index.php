@@ -1,17 +1,17 @@
 <?php
 
 use yii\helpers\Html;
-use panix\mod\shop\models\ShopCategory;
-use panix\mod\shop\models\ShopCategoryNode;
+use panix\mod\shop\models\Category;
+use panix\mod\shop\models\CategoryNode;
 
 \panix\mod\shop\assets\admin\CategoryAsset::register($this);
 
 
 
 echo \panix\ext\jstree\JsTree::widget([
-    'id' => 'ShopCategoryTree',
+    'id' => 'CategoryTree',
     'name' => 'jstree',
-    'data' => ShopCategoryNode::fromArray(ShopCategory::findOne(1)->children()->all(), ['switch' => true]),
+    'data' => CategoryNode::fromArray(Category::findOne(1)->children()->all(), ['switch' => true]),
     'core' => [
         'force_text' => true,
         'animation' => 0,
@@ -24,7 +24,7 @@ echo \panix\ext\jstree\JsTree::widget([
     'plugins' => ['dnd', 'contextmenu', 'search', 'wholerow', 'state'],
     'contextmenu' => [
         'items' => new yii\web\JsExpression('function($node) {
-                var tree = $("#jsTree_ShopCategoryTree").jstree(true);
+                var tree = $("#jsTree_CategoryTree").jstree(true);
                 return {
                     "Switch": {
                         "icon":"icon-eye",

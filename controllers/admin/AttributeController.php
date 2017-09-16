@@ -6,7 +6,7 @@ use panix\engine\controllers\AdminController;
 use panix\mod\shop\models\Attribute;
 use panix\mod\shop\models\search\AttributeSearch;
 use panix\mod\shop\models\AttributeOption;
-use panix\mod\shop\models\ShopProduct;
+use panix\mod\shop\models\Product;
 class AttributeController extends AdminController {
 
     public $icon = 'icon-filter';
@@ -158,7 +158,7 @@ class AttributeController extends AdminController {
 
             if (!empty($model)) {
                 foreach ($model as $m) {
-                   // $count = ShopProduct::find()->withEavAttributes(array($m->name))->count();
+                   // $count = Product::find()->withEavAttributes(array($m->name))->count();
                     //if ($count)
                     //    throw new \yii\web\HttpException(503, Yii::t('shop/admin', 'ERR_DEL_ATTR'));
                     $m->delete();

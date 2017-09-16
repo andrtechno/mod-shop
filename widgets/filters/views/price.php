@@ -1,7 +1,7 @@
 
     <?php
     use yii\helpers\Html;
-    use panix\mod\shop\models\ShopProduct;
+    use panix\mod\shop\models\Product;
     $cm = Yii::$app->currency;
     //$getMin = $this->controller->getMinPrice();
     //$getMax = $this->controller->getMaxPrice();
@@ -47,8 +47,8 @@
                 'create' => 'function(event, ui){
 				$("#min_price").val(' . $min . ');
 				$("#max_price").val(' . $max . ');
-                                $("#mn").text("' . ShopProduct::formatPrice($min) . '");
-				$("#mx").text("' . ShopProduct::formatPrice($max) . '");
+                                $("#mn").text("' . Product::formatPrice($min) . '");
+				$("#mx").text("' . Product::formatPrice($max) . '");
                     }'
             ],
     ]);

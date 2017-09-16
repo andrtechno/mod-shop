@@ -6,7 +6,7 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
-use panix\mod\shop\models\ShopCategory;
+use panix\mod\shop\models\Category;
 
 //$countries = ShopCategory::findOne(['seo_alias' => 'root']);
 //$children = $countries->children()->all();
@@ -54,7 +54,7 @@ $form = ActiveForm::begin([
 
 <?php
 /*echo \panix\engine\widgets\nestable\Nestable::widget([
-    'modelClass' => 'app\system\modules\shop\models\ShopCategory',
+    'modelClass' => 'app\system\modules\shop\models\Category',
 ]);*/
 /*
 use kartik\tree\TreeView;

@@ -4,8 +4,8 @@ namespace panix\mod\shop\controllers\admin;
 
 use Yii;
 use yii\helpers\Html;
-use panix\mod\shop\models\ShopProduct;
-use panix\mod\shop\models\search\ShopProductSearch;
+use panix\mod\shop\models\Product;
+use panix\mod\shop\models\search\ProductSearch;
 use panix\engine\controllers\AdminController;
 use panix\engine\grid\sortable\SortableGridAction;
 use panix\mod\shop\models\ProductType;
@@ -17,11 +17,11 @@ class DefaultController extends AdminController {
         return [
             'dnd_sort' => [
                 'class' => SortableGridAction::className(),
-                'modelName' => ShopProduct::className(),
+                'modelName' => Product::className(),
             ],
             'delete' => [
                 'class' => 'panix\engine\grid\actions\DeleteAction',
-                'modelClass' => ShopProduct::className(),
+                'modelClass' => Product::className(),
             ],
         ];
     }
@@ -40,7 +40,7 @@ class DefaultController extends AdminController {
             $this->pageName
         ];
 
-        $searchModel = new ShopProductSearch();
+        $searchModel = new ProductSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams());
 
         return $this->render('index', [
@@ -53,7 +53,7 @@ class DefaultController extends AdminController {
 
 
         if ($id === true) {
-            $model = new ShopProduct;
+            $model = new Product;
         } else {
             $model = $this->findModel($id);
         }
@@ -93,8 +93,8 @@ class DefaultController extends AdminController {
 
 
         // Apply use_configurations, configurable_attributes, type_id
-        if (Yii::$app->request->get('ShopProduct'))
-            $model->attributes = Yii::$app->request->get('ShopProduct');
+        if (Yii::$app->request->get('Product'))
+            $model->attributes = Yii::$app->request->get('Product');
 
 
 
@@ -103,7 +103,7 @@ class DefaultController extends AdminController {
 
         
         // On create new product first display "Choose type" form first.
-        if ($model->isNewRecord && isset($_GET['ShopProduct']['type_id'])) {
+        if ($model->isNewRecord && isset($_GET['Product']['type_id'])) {
            // $type_id = $model->type_id;
 
             if (ProductType::find()->where(['id' => $model->type_id])->count() === 0)
@@ -126,8 +126,8 @@ class DefaultController extends AdminController {
         
         // Set configurable attributes on new record
         if ($model->isNewRecord) {
-            if ($model->use_configurations && isset($_GET['ShopProduct']['configurable_attributes']))
-                $model->configurable_attributes = $_GET['ShopProduct']['configurable_attributes'];
+            if ($model->use_configurations && isset($_GET['Product']['configurable_attributes']))
+                $model->configurable_attributes = $_GET['Product']['configurable_attributes'];
         }
 
         if ($model->load($post) && $model->validate() && $this->validateAttributes($model)) {
@@ -138,8 +138,8 @@ class DefaultController extends AdminController {
 
             $model->save();
             $mainCategoryId = 1;
-            if (isset($_POST['ShopProduct']['main_category_id']))
-                $mainCategoryId = $_POST['ShopProduct']['main_category_id'];
+            if (isset($_POST['Product']['main_category_id']))
+                $mainCategoryId = $_POST['Product']['main_category_id'];
             $model->setCategories(Yii::$app->request->post('categories', []), $mainCategoryId);
 
             $model->file = \yii\web\UploadedFile::getInstances($model, 'file');
@@ -169,10 +169,10 @@ class DefaultController extends AdminController {
     }
     /**
      * Validate required shop attributes
-     * @param ShopProduct $model
+     * @param Product $model
      * @return bool
      */
-    public function validateAttributes(ShopProduct $model) {
+    public function validateAttributes(Product $model) {
         $attributes = $model->type->shopAttributes;
 
         if (empty($attributes) || $model->use_configurations) {
@@ -226,7 +226,7 @@ class DefaultController extends AdminController {
         die;
     }
 
-    protected function processConfigurations(ShopProduct $model) {
+    protected function processConfigurations(Product $model) {
         $productPks = Yii::$app->request->post('ConfigurationsProductGrid_c0', array());
 
         // Clear relations
@@ -243,12 +243,12 @@ class DefaultController extends AdminController {
         }
     }
 
-    protected function processAttributes(ShopProduct $model) {
+    protected function processAttributes(Product $model) {
         $attributes = Yii::$app->request->post('Attribute', []);
         if (empty($attributes))
             return false;
 
-        $deleteModel = ShopProduct::findOne($model->id);
+        $deleteModel = Product::findOne($model->id);
         //$deleteModel->deleteEavAttributes(array(), true);
 
         // Delete empty values
@@ -262,9 +262,9 @@ class DefaultController extends AdminController {
 
     /**
      * Save product variants
-     * @param ShopProduct $model
+     * @param Product $model
      */
-    protected function processVariants(ShopProduct $model) {
+    protected function processVariants(Product $model) {
         $dontDelete = array();
 
         if (!empty($_POST['variants'])) {
@@ -301,13 +301,13 @@ class DefaultController extends AdminController {
             $cr = new CDbCriteria;
             $cr->addNotInCondition('id', $dontDelete);
             $cr->addCondition('product_id=' . $model->id);
-            ShopProductVariant::model()->deleteAll($cr);
+            ProductVariant::model()->deleteAll($cr);
         } else
-            ShopProductVariant::model()->deleteAllByAttributes(array('product_id' => $model->id));
+            ProductVariant::model()->deleteAllByAttributes(array('product_id' => $model->id));
     }
 
     protected function findModel($id) {
-        $model = Yii::$app->getModule("shop")->model("ShopProduct");
+        $model = Yii::$app->getModule("shop")->model("Product");
         if (($model = $model::findOne($id)) !== null) {
             return $model;
         } else {
