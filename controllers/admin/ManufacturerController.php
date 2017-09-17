@@ -6,7 +6,7 @@ use Yii;
 use panix\mod\shop\models\Manufacturer;
 use panix\mod\shop\models\search\ManufacturerSearch;
 use panix\engine\controllers\AdminController;
-use panix\engine\grid\sortable\SortableGridAction;
+
 
 class ManufacturerController extends AdminController {
 

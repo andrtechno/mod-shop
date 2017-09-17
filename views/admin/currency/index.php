@@ -2,7 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\Pjax;
-use panix\engine\grid\sortable\SortableGridView;
+use panix\engine\grid\GridView;
 ?>
 
 
@@ -12,14 +12,19 @@ use panix\engine\grid\sortable\SortableGridView;
 
 
 <?php Pjax::begin(); ?>
-<?=
-
-SortableGridView::widget([
+<?= GridView::widget([
     'tableOptions' => ['class' => 'table table-striped'],
     'dataProvider' => $dataProvider,
     'filterModel' => $searchModel,
     'layoutOptions' => ['title' => $this->context->pageName],
+    'rowOptions' => function ($model, $key, $index, $grid) {
+        return ['class' => 'sortable-column'];
+    },
     'columns' => [
+        [
+            'class' => \panix\engine\grid\sortable\Column::className(),
+            'url' => ['/admin/shop/currency/sortable']
+        ],
         [
             'class' => 'yii\grid\SerialColumn',
             'contentOptions' => ['class' => 'text-center']

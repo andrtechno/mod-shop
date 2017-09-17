@@ -7,7 +7,6 @@ use yii\helpers\Html;
 use panix\mod\shop\models\Product;
 use panix\mod\shop\models\search\ProductSearch;
 use panix\engine\controllers\AdminController;
-use panix\engine\grid\sortable\SortableGridAction;
 use panix\mod\shop\models\ProductType;
 use panix\mod\shop\models\Attribute;
 
