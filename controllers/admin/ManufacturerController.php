@@ -12,33 +12,36 @@ class ManufacturerController extends AdminController {
 
     public function actions() {
         return [
-            'dnd_sort' => [
-                'class' => SortableGridAction::className(),
-                'modelName' => Manufacturer::className(),
+            'sortable' => [
+                'class' => \panix\engine\grid\sortable\Action::className(),
+                'modelClass' => Product::className(),
             ],
         ];
     }
-public function actionActive($id)
-{
-    $model = $this->findModel($id);
-    if ($model->switch == 0) $model->switch = 1;
-    else $model->switch = 0;
 
-    if (!$model->save()) {
-        Yii::$app->session->addFlash("error", "Error saving");
-    }
-    $model->refresh();
+    public function actionActive($id) {
+        $model = $this->findModel($id);
+        if ($model->switch == 0)
+            $model->switch = 1;
+        else
+            $model->switch = 0;
 
-    if (Yii::$app->request->isAjax) { // Render the index view
-        return $this->actionIndex();
+        if (!$model->save()) {
+            Yii::$app->session->addFlash("error", "Error saving");
+        }
+        $model->refresh();
+
+        if (Yii::$app->request->isAjax) { // Render the index view
+            return $this->actionIndex();
+        } else
+            return $this->redirect(['manufacturer/index']);
     }
-    else return $this->redirect(['manufacturer/index']);
-}
+
     public function actionIndex() {
         $this->pageName = Yii::t('shop/admin', 'MANUFACTURER');
         $this->buttons = [
             [
-                'icon'=>'icon-add',
+                'icon' => 'icon-add',
                 'label' => Yii::t('shop/admin', 'CREATE_MANUFACTURER'),
                 'url' => ['create'],
                 'options' => ['class' => 'btn btn-success']
@@ -59,7 +62,7 @@ public function actionActive($id)
 
     public function actionUpdate($id = false) {
 
-        
+
         if ($id === true) {
             $model = Yii::$app->getModule("shop")->model("Manufacturer");
         } else {
@@ -70,7 +73,7 @@ public function actionActive($id)
         $this->pageName = Yii::t('shop/admin', 'MANUFACTURER');
         $this->buttons = [
             [
-                'icon'=>'icon-add',
+                'icon' => 'icon-add',
                 'label' => Yii::t('shop/admin', 'CREATE_MANUFACTURER'),
                 'url' => ['create'],
                 'options' => ['class' => 'btn btn-success']
@@ -84,9 +87,9 @@ public function actionActive($id)
             'label' => Yii::t('shop/admin', 'PRODUCTS'),
             'url' => ['index']
         ];
-        $this->breadcrumbs[] = Yii::t('app','UPDATE');
+        $this->breadcrumbs[] = Yii::t('app', 'UPDATE');
 
-        
+
         //$model->setScenario("admin");
         $post = Yii::$app->request->post();
         if ($model->load($post) && $model->validate()) {
@@ -96,11 +99,9 @@ public function actionActive($id)
         }
 
         echo $this->render('update', [
-                    'model' => $model,
+            'model' => $model,
         ]);
     }
-
- 
 
     protected function findModel($id) {
         $model = Yii::$app->getModule("shop")->model("Manufacturer");

@@ -2,13 +2,15 @@
 
 namespace panix\mod\shop\models\query;
 
-use yii\db\ActiveQuery;
+use panix\engine\traits\DefaultQueryTrait;
 
-class ProductQuery extends ActiveQuery {
+class ProductQuery extends \yii\db\ActiveQuery {
 
-    public function published($state = 1) {
+    use DefaultQueryTrait;
+
+    /*public function published($state = 1) {
         return $this->andWhere(['{{%shop_product}}.switch' => $state]);
-    }
+    }*/
 
     /**
      * Product by category
@@ -90,11 +92,12 @@ class ProductQuery extends ActiveQuery {
         // echo $this->createCommand()->getRawSql();die;
         return $this;
     }
+
     protected function getFindByEavAttributes2($attributes) {
         //$criteria = new CDbCriteria();
         $pk = '{{%shop_product}}.id';
 
-       // $conn = $this->owner->getDbConnection();
+        // $conn = $this->owner->getDbConnection();
         $i = 0;
         foreach ($attributes as $attribute => $values) {
             // If search models with attribute name with specified values.
@@ -107,12 +110,12 @@ class ProductQuery extends ActiveQuery {
                 foreach ($values as $value) {
                     //$value = $conn->quoteValue($value);
                     $this->join('JOIN', '{{%shop_product_attribute_eav}} eavb' . $i, "$pk=eavb$i.`entity` AND eavb$i.`attribute` = '$attribute' AND eavb$i.`value` = '$value'");
-               //     $this->andWhere(['IN', "`eavb$i`.`value`", $values]);
-                    /*$criteria->join .= "\nJOIN {$this->tableName} eavb$i"
-                            . "\nON t.{$pk} = eavb$i.{$this->entityField}"
-                            . "\nAND eavb$i.{$this->attributeField} = $attribute"
-                            . "\nAND eavb$i.{$this->valueField} = $value";
-*/
+                    //     $this->andWhere(['IN', "`eavb$i`.`value`", $values]);
+                    /* $criteria->join .= "\nJOIN {$this->tableName} eavb$i"
+                      . "\nON t.{$pk} = eavb$i.{$this->entityField}"
+                      . "\nAND eavb$i.{$this->attributeField} = $attribute"
+                      . "\nAND eavb$i.{$this->valueField} = $value";
+                     */
 
                     $i++;
                 }
@@ -128,9 +131,10 @@ class ProductQuery extends ActiveQuery {
         }
         $this->distinct(true);
         $this->groupBy("{$pk}");
-       // echo $this->createCommand()->getRawSql();die;
+        // echo $this->createCommand()->getRawSql();die;
         return $this;
     }
+
     /**
      * Filter products by min_price
      * @param $value

@@ -12,12 +12,14 @@ use panix\mod\shop\models\ProductType;
 use panix\mod\shop\models\Attribute;
 
 class DefaultController extends AdminController {
+
     public $tab_errors = [];
+
     public function actions() {
         return [
-            'dnd_sort' => [
-                'class' => SortableGridAction::className(),
-                'modelName' => Product::className(),
+            'sortable' => [
+                'class' => \panix\engine\grid\sortable\Action::className(),
+                'modelClass' => Product::className(),
             ],
             'delete' => [
                 'class' => 'panix\engine\grid\actions\DeleteAction',
@@ -101,10 +103,10 @@ class DefaultController extends AdminController {
         if ($model->mainCategory)
             $model->main_category_id = $model->mainCategory->id;
 
-        
+
         // On create new product first display "Choose type" form first.
         if ($model->isNewRecord && isset($_GET['Product']['type_id'])) {
-           // $type_id = $model->type_id;
+            // $type_id = $model->type_id;
 
             if (ProductType::find()->where(['id' => $model->type_id])->count() === 0)
                 $this->error404(Yii::t('shop/admin', 'ERR_PRODUCT_TYPE'));
@@ -122,8 +124,8 @@ class DefaultController extends AdminController {
         $this->pageName = $title;
         if ($model->type)
             $title .= ' "' . Html::encode($model->type->name) . '"';
-        
-        
+
+
         // Set configurable attributes on new record
         if ($model->isNewRecord) {
             if ($model->use_configurations && isset($_GET['Product']['configurable_attributes']))
@@ -167,6 +169,7 @@ class DefaultController extends AdminController {
             'model' => $model,
         ]);
     }
+
     /**
      * Validate required shop attributes
      * @param Product $model
@@ -190,6 +193,7 @@ class DefaultController extends AdminController {
 
         return !$errors;
     }
+
     /**
      * Load attributes relative to type and available for product configurations.
      * Used on creating new product.
@@ -250,12 +254,11 @@ class DefaultController extends AdminController {
 
         $deleteModel = Product::findOne($model->id);
         //$deleteModel->deleteEavAttributes(array(), true);
-
         // Delete empty values
-        /*foreach ($attributes as $key => $val) {
-            if (is_string($val) && $val === '')
-                $attributes->remove($key);
-        }*/
+        /* foreach ($attributes as $key => $val) {
+          if (is_string($val) && $val === '')
+          $attributes->remove($key);
+          } */
 
         return $model->setEavAttributes($attributes, true);
     }
@@ -273,9 +276,9 @@ class DefaultController extends AdminController {
                 foreach ($values['option_id'] as $option_id) {
                     // Try to load variant from DB
                     $variant = ProductVariant::find()
-                         ->where(['product_id' => $model->id,
-                        'attribute_id' => $attribute_id,
-                        'option_id' => $option_id])
+                            ->where(['product_id' => $model->id,
+                                'attribute_id' => $attribute_id,
+                                'option_id' => $option_id])
                             ->one();
                     // If not - create new.
                     if (!$variant)

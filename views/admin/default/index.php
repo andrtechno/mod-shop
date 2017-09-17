@@ -1,8 +1,8 @@
 <?php
 
 use yii\helpers\Html;
-use panix\engine\grid\sortable\SortableGridView;
-use yii\widgets\Pjax;
+use panix\engine\grid\GridView;
+use panix\engine\widgets\Pjax;
 ?>
 
 
@@ -12,23 +12,28 @@ use yii\widgets\Pjax;
 
 
 <?php
+
 Pjax::begin([
     'timeout' => 50000,
-        'id' => 'pjax-container',
-        'enablePushState' => true,
- 'linkSelector' => 'a:not(.linkTarget)'
+    'id' => 'pjax-container',
+    'enablePushState' => true,
+    'linkSelector' => 'a:not(.linkTarget)'
 ]);
 ?>
 <?=
-SortableGridView::widget([
+
+GridView::widget([
     'tableOptions' => ['class' => 'table table-striped'],
     'dataProvider' => $dataProvider,
     'filterModel' => $searchModel,
-   // 'layoutOptions' => ['title' => $this->context->pageName],
+    'layoutOptions' => ['title' => $this->context->pageName],
+    'rowOptions' => function ($model, $key, $index, $grid) {
+        return ['class' => 'sortable-column'];
+    },
     'columns' => [
         [
-            'class' => 'yii\grid\SerialColumn',
-            'contentOptions' => ['class' => 'text-center']
+            'class' => \panix\engine\grid\sortable\Column::className(),
+            'url' => ['/admin/shop/default/sortable']
         ],
         [
             'format' => 'raw',
