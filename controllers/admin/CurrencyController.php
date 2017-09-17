@@ -6,15 +6,14 @@ use Yii;
 use panix\mod\shop\models\Currency;
 use panix\mod\shop\models\search\CurrencySearch;
 use panix\engine\controllers\AdminController;
-use panix\engine\grid\sortable\SortableGridAction;
 
 class CurrencyController extends AdminController {
 
     public function actions() {
         return [
-            'dnd_sort' => [
-                'class' => SortableGridAction::className(),
-                'modelName' => Currency::className(),
+            'sortable' => [
+                'class' => \panix\engine\grid\sortable\Action::className(),
+                'modelClass' => Currency::className(),
             ],
         ];
     }

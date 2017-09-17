@@ -1,14 +1,14 @@
 <?php
 
 use yii\widgets\Pjax;
-use panix\engine\grid\sortable\SortableGridView;
+use panix\engine\grid\GridView;
 
 Pjax::begin([
     'id' => 'pjax-container',
     //'enablePushState' => false,
    // 'linkSelector' => 'a:not(.linkTarget)'
 ]);
-echo SortableGridView::widget([
+echo GridView::widget([
     'tableOptions' => ['class' => 'table table-striped'],
     'dataProvider' => $dataProvider,
     'filterModel' => $searchModel,
