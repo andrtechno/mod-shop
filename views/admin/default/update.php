@@ -7,9 +7,9 @@ use yii\helpers\ArrayHelper;
 use panix\mod\shop\models\ProductType;
 ?>
 
-<div id="test"></div>
 
 
+<a href="javascript:void(0)" id="testclick">dsadasds</a>
 <div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title"><?= Html::encode($this->context->pageName) ?></h3>
@@ -70,7 +70,7 @@ use panix\mod\shop\models\ProductType;
 
 
                 $form = ActiveForm::begin([
-                            'id' => basename(get_class($model)),
+                            'id' => strtolower(basename(get_class($model))).'-form',
                             'options' => [
                                 'class' => 'form-horizontal',
                                 'enctype' => 'multipart/form-data'

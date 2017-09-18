@@ -3,7 +3,7 @@
 namespace panix\mod\shop\components;
 
 use panix\mod\shop\models\Attribute;
-use panix\mod\shop\models\ShopProduct;
+use panix\mod\shop\models\Product;
 use Yii;
 
 class AttributesRender extends \yii\base\Widget {
@@ -122,14 +122,14 @@ class AttributesRender extends \yii\base\Widget {
         return $this->_models;
     }
 
-    public function getData(ShopProduct $model) {
+    public function getData(Product $model) {
 
         $cacheId = 'product_attributes_' . strtotime($model->date_update) . '_' . strtotime($model->date_create);
         $result = Yii::app()->cache->get($cacheId);
         if ($result === false) {
             foreach (Yii::app()->languageManager->languages as $lang => $l) {
                 $result[$lang] = array();
-                $productModel = ShopProduct::model()->language($l->id)->findByPk($model->id);
+                $productModel = Product::model()->language($l->id)->findByPk($model->id);
                 $this->_attributes = $productModel->getEavAttributes();
                 foreach ($this->getModelsLanguage($l->id) as $data) {
                     $result[$lang][$data->name] = (object) array(

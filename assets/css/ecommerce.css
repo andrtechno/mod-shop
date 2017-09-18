@@ -67,7 +67,7 @@
 
 .autocomplete-item{
     position: relative;
-        height:60px;
+    height:60px;
 }
 .autocomplete-img{
     width: 50px;
@@ -110,4 +110,59 @@
 .ias-spinner{
     display: block;
     clear:both;
+}
+.price{
+    font-size:20px; 
+    color:#5cb85c;
+}
+.price.strike{
+    color:#888;
+    font-size: 16px;
+}
+.price.strike span{
+    text-decoration: line-through;
+}
+
+.ui-spinner{
+    position: relative;
+    display: inline-block;
+    height:35px;
+    font-size:16px;
+    font-weight: bold;
+
+}
+.ui-spinner > .ui-spinner-input{
+    margin: 0 30px;
+    width:80px;
+    text-align: center;
+    padding:0 0;
+    height:100%;
+    border:1px solid #888;
+
+}
+.ui-spinner .ui-spinner-button{
+    position: absolute;
+    top:0px;
+    display:block;
+    border:1px solid #888;
+    width:30px;
+    height:100%;
+    line-height:30px;
+    text-align:center;
+    font-size: 20px;
+    font-weight: normal;
+    color:#333;
+    background-color:#c1c1c1;
+}
+.ui-spinner a.ui-spinner-button:hover,
+.ui-spinner a.ui-spinner-button:focus{
+    text-decoration: none;
+}
+.ui-spinner .ui-spinner-up{
+    right:0;
+    border-left:0;
+}
+.ui-spinner .ui-spinner-down{
+    left:0;
+    border-right:0;
 }

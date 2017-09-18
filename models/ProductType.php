@@ -19,9 +19,6 @@ class ProductType extends \panix\engine\db\ActiveRecord {
 
     const MODULE_ID = 'shop';
 
- // public static function find() {
-     //   return new ShopProductQuery(get_called_class());
-   // }
 
     public static function getCSort() {
         $sort = new \yii\data\Sort([
@@ -66,9 +63,9 @@ class ProductType extends \panix\engine\db\ActiveRecord {
     public function relations2222() {
         return array(
           //  'attributeRelation' => array(self::HAS_MANY, 'ShopTypeAttribute', 'type_id'),
-            'shopAttributes' => array(self::HAS_MANY, 'ShopAttribute', array('attribute_id' => 'id'), 'through' => 'attributeRelation', 'scopes' => 'applyTranslateCriteria'),
-            'shopConfigurableAttributes' => array(self::HAS_MANY, 'ShopAttribute', array('attribute_id' => 'id'), 'through' => 'attributeRelation', 'condition' => 'use_in_variants=1'),
-         //   'productsCount' => array(self::STAT, 'ShopProduct', 'type_id'),
+            'shopAttributes' => array(self::HAS_MANY, 'Attribute', array('attribute_id' => 'id'), 'through' => 'attributeRelation', 'scopes' => 'applyTranslateCriteria'),
+            'shopConfigurableAttributes' => array(self::HAS_MANY, 'Attribute', array('attribute_id' => 'id'), 'through' => 'attributeRelation', 'condition' => 'use_in_variants=1'),
+         //   'productsCount' => array(self::STAT, 'Product', 'type_id'),
         );
     }
     public function getProductsCount() {

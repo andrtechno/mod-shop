@@ -41,9 +41,8 @@ echo \panix\ext\jstree\JsTree::widget([
 
 if (isset($_POST['categories']) && !empty($_POST['categories'])) {
     foreach ($_POST['categories'] as $id) {
-        Yii::app()->getClientScript()->registerScript("checkNode{$id}", "
-			$('#CategoryTree').checkNode({$id});
-		");
+
+       $this->registerJs("$('#jsTree_CategoryTree').checkNode({$id});");
     }
 } elseif ($model->isNewRecord && empty($_POST['categories']) && isset($presetCategories)) {
     foreach ($presetCategories as $id) {
@@ -60,4 +59,6 @@ if (isset($_POST['categories']) && !empty($_POST['categories'])) {
         $this->registerJs("$('#jsTree_CategoryTree').checkNode({$c->id});");
     }
 }
+
+?>
 

@@ -35,7 +35,7 @@ class AttributesColumns extends DataColumn {
           return CHtml::activeTextField($this->grid->filter, $this->name, array('id' => false, 'class' => 'form-control'));
           } else
           return parent::getFilterCellContent(); */
-        return CHtml::dropDownList('ShopProduct[eav]['.$this->filterName.']', isset($_GET['ShopProduct']['eav'])?$_GET['ShopProduct']['eav']:null, $this->filter, array('prompt' => '', 'class' => 'form-control'));
+        return CHtml::dropDownList('Product[eav]['.$this->filterName.']', isset($_GET['Product']['eav'])?$_GET['Product']['eav']:null, $this->filter, array('prompt' => '', 'class' => 'form-control'));
     }
 
     /**
@@ -43,7 +43,7 @@ class AttributesColumns extends DataColumn {
      * This method registers necessary client script for the checkbox column.
      */
     public function init() {
-        $this->query = ShopAttribute::model()
+        $this->query = Attribute::model()
                 ->sorting()
                 ->findByAttributes(array('name' => $this->attrname));
         if ($this->query) {
@@ -120,7 +120,7 @@ class AttributesColumns extends DataColumn {
         if ($useCondition)
             $cr->addInCondition('t.name', array_keys($this->_attributes));
 
-        $query = ShopAttribute::model()
+        $query = Attribute::model()
                 ->displayOnFront()
                 ->sorting()
                 ->findAll($cr);

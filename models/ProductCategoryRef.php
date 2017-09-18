@@ -24,8 +24,8 @@ class ProductCategoryRef extends \yii\db\ActiveRecord {
     
   /*  public function relations() {
         return array(
-            'active' => array(self::STAT, 'ShopProduct', 'id', 'condition'=>'`products`.`switch`=1'),
-            'countProducts' => array(self::HAS_MANY, 'ShopProductCategoryRef', 'category'),
+            'active' => array(self::STAT, 'Product', 'id', 'condition'=>'`products`.`switch`=1'),
+            'countProducts' => array(self::HAS_MANY, 'ProductCategoryRef', 'category'),
         );
     }*/
 }

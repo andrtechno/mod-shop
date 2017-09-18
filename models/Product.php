@@ -217,7 +217,7 @@ class Product extends \panix\engine\db\ActiveRecord {
 
 
         foreach ($categories as $c) {
-            /* $count = ShopProductCategoryRef::model()->countByAttributes(array(
+            /* $count = ProductCategoryRef::model()->countByAttributes(array(
               'category' => $c,
               'product' => $this->id,
               )); */
@@ -387,7 +387,7 @@ class Product extends \panix\engine\db\ActiveRecord {
     public function getDisplayPrice($currency_id = null) {
         $currency = Yii::$app->currency;
         if ($this->appliedDiscount) {
-            $price = $currency->convert($this->discountPrice, $currency_id);
+            $price = $currency->convert($this->originalPrice, $currency_id);
         } else {
             $price = $currency->convert($this->price, $currency_id);
         }
@@ -466,9 +466,9 @@ class Product extends \panix\engine\db\ActiveRecord {
     // }
 
     /*
-      // 'related' => array(self::HAS_MANY, 'ShopRelatedProduct', 'product_id'),
-      'relatedProducts' => array(self::HAS_MANY, 'ShopProduct', array('related_id' => 'id'), 'through' => 'related'),
-      //'relatedProductCount' => array(self::STAT, 'ShopRelatedProduct', 'product_id'),
+      // 'related' => array(self::HAS_MANY, 'RelatedProduct', 'product_id'),
+      'relatedProducts' => array(self::HAS_MANY, 'Product', array('related_id' => 'id'), 'through' => 'related'),
+      //'relatedProductCount' => array(self::STAT, 'RelatedProduct', 'product_id'),
      *  */
 
     //use EavTrait; // need for full support label of fields

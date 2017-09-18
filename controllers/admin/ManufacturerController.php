@@ -7,34 +7,23 @@ use panix\mod\shop\models\Manufacturer;
 use panix\mod\shop\models\search\ManufacturerSearch;
 use panix\engine\controllers\AdminController;
 
-
 class ManufacturerController extends AdminController {
 
     public function actions() {
         return [
             'sortable' => [
                 'class' => \panix\engine\grid\sortable\Action::className(),
-                'modelClass' => Product::className(),
+                'modelClass' => Manufacturer::className(),
+            ],
+            'switch' => [
+                'class' => \panix\engine\actions\SwitchAction::className(),
+                'modelClass' => Manufacturer::className(),
+            ],
+            'delete' => [
+                'class' => \panix\engine\actions\DeleteAction::className(),
+                'modelClass' => Manufacturer::className(),
             ],
         ];
-    }
-
-    public function actionActive($id) {
-        $model = $this->findModel($id);
-        if ($model->switch == 0)
-            $model->switch = 1;
-        else
-            $model->switch = 0;
-
-        if (!$model->save()) {
-            Yii::$app->session->addFlash("error", "Error saving");
-        }
-        $model->refresh();
-
-        if (Yii::$app->request->isAjax) { // Render the index view
-            return $this->actionIndex();
-        } else
-            return $this->redirect(['manufacturer/index']);
     }
 
     public function actionIndex() {

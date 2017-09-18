@@ -133,11 +133,10 @@ class DefaultController extends AdminController {
 
         if ($model->load($post) && $model->validate() && $this->validateAttributes($model)) {
 
-
             $model->setRelatedProducts(Yii::$app->request->post('RelatedProductId'), []);
-
-
+            
             $model->save();
+            
             $mainCategoryId = 1;
             if (isset($_POST['Product']['main_category_id']))
                 $mainCategoryId = $_POST['Product']['main_category_id'];

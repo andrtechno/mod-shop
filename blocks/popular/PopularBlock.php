@@ -2,7 +2,7 @@
 
 namespace panix\mod\shop\blocks\popular;
 
-use panix\mod\shop\models\ShopProduct;
+use panix\mod\shop\models\Product;
 use panix\engine\data\ActiveDataProvider;
 
 class PopularBlock extends \panix\engine\data\Widget {
@@ -10,7 +10,7 @@ class PopularBlock extends \panix\engine\data\Widget {
     public $limiter = 11;
 
     public function run() {
-        $query = ShopProduct::find();
+        $query = Product::find();
         $query->limit($this->limiter);
         $query->orderBy('views');
         //$query->joinWith('translations');
@@ -18,7 +18,7 @@ class PopularBlock extends \panix\engine\data\Widget {
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-            'sort' => ShopProduct::getSort(),
+            'sort' => Product::getSort(),
             'pagination' => false
                 ]
         );

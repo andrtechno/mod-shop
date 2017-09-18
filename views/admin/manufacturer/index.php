@@ -1,26 +1,18 @@
 <?php
 
 use yii\helpers\Html;
-use yii\widgets\Pjax;
+use panix\engine\widgets\Pjax;
 use panix\engine\grid\GridView;
 
-?>
-
-
-
-
-<?php // echo $this->render('_search', ['model' => $searchModel]);  ?>
-
-
-<?php Pjax::begin(); ?>
-<?= GridView::widget([
+Pjax::begin(['id'=>'test']);
+echo GridView::widget([
     'tableOptions' => ['class' => 'table table-striped'],
     'dataProvider' => $dataProvider,
     'filterModel' => $searchModel,
     'rowOptions' => function ($model, $key, $index, $grid) {
         return ['class' => 'sortable-column'];
     },
-        'layoutOptions' => ['title' => $this->context->pageName],
+    'layoutOptions' => ['title' => $this->context->pageName],
     'columns' => [
         [
             'class' => \panix\engine\grid\sortable\Column::className(),
@@ -31,24 +23,19 @@ use panix\engine\grid\GridView;
             'contentOptions' => ['class' => 'text-center']
         ],
         'name',
-['class' => 'panix\engine\grid\columns\ActionColumn',
-    'template'=>'{update}{active}',
-        'buttons' => [
-   "active" => function ($url, $model) {
-        if ($model->switch == 1) $icon = "pause";
-        else $icon = "play";
-
-        return Html::a('dsadas', $url, [
-        'title'              => Yii::t('app', 'Toogle Active'),
-        'data-pjax'          => '1',
-        'data-toggle-active' => $model->id
-    ]);
-   },
-        ]
-    ],
-       // ['class' => 'panix\engine\grid\columns\ActionColumn'],
+        ['class' => 'panix\engine\grid\columns\ActionColumn'],
     ],
 ]);
-?>
-<?php Pjax::end(); ?>
 
+Pjax::end();
+
+
+echo \yii\bootstrap\ButtonDropdown::widget([
+    'label' => 'Action',
+    'dropdown' => [
+        'items' => [
+            ['label' => 'DropdownA', 'url' => '/'],
+            ['label' => 'DropdownB', 'url' => '#'],
+        ],
+    ],
+]);

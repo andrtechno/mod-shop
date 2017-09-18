@@ -16,6 +16,7 @@ class Module extends WebModule {
         ['class' => 'panix\mod\shop\components\CategoryUrlRule'],
     ];
 
+
     public function getAdminMenu() {
         return [
             'shop' => [

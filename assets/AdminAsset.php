@@ -12,7 +12,7 @@ class AdminAsset extends AssetBundle
 {
     public $sourcePath = '@vendor/panix/mod-shop/assets/admin';
     public $jsOptions = array(
-        'position' => \yii\web\View::POS_HEAD
+        'position' => \yii\web\View::POS_END //require for products.js   POS_END
     );
     public $js = [
         'js/relatedProductsTab.js',

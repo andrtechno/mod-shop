@@ -1,15 +1,16 @@
 
 // Process checked categories
 
-$("#Product").submit(function () {
+$("#product-form").submit(function () {
     var checked = $("#jsTree_CategoryTree li a.jstree-checked");
     checked.each(function (i, el) {
         var id = $(el).attr("id").replace('node_', '').replace('_anchor', '');
         console.log(id);
-        $("#Product").append('<input type="hidden" name="categories[]" value="' + id + '" />');
+        $("#product-form").append('<input type="hidden" name="categories[]" value="' + id + '" />');
     });
-
 });
+
+
 //$('#ShopCategoryTree').delegate("a", "click", function (event) {
 //	$('#ShopCategoryTree').jstree('checkbox').check_node($(this));
 //	var id = $(this).parent("li").attr('id').replace('ShopCategoryTreeNode_', '');
@@ -28,7 +29,7 @@ $("#Product").submit(function () {
 // On change `use configurations` select - load available attributes
 $('#product-use_configurations, #product-type_id').change(function () {
     var attrs_block = $('#availableAttributes');
-    var type_id = $('#shopproduct-type_id').val();
+    var type_id = $('#product-type_id').val();
     attrs_block.html('');
 
     if ($('#product-use_configurations').val() == '0')
