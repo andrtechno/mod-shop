@@ -14,7 +14,21 @@ class Manufacturer extends \panix\engine\db\ActiveRecord {
     public static function find() {
         return new ManufacturerQuery(get_called_class());
     }
-
+    public function getGridColumns() {
+        return [
+            'name',
+            'DEFAULT_CONTROL' => [
+                'class' => 'panix\engine\grid\columns\ActionColumn',
+            ],
+            'DEFAULT_COLUMNS' => [
+                            [
+                'class' => \panix\engine\grid\sortable\Column::className(),
+                'url' => ['/admin/shop/default/sortable']
+            ],
+                ['class' => 'panix\engine\grid\columns\CheckboxColumn'],
+            ],
+        ];
+    }
     public static function dropdown() {
         // get and cache data
         static $dropdown;

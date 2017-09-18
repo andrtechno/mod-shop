@@ -87,7 +87,7 @@ class ManufacturerController extends AdminController {
             return Yii::$app->getResponse()->redirect(['/admin/shop/manufacturer']);
         }
 
-        echo $this->render('update', [
+        return $this->render('update', [
             'model' => $model,
         ]);
     }
