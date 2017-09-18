@@ -1,17 +1,22 @@
 <?php
 
+namespace panix\mod\shop\components;
+
+use panix\mod\shop\models\Attribute;
+
 /**
  * 
- * array(
-  'class' => 'mod.shop.components.AttributesColumns',
-  'attrname' => 'size',
-  'header' => 'Размеры',
-  'htmlOptions' => array('class' => 'text-center')
-  );
+ *
+  [
+    'class' => 'panix\mod\shop\components\AttributesColumns',
+    'attribute' => 'size',
+    'header' => 'Размеры',
+    'contentOptions' => ['class' => 'text-center']
+  ];
+ * 
+ * 
  */
-Yii::import('ext.adminList.columns.DataColumn');
-
-class AttributesColumns extends DataColumn {
+class AttributesColumns extends \yii\grid\DataColumn {
 
     /**
      * @var array model attributes loaded with getEavAttributes method
@@ -19,42 +24,11 @@ class AttributesColumns extends DataColumn {
     protected $_attributes;
 
     /**
-     * @var array of ShopAttribute models
+     * @var array of Attribute models
      */
     protected $_models;
-    public $attrname;
-    private $query;
-    private $filterName;
-    public function getFilterCellContent() {
-        /* if (is_string($this->filter))
-          return $this->filter;
-          elseif ($this->filter !== false && $this->grid->filter !== null && $this->name !== null && strpos($this->name, '.') === false) {
-          if (is_array($this->filter))
-          return CHtml::activeDropDownList($this->grid->filter, $this->name, $this->filter, array('id' => false, 'prompt' => '', 'class' => 'form-control'));
-          elseif ($this->filter === null)
-          return CHtml::activeTextField($this->grid->filter, $this->name, array('id' => false, 'class' => 'form-control'));
-          } else
-          return parent::getFilterCellContent(); */
-        return CHtml::dropDownList('Product[eav]['.$this->filterName.']', isset($_GET['Product']['eav'])?$_GET['Product']['eav']:null, $this->filter, array('prompt' => '', 'class' => 'form-control'));
-    }
 
-    /**
-     * Initializes the column.
-     * This method registers necessary client script for the checkbox column.
-     */
-    public function init() {
-        $this->query = Attribute::model()
-                ->sorting()
-                ->findByAttributes(array('name' => $this->attrname));
-        if ($this->query) {
-            $this->header = $this->query->title;
-        }
-        $this->filterName = $this->query->name;
-        $this->filter = Html::listData($this->query->options, 'id', 'value');
 
-        if ($this->attrname === null)
-            throw new CException(Yii::t('zii', 'Either "attrname" must be specified for AttributesColumns.'));
-    }
 
     public function getList($data) {
         $this->_attributes = $data->getEavAttributes();
@@ -63,10 +37,10 @@ class AttributesColumns extends DataColumn {
         if ($dataResult) {
             foreach ($dataResult as $model) {
                 $result[] = array(
-                    'class' => 'mod.shop.components.AttributesColumns',
+                    'class' => 'panix\mod\shop\components\AttributesColumns',
                     'filter' => true,
                     'header' => $model->title,
-                    'attrname' => $model->name,
+                    'attribute' => $model->name,
                     'value' => (isset($this->_attributes[$model->name])) ? $model->renderValue($this->_attributes[$model->name]) : false
                 );
             }
@@ -74,32 +48,10 @@ class AttributesColumns extends DataColumn {
         return $result;
     }
 
-    protected function renderHeaderCellContent() {
+    protected function renderDataCellContent($model, $key, $index) {
+        $this->_attributes = $model->getEavAttributes();
 
-        if ($this->query) {
-            echo $this->query->title;
-        } else {
-            parent::renderHeaderCellContent();
-        }
-    }
-
-    /**
-     * Renders the data cell content.
-     * This method renders a checkbox in the data cell.
-     * @param integer $row the row number (zero-based)
-     * @param mixed $data the data associated with the row
-     */
-    protected function renderDataCellContent($row, $data) {
-        if ($this->value !== null)
-            $value = $this->evaluateExpression($this->value, array('data' => $data, 'row' => $row));
-        elseif ($this->name !== null)
-            $value = CHtml::value($data, $this->name);
-        else
-            $value = $this->grid->dataProvider->keys[$row];
-
-        $this->_attributes = $data->getEavAttributes();
-
-        foreach ($this->getModels($value) as $model) {
+        foreach ($this->getModels() as $model) {
             $dataResult[$model->name] = array(
                 'title' => $model->title,
                 'value' => $model->renderValue($this->_attributes[$model->name])
@@ -107,29 +59,29 @@ class AttributesColumns extends DataColumn {
         }
 
         if (!empty($dataResult)) {
-            echo $dataResult[$this->attrname]['value'];
+            return $dataResult[$this->attribute]['value'];
         }
+
+        return parent::renderDataCellContent($model, $key, $index);
     }
 
-    protected function getModels($data, $useCondition = true) {
-        //$this->_models = array();
-        //$cacheId = 'product_attributes_' . strtotime($data->date_update) . '_' . $data->id;
-        //$this->_models = Yii::app()->cache->get($cacheId);
-        //if ($this->_models === false) {
-        $cr = new CDbCriteria;
-        if ($useCondition)
-            $cr->addInCondition('t.name', array_keys($this->_attributes));
+    protected function getModels($data = false, $useCondition = true) {
 
-        $query = Attribute::model()
+        // $query = Attribute::find();
+        if ($useCondition) {
+            //    $query->where(['name' => array_keys($this->_attributes)]);
+        }
+
+        $query = Attribute::find()
                 ->displayOnFront()
                 ->sorting()
-                ->findAll($cr);
+                //->where(['IN', 'name', array_keys($this->_attributes)])
+                ->all();
 
         foreach ($query as $m) {
             $this->_models[$m->name] = $m;
         }
-        //  Yii::app()->cache->set($cacheId, $this->_models, Yii::app()->settings->get('app', 'cache_time'));
-        // }
+
         return $this->_models;
     }
 

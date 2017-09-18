@@ -15,7 +15,7 @@ use panix\engine\widgets\Pjax;
 
 Pjax::begin([
     'timeout' => 50000,
-    'id' => 'pjax-container',
+'id'=>  'pjax-'.strtolower(basename($dataProvider->query->modelClass)),
     'enablePushState' => true,
     'linkSelector' => 'a:not(.linkTarget)'
 ]);
@@ -28,8 +28,8 @@ GridView::widget([
     'filterModel' => $searchModel,
     'layoutOptions' => ['title' => $this->context->pageName],
     'rowOptions' => function ($model, $key, $index, $grid) {
-        return ['class' => 'sortable-column'];
-    },
+return ['class' => 'sortable-column'];
+},
     'columns' => [
         [
             'class' => \panix\engine\grid\sortable\Column::className(),

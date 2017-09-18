@@ -15,9 +15,10 @@ use panix\mod\shop\models\ProductVariant;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
+
 class Product extends \panix\engine\db\ActiveRecord {
 
-
+    use traits\ProductTrait;
     /**
      * @var array of attributes used to configure product
      */
@@ -34,6 +35,8 @@ class Product extends \panix\engine\db\ActiveRecord {
 
     const route = '/admin/shop/default';
     const MODULE_ID = 'shop';
+
+
 
     public static function find() {
         return new ProductQuery(get_called_class());
@@ -191,13 +194,13 @@ class Product extends \panix\engine\db\ActiveRecord {
                             $query->where(['is_main' => 1]);
                         });
     }
+
     public function getVariants() {
         return $this->hasMany(ProductVariant::className(), ['product_id' => 'id'])
-                ->joinWith(['productAttribute', 'option'])
-                ->orderBy('{{%shop_attribute_option}}.ordern');
+                        ->joinWith(['productAttribute', 'option'])
+                        ->orderBy('{{%shop_attribute_option}}.ordern');
     }
 
-    
 //'variants' => array(self::HAS_MANY, 'ProductVariant', array('product_id'), 'with' => array('attribute', 'option'), 'order' => 'option.ordern'),
 
     /**
