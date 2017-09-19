@@ -54,7 +54,7 @@ class Attribute extends \panix\engine\db\ActiveRecord {
             'DEFAULT_COLUMNS' => [
                 [
                     'class' => \panix\engine\grid\sortable\Column::className(),
-                    'url' => ['/admin/shop/default/sortable']
+                    'url' => ['/admin/shop/attribute/sortable']
                 ],
                 ['class' => 'panix\engine\grid\columns\CheckboxColumn'],
             ],
