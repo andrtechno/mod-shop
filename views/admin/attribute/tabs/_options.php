@@ -98,6 +98,7 @@ echo panix\engine\grid\GridView::widget([
     'tableOptions' => ['class' => 'table table-striped optionsEditTable'],
     'dataProvider' => $data_db,
     'rowOptions' => ['class' => 'sortable-column'],
+    'enableLayout'=>false,
     'columns' => $columns
 ]);
 Pjax::end();
