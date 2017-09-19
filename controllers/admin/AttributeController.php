@@ -13,6 +13,10 @@ class AttributeController extends AdminController {
 
     public function actions() {
         return [
+            'sortableOptions' => [
+                'class' => \panix\engine\grid\sortable\Action::className(),
+                'modelClass' => AttributeOption::className(),
+            ],
             'sortable' => [
                 'class' => \panix\engine\grid\sortable\Action::className(),
                 'modelClass' => Attribute::className(),

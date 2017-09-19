@@ -39,7 +39,7 @@ use panix\engine\widgets\Pjax;
 $columns = array();
 $columns[] = [
     'class' => \panix\engine\grid\sortable\Column::className(),
-    'url' => ['/admin/shop/attribute/sortable']
+    'url' => ['/admin/shop/attribute/sortableOptions']
 ];
 $data = array();
 $data2 = array();

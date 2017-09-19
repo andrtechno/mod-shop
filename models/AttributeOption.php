@@ -4,6 +4,7 @@ namespace panix\mod\shop\models;
 
 use yii\helpers\ArrayHelper;
 use panix\mod\shop\models\AttributeOptionTranslate;
+use panix\mod\shop\models\query\AttributeOptionsQuery;
 
 /**
  * Shop options for dropdown and multiple select
@@ -24,17 +25,22 @@ class AttributeOption extends \panix\engine\db\ActiveRecord {
         return '{{%shop_attribute_option}}';
     }
 
+    public static function find() {
+        return new AttributeOptionsQuery(get_called_class());
+    }
+
     public function rules() {
         return array(
             array('id, value, attribute_id, ordern', 'safe', 'on' => 'search'),
         );
     }
- public function transactions()
-    {
+
+    public function transactions() {
         return [
             self::SCENARIO_DEFAULT => self::OP_INSERT | self::OP_UPDATE,
         ];
     }
+
     public function getOptionTranslate() {
         return $this->hasMany(AttributeOptionTranslate::className(), ['object_id' => 'id']);
     }
@@ -50,7 +56,5 @@ class AttributeOption extends \panix\engine\db\ActiveRecord {
                     ],
                         ], parent::behaviors());
     }
-
-
 
 }
