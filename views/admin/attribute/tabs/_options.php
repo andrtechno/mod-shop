@@ -45,7 +45,6 @@ $data = array();
 $data2 = array();
 $test = array();
 foreach ($model->options as $k => $o) {
-    //$data2['data-key'] = $o->id;
     $data2['delete'] = '<a href="#" class="deleteRow btn btn-default"><i class="icon-delete"></i></a>';
     foreach (Yii::$app->languageManager->languages as $k => $l) {
 
@@ -99,6 +98,7 @@ echo panix\engine\grid\GridView::widget([
     'dataProvider' => $data_db,
     'rowOptions' => ['class' => 'sortable-column'],
     'enableLayout'=>false,
+    'layout'=>'{items}',
     'columns' => $columns
 ]);
 Pjax::end();
