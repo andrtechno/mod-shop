@@ -103,7 +103,7 @@ class CurrencyController extends AdminController {
     }
 
     protected function findModel($id) {
-        $model = Yii::$app->getModule("shop")->model("Currency");
+        $model = new Currency;
         if (($model = $model::findOne($id)) !== null) {
             return $model;
         } else {

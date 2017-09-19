@@ -308,7 +308,7 @@ class DefaultController extends AdminController {
     }
 
     protected function findModel($id) {
-        $model = Yii::$app->getModule("shop")->model("Product");
+        $model = new Product;
         if (($model = $model::findOne($id)) !== null) {
             return $model;
         } else {

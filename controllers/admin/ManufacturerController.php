@@ -93,7 +93,7 @@ class ManufacturerController extends AdminController {
     }
 
     protected function findModel($id) {
-        $model = Yii::$app->getModule("shop")->model("Manufacturer");
+        $model = new Manufacturer;
         if (($model = $model::findOne($id)) !== null) {
             return $model;
         } else {

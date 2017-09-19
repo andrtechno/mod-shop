@@ -94,18 +94,5 @@ class Module extends WebModule {
         ];
     }
 
-    protected function getDefaultModelClasses() {
-        return [
-            'Product' => 'panix\mod\shop\models\Product',
-            'ProductSearch' => 'panix\mod\shop\models\search\ProductSearch',
-            'Currency' => 'panix\mod\shop\models\Currency',
-            'CurrencySearch' => 'panix\mod\shop\models\search\CurrencySearch',
-            'Category' => 'panix\mod\shop\models\Category',
-            'CategorySearch' => 'panix\mod\shop\models\search\CategorySearch',
-            'Manufacturer' => 'panix\mod\shop\models\Manufacturer',
-            'ManufacturerSearch' => 'panix\mod\shop\models\search\ManufacturerSearch',
-            'RelatedProduct' => 'panix\mod\shop\models\RelatedProduct',
-        ];
-    }
 
 }
