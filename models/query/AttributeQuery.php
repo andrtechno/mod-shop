@@ -4,6 +4,8 @@ namespace panix\mod\shop\models\query;
 
 class AttributeQuery extends \yii\db\ActiveQuery {
 
+    use \panix\engine\traits\DefaultQueryTrait;
+
     public function useInFilter() {
         return $this->andWhere(['use_in_filter' => 1]);
     }
@@ -19,9 +21,9 @@ class AttributeQuery extends \yii\db\ActiveQuery {
     public function displayOnFront() {
         return $this->andWhere(['display_on_front' => 1]);
     }
-    public function sorting() {
-        return $this->orderBy(['ordern'=>SORT_DESC]);
-    }
 
+    public function sorting() {
+        return $this->orderBy(['ordern' => SORT_DESC]);
+    }
 
 }

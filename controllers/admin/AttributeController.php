@@ -11,7 +11,22 @@ class AttributeController extends AdminController {
 
     public $icon = 'icon-filter';
 
-
+    public function actions() {
+        return [
+            'sortable' => [
+                'class' => \panix\engine\grid\sortable\Action::className(),
+                'modelClass' => Attribute::className(),
+            ],
+            'switch' => [
+                'class' => \panix\engine\actions\SwitchAction::className(),
+                'modelClass' => Attribute::className(),
+            ],
+            'delete' => [
+                'class' => \panix\engine\actions\DeleteAction::className(),
+                'modelClass' => Attribute::className(),
+            ],
+        ];
+    }
     public function actionIndex() {
 
         $searchModel = new AttributeSearch();

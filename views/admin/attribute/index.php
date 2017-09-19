@@ -1,10 +1,10 @@
 <?php
 
-use yii\widgets\Pjax;
+use panix\engine\widgets\Pjax;
 use panix\engine\grid\GridView;
 
 Pjax::begin([
-    'id' => 'pjax-container',
+    'id' => 'pjax-' . strtolower(basename($dataProvider->query->modelClass)),
     //'enablePushState' => false,
    // 'linkSelector' => 'a:not(.linkTarget)'
 ]);
@@ -13,18 +13,9 @@ echo GridView::widget([
     'dataProvider' => $dataProvider,
     'filterModel' => $searchModel,
     'layoutOptions' => ['title' => $this->context->pageName],
-    'columns' => [
-        [
-            'class' => 'yii\grid\SerialColumn',
-            'contentOptions' => ['class' => 'text-center']
-        ],
-        'title',
-        [
-            'class' => 'panix\engine\grid\columns\ActionColumn',
-            'template' => '{update} {switch} {delete}',
-        ]
-    ]
+    'showFooter' => true,
+    //   'footerRowOptions' => ['class' => 'text-center'],
+    'rowOptions' => ['class' => 'sortable-column']
 ]);
-?>
-<?php Pjax::end(); ?>
+Pjax::end();
 

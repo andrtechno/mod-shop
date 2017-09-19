@@ -11,9 +11,11 @@ class Manufacturer extends \panix\engine\db\ActiveRecord {
 
     const MODULE_ID = 'shop';
     const route = '/admin/shop/manufacturer';
+
     public static function find() {
         return new ManufacturerQuery(get_called_class());
     }
+
     public function getGridColumns() {
         return [
             'name',
@@ -21,14 +23,15 @@ class Manufacturer extends \panix\engine\db\ActiveRecord {
                 'class' => 'panix\engine\grid\columns\ActionColumn',
             ],
             'DEFAULT_COLUMNS' => [
-                            [
-                'class' => \panix\engine\grid\sortable\Column::className(),
-                'url' => ['/admin/shop/default/sortable']
-            ],
+                [
+                    'class' => \panix\engine\grid\sortable\Column::className(),
+                    'url' => ['/admin/shop/default/sortable']
+                ],
                 ['class' => 'panix\engine\grid\columns\CheckboxColumn'],
             ],
         ];
     }
+
     public static function dropdown() {
         // get and cache data
         static $dropdown;
@@ -64,10 +67,10 @@ class Manufacturer extends \panix\engine\db\ActiveRecord {
     public function getTranslations() {
         return $this->hasMany(ManufacturerTranslate::className(), ['object_id' => 'id']);
     }
+
     public function getProductsCount() {
         return $this->hasOne(Product::className(), ['manufacturer_id' => 'id'])->count();
     }
-
 
     /**
      * @inheritdoc

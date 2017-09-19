@@ -41,12 +41,32 @@ class Attribute extends \panix\engine\db\ActiveRecord {
         return new AttributeQuery(get_called_class());
     }
 
-    public function transactions()
-    {
+    public function getGridColumns() {
+        return [
+            [
+                'attribute' => 'title',
+                'contentOptions' => ['class' => 'text-left'],
+            ],
+            'name',
+            'DEFAULT_CONTROL' => [
+                'class' => 'panix\engine\grid\columns\ActionColumn',
+            ],
+            'DEFAULT_COLUMNS' => [
+                [
+                    'class' => \panix\engine\grid\sortable\Column::className(),
+                    'url' => ['/admin/shop/default/sortable']
+                ],
+                ['class' => 'panix\engine\grid\columns\CheckboxColumn'],
+            ],
+        ];
+    }
+
+    public function transactions() {
         return [
             self::SCENARIO_DEFAULT => self::OP_INSERT | self::OP_UPDATE,
         ];
     }
+
     /**
      * @return string the associated database table name
      */
@@ -57,9 +77,11 @@ class Attribute extends \panix\engine\db\ActiveRecord {
     public function getAttrtranslate() {
         return $this->hasMany(AttributeTranslate::className(), ['object_id' => 'id']);
     }
+
     public function ___getAttrtranslateOne() {
         return $this->hasOne(AttributeTranslate::className(), ['object_id' => 'id']);
     }
+
     public function getOptions() {
         return $this->hasMany(AttributeOption::className(), ['attribute_id' => 'id']);
     }
@@ -67,6 +89,7 @@ class Attribute extends \panix\engine\db\ActiveRecord {
     public function getTypes() {
         return $this->hasMany(TypeAttribute::className(), ['attribute_id' => 'id']);
     }
+
     /**
      * @return array validation rules for model attributes.
      */
@@ -97,8 +120,6 @@ class Attribute extends \panix\engine\db\ActiveRecord {
                     ],
                         ], parent::behaviors());
     }
-
-
 
     /**
      * Get types as key value list
@@ -133,12 +154,12 @@ class Attribute extends \panix\engine\db\ActiveRecord {
             case self::TYPE_DROPDOWN:
 
                 $data = ArrayHelper::map($this->options, 'id', 'value');
-                return Html::dropDownList($name, $value, $data, ['prompt'=>Yii::t('app','EMPTY_LIST')]);
+                return Html::dropDownList($name, $value, $data, ['prompt' => Yii::t('app', 'EMPTY_LIST')]);
                 //return Yii::app()->controller->widget('ext.bootstrap.selectinput.SelectInput',array('data'=>$data,'value'=>$value,'htmlOptions'=>array('name'=>$name,'empty'=>Yii::t('app','EMPTY_LIST'))),true);
                 break;
             case self::TYPE_SELECT_MANY:
                 $data = ArrayHelper::map($this->options, 'id', 'value');
-                return Html::dropDownList($name . '[]', $value, $data, ['multiple' => 'multiple','prompt'=>Yii::t('app','EMPTY_LIST')]);
+                return Html::dropDownList($name . '[]', $value, $data, ['multiple' => 'multiple', 'prompt' => Yii::t('app', 'EMPTY_LIST')]);
                 break;
             case self::TYPE_RADIO_LIST:
                 $data = ArrayHelper::map($this->options, 'id', 'value');
@@ -164,7 +185,7 @@ class Attribute extends \panix\engine\db\ActiveRecord {
      * @return string attribute value
      */
     public function renderValue($value) {
-        switch ($this->type){
+        switch ($this->type) {
             case self::TYPE_TEXT:
             case self::TYPE_TEXTAREA:
                 return $value;
@@ -205,7 +226,7 @@ class Attribute extends \panix\engine\db\ActiveRecord {
      */
     public function getIdByName() {
         $name = 'Attribute[' . $this->name . ']';
-        return Html::getInputId($this,$this->name);
+        return Html::getInputId($this, $this->name);
     }
 
     /**
@@ -218,7 +239,6 @@ class Attribute extends \panix\engine\db\ActiveRecord {
         $list = self::getTypesList();
         return $list[$type];
     }
-
 
     public function afterDelete() {
         // Delete options

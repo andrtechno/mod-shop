@@ -3,11 +3,10 @@
 namespace panix\mod\shop\models\query;
 
 use panix\engine\behaviors\nestedsets\NestedSetsQueryBehavior;
-use panix\engine\traits\DefaultQueryTrait;
 use Yii;
 class CategoryQuery extends \yii\db\ActiveQuery {
 
-    use DefaultQueryTrait;
+    use \panix\engine\traits\DefaultQueryTrait;
 
     public function behaviors() {
         return [

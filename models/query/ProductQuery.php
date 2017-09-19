@@ -2,11 +2,9 @@
 
 namespace panix\mod\shop\models\query;
 
-use panix\engine\traits\DefaultQueryTrait;
-
 class ProductQuery extends \yii\db\ActiveQuery {
 
-    use DefaultQueryTrait;
+    use \panix\engine\traits\DefaultQueryTrait;
 
     /*public function published($state = 1) {
         return $this->andWhere(['{{%shop_product}}.switch' => $state]);
