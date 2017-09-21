@@ -8,8 +8,6 @@ use panix\mod\shop\models\ProductType;
 ?>
 
 
-
-<a href="javascript:void(0)" id="testclick">dsadasds</a>
 <div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title"><?= Html::encode($this->context->pageName) ?></h3>

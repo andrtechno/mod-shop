@@ -274,10 +274,7 @@ class Product extends \panix\engine\db\ActiveRecord {
             // $cr->addNotInCondition('category', $dontDelete);
             //    $query = ShopProductCategoryRef::deleteAll(['product=:id','category NOT IN (:cats)'],[':id'=>$this->id,':cats'=>implode(',',$dontDelete)]);
             $query = ProductCategoryRef::deleteAll(
-                            ['AND',
-                        'product=:id',
-                        ['NOT IN', 'category', $dontDelete]
-                            ], [':id' => $this->id]);
+                            ['AND', 'product=:id',['NOT IN', 'category', $dontDelete]], [':id' => $this->id]);
             // ->andWhere(['not in','category',$dontDelete]);
             //  foreach($query as $q){
             // }

@@ -334,8 +334,11 @@ class DefaultController extends AdminController {
             //$cr = new CDbCriteria;
             //$cr->addNotInCondition('id', $dontDelete);
             //$cr->addCondition();
-
-            ProductVariant::find()->where(['NOT IN','id',$dontDelete])->deleteAll(['product_id'=>$model->id]);
+            ProductVariant::deleteAll(
+                            ['AND', 'product_id=:id',['NOT IN', 'id', $dontDelete]], [':id' => $model->id]);
+           /* ProductVariant::find()->where(['NOT IN','id',$dontDelete])->deleteAll([
+                'product_id'=>$model->id
+                    ]);*/
         } else
             ProductVariant::find()->where(['product_id'=>$model->id])->deleteAll();
     }
