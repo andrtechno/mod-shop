@@ -44,7 +44,7 @@ use yii\helpers\ArrayHelper;
                     <input class="form-control" type="text" name="variants[<?php echo $attribute->id ?>][price][]">
                 </td>
                 <td>
-                    <?= Html::dropDownList('variants[' . $attribute->id . '][price_type][]', null, array(0 => Yii::t('shop/admin','VARIANTS_PRICE_TYPE',0), 1 => Yii::t('shop/admin','VARIANTS_PRICE_TYPE',1)), array('class' => 'form-control')); ?>
+                    <?= Html::dropDownList('variants[' . $attribute->id . '][price_type][]', null, array(0 => Yii::t('shop/admin','VARIANTS_PRICE_FIX'), 1 => Yii::t('shop/admin','VARIANTS_PRICE_PERCENT')), array('class' => 'form-control')); ?>
                 </td>
                 <td>
                     <input class="form-control" type="text" name="variants[<?php echo $attribute->id ?>][sku][]" />
@@ -66,7 +66,7 @@ use yii\helpers\ArrayHelper;
                         <input class="form-control" type="text" name="variants[<?php echo $attribute->id ?>][price][]" value="<?php echo $o->price ?>">
                     </td>
                     <td>
-                        <?php echo Html::dropDownList('variants[' . $attribute->id . '][price_type][]', $o->price_type, array(0 => Yii::t('shop/admin','VARIANTS_PRICE_TYPE',0), 1 => Yii::t('shop/admin','VARIANTS_PRICE_TYPE',1)), array('class' => 'form-control')); ?>
+                        <?php echo Html::dropDownList('variants[' . $attribute->id . '][price_type][]', $o->price_type, array(0 => Yii::t('shop/admin','VARIANTS_PRICE_FIX'), 1 => Yii::t('shop/admin','VARIANTS_PRICE_PERCENT')), array('class' => 'form-control')); ?>
                     </td>
                     <td>
                         <input class="form-control" type="text" name="variants[<?php echo $attribute->id ?>][sku][]" value="<?php echo $o->sku ?>">

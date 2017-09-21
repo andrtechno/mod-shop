@@ -9,7 +9,7 @@ use panix\mod\shop\models\search\ProductSearch;
 use panix\engine\controllers\AdminController;
 use panix\mod\shop\models\ProductType;
 use panix\mod\shop\models\Attribute;
-
+use panix\mod\shop\models\ProductVariant;
 class DefaultController extends AdminController {
 
     public $tab_errors = [];
@@ -160,7 +160,7 @@ class DefaultController extends AdminController {
             }
             $this->processAttributes($model);
             // Process variants
-            //$this->processVariants($model);
+            $this->processVariants($model);
             $this->processConfigurations($model);
 
             Yii::$app->session->addFlash('success', \Yii::t('app', 'SUCCESS_CREATE'));
@@ -196,7 +196,7 @@ class DefaultController extends AdminController {
         if (!$attribute)
             $this->error404(Yii::t('shop/admin', 'ERR_LOAD_ATTR'));
 
-        return $this->renderPartial('variants/_table', array(
+        return $this->renderPartial('tabs/variants/_table', array(
             'attribute' => $attribute
         ));
     }
@@ -331,12 +331,13 @@ class DefaultController extends AdminController {
         }
 
         if (!empty($dontDelete)) {
-            $cr = new CDbCriteria;
-            $cr->addNotInCondition('id', $dontDelete);
-            $cr->addCondition('product_id=' . $model->id);
-            ProductVariant::model()->deleteAll($cr);
+            //$cr = new CDbCriteria;
+            //$cr->addNotInCondition('id', $dontDelete);
+            //$cr->addCondition();
+
+            ProductVariant::find()->where(['NOT IN','id',$dontDelete])->deleteAll(['product_id'=>$model->id]);
         } else
-            ProductVariant::model()->deleteAllByAttributes(array('product_id' => $model->id));
+            ProductVariant::find()->where(['product_id'=>$model->id])->deleteAll();
     }
 
     protected function findModel($id) {

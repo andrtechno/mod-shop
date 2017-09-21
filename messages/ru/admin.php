@@ -15,5 +15,8 @@ return [
     'CATEGORY_TREE_SWITCH_ON' => 'Категория успешно скрыта',
     'CATEGORY_TREE_SWITCH_OFF' => 'Категория успешно показана',
     'FIEND_REQUIRED' => 'Поле {field} обязательно для заполнения',
+        'ADD_OPTION'=>'Добавить опцию',
+    'VARIANTS_PRICE_FIX'=>'Фиксированная',
+    'VARIANTS_PRICE_PERCENT'=>'Процент',
 ];
 

@@ -83,16 +83,16 @@ if (!empty($eavAttributes))
 //$cr = new CDbCriteria;
 
 $searchModel = new ProductSearch();
-$searchModel->exclude = $product->id;
+$searchModel->exclude[] = $product->id;
 $searchModel->use_configurations = false;
 
-
+$configure = [];
 
 if (!empty($product->configurations) && !isset($clearConfigurations) && !$product->isNewRecord){
-   // echo 's';
+   $configure['conf']=$product->configurations;
    //$dataProvider->andWhere(['IN','id',$product->configurations]);//addInCondition('t.id', $product->configurations);
 }
-$dataProvider = $searchModel->search(Yii::$app->request->getQueryParams(),['conf'=>$product->configurations]);
+$dataProvider = $searchModel->search(Yii::$app->request->getQueryParams(),$configure);
 
 
 

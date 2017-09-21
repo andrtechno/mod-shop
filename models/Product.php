@@ -132,7 +132,7 @@ class Product extends \panix\engine\db\ActiveRecord {
             [['full_description'], 'string'],
             ['use_configurations', 'boolean', 'on' => self::SCENARIO_INSERT],
             [['sku', 'full_description'], 'default'], // установим ... как NULL, если они пустые
-            [['name', 'seo_alias', 'price', 'main_category_id'], 'required'],
+            [['name', 'seo_alias', 'main_category_id'], 'required'],
             [['name', 'seo_alias'], 'string', 'max' => 255],
             [['manufacturer_id', 'type_id', 'quantity', 'views', 'added_to_cart_count', 'ordern', 'category_id'], 'integer'],
             [['name', 'seo_alias', 'full_description','use_configurations'], 'safe'],
@@ -143,8 +143,9 @@ class Product extends \panix\engine\db\ActiveRecord {
     public function processVariants() {
         $result = array();
         foreach ($this->variants as $v) {
-            $result[$v->attribute->id]['attribute'] = $v->attribute;
-            $result[$v->attribute->id]['options'][] = $v;
+            //print_r($v);die;
+            $result[$v->productAttribute->id]['attribute'] = $v->productAttribute;
+            $result[$v->productAttribute->id]['options'][] = $v;
         };
         return $result;
     }
