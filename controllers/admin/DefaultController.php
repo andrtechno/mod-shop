@@ -127,10 +127,23 @@ class DefaultController extends AdminController {
 
         // Set configurable attributes on new record
         if ($model->isNewRecord) {
+  
             if ($model->use_configurations && isset($_GET['Product']['configurable_attributes']))
                 $model->configurable_attributes = $_GET['Product']['configurable_attributes'];
         }
 
+        
+        
+        echo $model->scenario;
+        
+        
+        
+        
+        
+        
+        
+        
+        
         if ($model->load($post) && $model->validate() && $this->validateAttributes($model)) {
 
             $model->setRelatedProducts(Yii::$app->request->post('RelatedProductId'), []);

@@ -113,7 +113,13 @@ class Product extends \panix\engine\db\ActiveRecord {
       self::SCENARIO_DEFAULT => self::OP_INSERT | self::OP_UPDATE,
       ];
       } */
-
+    const SCENARIO_INSERT = 'insert';
+   public function scenarios()
+    {
+        $scenarios = parent::scenarios();
+        $scenarios[self::SCENARIO_INSERT] = ['use_configurations'];
+        return $scenarios;
+    }
     /**
      * @inheritdoc
      */
@@ -124,17 +130,24 @@ class Product extends \panix\engine\db\ActiveRecord {
             [['image'], 'image'],
             [['name', 'seo_alias'], 'trim'],
             [['full_description'], 'string'],
-            ['use_configurations', 'boolean', 'on' => 'insert'],
+            ['use_configurations', 'boolean', 'on' => self::SCENARIO_INSERT],
             [['sku', 'full_description'], 'default'], // установим ... как NULL, если они пустые
             [['name', 'seo_alias', 'price', 'main_category_id'], 'required'],
             [['name', 'seo_alias'], 'string', 'max' => 255],
             [['manufacturer_id', 'type_id', 'quantity', 'views', 'added_to_cart_count', 'ordern', 'category_id'], 'integer'],
-            [['name', 'seo_alias', 'full_description'], 'safe'],
+            [['name', 'seo_alias', 'full_description','use_configurations'], 'safe'],
                 //  [['c1'], 'required'], // Attribute field
                 // [['c1'], 'string', 'max' => 255], // Attribute field
         ];
     }
-
+    public function processVariants() {
+        $result = array();
+        foreach ($this->variants as $v) {
+            $result[$v->attribute->id]['attribute'] = $v->attribute;
+            $result[$v->attribute->id]['options'][] = $v;
+        };
+        return $result;
+    }
     public function beforeValidate() {
         // For configurable product set 0 price
         if ($this->use_configurations)
@@ -386,7 +399,30 @@ class Product extends \panix\engine\db\ActiveRecord {
             'max_price' => $query['max_price']
                 ), 'id=:id', array(':id' => $model->id))->execute();
     }
+    /**
+     * @return array of product ids
+     */
+    public function getConfigurations($reload = false) {
+        if (is_array($this->_configurations) && $reload === false)
+            return $this->_configurations;
 
+        
+        $query = (new \yii\db\Query())
+                ->select('t.configurable_id')
+                ->from('{{%shop_product_configurations}} t')
+                ->where(['t.product_id=:id', [':id' => $this->id]])
+                ->groupBy('t.configurable_id');
+               // ->one();
+          $this->_configurations = $query->createCommand()->queryColumn();
+       /* $this->_configurations = Yii::$app->db->createCommand()
+                ->select('t.configurable_id')
+                ->from('{{%shop_product_configurations}} t')
+                ->where('product_id=:id', array(':id' => $this->id))
+                ->group('t.configurable_id')
+                ->queryColumn();*/
+
+        return $this->_configurations;
+    }
     public function getDisplayPrice($currency_id = null) {
         $currency = Yii::$app->currency;
         if ($this->appliedDiscount) {
@@ -425,11 +461,22 @@ class Product extends \panix\engine\db\ActiveRecord {
             $this->removeImages();
         }
         // Clear configurable attributes
-        //Yii::app()->db->createCommand()->delete('{{shop_product_configurable_attributes}}', 'product_id=:id', array(':id' => $this->id));
+        Yii::$app->db->createCommand()->delete('{{%shop_product_configurable_attributes}}', 'product_id=:id',[':id' => $this->id])->execute();
         // Delete configurations
-        //Yii::app()->db->createCommand()->delete('{{shop_product_configurations}}', 'product_id=:id', array(':id' => $this->id));
-        //Yii::app()->db->createCommand()->delete('{{shop_product_configurations}}', 'configurable_id=:id', array(':id' => $this->id));
-
+        Yii::$app->db->createCommand()->delete('{{%shop_product_configurations}}', 'product_id=:id', [':id' => $this->id])->execute();
+        Yii::$app->db->createCommand()->delete('{{%shop_product_configurations}}', 'configurable_id=:id', [':id' => $this->id])->execute();
+        /*if (Yii::app()->hasModule('wishlist')) {
+            Yii::import('mod.wishlist.models.WishlistProducts');
+            $wishlistProduct = WishlistProducts::model()->findByAttributes(array('product_id' => $this->id));
+            if ($wishlistProduct)
+                $wishlistProduct->delete();
+        }
+        // Delete from comapre if install module "comapre"
+        if (Yii::app()->hasModule('comapre')) {
+            Yii::import('mod.comapre.components.CompareProducts');
+            $comapreProduct = new CompareProducts;
+            $comapreProduct->remove($this->id);
+        }*/
         parent::afterDelete();
     }
 
