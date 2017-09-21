@@ -134,11 +134,6 @@ class DefaultController extends AdminController {
 
         
         
-        echo $model->scenario;
-        
-        
-        
-        
         
         
         
@@ -180,7 +175,31 @@ class DefaultController extends AdminController {
             'model' => $model,
         ]);
     }
+    
+        public function actionAddOptionToAttribute() {
+        $attribute = Attribute::findOne($_GET['attr_id']);
 
+        if (!$attribute)
+            $this->error404(Yii::t('shop/admin', 'ERR_LOAD_ATTR'));
+
+        $attributeOption = new AttributeOption;
+        $attributeOption->attribute_id = $attribute->id;
+        $attributeOption->value = $_GET['value'];
+        $attributeOption->save(false);
+
+        echo $attributeOption->id;
+    }
+    
+    public function actionRenderVariantTable() {
+        $attribute = Attribute::findOne($_GET['attr_id']);
+
+        if (!$attribute)
+            $this->error404(Yii::t('shop/admin', 'ERR_LOAD_ATTR'));
+
+        return $this->renderPartial('variants/_table', array(
+            'attribute' => $attribute
+        ));
+    }
     /**
      * Validate required shop attributes
      * @param Product $model

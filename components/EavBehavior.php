@@ -462,11 +462,11 @@ class EavBehavior extends \yii\base\Behavior {
         }
         print_r($this->owner);die;
         // $attributes be array of elements: $attribute => $values
-        $this->owner = $this->getFindByEavAttributesCriteria($attributes);
+        $criteria = $this->getFindByEavAttributesCriteria($attributes);
         // Merge model criteria.
        // $this->owner->getDbCriteria()->mergeWith($criteria);
         // Return model.
-        return $this->owner;
+        return $criteria;
     }
 
     /**
@@ -558,6 +558,11 @@ class EavBehavior extends \yii\base\Behavior {
 
     protected function getFindByEavAttributesCriteria($attributes) {
        // $criteria = new CDbCriteria();
+$query = new Query;
+// compose the query
+$query->select('id, name')
+    ->from('user')
+    ->limit(10);
         $pk = $this->getModelTableFk();
 
       //  $conn = $this->owner->getDbConnection();

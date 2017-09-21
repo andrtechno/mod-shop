@@ -409,8 +409,8 @@ class Product extends \panix\engine\db\ActiveRecord {
         
         $query = (new \yii\db\Query())
                 ->select('t.configurable_id')
-                ->from('{{%shop_product_configurations}} t')
-                ->where(['t.product_id=:id', [':id' => $this->id]])
+                ->from('{{%shop_product_configurations}} as t')
+                ->where('t.product_id=:id', [':id' => $this->id])
                 ->groupBy('t.configurable_id');
                // ->one();
           $this->_configurations = $query->createCommand()->queryColumn();

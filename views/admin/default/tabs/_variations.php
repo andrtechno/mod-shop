@@ -16,7 +16,8 @@ use yii\helpers\ArrayHelper;
                 echo Html::dropDownList(
                     'variantAttribute',
                     null,
-                   ArrayHelper::map($attributes, 'id', 'title')
+                   ArrayHelper::map($attributes, 'id', 'title'),
+                        ['id'=>'variantAttribute']
                 );
             }
             ?>
@@ -31,7 +32,7 @@ use yii\helpers\ArrayHelper;
     <div id="variantsData">
         <?php
         foreach ($model->processVariants() as $row) {
-            $this->renderPartial('variants/_table', array(
+            echo $this->render('variants/_table', array(
                 'attribute' => $row['attribute'],
                 'options' => $row['options']
             ));

@@ -3,6 +3,8 @@ use panix\engine\Html;
 use panix\mod\shop\models\Product;
 use panix\mod\shop\models\Attribute;
 use yii\helpers\ArrayHelper;
+use panix\mod\shop\models\search\ProductSearch;
+use panix\engine\grid\GridView;
 /**
  * Confirutable products tab
  *
@@ -13,7 +15,8 @@ use yii\helpers\ArrayHelper;
 
 \panix\mod\shop\assets\admin\ConfigurationsAsset::register($this);
 // For grid view we use new products instance
-$model = new Product; 
+$model =  Product::find(); 
+$model2 =  new Product; 
 
 if (isset($_GET['ConfProduct']))
     $model->attributes = $_GET['ConfProduct'];
@@ -27,23 +30,23 @@ $columns = array(
         'name' => 'id',
         'type' => 'text',
         'value' => '$data->id',
-        'filter' => Html::textInput('ConfProduct[id]', $model->id)
+        'filter' => Html::textInput('ConfProduct[id]', $model2->id)
     ),
     array(
         'name' => 'name',
         'type' => 'raw',
         'value' => 'Html::link(Html::encode($data->name), array("update", "id"=>$data->id), array("target"=>"_blank"))',
-        'filter' => Html::textInput('ConfProduct[name]', $model->name)
+        'filter' => Html::textInput('ConfProduct[name]', $model2->name)
     ),
     array(
         'name' => 'sku',
         'value' => '$data->sku',
-        'filter' => Html::textInput('ConfProduct[sku]', $model->sku)
+        'filter' => Html::textInput('ConfProduct[sku]', $model2->sku)
     ),
     array(
         'name' => 'price',
         'value' => '$data->price',
-        'filter' => Html::textInput('ConfProduct[price]', $model->price)
+        'filter' => Html::textInput('ConfProduct[price]', $model2->price)
     ),
 );
 
@@ -77,16 +80,32 @@ if (!empty($eavAttributes))
     $model = $model->withEavAttributes($eavAttributes);
 
 // On edit display only saved configurations
-$cr = new CDbCriteria;
-if (!empty($product->configurations) && !isset($clearConfigurations) && !$product->isNewRecord)
-    $cr->addInCondition('t.id', $product->configurations);
+//$cr = new CDbCriteria;
 
-$model->exclude = $product->id;
-$model->use_configurations = false;
+$searchModel = new ProductSearch();
+$searchModel->exclude = $product->id;
+$searchModel->use_configurations = false;
 
-$dataProvider = $model->search(array(), $cr);
-$dataProvider->pagination->pageSize = 100;
 
+
+if (!empty($product->configurations) && !isset($clearConfigurations) && !$product->isNewRecord){
+   // echo 's';
+   //$dataProvider->andWhere(['IN','id',$product->configurations]);//addInCondition('t.id', $product->configurations);
+}
+$dataProvider = $searchModel->search(Yii::$app->request->getQueryParams(),['conf'=>$product->configurations]);
+
+
+
+echo GridView::widget([
+    'tableOptions' => ['class' => 'table table-striped'],
+    'dataProvider' => $dataProvider,
+    'filterModel' => $searchModel,
+    'enableLayout'=>false,
+    'showFooter' => true,
+    //   'footerRowOptions' => ['class' => 'text-center'],
+    'rowOptions' => ['class' => 'sortable-column']
+]);
+/*
 $this->widget('ext.adminList.GridView', array(
     'dataProvider' => $dataProvider,
     'ajaxUrl' => Yii::app()->createUrl('/admin/shop/products/ApplyConfigurationsFilter', array(
@@ -104,7 +123,7 @@ $this->widget('ext.adminList.GridView', array(
     'selectableRows' => 2,
     'filter' => $model,
     'columns' => $columns,
-));
+));*/
 ?>
 
 <script type="text/javascript">

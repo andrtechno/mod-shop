@@ -61,6 +61,8 @@ class ProductQuery extends \yii\db\ActiveQuery {
         return $this->getFindByEavAttributes2($attributes);
     }
 
+    
+    
     protected function getFindByEavAttributes($attributes) {
         $pk = '{{%shop_product}}.id';
         $i = 0;
@@ -121,9 +123,9 @@ class ProductQuery extends \yii\db\ActiveQuery {
             // If search models with attribute name with anything values.
             elseif (is_int($attribute)) {
                 //$values = $conn->quoteValue($values);
-                $criteria->join .= "\nJOIN {$this->tableName} eavb$i"
-                        . "\nON t.{$pk} = eavb$i.{$this->entityField}"
-                        . "\nAND eavb$i.{$this->attributeField} = $values";
+                $this->join .= "\nJOIN {{%shop_product_attribute_eav}} eavb$i"
+                        . "\nON t.{$pk} = eavb$i.entity"
+                        . "\nAND eavb$i.attribute = $values";
                 $i++;
             }
         }

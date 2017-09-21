@@ -14,7 +14,7 @@ class ConfigurationsAsset extends AssetBundle {
 
     public $sourcePath = '@vendor/panix/mod-shop/assets/admin';
     public $jsOptions = array(
-        'position' => \yii\web\View::POS_END //require for products.js   POS_END
+        'position' => \yii\web\View::POS_HEAD //require for products.js   POS_END
     );
     public $js = [
         'js/products.configurations.js',
