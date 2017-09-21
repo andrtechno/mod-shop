@@ -460,10 +460,11 @@ class EavBehavior extends \yii\base\Behavior {
         if (empty($attributes)) {
             $attributes = $this->getSafeAttributesArray();
         }
+        print_r($this->owner);die;
         // $attributes be array of elements: $attribute => $values
-        $criteria = $this->getFindByEavAttributesCriteria($attributes);
+        $this->owner = $this->getFindByEavAttributesCriteria($attributes);
         // Merge model criteria.
-        $this->owner->getDbCriteria()->mergeWith($criteria);
+       // $this->owner->getDbCriteria()->mergeWith($criteria);
         // Return model.
         return $this->owner;
     }
@@ -556,22 +557,22 @@ class EavBehavior extends \yii\base\Behavior {
     }
 
     protected function getFindByEavAttributesCriteria($attributes) {
-        $criteria = new CDbCriteria();
+       // $criteria = new CDbCriteria();
         $pk = $this->getModelTableFk();
 
-        $conn = $this->owner->getDbConnection();
+      //  $conn = $this->owner->getDbConnection();
         $i = 0;
         foreach ($attributes as $attribute => $values) {
             // If search models with attribute name with specified values.
             if (is_string($attribute)) {
                 // Get attribute compare operator
-                $attribute = $conn->quoteValue($attribute);
+               // $attribute = $conn->quoteValue($attribute);
                 if (!is_array($values)) {
                     $values = array($values);
                 }
 
                 foreach ($values as $value) {
-                    $value = $conn->quoteValue($value);
+                   // $value = $conn->quoteValue($value);
                     $criteria->join .= "\nJOIN {$this->tableName} eavb$i"
                             . "\nON t.{$pk} = eavb$i.{$this->entityField}";
                     //  . "\nAND eavb$i.{$this->attributeField} = $attribute"
@@ -584,17 +585,17 @@ class EavBehavior extends \yii\base\Behavior {
             }
             // If search models with attribute name with anything values.
             elseif (is_int($attribute)) {
-                $values = $conn->quoteValue($values);
-                $criteria->join .= "\nJOIN {$this->tableName} eavb$i"
+               // $values = $conn->quoteValue($values);
+                $this->owner->join('JOIN', "{$this->tableName} eavb" . $i, "$pk=`eavb$i`.`{$this->entityField}` AND eavb$i.{$this->attributeField} = $values");
+                /*$criteria->join .= "\nJOIN {$this->tableName} eavb$i"
                         . "\nON t.{$pk} = eavb$i.{$this->entityField}"
-                        . "\nAND eavb$i.{$this->attributeField} = $values";
+                        . "\nAND eavb$i.{$this->attributeField} = $values";*/
                 $i++;
             }
         }
-        $criteria->distinct = true;
-        //$criteria->order = '`t`.`ordern` DESC';
-        $criteria->group .= "t.{$pk}";
-        return $criteria;
+        $this->owner->distinct(true);
+        $this->owner->groupBy("{$pk}");
+        return $this;
     }
 
     /**
