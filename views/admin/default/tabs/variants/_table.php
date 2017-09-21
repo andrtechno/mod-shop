@@ -9,7 +9,7 @@ use yii\helpers\ArrayHelper;
             <td colspan="6">
                 <h4><?php echo Html::encode($attribute->title); ?></h4>
                 <?php
-                echo Html::a(Yii::t('shop/admin','ADD_OPTION'), '#', array(
+                echo Html::a(Html::icon('add').' '.Yii::t('shop/admin','ADD_OPTION'), '#', array(
                     'rel' => $attribute->id,
                     'class' => 'btn btn-sm btn-success',
                     'onclick' => 'js: return addNewOption($(this));',

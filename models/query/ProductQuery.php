@@ -82,7 +82,7 @@ class ProductQuery extends \yii\db\ActiveQuery {
             }
             // If search models with attribute name with anything values.
             elseif (is_int($attribute)) {
-                $this->join('JOIN', '{{%shop_product_attribute_eav}} eavb' . $i, "$pk=`eavb$i`.`entity` AND eavb$i.attribute = $values");
+                $this->join('JOIN', '{{%shop_product_attribute_eav}} eavb' . $i, "$pk=`eavb$i`.`entity` AND eavb$i.attribute = '$values'");
                 $i++;
             }
         }
@@ -110,7 +110,7 @@ class ProductQuery extends \yii\db\ActiveQuery {
                 foreach ($values as $value) {
                     //$value = $conn->quoteValue($value);
                     $this->join('JOIN', '{{%shop_product_attribute_eav}} eavb' . $i, "$pk=eavb$i.`entity` AND eavb$i.`attribute` = '$attribute' AND eavb$i.`value` = '$value'");
-                    //     $this->andWhere(['IN', "`eavb$i`.`value`", $values]);
+                     $this->andWhere(['IN', "`eavb$i`.`value`", $values]);
                     /* $criteria->join .= "\nJOIN {$this->tableName} eavb$i"
                       . "\nON t.{$pk} = eavb$i.{$this->entityField}"
                       . "\nAND eavb$i.{$this->attributeField} = $attribute"
@@ -122,10 +122,11 @@ class ProductQuery extends \yii\db\ActiveQuery {
             }
             // If search models with attribute name with anything values.
             elseif (is_int($attribute)) {
+                $this->join('JOIN', '{{%shop_product_attribute_eav}} eavb' . $i, "$pk=`eavb$i`.`entity` AND eavb$i.attribute = '$values'");
                 //$values = $conn->quoteValue($values);
-                $this->join .= "\nJOIN {{%shop_product_attribute_eav}} eavb$i"
+               /* $this->join .= "\nJOIN {{%shop_product_attribute_eav}} eavb$i"
                         . "\nON t.{$pk} = eavb$i.entity"
-                        . "\nAND eavb$i.attribute = $values";
+                        . "\nAND eavb$i.attribute = $values";*/
                 $i++;
             }
         }

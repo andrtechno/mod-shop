@@ -15,6 +15,7 @@ return [
     'ADDED_TO_CART_COUNT' => 'Добавление в корзину',
     'FULL_DESCRIPTION' => 'Описание',
     'TAB_MAIN' => 'Основное',
+    'TAB_VARIANTS' => 'Варианты',
     'TYPE_ID'=>'Тип товара',
     'USE_CONFIGURATIONS'=>'Конфигурация'
 ];

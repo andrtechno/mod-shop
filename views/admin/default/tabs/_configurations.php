@@ -4,7 +4,8 @@ use panix\mod\shop\models\Product;
 use panix\mod\shop\models\Attribute;
 use yii\helpers\ArrayHelper;
 use panix\mod\shop\models\search\ProductSearch;
-use panix\engine\grid\GridView;
+use yii\grid\GridView;
+use panix\engine\data\ActiveDataProvider;
 /**
  * Confirutable products tab
  *
@@ -22,30 +23,34 @@ if (isset($_GET['ConfProduct']))
     $model->attributes = $_GET['ConfProduct'];
 
 $columns = array(
-    array(
+ /*   array(
         'class' => 'CheckBoxColumn',
         'checked' => (!empty($product->configurations) && !isset($clearConfigurations) && !$product->isNewRecord) ? 'true' : 'false'
-    ),
+    ),*/
     array(
-        'name' => 'id',
-        'type' => 'text',
-        'value' => '$data->id',
+        'attribute' => 'id',
+        'format' => 'text',
+        //'value' => '$data->id',
         'filter' => Html::textInput('ConfProduct[id]', $model2->id)
     ),
     array(
-        'name' => 'name',
-        'type' => 'raw',
-        'value' => 'Html::link(Html::encode($data->name), array("update", "id"=>$data->id), array("target"=>"_blank"))',
+        'attribute' => 'name',
+        'format' => 'raw',
+            'value' => function($model) {
+        return Html::a(Html::encode($model->name), array("update", "id"=>$model->id), array("target"=>"_blank"));
+    },
+
         'filter' => Html::textInput('ConfProduct[name]', $model2->name)
     ),
     array(
-        'name' => 'sku',
-        'value' => '$data->sku',
+        'attribute' => 'sku',
+        //'value' => '$data->sku',
         'filter' => Html::textInput('ConfProduct[sku]', $model2->sku)
     ),
     array(
-        'name' => 'price',
-        'value' => '$data->price',
+        'attribute' => 'price',
+           'format' => 'raw',
+        //'value' => '$data->price',
         'filter' => Html::textInput('ConfProduct[price]', $model2->price)
     ),
 );
@@ -67,9 +72,9 @@ foreach ($attributeModels as $attribute) {
         array_push($eavAttributes, $attribute->name);
 
     $columns[] = array(
-        'name' => 'eav_' . $attribute->name,
+        'attribute' => 'eav_' . $attribute->name,
         'header' => $attribute->title,
-        'htmlOptions' => array('class' => 'eav'),
+        'contentOptions' => array('class' => 'eav'),
         'filter' => Html::dropDownList('eav[' . $attribute->name . ']', $selected, ArrayHelper::map($attribute->options, 'id', 'value'), array(
             'empty' => '---',
         ))
@@ -79,31 +84,47 @@ foreach ($attributeModels as $attribute) {
 if (!empty($eavAttributes))
     $model = $model->withEavAttributes($eavAttributes);
 
+
 // On edit display only saved configurations
 //$cr = new CDbCriteria;
+$exclude[] = $product->id;
+            foreach ($exclude as $id) {
+                //$model->andWhere(['!=', '{{%shop_product}}.id', $id]);
+            }
 
-$searchModel = new ProductSearch();
-$searchModel->exclude[] = $product->id;
-$searchModel->use_configurations = false;
+
+//$model->use_configurations = false;
+//$searchModel = new ProductSearch();
+//$searchModel->exclude[] = $product->id;
+//$searchModel->use_configurations = false;
 
 $configure = [];
 
 if (!empty($product->configurations) && !isset($clearConfigurations) && !$product->isNewRecord){
-   $configure['conf']=$product->configurations;
+  // $configure['conf']=$product->configurations;
+      $model->andWhere(['IN','id',$product->configurations]);
    //$dataProvider->andWhere(['IN','id',$product->configurations]);//addInCondition('t.id', $product->configurations);
 }
-$dataProvider = $searchModel->search(Yii::$app->request->getQueryParams(),$configure);
+//$dataProvider = $searchModel->search(Yii::$app->request->getQueryParams(),$configure);
 
+
+        $dataProvider = new ActiveDataProvider([
+            'query' => $model,
+
+        ]);
+        
 
 
 echo GridView::widget([
+        'id' => 'ConfigurationsProductGrid',
     'tableOptions' => ['class' => 'table table-striped'],
     'dataProvider' => $dataProvider,
-    'filterModel' => $searchModel,
-    'enableLayout'=>false,
+    //'filterModel' => $searchModel,
+
+    'columns'=>$columns,
     'showFooter' => true,
     //   'footerRowOptions' => ['class' => 'text-center'],
-    'rowOptions' => ['class' => 'sortable-column']
+  //  'rowOptions' => ['class' => 'sortable-column']
 ]);
 /*
 $this->widget('ext.adminList.GridView', array(
