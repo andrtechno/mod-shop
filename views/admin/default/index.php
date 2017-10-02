@@ -1,20 +1,16 @@
 <?php
 
-use yii\helpers\Html;
 use panix\engine\grid\GridView;
 use panix\engine\widgets\Pjax;
-?>
 
 
-<?= \panix\ext\fancybox\Fancybox::widget(['target' => '.image a']); ?>
 
-<?php
+echo \panix\ext\fancybox\Fancybox::widget(['target' => '.image a']);
 
 Pjax::begin([
     'timeout' => 50000,
     'id' => 'pjax-' . strtolower(basename($dataProvider->query->modelClass)),
-    'enablePushState' => true,
-    'linkSelector' => 'a:not(.linkTarget)'
+   // 'linkSelector' => 'a:not(.linkTarget)'
 ]);
 echo GridView::widget([
     'tableOptions' => ['class' => 'table table-striped'],
@@ -26,5 +22,5 @@ echo GridView::widget([
     'rowOptions' => ['class' => 'sortable-column']
 ]);
 Pjax::end();
-?>
+
 

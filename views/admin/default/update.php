@@ -40,18 +40,18 @@ use panix\mod\shop\models\ProductType;
                 }
                 ?>
                 <div class="form-group">
-                    <div class="col-sm-4"><?= Html::activeLabel($model, 'type_id', array('class' => 'control-label')); ?></div>
+                    <div class="col-sm-4"><?= Html::activeLabel($model, 'type_id', ['class' => 'control-label']); ?></div>
                     <div class="col-sm-8">
-                        <?php echo Html::activeDropDownList($model, 'type_id', ArrayHelper::map($typesList, 'id', 'name')); ?>
+                        <?php echo Html::activeDropDownList($model, 'type_id', ArrayHelper::map($typesList, 'id', 'name'),['class'=>'form-control']); ?>
 
 
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <div class="col-sm-4"><?= Html::activeLabel($model, 'use_configurations', array('class' => 'control-label')); ?></div>
+                    <div class="col-sm-4"><?= Html::activeLabel($model, 'use_configurations', ['class' => 'control-label']); ?></div>
                     <div class="col-sm-8">
-                        <?php echo Html::activeDropDownList($model, 'use_configurations', array(0 => Yii::t('app', 'NO'), 1 => Yii::t('app', 'YES'))); ?>
+                        <?php echo Html::activeDropDownList($model, 'use_configurations', [0 => Yii::t('app', 'NO'), 1 => Yii::t('app', 'YES')],['class'=>'form-control']); ?>
 
 
                     </div>
@@ -60,7 +60,7 @@ use panix\mod\shop\models\ProductType;
                 <div id="availableAttributes" class="form-group hidden"></div>
 
                 <div class="form-group text-center">
-                    <?= Html::submitButton(Yii::t('app', 'CREATE', 0), array('name' => false, 'class' => 'btn btn-success')); ?>
+                    <?= Html::submitButton(Yii::t('app', 'CREATE', 0), ['name' => false, 'class' => 'btn btn-success']); ?>
                 </div>
                 <?php
                 echo Html::endForm();
