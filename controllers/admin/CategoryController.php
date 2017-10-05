@@ -11,28 +11,29 @@ use yii\filters\VerbFilter;
  * AdminController implements the CRUD actions for User model.
  */
 class CategoryController extends AdminController {
-/*
-    public function actions() {
-        return [
-            'moveNode' => [
-                'class' => 'panix\engine\behaviors\nestedsets\actions\MoveNodeAction',
-                'modelClass' => 'panix\mod\shop\models\Category',
-            ],
-            'deleteNode' => [
-                'class' => 'panix\engine\behaviors\nestedsets\actions\DeleteNodeAction',
-                'modelClass' => 'panix\mod\shop\models\Category',
-            ],
-            'updateNode' => [
-                'class' => 'panix\engine\behaviors\nestedsets\actions\UpdateNodeAction',
-                'modelClass' => 'panix\mod\shop\models\Category',
-            ],
-            'createNode' => [
-                'class' => 'panix\engine\behaviors\nestedsets\actions\CreateNodeAction',
-                'modelClass' => Category::className(),
-            ],
-        ];
-    }
-*/
+    /*
+      public function actions() {
+      return [
+      'moveNode' => [
+      'class' => 'panix\engine\behaviors\nestedsets\actions\MoveNodeAction',
+      'modelClass' => 'panix\mod\shop\models\Category',
+      ],
+      'deleteNode' => [
+      'class' => 'panix\engine\behaviors\nestedsets\actions\DeleteNodeAction',
+      'modelClass' => 'panix\mod\shop\models\Category',
+      ],
+      'updateNode' => [
+      'class' => 'panix\engine\behaviors\nestedsets\actions\UpdateNodeAction',
+      'modelClass' => 'panix\mod\shop\models\Category',
+      ],
+      'createNode' => [
+      'class' => 'panix\engine\behaviors\nestedsets\actions\CreateNodeAction',
+      'modelClass' => Category::className(),
+      ],
+      ];
+      }
+     */
+
     public function behaviors() {
         return [
             'verbs' => [
@@ -44,19 +45,17 @@ class CategoryController extends AdminController {
         ];
     }
 
-
-
     public function actionIndex() {
         $this->pageName = Yii::t('shop/default', 'MODULE_NAME');
         $this->buttons = [
             [
-                'label' => Yii::t('shop/default', 'CREATE_CATEGORY'),
+                'label' => Yii::t('shop/admin', 'CREATE_CATEGORY'),
                 'url' => ['/admin/shop/category/create'],
                 'options' => ['class' => 'btn btn-success']
             ]
         ];
 
-        echo $this->render('index', [
+        return $this->render('index', [
         ]);
     }
 
@@ -69,15 +68,16 @@ class CategoryController extends AdminController {
         if (!$model) {
             $this->error404();
         }
-
-
+        $this->pageName = Yii::t('shop/admin', 'CATEGORIES');
+        $this->breadcrumbs = [
+            [
+                'label' => Yii::t('shop/default', 'MODULE_NAME'),
+                'url' => ['/admin/shop']
+            ],
+            $this->pageName
+        ];
         $post = Yii::$app->request->post();
         if ($model->load($post) && $model->validate()) {
-
-
-
-
-
 
             if ($model->getIsNewRecord()) {
                 if (Yii::$app->request->get('parent_id')) {
@@ -87,7 +87,6 @@ class CategoryController extends AdminController {
                 }
 
                 $model->appendTo($parent_id);
-
                 return $this->redirect(['index']);
             } else {
                 $model->saveNode();
@@ -110,6 +109,7 @@ class CategoryController extends AdminController {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
+
     public function actionRenameNode() {
 
 
@@ -187,7 +187,7 @@ class CategoryController extends AdminController {
         $node->saveNode();
         echo \yii\helpers\Json::encode(array(
             'switch' => $node->switch,
-            'message' => Yii::t('shop/admin', ($node->switch)?'CATEGORY_TREE_SWITCH_OFF':'CATEGORY_TREE_SWITCH_NO')
+            'message' => Yii::t('shop/admin', ($node->switch) ? 'CATEGORY_TREE_SWITCH_OFF' : 'CATEGORY_TREE_SWITCH_NO')
         ));
         die;
     }
@@ -207,4 +207,5 @@ class CategoryController extends AdminController {
             $model->deleteNode();
         }
     }
+
 }

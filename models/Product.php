@@ -105,7 +105,7 @@ class Product extends \panix\engine\db\ActiveRecord {
     }
 
     public function getUrl() {
-        return ['/shop/default/view', 'seo_alias' => $this->seo_alias];
+        return ['/shop/product/view', 'seo_alias' => $this->seo_alias];
     }
 
     /* public function transactions() {

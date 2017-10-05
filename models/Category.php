@@ -30,7 +30,8 @@ class Category extends \panix\engine\db\ActiveRecord {
     public function rules() {
         return [
             [['name', 'seo_alias'], 'required'],
-            [['name'], 'string', 'max' => 255]
+            [['name'], 'string', 'max' => 255],
+            ['description','safe']
         ];
     }
 

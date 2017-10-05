@@ -15,6 +15,9 @@ $(document).ready(function() {
 });
 
 ", yii\web\View::POS_BEGIN, 'cart');
+
+
+ 
 ?>
 
 

@@ -9,7 +9,8 @@ class Module extends WebModule {
 
     public $icon = 'shopcart';
     public $routes = [
-        'product/<seo_alias>' => 'shop/default/view',
+        'shop' => 'shop/default/index',
+        'product/<seo_alias>' => 'shop/product/view',
         'manufacturer/<seo_alias>' => 'shop/manufacturer/view',
         'shop/ajax/activateCurrency/<id>' => 'shop/ajax/activateCurrency',
         'products/search/<q>' => 'shop/category/search',

@@ -40,7 +40,7 @@ echo \panix\ext\jstree\JsTree::widget([
                         "action": function (obj) {
                             $node = tree.get_node($node);
                             console.log($node);
-                            window.location = "/admin/shop/category/create/parent_id/"+$node.id.replace("node_", "");
+                            window.location = "/admin/shop/category/create?parent_id="+$node.id.replace("node_", "");
                         }
                     }, 
                     "Edit": {
@@ -48,7 +48,7 @@ echo \panix\ext\jstree\JsTree::widget([
                         "label": "' . Yii::t('app', 'UPDATE') . '",
                         "action": function (obj) {
                             $node = tree.get_node($node);
-                           window.location = "/admin/shop/category/update/id/"+$node.id.replace("node_", "");
+                           window.location = "/admin/shop/category/update?id="+$node.id.replace("node_", "");
                         }
                     },  
                     "Rename": {
@@ -62,8 +62,10 @@ echo \panix\ext\jstree\JsTree::widget([
                     "Remove": {
                         "icon":"icon-trashcan",
                         "label": "' . Yii::t('app', 'DELETE') . '",
-                        "action": function (obj) { 
-                            tree.delete_node($node);
+                        "action": function (obj) {
+                            if (confirm("'.Yii::t('app','DELETE_COMFIRM').'\nТак же будут удалены все товары.")) {
+                                tree.delete_node($node);
+                            }
                         }
                     }
                 };

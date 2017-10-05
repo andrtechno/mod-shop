@@ -4,6 +4,7 @@ return [
     'CREATE_PRODUCT' => 'Добавить товар',
     'CREATE_MANUFACTURER' => 'Добавить производителя',
     'CREATE_CURRENCY' => 'Добавить валюту',
+    'CREATE_CATEGORY'=>'Добавить категорию',
     'CURRENCY' => 'Валюта',
     'CATEGORIES' => 'Категории',
     'TYPE_PRODUCTS' => 'Тип товаров',

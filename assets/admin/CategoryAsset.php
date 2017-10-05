@@ -12,7 +12,7 @@ class CategoryAsset extends AssetBundle
 {
     public $sourcePath = '@vendor/panix/mod-shop/assets/admin';
     public $jsOptions = array(
-        'position' => \yii\web\View::POS_BEGIN
+        'position' => \yii\web\View::POS_END
     );
     public $js = [
         'js/category.js',
