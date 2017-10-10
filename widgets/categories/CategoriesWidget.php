@@ -23,14 +23,12 @@ class CategoriesWidget extends \panix\engine\data\Widget {
         $model = Category::findOne(1);
 
         if (!$model) {
-            die('err');
+            die(__CLASS__.'err');
         } else {
             $result = $model->menuArray();
         }
 
-
-
-        return $this->render('april', ['result' => $result]);
+        return $this->render($this->skin, ['result' => $result]);
     }
 
     public function recursive($data, $i = 0) {
@@ -57,6 +55,7 @@ class CategoriesWidget extends \panix\engine\data\Widget {
 
                 $html .= Html::beginTag('li', array('class' => $activeClass));
                 if (isset($obj['items'])) {
+                    $html .= $obj['total_count'];
                     $html .= Html::a($obj['label'], '#collapse' . $obj['id'], array(
                                 'data-toggle' => 'collapse',
                                 'aria-expanded' => $ariaExpanded,
@@ -68,7 +67,7 @@ class CategoriesWidget extends \panix\engine\data\Widget {
 
                     $html .= Html::endTag('div');
                 } else {
-
+ $html .= $obj['total_count'];
                    // $html .= Html::a($obj['label'], Yii::$app->urlManager->createUrl([$obj['url'][0], ['seo_alias' => $obj['url']['seo_alias']]]));
                     $html .= Html::a($obj['label'], Yii::$app->urlManager->createUrl($obj['url']));
                 }
@@ -77,6 +76,7 @@ class CategoriesWidget extends \panix\engine\data\Widget {
             $html .= Html::endTag('ul');
         } else {
             $parent[$obj['id']] = $obj['id'];
+                   $html .= $data['total_count'];
             $html .= Html::a($data['label'], '');
         }
         return $html;

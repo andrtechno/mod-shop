@@ -8,6 +8,7 @@ use panix\engine\behaviors\nestedsets\NestedSetsBehavior;
 use panix\engine\behaviors\MenuArrayBehavior;
 use panix\mod\shop\models\translate\CategoryTranslate;
 use panix\mod\shop\models\query\CategoryQuery;
+use panix\mod\shop\models\ProductCategoryRef;
 
 class Category extends \panix\engine\db\ActiveRecord {
 
@@ -61,6 +62,9 @@ class Category extends \panix\engine\db\ActiveRecord {
     }
 
 
+    public function getCountProducts() {
+        return $this->hasMany(ProductCategoryRef::className(), ['category' => 'id'])->count();
+    }
     public function getTranslations() {
         return $this->hasMany(CategoryTranslate::className(), ['object_id' => 'id']);
     }

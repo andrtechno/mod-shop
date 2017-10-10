@@ -34,7 +34,7 @@ use panix\mod\shop\models\Category;
                         foreach ($cat->children()->published()->all() as $subcat) {
                           //  $totalProducts +=$subcat->countProducts;
                             ?>
-                            <li><?= Html::a($subcat->name . ' ()', $subcat->getUrl()); ?></li>
+                            <li><?= Html::a($subcat->name . ' ('.$subcat->countProducts.')', $subcat->getUrl()); ?></li>
                         <?php } ?>
                     </ul>
 
