@@ -14,6 +14,7 @@ class Category extends \panix\engine\db\ActiveRecord {
 
     const MODULE_ID = 'shop';
     const route = '/shop/admin/category';
+
     public $parent_id;
 
     public static function tableName() {
@@ -32,7 +33,7 @@ class Category extends \panix\engine\db\ActiveRecord {
         return [
             [['name', 'seo_alias'], 'required'],
             [['name'], 'string', 'max' => 255],
-            ['description','safe']
+            ['description', 'safe']
         ];
     }
 
@@ -61,10 +62,10 @@ class Category extends \panix\engine\db\ActiveRecord {
         ];
     }
 
-
     public function getCountProducts() {
         return $this->hasMany(ProductCategoryRef::className(), ['category' => 'id'])->count();
     }
+
     public function getTranslations() {
         return $this->hasMany(CategoryTranslate::className(), ['object_id' => 'id']);
     }

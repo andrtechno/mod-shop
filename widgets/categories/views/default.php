@@ -1,12 +1,11 @@
 <?php
-use yii\helpers\Html;
 
+use yii\helpers\Html;
 ?>
-<div id="catalog-left-nav">
-    <?= Html::a('Каталог продукции1', array('/shop'), array('class' => 'btn btn-danger btn-lg btn-block catalog-title')); ?>
-    <div class="test">
-        <?php
-        echo $this->context->recursive($result['items']);
-        ?>
-    </div>
+
+<button class="btn btn-primary btn-lg btn-block" type="button" data-toggle="collapse" data-target="#catalog-container" aria-expanded="false" aria-controls="catalog-container">
+    Каталог продукции
+</button>
+<div class="collapse in" id="catalog-container">
+    <?= $this->context->recursive($result['items']); ?>
 </div>
