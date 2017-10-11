@@ -104,7 +104,12 @@ use panix\mod\shop\models\ProductType;
                     'options' => ['id' => 'variations'],
                 ];
 
-
+$tabs[] = [
+                    'label' => $model::t('TAB_SEO'),
+                    'content' => $this->render('@seo/views/admin/default/_module_seo', ['model' => $model]),
+                    'headerOptions' => [],
+                    'options' => ['id' => 'seo'],
+                ];
 
 
 

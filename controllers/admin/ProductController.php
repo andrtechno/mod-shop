@@ -10,7 +10,8 @@ use panix\engine\controllers\AdminController;
 use panix\mod\shop\models\ProductType;
 use panix\mod\shop\models\Attribute;
 use panix\mod\shop\models\ProductVariant;
-class DefaultController extends AdminController {
+
+class ProductController extends AdminController {
 
     public $tab_errors = [];
 
@@ -21,7 +22,7 @@ class DefaultController extends AdminController {
                 'modelClass' => Product::className(),
             ],
             'delete' => [
-                'class' => 'panix\engine\grid\actions\DeleteAction',
+                'class' => 'panix\engine\actions\DeleteAction',
                 'modelClass' => Product::className(),
             ],
         ];
@@ -165,9 +166,9 @@ class DefaultController extends AdminController {
 
             Yii::$app->session->addFlash('success', \Yii::t('app', 'SUCCESS_CREATE'));
             if ($model->isNewRecord) {
-                return Yii::$app->getResponse()->redirect(['/admin/shop']);
+                return Yii::$app->getResponse()->redirect(['/admin/shop/product']);
             } else {
-                return Yii::$app->getResponse()->redirect(['/admin/shop/default/update', 'id' => $model->id]);
+                return Yii::$app->getResponse()->redirect(['/admin/shop/product/update', 'id' => $model->id]);
             }
         }
 
@@ -339,8 +340,10 @@ class DefaultController extends AdminController {
            /* ProductVariant::find()->where(['NOT IN','id',$dontDelete])->deleteAll([
                 'product_id'=>$model->id
                     ]);*/
-        } else
-            ProductVariant::find()->where(['product_id'=>$model->id])->deleteAll();
+        } else{
+            //ProductVariant::find()->where(['product_id'=>$model->id])->deleteAll();
+            ProductVariant::deleteAll(['product_id'=>$model->id]);
+        }
     }
 
     protected function findModel($id) {

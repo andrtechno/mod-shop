@@ -31,7 +31,7 @@ class Module extends WebModule {
                         'items' => [
                             [
                                 'label' => Yii::t('shop/admin', 'LIST'),
-                                "url" => ['/admin/shop'],
+                                "url" => ['/admin/shop/product'],
                                 'icon' => 'list',
                             ],
                             [

@@ -446,7 +446,7 @@ class Product extends \panix\engine\db\ActiveRecord {
         RelatedProduct::deleteAll('related_id=:id', array('id' => $this->id));
 
         // Delete categorization
-        ProductCategoryRef::find()->deleteAll([
+        ProductCategoryRef::deleteAll([
             'product' => $this->id
         ]);
 
@@ -562,6 +562,10 @@ class Product extends \panix\engine\db\ActiveRecord {
                         'class' => \panix\mod\shop\components\EavBehavior::className(),
                         'tableName' => '{{%shop_product_attribute_eav}}'
                     ],
+                    'seo' =>[
+            'class' => \app\modules\seo\components\SeoBehavior::className(),
+            'url' => $this->getUrl()
+        ],
                     'translate' => [
                         'class' => TranslateBehavior::className(),
                         'translationAttributes' => [
