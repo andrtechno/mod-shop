@@ -61,12 +61,12 @@ trait ProductTrait {
         ];
 
         foreach ($attributesList as $at) {
-            $columns[] = array(
+            $columns[] = [
                 'class' => $at['class'],
                 'attribute' => $at['attribute'],
                 'header' => $at['header'],
-                'contentOptions' => array('class' => 'text-center')
-            );
+                'contentOptions' => ['class' => 'text-center']
+            ];
         }
 
         $columns['DEFAULT_CONTROL'] = [
@@ -77,7 +77,51 @@ trait ProductTrait {
                 'class' => \panix\engine\grid\sortable\Column::className(),
                 'url' => ['/admin/shop/default/sortable']
             ],
-            ['class' => 'panix\engine\grid\columns\CheckboxColumn'],
+            [
+                'class' => 'panix\engine\grid\columns\CheckboxColumn',
+                'customActions' => [
+                    [
+                        'label' => Yii::t('shop/admin', 'GRID_OPTION_ACTIVE'),
+                        'url' => 'javascript:void(0)',
+                        'icon' => 'icon-eye',
+                        'options' => [
+                            'onClick' => 'return setProductsStatus(1, this);',
+                        ],
+                    ],
+                    [
+                        'label' => Yii::t('shop/admin', 'GRID_OPTION_DEACTIVE'),
+                        'url' => 'javascript:void(0)',
+                        'icon' => 'icon-eye-close',
+                        'options' => [
+                            'onClick' => 'return setProductsStatus(0, this);',
+                        ],
+                    ],
+                    [
+                        'label' => Yii::t('shop/admin', 'GRID_OPTION_SETCATEGORY'),
+                        'url' => 'javascript:void(0)',
+                        'icon' => 'icon-folder-open',
+                        'options' => [
+                            'onClick' => 'return showCategoryAssignWindow(this);',
+                        ],
+                    ],
+                    [
+                        'label' => Yii::t('shop/admin', 'GRID_OPTION_COPY'),
+                        'url' => 'javascript:void(0)',
+                        'icon' => 'icon-copy',
+                        'options' => [
+                            'onClick' => 'return showDuplicateProductsWindow(this);',
+                        ],
+                    ],
+                    [
+                        'label' => Yii::t('shop/admin', 'GRID_OPTION_SETPRICE'),
+                        'url' => 'javascript:void(0)',
+                        'icon' => 'icon-currencies',
+                        'options' => [
+                            'onClick' => 'return setProductsPrice(this);',
+                        ],
+                    ]
+                ]
+            ]
         ];
 
         return $columns;

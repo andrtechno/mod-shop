@@ -29,6 +29,7 @@ class ProductController extends AdminController {
     }
 
     public function actionIndex() {
+        \panix\mod\shop\assets\admin\ProductIndex::register($this->view);
         $this->pageName = Yii::t('shop/admin', 'PRODUCTS');
         $this->buttons = [
             [
@@ -128,24 +129,24 @@ class ProductController extends AdminController {
 
         // Set configurable attributes on new record
         if ($model->isNewRecord) {
-  
+
             if ($model->use_configurations && isset($_GET['Product']['configurable_attributes']))
                 $model->configurable_attributes = $_GET['Product']['configurable_attributes'];
         }
 
-        
-        
-        
-        
-        
-        
-        
+
+
+
+
+
+
+
         if ($model->load($post) && $model->validate() && $this->validateAttributes($model)) {
 
             $model->setRelatedProducts(Yii::$app->request->post('RelatedProductId'), []);
-            
+
             $model->save();
-            
+
             $mainCategoryId = 1;
             if (isset($_POST['Product']['main_category_id']))
                 $mainCategoryId = $_POST['Product']['main_category_id'];
@@ -176,8 +177,8 @@ class ProductController extends AdminController {
             'model' => $model,
         ]);
     }
-    
-        public function actionAddOptionToAttribute() {
+
+    public function actionAddOptionToAttribute() {
         $attribute = Attribute::findOne($_GET['attr_id']);
 
         if (!$attribute)
@@ -190,7 +191,7 @@ class ProductController extends AdminController {
 
         echo $attributeOption->id;
     }
-    
+
     public function actionRenderVariantTable() {
         $attribute = Attribute::findOne($_GET['attr_id']);
 
@@ -198,9 +199,10 @@ class ProductController extends AdminController {
             $this->error404(Yii::t('shop/admin', 'ERR_LOAD_ATTR'));
 
         return $this->renderPartial('tabs/variants/_table', array(
-            'attribute' => $attribute
+                    'attribute' => $attribute
         ));
     }
+
     /**
      * Validate required shop attributes
      * @param Product $model
@@ -336,13 +338,13 @@ class ProductController extends AdminController {
             //$cr->addNotInCondition('id', $dontDelete);
             //$cr->addCondition();
             ProductVariant::deleteAll(
-                            ['AND', 'product_id=:id',['NOT IN', 'id', $dontDelete]], [':id' => $model->id]);
-           /* ProductVariant::find()->where(['NOT IN','id',$dontDelete])->deleteAll([
-                'product_id'=>$model->id
-                    ]);*/
-        } else{
+                    ['AND', 'product_id=:id', ['NOT IN', 'id', $dontDelete]], [':id' => $model->id]);
+            /* ProductVariant::find()->where(['NOT IN','id',$dontDelete])->deleteAll([
+              'product_id'=>$model->id
+              ]); */
+        } else {
             //ProductVariant::find()->where(['product_id'=>$model->id])->deleteAll();
-            ProductVariant::deleteAll(['product_id'=>$model->id]);
+            ProductVariant::deleteAll(['product_id' => $model->id]);
         }
     }
 
@@ -352,6 +354,34 @@ class ProductController extends AdminController {
             return $model;
         } else {
             $this->error404();
+        }
+    }
+    /**
+     * Render popup window
+     */
+    public function actionRenderCategoryAssignWindow() {
+       /* Yii::app()->getClientScript()->scriptMap = array(
+            'jquery.js' => false,
+            'jquery.min.js' => false,
+        );*/
+        return $this->renderPartial('window/category_assign_window');
+    }
+    /**
+     * Render popup windows
+     */
+    public function actionRenderDuplicateProductsWindow() {
+        return $this->renderPartial('window/duplicate_products_window');
+    }
+
+    /**
+     * Render popup windows
+     */
+    public function actionRenderProductsPriceWindow() {
+        if (Yii::$app->request->isAjax) {
+            $model = new ShopProduct;
+            return $this->renderPartial('window/products_price_window', ['model' => $model]);
+        } else {
+            throw new CException(Yii::t('http_error', '403'), 403);
         }
     }
 

@@ -23,7 +23,7 @@ $('#CategoryTreeFilter').bind('loaded.jstree', function (event, data) {
  */
 function setProductsStatus(status_id, el)
 {
-    $.ajax('/admin/shop/products/updateIsActive', {
+    $.ajax('/admin/shop/product/update-is-active', {
         type: "post",
         data: {
             token: $(el).attr('data-token'),
@@ -76,7 +76,7 @@ function showCategoryAssignWindow(el_clicked)
     $('body').scrollTop(30);
 
     var dialog = $("#set_categories_dialog");
-    dialog.load('/admin/shop/products/renderCategoryAssignWindow');
+    dialog.load('/admin/shop/product/render-category-assign-window');
 
     dialog.dialog({
       //  position:'top',
@@ -122,7 +122,7 @@ function showCategoryAssignWindow(el_clicked)
                         return;
                     }
 
-                    $.ajax('/admin/shop/products/assignCategories', {
+                    $.ajax('/admin/shop/product/assign-categories', {
                         type: "post",
                         data: {
                             token: common.token,
@@ -158,7 +158,7 @@ function showDuplicateProductsWindow(link_clicked) {
     }
 
     var dialog = $("#duplicate_products_dialog");
-    dialog.load('/admin/shop/products/renderDuplicateProductsWindow');
+    dialog.load('/admin/shop/product/render-duplicate-products-window');
 
     dialog.dialog({
         modal: true,
@@ -167,7 +167,7 @@ function showDuplicateProductsWindow(link_clicked) {
                 text: 'Копировать',
                 'class': 'btn btn-primary',
                 click: function () {
-                    $.ajax('/admin/shop/products/duplicateProducts', {
+                    $.ajax('/admin/shop/product/duplicateProducts', {
                         type: "post",
                         data: {
                             token: $(link_clicked).attr('data-token'),
@@ -209,7 +209,7 @@ function setProductsPrice(link_clicked) {
     }
 
     var dialog = $("#prices_products_dialog");
-    dialog.load('/admin/shop/products/renderProductsPriceWindow');
+    dialog.load('/admin/shop/product/renderProductsPriceWindow');
 
     dialog.dialog({
         modal: true,
