@@ -1,8 +1,13 @@
 <?php
 
+namespace panix\mod\shop\components;
 
+use panix\mod\shop\models\Product;
+use panix\mod\shop\models\RelatedProduct;
+use panix\mod\shop\models\ProductVariant;
+use panix\engine\CMS;
 
-class SProductsDuplicator extends CComponent {
+class ProductsDuplicator extends \yii\base\Component {
 
     /**
      * @var array
@@ -20,7 +25,7 @@ class SProductsDuplicator extends CComponent {
     private $_suffix;
 
     public function __construct() {
-        $this->_suffix = ' (' . Yii::t('ShopModule.admin', 'копия') . ')';
+        $this->_suffix = ' (' . Yii::t('shop/admin', 'копия') . ')';
     }
 
     /**
@@ -36,7 +41,7 @@ class SProductsDuplicator extends CComponent {
         $new_ids = array();
 
         foreach ($ids as $id) {
-            $model = Product::model()->findByPk($id);
+            $model = Product::findOne($id);
 
             if ($model) {
                 $new_ids[] = $this->duplicateProduct($model)->id;
@@ -81,7 +86,6 @@ class SProductsDuplicator extends CComponent {
                 die(__FUNCTION__ . ': Error save');
                 return false;
             }
-
         } else {
 
             print_r($product->getErrors());
@@ -101,16 +105,16 @@ class SProductsDuplicator extends CComponent {
         if (!empty($images)) {
             foreach ($images as $image) {
                 $image_copy = new AttachmentModel();
-                
 
-                
+
+
                 $image_copy->product_id = $copy->id;
                 $image_copy->name = $copy->id . '_' . $image->name;
                 $image_copy->is_main = $image->is_main;
                 $image_copy->user_id = $image->user_id;
                 $image_copy->title = $image->title;
 
-                
+
                 if ($image_copy->validate()) {
                     if ($image_copy->save(false, false)) {
                         copy($image->filePath, $image_copy->filePath);
@@ -160,7 +164,7 @@ class SProductsDuplicator extends CComponent {
                 $model->related_id = $p->related_id;
                 $model->save();
                 //двустороннюю связь между товарами
-                if (Yii::app()->settings->get('shop', 'product_related_bilateral')) {
+                if (Yii::$app->settings->get('shop', 'product_related_bilateral')) {
                     $related = new RelatedProduct;
                     $related->product_id = $p->related_id;
                     $related->related_id = $copy->id;

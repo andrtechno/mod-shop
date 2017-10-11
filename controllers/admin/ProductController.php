@@ -384,5 +384,59 @@ class ProductController extends AdminController {
             throw new CException(Yii::t('http_error', '403'), 403);
         }
     }
+    /**
+     * Set price products
+     */
+    public function actionSetProducts() {
+        $request = Yii::$app->request;
+        if ($request->isAjax) {
+            $product_ids = $request->post('products', array());
+            parse_str($request->getPost('data'), $price);
+            $products = ShopProduct::model()->findAllByPk($product_ids);
+            foreach ($products as $p) {
+                if (isset($p)) {
+                    if (!$p->currency_id || !$p->use_configurations) { //запрещаем редактирование товаров с привязанной ценой и/или концигурациями
+                        $p->price = $price['ShopProduct']['price'];
+                        if ($p->validate()) {
+                            $p->save(false, false);
+                        }
+                    }
+                }
+            }
+        } else {
+            throw new CException(Yii::t('http_error', '403'), 403);
+        }
+    }
 
+    /**
+     * Duplicate products
+     */
+    public function actionDuplicateProducts() {
+        //TODO: return ids to find products
+        $product_ids = Yii::$app->request->post('products', array());
+        parse_str(Yii::$app->request->post('duplicate'), $duplicates);
+
+        if (!isset($duplicates['copy']))
+            $duplicates['copy'] = array();
+
+        $duplicator = new SProductsDuplicator;
+        $ids = $duplicator->createCopy($product_ids, $duplicates['copy']);
+        echo '/admin/shop/products/?ShopProduct[id]=' . implode(',', $ids);
+    }
+
+    /**
+     * Assign categories to products
+     */
+    public function actionAssignCategories() {
+        $categories = Yii::app()->request->getPost('category_ids');
+        $products = Yii::app()->request->getPost('product_ids');
+
+        if (empty($categories) || empty($products))
+            return;
+
+        $products = ShopProduct::model()->findAllByPk($products);
+
+        foreach ($products as $p)
+            $p->setCategories($categories, Yii::app()->request->getPost('main_category'));
+    }
 }
