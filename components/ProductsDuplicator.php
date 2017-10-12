@@ -118,7 +118,7 @@ class ProductsDuplicator extends \yii\base\Component {
 
 
                 if ($image_copy->validate()) {
-                    if ($image_copy->save(false, false)) {
+                    if ($image_copy->save()) {
                         copy($image->filePath, $image_copy->filePath);
                     } else {
                         die(__FUNCTION__ . ': Error save');
