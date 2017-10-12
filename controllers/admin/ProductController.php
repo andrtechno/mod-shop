@@ -366,7 +366,7 @@ class ProductController extends AdminController {
      */
     public function actionRenderCategoryAssignWindow() {
         if (Yii::$app->request->isAjax) {
-            return $this->renderPartial('window/category_assign_window');
+            return $this->renderAjax('window/category_assign_window');
         } else {
             throw new ForbiddenHttpException(Yii::t('app/error', '403'));
         }
@@ -449,16 +449,39 @@ class ProductController extends AdminController {
      * @return type
      */
     public function actionAssignCategories() {
-        $categories = Yii::app()->request->getPost('category_ids');
-        $products = Yii::app()->request->getPost('product_ids');
+        $categories = Yii::$app->request->post('category_ids');
+        $products = Yii::$app->request->post('product_ids');
 
         if (empty($categories) || empty($products))
             return;
 
-        $products = ShopProduct::model()->findAllByPk($products);
+        $products = Product::find()->where(['id' => $products])->all();
 
         foreach ($products as $p)
-            $p->setCategories($categories, Yii::app()->request->getPost('main_category'));
+            $p->setCategories($categories, Yii::$app->request->post('main_category'));
+        if (Yii::$app->request->isAjax) {
+            echo \yii\helpers\Json::encode([
+                'message' => 'Выбранным товарам категории изменены'
+            ]);
+            die;
+        }
+    }
+
+    public function actionUpdateIsActive() {
+        $ids = Yii::$app->request->post('ids');
+        $switch = (int) Yii::$app->request->post('switch');
+        $models = Product::find()->where(['id' => $ids])->all();
+        foreach ($models as $product) {
+            if (in_array($switch, array(0, 1))) {
+                $product->switch = $switch;
+                $product->save();
+            }
+        }
+
+        echo \yii\helpers\Json::encode([
+            'message' => Yii::t('app', 'SUCCESS_UPDATE')
+        ]);
+        die;
     }
 
 }

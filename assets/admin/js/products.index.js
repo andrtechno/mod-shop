@@ -1,20 +1,21 @@
 
 
 // Init tree
-$('#CategoryTreeFilter').bind('loaded.jstree', function (event, data) {
-    //data.inst.open_all(0);
-}).delegate("a", "click", function (event) {
-    try {
-        var id = $(this).parent("li").attr('id').replace('CategoryTreeFilterNode_', '');
-    } catch (err) {
-        // 'All Categories' clicked
-        var id = 0;
-    }
-    var obj = $('#product-grid .filters td')[0];
-    $(obj).append('<input name="category" type="hidden" value="' + id + '">');
-    $('#productsListGrid .filters :input').first().trigger('change');
-});
-
+/*
+ $('#CategoryTreeFilter').bind('loaded.jstree', function (event, data) {
+ //data.inst.open_all(0);
+ }).delegate("a", "click", function (event) {
+ try {
+ var id = $(this).parent("li").attr('id').replace('CategoryTreeFilterNode_', '');
+ } catch (err) {
+ // 'All Categories' clicked
+ var id = 0;
+ }
+ var obj = $('#product-grid .filters td')[0];
+ $(obj).append('<input name="category" type="hidden" value="' + id + '">');
+ $('#productsListGrid .filters :input').first().trigger('change');
+ });
+ */
 
 
 /**
@@ -25,14 +26,15 @@ function setProductsStatus(status_id, el)
 {
     $.ajax('/admin/shop/product/update-is-active', {
         type: "post",
+        dataType: "json",
         data: {
             token: $(el).attr('data-token'),
             ids: $('#grid-product').yiiGridView('getSelectedRows'),
             'switch': status_id
         },
         success: function (data) {
-            $.fn.yiiGridView.update('product-grid');
-            common.notify(data,'success');
+            common.notify(data.message, 'success');
+            $('#grid-product').yiiGridView('applyFilter');
         },
         error: function (XHR, textStatus, errorThrown) {
             var err = '';
@@ -63,8 +65,8 @@ function setProductsStatus(status_id, el)
  *
  * @param el_clicked
  */
-function showCategoryAssignWindow(el_clicked)
-{
+function showCategoryAssignWindow(el_clicked) {
+    var confirmRequest;
     if ($("#set_categories_dialog").length == 0)
     {
         var div = $('<div id="set_categories_dialog"/>');
@@ -79,7 +81,7 @@ function showCategoryAssignWindow(el_clicked)
     dialog.load('/admin/shop/product/render-category-assign-window');
 
     dialog.dialog({
-      //  position:'top',
+        //  position:'top',
         modal: true,
         resizable: false,
         responsive: true,
@@ -87,15 +89,15 @@ function showCategoryAssignWindow(el_clicked)
         close: function () {
             $(this).remove();
         },
-                open:function(){
-        $('.ui-dialog').position({
-                  my: 'center',
-                  at: 'center',
-                  of: window,
-                  collision: 'fit'
+        open: function () {
+            $('.ui-dialog').position({
+                my: 'center',
+                at: 'center',
+                of: window,
+                collision: 'fit'
             });
 
-            $('.ui-widget-overlay').bind('click', function() {
+            $('.ui-widget-overlay').bind('click', function () {
                 $('#set_categories_dialog').dialog('close');
             });
 
@@ -104,7 +106,7 @@ function showCategoryAssignWindow(el_clicked)
                 text: 'Назначить',
                 'class': 'btn btn-primary',
                 click: function () {
-                    var checked = $("#CategoryAssignTreeDialog .jstree-checked");
+                    var checked = $("#jsTree_CategoryAssignTreeDialog .jstree-checked");
                     var ids = [];
 
                     checked.each(function (key, el) {
@@ -113,32 +115,34 @@ function showCategoryAssignWindow(el_clicked)
 
                     });
 
-                    if ($("#CategoryAssignTreeDialog .jstree-clicked").parent().length == 0)
-                    {
-                        // $.jGrowl("На выбрана 'главная' категория. Кликните на название категории, чтобы сделать ее главной.", {
-                        //     position: "bottom-right"
-                        // });
+                    if ($("#jsTree_CategoryAssignTreeDialog .jstree-clicked").parent().length == 0) {
                         $('#alert-s').html('<div class="alert alert-warning">На выбрана \'главная\' категория. Кликните на название категории, чтобы сделать ее главной.</div>');
                         return;
                     }
+                    if ($(el_clicked).attr('data-question')) {
+                        confirmRequest = confirm($(el_clicked).attr('data-question'));
+                    }
+                    if (confirmRequest) {
+                        $.ajax('/admin/shop/product/assign-categories', {
+                            type: "post",
+                            dataType: "json",
+                            data: {
+                                token: common.token,
+                                category_ids: ids,
+                                main_category: $("#jsTree_CategoryAssignTreeDialog .jstree-clicked").parent().attr('id').replace('node_', '').replace('_anchor', ''),
+                                product_ids: $('#grid-product').yiiGridView('getSelectedRows')
+                            },
+                            success: function (data) {
+                                $(dialog).dialog("close");
+                                common.notify(data.message, 'success');
+                                $('#grid-product').yiiGridView('applyFilter');
 
-                    $.ajax('/admin/shop/product/assign-categories', {
-                        type: "post",
-                        data: {
-                            token: common.token,
-                            category_ids: ids,
-                            main_category: $("#CategoryAssignTreeDialog .jstree-clicked").parent().attr('id').replace('node_', '').replace('_anchor', ''),
-                            product_ids: $('#grid-product').yiiGridView('getSelectedRows')
-                        },
-                        success: function () {
-                            $(dialog).dialog("close");
-                            $.fn.yiiGridView.update('product-grid');
-
-                        },
-                        error: function () {
-                            $('#alert-s').html('<div class="alert alert-danger">Ошибка</div>');
-                        }
-                    });
+                            },
+                            error: function () {
+                                $('#alert-s').html('<div class="alert alert-danger">Ошибка</div>');
+                            }
+                        });
+                    }
                 },
             }, {
                 text: common.message.cancel,
@@ -160,7 +164,7 @@ function showDuplicateProductsWindow(link_clicked) {
     var dialog = $("#duplicate_products_dialog");
     dialog.load('/admin/shop/product/render-duplicate-products-window');
 
-console.log(link_clicked);
+    var confirmRequest;
 
     dialog.dialog({
         modal: true,
@@ -169,23 +173,29 @@ console.log(link_clicked);
                 text: 'Копировать',
                 'class': 'btn btn-primary',
                 click: function () {
-                    $.ajax('/admin/shop/product/duplicate-products', {
-                        type: "post",
-                        data: {
-                            token: common.token,
-                            products: $('#grid-product').yiiGridView('getSelectedRows'),
-                            duplicate: $("#duplicate_products_dialog form").serialize()
-                        },
-                        success: function (data) {
-                            $(dialog).dialog("close");
-                            common.notify("Изменения сохранены. <a href='" + data + "'>Просмотреть копии продуктов.</a>",'success');
-                           // $.fn.yiiGridView.update('product-grid');
-                             $('#grid-product').yiiGridView('applyFilter');
-                        },
-                        error: function () {
-                            common.notify("Ошибка",'error');
-                        }
-                    });
+
+                    if ($(link_clicked).attr('data-question')) {
+                        confirmRequest = confirm($(link_clicked).attr('data-question'));
+                    }
+                    if (confirmRequest) {
+                        $.ajax('/admin/shop/product/duplicate-products', {
+                            type: "post",
+                            data: {
+                                token: common.token,
+                                products: $('#grid-product').yiiGridView('getSelectedRows'),
+                                duplicate: $("#duplicate_products_dialog form").serialize()
+                            },
+                            success: function (data) {
+                                $(dialog).dialog("close");
+                                common.notify("Изменения сохранены. <a href='" + data + "'>Просмотреть копии продуктов.</a>", 'success');
+                                // $.fn.yiiGridView.update('product-grid');
+                                $('#grid-product').yiiGridView('applyFilter');
+                            },
+                            error: function () {
+                                common.notify("Ошибка", 'error');
+                            }
+                        });
+                    }
                 }
             },
             {
@@ -232,10 +242,10 @@ function setProductsPrice(link_clicked) {
                         success: function (data) {
                             $(dialog).dialog("close");
                             $.fn.yiiGridView.update('product-grid');
-                           
+
                         },
                         error: function () {
-                            common.notify("Ошибка",'error');
+                            common.notify("Ошибка", 'error');
                         }
                     });
 

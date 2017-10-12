@@ -86,6 +86,7 @@ trait ProductTrait {
                         'icon' => 'icon-eye',
                         'options' => [
                             'onClick' => 'return setProductsStatus(1, this);',
+                             'data-question'=>self::t('COMFIRM_SHOW')
                         ],
                     ],
                     [
@@ -94,6 +95,7 @@ trait ProductTrait {
                         'icon' => 'icon-eye-close',
                         'options' => [
                             'onClick' => 'return setProductsStatus(0, this);',
+                            'data-question'=>self::t('COMFIRM_HIDE')
                         ],
                     ],
                     [
@@ -102,6 +104,7 @@ trait ProductTrait {
                         'icon' => 'icon-folder-open',
                         'options' => [
                             'onClick' => 'return showCategoryAssignWindow(this);',
+                            'data-question'=>self::t('COMFIRM_CATEGORY')
                         ],
                     ],
                     [
@@ -110,6 +113,7 @@ trait ProductTrait {
                         'icon' => 'icon-copy',
                         'options' => [
                             'onClick' => 'return showDuplicateProductsWindow(this);',
+                            'data-question'=>self::t('COMFIRM_COPY')
                         ],
                     ],
                     [
@@ -118,6 +122,7 @@ trait ProductTrait {
                         'icon' => 'icon-currencies',
                         'options' => [
                             'onClick' => 'return setProductsPrice(this);',
+                            'data-question'=>self::t('COMFIRM_PRICE')
                         ],
                     ]
                 ]
