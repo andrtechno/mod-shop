@@ -15,10 +15,10 @@ use panix\mod\shop\models\ProductVariant;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
-
 class Product extends \panix\engine\db\ActiveRecord {
 
     use traits\ProductTrait;
+
     /**
      * @var array of attributes used to configure product
      */
@@ -35,8 +35,6 @@ class Product extends \panix\engine\db\ActiveRecord {
 
     const route = '/admin/shop/default';
     const MODULE_ID = 'shop';
-
-
 
     public static function find() {
         return new ProductQuery(get_called_class());
@@ -113,13 +111,16 @@ class Product extends \panix\engine\db\ActiveRecord {
       self::SCENARIO_DEFAULT => self::OP_INSERT | self::OP_UPDATE,
       ];
       } */
+
     const SCENARIO_INSERT = 'insert';
-   public function scenarios()
-    {
+
+    public function scenarios() {
         $scenarios = parent::scenarios();
         $scenarios[self::SCENARIO_INSERT] = ['use_configurations'];
+        $scenarios['duplicate'] = [];
         return $scenarios;
     }
+
     /**
      * @inheritdoc
      */
@@ -135,11 +136,12 @@ class Product extends \panix\engine\db\ActiveRecord {
             [['name', 'seo_alias', 'main_category_id'], 'required'],
             [['name', 'seo_alias'], 'string', 'max' => 255],
             [['manufacturer_id', 'type_id', 'quantity', 'views', 'added_to_cart_count', 'ordern', 'category_id'], 'integer'],
-            [['name', 'seo_alias', 'full_description','use_configurations'], 'safe'],
+            [['name', 'seo_alias', 'full_description', 'use_configurations'], 'safe'],
                 //  [['c1'], 'required'], // Attribute field
                 // [['c1'], 'string', 'max' => 255], // Attribute field
         ];
     }
+
     public function processVariants() {
         $result = array();
         foreach ($this->variants as $v) {
@@ -149,6 +151,7 @@ class Product extends \panix\engine\db\ActiveRecord {
         };
         return $result;
     }
+
     public function beforeValidate() {
         // For configurable product set 0 price
         if ($this->use_configurations)
@@ -274,7 +277,7 @@ class Product extends \panix\engine\db\ActiveRecord {
             // $cr->addNotInCondition('category', $dontDelete);
             //    $query = ShopProductCategoryRef::deleteAll(['product=:id','category NOT IN (:cats)'],[':id'=>$this->id,':cats'=>implode(',',$dontDelete)]);
             $query = ProductCategoryRef::deleteAll(
-                            ['AND', 'product=:id',['NOT IN', 'category', $dontDelete]], [':id' => $this->id]);
+                            ['AND', 'product=:id', ['NOT IN', 'category', $dontDelete]], [':id' => $this->id]);
             // ->andWhere(['not in','category',$dontDelete]);
             //  foreach($query as $q){
             // }
@@ -397,6 +400,7 @@ class Product extends \panix\engine\db\ActiveRecord {
             'max_price' => $query['max_price']
                 ), 'id=:id', array(':id' => $model->id))->execute();
     }
+
     /**
      * @return array of product ids
      */
@@ -404,23 +408,24 @@ class Product extends \panix\engine\db\ActiveRecord {
         if (is_array($this->_configurations) && $reload === false)
             return $this->_configurations;
 
-        
+
         $query = (new \yii\db\Query())
                 ->select('t.configurable_id')
                 ->from('{{%shop_product_configurations}} as t')
                 ->where('t.product_id=:id', [':id' => $this->id])
                 ->groupBy('t.configurable_id');
-               // ->one();
-          $this->_configurations = $query->createCommand()->queryColumn();
-       /* $this->_configurations = Yii::$app->db->createCommand()
-                ->select('t.configurable_id')
-                ->from('{{%shop_product_configurations}} t')
-                ->where('product_id=:id', array(':id' => $this->id))
-                ->group('t.configurable_id')
-                ->queryColumn();*/
+        // ->one();
+        $this->_configurations = $query->createCommand()->queryColumn();
+        /* $this->_configurations = Yii::$app->db->createCommand()
+          ->select('t.configurable_id')
+          ->from('{{%shop_product_configurations}} t')
+          ->where('product_id=:id', array(':id' => $this->id))
+          ->group('t.configurable_id')
+          ->queryColumn(); */
 
         return $this->_configurations;
     }
+
     public function getDisplayPrice($currency_id = null) {
         $currency = Yii::$app->currency;
         if ($this->appliedDiscount) {
@@ -459,22 +464,22 @@ class Product extends \panix\engine\db\ActiveRecord {
             $this->removeImages();
         }
         // Clear configurable attributes
-        Yii::$app->db->createCommand()->delete('{{%shop_product_configurable_attributes}}', 'product_id=:id',[':id' => $this->id])->execute();
+        Yii::$app->db->createCommand()->delete('{{%shop_product_configurable_attributes}}', 'product_id=:id', [':id' => $this->id])->execute();
         // Delete configurations
         Yii::$app->db->createCommand()->delete('{{%shop_product_configurations}}', 'product_id=:id', [':id' => $this->id])->execute();
         Yii::$app->db->createCommand()->delete('{{%shop_product_configurations}}', 'configurable_id=:id', [':id' => $this->id])->execute();
-        /*if (Yii::app()->hasModule('wishlist')) {
-            Yii::import('mod.wishlist.models.WishlistProducts');
-            $wishlistProduct = WishlistProducts::model()->findByAttributes(array('product_id' => $this->id));
-            if ($wishlistProduct)
-                $wishlistProduct->delete();
-        }
-        // Delete from comapre if install module "comapre"
-        if (Yii::app()->hasModule('comapre')) {
-            Yii::import('mod.comapre.components.CompareProducts');
-            $comapreProduct = new CompareProducts;
-            $comapreProduct->remove($this->id);
-        }*/
+        /* if (Yii::app()->hasModule('wishlist')) {
+          Yii::import('mod.wishlist.models.WishlistProducts');
+          $wishlistProduct = WishlistProducts::model()->findByAttributes(array('product_id' => $this->id));
+          if ($wishlistProduct)
+          $wishlistProduct->delete();
+          }
+          // Delete from comapre if install module "comapre"
+          if (Yii::app()->hasModule('comapre')) {
+          Yii::import('mod.comapre.components.CompareProducts');
+          $comapreProduct = new CompareProducts;
+          $comapreProduct->remove($this->id);
+          } */
         parent::afterDelete();
     }
 
@@ -562,10 +567,10 @@ class Product extends \panix\engine\db\ActiveRecord {
                         'class' => \panix\mod\shop\components\EavBehavior::className(),
                         'tableName' => '{{%shop_product_attribute_eav}}'
                     ],
-                    'seo' =>[
-            'class' => \app\modules\seo\components\SeoBehavior::className(),
-            'url' => $this->getUrl()
-        ],
+                    'seo' => [
+                        'class' => \app\modules\seo\components\SeoBehavior::className(),
+                        'url' => $this->getUrl()
+                    ],
                     'translate' => [
                         'class' => TranslateBehavior::className(),
                         'translationAttributes' => [

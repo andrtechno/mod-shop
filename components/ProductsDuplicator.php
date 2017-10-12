@@ -2,6 +2,7 @@
 
 namespace panix\mod\shop\components;
 
+use Yii;
 use panix\mod\shop\models\Product;
 use panix\mod\shop\models\RelatedProduct;
 use panix\mod\shop\models\ProductVariant;
@@ -59,12 +60,13 @@ class ProductsDuplicator extends \yii\base\Component {
      */
     public function duplicateProduct(Product $model) {
 
-        $product = new Product();
+        $product = new Product;
         $product->attributes = $model->attributes;
 
         $behaviors = $model->behaviors();
 
-        foreach ($behaviors['TranslateBehavior']['translateAttributes'] as $attr)
+
+        foreach ($behaviors['translate']['translationAttributes'] as $attr)
             $product->$attr = $model->$attr;
 
         $product->name .= $this->getSuffix();
@@ -73,7 +75,7 @@ class ProductsDuplicator extends \yii\base\Component {
 
         $product->scenario = 'duplicate';
         if ($product->validate()) {
-            if ($product->save(false, false)) {
+            if ($product->save()) {
                 foreach ($this->duplicate as $feature) {
                     $method_name = 'copy' . ucfirst($feature);
 
@@ -139,11 +141,11 @@ class ProductsDuplicator extends \yii\base\Component {
 
         if (!empty($attributes)) {
             foreach ($attributes as $key => $val) {
-                Yii::$app->db->createCommand()->insert('{{%shop_product_attribute_eav}}', array(
+                Yii::$app->db->createCommand()->insert('{{%shop_product_attribute_eav}}', [
                     'entity' => $copy->id,
                     'attribute' => $key,
                     'value' => $val
-                ));
+                ])->execute();
             }
         }
     }

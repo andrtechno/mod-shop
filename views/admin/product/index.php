@@ -13,6 +13,7 @@ Pjax::begin([
    // 'linkSelector' => 'a:not(.linkTarget)'
 ]);
 echo GridView::widget([
+    'id'=>'grid-product',
     'tableOptions' => ['class' => 'table table-striped'],
     'dataProvider' => $dataProvider,
     'filterModel' => $searchModel,

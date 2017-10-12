@@ -27,7 +27,7 @@ function setProductsStatus(status_id, el)
         type: "post",
         data: {
             token: $(el).attr('data-token'),
-            ids: $.fn.yiiGridView.getSelection('product-grid'),
+            ids: $('#grid-product').yiiGridView('getSelectedRows'),
             'switch': status_id
         },
         success: function (data) {
@@ -128,7 +128,7 @@ function showCategoryAssignWindow(el_clicked)
                             token: common.token,
                             category_ids: ids,
                             main_category: $("#CategoryAssignTreeDialog .jstree-clicked").parent().attr('id').replace('node_', '').replace('_anchor', ''),
-                            product_ids: $.fn.yiiGridView.getSelection('product-grid')
+                            product_ids: $('#grid-product').yiiGridView('getSelectedRows')
                         },
                         success: function () {
                             $(dialog).dialog("close");
@@ -160,6 +160,8 @@ function showDuplicateProductsWindow(link_clicked) {
     var dialog = $("#duplicate_products_dialog");
     dialog.load('/admin/shop/product/render-duplicate-products-window');
 
+console.log(link_clicked);
+
     dialog.dialog({
         modal: true,
         resizable: false,
@@ -167,17 +169,18 @@ function showDuplicateProductsWindow(link_clicked) {
                 text: 'Копировать',
                 'class': 'btn btn-primary',
                 click: function () {
-                    $.ajax('/admin/shop/product/duplicateProducts', {
+                    $.ajax('/admin/shop/product/duplicate-products', {
                         type: "post",
                         data: {
-                            token: $(link_clicked).attr('data-token'),
-                            products: $.fn.yiiGridView.getSelection('product-grid'),
+                            token: common.token,
+                            products: $('#grid-product').yiiGridView('getSelectedRows'),
                             duplicate: $("#duplicate_products_dialog form").serialize()
                         },
                         success: function (data) {
                             $(dialog).dialog("close");
                             common.notify("Изменения сохранены. <a href='" + data + "'>Просмотреть копии продуктов.</a>",'success');
-                            $.fn.yiiGridView.update('product-grid');
+                           // $.fn.yiiGridView.update('product-grid');
+                             $('#grid-product').yiiGridView('applyFilter');
                         },
                         error: function () {
                             common.notify("Ошибка",'error');
@@ -209,7 +212,7 @@ function setProductsPrice(link_clicked) {
     }
 
     var dialog = $("#prices_products_dialog");
-    dialog.load('/admin/shop/product/renderProductsPriceWindow');
+    dialog.load('/admin/shop/product/render-products-price-window');
 
     dialog.dialog({
         modal: true,
@@ -219,17 +222,17 @@ function setProductsPrice(link_clicked) {
                 'class': 'btn btn-primary',
                 click: function () {
 
-                    $.ajax('/admin/shop/products/setProducts', {
+                    $.ajax('/admin/shop/product/set-products', {
                         type: "post",
                         data: {
-                            token: $(link_clicked).attr('data-token'),
+                            token: common.token,
                             products: $.fn.yiiGridView.getSelection('product-grid'),
                             data: $("#prices_products_dialog form").serialize()
                         },
                         success: function (data) {
                             $(dialog).dialog("close");
                             $.fn.yiiGridView.update('product-grid');
-
+                           
                         },
                         error: function () {
                             common.notify("Ошибка",'error');

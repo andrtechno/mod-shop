@@ -419,9 +419,9 @@ class ProductController extends AdminController {
         if (!isset($duplicates['copy']))
             $duplicates['copy'] = array();
 
-        $duplicator = new SProductsDuplicator;
+        $duplicator = new \panix\mod\shop\components\ProductsDuplicator;
         $ids = $duplicator->createCopy($product_ids, $duplicates['copy']);
-        echo '/admin/shop/products/?ShopProduct[id]=' . implode(',', $ids);
+        echo '/admin/shop/product/?Product[id]=' . implode(',', $ids);
     }
 
     /**

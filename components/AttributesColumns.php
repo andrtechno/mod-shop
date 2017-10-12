@@ -52,10 +52,12 @@ class AttributesColumns extends \yii\grid\DataColumn {
         $this->_attributes = $model->getEavAttributes();
 
         foreach ($this->getModels() as $model) {
+
             $dataResult[$model->name] = array(
                 'title' => $model->title,
                 'value' => $model->renderValue($this->_attributes[$model->name])
             );
+
         }
 
         if (!empty($dataResult)) {
