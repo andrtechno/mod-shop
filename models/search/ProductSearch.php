@@ -42,15 +42,15 @@ class ProductSearch extends Product {
     public function search($params, $configure = array()) {
         $query = Product::find();
         $query->joinWith('translations');
- 
-if (isset($configure['conf'])){
 
-   $query->andWhere(['IN','id',$configure['conf']]);
-}
-        
+        if (isset($configure['conf'])) {
+
+            $query->andWhere(['IN', 'id', $configure['conf']]);
+        }
+
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-            'sort'=>self::getSort()
+            'sort' => self::getSort()
         ]);
 
         $this->load($params);

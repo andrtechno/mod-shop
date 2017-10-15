@@ -6,24 +6,24 @@ use yii\helpers\Html;
 
 
 
-    <h1><?php echo Html::encode($this->context->dataModel->name); ?></h1>
-    <?php if (!empty($this->context->dataModel->description)) { ?>
-        <div>
-            <?php echo $this->context->dataModel->description ?>
-        </div>
-    <?php } ?>
+<h1><?php echo Html::encode($this->context->dataModel->name); ?></h1>
+<?php if (!empty($this->context->dataModel->description)) { ?>
+    <div>
+        <?php echo $this->context->dataModel->description ?>
+    </div>
+<?php } ?>
 
 
-    <?php
-    echo \yii\widgets\ListView::widget([
-        'dataProvider' => $provider,
-        'itemView' => '@shop/views/category/_view_grid',
-        'layout' => '{summary}{items}{pager}',
-        'emptyText' => 'Empty',
-        'options' => ['class' => 'row'],
-        'itemOptions' => ['class' => 'col-sm-4'],
-        'emptyTextOptions' => ['class' => 'alert alert-info']
-    ]);
-    ?>
+<?php
+echo \yii\widgets\ListView::widget([
+    'dataProvider' => $provider,
+    'itemView' => '@shop/views/category/_view_grid',
+    'layout' => '{summary}{items}{pager}',
+    'emptyText' => 'Empty',
+    'options' => ['class' => 'row'],
+    'itemOptions' => ['class' => 'col-sm-4'],
+    'emptyTextOptions' => ['class' => 'alert alert-info']
+]);
+?>
 
 

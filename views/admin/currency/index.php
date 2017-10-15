@@ -12,14 +12,16 @@ use panix\engine\grid\GridView;
 
 
 <?php Pjax::begin(); ?>
-<?= GridView::widget([
+<?=
+
+GridView::widget([
     'tableOptions' => ['class' => 'table table-striped'],
     'dataProvider' => $dataProvider,
     'filterModel' => $searchModel,
     'layoutOptions' => ['title' => $this->context->pageName],
     'rowOptions' => function ($model, $key, $index, $grid) {
-        return ['class' => 'sortable-column'];
-    },
+return ['class' => 'sortable-column'];
+},
     'columns' => [
         [
             'class' => \panix\engine\grid\sortable\Column::className(),
@@ -31,28 +33,22 @@ use panix\engine\grid\GridView;
         ],
         'name',
         [
+            'class' => 'panix\engine\grid\columns\BooleanColumn',
             'attribute' => 'is_default',
-            'format' => 'raw',
             'contentOptions' => ['class' => 'text-center'],
-            'value' => function($model) {
-                return $model->is_default == 1 ? Yii::t('app','YES') : Yii::t('app','NO');
-            }
         ],
         [
+            'class' => 'panix\engine\grid\columns\BooleanColumn',
             'attribute' => 'is_main',
-            'format' => 'raw',
             'contentOptions' => ['class' => 'text-center'],
-            'value' => function($model) {
-                return $model->is_main == 1 ? Yii::t('app','YES') : Yii::t('app','NO');
-            }
         ],
         [
             'attribute' => 'rate',
             'format' => 'raw',
             'contentOptions' => ['class' => 'text-center'],
             'value' => function($model) {
-                return $model->rate;
-            }
+        return $model->rate;
+    }
         ],
         ['class' => 'panix\engine\grid\columns\ActionColumn',
             'template' => '{update}{delete}',
