@@ -75,7 +75,8 @@ trait ProductTrait {
         $columns['DEFAULT_COLUMNS'] = [
             [
                 'class' => \panix\engine\grid\sortable\Column::className(),
-                'url' => ['/admin/shop/default/sortable']
+                'url' => ['/admin/shop/product/sortable'],
+                'successMessage'=>Yii::t('shop/admin','SORT_PRODUCT_SUCCESS_MESSAGE')
             ],
             [
                 'class' => 'panix\engine\grid\columns\CheckboxColumn',
@@ -83,7 +84,7 @@ trait ProductTrait {
                     [
                         'label' => Yii::t('shop/admin', 'GRID_OPTION_ACTIVE'),
                         'url' => 'javascript:void(0)',
-                        'icon' => 'icon-eye',
+                        'icon' => 'eye',
                         'options' => [
                             'onClick' => 'return setProductsStatus(1, this);',
                              'data-question'=>self::t('COMFIRM_SHOW')
@@ -92,7 +93,7 @@ trait ProductTrait {
                     [
                         'label' => Yii::t('shop/admin', 'GRID_OPTION_DEACTIVE'),
                         'url' => 'javascript:void(0)',
-                        'icon' => 'icon-eye-close',
+                        'icon' => 'eye-close',
                         'options' => [
                             'onClick' => 'return setProductsStatus(0, this);',
                             'data-question'=>self::t('COMFIRM_HIDE')
@@ -101,7 +102,7 @@ trait ProductTrait {
                     [
                         'label' => Yii::t('shop/admin', 'GRID_OPTION_SETCATEGORY'),
                         'url' => 'javascript:void(0)',
-                        'icon' => 'icon-folder-open',
+                        'icon' => 'folder-open',
                         'options' => [
                             'onClick' => 'return showCategoryAssignWindow(this);',
                             'data-question'=>self::t('COMFIRM_CATEGORY')
@@ -110,7 +111,7 @@ trait ProductTrait {
                     [
                         'label' => Yii::t('shop/admin', 'GRID_OPTION_COPY'),
                         'url' => 'javascript:void(0)',
-                        'icon' => 'icon-copy',
+                        'icon' => 'copy',
                         'options' => [
                             'onClick' => 'return showDuplicateProductsWindow(this);',
                             'data-question'=>self::t('COMFIRM_COPY')
@@ -119,7 +120,7 @@ trait ProductTrait {
                     [
                         'label' => Yii::t('shop/admin', 'GRID_OPTION_SETPRICE'),
                         'url' => 'javascript:void(0)',
-                        'icon' => 'icon-currencies',
+                        'icon' => 'currencies',
                         'options' => [
                             'onClick' => 'return setProductsPrice(this);',
                             'data-question'=>self::t('COMFIRM_PRICE')

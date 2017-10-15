@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'SORT_PRODUCT_SUCCESS_MESSAGE'=>'Товары успешно отсортированы',
     'CREATE_PRODUCT' => 'Добавить товар',
     'CREATE_MANUFACTURER' => 'Добавить производителя',
     'CREATE_CURRENCY' => 'Добавить валюту',
