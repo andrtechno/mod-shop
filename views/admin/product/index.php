@@ -1,16 +1,12 @@
 <?php
-
 use panix\engine\grid\GridView;
 use panix\engine\widgets\Pjax;
-
-
-
 echo \panix\ext\fancybox\Fancybox::widget(['target' => '.image a']);
 
 Pjax::begin([
     'timeout' => 50000,
     'id' => 'pjax-' . strtolower(basename($dataProvider->query->modelClass)),
-   // 'linkSelector' => 'a:not(.linkTarget)'
+    'linkSelector' => 'a:not(.linkTarget)'
 ]);
 echo GridView::widget([
     'id'=>'grid-product',

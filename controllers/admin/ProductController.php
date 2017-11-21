@@ -416,18 +416,24 @@ class ProductController extends AdminController {
         $request = Yii::$app->request;
         if ($request->isAjax) {
             $product_ids = $request->post('products', array());
-            parse_str($request->getPost('data'), $price);
-            $products = Product::find()->where(['id' => $product_ids])->all(); //findallbypk
+            parse_str($request->post('data'), $price);
+            $products = Product::findAll($product_ids);
             foreach ($products as $p) {
                 if (isset($p)) {
                     if (!$p->currency_id || !$p->use_configurations) { //запрещаем редактирование товаров с привязанной ценой и/или концигурациями
                         $p->price = $price['Product']['price'];
-                        if ($p->validate()) {
-                            $p->save(false, false);
-                        }
+                        $p->save(false);
                     }
                 }
             }
+            
+        if (Yii::$app->request->isAjax) {
+            echo Json::encode([
+                'message' => 'Success'
+            ]);
+            Yii::$app->end();
+        }
+            
         } else {
             throw new HttpException(403, Yii::t('app/error', '403'));
         }
@@ -469,7 +475,7 @@ class ProductController extends AdminController {
             echo Json::encode([
                 'message' => 'Выбранным товарам категории изменены'
             ]);
-            die;
+            Yii::$app->end();
         }
     }
 
@@ -487,7 +493,7 @@ class ProductController extends AdminController {
         echo Json::encode([
             'message' => Yii::t('app', 'SUCCESS_UPDATE')
         ]);
-        die;
+        Yii::$app->end();
     }
 
 }

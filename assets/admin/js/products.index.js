@@ -227,6 +227,7 @@ function setProductsPrice(link_clicked) {
     dialog.dialog({
         modal: true,
         resizable: false,
+        responsive: true,
         buttons: [{
                 text: 'Установить',
                 'class': 'btn btn-primary',
@@ -236,12 +237,13 @@ function setProductsPrice(link_clicked) {
                         type: "post",
                         data: {
                             token: common.token,
-                            products: $.fn.yiiGridView.getSelection('product-grid'),
+                            products: $('#grid-product').yiiGridView('getSelectedRows'),
                             data: $("#prices_products_dialog form").serialize()
                         },
                         success: function (data) {
                             $(dialog).dialog("close");
-                            $.fn.yiiGridView.update('product-grid');
+                            $('#grid-product').yiiGridView('applyFilter');
+                            //$.fn.yiiGridView.update('product-grid');
 
                         },
                         error: function () {
@@ -258,6 +260,13 @@ function setProductsPrice(link_clicked) {
                 }
             }]
     });
+    
+     dialog.position({
+                  my: 'center',
+                  at: 'center',
+                  of: window,
+                  collision: 'fit'
+            });
 }
 
 // Хак для отправки с диалогового окна формы через ENTER
