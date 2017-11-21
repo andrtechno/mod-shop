@@ -126,6 +126,7 @@ class Product extends \panix\engine\db\ActiveRecord {
      */
     public function rules() {
         return [
+
             [['file'], 'file', 'maxFiles' => 10],
             [['origin_name'], 'string', 'max' => 255],
             [['image'], 'image'],
@@ -133,7 +134,7 @@ class Product extends \panix\engine\db\ActiveRecord {
             [['full_description'], 'string'],
             ['use_configurations', 'boolean', 'on' => self::SCENARIO_INSERT],
             [['sku', 'full_description'], 'default'], // установим ... как NULL, если они пустые
-            [['name', 'seo_alias', 'main_category_id'], 'required'],
+            [['name', 'main_category_id'], 'required'],
             [['name', 'seo_alias'], 'string', 'max' => 255],
             [['manufacturer_id', 'type_id', 'quantity', 'views', 'added_to_cart_count', 'ordern', 'category_id'], 'integer'],
             [['name', 'seo_alias', 'full_description', 'use_configurations'], 'safe'],
@@ -554,6 +555,11 @@ class Product extends \panix\engine\db\ActiveRecord {
                     'imagesBehavior' => [
                         'class' => \panix\mod\images\behaviors\ImageBehavior::className(),
                     ],
+            'slug'=> [
+            'class' => \yii\behaviors\SluggableBehavior::className(),
+            'attribute' => 'name',
+             'slugAttribute' => 'seo_alias',
+        ],
                     /* 'eav' => [
                       'class' => \mazurva\eav\EavBehavior::className(),
                       'valueClass' => \mazurva\eav\models\EavAttributeValue::className(), // this model for table object_attribute_value

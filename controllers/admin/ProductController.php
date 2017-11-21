@@ -4,11 +4,13 @@ namespace panix\mod\shop\controllers\admin;
 
 use Yii;
 use yii\helpers\Html;
+use yii\helpers\Json;
 use panix\mod\shop\models\Product;
 use panix\mod\shop\models\search\ProductSearch;
 use panix\engine\controllers\AdminController;
 use panix\mod\shop\models\ProductType;
 use panix\mod\shop\models\Attribute;
+use panix\mod\shop\models\AttributeOption;
 use panix\mod\shop\models\ProductVariant;
 use yii\web\ForbiddenHttpException;
 
@@ -190,7 +192,11 @@ class ProductController extends AdminController {
         $attributeOption->value = $_GET['value'];
         $attributeOption->save(false);
 
-        echo $attributeOption->id;
+        echo Json::encode([
+            'message' => 'Опция успешно добавлена',
+            'id' => $attributeOption->id
+        ]);
+        die;
     }
 
     public function actionRenderVariantTable() {
@@ -460,7 +466,7 @@ class ProductController extends AdminController {
         foreach ($products as $p)
             $p->setCategories($categories, Yii::$app->request->post('main_category'));
         if (Yii::$app->request->isAjax) {
-            echo \yii\helpers\Json::encode([
+            echo Json::encode([
                 'message' => 'Выбранным товарам категории изменены'
             ]);
             die;
@@ -478,7 +484,7 @@ class ProductController extends AdminController {
             }
         }
 
-        echo \yii\helpers\Json::encode([
+        echo Json::encode([
             'message' => Yii::t('app', 'SUCCESS_UPDATE')
         ]);
         die;

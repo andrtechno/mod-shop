@@ -53,8 +53,8 @@ function addNewOption(link_clicked){
     if(name != null){
         $.ajax({
             type: 'get',
-            dataType: 'html',
-            url: '/admin/shop/products/add-option-to-attribute',
+            dataType: 'json',
+            url: '/admin/shop/product/add-option-to-attribute',
             data: {
                 attr_id: attr_id,
                 value: name
@@ -62,11 +62,12 @@ function addNewOption(link_clicked){
             success: function(data){
                 $('#variantAttribute'+attr_id+' select.options_list, #'+$(link_clicked).data('name')).each(function(i,el){
                     $(el).append($("<option/>", {
-                        value: data,
+                        value: data.id,
                         text: name
                     }));
+                    
                 });
-
+                common.notify(data.message,'success');
                 if( $(link_clicked).data('name') ){
                     $('#' + $(link_clicked).data('name')).trigger("liszt:updated");
                 }
