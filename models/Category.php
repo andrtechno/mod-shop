@@ -9,7 +9,7 @@ use panix\engine\behaviors\MenuArrayBehavior;
 use panix\mod\shop\models\translate\CategoryTranslate;
 use panix\mod\shop\models\query\CategoryQuery;
 use panix\mod\shop\models\ProductCategoryRef;
-
+use panix\engine\CMS;
 class Category extends \panix\engine\db\ActiveRecord {
 
     const MODULE_ID = 'shop';
@@ -127,5 +127,24 @@ class Category extends \panix\engine\db\ActiveRecord {
 //print_r($this->full_path);die;
         // return $this;
     }
+    public function keywords() {
+        return $this->replaceMeta(Yii::$app->settings->get('shop', 'seo_categories_keywords'));
+    }
 
+    public function description() {
+        return $this->replaceMeta(Yii::$app->settings->get('shop', 'seo_categories_description'));
+    }
+
+    public function title() {
+        return $this->replaceMeta(Yii::$app->settings->get('shop', 'seo_categories_title'));
+    }
+
+    public function replaceMeta($text) {
+        $replace = array(
+            "{category_name}" => $this->name,
+            "{sub_category_name}" => ($this->parent()->one()->name == 'root') ? '' : $this->parent()->one()->name,
+            "{current_currency}" => Yii::$app->currency->active->symbol,
+        );
+        return CMS::textReplace($text, $replace);
+    }
 }

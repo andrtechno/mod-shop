@@ -1,4 +1,11 @@
-<?= $form->field($model, 'price_penny')->checkbox(); ?>
-<?= $form->field($model, 'price_decimal')->dropDownList($model::priceSeparator()); ?>
-<?= $form->field($model, 'price_thousand')->dropDownList($model::priceSeparator()); ?>
-
+<?php
+echo $form->field($model, 'seo_categories')->checkbox();
+echo $form->field($model, 'seo_categories_title')->hint($model::t('META_CAT_TPL', [
+            'currency' => Yii::$app->currency->active->symbol
+]));
+echo $form->field($model, 'seo_categories_keywords')->hint($model::t('META_CAT_TPL', [
+            'currency' => Yii::$app->currency->active->symbol
+]));
+echo $form->field($model, 'seo_categories_description')->hint($model::t('META_CAT_TPL', [
+            'currency' => Yii::$app->currency->active->symbol
+]));

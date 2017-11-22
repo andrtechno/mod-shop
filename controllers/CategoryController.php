@@ -212,7 +212,11 @@ class CategoryController extends WebController {
 
             $c = Yii::$app->settings->get('shop');
 
-
+            if ($c['seo_categories']) {
+                $this->keywords = $this->dataModel->keywords();
+                $this->description = $this->dataModel->description();
+                $this->title = $this->dataModel->title();
+            }
             $ancestors = $this->dataModel->ancestors()->addOrderBy('depth')->excludeRoot()->all();
 
             $this->breadcrumbs[] = [
