@@ -38,6 +38,14 @@ class ProductController extends WebController {
             $this->breadcrumbs[] = $this->dataModel->name;
         }
         
+        if (Yii::$app->settings->get('shop', 'seo_products')) {
+            $this->keywords = $this->dataModel->keywords();
+            $this->description = $this->dataModel->description();
+            $this->title = $this->dataModel->title();
+        }
+        
+        
+        
         return $this->render('view', ['model' => $this->dataModel]);
     }
 

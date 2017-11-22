@@ -228,6 +228,7 @@ function setProductsPrice(link_clicked) {
         modal: true,
         resizable: false,
         responsive: true,
+        draggable:false,
         buttons: [{
                 text: 'Установить',
                 'class': 'btn btn-primary',

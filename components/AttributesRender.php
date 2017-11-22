@@ -125,11 +125,13 @@ class AttributesRender extends \yii\base\Widget {
     public function getData(Product $model) {
 
         $cacheId = 'product_attributes_' . strtotime($model->date_update) . '_' . strtotime($model->date_create);
-        $result = Yii::app()->cache->get($cacheId);
+        $result = Yii::$app->cache->get($cacheId);
         if ($result === false) {
-            foreach (Yii::app()->languageManager->languages as $lang => $l) {
+            foreach (Yii::$app->languageManager->languages as $lang => $l) {
                 $result[$lang] = array();
-                $productModel = Product::model()->language($l->id)->findByPk($model->id);
+                $productModel = Product::find($model->id)
+                        //->language($l->id)
+                        ->one();
                 $this->_attributes = $productModel->getEavAttributes();
                 foreach ($this->getModelsLanguage($l->id) as $data) {
                     $result[$lang][$data->name] = (object) array(
@@ -138,9 +140,9 @@ class AttributesRender extends \yii\base\Widget {
                     );
                 }
             }
-            Yii::app()->cache->set($cacheId, $result, Yii::app()->settings->get('app', 'cache_time'));
+            Yii::$app->cache->set($cacheId, $result, Yii::$app->settings->get('app', 'cache_time'));
         }
-        return (object) $result[Yii::app()->language];
+        return (object) $result[Yii::$app->language];
     }
 
 }

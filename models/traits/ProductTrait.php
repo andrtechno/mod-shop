@@ -4,7 +4,8 @@ namespace panix\mod\shop\models\traits;
 
 use Yii;
 use panix\mod\shop\models\search\ProductSearch;
-
+use panix\engine\CMS;
+use yii\helpers\ArrayHelper;
 trait ProductTrait {
 
     public function getGridColumns() {
@@ -132,5 +133,42 @@ trait ProductTrait {
 
         return $columns;
     }
+    
+    
+        public function getProductAttributes() {
+        //Yii::import('mod.shop.components.AttributesRender');
+        $attributes = new \panix\mod\shop\components\AttributesRender;
+        return $attributes->getData($this);
+    }
+    
+    public function keywords() {
+        return $this->replaceMeta(Yii::$app->settings->get('shop', 'seo_products_keywords'));
+    }
 
+    public function description() {
+        return $this->replaceMeta(Yii::$app->settings->get('shop', 'seo_products_description'));
+    }
+
+    public function title() {
+        return $this->replaceMeta(Yii::$app->settings->get('shop', 'seo_products_title'));
+    }
+
+    public function replaceMeta($text) {
+        $attrArray = array();
+        foreach ($this->getProductAttributes() as $k => $attr) {
+            $attrArray['{eav_' . $k . '_value}'] = $attr->value;
+            $attrArray['{eav_' . $k . '_name}'] = $attr->name;
+        }
+
+        $replace = ArrayHelper::merge([
+                    "{product_name}" => $this->name,
+                    "{product_price}" => $this->price,
+                    "{product_sku}" => $this->sku,
+                    "{product_pcs}" => $this->pcs,
+                    "{product_brand}" => (isset($this->manufacturer)) ? $this->manufacturer->name : null,
+                    "{product_main_category}" => (isset($this->mainCategory)) ? $this->mainCategory->name : null,
+                    "{current_currency}" => Yii::$app->currency->active->symbol,
+                        ], $attrArray);
+        return CMS::textReplace($text, $replace);
+    }
 }

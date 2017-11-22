@@ -6,12 +6,7 @@ use panix\engine\bootstrap\ActiveForm;
 <?php
 $form = ActiveForm::begin();
 
-if (extension_loaded('intl')) {
-    echo "true";
 
-} else {
-    echo "false";
-}
 
 ?>
 <div class="panel panel-default">
@@ -29,9 +24,18 @@ if (extension_loaded('intl')) {
                     'options' => ['id' => 'global'],
                 ],
                 [
+                    'label' => 'SEO Товаров',
+                    'content' => $this->render('_seo_products', ['form' => $form, 'model' => $model]),
+                    'options' => ['id' => 'seo_products'],
+                ],
+                [
+                    'label' => 'SEO Категорий',
+                    'content' => $this->render('_seo_categories', ['form' => $form, 'model' => $model]),
+                    'options' => ['id' => 'seo_categories'],
+                ],
+                [
                     'label' => 'Формат цены',
                     'content' => $this->render('_price', ['form' => $form, 'model' => $model]),
-                    'headerOptions' => [],
                     'options' => ['id' => 'price'],
                 ],
 
