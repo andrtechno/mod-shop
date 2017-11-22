@@ -6,6 +6,7 @@ use Yii;
 use panix\mod\shop\models\search\ProductSearch;
 use panix\engine\CMS;
 use yii\helpers\ArrayHelper;
+
 trait ProductTrait {
 
     public function getGridColumns() {
@@ -20,8 +21,8 @@ trait ProductTrait {
             'format' => 'raw',
             'contentOptions' => ['class' => 'text-center image'],
             'value' => function($model) {
-        return $model->renderGridImage('50x50');
-    },
+                return $model->renderGridImage('50x50');
+            },
         ];
         $columns[] = 'name';
         $columns[] = [
@@ -29,8 +30,8 @@ trait ProductTrait {
             'format' => 'html',
             'contentOptions' => ['class' => 'text-center'],
             'value' => function($model) {
-        return $model::formatPrice($model->price) . ' ' . Yii::$app->currency->main->symbol;
-    }
+                return $model::formatPrice($model->price) . ' ' . Yii::$app->currency->main->symbol;
+            }
         ];
         $columns[] = [
             'attribute' => 'date_create',
@@ -43,8 +44,8 @@ trait ProductTrait {
             ]),
             'contentOptions' => ['class' => 'text-center'],
             'value' => function($model) {
-        return Yii::$app->formatter->asDatetime($model->date_create, 'php:d D Y H:i:s');
-    }
+                return Yii::$app->formatter->asDatetime($model->date_create, 'php:d D Y H:i:s');
+            }
         ];
         $columns[] = [
             'attribute' => 'date_update',
@@ -57,8 +58,8 @@ trait ProductTrait {
             ]),
             'contentOptions' => ['class' => 'text-center'],
             'value' => function($model) {
-        return Yii::$app->formatter->asDatetime($model->date_update, 'php:d D Y H:i:s');
-    }
+                return Yii::$app->formatter->asDatetime($model->date_update, 'php:d D Y H:i:s');
+            }
         ];
 
         foreach ($attributesList as $at) {
@@ -77,7 +78,7 @@ trait ProductTrait {
             [
                 'class' => \panix\engine\grid\sortable\Column::className(),
                 'url' => ['/admin/shop/product/sortable'],
-                'successMessage'=>Yii::t('shop/admin','SORT_PRODUCT_SUCCESS_MESSAGE')
+                'successMessage' => Yii::t('shop/admin', 'SORT_PRODUCT_SUCCESS_MESSAGE')
             ],
             [
                 'class' => 'panix\engine\grid\columns\CheckboxColumn',
@@ -88,7 +89,7 @@ trait ProductTrait {
                         'icon' => 'eye',
                         'options' => [
                             'onClick' => 'return setProductsStatus(1, this);',
-                             'data-question'=>self::t('COMFIRM_SHOW')
+                            'data-question' => self::t('COMFIRM_SHOW')
                         ],
                     ],
                     [
@@ -97,7 +98,7 @@ trait ProductTrait {
                         'icon' => 'eye-close',
                         'options' => [
                             'onClick' => 'return setProductsStatus(0, this);',
-                            'data-question'=>self::t('COMFIRM_HIDE')
+                            'data-question' => self::t('COMFIRM_HIDE')
                         ],
                     ],
                     [
@@ -106,7 +107,7 @@ trait ProductTrait {
                         'icon' => 'folder-open',
                         'options' => [
                             'onClick' => 'return showCategoryAssignWindow(this);',
-                            'data-question'=>self::t('COMFIRM_CATEGORY')
+                            'data-question' => self::t('COMFIRM_CATEGORY')
                         ],
                     ],
                     [
@@ -115,7 +116,7 @@ trait ProductTrait {
                         'icon' => 'copy',
                         'options' => [
                             'onClick' => 'return showDuplicateProductsWindow(this);',
-                            'data-question'=>self::t('COMFIRM_COPY')
+                            'data-question' => self::t('COMFIRM_COPY')
                         ],
                     ],
                     [
@@ -124,7 +125,7 @@ trait ProductTrait {
                         'icon' => 'currencies',
                         'options' => [
                             'onClick' => 'return setProductsPrice(this);',
-                            'data-question'=>self::t('COMFIRM_PRICE')
+                            'data-question' => self::t('COMFIRM_PRICE')
                         ],
                     ]
                 ]
@@ -133,14 +134,23 @@ trait ProductTrait {
 
         return $columns;
     }
-    
-    
-        public function getProductAttributes() {
+
+    /**
+     * Convert price to current currency
+     *
+     * @param string $attr
+     * @return mixed
+     */
+    public function toCurrentCurrency($attr = 'price') {
+        return Yii::$app->currency->convert($this->$attr);
+    }
+
+    public function getProductAttributes() {
         //Yii::import('mod.shop.components.AttributesRender');
         $attributes = new \panix\mod\shop\components\AttributesRender;
         return $attributes->getData($this);
     }
-    
+
     public function keywords() {
         return $this->replaceMeta(Yii::$app->settings->get('shop', 'seo_products_keywords'));
     }
@@ -171,4 +181,7 @@ trait ProductTrait {
                         ], $attrArray);
         return CMS::textReplace($text, $replace);
     }
+
+
+
 }

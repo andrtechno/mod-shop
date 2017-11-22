@@ -35,7 +35,7 @@ $('#product-use_configurations, #product-type_id').change(function () {
     if ($('#product-use_configurations').val() == '0')
         return;
 
-    $.getJSON('/admin/shop/default/load-configurable-options?type_id=' + type_id, function (data) {
+    $.getJSON('/admin/shop/product/load-configurable-options?type_id=' + type_id, function (data) {
         var items = [];
         if (data.status === 'success') {
             $.each(data.response, function (key, option) {

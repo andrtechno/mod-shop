@@ -122,11 +122,21 @@ class Product extends \panix\engine\db\ActiveRecord {
     }
 
     /**
+     * Decrease product quantity when added to cart
+     */
+    public function decreaseQuantity() {
+        if ($this->auto_decrease_quantity && (int) $this->quantity > 0) {
+            $this->quantity--;
+            $this->save(false);
+        }
+    }
+
+    /**
      * @inheritdoc
      */
     public function rules() {
         return [
-
+            ['price', 'commaToDot'],
             [['file'], 'file', 'maxFiles' => 10],
             [['origin_name'], 'string', 'max' => 255],
             [['image'], 'image'],
@@ -555,11 +565,11 @@ class Product extends \panix\engine\db\ActiveRecord {
                     'imagesBehavior' => [
                         'class' => \panix\mod\images\behaviors\ImageBehavior::className(),
                     ],
-            'slug'=> [
-            'class' => \yii\behaviors\SluggableBehavior::className(),
-            'attribute' => 'name',
-             'slugAttribute' => 'seo_alias',
-        ],
+                    'slug' => [
+                        'class' => \yii\behaviors\SluggableBehavior::className(),
+                        'attribute' => 'name',
+                        'slugAttribute' => 'seo_alias',
+                    ],
                     /* 'eav' => [
                       'class' => \mazurva\eav\EavBehavior::className(),
                       'valueClass' => \mazurva\eav\models\EavAttributeValue::className(), // this model for table object_attribute_value
@@ -594,7 +604,13 @@ class Product extends \panix\engine\db\ActiveRecord {
         $c = Yii::$app->settings->get('shop');
         return iconv("windows-1251", "UTF-8", number_format($price, $c['price_penny'], chr($c['price_thousand']), chr($c['price_decimal'])));
     }
-
+    /**
+     * Replaces comma to dot
+     * @param $attr
+     */
+    public function commaToDot($attr) {
+        $this->$attr = str_replace(',', '.', $this->$attr);
+    }
     /**
      * @return \yii\db\ActiveQuery
      */

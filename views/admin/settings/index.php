@@ -5,9 +5,6 @@ use panix\engine\bootstrap\ActiveForm;
 ?>
 <?php
 $form = ActiveForm::begin();
-
-
-
 ?>
 <div class="panel panel-default">
     <div class="panel-heading">
@@ -24,24 +21,28 @@ $form = ActiveForm::begin();
                     'options' => ['id' => 'global'],
                 ],
                 [
-                    'label' => 'SEO Товаров',
-                    'content' => $this->render('_seo_products', ['form' => $form, 'model' => $model]),
-                    'options' => ['id' => 'seo_products'],
-                ],
-                [
-                    'label' => 'SEO Категорий',
-                    'content' => $this->render('_seo_categories', ['form' => $form, 'model' => $model]),
-                    'options' => ['id' => 'seo_categories'],
+                    'label' => 'SEO',
+                    'items' => [
+                        [
+                            'label' => 'Товаров',
+                            'contentOptions' => ['id' => 'seo_products'],
+                            'content' => $this->render('_seo_products', ['form' => $form, 'model' => $model]),
+                        ],
+                        [
+                            'label' => 'Категорий',
+                            'contentOptions' => ['id' => 'seo_categories'],
+                            'content' => $this->render('_seo_categories', ['form' => $form, 'model' => $model]),
+                        ],
+                    ],
                 ],
                 [
                     'label' => 'Формат цены',
                     'content' => $this->render('_price', ['form' => $form, 'model' => $model]),
                     'options' => ['id' => 'price'],
                 ],
-
             ],
         ]);
-?>
+        ?>
     </div>
     <div class="panel-footer text-center">
         <?= Html::submitButton(Yii::t('app', 'SAVE'), ['class' => 'btn btn-success']) ?>

@@ -36,15 +36,13 @@ use panix\mod\shop\models\ProductType;
                 panix\mod\shop\assets\admin\ProductAsset::register($this);
 
                 if ($attributeError) {
-                    echo Yii::t('shop/admin', 'Выберите атрибуты для конфигурации продуктов.');
+                    $this->theme->alert('danger',Yii::t('shop/admin', 'Выберите атрибуты для конфигурации продуктов.'),false);
                 }
                 ?>
                 <div class="form-group">
                     <div class="col-sm-4"><?= Html::activeLabel($model, 'type_id', ['class' => 'control-label']); ?></div>
                     <div class="col-sm-8">
                         <?php echo Html::activeDropDownList($model, 'type_id', ArrayHelper::map($typesList, 'id', 'name'),['class'=>'form-control']); ?>
-
-
                     </div>
                 </div>
 
@@ -52,8 +50,6 @@ use panix\mod\shop\models\ProductType;
                     <div class="col-sm-4"><?= Html::activeLabel($model, 'use_configurations', ['class' => 'control-label']); ?></div>
                     <div class="col-sm-8">
                         <?php echo Html::activeDropDownList($model, 'use_configurations', [0 => Yii::t('app', 'NO'), 1 => Yii::t('app', 'YES')],['class'=>'form-control']); ?>
-
-
                     </div>
                 </div>
 
