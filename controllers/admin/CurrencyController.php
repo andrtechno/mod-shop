@@ -40,15 +40,17 @@ class CurrencyController extends AdminController {
         $this->pageName = Yii::t('shop/admin', 'CURRENCY');
         $this->buttons = [
             [
-                'icon'=>'icon-add',
+                'icon' => 'icon-add',
                 'label' => Yii::t('shop/admin', 'CREATE_CURRENCY'),
                 'url' => ['create'],
                 'options' => ['class' => 'btn btn-success']
             ]
         ];
-        $this->breadcrumbs = [
-            $this->pageName
+        $this->breadcrumbs[] = [
+            'label' => Yii::t('shop/default', 'MODULE_NAME'),
+            'url' => ['/admin/shop']
         ];
+        $this->breadcrumbs[] = $this->pageName;
 
         $searchModel = new CurrencySearch();
         $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams());
@@ -72,20 +74,21 @@ class CurrencyController extends AdminController {
         $this->pageName = Yii::t('shop/admin', 'CURRENCY');
         $this->buttons = [
             [
-                'icon'=>'icon-add',
+                'icon' => 'icon-add',
                 'label' => Yii::t('shop/admin', 'CREATE_CURRENCY'),
                 'url' => ['create'],
                 'options' => ['class' => 'btn btn-success']
             ]
         ];
         $this->breadcrumbs[] = [
+            'label' => $this->module->info['label'],
+            'url' => $this->module->info['url'],
+        ];
+        $this->breadcrumbs[] = [
             'label' => $this->pageName,
             'url' => ['index']
         ];
-        $this->breadcrumbs[] = [
-            'label' => Yii::t('shop/admin', 'PRODUCTS'),
-            'url' => ['index']
-        ];
+
         $this->breadcrumbs[] = Yii::t('app', 'UPDATE');
 
 

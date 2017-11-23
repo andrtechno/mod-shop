@@ -21,8 +21,8 @@ class TypeController extends AdminController {
 
         $this->pageName = Yii::t('shop/admin', 'TYPE_PRODUCTS');
         $this->breadcrumbs[] = [
-            'label' => Yii::t('shop/default', 'MODULE_NAME'),
-            'url' => ['/admin/shop']
+            'label' => $this->module->info['label'],
+            'url' => $this->module->info['url'],
         ];
         $this->breadcrumbs[] = $this->pageName;
         // $this->topButtons = array(array('label' => Yii::t('shop/admin', 'Создать тип'),
@@ -66,6 +66,15 @@ class TypeController extends AdminController {
 
 
 
+        $this->breadcrumbs[] = [
+            'label' => $this->module->info['label'],
+            'url' => $this->module->info['url'],
+        ];
+        $this->breadcrumbs[] = [
+            'label' => Yii::t('shop/admin', 'TYPE_PRODUCTS'),
+            'url' => ['/admin/shop/type'],
+        ];
+        $this->breadcrumbs[] = $this->pageName;
 
         \panix\mod\shop\assets\admin\ProductTypeAsset::register($this->view);
 

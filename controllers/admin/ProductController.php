@@ -42,9 +42,11 @@ class ProductController extends AdminController {
                 'options' => ['class' => 'btn btn-success']
             ]
         ];
-        $this->breadcrumbs = [
-            $this->pageName
+        $this->breadcrumbs[] = [
+            'label' => $this->module->info['label'],
+            'url' => $this->module->info['url'],
         ];
+        $this->breadcrumbs[] = $this->pageName;
 
         $searchModel = new ProductSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams());
@@ -83,11 +85,11 @@ class ProductController extends AdminController {
             'url' => ['create'],
             'options' => ['class' => 'btn btn-success']
         ];
-
         $this->breadcrumbs[] = [
-            'label' => $this->pageName,
-            'url' => ['index']
+            'label' => $this->module->info['label'],
+            'url' => $this->module->info['url'],
         ];
+
         $this->breadcrumbs[] = [
             'label' => Yii::t('shop/admin', 'PRODUCTS'),
             'url' => ['index']
@@ -426,14 +428,13 @@ class ProductController extends AdminController {
                     }
                 }
             }
-            
-        if (Yii::$app->request->isAjax) {
-            echo Json::encode([
-                'message' => 'Success'
-            ]);
-            Yii::$app->end();
-        }
-            
+
+            if (Yii::$app->request->isAjax) {
+                echo Json::encode([
+                    'message' => 'Success'
+                ]);
+                Yii::$app->end();
+            }
         } else {
             throw new HttpException(403, Yii::t('app/error', '403'));
         }

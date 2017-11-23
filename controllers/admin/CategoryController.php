@@ -46,7 +46,7 @@ class CategoryController extends AdminController {
     }
 
     public function actionIndex() {
-        $this->pageName = Yii::t('shop/default', 'MODULE_NAME');
+        $this->pageName = Yii::t('shop/admin', 'CATEGORIES');
         $this->buttons = [
             [
                 'label' => Yii::t('shop/admin', 'CREATE_CATEGORY'),
@@ -54,7 +54,11 @@ class CategoryController extends AdminController {
                 'options' => ['class' => 'btn btn-success']
             ]
         ];
-
+        $this->breadcrumbs[] = [
+            'label' => $this->module->info['label'],
+            'url' => $this->module->info['url'],
+        ];
+        $this->breadcrumbs[] = $this->pageName;
         return $this->render('index', [
         ]);
     }
@@ -69,6 +73,7 @@ class CategoryController extends AdminController {
             $this->error404();
         }
         $this->pageName = Yii::t('shop/admin', 'CATEGORIES');
+
         $this->breadcrumbs = [
             [
                 'label' => Yii::t('shop/default', 'MODULE_NAME'),

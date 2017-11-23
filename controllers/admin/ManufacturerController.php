@@ -36,9 +36,11 @@ class ManufacturerController extends AdminController {
                 'options' => ['class' => 'btn btn-success']
             ]
         ];
-        $this->breadcrumbs = [
-            $this->pageName
+        $this->breadcrumbs[] = [
+            'label' => $this->module->info['label'],
+            'url' => $this->module->info['url'],
         ];
+        $this->breadcrumbs[] = $this->pageName;
 
         $searchModel = new ManufacturerSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams());
@@ -69,13 +71,14 @@ class ManufacturerController extends AdminController {
             ]
         ];
         $this->breadcrumbs[] = [
+            'label' => Yii::t('shop/default', 'MODULE_NAME'),
+            'url' => ['/admin/shop']
+        ];
+        $this->breadcrumbs[] = [
             'label' => $this->pageName,
             'url' => ['index']
         ];
-        $this->breadcrumbs[] = [
-            'label' => Yii::t('shop/admin', 'PRODUCTS'),
-            'url' => ['index']
-        ];
+
         $this->breadcrumbs[] = Yii::t('app', 'UPDATE');
 
 
@@ -88,7 +91,7 @@ class ManufacturerController extends AdminController {
         }
 
         return $this->render('update', [
-            'model' => $model,
+                    'model' => $model,
         ]);
     }
 
