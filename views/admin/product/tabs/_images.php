@@ -8,7 +8,6 @@ use panix\engine\Html;
 
 <?php
 $images = $model->getImages();
-
 ?>
 
 
@@ -23,7 +22,7 @@ $('.attachment-delete').on('click', function(e) {
        success: function(data) {
                                             if(data.status == "success"){
                                                 common.notify(data.message,"success");
-                                                $("#AttachmentsImages"+id).hide().remove();
+                                                $("#image-"+id).remove();
                                                 common.removeLoader();
                                             }
        }
@@ -49,48 +48,46 @@ JS;
 $this->registerJs($script); //$position
 ?>
 
-<div class="col-sm-12">
-    <div class="attachments2">
-        
-        <table class="table table-striped">
-            <tr>
-                <th>Изображение</th>
-                <th>123312</th>
-                <th>123312</th>
-                <th>Опции</th>
-            </tr>
 
+<div class="attachments2">
+    <?php if($images){ ?>
+    <table class="table table-striped">
+        <tr>
+            <th>Изображение</th>
+            <th>Главное</th>
+            <th>Alt-тег</th>
+            <th>Опции</th>
+        </tr>
         <?php
         foreach ($images as $img) {
-            $coverClass = ($img->isMain) ? 'bg-success active' : '';
-                            if ($img->isMain) {
-                    echo '<i class="icon-check iscover" style=""></i>';
-                }
+            $coverClass = ($img->is_main) ? 'bg-success active' : '';
+            if ($img->is_main) {
+                echo '<i class="icon-check iscover"></i>';
+            }
             ?>
-
-            <tr class="<?= $coverClass ?>">
-                <td>        <?= Html::a(Html::img($img->getUrl('300x'),['class'=>'img-thumnail']), $img->getUrl(),['class'=>'img-thumnail']); ?></td>
-                <td>                        <?=
-                        Html::radio('AttachmentsMainId', $img->isMain, array(
-                            'value' => $img->id,
-                            'class' => 'check',
-                            'data-toggle' => "tooltip",
-                            'title' => Yii::t('app', 'IS_MAIN'),
-                            'id' => 'main_image_' . $img->id
-                        ));
-                        ?></td>
+            <tr id="image-<?=$img->id?>" class="<?= $coverClass ?>">
+                <td><?= Html::a(Html::img($img->getUrl('300x'), ['class' => 'img-thumnail']), $img->getUrl(), ['class' => 'img-thumnail']); ?></td>
+                <td>
+                    <?=
+                    Html::radio('AttachmentsMainId', $img->is_main, array(
+                        'value' => $img->id,
+                        'class' => 'check',
+                        'data-toggle' => "tooltip",
+                        'title' => Yii::t('app', 'IS_MAIN'),
+                        'id' => 'main_image_' . $img->id
+                    ));
+                    ?></td>
                 <td><?= Html::input('text', 'attachment_image_titles[' . $img->id . ']', $img->name, array('class' => 'form-control', 'placeholder' => $img->getAttributeLabel('name'))); ?></td>
-                <td>                    <div class="btn-group btn-group-sm">
+                <td>
+                    <div class="btn-group btn-group-sm">
                         <?= Html::a(Html::icon('resize'), $img->getUrl(), array('class' => 'btn btn-default attachment-zoom', 'data-fancybox' => 'gallery')); ?>
                         <?= Html::a(Html::icon('settings'), ['/images/edit-crop', 'id' => $img->id], array('class' => 'btn btn-default copper')); ?>
                         <?= Html::a(Html::icon('delete'), ['/images/default/delete', 'id' => $img->id], array('class' => 'btn btn-danger attachment-delete', 'data-id' => $img->id)); ?>
-
-
-                    </div></td>
-                
+                    </div>
+                </td>
             </tr>
-
         <?php } ?>
-                    </table>
-    </div>
+    </table>
+    <?php } ?>
 </div>
+

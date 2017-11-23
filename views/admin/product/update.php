@@ -100,7 +100,7 @@ use panix\mod\shop\models\ProductType;
                     'options' => ['id' => 'variations'],
                 ];
 
-$tabs[] = [
+                $tabs[] = [
                     'label' => $model::t('TAB_SEO'),
                     'content' => $this->render('@seo/views/admin/default/_module_seo', ['model' => $model]),
                     'headerOptions' => [],
@@ -149,7 +149,7 @@ $tabs[] = [
                 ActiveForm::end();
             }
         } else {
-            echo 'Для начало необходимо создать Тип товара';
+            $this->theme->alert('warning',Yii::t('shop/admin', 'Для начало необходимо создать Тип товара'),false);
         }
         ?>
     </div>

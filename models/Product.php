@@ -80,7 +80,6 @@ class Product extends \panix\engine\db\ActiveRecord {
 
     public function getMainImageUrl($size = false) {
         if ($this->getImage()) {
-
             if ($size) {
                 return $this->getImage()->getUrl($size);
             } else {
