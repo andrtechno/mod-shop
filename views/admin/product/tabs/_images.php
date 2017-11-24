@@ -62,9 +62,7 @@ $this->registerJs($script); //$position
         <?php
         foreach ($images as $img) {
             $coverClass = ($img->is_main) ? 'bg-success active' : '';
-            if ($img->is_main) {
-                echo '<i class="icon-check iscover"></i>';
-            }
+
             ?>
             <tr id="image-<?=$img->id?>" class="<?= $coverClass ?>">
                 <td class="text-center"><?= Html::a(Html::img($img->getUrl('100x100'), ['class' => '']), $img->getUrl(), ['class' => 'img-thumbnail fancybox']); ?></td>
@@ -78,7 +76,7 @@ $this->registerJs($script); //$position
                         'id' => 'main_image_' . $img->id
                     ));
                     ?></td>
-                <td><?= Html::input('text', 'attachment_image_titles[' . $img->id . ']', $img->name, array('class' => 'form-control', 'placeholder' => $img->getAttributeLabel('name'))); ?></td>
+                <td><?= Html::input('text', 'attachment_image_titles[' . $img->id . ']', $img->alt_title, array('class' => 'form-control', 'placeholder' => $img->getAttributeLabel('alt_title'))); ?></td>
                 <td class="text-center">
                     <div class="btn-group btn-group-sm">
                         <?= Html::a(Html::icon('resize'), $img->getUrl(), array('class' => 'btn btn-default attachment-zoom', 'data-fancybox' => 'gallery')); ?>

@@ -158,8 +158,20 @@ class ProductController extends AdminController {
             $model->setCategories(Yii::$app->request->post('categories', []), $mainCategoryId);
 
             $model->file = \yii\web\UploadedFile::getInstances($model, 'file');
+            
+            
+            if(Yii::$app->request->post('AttachmentsMainId')){
+                $test = $model->getImages();
+                //print_r($test);
+                //sdie;
+            }
+      
+             
             if ($model->file) {
+               
                 foreach ($model->file as $file) {
+                    
+                    
                     $uniqueName = \panix\engine\CMS::gen(10);
                     $file->saveAs('uploads/' . $uniqueName . '_' . $file->baseName . '.' . $file->extension);
                     $model->attachImage('uploads/' . $uniqueName . '_' . $file->baseName . '.' . $file->extension);
@@ -198,7 +210,7 @@ class ProductController extends AdminController {
             'message' => 'Опция успешно добавлена',
             'id' => $attributeOption->id
         ]);
-        die;
+        Yii::$app->end();
     }
 
     public function actionRenderVariantTable() {

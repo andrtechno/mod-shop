@@ -83,13 +83,19 @@ use panix\mod\shop\models\ProductType;
                     'options' => ['id' => 'main'],
                 ];
                 $tabs[] = [
-                    'label' => 'Изображение',
+                    'label' => $model::t('TAB_WAREHOUSE'),
+                    'content' => $this->render('tabs/_warehouse', ['form' => $form, 'model' => $model]),
+                    'headerOptions' => [],
+                    'options' => ['id' => 'warehouse'],
+                ];
+                $tabs[] = [
+                    'label' => $model::t('TAB_IMG'),
                     'content' => $this->render('tabs/_images', ['form' => $form, 'model' => $model]),
                     'headerOptions' => [],
                     'options' => ['id' => 'images'],
                 ];
                 $tabs[] = [
-                    'label' => 'Связи товаров',
+                    'label' => $model::t('TAB_REL'),
                     'content' => $this->render('tabs/_related', ['exclude' => $model->id, 'form' => $form, 'model' => $model]),
                     'headerOptions' => [],
                     'options' => ['id' => 'related'],
@@ -111,7 +117,7 @@ use panix\mod\shop\models\ProductType;
 
 
                 $tabs[] = [
-                    'label' => 'Категории',
+                    'label' => $model::t('TAB_CATEGORIES'),
                     'content' => $this->render('tabs/_tree', ['exclude' => $model->id, 'form' => $form, 'model' => $model]),
                     'headerOptions' => [],
                     'options' => ['id' => 'tree'],

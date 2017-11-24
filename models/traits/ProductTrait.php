@@ -10,9 +10,10 @@ use yii\helpers\ArrayHelper;
 trait ProductTrait {
     public static function getAvailabilityItems() {
         return array(
-            1 => Yii::t('shop/product', 'AVAILABILITY_LIST'),
-            2 => Yii::t('shop/product', 'AVAILABILITY_LIST'),
-            3 => Yii::t('shop/product', 'AVAILABILITY_LIST'),
+            1 => self::t('AVAILABILITY_1'),
+            2 => self::t('AVAILABILITY_2'),
+            3 => self::t('AVAILABILITY_3'),
+            4 => self::t('AVAILABILITY_4'),
         );
     }
     public function getGridColumns() {
