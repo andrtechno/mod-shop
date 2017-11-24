@@ -1,8 +1,9 @@
 <?php
 
 use panix\engine\Html;
+use panix\ext\fancybox\Fancybox;
 ?>
-<?= \panix\ext\fancybox\Fancybox::widget(['target' => 'a.attachment-zoom']); ?>
+<?= Fancybox::widget(['target' => 'a.fancybox']); ?>
 
 <?= $form->field($model, 'file[]')->fileInput(['multiple' => true]); ?>
 
@@ -53,10 +54,10 @@ $this->registerJs($script); //$position
     <?php if($images){ ?>
     <table class="table table-striped">
         <tr>
-            <th>Изображение</th>
-            <th>Главное</th>
-            <th>Alt-тег</th>
-            <th>Опции</th>
+            <th class="text-center">Изображение</th>
+            <th class="text-center">Главное</th>
+            <th class="text-center">Alt-тег</th>
+            <th class="text-center">Опции</th>
         </tr>
         <?php
         foreach ($images as $img) {
@@ -66,8 +67,8 @@ $this->registerJs($script); //$position
             }
             ?>
             <tr id="image-<?=$img->id?>" class="<?= $coverClass ?>">
-                <td><?= Html::a(Html::img($img->getUrl('300x'), ['class' => 'img-thumnail']), $img->getUrl(), ['class' => 'img-thumnail']); ?></td>
-                <td>
+                <td class="text-center"><?= Html::a(Html::img($img->getUrl('100x100'), ['class' => '']), $img->getUrl(), ['class' => 'img-thumbnail fancybox']); ?></td>
+                <td class="text-center">
                     <?=
                     Html::radio('AttachmentsMainId', $img->is_main, array(
                         'value' => $img->id,
@@ -78,7 +79,7 @@ $this->registerJs($script); //$position
                     ));
                     ?></td>
                 <td><?= Html::input('text', 'attachment_image_titles[' . $img->id . ']', $img->name, array('class' => 'form-control', 'placeholder' => $img->getAttributeLabel('name'))); ?></td>
-                <td>
+                <td class="text-center">
                     <div class="btn-group btn-group-sm">
                         <?= Html::a(Html::icon('resize'), $img->getUrl(), array('class' => 'btn btn-default attachment-zoom', 'data-fancybox' => 'gallery')); ?>
                         <?= Html::a(Html::icon('settings'), ['/images/edit-crop', 'id' => $img->id], array('class' => 'btn btn-default copper')); ?>

@@ -44,7 +44,6 @@ class ProductSearch extends Product {
         $query->joinWith('translations');
 
         if (isset($configure['conf'])) {
-
             $query->andWhere(['IN', 'id', $configure['conf']]);
         }
 

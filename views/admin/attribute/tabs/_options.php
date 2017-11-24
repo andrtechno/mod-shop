@@ -8,7 +8,6 @@ use panix\engine\widgets\Pjax;
 ?>
 
 <style type="text/css">
-
     table.optionsEditTable input[type="text"] {
         width: 200px;
     }
@@ -24,7 +23,7 @@ use panix\engine\widgets\Pjax;
 </div>
 <table>
     <tr class="copyMe">
-
+        <td>N/A</td>
         <?php foreach (Yii::$app->languageManager->languages as $k => $l) { ?>
             <td>
                 <input name="sample" type="text" class="value form-control input-lang" style="background-image:url(/uploads/language/<?= $k ?>.png">

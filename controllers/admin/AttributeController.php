@@ -1,4 +1,5 @@
 <?php
+
 namespace panix\mod\shop\controllers\admin;
 
 use Yii;
@@ -7,6 +8,7 @@ use panix\mod\shop\models\Attribute;
 use panix\mod\shop\models\search\AttributeSearch;
 use panix\mod\shop\models\AttributeOption;
 use panix\mod\shop\models\Product;
+
 class AttributeController extends AdminController {
 
     public $icon = 'icon-filter';
@@ -31,8 +33,8 @@ class AttributeController extends AdminController {
             ],
         ];
     }
-    public function actionIndex() {
 
+    public function actionIndex() {
         $searchModel = new AttributeSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams());
         $this->buttons = [
@@ -43,17 +45,17 @@ class AttributeController extends AdminController {
                 'options' => ['class' => 'btn btn-success']
             ]
         ];
-        
+
         $this->pageName = Yii::t('shop/admin', 'ATTRIBUTES');
         $this->breadcrumbs[] = [
-            'label'=>Yii::t('shop/default', 'MODULE_NAME'),
-            'url'=>['/admin/shop']
+            'label' => Yii::t('shop/default', 'MODULE_NAME'),
+            'url' => ['/admin/shop']
         ];
         $this->breadcrumbs[] = $this->pageName;
-        
+
         return $this->render('index', array(
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
+                    'searchModel' => $searchModel,
+                    'dataProvider' => $dataProvider,
         ));
     }
 
@@ -74,33 +76,32 @@ class AttributeController extends AdminController {
             $this->error404(Yii::t('shop/admin', 'NO_FOUND_ATTR'));
 
 
-
-     //   $this->pageName = ($model->isNewRecord) ? $model::t('ISNEW', 0) : $model::t('ISNEW', 1);
+        
+       $this->pageName = ($model->isNewRecord) ? $model::t('CREATE_ATTRIBUTES') : $model::t('UPDATE_ATTRIBUTES');
 
         $this->breadcrumbs[] = [
-            'label'=>Yii::t('shop/default', 'MODULE_NAME'),
-            'url'=>['/admin/shop']
+            'label' => Yii::t('shop/default', 'MODULE_NAME'),
+            'url' => ['/admin/shop']
         ];
         $this->breadcrumbs[] = [
-            'label'=>Yii::t('shop/admin', 'ATTRIBUTES'),
-            'url'=>['index']
+            'label' => Yii::t('shop/admin', 'ATTRIBUTES'),
+            'url' => ['index']
         ];
         $this->breadcrumbs[] = $this->pageName;
-        
+
 
 
         $post = Yii::$app->request->post();
 
 
         if ($model->load($post) && $model->validate()) {
-                $model->save();
-                $this->saveOptions($model);
-                if ($id) {
-                    return $this->redirect(['index']);
-                } else {
-                    return $this->redirect(['update', 'id' => $id]);
-                }
-          
+            $model->save();
+            $this->saveOptions($model);
+            if ($id) {
+                return $this->redirect(['index']);
+            } else {
+                return $this->redirect(['update', 'id' => $id]);
+            }
         }
 
         return $this->render('update', ['model' => $model]);
@@ -121,7 +122,7 @@ class AttributeController extends AdminController {
 
                     $attributeOption = AttributeOption::find()
                             ->where(['id' => $key,
-                        'attribute_id' => $model->id])
+                                'attribute_id' => $model->id])
                             ->one();
 
                     if (!$attributeOption) {
@@ -146,16 +147,14 @@ class AttributeController extends AdminController {
         }
 
         if (sizeof($dontDelete)) {
-           // $cr = new CDbCriteria;
-           //$cr->addNotInCondition('t.id', $dontDelete);
-            
-                        $optionsToDelete = AttributeOption::findAll(
+            // $cr = new CDbCriteria;
+            //$cr->addNotInCondition('t.id', $dontDelete);
+
+            $optionsToDelete = AttributeOption::findAll(
                             ['AND',
                         'attribute_id=:id',
                         ['NOT IN', 'id', $dontDelete]
                             ], [':id' => $model->id]);
-                        
-  
         } else {
             // Clear all attribute options
             $optionsToDelete = AttributeOption::find()->where(['attribute_id' => $model->id])->all();
@@ -173,11 +172,11 @@ class AttributeController extends AdminController {
      */
     public function actionDelete($id = array()) {
         if (Yii::$app->request->isPost) {
-            $model = Attribute::find(['id'=>$id])->all();
+            $model = Attribute::find(['id' => $id])->all();
 
             if (!empty($model)) {
                 foreach ($model as $m) {
-                   // $count = Product::find()->withEavAttributes(array($m->name))->count();
+                    // $count = Product::find()->withEavAttributes(array($m->name))->count();
                     //if ($count)
                     //    throw new \yii\web\HttpException(503, Yii::t('shop/admin', 'ERR_DEL_ATTR'));
                     $m->delete();

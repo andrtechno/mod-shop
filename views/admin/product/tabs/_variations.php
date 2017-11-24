@@ -13,11 +13,9 @@ use yii\helpers\ArrayHelper;
             if ($model->type) {
                 $attributes = $model->type->shopConfigurableAttributes;
 
-                echo Html::dropDownList(
-                    'variantAttribute',
-                    null,
+                echo Html::dropDownList('variantAttribute',null,
                    ArrayHelper::map($attributes, 'id', 'title'),
-                        ['id'=>'variantAttribute']
+                        ['id'=>'variantAttribute','class'=>'form-control','style'=>'width:auto;']
                 );
             }
             ?>

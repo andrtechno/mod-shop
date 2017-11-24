@@ -138,6 +138,17 @@ class Attribute extends \panix\engine\db\ActiveRecord {
         );
     }
 
+    public static function getSort() {
+        return new \yii\data\Sort([
+            'attributes' => [
+                'title' => [
+                    'asc' => ['title' => SORT_ASC],
+                    'desc' => ['title' => SORT_DESC],
+                ],
+            ],
+        ]);
+    }
+
     /**
      * @return string html field based on attribute type
      */
@@ -152,18 +163,17 @@ class Attribute extends \panix\engine\db\ActiveRecord {
                 return Html::textarea($name, $value, array('class' => 'form-control'));
                 break;
             case self::TYPE_DROPDOWN:
-
                 $data = ArrayHelper::map($this->options, 'id', 'value');
-                return Html::dropDownList($name, $value, $data, ['prompt' => Yii::t('app', 'EMPTY_LIST')]);
+                return Html::dropDownList($name, $value, $data, ['class' => 'form-control pull-left', 'prompt' => Yii::t('app', 'EMPTY_LIST')]);
                 //return Yii::app()->controller->widget('ext.bootstrap.selectinput.SelectInput',array('data'=>$data,'value'=>$value,'htmlOptions'=>array('name'=>$name,'empty'=>Yii::t('app','EMPTY_LIST'))),true);
                 break;
             case self::TYPE_SELECT_MANY:
                 $data = ArrayHelper::map($this->options, 'id', 'value');
-                return Html::dropDownList($name . '[]', $value, $data, ['multiple' => 'multiple', 'prompt' => Yii::t('app', 'EMPTY_LIST')]);
+                return Html::dropDownList($name . '[]', $value, $data, ['class' => 'form-control pull-left', 'multiple' => 'multiple', 'prompt' => Yii::t('app', 'EMPTY_LIST')]);
                 break;
             case self::TYPE_RADIO_LIST:
                 $data = ArrayHelper::map($this->options, 'id', 'value');
-                return Html::radioList($name, (string) $value, $data, ['separator' => '']);
+                return Html::radioList($name, $value, $data, ['separator' => '<br/>']);
                 break;
             case self::TYPE_CHECKBOX_LIST:
                 $data = ArrayHelper::map($this->options, 'id', 'value');

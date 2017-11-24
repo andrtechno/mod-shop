@@ -3,9 +3,8 @@
 use yii\helpers\Html;
 use panix\engine\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
-echo Yii::t('app', 'Чтобы атрибут отображался в товарах его необходимо добавить к необходимому {productType}', array('productType' => Html::a('типу товара', '/admin/shop/productType')));
 
-
+$this->theme->alert('info', Yii::t('shop/Attribute', 'INFO', ['productType' => Html::a('типу товара', '/admin/shop/productType')]), false);
 ?>
 
 
@@ -14,8 +13,6 @@ echo Yii::t('app', 'Чтобы атрибут отображался в това
         <h3 class="panel-title"><?= Html::encode($this->context->pageName) ?></h3>
     </div>
     <div class="panel-body">
-
-
         <?php
         $form = ActiveForm::begin([
                     'id' => basename(get_class($model)),
@@ -27,7 +24,6 @@ echo Yii::t('app', 'Чтобы атрибут отображался в това
         ?>
         <?php
         echo yii\bootstrap\Tabs::widget([
-
             'items' => [
                 [
                     'label' => 'Основные',
@@ -44,26 +40,9 @@ echo Yii::t('app', 'Чтобы атрибут отображался в това
             ],
         ]);
         ?>
-
-
-
-
-
-
-
-
-
         <div class="form-group text-center">
             <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'CREATE') : Yii::t('app', 'UPDATE'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
         </div>
-
-
-
-
-
         <?php ActiveForm::end(); ?>
-
-
-
     </div>
 </div>

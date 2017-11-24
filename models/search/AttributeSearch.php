@@ -41,9 +41,10 @@ class AttributeSearch extends Attribute {
      */
     public function search($params) {
         $query = Attribute::find();
-
+        $query->joinWith('attrtranslate');
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort' => self::getSort()
         ]);
 
         $this->load($params);
@@ -59,12 +60,12 @@ class AttributeSearch extends Attribute {
         ]);
         // Id of product to exclude from search
         if ($this->exclude) {
-            foreach($this->exclude as $id){
-                  $query->andFilterWhere(['!=', 'id', $id]);
+            foreach ($this->exclude as $id) {
+                $query->andFilterWhere(['!=', 'id', $id]);
             }
         }
 
-        $query->andFilterWhere(['like', 'name', $this->name]);
+        $query->andFilterWhere(['like', 'title', $this->title]);
 
 
         return $dataProvider;

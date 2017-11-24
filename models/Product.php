@@ -55,7 +55,7 @@ class Product extends \panix\engine\db\ActiveRecord {
     }
 
     public static function getSort() {
-        $sort = new \yii\data\Sort([
+        return new \yii\data\Sort([
             'attributes' => [
                 'date_create',
                 'views',
@@ -70,7 +70,6 @@ class Product extends \panix\engine\db\ActiveRecord {
                 ],
             ],
         ]);
-        return $sort;
     }
 
     public function getMainImageTitle() {

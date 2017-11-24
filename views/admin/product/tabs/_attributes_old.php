@@ -27,7 +27,7 @@ else {
                         'rel' => $a->id,
                         'data-name' => $a->getIdByName(),
                         'onclick' => 'js: return addNewOption($(this));',
-                        'class' => 'btn btn-success btn-sm pull-right',
+                        'class' => 'btn btn-success btn-sm pull-left',
                         'title' => Yii::t('shop/admin', 'Создать опцию')
             ));
         } else
