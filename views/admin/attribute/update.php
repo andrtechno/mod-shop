@@ -24,6 +24,7 @@ $this->theme->alert('info', Yii::t('shop/Attribute', 'INFO', ['productType' => H
         ?>
         <?php
         echo yii\bootstrap\Tabs::widget([
+           'options'=> ['id'=>'attrobutes-tabs'],
             'items' => [
                 [
                     'label' => 'Основные',

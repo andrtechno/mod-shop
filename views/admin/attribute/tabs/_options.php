@@ -17,7 +17,7 @@ use panix\engine\widgets\Pjax;
 
 </style>
 <div class="panel-body-static text-right">
-    <a class="plusOne btn btn-success" href="javascript:void(0)">
+    <a id="add-option-attribute" class="btn btn-success" href="javascript:void(0)">
         <i class="icon-add"></i> Добавить опцию
     </a>
 </div>
