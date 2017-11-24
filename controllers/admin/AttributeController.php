@@ -67,7 +67,7 @@ class AttributeController extends AdminController {
     public function actionUpdate($id = false) {
 
         if ($id === true)
-            $model = new Attribute;
+            $model = new Attribute();
         else {
             $model = Attribute::findOne($id);
         }

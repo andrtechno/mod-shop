@@ -77,11 +77,11 @@ class Attribute extends \panix\engine\db\ActiveRecord {
     public function getAttrtranslate() {
         return $this->hasMany(AttributeTranslate::className(), ['object_id' => 'id']);
     }
-
+/*
     public function ___getAttrtranslateOne() {
         return $this->hasOne(AttributeTranslate::className(), ['object_id' => 'id']);
     }
-
+*/
     public function getOptions() {
         return $this->hasMany(AttributeOption::className(), ['attribute_id' => 'id']);
     }
@@ -96,12 +96,14 @@ class Attribute extends \panix\engine\db\ActiveRecord {
     public function rules() {
         return [
             [['name', 'title'], 'required'],
+            [['name', 'title'], 'trim'],
+            ['name', '\panix\engine\validators\UrlValidator', 'attributeCompare' => 'title', 'attributeSlug' => 'name'],
             [['name', 'title', 'abbreviation'], 'string', 'max' => 255],
             [['required', 'use_in_compare', 'use_in_filter', 'select_many', 'display_on_front', 'use_in_variants'], 'boolean'],
             // array('name', 'unique'),
             ['name', 'match',
                 'pattern' => '/^([a-z0-9-])+$/i',
-                'message' => Yii::t('app','PATTERN_URL')
+                'message' => Yii::t('app', 'PATTERN_URL')
             ],
             //  array('type, ordern, group_id', 'numerical', 'integerOnly' => true),
             [['id', 'name', 'title', 'type'], 'safe'],
@@ -117,6 +119,11 @@ class Attribute extends \panix\engine\db\ActiveRecord {
                             'title',
                             'abbreviation'
                         ]
+                    ],
+                                'slug' => [
+                        'class' => \yii\behaviors\SluggableBehavior::className(),
+                        'attribute' => 'title',
+                        'slugAttribute' => 'name',
                     ],
                         ], parent::behaviors());
     }

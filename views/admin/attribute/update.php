@@ -5,6 +5,8 @@ use panix\engine\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
 
 $this->theme->alert('info', Yii::t('shop/Attribute', 'INFO', ['productType' => Html::a('типу товара', '/admin/shop/productType')]), false);
+
+
 ?>
 
 
