@@ -31,7 +31,17 @@ class Manufacturer extends \panix\engine\db\ActiveRecord {
             ],
         ];
     }
-
+    public static function getSort() {
+        return new \yii\data\Sort([
+            'attributes' => [
+                //'date_create',
+                'name' => [
+                    'asc' => ['name' => SORT_ASC],
+                    'desc' => ['name' => SORT_DESC],
+                ],
+            ],
+        ]);
+    }
     public static function dropdown() {
         // get and cache data
         static $dropdown;

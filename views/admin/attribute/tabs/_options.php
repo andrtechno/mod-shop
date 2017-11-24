@@ -3,6 +3,7 @@
 use panix\mod\shop\models\AttributeOptionTranslate;
 use panix\engine\Html;
 use panix\engine\widgets\Pjax;
+use panix\mod\shop\models\AttributeOption;
 
 \panix\mod\shop\assets\admin\AttributeAsset::register($this);
 ?>
@@ -16,35 +17,31 @@ use panix\engine\widgets\Pjax;
     }
 
 </style>
-<div class="panel-body-static text-right">
-    <a id="add-option-attribute" class="btn btn-success" href="javascript:void(0)">
-        <i class="icon-add"></i> Добавить опцию
-    </a>
-</div>
+
 <table>
     <tr class="copyMe">
-        <td>N/A</td>
+        <td class="text-center">N/A</td>
         <?php foreach (Yii::$app->languageManager->languages as $k => $l) { ?>
             <td>
                 <input name="sample" type="text" class="value form-control input-lang" style="background-image:url(/uploads/language/<?= $k ?>.png">
             </td>
         <?php } ?>
         <td class="text-center">
-            <a href="javascript:void(0);" class="deleteRow btn btn-default"><i class="icon-delete"></i></a>
+            <a href="javascript:void(0);" class="delete-option-attribute btn btn-sm btn-default"><i class="icon-delete"></i></a>
         </td>
     </tr>
 </table>
 <?php
-$columns = array();
+$columns = [];
 $columns[] = [
     'class' => \panix\engine\grid\sortable\Column::className(),
     'url' => ['/admin/shop/attribute/sortableOptions']
 ];
-$data = array();
-$data2 = array();
-$test = array();
+$data = [];
+$data2 = [];
+$test = [];
 foreach ($model->options as $k => $o) {
-    $data2['delete'] = '<a href="#" class="deleteRow btn btn-default"><i class="icon-delete"></i></a>';
+    $data2['delete'] = '<a href="javascript:void(0);" class="delete-option-attribute btn btn-sm btn-default"><i class="icon-delete"></i></a>';
     foreach (Yii::$app->languageManager->languages as $k => $l) {
 
         $otest = AttributeOptionTranslate::find()->where([
@@ -61,22 +58,23 @@ foreach ($model->options as $k => $o) {
 
 
 foreach (Yii::$app->languageManager->languages as $k => $l) {
-    $columns[] = array(
+    $columns[] = [
         'header' => $l->name,
         'attribute' => 'name' . $k,
         'format' => 'raw',
             //  'value' => '$data->name'
-    );
+    ];
     $sortAttributes[] = 'name' . $k;
 }
 
-$columns[] = array(
+$columns[] = [
     'header' => Yii::t('app', 'OPTIONS'),
     'attribute' => 'delete',
     'format' => 'html',
-    'contentOptions' => array('class' => 'text-center'),
-    'filter' => 'adssad'
-);
+    'contentOptions' => ['class' => 'text-center'],
+    'filterOptions'=>['class' => 'text-center'],
+    'filter' => '<a id="add-option-attribute" class="btn btn-sm btn-success" title="Добавить опцию" href="javascript:void(0)"><i class="icon-add"></i></a>'
+];
 
 
 $data_db = new \yii\data\ArrayDataProvider([
@@ -98,7 +96,8 @@ echo panix\engine\grid\GridView::widget([
     'rowOptions' => ['class' => 'sortable-column'],
     'enableLayout'=>false,
     'layout'=>'{items}',
-    'columns' => $columns
+    'columns' => $columns,
+    'filterModel'=>true
 ]);
 Pjax::end();
 ?>

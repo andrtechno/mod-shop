@@ -61,8 +61,7 @@ class AttributeController extends AdminController {
 
     /**
      * Update attribute
-     * @param bool $new
-     * @throws CHttpException
+     * @param bool $id
      */
     public function actionUpdate($id = false) {
 
@@ -76,8 +75,7 @@ class AttributeController extends AdminController {
             $this->error404(Yii::t('shop/admin', 'NO_FOUND_ATTR'));
 
 
-        
-       $this->pageName = ($model->isNewRecord) ? $model::t('CREATE_ATTRIBUTES') : $model::t('UPDATE_ATTRIBUTES');
+        $this->pageName = ($model->isNewRecord) ? $model::t('CREATE_ATTRIBUTES') : $model::t('UPDATE_ATTRIBUTES');
 
         $this->breadcrumbs[] = [
             'label' => Yii::t('shop/default', 'MODULE_NAME'),
@@ -109,17 +107,14 @@ class AttributeController extends AdminController {
 
     /**
      * Save attribute options
-     * @param ShopAttribute $model
+     * @param Attribute $model
      */
     protected function saveOptions($model) {
-        //  print_r(Yii::app()->languageManager->languages);
-        //    die;
-        $dontDelete = array();
+        $dontDelete = [];
         if (!empty($_POST['options'])) {
             foreach ($_POST['options'] as $key => $val) {
                 if (isset($val[0]) && $val[0] != '') {
                     $index = 0;
-
                     $attributeOption = AttributeOption::find()
                             ->where(['id' => $key,
                                 'attribute_id' => $model->id])

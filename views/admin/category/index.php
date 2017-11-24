@@ -5,25 +5,30 @@ use panix\mod\shop\models\Category;
 use panix\mod\shop\models\CategoryNode;
 
 \panix\mod\shop\assets\admin\CategoryAsset::register($this);
+?>
 
-
-
-echo \panix\ext\jstree\JsTree::widget([
-    'id' => 'CategoryTree',
-    'name' => 'jstree',
-    'data' => CategoryNode::fromArray(Category::findOne(1)->children()->all(), ['switch' => true]),
-    'core' => [
-        'force_text' => true,
-        'animation' => 0,
-        'strings' => [
-            'Loading ...' => Yii::t('app', 'LOADING')
-        ],
-        "themes" => ["stripes" => true, 'responsive' => true,"variant" => "large"],
-        'check_callback' => true
-    ],
-    'plugins' => ['dnd', 'contextmenu', 'search', 'wholerow', 'state'],
-    'contextmenu' => [
-        'items' => new yii\web\JsExpression('function($node) {
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title"><?= Html::encode($this->context->pageName) ?></h3>
+    </div>
+    <div class="panel-body">
+        <?php
+        echo \panix\ext\jstree\JsTree::widget([
+            'id' => 'CategoryTree',
+            'name' => 'jstree',
+            'data' => CategoryNode::fromArray(Category::findOne(1)->children()->all(), ['switch' => true]),
+            'core' => [
+                'force_text' => true,
+                'animation' => 0,
+                'strings' => [
+                    'Loading ...' => Yii::t('app', 'LOADING')
+                ],
+                "themes" => ["stripes" => true, 'responsive' => true, "variant" => "large"],
+                'check_callback' => true
+            ],
+            'plugins' => ['dnd', 'contextmenu', 'search', 'wholerow', 'state'],
+            'contextmenu' => [
+                'items' => new yii\web\JsExpression('function($node) {
                 var tree = $("#jsTree_CategoryTree").jstree(true);
                 return {
                     "Switch": {
@@ -63,13 +68,15 @@ echo \panix\ext\jstree\JsTree::widget([
                         "icon":"icon-trashcan",
                         "label": "' . Yii::t('app', 'DELETE') . '",
                         "action": function (obj) {
-                            if (confirm("'.Yii::t('app','DELETE_COMFIRM').'\nТак же будут удалены все товары.")) {
+                            if (confirm("' . Yii::t('app', 'DELETE_COMFIRM') . '\nТак же будут удалены все товары.")) {
                                 tree.delete_node($node);
                             }
                         }
                     }
                 };
       }')
-    ]
-]);
-?>
+            ]
+        ]);
+        ?>
+    </div>
+</div>

@@ -147,7 +147,7 @@ class Product extends \panix\engine\db\ActiveRecord {
             [['full_description'], 'string'],
             ['use_configurations', 'boolean', 'on' => self::SCENARIO_INSERT],
             [['sku', 'full_description'], 'default'], // установим ... как NULL, если они пустые
-            [['name', 'main_category_id'], 'required'],
+            [['name', 'seo_alias', 'main_category_id'], 'required'],
             [['name', 'seo_alias'], 'string', 'max' => 255],
             [['manufacturer_id', 'type_id', 'quantity', 'views', 'added_to_cart_count', 'ordern', 'category_id'], 'integer'],
             [['name', 'seo_alias', 'full_description', 'use_configurations'], 'safe'],

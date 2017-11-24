@@ -30,9 +30,9 @@ class AttributeOption extends \panix\engine\db\ActiveRecord {
     }
 
     public function rules() {
-        return array(
-            array('id, value, attribute_id, ordern', 'safe', 'on' => 'search'),
-        );
+        return [
+            [['id', 'value', 'attribute_id', 'ordern'], 'safe'],
+        ];
     }
 
     public function transactions() {
@@ -45,6 +45,7 @@ class AttributeOption extends \panix\engine\db\ActiveRecord {
         return $this->hasMany(AttributeOptionTranslate::className(), ['object_id' => 'id']);
     }
 
+ 
     public function behaviors() {
         return ArrayHelper::merge([
                     'translate' => [

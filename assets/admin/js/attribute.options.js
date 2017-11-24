@@ -4,20 +4,28 @@ $(function () {
     $("#add-option-attribute").click(function () {
         var option_name = Math.random();
         var row = $(".copyMe").clone().removeClass('copyMe');
+
+        if ($(".optionsEditTable tbody tr").length == 1) {
+            $(".optionsEditTable tbody tr").addClass('hidden');
+        }
+
+
         row.prependTo(".optionsEditTable tbody");
         row.find(".value").each(function (i, el) {
             $(el).attr('name', 'options[' + option_name + '][]');
-            console.log('find');
         });
+
+
+
         return false;
     });
-    // $('.optionsEditTable').sortable({handle:'.copyMe'});
+
     // Delete row
-    $(".optionsEditTable").delegate(".deleteRow", "click", function () {
+    $(".optionsEditTable").delegate(".delete-option-attribute", "click", function () {
         $(this).parent().parent().remove();
 
-        if ($(".optionsEditTable tbody tr").length == 1){
-            $(".optionsEditTable #add-option-attribute").click();
+        if ($(".optionsEditTable tbody tr").length == 1) {
+            $(".optionsEditTable tbody tr").removeClass('hidden');
         }
         return false;
     });
@@ -31,7 +39,7 @@ $(function () {
 
     $("form#Attribute").submit(function () {
         var el = $("#attribute-type");
-        if ($(el).val() != 3 && $(el).val() != 4 && $(el).val() != 5 && $(el).val() != 6){
+        if ($(el).val() != 3 && $(el).val() != 4 && $(el).val() != 5 && $(el).val() != 6) {
             $(".optionsEditTable").remove();
         }
         return true;
@@ -41,10 +49,10 @@ $(function () {
      * Show/hide options tab on type change
      * @param el
      */
-    function toggleOptionsTab(el){
-        var optionsTab = $("#attrobutes-tabs li")[1];
+    function toggleOptionsTab(el) {
+        var optionsTab = $("#attributes-tabs li")[1];
         // Show options tab when type is dropdown or select
-        if ($(el).val() == 3 || $(el).val() == 4 || $(el).val() == 5 || $(el).val() == 6){
+        if ($(el).val() == 3 || $(el).val() == 4 || $(el).val() == 5 || $(el).val() == 6) {
             $(optionsTab).show();
             $(".field-attribute-use_in_filter").show();
             $(".field-attribute-select_many").show();

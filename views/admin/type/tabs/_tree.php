@@ -2,6 +2,8 @@
 
 use panix\mod\shop\models\CategoryNode;
 use panix\mod\shop\models\Category;
+
+$this->theme->alert('info', $model::t('ALERT_INFO'), false);
 ?>
 
 <div class="form-group">
@@ -17,21 +19,18 @@ echo \panix\ext\jstree\JsTree::widget([
     'id' => 'TypeCategoryTree',
     'name' => 'jstree',
     'data' => CategoryNode::fromArray(Category::findOne(1)->children()->all()),
-
-        'core' => array(
-            'strings' => array('Loading ...' => Yii::t('app', 'LOADING')),
-            'check_callback' => true,
-            "themes" => array("variant" => "large","stripes" => true, 'responsive' => true),
-        ),
-
-
-            'plugins' => array('search', 'checkbox'),
-        'checkbox' => array(
-            'three_state' => false,
-            'tie_selection' => false,
-            'whole_node' => false,
-            "keep_selected_style" => true
-        ),
+    'core' => array(
+        'strings' => array('Loading ...' => Yii::t('app', 'LOADING')),
+        'check_callback' => true,
+        "themes" => array("variant" => "large", "stripes" => true, 'responsive' => true),
+    ),
+    'plugins' => array('search', 'checkbox'),
+    'checkbox' => array(
+        'three_state' => false,
+        'tie_selection' => false,
+        'whole_node' => false,
+        "keep_selected_style" => true
+    ),
 ]);
 
 // Check tree nodes
@@ -42,8 +41,4 @@ if (!is_array($categories))
 foreach ($categories as $id) {
     $this->registerJs("$('#jsTree_TypeCategoryTree').checkNode({$id});");
 }
-
-
-echo Yii::t('shop/admin', "Здесь вы можете указать категории, которые будут автоматически выбраны при создании продукта.");
-echo Yii::t('shop/admin', "Нажмите на название категории, чтобы сделать её главной.");
 ?>
