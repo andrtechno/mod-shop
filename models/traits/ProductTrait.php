@@ -8,7 +8,13 @@ use panix\engine\CMS;
 use yii\helpers\ArrayHelper;
 
 trait ProductTrait {
-
+    public static function getAvailabilityItems() {
+        return array(
+            1 => Yii::t('shop/product', 'AVAILABILITY_LIST'),
+            2 => Yii::t('shop/product', 'AVAILABILITY_LIST'),
+            3 => Yii::t('shop/product', 'AVAILABILITY_LIST'),
+        );
+    }
     public function getGridColumns() {
         $columns = [];
         $attributesColumns = new \panix\mod\shop\components\AttributesColumns();
