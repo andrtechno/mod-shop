@@ -97,7 +97,11 @@ class Attribute extends \panix\engine\db\ActiveRecord {
         return [
             [['name', 'title'], 'required'],
             [['name', 'title'], 'trim'],
-            ['name', '\panix\engine\validators\UrlValidator', 'attributeCompare' => 'title', 'attributeSlug' => 'name'],
+            ['name', '\panix\engine\validators\UrlValidator',
+                'attributeCompare' => 'title',
+                'attributeSlug' => 'name',
+                'message'=>'Индификатор занят'
+                ],
             [['name', 'title', 'abbreviation'], 'string', 'max' => 255],
             [['required', 'use_in_compare', 'use_in_filter', 'select_many', 'display_on_front', 'use_in_variants'], 'boolean'],
             // array('name', 'unique'),

@@ -138,10 +138,10 @@ class Product extends \panix\engine\db\ActiveRecord {
             [['file'], 'file', 'maxFiles' => 10],
             [['origin_name'], 'string', 'max' => 255],
             [['image'], 'image'],
-            ['seo_alias', '\panix\engine\validators\UrlValidator','attributeCompare'=>'name'],
+            ['seo_alias', '\panix\engine\validators\UrlValidator', 'attributeCompare' => 'name'],
             ['seo_alias', 'match',
                 'pattern' => '/^([a-z0-9-])+$/i',
-                'message' => Yii::t('app','PATTERN_URL')
+                'message' => Yii::t('app', 'PATTERN_URL')
             ],
             [['name', 'seo_alias'], 'trim'],
             [['full_description'], 'string'],
@@ -607,6 +607,7 @@ class Product extends \panix\engine\db\ActiveRecord {
         $c = Yii::$app->settings->get('shop');
         return iconv("windows-1251", "UTF-8", number_format($price, $c['price_penny'], chr($c['price_thousand']), chr($c['price_decimal'])));
     }
+
     /**
      * Replaces comma to dot
      * @param $attr
@@ -614,6 +615,7 @@ class Product extends \panix\engine\db\ActiveRecord {
     public function commaToDot($attr) {
         $this->$attr = str_replace(',', '.', $this->$attr);
     }
+
     /**
      * @return \yii\db\ActiveQuery
      */
