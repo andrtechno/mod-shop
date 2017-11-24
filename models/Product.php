@@ -139,6 +139,7 @@ class Product extends \panix\engine\db\ActiveRecord {
             [['file'], 'file', 'maxFiles' => 10],
             [['origin_name'], 'string', 'max' => 255],
             [['image'], 'image'],
+            ['seo_alias', '\panix\engine\validators\UrlValidator','attributeCompare'=>'name'],
             [['name', 'seo_alias'], 'trim'],
             [['full_description'], 'string'],
             ['use_configurations', 'boolean', 'on' => self::SCENARIO_INSERT],
