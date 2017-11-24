@@ -139,6 +139,10 @@ class Product extends \panix\engine\db\ActiveRecord {
             [['origin_name'], 'string', 'max' => 255],
             [['image'], 'image'],
             ['seo_alias', '\panix\engine\validators\UrlValidator','attributeCompare'=>'name'],
+            ['seo_alias', 'match',
+                'pattern' => '/^([a-z0-9-])+$/i',
+                'message' => Yii::t('app','PATTERN_URL')
+            ],
             [['name', 'seo_alias'], 'trim'],
             [['full_description'], 'string'],
             ['use_configurations', 'boolean', 'on' => self::SCENARIO_INSERT],

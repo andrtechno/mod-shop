@@ -99,10 +99,10 @@ class Attribute extends \panix\engine\db\ActiveRecord {
             [['name', 'title', 'abbreviation'], 'string', 'max' => 255],
             [['required', 'use_in_compare', 'use_in_filter', 'select_many', 'display_on_front', 'use_in_variants'], 'boolean'],
             // array('name', 'unique'),
-            // array('name', 'match',
-            //     'pattern' => '/^([a-z0-9_-])+$/i',
-            //      'message' => self::t('PATTERN_NAME')
-            //  ),
+            ['name', 'match',
+                'pattern' => '/^([a-z0-9-])+$/i',
+                'message' => Yii::t('app','PATTERN_URL')
+            ],
             //  array('type, ordern, group_id', 'numerical', 'integerOnly' => true),
             [['id', 'name', 'title', 'type'], 'safe'],
         ];

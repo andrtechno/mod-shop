@@ -79,6 +79,11 @@ class Manufacturer extends \panix\engine\db\ActiveRecord {
         return [
             [['name', 'seo_alias'], 'required'],
             [['name', 'seo_alias'], 'trim'],
+            ['seo_alias', 'match',
+                'pattern' => '/^([a-z0-9-])+$/i',
+                'message' => Yii::t('app','PATTERN_URL')
+            ],
+            ['seo_alias', '\panix\engine\validators\UrlValidator','attributeCompare'=>'name'],
             [['description'], 'string'],
             [['name', 'seo_alias'], 'string', 'max' => 255],
             [['ordern'], 'integer'],
