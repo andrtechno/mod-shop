@@ -9,10 +9,6 @@ use panix\engine\widgets\Pjax;
 
 <?= $form->field($model, 'file[]')->fileInput(['multiple' => true]); ?>
 
-<?php
-
-$images = $model->getImages();
-?>
 
 
 <?php
@@ -30,7 +26,7 @@ $('.attachment-delete').on('click', function(e) {
        success: function(data) {
             if(data.status == "success"){
                 common.notify(data.message,"success");
-                //$('tr[data-key="'+id+'"]').remove();
+                $('tr[data-key="'+id+'"]').remove();
         $('#grid-images').yiiGridView('applyFilter');
         
                 common.removeLoader();
@@ -65,7 +61,7 @@ $searchModel = new ImageSearch();
 $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams(), ['model' => $model]);
 
 
-Pjax::begin([
+/*Pjax::begin([
         'timeout' => 50000,
     'id' => 'pjax-' . strtolower((new \ReflectionClass($searchModel))->getShortName()),
     //'id' => 'pjax-' . strtolower((new \ReflectionClass(new \panix\mod\images\models\Image))->getShortName()),
@@ -73,7 +69,7 @@ Pjax::begin([
     //'id' => 'pjax-image-container',
         //'enablePushState' => false,
         //  'linkSelector' => 'a:not(.linkTarget)'
-]);
+]);*/
 echo panix\engine\grid\GridView::widget([
     'id'=>'grid-images',
     'tableOptions' => ['class' => 'table table-striped'],
@@ -128,14 +124,14 @@ echo panix\engine\grid\GridView::widget([
                     return Html::a(Html::icon('settings'), ['/images/edit-crop', 'id' => $data->id], array('class' => 'btn btn-sm btn-default copper'));
                 },
                 'delete' => function ($url, $data, $key) use ($model) {
-                    return Html::a(Html::icon('delete'), ['/images/default/delete', 'id' => $data->id], array('class' => 'btn btn-sm btn-danger attachment-delete', 'data-id' => $data->id, 'data-object_id' => $model->id, 'data-model' => get_class($model)));
+                    return Html::a(Html::icon('delete'), ['/images/default/delete', 'id' => $data->id], array('class' => 'btn btn-sm btn-danger attachment-delete linkTarget', 'data-id' => $data->id, 'data-object_id' => $model->id, 'data-model' => get_class($model)));
                 },
             ]
         ]
     ],
     'filterModel' => $searchModel
 ]);
-Pjax::end();
+//Pjax::end();
 ?>
 
 
