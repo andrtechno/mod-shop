@@ -74,7 +74,7 @@ class Product extends \panix\engine\db\ActiveRecord {
 
     public function getMainImageTitle() {
         if ($this->getImage())
-            return ($this->getImage()->name) ? $this->getImage()->name : $this->name;
+            return ($this->getImage()->alt_title) ? $this->getImage()->alt_title : $this->name;
     }
 
     public function getMainImageUrl($size = false) {
