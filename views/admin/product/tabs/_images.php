@@ -61,27 +61,32 @@ $searchModel = new ImageSearch();
 $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams(), ['model' => $model]);
 
 
-/*Pjax::begin([
-        'timeout' => 50000,
-    'id' => 'pjax-' . strtolower((new \ReflectionClass($searchModel))->getShortName()),
-    //'id' => 'pjax-' . strtolower((new \ReflectionClass(new \panix\mod\images\models\Image))->getShortName()),
-    'linkSelector' => 'a:not(.linkTarget)'
-    //'id' => 'pjax-image-container',
-        //'enablePushState' => false,
-        //  'linkSelector' => 'a:not(.linkTarget)'
-]);*/
+/* Pjax::begin([
+  'timeout' => 50000,
+  'id' => 'pjax-' . strtolower((new \ReflectionClass($searchModel))->getShortName()),
+  //'id' => 'pjax-' . strtolower((new \ReflectionClass(new \panix\mod\images\models\Image))->getShortName()),
+  'linkSelector' => 'a:not(.linkTarget)'
+  //'id' => 'pjax-image-container',
+  //'enablePushState' => false,
+  //  'linkSelector' => 'a:not(.linkTarget)'
+  ]); */
 echo panix\engine\grid\GridView::widget([
-    'id'=>'grid-images',
+    'id' => 'grid-images',
     'tableOptions' => ['class' => 'table table-striped'],
     'dataProvider' => $dataProvider,
     'rowOptions' => ['class' => 'sortable-column'],
     'enableLayout' => false,
     //'layout'=>'{items}',
     'rowOptions' => function ($model, $index, $widget, $grid) {
-        $coverClass = ($model->is_main) ? 'bg-success active' : '';
+        $coverClass = ($model->is_main) ? 'bg-success active sortable-column' : 'sortable-column';
         return ['class' => $coverClass];
     },
     'columns' => [
+        [
+            'class' => 'panix\engine\grid\sortable\Column',
+            'url' => ['/images/default/sortable'],
+            'successMessage' => Yii::t('shop/admin', 'SORT_IMAGE_SUCCESS_MESSAGE')
+        ],
         [
             'attribute' => 'image',
             'format' => 'raw',
@@ -115,7 +120,7 @@ echo panix\engine\grid\GridView::widget([
         [
             'class' => 'panix\engine\grid\columns\ActionColumn',
             'template' => '{resize} {settings} {delete}',
-             'filter' => false,
+            'filter' => false,
             'buttons' => [
                 'resize' => function ($url, $data, $key) {
                     return Html::a(Html::icon('resize'), ['s'], array('class' => 'btn btn-sm btn-default attachment-zoom', 'data-fancybox' => 'gallery'));

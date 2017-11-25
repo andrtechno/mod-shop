@@ -2,6 +2,7 @@
 
 return [
     'SORT_PRODUCT_SUCCESS_MESSAGE' => 'Товары успешно отсортированы',
+    'SORT_IMAGE_SUCCESS_MESSAGE' => 'Изображения успешно отсортированы',
     'CREATE_PRODUCT' => 'Добавить товар',
     'CREATE_MANUFACTURER' => 'Добавить производителя',
     'CREATE_CURRENCY' => 'Добавить валюту',

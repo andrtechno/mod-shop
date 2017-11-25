@@ -69,7 +69,7 @@ echo \yii\helpers\Inflector::sentence($words);
             <div>Fake Dot 3</div>
         </div>
         <div class="owl-carousel owl-theme">
-            <?php foreach ($model->getImages(['is_main' => null]) as $k => $image) { ?>
+            <?php foreach ($model->getImages(['is_main' => 0]) as $k => $image) { ?>
                 <?= Html::img($image->getUrl('100x100'), ['data-hash' => $image->id, 'data-dot' => $k + 1]); ?>
             <?php } ?>
         </div>

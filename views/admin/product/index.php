@@ -2,7 +2,7 @@
 use panix\engine\grid\GridView;
 use panix\engine\widgets\Pjax;
 echo \panix\ext\fancybox\Fancybox::widget(['target' => '.image a']);
-
+/*
 use yii\jui\Dialog;
 Dialog::begin([
     'clientOptions' => [
@@ -13,7 +13,7 @@ Dialog::begin([
 echo 'Dialog contents here...';
 
 Dialog::end();
-
+*/
 Pjax::begin([
     'timeout' => 50000,
     'id' => 'pjax-' . strtolower(basename($dataProvider->query->modelClass)),
