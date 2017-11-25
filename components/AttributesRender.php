@@ -134,10 +134,12 @@ class AttributesRender extends \yii\base\Widget {
                         ->one();
                 $this->_attributes = $productModel->getEavAttributes();
                 foreach ($this->getModelsLanguage($l->id) as $data) {
-                    $result[$lang][$data->name] = (object) array(
-                                'name' => $data->title,
-                                'value' => $data->renderValue($this->_attributes[$data->name]),
-                    );
+                    if (isset($this->_attributes[$data->name])) {
+                        $result[$lang][$data->name] = (object) [
+                                    'name' => $data->title,
+                                    'value' => $data->renderValue($this->_attributes[$data->name]),
+                        ];
+                    }
                 }
             }
             Yii::$app->cache->set($cacheId, $result, Yii::$app->settings->get('app', 'cache_time'));

@@ -22,17 +22,17 @@ panix\engine\widgets\owlcarousel\Carousel::widget([
         'loop' => false,
         'margin' => 10,
         'nav' => true,
-        'dots'=>true,
-       //  'dotsContainer'=> '.dotsCont',
-        'items'=>5,
-        'URLhashListener'=>false,
-        'stagePadding'=>0,
-        'dotData'=>true,
+        'dots' => true,
+        //  'dotsContainer'=> '.dotsCont',
+        'items' => 5,
+        'URLhashListener' => false,
+        'stagePadding' => 0,
+        'dotData' => true,
         'responsive' => [
             0 => [
                 'items' => 1,
-                 'nav'=>false,
-            'dots'=>false
+                'nav' => false,
+                'dots' => false
             ],
             768 => [
                 'items' => 3
@@ -53,11 +53,8 @@ echo \yii\helpers\Inflector::titleize('CamelCase');
 
 echo \yii\helpers\Inflector::ordinalize(15);
 
-$words = ['Spain', 'France','Украина'];
+$words = ['Spain', 'France', 'Украина'];
 echo \yii\helpers\Inflector::sentence($words);
-// output: Spain and France
-var_dump(\yii\helpers\Inflector::slug('Привет вася <>??#@!%@# '));
-
 ?>
 
 <div id="info"></div>
@@ -65,17 +62,17 @@ var_dump(\yii\helpers\Inflector::slug('Привет вася <>??#@!%@# '));
     <div class="col-sm-6 col-xs-12">
         <?= Html::img($model->getMainImageUrl('500x500')); ?>
 
-
+        <?php echo panix\mod\discounts\widgets\countdown\Countdown::widget(['model' => $model]) ?>
         <div class="dotsCont">
-  <div>Fake Dot 1</div>
-  <div>Fake Dot 2</div>
-  <div>Fake Dot 3</div>
-</div>
-            <div class="owl-carousel owl-theme">
-        <?php foreach ($model->getImages(['isMain' => null]) as $k=>$image) { ?>
-            <?= Html::img($image->getUrl('100x100'),['data-hash'=>$image->id,'data-dot'=>$k+1]); ?>
-        <?php } ?>
-                </div>
+            <div>Fake Dot 1</div>
+            <div>Fake Dot 2</div>
+            <div>Fake Dot 3</div>
+        </div>
+        <div class="owl-carousel owl-theme">
+            <?php foreach ($model->getImages(['is_main' => null]) as $k => $image) { ?>
+                <?= Html::img($image->getUrl('100x100'), ['data-hash' => $image->id, 'data-dot' => $k + 1]); ?>
+            <?php } ?>
+        </div>
     </div>
     <div class="col-sm-6 col-xs-12">
         <div class="btn-group">
@@ -140,11 +137,11 @@ var_dump(\yii\helpers\Inflector::slug('Привет вася <>??#@!%@# '));
             <?php } ?>
             <li class="list-group-item">
                 Категории<?php
-            foreach ($model->categories as $c) {
-                $content[] = Html::a($c->name, $c->getUrl());
-            }
-            echo implode(', ', $content);
-            ?>
+                foreach ($model->categories as $c) {
+                    $content[] = Html::a($c->name, $c->getUrl());
+                }
+                echo implode(', ', $content);
+                ?>
             </li>
 
         </ul>
