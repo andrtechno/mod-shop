@@ -26,7 +26,7 @@ class CurrencyController extends AdminController {
             $model->switch = 0;
 
         if (!$model->save()) {
-            Yii::$app->session->addFlash("error", "Error saving");
+            Yii::$app->session->setFlash("error", "Error saving");
         }
         $model->refresh();
 
@@ -96,7 +96,7 @@ class CurrencyController extends AdminController {
         $post = Yii::$app->request->post();
         if ($model->load($post) && $model->validate()) {
             $model->save();
-            Yii::$app->session->addFlash('success', \Yii::t('app', 'SUCCESS_CREATE'));
+            Yii::$app->session->setFlash('success', \Yii::t('app', 'SUCCESS_CREATE'));
             return Yii::$app->getResponse()->redirect(['/admin/shop/currency']);
         }
 

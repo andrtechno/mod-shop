@@ -182,7 +182,7 @@ class ProductController extends AdminController {
             $this->processVariants($model);
             $this->processConfigurations($model);
 
-            Yii::$app->session->addFlash('success', \Yii::t('app', 'SUCCESS_CREATE'));
+            Yii::$app->session->setFlash('success', \Yii::t('app', 'SUCCESS_CREATE'));
             if ($model->isNewRecord) {
                 return Yii::$app->getResponse()->redirect(['/admin/shop/product']);
             } else {

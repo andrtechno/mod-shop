@@ -45,13 +45,36 @@ $('.attachment-delete').on('click', function(e) {
        type:'POST',
       // data: {id: id},
        success: function(data) {
-        $('#test').html(data);
+        $('#cropper-body').html(data);
+        $('#cropper-modal').modal('show')
        }
     });
         return false;
 });
 JS;
 $this->registerJs($script); //$position
+?>
+<style>
+.modal .modal-dialog   {
+  width: 750px;
+  margin: auto;
+}
+
+    
+</style>
+    <?php
+use yii\bootstrap\Modal;
+Modal::begin([
+    'options'=>['id'=>'cropper-modal','style'=>'width:100%'],
+    'header' => '<h2>Cropper</h2>',
+    'toggleButton' => false,
+    'bodyOptions'=>['id'=>'cropper-body']
+]);
+
+echo 'Say hello...';
+
+Modal::end();
+
 ?>
 
 
