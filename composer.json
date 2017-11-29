@@ -15,7 +15,6 @@
         }
     ],
     "require": {
-        "panix/wgt-fancybox": "*",
         "panix/mod-images": "*",
         "panix/mod-discounts": "*",
         "panix/mod-cart": "*",
@@ -23,8 +22,10 @@
         "panix/mod-wishlist": "*",
         "panix/mod-exchange1c": "*",
         "panix/mod-yandexmarket": "*",
+        "panix/mod-comments": "*",
         "panix/mod-csv": "*",
         "panix/wgt-jstree": "*",
+        "panix/wgt-fancybox": "*",
         "kop/yii2-scroll-pager": "*"
     },
     "autoload": {
