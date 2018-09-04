@@ -195,7 +195,7 @@ echo \yii\helpers\Inflector::sentence($words);
 
 
 
-        echo yii\bootstrap\Tabs::widget(['items' => $tabs]);
+        echo yii\bootstrap4\Tabs::widget(['items' => $tabs]);
         ?>
     </div>
 </div>

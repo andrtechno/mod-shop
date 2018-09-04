@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use panix\engine\bootstrap\ActiveForm;
 use panix\mod\shop\models\Category;
 use panix\ext\tinymce\TinyMce;
-use yii\bootstrap\Alert;
+use panix\engine\bootstrap\Alert;
 ?>
 <div class="panel panel-default">
     <div class="panel-heading">

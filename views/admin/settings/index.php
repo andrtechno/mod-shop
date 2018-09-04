@@ -12,7 +12,7 @@ $form = ActiveForm::begin();
     </div>
     <div class="panel-body">
         <?php
-        echo yii\bootstrap\Tabs::widget([
+        echo yii\bootstrap4\Tabs::widget([
             'items' => [
                 [
                     'label' => 'Общие',

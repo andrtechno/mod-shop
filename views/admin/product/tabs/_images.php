@@ -63,7 +63,7 @@ $this->registerJs($script); //$position
     
 </style>
     <?php
-use yii\bootstrap\Modal;
+use yii\bootstrap4\Modal;
 Modal::begin([
     'options'=>['id'=>'cropper-modal','style'=>'width:100%'],
     'header' => '<h2>Cropper</h2>',

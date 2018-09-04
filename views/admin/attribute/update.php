@@ -25,7 +25,7 @@ $this->theme->alert('info', Yii::t('shop/Attribute', 'INFO', ['productType' => H
         ]);
         ?>
         <?php
-        echo yii\bootstrap\Tabs::widget([
+        echo panix\engine\bootstrap\Tabs::widget([
            'options'=> ['id'=>'attrobites-tabs'],
             'items' => [
                 [

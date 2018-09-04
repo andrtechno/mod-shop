@@ -15,7 +15,7 @@ use yii\helpers\Html;
         ));
 
         echo Html::hiddenInput('main_category', $model->main_category, ['id' => 'main_category']);
-        echo yii\bootstrap\Tabs::widget([
+        echo yii\bootstrap4\Tabs::widget([
             'items' => [
                 [
                     'label' => $model::t('TAB_OPTIONS'),

@@ -141,7 +141,7 @@ use panix\mod\shop\models\ProductType;
                     ];
                 }
 
-                echo yii\bootstrap\Tabs::widget([
+                echo yii\bootstrap4\Tabs::widget([
                     //'encodeLabels'=>true,
                     'items' => $tabs,
                 ]);
