@@ -7,7 +7,7 @@ use panix\engine\data\ActiveDataProvider;
 
 class PopularBlock extends \panix\engine\data\Widget {
 
-    public $limiter = 11;
+    public $limiter = 10;
 
     public function run() {
         $query = Product::find();

@@ -37,7 +37,8 @@ class SettingsForm extends SettingsModel {
     }
 
     public static function priceSeparator() {
-        return [0 => 'нечего', 32 => 'пробел', 44 => 'запятая', 46 => 'точка'];
+        //return [0 => 'нечего', 32 => 'пробел', 44 => 'запятая', 46 => 'точка'];
+        return [' ' => 'пробел', ',' => 'запятая', '.' => 'точка'];
     }
 
 }

@@ -2,6 +2,7 @@
 
 namespace panix\mod\shop\components;
 
+use panix\mod\shop\models\Category;
 use yii\web\UrlRuleInterface;
 use yii\base\Object;
 use yii\web\UrlRule;
@@ -82,7 +83,7 @@ class CategoryUrlRule extends UrlRule {
             $allPaths = (new \yii\db\Query())
                     ->select(['full_path'])
                     ->andWhere('id!=:id', [':id' => 1])
-                    ->from('{{%shop_category}}')
+                    ->from(Category::tableName())
                     ->all();
 
 

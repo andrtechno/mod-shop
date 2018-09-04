@@ -3,28 +3,25 @@
 use yii\helpers\Html;
 use panix\engine\grid\GridView;
 use yii\widgets\Pjax;
-?>
-
-
-<?= \panix\ext\fancybox\Fancybox::widget(['target' => '.image a']); ?>
 
 
 
-<?php
 
+echo \panix\ext\fancybox\Fancybox::widget(['target' => '.image a']);
 
 
 echo GridView::widget([
     'tableOptions' => ['class' => 'table table-striped'],
     'dataProvider' => $dataProvider,
     'layoutOptions' => ['title' => 'Popular'],
+    'enableColumns'=>false,
     'columns' => [
         [
             'format' => 'raw',
             'contentOptions' => ['class' => 'text-center image'],
-            'value' => function($model) {
-        return $model->renderGridImage('50x50');
-    },
+            'value' => function ($model) {
+                return $model->renderGridImage('50x50');
+            },
         ],
         'name',
         [
@@ -40,4 +37,3 @@ echo GridView::widget([
     ]
 ]);
 
-?>

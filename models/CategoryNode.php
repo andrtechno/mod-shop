@@ -1,14 +1,15 @@
 <?php
+
 namespace panix\mod\shop\models;
 
-use Yii;
 use yii\base\Component;
 use panix\mod\shop\models\Category;
-use yii\helpers\ArrayHelper;
+
 /**
  * Present Category as JsTree node.
  */
-class CategoryNode extends Component implements \ArrayAccess {
+class CategoryNode extends Component implements \ArrayAccess
+{
 
     /**
      * @var Category
@@ -42,9 +43,10 @@ class CategoryNode extends Component implements \ArrayAccess {
     protected $options = array();
 
 
-        public function __construct($model, $options = []) {
-        $this->options = & $options;
-        $this->model = & $model;
+    public function __construct($model, $options = [])
+    {
+        $this->options = &$options;
+        $this->model = &$model;
         return $this;
     }
 
@@ -54,13 +56,14 @@ class CategoryNode extends Component implements \ArrayAccess {
      * @param array $model
      * @return array
      */
-    public static function fromArray($model, $options = []) {
+    public static function fromArray($model, $options = [])
+    {
         $result = array();
-        foreach ($model as $row){
+        foreach ($model as $row) {
             //if(isset($options['switch'])){
-           // if($row->switch) //$options['switch'] || 
-                $result[] = new CategoryNode($row, $options);
-           // }
+            // if($row->switch) //$options['switch'] ||
+            $result[] = new CategoryNode($row, $options);
+            // }
         }
         return $result;
     }
@@ -68,38 +71,43 @@ class CategoryNode extends Component implements \ArrayAccess {
     /**
      * @return bool
      */
-    public function getHasChildren() {
-        return (boolean) $this->model->children()->count();
+    public function getHasChildren()
+    {
+        return (boolean)$this->model->children()->count();
     }
 
     /**
      * @return array
      */
-    public function getChildren() {
+    public function getChildren()
+    {
         return self::fromArray($this->model->children()->all(), $this->options);
     }
 
     /**
      * @return string
      */
-    public function getName() {
-      //  if (isset($this->options['displayCount']) && $this->options['displayCount'])
-           // return "{$this->model->name} ({$this->model->countProducts})";
-       // else
-            return $this->model->name;
+    public function getName()
+    {
+        //  if (isset($this->options['displayCount']) && $this->options['displayCount'])
+        // return "{$this->model->name} ({$this->model->countProducts})";
+        // else
+        return $this->model->name;
     }
 
     /**
      * @return string
      */
-    public function getId() {
+    public function getId()
+    {
         return $this->model->id;
     }
 
     /**
      * @return string
      */
-    public function getSwitch() {
+    public function getSwitch()
+    {
         return $this->model->switch;
     }
 
@@ -107,20 +115,24 @@ class CategoryNode extends Component implements \ArrayAccess {
      * @param $offset
      * @return mixed
      */
-    public function offsetGet($offset) {
+    public function offsetGet($offset)
+    {
         return $this->{$offset};
     }
 
-    public function offsetExists($offset) {
-        
+    public function offsetExists($offset)
+    {
+
     }
 
-    public function offsetSet($offset, $value) {
-        
+    public function offsetSet($offset, $value)
+    {
+
     }
 
-    public function offsetUnset($offset) {
-        
+    public function offsetUnset($offset)
+    {
+
     }
 
 }

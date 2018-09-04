@@ -122,9 +122,10 @@ class FiltersWidget extends \panix\engine\data\Widget {
         if (!empty($active)) {
             echo $this->render('current', ['active' => $active]);
         }
+        echo $this->render('price');
         echo $this->render('attributes', ['attributes' => $this->getCategoryAttributes()]);
         echo $this->render('manufacturer', ['manufacturers' => $manufacturers]);
-        echo $this->render('price');
+
     }
 
     /**

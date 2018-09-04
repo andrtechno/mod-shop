@@ -2,9 +2,12 @@
 
 namespace panix\mod\shop\controllers;
 
+use app\modules\projects\models\Projects;
+use panix\mod\shop\models\search\ProductSearch;
 use Yii;
 use panix\engine\controllers\WebController;
 use panix\mod\shop\models\Product;
+use yii\data\ActiveDataProvider;
 use yii\web\NotFoundHttpException;
 use panix\mod\shop\models\Category;
 use panix\mod\shop\models\Attribute;
@@ -102,7 +105,7 @@ class CategoryController extends WebController {
     public function actionView() {
         $this->dataModel = $this->findModel(Yii::$app->request->getQueryParam('seo_alias'));
         // $this->canonical = Yii::$app->urlManager->createAbsoluteUrl($this->dataModel->getUrl());
-        $this->doSearch($this->dataModel, 'view');
+        return $this->doSearch($this->dataModel, 'view');
     }
 
     /**
@@ -138,24 +141,23 @@ class CategoryController extends WebController {
                 ];
             }
             echo \yii\helpers\Json::encode($res);
-            die;
+            Yii::$app->end();
         }
         if (!$q) {
             return $this->render('search');
         } else {
-            $this->doSearch($q, 'search');
+            return $this->doSearch($q, 'search');
         }
     }
 
     public function doSearch($data, $view) {
+        //$this->query = ProductSearch::find();
         $this->query = Product::find();
+        //$searchModel = new ProductSearch();
+        //$this->query = $searchModel->searchBySite(Yii::$app->request->getQueryParams());//
 
         $this->query->attachBehaviors($this->query->behaviors());
         $this->query->applyAttributes($this->activeAttributes)->published();
-
-
-
-
 
 
         if ($data instanceof \panix\mod\shop\models\Category) {
@@ -166,14 +168,12 @@ class CategoryController extends WebController {
             //        'scopes' => array('published')
             //)));
 
-
             $this->query->applyCategories($this->dataModel);
             //  $this->query->with('manufacturerActive');
         } else {
             $this->query->joinWith(['manufacturer', 'translations']); //manufacturerActive
             $this->query->andWhere(['LIKE', '{{%shop_product}}.sku', $data]);
             $this->query->orWhere(['LIKE', '{{%shop_product_translate}}.name', $data]);
-
             //echo $this->query->createCommand()->getRawSql();
         }
 
@@ -193,25 +193,39 @@ class CategoryController extends WebController {
         //$this->maxprice = $this->getMaxPrice();
         //$this->minprice = $this->getMinPrice();
 
-        $per_page = $this->allowedPageLimit[0];
-        if (isset($_GET['per_page']) && in_array((int) $_GET['per_page'], $this->allowedPageLimit))
-            $per_page = (int) $_GET['per_page'];
+        $per_page = (int) $this->allowedPageLimit[0];
+
+       // if (isset($_GET['per_page']) && in_array((int) $_GET['per_page'], $this->allowedPageLimit))
+        //    $per_page = (int) $_GET['per_page'];
+
+        if (Yii::$app->request->get('per_page') && in_array($_GET['per_page'], $this->allowedPageLimit)) {
+            $per_page = (int)Yii::$app->request->get('per_page');
+        }
 
 
+
+        //$this->query->addOrderBy(['price'=>SORT_DESC]);
+        //$this->query->orderBy(['price'=>SORT_DESC]);
+
+
+
+//\panix\engine\data\ActiveDataProvider
         $this->provider = new \panix\engine\data\ActiveDataProvider([
             'query' => $this->query,
-
-            //  'id' => false,
-            'pagination' => array(
+            'sort'=>Product::getSort(),
+            'pagination' => [
                 'pageSize' => $per_page,
-            )
+               // 'defaultPageSize' =>(int)  $this->allowedPageLimit[0],
+               // 'pageSizeLimit' => $this->allowedPageLimit,
+            ]
         ]);
 
-        $this->provider->sort = Product::getSort();
+       // $this->provider->sort = Product::getSort();
+
+
+
         if ($view != 'search') {
-
             $c = Yii::$app->settings->get('shop');
-
             if ($c['seo_categories']) {
                 $this->keywords = $this->dataModel->keywords();
                 $this->description = $this->dataModel->description();
@@ -232,28 +246,16 @@ class CategoryController extends WebController {
             $this->breadcrumbs[] = $this->dataModel->name;
         }
         $itemView = '_view_grid';
-        /* if (isset($_GET['view'])) {
-          if ($_GET['view'] == 'list') {
-          $itemView = '_view_list';
-          } elseif ($_GET['view'] == 'table') {
-          $itemView = '_view_table';
-          } else {
-          $itemView = '_view_grid';
-          }
-          } */
-
-        if (isset($_GET['view'])) {
-            if (in_array($_GET['view'], ['list', 'table', 'grid'])) {
-                $itemView = '_view_' . $_GET['view'];
-            } else {
-                $itemView = '_view_grid';
+        if (Yii::$app->request->get('view')) {
+            if (in_array(Yii::$app->request->get('view'), ['list', 'table', 'grid'])) {
+                $itemView = '_view_' . Yii::$app->request->get('view');
             }
         }
 
-        echo $this->render($view, array(
+        return $this->render($view, [
             'provider' => $this->provider,
             'itemView' => $itemView
-        ));
+        ]);
     }
 
     public function applyPricesFilter() {

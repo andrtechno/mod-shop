@@ -78,11 +78,21 @@ echo \yii\helpers\Inflector::sentence($words);
         <div class="btn-group">
             <?php
             if ($prev = $model->getNextOrPrev('prev')) {
-                echo Html::a('prev ' . $prev->name, $prev->getUrl(), ['class' => 'btn btn-default']);
+              //  echo Html::a('prev ' . $prev->name, $prev->getUrl(), ['class' => 'btn btn-default']);
             }
             if ($next = $model->getNextOrPrev('next')) {
+              //  echo Html::a($next->name . ' next', $next->getUrl(), ['class' => 'btn btn-default']);
+            }
+
+
+
+            if ($prev = $model->objectPrev) {
+                echo Html::a('prev ' . $prev->name, $prev->getUrl(), ['class' => 'btn btn-default']);
+            }
+            if ($next = $model->objectNext) {
                 echo Html::a($next->name . ' next', $next->getUrl(), ['class' => 'btn btn-default']);
             }
+
             ?>
         </div>
         <h1><?= $model->name ?></h1>
@@ -102,7 +112,7 @@ echo \yii\helpers\Inflector::sentence($words);
         </span>
         <?= $model->beginCartForm(); ?>
         <?php
-        echo Html::a(Html::icon('shopcart') . Yii::t('cart/default', 'BUY'), 'javascript:cart.add("#form-add-cart-' . $model->id . '")', array('class' => 'btn btn-primary'));
+        echo Html::a(Html::icon('shopcart') . Yii::t('cart/default', 'BUY'), 'javascript:cart.add(' . $model->id . ')', array('class' => 'btn btn-primary'));
         ?>
         <?php
         echo yii\jui\Spinner::widget([
@@ -136,7 +146,8 @@ echo \yii\helpers\Inflector::sentence($words);
 
             <?php } ?>
             <li class="list-group-item">
-                Категории<?php
+                Категории
+                <?php
                 foreach ($model->categories as $c) {
                     $content[] = Html::a($c->name, $c->getUrl());
                 }

@@ -19,7 +19,7 @@ class ProductSearch extends Product {
      */
     public function rules() {
         return [
-            [['id'], 'integer'],
+            [['id','price'], 'integer'],
             [['name', 'seo_alias', 'sku', 'price'], 'safe'],
         ];
     }
@@ -75,6 +75,14 @@ class ProductSearch extends Product {
         $query->andFilterWhere(['like', 'price', $this->price]);
 
         return $dataProvider;
+    }
+
+
+    public function searchBySite($params) {
+        $query = Product::find();
+        $query->joinWith('translations');
+        $this->load($params);
+        return $query;
     }
 
 }
