@@ -192,7 +192,7 @@ class Product extends \panix\engine\db\ActiveRecord
 
     public function getUser()
     {
-        return $this->hasOne(User::className(), ['id' => 'user_id']);
+        return $this->hasOne(User::class, ['id' => 'user_id']);
     }
 
     /* public function getCategory2() {
@@ -201,53 +201,53 @@ class Product extends \panix\engine\db\ActiveRecord
 
     public function getManufacturer()
     {
-        return $this->hasOne(Manufacturer::className(), ['id' => 'manufacturer_id']);
+        return $this->hasOne(Manufacturer::class, ['id' => 'manufacturer_id']);
     }
 
     public function getType()
     {
-        return $this->hasOne(ProductType::className(), ['id' => 'type_id']);
+        return $this->hasOne(ProductType::class, ['id' => 'type_id']);
     }
 
     public function getType2()
     {
-        return $this->hasOne(ProductType::className(), ['type_id' => 'id']);
+        return $this->hasOne(ProductType::class, ['type_id' => 'id']);
     }
 
     public function getTranslations()
     {
-        return $this->hasMany(ProductTranslate::className(), ['object_id' => 'id']);
+        return $this->hasMany(ProductTranslate::class, ['object_id' => 'id']);
     }
 
     public function getRelated()
     {
-        return $this->hasMany(RelatedProduct::className(), ['related_id' => 'id']);
+        return $this->hasMany(RelatedProduct::class, ['related_id' => 'id']);
     }
 
     public function getRelatedProductCount()
     {
-        return $this->hasMany(RelatedProduct::className(), ['product_id' => 'id'])->count();
+        return $this->hasMany(RelatedProduct::class, ['product_id' => 'id'])->count();
     }
 
     public function getRelatedProducts()
     {
-        return $this->hasMany(Product::className(), ['id' => 'product_id'])
+        return $this->hasMany(Product::class, ['id' => 'product_id'])
             ->viaTable(RelatedProduct::tableName(), ['related_id' => 'id']);
     }
 
     public function getCategorization()
     {
-        return $this->hasMany(ProductCategoryRef::className(), ['product' => 'id']);
+        return $this->hasMany(ProductCategoryRef::class, ['product' => 'id']);
     }
 
     public function getCategories()
     {
-        return $this->hasMany(Category::className(), ['id' => 'category'])->via('categorization');
+        return $this->hasMany(Category::class, ['id' => 'category'])->via('categorization');
     }
 
     public function getMainCategory()
     {
-        return $this->hasOne(Category::className(), ['id' => 'category'])
+        return $this->hasOne(Category::class, ['id' => 'category'])
             ->via('categorization', function ($query) {
                 $query->where(['is_main' => 1]);
             });
@@ -255,7 +255,7 @@ class Product extends \panix\engine\db\ActiveRecord
 
     public function getVariants()
     {
-        return $this->hasMany(ProductVariant::className(), ['product_id' => 'id'])
+        return $this->hasMany(ProductVariant::class, ['product_id' => 'id'])
             ->joinWith(['productAttribute', 'option'])
             ->orderBy('{{%shop_attribute_option}}.ordern');
     }
@@ -604,10 +604,10 @@ class Product extends \panix\engine\db\ActiveRecord
     {
         return ArrayHelper::merge([
             'imagesBehavior' => [
-                'class' => \panix\mod\images\behaviors\ImageBehavior::className(),
+                'class' => \panix\mod\images\behaviors\ImageBehavior::class,
             ],
             'slug' => [
-                'class' => \yii\behaviors\SluggableBehavior::className(),
+                'class' => \yii\behaviors\SluggableBehavior::class,
                 'attribute' => 'name',
                 'slugAttribute' => 'seo_alias',
             ],
@@ -621,22 +621,22 @@ class Product extends \panix\engine\db\ActiveRecord
               'valueClass' => \mirocow\eav\models\EavAttributeValue::className(),
               ], */
             'eav' => [
-                'class' => \panix\mod\shop\components\EavBehavior::className(),
+                'class' => \panix\mod\shop\components\EavBehavior::class,
                 'tableName' => '{{%shop_product_attribute_eav}}'
             ],
             'seo' => [
-                'class' => \app\modules\seo\components\SeoBehavior::className(),
+                'class' => \app\modules\seo\components\SeoBehavior::class,
                 'url' => $this->getUrl()
             ],
             'translate' => [
-                'class' => TranslateBehavior::className(),
+                'class' => TranslateBehavior::class,
                 'translationAttributes' => [
                     'name',
                     'full_description'
                 ]
             ],
             'discountsBehavior' => [
-                'class' => \panix\mod\discounts\components\DiscountBehavior::className()
+                'class' => \panix\mod\discounts\components\DiscountBehavior::class
             ],
         ], parent::behaviors());
     }

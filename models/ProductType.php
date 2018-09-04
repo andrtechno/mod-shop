@@ -69,18 +69,18 @@ class ProductType extends \panix\engine\db\ActiveRecord {
         );
     }
     public function getProductsCount() {
-        return $this->hasOne(Product::className(), ['id' => 'type_id'])->count();
+        return $this->hasOne(Product::class, ['id' => 'type_id'])->count();
     }
 
     public function getAttributeRelation() {
-        return $this->hasMany(TypeAttribute::className(), ['type_id' => 'id']);
+        return $this->hasMany(TypeAttribute::class, ['type_id' => 'id']);
     }
 
     public function getShopAttributes() {
-        return $this->hasMany(Attribute::className(), ['id' => 'attribute_id'])->via('attributeRelation');
+        return $this->hasMany(Attribute::class, ['id' => 'attribute_id'])->via('attributeRelation');
     }
     public function getShopConfigurableAttributes() {
-        return $this->hasMany(Attribute::className(), ['id' => 'attribute_id'])->andWhere('use_in_variants=1')->via('attributeRelation');
+        return $this->hasMany(Attribute::class, ['id' => 'attribute_id'])->andWhere('use_in_variants=1')->via('attributeRelation');
     }
 
 

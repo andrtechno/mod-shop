@@ -21,12 +21,12 @@ class ProductController extends AdminController {
     public function actions() {
         return [
             'sortable' => [
-                'class' => \panix\engine\grid\sortable\Action::className(),
-                'modelClass' => Product::className(),
+                'class' => \panix\engine\grid\sortable\Action::class,
+                'modelClass' => Product::class,
             ],
             'delete' => [
                 'class' => 'panix\engine\actions\DeleteAction',
-                'modelClass' => Product::className(),
+                'modelClass' => Product::class,
             ],
         ];
     }

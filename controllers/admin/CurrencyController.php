@@ -12,8 +12,8 @@ class CurrencyController extends AdminController {
     public function actions() {
         return [
             'sortable' => [
-                'class' => \panix\engine\grid\sortable\Action::className(),
-                'modelClass' => Currency::className(),
+                'class' => \panix\engine\grid\sortable\Action::class,
+                'modelClass' => Currency::class,
             ],
         ];
     }

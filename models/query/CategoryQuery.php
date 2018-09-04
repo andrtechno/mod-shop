@@ -11,7 +11,7 @@ class CategoryQuery extends \yii\db\ActiveQuery {
     public function behaviors() {
         return [
             [
-                'class' => NestedSetsQueryBehavior::className(),
+                'class' => NestedSetsQueryBehavior::class,
             ]
         ];
     }

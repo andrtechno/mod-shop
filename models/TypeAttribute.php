@@ -23,7 +23,7 @@ class TypeAttribute extends \yii\db\ActiveRecord {
     }
 
     public function getMyAttribute() {
-        return $this->hasOne(Attribute::className(), ['attribute_id' => 'id']);
+        return $this->hasOne(Attribute::class, ['attribute_id' => 'id']);
     }
 
 }

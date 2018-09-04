@@ -37,7 +37,7 @@ use panix\engine\bootstrap\Alert;
 
 
         <?=
-        $form->field($model, 'description')->widget(TinyMce::className(), [
+        $form->field($model, 'description')->widget(TinyMce::class, [
             'options' => ['rows' => 6],
         ]);
         ?>

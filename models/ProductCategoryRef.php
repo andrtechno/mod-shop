@@ -23,7 +23,7 @@ class ProductCategoryRef extends \yii\db\ActiveRecord {
         return '{{%shop_product_category_ref}}';
     }
        public function getCountProducts() {
-       return $this->hasMany(ProductCategoryRef::className(), ['category' => 'id'])->count();
+       return $this->hasMany(ProductCategoryRef::class, ['category' => 'id'])->count();
     }
   /*  public function relations() {
         return array(

@@ -68,7 +68,7 @@ use panix\mod\shop\models\CategoryNode;
                         "icon":"icon-trashcan",
                         "label": "' . Yii::t('app', 'DELETE') . '",
                         "action": function (obj) {
-                            if (confirm("' . Yii::t('app', 'DELETE_COMFIRM') . '\nТак же будут удалены все товары.")) {
+                            if (confirm("' . Yii::t('app', 'DELETE_CONFIRM') . '\nТак же будут удалены все товары.")) {
                                 tree.delete_node($node);
                             }
                         }

@@ -37,7 +37,7 @@ class CategoryController extends AdminController {
     public function behaviors() {
         return [
             'verbs' => [
-                'class' => VerbFilter::className(),
+                'class' => VerbFilter::class,
                 'actions' => [
                     'delete2' => ['post'],
                 ],

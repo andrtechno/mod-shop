@@ -40,20 +40,20 @@ class Category extends \panix\engine\db\ActiveRecord {
     public function behaviors() {
         return [
             'TranslateBehavior' => [ // name it the way you want
-                'class' => TranslateBehavior::className(),
+                'class' => TranslateBehavior::class,
                 'translationAttributes' => [
                     'name',
                     'description'
                 ]
             ],
             'MenuArrayBehavior' => array(
-                'class' => MenuArrayBehavior::className(),
+                'class' => MenuArrayBehavior::class,
                 'labelAttr' => 'name',
                 // 'countProduct'=>false,
                 'urlExpression' => '["/shop/category/view", "seo_alias"=>$model->full_path]',
             ),
             'tree' => [
-                'class' => NestedSetsBehavior::className(),
+                'class' => NestedSetsBehavior::class,
             // 'treeAttribute' => 'tree',
             // 'leftAttribute' => 'lft',
             // 'rightAttribute' => 'rgt',
@@ -63,11 +63,11 @@ class Category extends \panix\engine\db\ActiveRecord {
     }
 
     public function getCountProducts() {
-        return $this->hasMany(ProductCategoryRef::className(), ['category' => 'id'])->count();
+        return $this->hasMany(ProductCategoryRef::class, ['category' => 'id'])->count();
     }
 
     public function getTranslations() {
-        return $this->hasMany(CategoryTranslate::className(), ['object_id' => 'id']);
+        return $this->hasMany(CategoryTranslate::class, ['object_id' => 'id']);
     }
 
     public static function flatTree() {

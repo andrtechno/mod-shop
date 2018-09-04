@@ -83,7 +83,7 @@ trait ProductTrait {
         ];
         $columns['DEFAULT_COLUMNS'] = [
             [
-                'class' => \panix\engine\grid\sortable\Column::className(),
+                'class' => \panix\engine\grid\sortable\Column::class,
                 'url' => ['/admin/shop/product/sortable'],
                 'successMessage' => Yii::t('shop/admin', 'SORT_PRODUCT_SUCCESS_MESSAGE')
             ],
@@ -96,7 +96,7 @@ trait ProductTrait {
                         'icon' => 'eye',
                         'options' => [
                             'onClick' => 'return setProductsStatus(1, this);',
-                            'data-question' => self::t('COMFIRM_SHOW')
+                            'data-question' => self::t('CONFIRM_SHOW')
                         ],
                     ],
                     [
@@ -105,7 +105,7 @@ trait ProductTrait {
                         'icon' => 'eye-close',
                         'options' => [
                             'onClick' => 'return setProductsStatus(0, this);',
-                            'data-question' => self::t('COMFIRM_HIDE')
+                            'data-question' => self::t('CONFIRM_HIDE')
                         ],
                     ],
                     [
@@ -114,7 +114,7 @@ trait ProductTrait {
                         'icon' => 'folder-open',
                         'options' => [
                             'onClick' => 'return showCategoryAssignWindow(this);',
-                            'data-question' => self::t('COMFIRM_CATEGORY')
+                            'data-question' => self::t('CONFIRM_CATEGORY')
                         ],
                     ],
                     [
@@ -123,7 +123,7 @@ trait ProductTrait {
                         'icon' => 'copy',
                         'options' => [
                             'onClick' => 'return showDuplicateProductsWindow(this);',
-                            'data-question' => self::t('COMFIRM_COPY')
+                            'data-question' => self::t('CONFIRM_COPY')
                         ],
                     ],
                     [
@@ -132,7 +132,7 @@ trait ProductTrait {
                         'icon' => 'currencies',
                         'options' => [
                             'onClick' => 'return setProductsPrice(this);',
-                            'data-question' => self::t('COMFIRM_PRICE')
+                            'data-question' => self::t('CONFIRM_PRICE')
                         ],
                     ]
                 ]

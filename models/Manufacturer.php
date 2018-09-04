@@ -2,9 +2,10 @@
 
 namespace panix\mod\shop\models;
 
+use Yii;
+use yii\helpers\ArrayHelper;
 use panix\mod\shop\models\query\ManufacturerQuery;
 use panix\engine\behaviors\TranslateBehavior;
-use yii\helpers\ArrayHelper;
 use panix\mod\shop\models\translate\ManufacturerTranslate;
 
 class Manufacturer extends \panix\engine\db\ActiveRecord {
@@ -24,7 +25,7 @@ class Manufacturer extends \panix\engine\db\ActiveRecord {
             ],
             'DEFAULT_COLUMNS' => [
                 [
-                    'class' => \panix\engine\grid\sortable\Column::className(),
+                    'class' => \panix\engine\grid\sortable\Column::class,
                     'url' => ['/admin/shop/default/sortable']
                 ],
                 ['class' => 'panix\engine\grid\columns\CheckboxColumn'],
@@ -75,11 +76,11 @@ class Manufacturer extends \panix\engine\db\ActiveRecord {
     }
 
     public function getTranslations() {
-        return $this->hasMany(ManufacturerTranslate::className(), ['object_id' => 'id']);
+        return $this->hasMany(ManufacturerTranslate::class, ['object_id' => 'id']);
     }
 
     public function getProductsCount() {
-        return $this->hasOne(Product::className(), ['manufacturer_id' => 'id'])->count();
+        return $this->hasOne(Product::class, ['manufacturer_id' => 'id'])->count();
     }
 
     /**
@@ -104,7 +105,7 @@ class Manufacturer extends \panix\engine\db\ActiveRecord {
     public function behaviors() {
         return ArrayHelper::merge([
                     'translate' => [
-                        'class' => TranslateBehavior::className(),
+                        'class' => TranslateBehavior::class,
                         'translationAttributes' => [
                             'name',
                             'description'

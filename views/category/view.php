@@ -40,7 +40,7 @@ use yii\helpers\Html;
                 'attributes'=>['price','sku']
             ],
             'pager' => [
-                'class' => \kop\y2sp\ScrollPager::className(),
+                'class' => \kop\y2sp\ScrollPager::class,
                 'triggerTemplate' => '<div class="ias-trigger" style="text-align: center; cursor: pointer;"><a href="javascript:void(0)">{text}</a></div>'
             ],
             'emptyTextOptions' => ['class' => 'alert alert-info']

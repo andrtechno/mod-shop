@@ -34,7 +34,7 @@ use panix\mod\shop\models\AttributeOption;
 <?php
 $columns = [];
 $columns[] = [
-    'class' => \panix\engine\grid\sortable\Column::className(),
+    'class' => \panix\engine\grid\sortable\Column::class,
     'url' => ['/admin/shop/attribute/sortableOptions']
 ];
 $data = [];

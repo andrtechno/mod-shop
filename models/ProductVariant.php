@@ -50,11 +50,11 @@ class ProductVariant extends \yii\db\ActiveRecord {
 
     
     public function getProductAttribute() {
-        return $this->hasOne(Attribute::className(), ['id' => 'attribute_id']);
+        return $this->hasOne(Attribute::class, ['id' => 'attribute_id']);
     }
     
     public function getOption() {
-        return $this->hasOne(AttributeOption::className(), ['id' => 'option_id']);
+        return $this->hasOne(AttributeOption::class, ['id' => 'option_id']);
     }
     /**
      * @return array customized attribute labels (name=>label)

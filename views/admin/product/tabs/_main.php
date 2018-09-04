@@ -34,7 +34,7 @@ $form->field($model, 'main_category_id')->dropDownList(Category::flatTree(), [
 ?>
 <?=
 
-$form->field($model, 'full_description')->widget(TinyMce::className(), [
+$form->field($model, 'full_description')->widget(TinyMce::class, [
     'options' => ['rows' => 6],
 ]);
 ?>

@@ -53,7 +53,7 @@ class Attribute extends \panix\engine\db\ActiveRecord {
             ],
             'DEFAULT_COLUMNS' => [
                 [
-                    'class' => \panix\engine\grid\sortable\Column::className(),
+                    'class' => \panix\engine\grid\sortable\Column::class,
                     'url' => ['/admin/shop/attribute/sortable']
                 ],
                 ['class' => 'panix\engine\grid\columns\CheckboxColumn'],
@@ -75,7 +75,7 @@ class Attribute extends \panix\engine\db\ActiveRecord {
     }
 
     public function getAttrtranslate() {
-        return $this->hasMany(AttributeTranslate::className(), ['object_id' => 'id']);
+        return $this->hasMany(AttributeTranslate::class, ['object_id' => 'id']);
     }
 /*
     public function ___getAttrtranslateOne() {
@@ -83,11 +83,11 @@ class Attribute extends \panix\engine\db\ActiveRecord {
     }
 */
     public function getOptions() {
-        return $this->hasMany(AttributeOption::className(), ['attribute_id' => 'id']);
+        return $this->hasMany(AttributeOption::class, ['attribute_id' => 'id']);
     }
 
     public function getTypes() {
-        return $this->hasMany(TypeAttribute::className(), ['attribute_id' => 'id']);
+        return $this->hasMany(TypeAttribute::class, ['attribute_id' => 'id']);
     }
 
     /**
@@ -117,7 +117,7 @@ class Attribute extends \panix\engine\db\ActiveRecord {
     public function behaviors() {
         return ArrayHelper::merge([
                     'translate' => [
-                        'class' => \panix\engine\behaviors\TranslateBehavior::className(),
+                        'class' => \panix\engine\behaviors\TranslateBehavior::class,
                         'translationRelation' => 'attrtranslate',
                         'translationAttributes' => [
                             'title',
@@ -125,7 +125,7 @@ class Attribute extends \panix\engine\db\ActiveRecord {
                         ]
                     ],
                                 'slug' => [
-                        'class' => \yii\behaviors\SluggableBehavior::className(),
+                        'class' => \yii\behaviors\SluggableBehavior::class,
                         'attribute' => 'title',
                         'slugAttribute' => 'name',
                     ],

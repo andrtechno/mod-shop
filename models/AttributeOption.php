@@ -42,14 +42,14 @@ class AttributeOption extends \panix\engine\db\ActiveRecord {
     }
 
     public function getOptionTranslate() {
-        return $this->hasMany(AttributeOptionTranslate::className(), ['object_id' => 'id']);
+        return $this->hasMany(AttributeOptionTranslate::class, ['object_id' => 'id']);
     }
 
  
     public function behaviors() {
         return ArrayHelper::merge([
                     'translate' => [
-                        'class' => \panix\engine\behaviors\TranslateBehavior::className(),
+                        'class' => \panix\engine\behaviors\TranslateBehavior::class,
                         'translationRelation' => 'optionTranslate',
                         'translationAttributes' => [
                             'value',

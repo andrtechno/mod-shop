@@ -16,20 +16,20 @@ class AttributeController extends AdminController {
     public function actions() {
         return [
             'sortableOptions' => [
-                'class' => \panix\engine\grid\sortable\Action::className(),
-                'modelClass' => AttributeOption::className(),
+                'class' => \panix\engine\grid\sortable\Action::class,
+                'modelClass' => AttributeOption::class,
             ],
             'sortable' => [
-                'class' => \panix\engine\grid\sortable\Action::className(),
-                'modelClass' => Attribute::className(),
+                'class' => \panix\engine\grid\sortable\Action::class,
+                'modelClass' => Attribute::class,
             ],
             'switch' => [
-                'class' => \panix\engine\actions\SwitchAction::className(),
-                'modelClass' => Attribute::className(),
+                'class' => \panix\engine\actions\SwitchAction::class,
+                'modelClass' => Attribute::class,
             ],
             'delete' => [
-                'class' => \panix\engine\actions\DeleteAction::className(),
-                'modelClass' => Attribute::className(),
+                'class' => \panix\engine\actions\DeleteAction::class,
+                'modelClass' => Attribute::class,
             ],
         ];
     }

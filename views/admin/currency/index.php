@@ -24,7 +24,7 @@ return ['class' => 'sortable-column'];
 },
     'columns' => [
         [
-            'class' => \panix\engine\grid\sortable\Column::className(),
+            'class' => \panix\engine\grid\sortable\Column::class,
             'url' => ['/admin/shop/currency/sortable']
         ],
         [
