@@ -3,11 +3,11 @@
 use yii\helpers\Html;
 ?>
 
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <h3 class="panel-title"><?= Html::encode($this->context->pageName) ?></h3>
+<div class="card card-light">
+    <div class="card-header">
+        <h5><?= Html::encode($this->context->pageName) ?></h5>
     </div>
-    <div class="panel-body">
+    <div class="card-body">
         <?php
         echo Html::beginForm('', 'post', array(
             'id' => 'ProductTypeForm',

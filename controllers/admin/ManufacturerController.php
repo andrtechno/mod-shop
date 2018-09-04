@@ -12,16 +12,16 @@ class ManufacturerController extends AdminController {
     public function actions() {
         return [
             'sortable' => [
-                'class' => \panix\engine\grid\sortable\Action::className(),
-                'modelClass' => Manufacturer::className(),
+                'class' => \panix\engine\grid\sortable\Action::class,
+                'modelClass' => Manufacturer::class,
             ],
             'switch' => [
-                'class' => \panix\engine\actions\SwitchAction::className(),
-                'modelClass' => Manufacturer::className(),
+                'class' => \panix\engine\actions\SwitchAction::class,
+                'modelClass' => Manufacturer::class,
             ],
             'delete' => [
-                'class' => \panix\engine\actions\DeleteAction::className(),
-                'modelClass' => Manufacturer::className(),
+                'class' => \panix\engine\actions\DeleteAction::class,
+                'modelClass' => Manufacturer::class,
             ],
         ];
     }
