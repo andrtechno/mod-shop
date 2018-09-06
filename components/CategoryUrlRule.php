@@ -4,7 +4,6 @@ namespace panix\mod\shop\components;
 
 use panix\mod\shop\models\Category;
 use yii\web\UrlRuleInterface;
-use yii\base\Object;
 use yii\web\UrlRule;
 
 class CategoryUrlRule extends UrlRule {

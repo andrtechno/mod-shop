@@ -2,6 +2,8 @@
 
 namespace panix\mod\shop\models;
 
+use app\modules\sitemap\Sitemap;
+use app\modules\sitemap\behaviors\SitemapBehavior;
 use Yii;
 use panix\engine\CMS;
 use panix\engine\behaviors\TranslateBehavior;
@@ -603,6 +605,26 @@ class Product extends \panix\engine\db\ActiveRecord
     public function behaviors()
     {
         return ArrayHelper::merge([
+
+            'sitemap' => [
+                'class' => SitemapBehavior::class,
+                /**'batchSize' => 100,*/
+                'scope' => function ($model) {
+                    /** @var \yii\db\ActiveQuery $model */
+                    $model->select(['seo_alias', 'date_update']);
+                    $model->andWhere(['switch' => 1]);
+                },
+                'dataClosure' => function ($model) {
+                    /** @var self $model */
+                    return [
+                        'loc' => Url::to($model->seo_alias, true),
+                        'lastmod' => strtotime($model->date_update),
+                        'changefreq' => Sitemap::DAILY,
+                        'priority' => 0.8
+                    ];
+                }
+            ],
+
             'imagesBehavior' => [
                 'class' => \panix\mod\images\behaviors\ImageBehavior::class,
             ],
