@@ -16,7 +16,14 @@ class Module extends WebModule {
         'products/search/<q>' => 'shop/category/search',
         ['class' => 'panix\mod\shop\components\CategoryUrlRule'],
     ];
-
+    public function init()
+    {
+        //yii <module_id>/<command>/<sub_command>
+        parent::init();
+        if (Yii::$app instanceof \yii\console\Application) {
+            $this->controllerNamespace = 'app\modules\shop\commands';
+        }
+    }
 
     public function getAdminMenu() {
         return [
