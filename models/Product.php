@@ -16,6 +16,7 @@ use panix\mod\shop\models\ProductCategoryRef;
 use panix\mod\shop\models\ProductVariant;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 class Product extends \panix\engine\db\ActiveRecord
 {
@@ -59,7 +60,10 @@ class Product extends \panix\engine\db\ActiveRecord
         $html .= Html::hiddenInput('configurable_id', 0);
         return $html;
     }
-
+    public function endCartForm()
+    {
+        return Html::endForm();
+    }
     public static function getSort()
     {
         return new \yii\data\Sort([
@@ -617,7 +621,9 @@ class Product extends \panix\engine\db\ActiveRecord
                 'dataClosure' => function ($model) {
                     /** @var self $model */
                     return [
-                        'loc' => Url::to($model->seo_alias, true),
+                        //'loc' => Url::to($model->seo_alias, true),
+                        'loc' => Url::to($model->getUrl(), true),
+                        //'loc' => $model->getUrl(),
                         'lastmod' => strtotime($model->date_update),
                         'changefreq' => Sitemap::DAILY,
                         'priority' => 0.8

@@ -18,7 +18,7 @@ use yii\helpers\Html;
             $sorter[Yii::$app->urlManager->addUrlParam('/shop/category/view', array('sort' => '-date_create'))] = Yii::t('shop/default', 'SORT_BY_DATE_DESC');
             $active = Yii::$app->urlManager->addUrlParam('/shop/category/view', array('sort' => Yii::$app->request->get('sort')));
 
-            echo Html::dropDownList('sorter', $active, $sorter, ['onChange' => 'window.location = $(this).val()']);
+            echo Html::dropDownList('sorter', $active, $sorter, ['onChange' => 'window.location = $(this).val()','class'=>'form-control']);
             ?>
 
 
@@ -37,9 +37,9 @@ use yii\helpers\Html;
             ?>
             <span class="hidden-md hidden-sm"><?= Yii::t('shop/default', 'OUTPUT_ON'); ?> </span>
             <?php
-            echo Html::dropDownList('per_page', $active, $limits, ['onChange' => 'window.location = $(this).val()']);
+            echo Html::dropDownList('per_page', $active, $limits, ['onChange' => 'window.location = $(this).val()','class'=>'form-control']);
             ?>
-            <span class="hidden-xs "><?= Yii::t('shop/default', 'товаров'); ?></span>
+            <span class=""><?= Yii::t('shop/default', 'товаров'); ?></span>
 
         </div>
 

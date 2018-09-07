@@ -4,6 +4,8 @@ use panix\engine\Html;
 use panix\ext\fancybox\Fancybox;
 use panix\mod\images\models\ImageSearch;
 use panix\engine\widgets\Pjax;
+use panix\engine\bootstrap\Modal;
+
 ?>
 <?= Fancybox::widget(['target' => 'a.fancybox']); ?>
 
@@ -63,10 +65,10 @@ $this->registerJs($script); //$position
     
 </style>
     <?php
-use yii\bootstrap4\Modal;
+
 Modal::begin([
     'options'=>['id'=>'cropper-modal','style'=>'width:100%'],
-    'header' => '<h2>Cropper</h2>',
+    'title' => '<h2>Cropper</h2>',
     'toggleButton' => false,
     'bodyOptions'=>['id'=>'cropper-body']
 ]);

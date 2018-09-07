@@ -3,11 +3,12 @@
 use yii\helpers\Html;
 ?>
 <?php if($manufacturers['filters']) { ?>
-<div class="panel panel-default filter-block">
-    <div class="panel-heading" data-toggle="collapse" data-target="#collapse-<?=md5('manufacturer')?>" aria-expanded="false" aria-controls="collapse-<?=md5('manufacturer')?>">
-        <div class="panel-title"><?= Yii::t('shop/default', 'FILTER_BY_MANUFACTURER') ?></div>
+<div class="card filter-block">
+    <div class="card-header" data-toggle="collapse" data-target="#collapse-<?=md5('manufacturer')?>" aria-expanded="false" aria-controls="collapse-<?=md5('manufacturer')?>">
+        <?= Yii::t('shop/default', 'FILTER_BY_MANUFACTURER') ?>
     </div>
-    <div class="panel-body collapse in" id="collapse-<?=md5('manufacturer')?>">
+    <div class="collapse in" id="collapse-<?=md5('manufacturer')?>">
+    <div class="card-body">
         <ul class="filter-list">
             <?php
             foreach ($manufacturers['filters'] as $filter) {
@@ -31,6 +32,7 @@ use yii\helpers\Html;
             }
             ?>
         </ul>
+    </div>
     </div>
 </div>
 <?php } ?>

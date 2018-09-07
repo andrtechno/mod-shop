@@ -1,8 +1,10 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\Inflector;
 
-echo \yii\helpers\Inflector::slug('как дела');
+echo Inflector::slug('как дела');
+
 foreach ($attributes as $attrData) {
 
 
@@ -10,11 +12,12 @@ foreach ($attributes as $attrData) {
 
         ?>
 
-        <div class="panel panel-default filter-block" id="filter-attributes-<?= \yii\helpers\Inflector::slug($attrData['title']); ?>">
-            <div class="panel-heading" data-toggle="collapse" data-target="#collapse-<?=md5($attrData['title'])?>" aria-expanded="false" aria-controls="collapse-<?=md5($attrData['title'])?>">
-                <div class="panel-title"><?= Html::encode($attrData['title']) ?></div>
+        <div class="card filter-block" id="filter-attributes-<?= Inflector::slug($attrData['title']); ?>">
+            <div class="card-header" data-toggle="collapse" data-target="#collapse-<?= md5($attrData['title'])?>" aria-expanded="false" aria-controls="collapse-<?=md5($attrData['title'])?>">
+                <?= Html::encode($attrData['title']) ?>
             </div>
-            <div class="panel-body collapse in" id="collapse-<?=md5($attrData['title'])?>">
+            <div class="collapse in" id="collapse-<?= md5($attrData['title'])?>">
+            <div class="card-body">
                 <ul class="filter-list">
                     <?php
                     foreach ($attrData['filters'] as $filter) {
@@ -46,7 +49,7 @@ foreach ($attributes as $attrData) {
                 </ul>
             </div>
         </div>
-
+        </div>
         <?php
     }
 }

@@ -18,12 +18,12 @@ $max = (int)ceil($getMax2);
 //  echo $cm->convert($getMin);
 ?>
 <?php if (($getMin2 >= 0 && $getMax2 >= 0) && ($getMin2 != $getMax2)) { ?>
-    <div class="panel panel-default filter filter-price">
+    <div class="card bg-light filter filter-price">
 
-        <div class="panel-heading">
-            <div class="panel-title"><?= Yii::t('shop/default', 'FILTER_BY_PRICE') ?></div>
+        <div class="card-header">
+            <h5><?= Yii::t('shop/default', 'FILTER_BY_PRICE') ?></h5>
         </div>
-        <div class="panel-body">
+        <div class="card-body">
             <?php
             echo Html::beginForm();
             echo Html::hiddenInput('min_price', (isset($_GET['min_price'])) ? $getMin : null, ['id' => 'min_price']);
