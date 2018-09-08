@@ -4,15 +4,16 @@ use panix\engine\Html;
 use yii\jui\AutoComplete;
 use yii\web\JsExpression;
 use yii\helpers\Url;
+$id = $this->context->id;
 ?>
 
 <div id="search-box">
-    <?= Html::beginForm(Yii::$app->urlManager->createUrl(['/shop/category/search', 'q' => $value]), 'post', ['id' => 'search-form']) ?>
+    <?= Html::beginForm(Yii::$app->urlManager->createUrl(['/shop/category/search', 'q' => $value]), 'post', ['id' => 'search-form-'.$id]) ?>
     <div class="input-group">
 
         <?php
         echo AutoComplete::widget([
-            'id' => 'searchInput',
+            'id' => 'searchInput-'.$id,
             'name' => 'q',
             'value' => $value,
             //'model'=>$searchModel,
@@ -26,10 +27,10 @@ use yii\helpers\Url;
                         dataType: "json",
                         success: response,
                         beforeSend: function(){
-                            $("#searchInput").addClass("loading");
+                            $("#searchInput-'.$id.'").addClass("loading");
                         },
                         complete: function(){
-                            $("#searchInput").removeClass("loading");
+                            $("#searchInput-'.$id.'").removeClass("loading");
                         },
                         error: function () {
                             response([]);
@@ -38,7 +39,7 @@ use yii\helpers\Url;
                 }'),
                 'minLength' => 0,
                 'create' => new JsExpression('function( event, ui ) {
-                    $("#searchInput").autocomplete( "instance" )._renderItem = function( ul, item ) {
+                    $("#searchInput-'.$id.'").autocomplete( "instance" )._renderItem = function( ul, item ) {
                         return $( "<li></li>" ).data( "item.autocomplete", item ).append(item.renderItem).appendTo( ul );
                     };
                 }'),

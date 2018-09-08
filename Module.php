@@ -1,21 +1,27 @@
 <?php
-/*11*/
+
 namespace panix\mod\shop;
 
 use Yii;
 use panix\engine\WebModule;
+use yii\web\UrlRule;
 
 class Module extends WebModule {
 
     public $icon = 'shopcart';
     public $routes = [
+        'shop/ajax/currency/<id:\d+>' => 'shop/ajax/currency',
         'shop' => 'shop/default/index',
-        'product/<seo_alias>' => 'shop/product/view',
-        'manufacturer/<seo_alias>' => 'shop/manufacturer/view',
-        'shop/ajax/activateCurrency/<id>' => 'shop/ajax/activateCurrency',
-        'products/search/<q>' => 'shop/category/search',
+        'product/<seo_alias:\w+>' => 'shop/product/view',
+        'manufacturer/<seo_alias:\w+>' => 'shop/manufacturer/view',
+
+        'products/search/<q:\w+>' => 'shop/category/search',
         ['class' => 'panix\mod\shop\components\CategoryUrlRule'],
     ];
+
+
+
+
     public function init()
     {
         //yii <module_id>/<command>/<sub_command>

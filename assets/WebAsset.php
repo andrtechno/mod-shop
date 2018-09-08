@@ -2,9 +2,10 @@
 
 namespace panix\mod\shop\assets;
 
-class WebAsset extends \yii\web\AssetBundle {
+class WebAsset extends \yii\web\AssetBundle
+{
 
-       public $sourcePath = '@vendor/panix/mod-shop/assets';
+    public $sourcePath = '@vendor/panix/mod-shop/assets';
     /*  public $jsOptions = array(
       'position' => \yii\web\View::POS_HEAD
       );
@@ -13,9 +14,11 @@ class WebAsset extends \yii\web\AssetBundle {
       'js/products.js',
       // 'js/products.index.js',
       ]; */
-
+    public $js = [
+        'js/switchCurrency.js',
+    ];
     public $css = [
-        'css/ecommerce.css',
+       // 'css/ecommerce.css',
     ];
     public $depends = [
         'panix\mod\cart\assets\CartAsset',
