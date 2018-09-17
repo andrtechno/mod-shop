@@ -8,6 +8,7 @@ use yii\helpers\Html;
 use panix\mod\shop\models\AttributeTranslate;
 use panix\mod\shop\models\AttributeOption;
 use panix\mod\shop\models\query\AttributeQuery;
+use panix\engine\db\ActiveRecord;
 
 /**
  * This is the model class for table "Attribute".
@@ -26,7 +27,8 @@ use panix\mod\shop\models\query\AttributeQuery;
  * @property boolean $select_many Allow to filter products on front by more than one option value.
  * @method Category useInFilter()
  */
-class Attribute extends \panix\engine\db\ActiveRecord {
+class Attribute extends ActiveRecord
+{
 
     const TYPE_TEXT = 1;
     const TYPE_TEXTAREA = 2;
@@ -37,11 +39,13 @@ class Attribute extends \panix\engine\db\ActiveRecord {
     const TYPE_YESNO = 7;
     const MODULE_ID = 'shop';
 
-    public static function find() {
+    public static function find()
+    {
         return new AttributeQuery(get_called_class());
     }
 
-    public function getGridColumns() {
+    public function getGridColumns()
+    {
         return [
             [
                 'attribute' => 'title',
@@ -61,7 +65,8 @@ class Attribute extends \panix\engine\db\ActiveRecord {
         ];
     }
 
-    public function transactions() {
+    public function transactions()
+    {
         return [
             self::SCENARIO_DEFAULT => self::OP_INSERT | self::OP_UPDATE,
         ];
@@ -70,38 +75,44 @@ class Attribute extends \panix\engine\db\ActiveRecord {
     /**
      * @return string the associated database table name
      */
-    public static function tableName() {
+    public static function tableName()
+    {
         return '{{%shop_attribute}}';
     }
 
-    public function getAttrtranslate() {
+    public function getAttrtranslate()
+    {
         return $this->hasMany(AttributeTranslate::class, ['object_id' => 'id']);
     }
-/*
-    public function ___getAttrtranslateOne() {
-        return $this->hasOne(AttributeTranslate::className(), ['object_id' => 'id']);
-    }
-*/
-    public function getOptions() {
+
+    /*
+        public function ___getAttrtranslateOne() {
+            return $this->hasOne(AttributeTranslate::className(), ['object_id' => 'id']);
+        }
+    */
+    public function getOptions()
+    {
         return $this->hasMany(AttributeOption::class, ['attribute_id' => 'id']);
     }
 
-    public function getTypes() {
+    public function getTypes()
+    {
         return $this->hasMany(TypeAttribute::class, ['attribute_id' => 'id']);
     }
 
     /**
      * @return array validation rules for model attributes.
      */
-    public function rules() {
+    public function rules()
+    {
         return [
             [['name', 'title'], 'required'],
             [['name', 'title'], 'trim'],
             ['name', '\panix\engine\validators\UrlValidator',
                 'attributeCompare' => 'title',
                 'attributeSlug' => 'name',
-                'message'=>'Индификатор занят'
-                ],
+                'message' => 'Индификатор занят'
+            ],
             [['name', 'title', 'abbreviation'], 'string', 'max' => 255],
             [['required', 'use_in_compare', 'use_in_filter', 'select_many', 'display_on_front', 'use_in_variants'], 'boolean'],
             // array('name', 'unique'),
@@ -114,22 +125,23 @@ class Attribute extends \panix\engine\db\ActiveRecord {
         ];
     }
 
-    public function behaviors() {
+    public function behaviors()
+    {
         return ArrayHelper::merge([
-                    'translate' => [
-                        'class' => \panix\engine\behaviors\TranslateBehavior::class,
-                        'translationRelation' => 'attrtranslate',
-                        'translationAttributes' => [
-                            'title',
-                            'abbreviation'
-                        ]
-                    ],
-                                'slug' => [
-                        'class' => \yii\behaviors\SluggableBehavior::class,
-                        'attribute' => 'title',
-                        'slugAttribute' => 'name',
-                    ],
-                        ], parent::behaviors());
+            'translate' => [
+                'class' => \panix\engine\behaviors\TranslateBehavior::class,
+                'translationRelation' => 'attrtranslate',
+                'translationAttributes' => [
+                    'title',
+                    'abbreviation'
+                ]
+            ],
+            'slug' => [
+                'class' => \yii\behaviors\SluggableBehavior::class,
+                'attribute' => 'title',
+                'slugAttribute' => 'name',
+            ],
+        ], parent::behaviors());
     }
 
     /**
@@ -137,7 +149,8 @@ class Attribute extends \panix\engine\db\ActiveRecord {
      * @static
      * @return array
      */
-    public static function getTypesList() {
+    public static function getTypesList()
+    {
         return array(
             self::TYPE_TEXT => 'Text',
             self::TYPE_TEXTAREA => 'Textarea',
@@ -149,7 +162,8 @@ class Attribute extends \panix\engine\db\ActiveRecord {
         );
     }
 
-    public static function getSort() {
+    public static function getSort()
+    {
         return new \yii\data\Sort([
             'attributes' => [
                 'title' => [
@@ -163,7 +177,8 @@ class Attribute extends \panix\engine\db\ActiveRecord {
     /**
      * @return string html field based on attribute type
      */
-    public function renderField($value = null) {
+    public function renderField($value = null)
+    {
 
         $name = 'Attribute[' . $this->name . ']';
         switch ($this->type) {
@@ -205,7 +220,8 @@ class Attribute extends \panix\engine\db\ActiveRecord {
      * @param $value
      * @return string attribute value
      */
-    public function renderValue($value) {
+    public function renderValue($value)
+    {
         switch ($this->type) {
             case self::TYPE_TEXT:
             case self::TYPE_TEXTAREA:
@@ -245,7 +261,8 @@ class Attribute extends \panix\engine\db\ActiveRecord {
     /**
      * @return string html id based on name
      */
-    public function getIdByName() {
+    public function getIdByName()
+    {
         $name = 'Attribute[' . $this->name . ']';
         return Html::getInputId($this, $this->name);
     }
@@ -256,12 +273,14 @@ class Attribute extends \panix\engine\db\ActiveRecord {
      * @param $type
      * @return string
      */
-    public static function getTypeTitle($type) {
+    public static function getTypeTitle($type)
+    {
         $list = self::getTypesList();
         return $list[$type];
     }
 
-    public function afterDelete() {
+    public function afterDelete()
+    {
         // Delete options
         foreach ($this->options as $o)
             $o->delete();
