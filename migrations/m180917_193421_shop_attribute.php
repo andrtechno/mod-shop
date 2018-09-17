@@ -1,14 +1,11 @@
 <?php
 
-namespace panix\mod\shop\migrations;
-
 /**
  * Generation migrate by PIXELION CMS
  * @author PIXELION CMS development team <dev@pixelion.com.ua>
  *
  * Class m180917_193421_shop_attribute
  */
-
 
 use yii\db\Schema;
 use panix\engine\db\Migration;
@@ -23,16 +20,16 @@ class m180917_193421_shop_attribute extends Migration
 
         $this->createTable(Attribute::tableName(), [
             'id' => $this->primaryKey(),
-            'group_id' => $this->integer(11),
+            'group_id' => $this->integer(11)->null(),
             'name' => $this->string(255)->notNull(),
             'type' => $this->string(10)->notNull(),
             'display_on_front' => $this->boolean()->defaultValue(1),
-            'use_in_filter' => $this->boolean()->defaultValue(null),
-            'use_in_variants' => $this->boolean()->defaultValue(null),
+            'use_in_filter' => $this->boolean()->null(),
+            'use_in_variants' => $this->boolean()->null(),
             'use_in_compare' => $this->boolean()->defaultValue(0),
-            'select_many' => $this->boolean()->defaultValue(null),
-            'ordern' => $this->integer(11)->defaultValue(null),
-            'required' => $this->boolean()->defaultValue(null),
+            'select_many' => $this->boolean()->null(),
+            'ordern' => $this->integer(11)->null(),
+            'required' => $this->boolean()->null(),
         ], $this->tableOptions);
 
 

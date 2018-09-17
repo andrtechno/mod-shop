@@ -1,7 +1,5 @@
 <?php
 
-namespace panix\mod\shop\migrations;
-
 /**
  * Generation migrate by PIXELION CMS
  * @author PIXELION CMS development team <dev@pixelion.com.ua>
@@ -63,6 +61,7 @@ class m180917_193213_shop_product extends Migration
         ], $this->tableOptions);
 
         $this->addCommentOnColumn(Product::tableName(), 'price_purchase', 'Цена закупки');
+
         $this->createIndex('user_id', Product::tableName(), 'user_id', 0);
         $this->createIndex('manufacturer_id', Product::tableName(), 'manufacturer_id', 0);
         $this->createIndex('category_id', Product::tableName(), 'category_id', 0);
