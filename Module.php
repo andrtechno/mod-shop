@@ -49,7 +49,7 @@ class Module extends WebModule {
                             ],
                             [
                                 'label' => Yii::t('shop/admin', 'CREATE_PRODUCT'),
-                                "url" => ['/admin/default/create'],
+                                "url" => ['/admin/shop/product/create'],
                                 'icon' => 'add',
                             ]
                         ]

@@ -85,16 +85,7 @@ class ProductController extends AdminController {
             'url' => ['create'],
             'options' => ['class' => 'btn btn-success']
         ];
-        $this->breadcrumbs[] = [
-            'label' => $this->module->info['label'],
-            'url' => $this->module->info['url'],
-        ];
 
-        $this->breadcrumbs[] = [
-            'label' => Yii::t('shop/admin', 'PRODUCTS'),
-            'url' => ['index']
-        ];
-        $this->breadcrumbs[] = Yii::t('app', 'UPDATE');
         $post = Yii::$app->request->post();
 
 
@@ -130,6 +121,18 @@ class ProductController extends AdminController {
         $this->pageName = $title;
         if ($model->type)
             $title .= ' "' . Html::encode($model->type->name) . '"';
+
+
+        $this->breadcrumbs[] = [
+            'label' => $this->module->info['label'],
+            'url' => $this->module->info['url'],
+        ];
+
+        $this->breadcrumbs[] = [
+            'label' => Yii::t('shop/admin', 'PRODUCTS'),
+            'url' => ['index']
+        ];
+        $this->breadcrumbs[] = $title;
 
 
         // Set configurable attributes on new record
@@ -190,7 +193,7 @@ class ProductController extends AdminController {
             }
         }
 
-        echo $this->render('update', [
+        return $this->render('update', [
             'model' => $model,
         ]);
     }

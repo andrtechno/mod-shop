@@ -9,11 +9,11 @@ use panix\mod\shop\models\ProductType;
 ?>
 
 
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <h3 class="panel-title"><?= Html::encode($this->context->pageName) ?></h3>
+<div class="card bg-light">
+    <div class="card-header">
+        <h5><?= Html::encode($this->context->pageName) ?></h5>
     </div>
-    <div class="panel-body">
+    <div class="card-body">
 
 
 
@@ -40,14 +40,14 @@ use panix\mod\shop\models\ProductType;
                     $this->theme->alert('danger',Yii::t('shop/admin', 'Выберите атрибуты для конфигурации продуктов.'),false);
                 }
                 ?>
-                <div class="form-group">
+                <div class="form-group row">
                     <div class="col-sm-4"><?= Html::activeLabel($model, 'type_id', ['class' => 'control-label']); ?></div>
                     <div class="col-sm-8">
                         <?php echo Html::activeDropDownList($model, 'type_id', ArrayHelper::map($typesList, 'id', 'name'),['class'=>'form-control']); ?>
                     </div>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group row">
                     <div class="col-sm-4"><?= Html::activeLabel($model, 'use_configurations', ['class' => 'control-label']); ?></div>
                     <div class="col-sm-8">
                         <?php echo Html::activeDropDownList($model, 'use_configurations', [0 => Yii::t('app', 'NO'), 1 => Yii::t('app', 'YES')],['class'=>'form-control']); ?>
@@ -56,7 +56,7 @@ use panix\mod\shop\models\ProductType;
 
                 <div id="availableAttributes" class="form-group hidden"></div>
 
-                <div class="form-group text-center">
+                <div class="form-group row text-center">
                     <?= Html::submitButton(Yii::t('app', 'CREATE', 0), ['name' => false, 'class' => 'btn btn-success']); ?>
                 </div>
                 <?php
@@ -67,7 +67,6 @@ use panix\mod\shop\models\ProductType;
                 $form = ActiveForm::begin([
                             'id' => strtolower(basename(get_class($model))) . '-form',
                             'options' => [
-                                'class' => 'form-horizontal',
                                 'enctype' => 'multipart/form-data'
                             ]
                 ]);

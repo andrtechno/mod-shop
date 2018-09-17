@@ -225,6 +225,16 @@ class CategoryController extends WebController {
 
 
         if ($view != 'search') {
+            $this->view->registerJs("
+        var penny = '" . Yii::$app->currency->active->penny . "';
+        var separator_thousandth = '" . Yii::$app->currency->active->separator_thousandth . "';
+        var separator_hundredth = '" . Yii::$app->currency->active->separator_hundredth . "';
+     ", yii\web\View::POS_HEAD, 'numberformat');
+
+
+
+
+
             $c = Yii::$app->settings->get('shop');
             if ($c->seo_categories) {
                 $this->keywords = $this->dataModel->keywords();
