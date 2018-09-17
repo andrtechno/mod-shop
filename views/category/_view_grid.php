@@ -28,7 +28,7 @@ use yii\helpers\HtmlPurifier;
                 <?php if ($model->appliedDiscount) { ?>
 
                     <div class="product-price clearfix product-price-discount">
-                        <span><?= $model::formatPrice(Yii::$app->currency->convert($model->originalPrice)) ?></span><sup><?= Yii::$app->currency->active->symbol ?></sup>
+                        <span><?= Yii::$app->currency->number_format(Yii::$app->currency->convert($model->originalPrice)) ?></span><sup><?= Yii::$app->currency->active->symbol ?></sup>
                     </div>
                 <?php } ?>
                 <?= Yii::$app->currency->convert($model->price); ?>

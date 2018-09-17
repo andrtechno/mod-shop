@@ -116,6 +116,10 @@ class CurrencyManager extends Component {
         return $currency->rate * $sum;
     }
 
+    public function number_format($sum) {
+        $format = number_format($sum, $this->_active->penny, $this->_active->separator_thousandth, $this->_active->separator_hundredth);
+        return iconv("windows-1251", "UTF-8", $format);
+    }
     
     /**
      * Convert from active currency to main

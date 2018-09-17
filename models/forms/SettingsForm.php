@@ -29,7 +29,7 @@ class SettingsForm extends SettingsModel {
 
     public function rules() {
         return [
-            [['per_page', 'price_decimal', 'price_thousand'], "required"],
+           // [['per_page', 'price_decimal', 'price_thousand'], "required"],
             [['product_related_bilateral', 'price_penny', 'seo_products', 'seo_categories'], 'boolean'],
             [['seo_products_title', 'seo_categories_title'], 'string', 'max' => 255],
             [['seo_categories_keywords', 'seo_categories_description', 'seo_products_keywords', 'seo_products_description'], 'string'],

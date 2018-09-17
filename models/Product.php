@@ -494,9 +494,9 @@ class Product extends \panix\engine\db\ActiveRecord
         $max_price = Yii::$app->currency->convert($this->max_price);
 
         if ($this->use_configurations && $max_price > 0)
-            return self::formatPrice($price) . ' - ' . self::formatPrice($max_price);
+            return Yii::$app->currency->number_format($price) . ' - ' . Yii::$app->currency->number_format($max_price);
 
-        return self::formatPrice($price);
+        return Yii::$app->currency->number_format($price);
     }
 
     public function afterDelete()
@@ -669,11 +669,11 @@ class Product extends \panix\engine\db\ActiveRecord
         ], parent::behaviors());
     }
 
-    public static function formatPrice($price)
+    /*public static function formatPrice($price)
     {
         $c = Yii::$app->settings->get('shop');
-        return iconv("windows-1251", "UTF-8", number_format($price, $c['price_penny'], $c['price_thousand'], $c['price_decimal']));
-    }
+        return iconv("windows-1251", "UTF-8", number_format($price, $c->price_penny, $c->price_thousand, $c->price_decimal));
+    }*/
 
     /**
      * Replaces comma to dot

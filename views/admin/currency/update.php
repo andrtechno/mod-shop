@@ -6,47 +6,40 @@ use panix\engine\bootstrap\ActiveForm;
 
 ?>
 
-
-
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <h3 class="panel-title"><?= Html::encode($this->context->pageName) ?></h3>
+<?php
+$form = ActiveForm::begin([
+    'options' => ['class' => 'form-horizontal']
+]);
+?>
+<div class="card bg-light">
+    <div class="card-header">
+        <h3 class="card-title"><?= $this->context->pageName ?></h3>
     </div>
-    <div class="panel-body">
-
-
+    <div class="card-body">
         <?php
-        $form = ActiveForm::begin([
-                    'layout' => 'horizontal',
-                    'fieldConfig' => [
-                        'horizontalCssClasses' => [
-                            'label' => 'col-sm-4',
-                            'offset' => 'col-sm-offset-4',
-                            'wrapper' => 'col-sm-8',
-                            'error' => '',
-                            'hint' => '',
-                        ],
-                    ],
-                    'options' => ['class' => 'form-horizontal']
+        echo yii\bootstrap4\Tabs::widget([
+            'items' => [
+                [
+                    'label' => 'Общие',
+                    'content' => $this->render('_global', ['form' => $form, 'model' => $model]),
+                    'active' => true,
+                    'options' => ['id' => 'global'],
+                ],
+                [
+                    'label' => 'Формат цены',
+                    'content' => $this->render('_price', ['form' => $form, 'model' => $model]),
+                    'options' => ['id' => 'price'],
+                ],
+            ],
         ]);
         ?>
-        <?= $form->field($model, 'name')->textInput(['maxlength' => 255]) ?>
-        <?= $form->field($model, 'iso')->textInput(['maxlength' => 10]) ?>
-        <?= $form->field($model, 'symbol')->textInput(['maxlength' => 10]) ?>
-        <?= $form->field($model, 'rate')->textInput() ?>
-        <?= $form->field($model, 'is_main')->checkbox() ?>
-         <?= $form->field($model, 'is_default')->checkbox() ?>
-
-
-
-
-        <div class="form-group text-center">
-            <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'CREATE') : Yii::t('app', 'UPDATE'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
-        </div>
-
-        <?php ActiveForm::end(); ?>
-
-
-
+    </div>
+    <div class="card-footer text-center">
+        <?= Html::submitButton(Yii::t('app', 'SAVE'), ['class' => 'btn btn-success']) ?>
     </div>
 </div>
+<?php ActiveForm::end(); ?>
+
+
+
+

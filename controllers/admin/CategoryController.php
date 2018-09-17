@@ -137,7 +137,7 @@ class CategoryController extends AdminController {
             echo CJSON::encode(array(
                 'message' => $message
             ));
-            Yii::app()->end();
+            Yii::$app->end();
         }
     }
 
@@ -156,7 +156,7 @@ class CategoryController extends AdminController {
         echo CJSON::encode(array(
             'message' => $message
         ));
-        Yii::app()->end();
+        Yii::$app->end();
     }
 
     /**

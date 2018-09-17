@@ -16,7 +16,6 @@ use yii\helpers\Html;
             'attributes' => $this->context->eavAttributes,
         ]);
 
-        print_r($_GET);
         ?>
 
 

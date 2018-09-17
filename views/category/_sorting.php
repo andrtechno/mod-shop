@@ -8,9 +8,9 @@ use yii\helpers\Html;
 
 
 
-        <div class="col-xs-12 col-sm-5 col-md-5 col-lg-5">
+        <div class="col-sm-5 col-md-5 col-lg-5">
 
-            <span class="hidden-md hidden-sm"><?= Yii::t('shop/default', 'VIEW'); ?> </span>
+            <span class=""><?= Yii::t('shop/default', 'VIEW'); ?> </span>
             <?php
             $sorter[Yii::$app->urlManager->removeUrlParam('/shop/category/view', 'sort')] = Yii::t('shop/default', 'SORT');
             $sorter[Yii::$app->urlManager->addUrlParam('/shop/category/view', array('sort' => 'price'))] = Yii::t('shop/default', 'SORT_BY_PRICE_ASC');
@@ -18,12 +18,12 @@ use yii\helpers\Html;
             $sorter[Yii::$app->urlManager->addUrlParam('/shop/category/view', array('sort' => '-date_create'))] = Yii::t('shop/default', 'SORT_BY_DATE_DESC');
             $active = Yii::$app->urlManager->addUrlParam('/shop/category/view', array('sort' => Yii::$app->request->get('sort')));
 
-            echo Html::dropDownList('sorter', $active, $sorter, ['onChange' => 'window.location = $(this).val()','class'=>'form-control']);
+            echo Html::dropDownList('sorter', $active, $sorter, ['onChange' => 'window.location = $(this).val()','class'=>'custom-select','style'=>'width:auto;']);
             ?>
 
 
         </div><!-- /.col -->
-        <div class="col-xs-6 col-sm-3 col-md-4 col-lg-4">
+        <div class="col-sm-3 col-md-4 col-lg-4">
 
 
 
@@ -35,22 +35,22 @@ use yii\helpers\Html;
                 $limits[Yii::$app->urlManager->addUrlParam('/shop/category/view', array('per_page' => $l))] = $l;
             }
             ?>
-            <span class="hidden-md hidden-sm"><?= Yii::t('shop/default', 'OUTPUT_ON'); ?> </span>
+            <span class=""><?= Yii::t('shop/default', 'OUTPUT_ON'); ?> </span>
             <?php
-            echo Html::dropDownList('per_page', $active, $limits, ['onChange' => 'window.location = $(this).val()','class'=>'form-control']);
+            echo Html::dropDownList('per_page', $active, $limits, ['onChange' => 'window.location = $(this).val()','class'=>'custom-select','style'=>'width:auto;']);
             ?>
             <span class=""><?= Yii::t('shop/default', 'товаров'); ?></span>
 
         </div>
 
 
-        <div class="col-xs-6 col-sm-4 col-md-3 col-lg-3">
+        <div class="col-sm-4 col-md-3 col-lg-3">
 
-            <ul id="filter-tabs" class="list-inline pull-right">
-                <li class="active"><a class="btn btn-xs <?php if ($itemView === '_grid') echo 'btn-info active'; ?>" href="<?= Yii::$app->urlManager->removeUrlParam('/shop/category/view', 'view') ?>"><i class="icon-grid"></i><span class="hidden"> Сеткой</span></a></li>
-                <li><a class="btn btn-xs <?php if ($itemView === '_list') echo 'btn-info active'; ?>" href="<?= Yii::$app->urlManager->addUrlParam('/shop/category/view', array('view' => 'list')) ?>"><i class="icon-menu"></i><span class="hidden"> Списком</span></a></li>
-                <li><a class="btn btn-xs <?php if ($itemView === '_table') echo 'btn-info active'; ?>" href="<?= Yii::$app->urlManager->addUrlParam('/shop/category/view', array('view' => 'table')) ?>"><i class="icon-table"></i><span class="hidden"> Таблицей</span></a></li>
-            </ul>
+            <div class="btn-group">
+                <a class="btn btn-xs <?php if ($itemView === '_view_grid') echo 'btn-info active'; ?>" href="<?= Yii::$app->urlManager->removeUrlParam('/shop/category/view', 'view') ?>"><i class="icon-grid"></i><span class=""> Сеткой</span></a></li>
+                <a class="btn btn-sm <?php if ($itemView === '_view_list') echo 'btn-info active'; ?>" href="<?= Yii::$app->urlManager->addUrlParam('/shop/category/view', array('view' => 'list')) ?>"><i class="icon-menu"></i><span class=""> Списком</span></a></li>
+                <a class="btn btn-sm <?php if ($itemView === '_view_table') echo 'btn-info active'; ?>" href="<?= Yii::$app->urlManager->addUrlParam('/shop/category/view', array('view' => 'table')) ?>"><i class="icon-table"></i><span class=""> Таблицей</span></a></li>
+            </div>
         </div>
     </div>
 </div>

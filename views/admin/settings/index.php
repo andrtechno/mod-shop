@@ -6,11 +6,11 @@ use panix\engine\bootstrap\ActiveForm;
 <?php
 $form = ActiveForm::begin();
 ?>
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <h3 class="panel-title"><?= $this->context->pageName ?></h3>
+<div class="card bg-light">
+    <div class="card-header">
+        <h3 class="card-title"><?= $this->context->pageName ?></h3>
     </div>
-    <div class="panel-body">
+    <div class="card-body">
         <?php
         echo yii\bootstrap4\Tabs::widget([
             'items' => [
@@ -35,16 +35,11 @@ $form = ActiveForm::begin();
                         ],
                     ],
                 ],
-                [
-                    'label' => 'Формат цены',
-                    'content' => $this->render('_price', ['form' => $form, 'model' => $model]),
-                    'options' => ['id' => 'price'],
-                ],
             ],
         ]);
         ?>
     </div>
-    <div class="panel-footer text-center">
+    <div class="card-footer text-center">
         <?= Html::submitButton(Yii::t('app', 'SAVE'), ['class' => 'btn btn-success']) ?>
     </div>
 </div>

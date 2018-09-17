@@ -47,16 +47,16 @@ $max = (int)ceil($getMax2);
                     'create' => 'function(event, ui){
                         $("#min_price").val(' . $min . ');
                         $("#max_price").val(' . $max . ');
-                        $("#mn").text("' . Product::formatPrice($min) . '");
-                        $("#mx").text("' . Product::formatPrice($max) . '");
+                        $("#mn").text("' . Yii::$app->currency->number_format($min) . '");
+                        $("#mx").text("' . Yii::$app->currency->number_format($max) . '");
                     }'
                 ],
             ]);
             ?>
             <span class="min-max">
         Цена от  
-        <span id="mn"><?php echo Product::formatPrice($min); ?></span>
-        до   <span id="mx"><?php echo Product::formatPrice($max); ?></span>
+        <span id="mn"><?php echo Yii::$app->currency->number_format($min); ?></span>
+        до   <span id="mx"><?php echo Yii::$app->currency->number_format($max); ?></span>
         (<?= Yii::$app->currency->active->symbol ?>)</span>
 
             <?php echo Html::submitButton('OK', ['class' => 'btn btn-xs btn-danger']); ?>

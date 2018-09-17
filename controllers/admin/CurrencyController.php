@@ -100,7 +100,7 @@ class CurrencyController extends AdminController {
             return Yii::$app->getResponse()->redirect(['/admin/shop/currency']);
         }
 
-        echo $this->render('update', [
+        return $this->render('update', [
             'model' => $model,
         ]);
     }
