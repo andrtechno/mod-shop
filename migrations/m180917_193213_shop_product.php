@@ -20,13 +20,13 @@ class m180917_193213_shop_product extends Migration
     public function up()
     {
         $this->createTable(Product::tableName(), [
-            'id' => $this->primaryKey(),
-            'user_id' => $this->integer(),
-            'manufacturer_id' => $this->integer(),
-            'category_id' => $this->integer(),
-            'type_id' => $this->integer(),
-            'supplier_id' => $this->integer(),
-            'currency_id' => $this->integer(),
+            'id' => $this->primaryKey()->unsigned(),
+            'user_id' => $this->integer()->unsigned(),
+            'manufacturer_id' => $this->integer()->unsigned(),
+            'category_id' => $this->integer()->unsigned(),
+            'type_id' => $this->smallInteger()->unsigned(),
+            'supplier_id' => $this->integer()->unsigned(),
+            'currency_id' => $this->smallInteger()->unsigned(),
             'use_configurations' => $this->boolean()->defaultValue(0),
             'seo_alias' => $this->string(255)->notNull(),
             'price' => $this->float('10,2'),

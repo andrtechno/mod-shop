@@ -8,18 +8,45 @@
  */
 use yii\db\Schema;
 use panix\engine\db\Migration;
+use panix\mod\shop\models\Manufacturer;
+use panix\mod\shop\models\translate\ManufacturerTranslate;
 
 class m180917_193531_shop_manufacturer extends Migration {
 
-    // Use up()/down() to run migration code without a transaction.
-    public function up() {
+    public function up()
+    {
+        $this->createTable(Manufacturer::tableName(), [
+            'id' => $this->primaryKey()->unsigned(),
+            'cat_id' => $this->integer()->null(),
+            'image' => $this->string()->null()->defaultValue(null),
+            'seo_alias' => $this->string(11)->notNull()->defaultValue(null),
+            'switch' => $this->boolean(11)->notNull()->defaultValue(null),
+            'ordern' => $this->integer(),
+        ], $this->tableOptions);
+
+
+
+        $this->createTable(ManufacturerTranslate::tableName(), [
+            'id' => $this->primaryKey(),
+            'object_id' => $this->integer(),
+            'language_id' => $this->integer(),
+            'name' => $this->string(255)->notNull(),
+            'description' => $this->text()->null()->defaultValue(null)
+        ], $this->tableOptions);
+
+
+        $this->createIndex('switch', Manufacturer::tableName(), 'switch', 0);
+        $this->createIndex('ordern', Manufacturer::tableName(), 'ordern', 0);
+        $this->createIndex('seo_alias', Manufacturer::tableName(), 'seo_alias', 0);
+
+        $this->createIndex('object_id', ManufacturerTranslate::tableName(), 'object_id', 0);
+        $this->createIndex('language_id', ManufacturerTranslate::tableName(), 'language_id', 0);
 
     }
 
-    public function down() {
-        echo "m180917_193531_shop_manufacturer cannot be reverted.\n";
-
-        return false;
+    public function down()
+    {
+        $this->dropTable(Manufacturer::tableName());
+        $this->dropTable(ManufacturerTranslate::tableName());
     }
-
 }

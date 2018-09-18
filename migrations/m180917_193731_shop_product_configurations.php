@@ -11,15 +11,21 @@ use panix\engine\db\Migration;
 
 class m180917_193731_shop_product_configurations extends Migration {
 
-    // Use up()/down() to run migration code without a transaction.
-    public function up() {
+    public function up()
+    {
+        $this->createTable('{{%shop_product_configurations}}', [
+            'product_id' => $this->integer(11)->notNull()->unsigned(),
+            'configurable_id' => $this->integer(11)->notNull()->unsigned(),
+        ], $this->tableOptions);
 
+        $this->addCommentOnColumn('{{%shop_product_configurations}}', 'product_id', 'Saves relations beetwen product and configurations');
+
+        $this->createIndex('idsunique', '{{%shop_product_configurations}}', ['product_id','configurable_id'], 1);
     }
 
-    public function down() {
-        echo "m180917_193731_shop_product_configurations cannot be reverted.\n";
-
-        return false;
+    public function down()
+    {
+        $this->dropTable('{{%shop_product_configurations}}');
     }
 
 }
