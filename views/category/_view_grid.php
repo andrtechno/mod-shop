@@ -1,6 +1,6 @@
 <?php
 
-use yii\helpers\Html;
+use panix\engine\Html;
 use yii\helpers\HtmlPurifier;
 
 ?>
@@ -9,7 +9,7 @@ use yii\helpers\HtmlPurifier;
 <div class="product">
     <div class="product-image">
         <?php
-        echo Html::a(Html::img($model->getMainImageUrl('400x250'), ['alt' => $model->name, 'class' => 'group list-group-image']), $model->getUrl());
+        echo Html::a(Html::img($model->getMainImageUrl('400x250'), ['alt' => $model->name, 'class' => 'img-fluid']), $model->getUrl());
         ?>
     </div>
 
@@ -21,19 +21,19 @@ use yii\helpers\HtmlPurifier;
 
         <div class="product-price clearfix">
 
-            <span class="price float-left"><span><?= $model->priceRange() ?></span> <sup><?= Yii::$app->currency->active->symbol ?></sup></span>
+            <span class="price"><span><?= $model->priceRange() ?></span> <sup><?= Yii::$app->currency->active->symbol ?></sup></span>
 
-            <div class="product-price">
+
 
                 <?php if ($model->appliedDiscount) { ?>
 
-                    <div class="product-price clearfix product-price-discount">
+                    <div class="product-price product-price-discount">
                         <span><?= Yii::$app->currency->number_format(Yii::$app->currency->convert($model->originalPrice)) ?></span><sup><?= Yii::$app->currency->active->symbol ?></sup>
                     </div>
+
                 <?php } ?>
-                <?= Yii::$app->currency->convert($model->price); ?>
-                <sup><?= Yii::$app->currency->active->symbol; ?></sup>
-            </div>
+
+
 
 
         </div>
@@ -47,8 +47,8 @@ use yii\helpers\HtmlPurifier;
         <div class="action btn-group">
 
 
-        </div><!-- /.action -->
-        <?php echo Html::a('<i class="icon-shopcart"></i>' . Yii::t('cart/default', 'BUY'), 'javascript:cart.add(' . $model->id . ')', array('class' => 'btn btn-primary')); ?>
+        </div>
+        <?php echo Html::a(Html::icon('shopcart') .' '. Yii::t('cart/default', 'BUY'), 'javascript:cart.add(' . $model->id . ')', array('class' => 'btn btn-primary')); ?>
 
 
         <?php echo $model->endCartForm(); ?>

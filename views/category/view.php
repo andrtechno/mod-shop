@@ -25,25 +25,15 @@ use yii\helpers\Html;
     <div class="col-sm-9">
         <?= Html::a('back', Url::previous(),['class'=>'btn btn-default']); ?>
         <h1><?= $this->context->dataModel->name ?></h1>
-        <?php echo $this->render('_sorting', array('itemView' => $itemView)); ?>
+        <?php echo $this->render('_sorting', ['itemView' => $itemView]); ?>
+
+        <div id="listview-ajax">
         <?php
-        echo \yii\widgets\ListView::widget([
-            'dataProvider' => $provider,
+        echo $this->render('listview',[
             'itemView' => $itemView,
-            'layout' => '{sorter}{summary}{items}{pager}',
-            'emptyText' => 'Empty',
-            'options' => ['class' => 'row list-view'],
-            'itemOptions' => ['class' => 'item'],
-            'sorter' => [
-                //'class' => \yii\widgets\LinkSorter::className(),
-                'attributes'=>['price','sku']
-            ],
-            'pager' => [
-                'class' => \kop\y2sp\ScrollPager::class,
-                'triggerTemplate' => '<div class="ias-trigger" style="text-align: center; cursor: pointer;"><a href="javascript:void(0)">{text}</a></div>'
-            ],
-            'emptyTextOptions' => ['class' => 'alert alert-info']
+            'provider' => $provider,
         ]);
         ?>
+        </div>
     </div>
 </div>

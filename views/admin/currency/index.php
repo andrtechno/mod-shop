@@ -3,9 +3,8 @@
 use yii\helpers\Html;
 use yii\widgets\Pjax;
 use panix\engine\grid\GridView;
+
 ?>
-
-
 
 
 <?php // echo $this->render('_search', ['model' => $searchModel]);   ?>
@@ -20,8 +19,8 @@ GridView::widget([
     'filterModel' => $searchModel,
     'layoutOptions' => ['title' => $this->context->pageName],
     'rowOptions' => function ($model, $key, $index, $grid) {
-return ['class' => 'sortable-column'];
-},
+        return ['class' => 'sortable-column'];
+    },
     'columns' => [
         [
             'class' => \panix\engine\grid\sortable\Column::class,
@@ -46,9 +45,9 @@ return ['class' => 'sortable-column'];
             'attribute' => 'rate',
             'format' => 'raw',
             'contentOptions' => ['class' => 'text-center'],
-            'value' => function($model) {
-        return $model->rate;
-    }
+            'value' => function ($model) {
+                return $model->rate;
+            }
         ],
         ['class' => 'panix\engine\grid\columns\ActionColumn',
             'template' => '{update}{delete}',
@@ -60,16 +59,16 @@ return ['class' => 'sortable-column'];
                         $icon = "play";
 
                     return Html::a('dsadas', $url, [
-                                'title' => Yii::t('app', 'Toogle Active'),
-                                'data-pjax' => '1',
-                                'data-toggle-active' => $model->id
+                        'title' => Yii::t('app', 'Toogle Active'),
+                        'data-pjax' => '1',
+                        'data-toggle-active' => $model->id
                     ]);
                 },
-                    ]
-                ],
-            // ['class' => 'panix\engine\grid\columns\ActionColumn'],
-            ],
-        ]);
-        ?>
-        <?php Pjax::end(); ?>
+            ]
+        ],
+        // ['class' => 'panix\engine\grid\columns\ActionColumn'],
+    ],
+]);
+?>
+<?php Pjax::end(); ?>
 

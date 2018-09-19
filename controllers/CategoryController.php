@@ -261,11 +261,18 @@ class CategoryController extends WebController {
                 $itemView = '_view_' . Yii::$app->request->get('view');
             }
         }
-
+        if (Yii::$app->request->isAjax){
+            //\Yii::$app->response->format = \yii\web\Response::FORMAT_HTML;
+            return $this->renderPartial('listview', [
+                'provider' => $this->provider,
+                'itemView' => $itemView
+            ]);
+        }else{
         return $this->render($view, [
             'provider' => $this->provider,
             'itemView' => $itemView
         ]);
+        }
     }
 
     public function applyPricesFilter() {
