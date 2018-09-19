@@ -101,7 +101,7 @@ class CategoryController extends AdminController {
             Yii::$app->session->setFlash('success', \Yii::t('app', 'SUCCESS_UPDATE'));
             //return Yii::$app->getResponse()->redirect(['/admin/shop/category']);
         }
-        echo $this->render('update', [
+        return $this->render('update', [
             'model' => $model,
         ]);
     }

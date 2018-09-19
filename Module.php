@@ -12,10 +12,11 @@ class Module extends WebModule {
     public $routes = [
         'shop/ajax/currency/<id:\d+>' => 'shop/ajax/currency',
         'shop' => 'shop/default/index',
-        'product/<seo_alias:\w+>' => 'shop/product/view',
-        'manufacturer/<seo_alias:\w+>' => 'shop/manufacturer/view',
 
+        'manufacturer/<seo_alias:\w+>' => 'shop/manufacturer/view',
+        'product/<seo_alias:[0-9a-zA-Z\-]+>' => 'shop/product/view',
         'products/search/<q:\w+>' => 'shop/category/search',
+
         ['class' => 'panix\mod\shop\components\CategoryUrlRule'],
     ];
 

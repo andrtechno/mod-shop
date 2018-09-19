@@ -8,11 +8,11 @@ use yii\bootstrap4\ActiveForm;
 
 
 
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <h3 class="panel-title"><?= Html::encode($this->context->pageName) ?></h3>
+<div class="card bg-light">
+    <div class="card-header">
+        <h5><?= Html::encode($this->context->pageName) ?></h5>
     </div>
-    <div class="panel-body">
+    <div class="card-body">
 
 
         <?php

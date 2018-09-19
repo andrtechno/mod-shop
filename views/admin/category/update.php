@@ -6,11 +6,11 @@ use panix\mod\shop\models\Category;
 use panix\ext\tinymce\TinyMce;
 use panix\engine\bootstrap\Alert;
 ?>
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <h3 class="panel-title"><?= Html::encode($this->context->pageName) ?></h3>
+<div class="card bg-light">
+    <div class="card-header">
+        <h5><?= Html::encode($this->context->pageName) ?></h5>
     </div>
-    <div class="panel-body">
+    <div class="card-body">
         <?php
         if (Yii::$app->request->get('parent_id')) {
             $parent = Category::findOne(Yii::$app->request->get('parent_id'));
