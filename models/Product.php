@@ -481,7 +481,7 @@ class Product extends \panix\engine\db\ActiveRecord
     {
         $currency = Yii::$app->currency;
         if ($this->appliedDiscount) {
-            $price = $currency->convert($this->originalPrice, $currency_id);
+            $price = $currency->convert($this->discountPrice, $currency_id);
         } else {
             $price = $currency->convert($this->price, $currency_id);
         }
@@ -709,12 +709,14 @@ class Product extends \panix\engine\db\ActiveRecord
         if ($configuration instanceof Product) {
             $result = $configuration->price;
         } else {
-            //  if ($product->currency_id) {
-            //      $result = $product->price;
-            //  } else {
-            $result = $product->price;
-            // $result = $product->getFrontPrice();
-            //   }
+              if ($product->currency_id) {
+                  $result = $product->price;
+              } else {
+
+             $result = $product->getDisplayPrice();
+                  //$result = $product->price;
+               }
+          //  $result = $product->price;
         }
 
         // if $variants contains not models

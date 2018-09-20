@@ -13,7 +13,7 @@ use yii\helpers\HtmlPurifier;
         ?>
     </div>
 
-   <div class="product-info">
+    <div class="product-info">
         <div class="product-title">
             <h4 class="group inner list-group-item-heading"><?= Html::a(Html::encode($model->name), $model->getUrl()) ?></h4>
 
@@ -21,19 +21,25 @@ use yii\helpers\HtmlPurifier;
 
         <div class="product-price clearfix">
 
-            <span class="price"><span><?= $model->priceRange() ?></span> <sup><?= Yii::$app->currency->active->symbol ?></sup></span>
+            <div>
+                <span class="price">
+                    <span><?= $model->priceRange() ?></span>
+                    <sup><?= Yii::$app->currency->active->symbol ?></sup>
+                </span>
+            </div>
 
+            <?php
+            // var_dump($model->appliedDiscount);
+            ?>
+            <?php if ($model->appliedDiscount) { ?>
+                <div>
+                    <span class="price price-strike">
+                        <span><?= Yii::$app->currency->number_format(Yii::$app->currency->convert($model->originalPrice)) ?></span>
+                        <sup><?= Yii::$app->currency->active->symbol ?></sup>
+                    </span>
+                </div>
 
-
-                <?php if ($model->appliedDiscount) { ?>
-
-                    <div class="product-price product-price-discount">
-                        <span><?= Yii::$app->currency->number_format(Yii::$app->currency->convert($model->originalPrice)) ?></span><sup><?= Yii::$app->currency->active->symbol ?></sup>
-                    </div>
-
-                <?php } ?>
-
-
+            <?php } ?>
 
 
         </div>
@@ -48,7 +54,7 @@ use yii\helpers\HtmlPurifier;
 
 
         </div>
-        <?php echo Html::a(Html::icon('shopcart') .' '. Yii::t('cart/default', 'BUY'), 'javascript:cart.add(' . $model->id . ')', array('class' => 'btn btn-primary')); ?>
+        <?php echo Html::a(Html::icon('shopcart') . ' ' . Yii::t('cart/default', 'BUY'), 'javascript:cart.add(' . $model->id . ')', array('class' => 'btn btn-primary')); ?>
 
 
         <?php echo $model->endCartForm(); ?>
