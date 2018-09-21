@@ -53,7 +53,7 @@ class ProductSearch extends Product
             'query' => $query,
             //'sort' => self::getSort()
             'sort' => [
-                'defaultOrder' => ['date_create' => SORT_ASC],
+                //'defaultOrder' => ['date_create' => SORT_ASC],
                 'attributes' => [
                     'price',
                 ],

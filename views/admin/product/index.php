@@ -24,7 +24,16 @@ echo GridView::widget([
     'tableOptions' => ['class' => 'table table-striped'],
     'dataProvider' => $dataProvider,
     'filterModel' => $searchModel,
-    'layoutOptions' => ['title' => $this->context->pageName],
+    'layoutOptions' => [
+        'title' => $this->context->pageName,
+        'buttons'=>[
+            [
+                'url'=>['create'],
+                'label'=>Yii::t('shop/admin', 'CREATE_PRODUCT'),
+                'icon'=>'add'
+            ]
+        ]
+    ],
     'showFooter' => true,
     //   'footerRowOptions' => ['class' => 'text-center'],
     'rowOptions' => ['class' => 'sortable-column']
