@@ -74,12 +74,21 @@ class CategoryController extends AdminController {
         if (!$model) {
             $this->error404();
         }
-        $this->pageName = Yii::t('shop/admin', 'CATEGORIES');
-
+       // $this->pageName = Yii::t('shop/admin', 'CATEGORIES');
+        if ($model->getIsNewRecord()) {
+            $this->icon = 'add';
+            $this->pageName = Yii::t('shop/Category', 'CREATE_TITLE');
+        }else{
+            $this->pageName = Yii::t('shop/Category', 'UPDATE_TITLE',['name'=>$model->name]);
+        }
         $this->breadcrumbs = [
             [
                 'label' => Yii::t('shop/default', 'MODULE_NAME'),
                 'url' => ['/admin/shop']
+            ],
+            [
+                'label' => Yii::t('shop/admin', 'CATEGORIES'),
+                'url' => ['/admin/shop/category']
             ],
             $this->pageName
         ];
