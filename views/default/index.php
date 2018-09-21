@@ -6,9 +6,9 @@ use panix\mod\shop\models\Category;
 
 // \yii\helpers\VarDumper::dump(Category::findOne(44),100,true);
 // die;
+$root = Category::findOne(1);
 
-
-$categories = Category::findOne(1)->children()->all();
+$categories = $root->children()->all();
 ?>
 <div class="row">
     <?php

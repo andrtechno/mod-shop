@@ -69,7 +69,7 @@ class Product extends \panix\engine\db\ActiveRecord
         return new \yii\data\Sort([
             //'defaultOrder'=>'ordern DESC',
             'attributes' => [
-                '*',
+                //'*',
                 'price' => [
                     'asc' => ['price' => SORT_ASC],
                     'desc' => ['price' => SORT_DESC],
@@ -79,6 +79,11 @@ class Product extends \panix\engine\db\ActiveRecord
                 'sku' => [
                     'asc' => ['sku' => SORT_ASC],
                     'desc' => ['sku' => SORT_DESC],
+                ],
+                'name' => [
+                    'default' => SORT_ASC,
+                    'asc' => ['translation.name' => SORT_ASC],
+                    'desc' => ['translation.name' => SORT_DESC],
                 ],
             ],
         ]);
@@ -223,6 +228,11 @@ class Product extends \panix\engine\db\ActiveRecord
     public function getTranslations()
     {
         return $this->hasMany(ProductTranslate::class, ['object_id' => 'id']);
+    }
+
+    public function getTranslation()
+    {
+        return $this->hasOne(ProductTranslate::class, ['object_id' => 'id']);
     }
 
     public function getRelated()
@@ -479,13 +489,12 @@ class Product extends \panix\engine\db\ActiveRecord
 
     public function getDisplayPrice($currency_id = null)
     {
-        $currency = Yii::$app->currency;
         if ($this->appliedDiscount) {
-            $price = $currency->convert($this->discountPrice, $currency_id);
+            $price = $this->discountPrice;
         } else {
-            $price = $currency->convert($this->price, $currency_id);
+            $price = $this->price;
         }
-        return $price;
+        return Yii::$app->currency->convert($this->price, $currency_id);
     }
 
     public function priceRange()

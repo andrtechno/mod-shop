@@ -10,16 +10,18 @@ use panix\mod\shop\models\Product;
 /**
  * PagesSearch represents the model behind the search form about `app\modules\pages\models\Pages`.
  */
-class ProductSearch extends Product {
+class ProductSearch extends Product
+{
 
     public $exclude = null;
 
     /**
      * @inheritdoc
      */
-    public function rules() {
+    public function rules()
+    {
         return [
-            [['id','price'], 'integer'],
+            [['id', 'price'], 'integer'],
             [['name', 'seo_alias', 'sku', 'price'], 'safe'],
         ];
     }
@@ -27,7 +29,8 @@ class ProductSearch extends Product {
     /**
      * @inheritdoc
      */
-    public function scenarios() {
+    public function scenarios()
+    {
         // bypass scenarios() implementation in the parent class
         return Model::scenarios();
     }
@@ -39,17 +42,22 @@ class ProductSearch extends Product {
      *
      * @return ActiveDataProvider
      */
-    public function search($params, $configure = array()) {
+    public function search($params, $configure = array())
+    {
         $query = Product::find();
-        $query->joinWith('translations');
+        //$query->joinWith('translations');
+        $query->joinWith(['translations translations']);
 
-        if (isset($configure['conf'])) {
-            $query->andWhere(['IN', 'id', $configure['conf']]);
-        }
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-            'sort' => self::getSort()
+            //'sort' => self::getSort()
+            'sort' => [
+                'defaultOrder' => ['date_create' => SORT_ASC],
+                'attributes' => [
+                    'price',
+                ],
+            ],
         ]);
 
         $this->load($params);
@@ -60,25 +68,29 @@ class ProductSearch extends Product {
             return $dataProvider;
         }
 
-        $query->andFilterWhere([
-            'id' => $this->id,
-        ]);
+        // $query->andFilterWhere([
+        //     'id' => $this->id,
+        // ]);
         // Id of product to exclude from search
         if ($this->exclude) {
             foreach ($this->exclude as $id) {
                 $query->andFilterWhere(['!=', '{{%shop_product}}.id', $id]);
             }
         }
+        if (isset($configure['conf'])) {
+            $query->andWhere(['IN', 'id', $configure['conf']]);
+        }
 
-        $query->andFilterWhere(['like', 'name', $this->name]);
-        $query->andFilterWhere(['like', 'sku', $this->sku]);
-        $query->andFilterWhere(['like', 'price', $this->price]);
+       // $query->andFilterWhere(['like', 'translations.name', $this->name]);
+        // $query->andFilterWhere(['like', 'sku', $this->sku]);
+         $query->andFilterWhere(['like', 'price', $this->price]);
 
         return $dataProvider;
     }
 
 
-    public function searchBySite($params) {
+    public function searchBySite($params)
+    {
         $query = Product::find();
         $query->joinWith('translations');
         $this->load($params);

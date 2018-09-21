@@ -2,6 +2,7 @@
 
 use panix\engine\Html;
 use yii\widgets\ActiveForm;
+
 ?>
 <?php
 $this->registerJs("
@@ -78,12 +79,11 @@ echo \yii\helpers\Inflector::sentence($words);
         <div class="btn-group">
             <?php
             if ($prev = $model->getNextOrPrev('prev')) {
-              //  echo Html::a('prev ' . $prev->name, $prev->getUrl(), ['class' => 'btn btn-default']);
+                //  echo Html::a('prev ' . $prev->name, $prev->getUrl(), ['class' => 'btn btn-default']);
             }
             if ($next = $model->getNextOrPrev('next')) {
-              //  echo Html::a($next->name . ' next', $next->getUrl(), ['class' => 'btn btn-default']);
+                //  echo Html::a($next->name . ' next', $next->getUrl(), ['class' => 'btn btn-default']);
             }
-
 
 
             if ($prev = $model->objectPrev) {
@@ -98,19 +98,19 @@ echo \yii\helpers\Inflector::sentence($words);
         <h1><?= $model->name ?></h1>
 
 
-
-        <?php if ($model->appliedDiscount) { ?>
-
-            <span class="price price-discount">
-                <span><?= Yii::$app->currency->number_format(Yii::$app->currency->convert($model->discountPrice)) ?></span>
-                <sup><?= Yii::$app->currency->active->symbol ?></sup>
-            </span>
-        <?php } ?>
-        <span class="price <?php echo($model->appliedDiscount) ? 'strike' : ''; ?>">
+        <span class="price">
             <span><?= Yii::$app->currency->number_format($model->getDisplayPrice()); ?></span>
             <sup><?= Yii::$app->currency->active->symbol; ?></sup>
         </span>
         <?= $model->beginCartForm(); ?>
+
+
+        <?php if ($model->appliedDiscount) { ?>
+            <span class="price price-strike">
+                <span><?= Yii::$app->currency->number_format(Yii::$app->currency->convert($model->discountPrice)) ?></span>
+                <sup><?= Yii::$app->currency->active->symbol ?></sup>
+            </span>
+        <?php } ?>
         <?php
         echo Html::a(Html::icon('shopcart') . Yii::t('cart/default', 'BUY'), 'javascript:cart.add(' . $model->id . ')', array('class' => 'btn btn-primary'));
         ?>
@@ -141,7 +141,8 @@ echo \yii\helpers\Inflector::sentence($words);
         <ul class="list-group">
             <?php if ($model->manufacturer_id) { ?>
                 <li class="list-group-item">
-                    <?= $model->getAttributeLabel('manufacturer_id'); ?>: <?= Html::a($model->manufacturer->name, $model->manufacturer->getUrl()); ?>
+                    <?= $model->getAttributeLabel('manufacturer_id'); ?>
+                    : <?= Html::a($model->manufacturer->name, $model->manufacturer->getUrl()); ?>
                 </li>
 
             <?php } ?>
@@ -192,7 +193,6 @@ echo \yii\helpers\Inflector::sentence($words);
                 'options' => ['id' => 'videl'],
             ];
         }
-
 
 
         echo yii\bootstrap4\Tabs::widget(['items' => $tabs]);

@@ -6,6 +6,8 @@ use Yii;
 use panix\engine\controllers\AdminController;
 use panix\mod\shop\models\Category;
 use yii\filters\VerbFilter;
+use yii\helpers\Inflector;
+use yii\web\Response;
 
 /**
  * AdminController implements the CRUD actions for User model.
@@ -127,17 +129,21 @@ class CategoryController extends AdminController {
         $model = Category::findOne((int) $id);
         if ($model) {
             $model->name = $_GET['text'];
-            $model->seo_alias = \panix\engine\CMS::translit($model->name);
+            $model->seo_alias = Inflector::slug($model->name);
             if ($model->validate()) {
-                $model->saveNode(false, false);
-                $message = Yii::t('shop/admin', 'CATEGORY_TREE_RENAME');
+                $model->saveNode(false);
+                $success=true;
+                $message = Yii::t('shop/Category', 'CATEGORY_TREE_RENAME');
             } else {
-                $message = $model->getError('seo_alias');
+                $success=false;
+                $message = Yii::t('shop/Category', 'ERROR_CATEGORY_TREE_RENAME');
             }
-            echo CJSON::encode(array(
-                'message' => $message
-            ));
-            Yii::$app->end();
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return [
+                'message' => $message,
+                'success' => $success
+            ];
+
         }
     }
 
@@ -146,17 +152,17 @@ class CategoryController extends AdminController {
         $parent = Category::findOne($_GET['parent_id']);
 
         $model->name = $_GET['text'];
-        $model->seo_alias = \panix\engine\CMS::translit($model->name);
+        $model->seo_alias = Inflector::slug($model->name);
         if ($model->validate()) {
             $model->appendTo($parent);
-            $message = Yii::t('shop/admin', 'CATEGORY_TREE_CREATE');
+            $message = Yii::t('shop/Category', 'CATEGORY_TREE_CREATE');
         } else {
             $message = $model->getError('seo_alias');
         }
-        echo CJSON::encode(array(
-            'message' => $message
-        ));
-        Yii::$app->end();
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return [
+            'message' => $message,
+        ];
     }
 
     /**
@@ -190,11 +196,12 @@ class CategoryController extends AdminController {
         $node = Category::findOne($_GET['id']);
         $node->switch = ($node->switch == 1) ? 0 : 1;
         $node->saveNode();
-        echo \yii\helpers\Json::encode(array(
+
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return [
             'switch' => $node->switch,
-            'message' => Yii::t('shop/admin', ($node->switch) ? 'CATEGORY_TREE_SWITCH_OFF' : 'CATEGORY_TREE_SWITCH_NO')
-        ));
-        die;
+            'message' => Yii::t('shop/Category', ($node->switch) ? 'CATEGORY_TREE_SWITCH_OFF' : 'CATEGORY_TREE_SWITCH_ON')
+        ];
     }
 
     /**

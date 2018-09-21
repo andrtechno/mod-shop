@@ -14,10 +14,8 @@ return [
     'ATTRIBUTES' => 'Атрибуры',
     'PRODUCTS' => 'Продукция',
     'MANUFACTURER' => 'Производители',
-    'CATEGORY_TREE_CREATE' => 'Категория успешно добавлена.',
-    'CATEGORY_TREE_RENAME' => 'Категория успешно переименована.',
-    'CATEGORY_TREE_SWITCH_ON' => 'Категория успешно скрыта',
-    'CATEGORY_TREE_SWITCH_OFF' => 'Категория успешно показана',
+
+
     'FIEND_REQUIRED' => 'Поле {field} обязательно для заполнения',
     'ADD_OPTION' => 'Добавить опцию',
     'VARIANTS_PRICE_FIX' => 'Фиксированная',

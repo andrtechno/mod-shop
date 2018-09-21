@@ -22,7 +22,12 @@ $('#jsTree_CategoryTree').bind('rename_node.jstree', function (node, text) {
                 text: text.text
             },
             success: function (data) {
-                common.notify(data.message,'success');
+                if(data.success){
+                    common.notify(data.message,'success');
+                }else{
+                    common.notify(data.message,'error');
+                }
+
             }
         });
     }

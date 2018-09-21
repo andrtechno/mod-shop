@@ -31,6 +31,16 @@ class Category extends \panix\engine\db\ActiveRecord {
 
     public function rules() {
         return [
+
+
+            ['seo_alias', '\panix\engine\validators\UrlValidator', 'attributeCompare' => 'name'],
+            ['seo_alias', 'match',
+                'pattern' => '/^([a-z0-9-])+$/i',
+                'message' => Yii::t('app', 'PATTERN_URL')
+            ],
+            [['name', 'seo_alias'], 'trim'],
+
+
             [['name', 'seo_alias'], 'required'],
             [['name'], 'string', 'max' => 255],
             ['description', 'safe']
