@@ -68,9 +68,9 @@ class ProductSearch extends Product
             return $dataProvider;
         }
 
-        // $query->andFilterWhere([
-        //     'id' => $this->id,
-        // ]);
+        $query->andFilterWhere([
+            'id' => $this->id,
+        ]);
         // Id of product to exclude from search
         if ($this->exclude) {
             foreach ($this->exclude as $id) {
@@ -81,9 +81,9 @@ class ProductSearch extends Product
             $query->andWhere(['IN', 'id', $configure['conf']]);
         }
 
-       // $query->andFilterWhere(['like', 'translations.name', $this->name]);
-        // $query->andFilterWhere(['like', 'sku', $this->sku]);
-         $query->andFilterWhere(['like', 'price', $this->price]);
+        $query->andFilterWhere(['like', 'translations.name', $this->name]);
+        $query->andFilterWhere(['like', 'sku', $this->sku]);
+        $query->andFilterWhere(['like', 'price', $this->price]);
 
         return $dataProvider;
     }
