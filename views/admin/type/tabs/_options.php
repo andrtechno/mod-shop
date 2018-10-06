@@ -1,5 +1,5 @@
 <?php
-use yii\helpers\Html;
+use panix\engine\Html;
 use yii\helpers\ArrayHelper;
 
 ?>
@@ -8,13 +8,13 @@ use yii\helpers\ArrayHelper;
        $.configureBoxes({useFilters:false,useCounters:false});
     });
 </script>
-<div class="form-group">
+<div class="form-group row">
     <div class="col-sm-4"><?= Html::activeLabel($model, 'name', array('required' => true)); ?></div>
     <div class="col-sm-8"><?= Html::activeTextInput($model, 'name', array('class' => 'form-control')); ?></div>
 
 </div>
 
-<div class="body form-group">
+<div class="form-group row">
     <div class="leftBox col-lg-5">
 
         <?= Html::label(Yii::t('shop/admin', 'Атрибуты продукта'), 'box2View') ?>
@@ -28,15 +28,15 @@ use yii\helpers\ArrayHelper;
     </div>
 
     <div class="dualControl col-lg-2 text-center" style="margin-top:40px">
-        <div class="btn-group">
-            <button id="to2" type="button" class="dualBtn btn btn-default">&nbsp;&lt;&nbsp;</button>
-            <button id="to1" type="button" class="dualBtn btn btn-default">&nbsp;&gt;&nbsp;</button>
+        <div class="btn-group2">
+            <button id="to2" type="button" class="dualBtn btn btn-secondary"><?= Html::icon('arrow-left');?></button>
+            <button id="to1" type="button" class="dualBtn btn btn-secondary"><?= Html::icon('arrow-right');?></button>
         </div>
         <br/>
         <br/>
-        <div class="btn-group">
-            <button id="allTo2" type="button" class="dualBtn btn btn-default">&nbsp;&lt;&lt;&nbsp;</button>
-            <button id="allTo1" type="button" class="dualBtn btn btn-default">&nbsp;&gt;&gt;&nbsp;</button>
+        <div class="btn-group2">
+            <button id="allTo2" type="button" class="dualBtn btn btn-secondary"><?= Html::icon('double-arrow-left');?></button>
+            <button id="allTo1" type="button" class="dualBtn btn btn-secondary"><?= Html::icon('double-arrow-right');?></button>
         </div>
     </div>
 

@@ -3,7 +3,7 @@
 use yii\helpers\Html;
 ?>
 
-<div class="card card-light">
+<div class="card bg-light">
     <div class="card-header">
         <h5><?= Html::encode($this->context->pageName) ?></h5>
     </div>
@@ -15,7 +15,7 @@ use yii\helpers\Html;
         ));
 
         echo Html::hiddenInput('main_category', $model->main_category, ['id' => 'main_category']);
-        echo yii\bootstrap4\Tabs::widget([
+        echo \panix\engine\bootstrap\Tabs::widget([
             'items' => [
                 [
                     'label' => $model::t('TAB_OPTIONS'),
