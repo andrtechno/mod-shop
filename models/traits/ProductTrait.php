@@ -94,7 +94,7 @@ trait ProductTrait {
                         'label' => Yii::t('shop/admin', 'GRID_OPTION_ACTIVE'),
                         'url' => 'javascript:void(0)',
                         'icon' => 'eye',
-                        'options' => [
+                        'linkOptions' => [
                             'onClick' => 'return setProductsStatus(1, this);',
                             'data-question' => self::t('CONFIRM_SHOW')
                         ],
@@ -103,7 +103,7 @@ trait ProductTrait {
                         'label' => Yii::t('shop/admin', 'GRID_OPTION_DEACTIVE'),
                         'url' => 'javascript:void(0)',
                         'icon' => 'eye-close',
-                        'options' => [
+                        'linkOptions' => [
                             'onClick' => 'return setProductsStatus(0, this);',
                             'data-question' => self::t('CONFIRM_HIDE')
                         ],
@@ -112,7 +112,7 @@ trait ProductTrait {
                         'label' => Yii::t('shop/admin', 'GRID_OPTION_SETCATEGORY'),
                         'url' => 'javascript:void(0)',
                         'icon' => 'folder-open',
-                        'options' => [
+                        'linkOptions' => [
                             'onClick' => 'return showCategoryAssignWindow(this);',
                             'data-question' => self::t('CONFIRM_CATEGORY')
                         ],
@@ -121,7 +121,7 @@ trait ProductTrait {
                         'label' => Yii::t('shop/admin', 'GRID_OPTION_COPY'),
                         'url' => 'javascript:void(0)',
                         'icon' => 'copy',
-                        'options' => [
+                        'linkOptions' => [
                             'onClick' => 'return showDuplicateProductsWindow(this);',
                             'data-question' => self::t('CONFIRM_COPY')
                         ],
@@ -130,7 +130,7 @@ trait ProductTrait {
                         'label' => Yii::t('shop/admin', 'GRID_OPTION_SETPRICE'),
                         'url' => 'javascript:void(0)',
                         'icon' => 'currencies',
-                        'options' => [
+                        'linkOptions' => [
                             'onClick' => 'return setProductsPrice(this);',
                             'data-question' => self::t('CONFIRM_PRICE')
                         ],
