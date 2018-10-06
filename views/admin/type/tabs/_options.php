@@ -5,7 +5,7 @@ use yii\helpers\ArrayHelper;
 ?>
 <script>
     $(function () {
-       $.configureBoxes({useFilters:false,useCounters:false});
+        $.configureBoxes({useFilters: false, useCounters: false});
     });
 </script>
 <div class="form-group row">
@@ -18,7 +18,7 @@ use yii\helpers\ArrayHelper;
     <div class="leftBox col-lg-5">
 
         <?= Html::label(Yii::t('shop/admin', 'Атрибуты продукта'), 'box2View') ?>
-        <br />
+        <br/>
         <?php
         echo Html::dropDownList('attributes[]', null, ArrayHelper::map($model->shopAttributes, 'id', 'title'), array('id' => 'box2View', 'multiple' => true, 'class' => 'form-control multiple attributesList', 'style' => 'height:300px;width:100%;'));
         ?>
@@ -27,22 +27,26 @@ use yii\helpers\ArrayHelper;
         <span id="box2Counter" class="countLabel"></span>
     </div>
 
-    <div class="dualControl col-lg-2 text-center" style="margin-top:40px">
-        <div class="btn-group2">
-            <button id="to2" type="button" class="dualBtn btn btn-secondary"><?= Html::icon('arrow-left');?></button>
-            <button id="to1" type="button" class="dualBtn btn btn-secondary"><?= Html::icon('arrow-right');?></button>
+    <div class="dualControl col-lg-2 text-center2 d-flex align-items-center">
+
+        <div class="btn-group mx-auto">
+            <button id="to2" type="button"
+                    class="dualBtn btn btn-secondary"><?= Html::icon('arrow-left'); ?></button>
+            <button id="to1" type="button"
+                    class="dualBtn btn btn-secondary"><?= Html::icon('arrow-right'); ?></button>
         </div>
-        <br/>
-        <br/>
-        <div class="btn-group2">
-            <button id="allTo2" type="button" class="dualBtn btn btn-secondary"><?= Html::icon('double-arrow-left');?></button>
-            <button id="allTo1" type="button" class="dualBtn btn btn-secondary"><?= Html::icon('double-arrow-right');?></button>
+
+        <div class="btn-group mx-auto">
+            <button id="allTo2" type="button"
+                    class="dualBtn btn btn-secondary"><?= Html::icon('double-arrow-left'); ?></button>
+            <button id="allTo1" type="button"
+                    class="dualBtn btn btn-secondary"><?= Html::icon('double-arrow-right'); ?></button>
         </div>
     </div>
 
     <div class="rightBox col-lg-5">
 
-        <?= Html::label(Yii::t('shop/admin', 'Доступные атрибуты'),'box1View') ?><br />
+        <?= Html::label(Yii::t('shop/admin', 'Доступные атрибуты'), 'box1View') ?><br/>
         <?php
 
         echo Html::dropDownList('allAttributes', null, ArrayHelper::map($attributes, 'id', 'title'), array('id' => 'box1View', 'multiple' => true, 'class' => 'form-control multiple attributesList', 'style' => 'height:300px;width:100%;'));
