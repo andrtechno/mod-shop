@@ -39,8 +39,8 @@ class ProductQuery extends \yii\db\ActiveQuery {
                 $categories = array($categories);
         }
 
-        $this->leftJoin('{{%shop_product_category_ref}}', '{{%shop_product_category_ref}}.`product`={{%shop_product}}.`id`');
-        $this->andWhere(['{{%shop_product_category_ref}}.`category`' => $categories]);
+        $this->leftJoin('{{%shop__product_category_ref}}', '{{%shop__product_category_ref}}.`product`={{%shop__product}}.`id`');
+        $this->andWhere(['{{%shop__product_category_ref}}.`category`' => $categories]);
 
         return $this;
     }
@@ -64,7 +64,7 @@ class ProductQuery extends \yii\db\ActiveQuery {
     
     
     protected function getFindByEavAttributes($attributes) {
-        $pk = '{{%shop_product}}.id';
+        $pk = '{{%shop__product}}.id';
         $i = 0;
         foreach ($attributes as $attribute => $values) {
             // If search models with attribute name with specified values.
@@ -75,14 +75,14 @@ class ProductQuery extends \yii\db\ActiveQuery {
                 }
 
                 foreach ($values as $value) {
-                    $this->join('JOIN', '{{%shop_product_attribute_eav}} eavb' . $i, "{$pk}=`eavb{$i}`.`entity`");
+                    $this->join('JOIN', '{{%shop__product_attribute_eav}} eavb' . $i, "{$pk}=`eavb{$i}`.`entity`");
                     $this->andWhere(['IN', "`eavb$i`.`value`", $values]);
                     $i++;
                 }
             }
             // If search models with attribute name with anything values.
             elseif (is_int($attribute)) {
-                $this->join('JOIN', '{{%shop_product_attribute_eav}} eavb' . $i, "$pk=`eavb$i`.`entity` AND eavb$i.attribute = '$values'");
+                $this->join('JOIN', '{{%shop__product_attribute_eav}} eavb' . $i, "$pk=`eavb$i`.`entity` AND eavb$i.attribute = '$values'");
                 $i++;
             }
         }
@@ -95,7 +95,7 @@ class ProductQuery extends \yii\db\ActiveQuery {
 
     protected function getFindByEavAttributes2($attributes) {
         //$criteria = new CDbCriteria();
-        $pk = '{{%shop_product}}.id';
+        $pk = '{{%shop__product}}.id';
 
         // $conn = $this->owner->getDbConnection();
         $i = 0;
@@ -109,7 +109,7 @@ class ProductQuery extends \yii\db\ActiveQuery {
                 }
                 foreach ($values as $value) {
                     //$value = $conn->quoteValue($value);
-                    $this->join('JOIN', '{{%shop_product_attribute_eav}} eavb' . $i, "$pk=eavb$i.`entity` AND eavb$i.`attribute` = '$attribute' AND eavb$i.`value` = '$value'");
+                    $this->join('JOIN', '{{%shop__product_attribute_eav}} eavb' . $i, "$pk=eavb$i.`entity` AND eavb$i.`attribute` = '$attribute' AND eavb$i.`value` = '$value'");
                      $this->andWhere(['IN', "`eavb$i`.`value`", $values]);
                     /* $criteria->join .= "\nJOIN {$this->tableName} eavb$i"
                       . "\nON t.{$pk} = eavb$i.{$this->entityField}"
@@ -122,9 +122,9 @@ class ProductQuery extends \yii\db\ActiveQuery {
             }
             // If search models with attribute name with anything values.
             elseif (is_int($attribute)) {
-                $this->join('JOIN', '{{%shop_product_attribute_eav}} eavb' . $i, "$pk=`eavb$i`.`entity` AND eavb$i.attribute = '$values'");
+                $this->join('JOIN', '{{%shop__product_attribute_eav}} eavb' . $i, "$pk=`eavb$i`.`entity` AND eavb$i.attribute = '$values'");
                 //$values = $conn->quoteValue($values);
-               /* $this->join .= "\nJOIN {{%shop_product_attribute_eav}} eavb$i"
+               /* $this->join .= "\nJOIN {{%shop__product_attribute_eav}} eavb$i"
                         . "\nON t.{$pk} = eavb$i.entity"
                         . "\nAND eavb$i.attribute = $values";*/
                 $i++;

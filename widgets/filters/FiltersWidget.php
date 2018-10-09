@@ -208,7 +208,7 @@ class FiltersWidget extends \panix\engine\data\Widget {
                 ->with(['manufacturer'])
                 //->applyMaxPrice($this->convertCurrency(Yii::$app->request->getQueryParam('max_price')))
                 //->applyMinPrice($this->convertCurrency(Yii::$app->request->getQueryParam('min_price')))
-                ->addSelect(['manufacturer_id', '{{%shop_product}}.id'])
+                ->addSelect(['manufacturer_id', '{{%shop__product}}.id'])
                 ->groupBy('manufacturer_id')
                 ->andWhere('manufacturer_id IS NOT NULL')
                 ->all();

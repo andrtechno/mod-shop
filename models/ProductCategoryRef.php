@@ -20,7 +20,7 @@ class ProductCategoryRef extends \yii\db\ActiveRecord {
      * @return string the associated database table name
      */
     public static function tableName() {
-        return '{{%shop_product_category_ref}}';
+        return '{{%shop__product_category_ref}}';
     }
        public function getCountProducts() {
        return $this->hasMany(ProductCategoryRef::class, ['category' => 'id'])->count();

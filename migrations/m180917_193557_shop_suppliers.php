@@ -15,7 +15,7 @@ class m180917_193557_shop_suppliers extends Migration
     public function up()
     {
 
-        $this->createTable('{{%shop_suppliers}}', [
+        $this->createTable('{{%shop__suppliers}}', [
             'id' => $this->primaryKey()->unsigned(),
             'name' => $this->string(255)->null()->defaultValue(null),
             'phone' => $this->string(255)->null()->defaultValue(null),
@@ -26,7 +26,7 @@ class m180917_193557_shop_suppliers extends Migration
 
     public function down()
     {
-        $this->dropTable('{{%shop_suppliers}}');
+        $this->dropTable('{{%shop__suppliers}}');
 
     }
 

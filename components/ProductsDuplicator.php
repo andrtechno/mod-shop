@@ -141,7 +141,7 @@ class ProductsDuplicator extends \yii\base\Component {
 
         if (!empty($attributes)) {
             foreach ($attributes as $key => $val) {
-                Yii::$app->db->createCommand()->insert('{{%shop_product_attribute_eav}}', [
+                Yii::$app->db->createCommand()->insert('{{%shop__product_attribute_eav}}', [
                     'entity' => $copy->id,
                     'attribute' => $key,
                     'value' => $val

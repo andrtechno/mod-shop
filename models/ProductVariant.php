@@ -22,7 +22,7 @@ class ProductVariant extends \yii\db\ActiveRecord {
      * @return string the associated database table name
      */
     public static function tableName() {
-        return '{{%shop_product_variant}}';
+        return '{{%shop__product_variant}}';
     }
 
     /**

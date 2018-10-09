@@ -10,7 +10,7 @@ namespace panix\mod\shop\models;
 class AttributeTranslate extends \yii\db\ActiveRecord {
 
     public static function tableName() {
-        return '{{%shop_attribute_translate}}';
+        return '{{%shop__attribute_translate}}';
     }
 
 

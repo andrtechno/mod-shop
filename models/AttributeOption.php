@@ -22,7 +22,7 @@ class AttributeOption extends \panix\engine\db\ActiveRecord {
      * @return string the associated database table name
      */
     public static function tableName() {
-        return '{{%shop_attribute_option}}';
+        return '{{%shop__attribute_option}}';
     }
 
     public static function find() {

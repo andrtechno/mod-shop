@@ -13,19 +13,19 @@ class m180917_193731_shop_product_configurations extends Migration {
 
     public function up()
     {
-        $this->createTable('{{%shop_product_configurations}}', [
+        $this->createTable('{{%shop__product_configurations}}', [
             'product_id' => $this->integer(11)->notNull()->unsigned(),
             'configurable_id' => $this->integer(11)->notNull()->unsigned(),
         ], $this->tableOptions);
 
-        $this->addCommentOnColumn('{{%shop_product_configurations}}', 'product_id', 'Saves relations beetwen product and configurations');
+        $this->addCommentOnColumn('{{%shop__product_configurations}}', 'product_id', 'Saves relations beetwen product and configurations');
 
-        $this->createIndex('idsunique', '{{%shop_product_configurations}}', ['product_id','configurable_id'], 1);
+        $this->createIndex('idsunique', '{{%shop__product_configurations}}', ['product_id','configurable_id'], 1);
     }
 
     public function down()
     {
-        $this->dropTable('{{%shop_product_configurations}}');
+        $this->dropTable('{{%shop__product_configurations}}');
     }
 
 }

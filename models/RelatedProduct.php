@@ -16,7 +16,7 @@ class RelatedProduct extends \yii\db\ActiveRecord {
      * @return string the associated database table name
      */
     public static function tableName() {
-        return '{{%shop_related_product}}';
+        return '{{%shop__related_product}}';
     }
 
 }

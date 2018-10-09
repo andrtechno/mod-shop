@@ -18,7 +18,7 @@ class Category extends \panix\engine\db\ActiveRecord {
     public $parent_id;
 
     public static function tableName() {
-        return '{{%shop_category}}';
+        return '{{%shop__category}}';
     }
 
     public static function find() {

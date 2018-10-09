@@ -72,7 +72,7 @@ class Manufacturer extends \panix\engine\db\ActiveRecord {
      * @inheritdoc
      */
     public static function tableName() {
-        return '{{%shop_manufacturer}}';
+        return '{{%shop__manufacturer}}';
     }
 
     public function getTranslations() {

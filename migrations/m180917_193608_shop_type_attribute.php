@@ -21,7 +21,7 @@ class m180917_193608_shop_type_attribute extends Migration
         ], $this->tableOptions);
 
 
-        $this->addPrimaryKey('{{%pk_shop_type_attribute}}', TypeAttribute::tableName(), ['type_id', 'attribute_id']);
+        $this->addPrimaryKey('{{%pk_shop__type_attribute}}', TypeAttribute::tableName(), ['type_id', 'attribute_id']);
         $this->createIndex('attribute_id', TypeAttribute::tableName(), 'attribute_id', 0);
 
     }

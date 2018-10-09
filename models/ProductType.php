@@ -39,7 +39,7 @@ class ProductType extends \panix\engine\db\ActiveRecord {
      * @inheritdoc
      */
     public static function tableName() {
-        return '{{%shop_product_type}}';
+        return '{{%shop__product_type}}';
     }
 
 

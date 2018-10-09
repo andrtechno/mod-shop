@@ -77,7 +77,7 @@ class Attribute extends ActiveRecord
      */
     public static function tableName()
     {
-        return '{{%shop_attribute}}';
+        return '{{%shop__attribute}}';
     }
 
     public function getAttrtranslate()
@@ -290,7 +290,7 @@ class Attribute extends ActiveRecord
 
         // Delete attributes assigned to products
         $conn = $this->getDb();
-        $conn->createCommand()->delete('{{%shop_product_attribute_eav}}', "`attribute`='{$this->name}'")->execute();
+        $conn->createCommand()->delete('{{%shop__product_attribute_eav}}', "`attribute`='{$this->name}'")->execute();
 
 
         return parent::afterDelete();

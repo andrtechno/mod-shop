@@ -13,7 +13,7 @@ class m180917_193746_shop_product_type extends Migration {
 
     public function up()
     {
-        $this->createTable('{{%shop_product_type}}', [
+        $this->createTable('{{%shop__product_type}}', [
             'id' => $this->primaryKey()->unsigned(),
             'name' => $this->string(255)->null(),
             'categories_preset' => $this->text()->null()->defaultValue(null),
@@ -24,7 +24,7 @@ class m180917_193746_shop_product_type extends Migration {
 
     public function down()
     {
-        $this->dropTable('{{%shop_product_type}}');
+        $this->dropTable('{{%shop__product_type}}');
     }
 
 }

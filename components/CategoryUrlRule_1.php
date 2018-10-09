@@ -67,7 +67,7 @@ class CategoryUrlRule extends Object implements UrlRuleInterface {
             $allPaths = (new \yii\db\Query())
                     ->select(['full_path'])
                     ->andWhere('id!=:id', [':id' => 1])
-                    ->from('{{%shop_category}}')
+                    ->from('{{%shop__category}}')
                     ->all();
 
 

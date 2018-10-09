@@ -74,7 +74,7 @@ class ProductSearch extends Product
         // Id of product to exclude from search
         if ($this->exclude) {
             foreach ($this->exclude as $id) {
-                $query->andFilterWhere(['!=', '{{%shop_product}}.id', $id]);
+                $query->andFilterWhere(['!=', '{{%shop__product}}.id', $id]);
             }
         }
         if (isset($configure['conf'])) {

@@ -19,7 +19,7 @@ class TypeAttribute extends \yii\db\ActiveRecord {
      * @return string the associated database table name
      */
     public static function tableName() {
-        return '{{%shop_type_attribute}}';
+        return '{{%shop__type_attribute}}';
     }
 
     public function getMyAttribute() {

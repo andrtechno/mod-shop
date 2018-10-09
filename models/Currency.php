@@ -26,7 +26,7 @@ class Currency extends \panix\engine\db\ActiveRecord {
      * @inheritdoc
      */
     public static function tableName() {
-        return '{{%shop_currency}}';
+        return '{{%shop__currency}}';
     }
 
     public static function fpSeparator()

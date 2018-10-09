@@ -118,7 +118,7 @@ class Product extends \panix\engine\db\ActiveRecord
      */
     public static function tableName()
     {
-        return '{{%shop_product}}';
+        return '{{%shop__product}}';
     }
 
     public function getUrl()
@@ -273,7 +273,7 @@ class Product extends \panix\engine\db\ActiveRecord
     {
         return $this->hasMany(ProductVariant::class, ['product_id' => 'id'])
             ->joinWith(['productAttribute', 'option'])
-            ->orderBy('{{%shop_attribute_option}}.ordern');
+            ->orderBy('{{%shop__attribute_option}}.ordern');
     }
 
 //'variants' => array(self::HAS_MANY, 'ProductVariant', array('product_id'), 'with' => array('attribute', 'option'), 'order' => 'option.ordern'),
@@ -387,10 +387,10 @@ class Product extends \panix\engine\db\ActiveRecord
         // Save configurable attributes
         if ($this->_configurable_attribute_changed === true) {
             // Clear
-            Yii::$app->db->createCommand()->delete('{{%shop_product_configurable_attributes}}', 'product_id = :id', array(':id' => $this->id));
+            Yii::$app->db->createCommand()->delete('{{%shop__product_configurable_attributes}}', 'product_id = :id', array(':id' => $this->id));
 
             foreach ($this->_configurable_attributes as $attr_id) {
-                Yii::$app->db->createCommand()->insert('{{%shop_product_configurable_attributes}}', array(
+                Yii::$app->db->createCommand()->insert('{{%shop__product_configurable_attributes}}', array(
                     'product_id' => $this->id,
                     'attribute_id' => $attr_id
                 ));
@@ -404,13 +404,13 @@ class Product extends \panix\engine\db\ActiveRecord
             // Check if product is configuration
 
             $query = (new \yii\db\Query())
-                ->from('{{%shop_product_configurations}} t')
+                ->from('{{%shop__product_configurations}} t')
                 ->where(['in', 't.configurable_id', [$this->id]])
                 ->all();
 
 
             /* $query = Yii::$app->db->createCommand()
-              ->from('{{%shop_product_configurations}} t')
+              ->from('{{%shop__product_configurations}} t')
               ->where(['in', 't.configurable_id', [$this->id]])
               ->queryAll();
              */
@@ -434,12 +434,12 @@ class Product extends \panix\engine\db\ActiveRecord
         // Get min and max prices
         $query = Yii::$app->db->createCommand()
             ->select('MIN(t.price) as min_price, MAX(t.price) as max_price')
-            ->from('{{%shop_product}} t')
+            ->from('{{%shop__product}} t')
             ->where(array('in', 't.id', $model->getConfigurations(true)))
             ->queryRow();
 
         // Update
-        Yii::$app->db->createCommand()->update('{{%shop_product}}', array(
+        Yii::$app->db->createCommand()->update('{{%shop__product}}', array(
             'price' => $query['min_price'],
             'max_price' => $query['max_price']
         ), 'id=:id', array(':id' => $model->id));
@@ -449,13 +449,13 @@ class Product extends \panix\engine\db\ActiveRecord
     {
         $query = (new \yii\db\Query())
             ->select('MIN(t.price) as min_price, MAX(t.price) as max_price')
-            ->from('{{%shop_product}} t')
+            ->from('{{%shop__product}} t')
             ->where(['in', 't.id', $model->getConfigurations(true)])
             ->one();
 
 
         // Update
-        Yii::$app->db->createCommand()->update('{{%shop_product}}', array(
+        Yii::$app->db->createCommand()->update('{{%shop__product}}', array(
             'price' => $query['min_price'],
             'max_price' => $query['max_price']
         ), 'id=:id', array(':id' => $model->id))->execute();
@@ -472,14 +472,14 @@ class Product extends \panix\engine\db\ActiveRecord
 
         $query = (new \yii\db\Query())
             ->select('t.configurable_id')
-            ->from('{{%shop_product_configurations}} as t')
+            ->from('{{%shop__product_configurations}} as t')
             ->where('t.product_id=:id', [':id' => $this->id])
             ->groupBy('t.configurable_id');
         // ->one();
         $this->_configurations = $query->createCommand()->queryColumn();
         /* $this->_configurations = Yii::$app->db->createCommand()
           ->select('t.configurable_id')
-          ->from('{{%shop_product_configurations}} t')
+          ->from('{{%shop__product_configurations}} t')
           ->where('product_id=:id', array(':id' => $this->id))
           ->group('t.configurable_id')
           ->queryColumn(); */
@@ -527,10 +527,10 @@ class Product extends \panix\engine\db\ActiveRecord
             $this->removeImages();
         }
         // Clear configurable attributes
-        Yii::$app->db->createCommand()->delete('{{%shop_product_configurable_attributes}}', 'product_id=:id', [':id' => $this->id])->execute();
+        Yii::$app->db->createCommand()->delete('{{%shop__product_configurable_attributes}}', 'product_id=:id', [':id' => $this->id])->execute();
         // Delete configurations
-        Yii::$app->db->createCommand()->delete('{{%shop_product_configurations}}', 'product_id=:id', [':id' => $this->id])->execute();
-        Yii::$app->db->createCommand()->delete('{{%shop_product_configurations}}', 'configurable_id=:id', [':id' => $this->id])->execute();
+        Yii::$app->db->createCommand()->delete('{{%shop__product_configurations}}', 'product_id=:id', [':id' => $this->id])->execute();
+        Yii::$app->db->createCommand()->delete('{{%shop__product_configurations}}', 'configurable_id=:id', [':id' => $this->id])->execute();
         /* if (Yii::app()->hasModule('wishlist')) {
           Yii::import('mod.wishlist.models.WishlistProducts');
           $wishlistProduct = WishlistProducts::model()->findByAttributes(array('product_id' => $this->id));
@@ -564,13 +564,13 @@ class Product extends \panix\engine\db\ActiveRecord
 
             $query = new \yii\db\Query;
             $query->select('attribute_id')
-                ->from('{{%shop_product_configurable_attributes}}')
+                ->from('{{%shop__product_configurable_attributes}}')
                 ->where(['product_id' => $this->id])
                 ->groupBy('attribute_id');
             $this->_configurable_attributes = $query->createCommand()->queryColumn();
             /*    $this->_configurable_attributes = Yii::app()->db->createCommand()
               ->select('t.attribute_id')
-              ->from('{{shop_product_configurable_attributes}} t')
+              ->from('{{shop__product_configurable_attributes}} t')
               ->where('t.product_id=:id', array(':id' => $this->id))
               ->group('t.attribute_id')
               ->queryColumn(); */
@@ -659,7 +659,7 @@ class Product extends \panix\engine\db\ActiveRecord
               ], */
             'eav' => [
                 'class' => \panix\mod\shop\components\EavBehavior::class,
-                'tableName' => '{{%shop_product_attribute_eav}}'
+                'tableName' => '{{%shop__product_attribute_eav}}'
             ],
             'seo' => [
                 'class' => \app\modules\seo\components\SeoBehavior::class,
