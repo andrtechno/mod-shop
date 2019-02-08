@@ -6,17 +6,13 @@ class WebAsset extends \yii\web\AssetBundle
 {
 
     public $sourcePath = '@vendor/panix/mod-shop/assets';
-    /*  public $jsOptions = array(
-      'position' => \yii\web\View::POS_HEAD
-      );
+    /*
       public $js = [
       'js/relatedProductsTab.js',
       'js/products.js',
       // 'js/products.index.js',
       ]; */
-    public $jsOptions = array(
-        'position' => \yii\web\View::POS_END
-    );
+
     public $js = [
         'js/switchCurrency.js',
     ];

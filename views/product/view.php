@@ -15,7 +15,7 @@ $(document).ready(function() {
     });
 });
 
-", yii\web\View::POS_BEGIN, 'cart');
+", yii\web\View::POS_END);
 
 panix\engine\widgets\owlcarousel\Carousel::widget([
     'target' => '.owl-carousel',

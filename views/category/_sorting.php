@@ -2,8 +2,7 @@
 
 use yii\helpers\Html;
 
-?>
-<script>
+$this->registerJs("
     $(function () {
         $('.te').click(function (e) {
             $.ajax({
@@ -15,6 +14,11 @@ use yii\helpers\Html;
             return false;
         })
     });
+", \yii\web\View::POS_END);
+
+?>
+<script>
+
 </script>
 <div class="clearfix filters-container">
     <div class="row">

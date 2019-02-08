@@ -59,7 +59,8 @@ $id = $this->context->id;
     <?= Html::endForm() ?>
     <?= Html::a('GO', '#', array('onClick' => '$("#search-form").submit();', 'class' => 'search-button')); ?>
 </div>
-<script>
+<?php
+$this->registerJs("
     $(function () {
         $('#searchQuery').keydown(function (event) {
             if (event.which == 13) {
@@ -67,4 +68,6 @@ $id = $this->context->id;
             }
         });
     });
-</script>
+", \yii\web\View::POS_END);
+
+?>
