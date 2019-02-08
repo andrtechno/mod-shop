@@ -25,7 +25,7 @@ use yii\widgets\Pjax;
                     'target' => '_blank'
                 ));
                 ?></td>
-            <td class="text-center"><a class="btn btn-danger" href="javascript:void(0)" onclick="$(this).parents('tr').remove();"><?php echo Yii::t('app', 'DELETE') ?></a></td>
+            <td class="text-center"><a class="btn btn-danger" href="#" onclick="$(this).parents('tr').remove();"><?php echo Yii::t('app', 'DELETE') ?></a></td>
         </tr>
     <?php } ?>
 

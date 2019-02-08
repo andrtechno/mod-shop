@@ -57,7 +57,7 @@ $id = $this->context->id;
 
 
     <?= Html::endForm() ?>
-    <?= Html::a('GO', 'javascript:void(0);', array('onClick' => '$("#search-form").submit();', 'class' => 'search-button')); ?>
+    <?= Html::a('GO', '#', array('onClick' => '$("#search-form").submit();', 'class' => 'search-button')); ?>
 </div>
 <script>
     $(function () {

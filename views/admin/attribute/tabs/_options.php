@@ -27,7 +27,7 @@ use panix\mod\shop\models\AttributeOption;
             </td>
         <?php } ?>
         <td class="text-center">
-            <a href="javascript:void(0);" class="delete-option-attribute btn btn-sm btn-default"><i class="icon-delete"></i></a>
+            <a href="#" class="delete-option-attribute btn btn-sm btn-default"><i class="icon-delete"></i></a>
         </td>
     </tr>
 </table>
@@ -41,7 +41,7 @@ $data = [];
 $data2 = [];
 $test = [];
 foreach ($model->options as $k => $o) {
-    $data2['delete'] = '<a href="javascript:void(0);" class="delete-option-attribute btn btn-sm btn-default"><i class="icon-delete"></i></a>';
+    $data2['delete'] = '<a href="#" class="delete-option-attribute btn btn-sm btn-default"><i class="icon-delete"></i></a>';
     foreach (Yii::$app->languageManager->languages as $k => $l) {
 
         $otest = AttributeOptionTranslate::find()->where([
@@ -73,7 +73,7 @@ $columns[] = [
     'format' => 'html',
     'contentOptions' => ['class' => 'text-center'],
     'filterOptions'=>['class' => 'text-center'],
-    'filter' => '<a id="add-option-attribute" class="btn btn-sm btn-success" title="Добавить опцию" href="javascript:void(0)"><i class="icon-add"></i></a>'
+    'filter' => '<a id="add-option-attribute" class="btn btn-sm btn-success" title="Добавить опцию" href="#"><i class="icon-add"></i></a>'
 ];
 
 

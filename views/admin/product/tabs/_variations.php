@@ -19,7 +19,7 @@ use yii\helpers\ArrayHelper;
                 );
             }
             ?>
-            <a href="javascript:void(0)" id="addAttribute" class="btn btn-success"><?= Yii::t('app', 'CREATE', 0) ?></a>
+            <a href="#" id="addAttribute" class="btn btn-success"><?= Yii::t('app', 'CREATE', 0) ?></a>
         </div>
         <div class="clearfix"></div>
     </div>

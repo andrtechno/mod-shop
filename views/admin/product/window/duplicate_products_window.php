@@ -28,7 +28,7 @@
         <div class="col-sm-6"><input type="checkbox" name="copy[]" value="attributes" class="check" checked/></div>
     </div>
     <div class="form-group">
-        <div class="col-sm-6"><a href="javascript:void(0)" class="control-label" style="color: #309bbf" onclick="return checkAllDuplicateAttributes(this);">Отметить все</a></div>
+        <div class="col-sm-6"><a href="#" class="control-label" style="color: #309bbf" onclick="return checkAllDuplicateAttributes(this);">Отметить все</a></div>
         <div class="col-sm-6"><input type="checkbox" value="1" class="check" checked="checked"/></div>
     </div>
 

@@ -92,7 +92,7 @@ trait ProductTrait {
                 'customActions' => [
                     [
                         'label' => Yii::t('shop/admin', 'GRID_OPTION_ACTIVE'),
-                        'url' => 'javascript:void(0)',
+                        'url' => '#',
                         'icon' => 'eye',
                         'linkOptions' => [
                             'onClick' => 'return setProductsStatus(1, this);',
@@ -101,7 +101,7 @@ trait ProductTrait {
                     ],
                     [
                         'label' => Yii::t('shop/admin', 'GRID_OPTION_DEACTIVE'),
-                        'url' => 'javascript:void(0)',
+                        'url' => '#',
                         'icon' => 'eye-close',
                         'linkOptions' => [
                             'onClick' => 'return setProductsStatus(0, this);',
@@ -110,7 +110,7 @@ trait ProductTrait {
                     ],
                     [
                         'label' => Yii::t('shop/admin', 'GRID_OPTION_SETCATEGORY'),
-                        'url' => 'javascript:void(0)',
+                        'url' => '#',
                         'icon' => 'folder-open',
                         'linkOptions' => [
                             'onClick' => 'return showCategoryAssignWindow(this);',
@@ -119,7 +119,7 @@ trait ProductTrait {
                     ],
                     [
                         'label' => Yii::t('shop/admin', 'GRID_OPTION_COPY'),
-                        'url' => 'javascript:void(0)',
+                        'url' => '#',
                         'icon' => 'copy',
                         'linkOptions' => [
                             'onClick' => 'return showDuplicateProductsWindow(this);',
@@ -128,7 +128,7 @@ trait ProductTrait {
                     ],
                     [
                         'label' => Yii::t('shop/admin', 'GRID_OPTION_SETPRICE'),
-                        'url' => 'javascript:void(0)',
+                        'url' => '#',
                         'icon' => 'currencies',
                         'linkOptions' => [
                             'onClick' => 'return setProductsPrice(this);',

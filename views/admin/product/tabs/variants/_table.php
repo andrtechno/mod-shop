@@ -50,7 +50,7 @@ use yii\helpers\ArrayHelper;
                     <input class="form-control" type="text" name="variants[<?php echo $attribute->id ?>][sku][]" />
                 </td>
                 <td class="text-center">
-                    <a href="javascript:void(0)" class="btn btn-sm btn-danger" onclick="return deleteVariantRow($(this));"><i class="icon-delete"></i></a>
+                    <a href="#" class="btn btn-sm btn-danger" onclick="return deleteVariantRow($(this));"><i class="icon-delete"></i></a>
                 </td>
             </tr>
         <?php } ?>
@@ -72,7 +72,7 @@ use yii\helpers\ArrayHelper;
                         <input class="form-control" type="text" name="variants[<?php echo $attribute->id ?>][sku][]" value="<?php echo $o->sku ?>">
                     </td>
                     <td class="text-center">
-                        <a href="javascript:void()" class="btn btn-sm btn-danger" onclick="return deleteVariantRow($(this));"><i class="icon-delete"></i></a>
+                        <a href="#" class="btn btn-sm btn-danger" onclick="return deleteVariantRow($(this));"><i class="icon-delete"></i></a>
                     </td>
                 </tr>
                 <?php
