@@ -14,6 +14,9 @@ class WebAsset extends \yii\web\AssetBundle
       'js/products.js',
       // 'js/products.index.js',
       ]; */
+    public $jsOptions = array(
+        'position' => \yii\web\View::POS_END
+    );
     public $js = [
         'js/switchCurrency.js',
     ];
