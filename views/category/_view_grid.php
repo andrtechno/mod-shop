@@ -22,7 +22,7 @@ use yii\helpers\HtmlPurifier;
         <div class="product-price clearfix">
 
             <div>
-                <span class="price">
+                <span class="price"><?= $model->price; ?>
                     <span><?= $model->priceRange() ?></span>
                     <sup><?= Yii::$app->currency->active->symbol ?></sup>
                 </span>

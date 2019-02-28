@@ -29,7 +29,7 @@ class FiltersWidget extends \panix\engine\data\Widget {
     /**
      * @var string min price in the query
      */
-    private $_currentMinPrice, $_currentMaxPrice = null;
+   // private $_currentMinPrice, $_currentMaxPrice = null;
     public $_maxprice, $_minprice;
 
     public function init() {
@@ -38,6 +38,12 @@ class FiltersWidget extends \panix\engine\data\Widget {
         $this->_minprice = $view->context->minprice;
     }
 
+    public function getMinPrice(){
+        return Yii::$app->controller->getMinPrice();
+    }
+    public function getMaxPrice(){
+        return Yii::$app->controller->getMaxPrice();
+    }
     /**
      * @return array of attributes used in category
      */
@@ -73,11 +79,11 @@ class FiltersWidget extends \panix\engine\data\Widget {
             $model->attachBehaviors($model->behaviors());
             $model->published();
             $model->applyCategories($this->model);
-            $model->applyMinPrice($this->convertCurrency(Yii::$app->request->getQueryParam('min_price')));
-            $model->applyMaxPrice($this->convertCurrency(Yii::$app->request->getQueryParam('max_price')));
+            //$model->applyMinPrice($this->convertCurrency(Yii::$app->request->getQueryParam('min_price')));
+            //$model->applyMaxPrice($this->convertCurrency(Yii::$app->request->getQueryParam('max_price')));
 
-            if (Yii::$app->request->get('manufacturer'))
-                $model->applyManufacturers(explode(',', Yii::$app->request->get('manufacturer')));
+            //if (Yii::$app->request->get('manufacturer'))
+                //$model->applyManufacturers(explode(',', Yii::$app->request->get('manufacturer')));
 
             //$data = array($attribute->name => $option->id);
             $current = $this->view->context->activeAttributes;
@@ -141,14 +147,14 @@ class FiltersWidget extends \panix\engine\data\Widget {
         if ($request->getQueryParam('min_price')) {
             array_push($menuItems, array(
                 'linkOptions' => array('class' => 'remove'),
-                'label' => Yii::t('shop/default', 'FILTER_CURRENT_PRICE_MIN', ['min' => (int) $this->getCurrentMinPrice(), 'currency' => Yii::$app->currency->active->symbol]),
+                'label' => Yii::t('shop/default', 'FILTER_CURRENT_PRICE_MIN', ['min' => (int) Yii::$app->controller->getCurrentMinPrice(), 'currency' => Yii::$app->currency->active->symbol]),
                 'url' => Yii::$app->urlManager->removeUrlParam('/shop/category/view', 'min_price')
             ));
         }
 
         if ($request->getQueryParam('max_price')) {
             array_push($menuItems, array(
-                'label' => Yii::t('shop/default', 'FILTER_CURRENT_PRICE_MAX', ['max' => (int) $this->getCurrentMaxPrice(), 'currency' => Yii::$app->currency->active->symbol]),
+                'label' => Yii::t('shop/default', 'FILTER_CURRENT_PRICE_MAX', ['max' => (int) Yii::$app->controller->getCurrentMaxPrice(), 'currency' => Yii::$app->currency->active->symbol]),
                 'linkOptions' => array('class' => 'remove'),
                 'url' => Yii::$app->urlManager->removeUrlParam('/shop/category/view', 'max_price')
             ));
@@ -252,7 +258,7 @@ class FiltersWidget extends \panix\engine\data\Widget {
 
         return $data;
     }
-
+/*
     public function getCurrentMaxPrice() {
         if ($this->_currentMaxPrice !== null)
             return $this->_currentMaxPrice;
@@ -278,7 +284,7 @@ class FiltersWidget extends \panix\engine\data\Widget {
 
         return $this->_currentMinPrice;
     }
-
+*/
     public function convertCurrency($sum) {
         $cm = Yii::$app->currency;
         if ($cm->active->id != $cm->main->id)

@@ -172,7 +172,7 @@ class Product extends \panix\engine\db\ActiveRecord
             [['full_description'], 'string'],
             ['use_configurations', 'boolean', 'on' => self::SCENARIO_INSERT],
             [['sku', 'full_description'], 'default'], // установим ... как NULL, если они пустые
-            [['name', 'seo_alias', 'main_category_id'], 'required'],
+            [['name', 'seo_alias', 'main_category_id','price'], 'required'],
             [['name', 'seo_alias'], 'string', 'max' => 255],
             [['manufacturer_id', 'type_id', 'quantity', 'views', 'added_to_cart_count', 'ordern', 'category_id'], 'integer'],
             [['name', 'seo_alias', 'full_description', 'use_configurations'], 'safe'],
@@ -487,19 +487,20 @@ class Product extends \panix\engine\db\ActiveRecord
         return $this->_configurations;
     }
 
-    public function getDisplayPrice($currency_id = null)
+    public function getFrontPrice()
     {
+        $currency = Yii::$app->currency;
         if ($this->appliedDiscount) {
-            $price = $this->discountPrice;
+            $price = $currency->convert($this->discountPrice, $this->currency_id);
         } else {
-            $price = $this->price;
+            $price = $currency->convert($this->price, $this->currency_id);
         }
-        return Yii::$app->currency->convert($this->price, $currency_id);
+        return $price;
     }
 
     public function priceRange()
     {
-        $price = $this->getDisplayPrice();
+        $price = $this->getFrontPrice();
         $max_price = Yii::$app->currency->convert($this->max_price);
 
         if ($this->use_configurations && $max_price > 0)

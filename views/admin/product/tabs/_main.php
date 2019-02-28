@@ -24,7 +24,12 @@ $form->field($model, 'manufacturer_id')->dropDownList(ArrayHelper::map(Manufactu
     'prompt' => 'Укажите производителя'
 ]);
 ?>
+<?=
 
+$form->field($model, 'currency_id')->dropDownList(ArrayHelper::map(\panix\mod\shop\models\Currency::find()->andWhere(['!=','id', Yii::$app->currency->main->id])->all(), 'id', 'name'), [
+    'prompt' => 'Укажите валюту'
+]);
+?>
 
 <?=
 
@@ -37,4 +42,5 @@ $form->field($model, 'main_category_id')->dropDownList(Category::flatTree(), [
 $form->field($model, 'full_description')->widget(TinyMce::class, [
     'options' => ['rows' => 6],
 ]);
+
 ?>

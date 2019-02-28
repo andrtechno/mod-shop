@@ -2,7 +2,8 @@
 
 namespace panix\mod\shop\models\query;
 
-class ProductQuery extends \yii\db\ActiveQuery {
+class ProductQuery extends \yii\db\ActiveQuery
+{
 
     use \panix\engine\traits\DefaultQueryTrait;
 
@@ -15,23 +16,28 @@ class ProductQuery extends \yii\db\ActiveQuery {
      *
      * @return $this
      */
-    public function category() {
+    public function category()
+    {
         $this->joinWith(['category']);
         return $this;
     }
 
-    public function applyManufacturers($manufacturers) {
+    public function applyManufacturers($manufacturers)
+    {
         if (!is_array($manufacturers))
             $manufacturers = array($manufacturers);
 
         if (empty($manufacturers))
             return $this;
 
+        sort($manufacturers);
+
         $this->andWhere(['`manufacturer_id`' => $manufacturers]);
         return $this;
     }
 
-    public function applyCategories($categories) {
+    public function applyCategories($categories)
+    {
         if ($categories instanceof \panix\mod\shop\models\Category)
             $categories = array($categories->id);
         else {
@@ -45,13 +51,15 @@ class ProductQuery extends \yii\db\ActiveQuery {
         return $this;
     }
 
-    public function applyAttributes(array $attributes) {
+    public function applyAttributes(array $attributes)
+    {
         if (empty($attributes))
             return $this;
         return $this->withEavAttributes($attributes);
     }
 
-    public function withEavAttributes($attributes = array()) {
+    public function withEavAttributes($attributes = array())
+    {
         // If not set attributes, search models with anything attributes exists.
         if (empty($attributes)) {
             $attributes = $this->getSafeAttributesArray();
@@ -61,9 +69,9 @@ class ProductQuery extends \yii\db\ActiveQuery {
         return $this->getFindByEavAttributes2($attributes);
     }
 
-    
-    
-    protected function getFindByEavAttributes($attributes) {
+
+    protected function getFindByEavAttributes($attributes)
+    {
         $pk = '{{%shop__product}}.id';
         $i = 0;
         foreach ($attributes as $attribute => $values) {
@@ -73,27 +81,34 @@ class ProductQuery extends \yii\db\ActiveQuery {
                 if (!is_array($values)) {
                     $values = array($values);
                 }
+                sort($values);
 
+
+                $cache = \Yii::$app->cache->get("attribute_" . $attribute);
+                //anti d-dos убирает лишние значение с запроса.
+                if ($cache) {
+                    $values = array_intersect($cache[$attribute], $values);
+                }
                 foreach ($values as $value) {
                     $this->join('JOIN', '{{%shop__product_attribute_eav}} eavb' . $i, "{$pk}=`eavb{$i}`.`entity`");
                     $this->andWhere(['IN', "`eavb$i`.`value`", $values]);
                     $i++;
                 }
-            }
-            // If search models with attribute name with anything values.
+            } // If search models with attribute name with anything values.
             elseif (is_int($attribute)) {
                 $this->join('JOIN', '{{%shop__product_attribute_eav}} eavb' . $i, "$pk=`eavb$i`.`entity` AND eavb$i.attribute = '$values'");
                 $i++;
             }
         }
 
-        $this->distinct(true);
-        $this->groupBy("{$pk}");
+        //$this->distinct(true);
+        //$this->groupBy("{$pk}");
         // echo $this->createCommand()->getRawSql();die;
         return $this;
     }
 
-    protected function getFindByEavAttributes2($attributes) {
+    protected function getFindByEavAttributes2($attributes)
+    {
         //$criteria = new CDbCriteria();
         $pk = '{{%shop__product}}.id';
 
@@ -107,10 +122,18 @@ class ProductQuery extends \yii\db\ActiveQuery {
                 if (!is_array($values)) {
                     $values = array($values);
                 }
+                sort($values);
+
+
+                $cache = \Yii::$app->cache->get("attribute_" . $attribute);
+                //anti d-dos убирает лишние значение с запроса.
+                if ($cache) {
+                    $values = array_intersect($cache[$attribute], $values);
+                }
                 foreach ($values as $value) {
                     //$value = $conn->quoteValue($value);
                     $this->join('JOIN', '{{%shop__product_attribute_eav}} eavb' . $i, "$pk=eavb$i.`entity` AND eavb$i.`attribute` = '$attribute' AND eavb$i.`value` = '$value'");
-                     $this->andWhere(['IN', "`eavb$i`.`value`", $values]);
+                    $this->andWhere(['IN', "`eavb$i`.`value`", $values]);
                     /* $criteria->join .= "\nJOIN {$this->tableName} eavb$i"
                       . "\nON t.{$pk} = eavb$i.{$this->entityField}"
                       . "\nAND eavb$i.{$this->attributeField} = $attribute"
@@ -119,19 +142,18 @@ class ProductQuery extends \yii\db\ActiveQuery {
 
                     $i++;
                 }
-            }
-            // If search models with attribute name with anything values.
+            } // If search models with attribute name with anything values.
             elseif (is_int($attribute)) {
                 $this->join('JOIN', '{{%shop__product_attribute_eav}} eavb' . $i, "$pk=`eavb$i`.`entity` AND eavb$i.attribute = '$values'");
                 //$values = $conn->quoteValue($values);
-               /* $this->join .= "\nJOIN {{%shop__product_attribute_eav}} eavb$i"
-                        . "\nON t.{$pk} = eavb$i.entity"
-                        . "\nAND eavb$i.attribute = $values";*/
+                /* $this->join .= "\nJOIN {{%shop__product_attribute_eav}} eavb$i"
+                         . "\nON t.{$pk} = eavb$i.entity"
+                         . "\nAND eavb$i.attribute = $values";*/
                 $i++;
             }
         }
-        $this->distinct(true);
-        $this->groupBy("{$pk}");
+        //$this->distinct(true);
+        //$this->groupBy("{$pk}");
         // echo $this->createCommand()->getRawSql();die;
         return $this;
     }
@@ -140,9 +162,17 @@ class ProductQuery extends \yii\db\ActiveQuery {
      * Filter products by min_price
      * @param $value
      */
-    public function applyMinPrice($value) {
+    public function applyMinPrice($value)
+    {
         if ($value) {
-            $this->andWhere(['>=', 'price', (int) $value]);
+          //  $this->andWhere(['>=', 'price', (int)$value]);
+
+            $this->andWhere('CASE WHEN ({{%shop__product}}.`currency_id`) THEN
+            ({{%shop__product}}.`price` * (SELECT rate FROM {{%shop__currency}} `currency` WHERE `currency`.`id`={{%shop__product}}.`currency_id`)) >= '.(int)$value.'
+        ELSE
+        	{{%shop__product}}.price >= '.(int)$value.'
+        END');
+
         }
         return $this;
     }
@@ -151,9 +181,16 @@ class ProductQuery extends \yii\db\ActiveQuery {
      * Filter products by max_price
      * @param $value
      */
-    public function applyMaxPrice($value) {
+    public function applyMaxPrice($value)
+    {
         if ($value) {
-            $this->andWhere(['<=', 'price', (int) $value]);
+            //$this->andWhere(['<=', 'price', (int)$value]);
+
+            $this->andWhere('CASE WHEN ({{%shop__product}}.`currency_id`) THEN
+            ({{%shop__product}}.`price` * (SELECT rate FROM {{%shop__currency}} `currency` WHERE `currency`.`id`={{%shop__product}}.`currency_id`)) <= '.(int)$value.'
+        ELSE
+        	{{%shop__product}}.price <= '.(int)$value.'
+        END');
         }
         return $this;
     }
@@ -163,7 +200,8 @@ class ProductQuery extends \yii\db\ActiveQuery {
      *
      * @return $this
      */
-    public function manufacturer() {
+    public function manufacturer()
+    {
         $this->joinWith(['manufacturer']);
         return $this;
     }

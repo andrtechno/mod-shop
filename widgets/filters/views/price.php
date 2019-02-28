@@ -3,21 +3,29 @@ use yii\helpers\Html;
 use panix\mod\shop\models\Product;
 
 $cm = Yii::$app->currency;
-//$getMin = $this->controller->getMinPrice();
-//$getMax = $this->controller->getMaxPrice();
-
-$getMax2 = (int)$this->context->currentMaxPrice;
-$getMin2 = (int)$this->context->currentMinPrice;
-
-$getMax = $this->context->_maxprice;
-$getMin = $this->context->_minprice;
 
 
-$min = (int)floor($getMin2); //$cm->convert()
-$max = (int)ceil($getMax2);
-//  echo $cm->convert($getMin);
+//$getMax = $this->context->_maxprice;
+//$getMin = $this->context->_minprice;
+
+
+//$min = (int)floor($getMin2); //$cm->convert()
+//$max = (int)ceil($getMax2);
+
+
+
+$getDefaultMin = (int)floor(Yii::$app->controller->getMinPrice());
+$getDefaultMax = (int)ceil(Yii::$app->controller->getMaxPrice());
+$getMax = Yii::$app->controller->currentMaxPrice;
+$getMin = Yii::$app->controller->currentMinPrice;
+$min = (int)floor($getMin); //$cm->convert()
+$max = (int)ceil($getMax);
+
+
+echo '<br>';
+echo $getDefaultMax;
 ?>
-<?php if (($getMin2 >= 0 && $getMax2 >= 0) && ($getMin2 != $getMax2)) { ?>
+<?php if (true) { ?>
     <div class="card bg-light filter filter-price">
 
         <div class="card-header">
@@ -31,10 +39,10 @@ $max = (int)ceil($getMax2);
             echo \yii\jui\Slider::widget([
                 'clientOptions' => [
                     'range' => true,
-                    // 'disabled' => (int) $getMin === (int) $getMax,
-                    'min' => $min, //$prices['min'],//$min,
-                    'max' => $max, //$prices['max'],//$max,
-                    'values' => [$getMin2, $getMax2],
+                    // 'disabled' => $getDefaultMin === $getDefaultMax,
+                    'min' => $getDefaultMin, //$prices['min'],//$min,
+                    'max' => $getDefaultMax, //$prices['max'],//$max,
+                    'values' => [$getMin, $getMax],
 
                 ],
                 'clientEvents' => [
@@ -54,9 +62,9 @@ $max = (int)ceil($getMax2);
             ]);
             ?>
             <span class="min-max">
-        Цена от  
-        <span id="mn"><?php echo Yii::$app->currency->number_format($min); ?></span>
-        до   <span id="mx"><?php echo Yii::$app->currency->number_format($max); ?></span>
+        Цена от
+        <span id="mn"><?php echo Yii::$app->currency->number_format($getMin); ?></span>
+        до   <span id="mx"><?php echo Yii::$app->currency->number_format($getMax); ?></span>
         (<?= Yii::$app->currency->active->symbol ?>)</span>
 
             <?php echo Html::submitButton('OK', ['class' => 'btn btn-xs btn-danger']); ?>

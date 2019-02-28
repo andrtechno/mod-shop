@@ -21,6 +21,15 @@ class CategoryController extends WebController {
     private $_eavAttributes;
 
     /**
+     * @var string min price in the query
+     */
+    private $_currentMinPrice = null;
+
+    /**
+     * @var string max price in the query
+     */
+    private $_currentMaxPrice = null;
+    /**
      * @var string
      */
     private $_maxPrice, $_minPrice;
@@ -29,7 +38,97 @@ class CategoryController extends WebController {
      * @var string
      */
     public $maxprice, $minprice;
+    /**
+     * @param string $function
+     * @return mixed
+     */
+    public function aggregatePrice($function = 'MIN')
+    {
+        $query = clone $this->currentQuery;
 
+        $query->select(''.$function.'((CASE WHEN ({{%shop__product}}.`currency_id`)
+                    THEN
+                        {{%shop__product}}.`price` * (SELECT rate FROM {{%shop__currency}} `currency` WHERE `currency`.`id`={{%shop__product}}.`currency_id`)
+                    ELSE
+                        {{%shop__product}}.`price`
+                END)) AS aggregation_price');
+        /*$query->select = array(
+            ''.$function.'((CASE WHEN (`t`.`currency_id`)
+                    THEN
+                        `t`.`price` * (SELECT rate FROM `cms_shop_currency` `currency` WHERE `currency`.`id`=`t`.`currency_id`)
+                    ELSE
+                        `t`.`price`
+                END)) AS aggregation_price',
+        );*/
+        //$query->select = $function . '(`t`.`price`) as aggregation_price';
+
+        $query->addOrderBy(["aggregation_price" => ($function === 'MIN') ? SORT_ASC : SORT_DESC]);
+        $query->distinct(false);      //@todo panix 24.02.2019 added
+        $query->limit(1);
+
+
+        //var_dump($query->asArray()->one());die;
+
+        $result = $query->asArray()->one();
+
+        if ($result) {
+            return $result['aggregation_price'];
+        }
+        return null;
+    }
+
+
+    /**
+     * @return mixed
+     */
+    public function getCurrentMinPrice()
+    {
+        if ($this->_currentMinPrice !== null)
+            return $this->_currentMinPrice;
+
+        if (Yii::$app->request->get('min_price'))
+            $this->_currentMinPrice = Yii::$app->request->get('min_price');
+        else
+            $this->_currentMinPrice = Yii::$app->currency->convert($this->getMinPrice());
+
+        return $this->_currentMinPrice;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCurrentMaxPrice()
+    {
+        if ($this->_currentMaxPrice !== null)
+            return $this->_currentMaxPrice;
+
+        if (Yii::$app->request->get('max_price'))
+            $this->_currentMaxPrice = Yii::$app->request->get('max_price');
+        else
+            $this->_currentMaxPrice = Yii::$app->currency->convert($this->getMaxPrice());
+
+        return $this->_currentMaxPrice;
+    }
+
+    /**
+     * @return string min price
+     */
+    public function getMinPrice()
+    {
+        if ($this->_minPrice !== null)
+            return $this->_minPrice;
+        $this->_minPrice = $this->aggregatePrice('MIN');
+        return $this->_minPrice;
+    }
+
+    /**
+     * @return string max price
+     */
+    public function getMaxPrice()
+    {
+        $this->_maxPrice = $this->aggregatePrice('MAX');
+        return $this->_maxPrice;
+    }
     public function getEavAttributes() {
         if (is_array($this->_eavAttributes))
             return $this->_eavAttributes;

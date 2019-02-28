@@ -40,7 +40,7 @@ class Module extends WebModule {
                 'items' => [
                     [
                         'label' => 'Товары',
-                        'url' => ['/admin/shop'],
+                       // 'url' => ['/admin/shop'], //bug with bootstrap 4.2.x
                         'icon' => $this->icon,
                         'items' => [
                             [
