@@ -55,7 +55,7 @@ class AttributesColumns extends \yii\grid\DataColumn {
 
             $dataResult[$model->name] = array(
                 'title' => $model->title,
-                'value' => $model->renderValue($this->_attributes[$model->name])
+                'value' => (isset($this->_attributes[$model->name])) ? $model->renderValue($this->_attributes[$model->name]) : false
             );
 
         }

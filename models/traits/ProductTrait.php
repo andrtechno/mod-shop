@@ -23,7 +23,7 @@ trait ProductTrait {
         //    print_r($attributesList);die;
 
 
-        $columns[] = [
+        $columns['image'] = [
             'attribute' => 'image',
             'format' => 'raw',
             'contentOptions' => ['class' => 'text-center image'],
@@ -31,8 +31,8 @@ trait ProductTrait {
                 return $model->renderGridImage('50x50');
             },
         ];
-        $columns[] = 'name';
-        $columns[] = [
+        $columns['name'] = 'name';
+        $columns['price'] = [
             'attribute' => 'price',
             'format' => 'html',
             'contentOptions' => ['class' => 'text-center'],
@@ -40,7 +40,7 @@ trait ProductTrait {
                 return Yii::$app->currency->number_format($model->price) . ' ' . Yii::$app->currency->main->symbol;
             }
         ];
-        $columns[] = [
+        $columns['date_create'] = [
             'attribute' => 'date_create',
             'format' => 'raw',
             'filter' => \yii\jui\DatePicker::widget([
@@ -54,7 +54,7 @@ trait ProductTrait {
                 return Yii::$app->formatter->asDatetime($model->date_create, 'php:d D Y H:i:s');
             }
         ];
-        $columns[] = [
+        $columns['date_update'] = [
             'attribute' => 'date_update',
             'format' => 'raw',
             'filter' => \yii\jui\DatePicker::widget([
@@ -70,7 +70,7 @@ trait ProductTrait {
         ];
 
         foreach ($attributesList as $at) {
-            $columns[] = [
+            $columns[$at['attribute']] = [
                 'class' => $at['class'],
                 'attribute' => $at['attribute'],
                 'header' => $at['header'],
