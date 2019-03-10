@@ -6,9 +6,12 @@ use Yii;
 use panix\mod\shop\models\search\ProductSearch;
 use panix\engine\CMS;
 use yii\helpers\ArrayHelper;
-
-trait ProductTrait {
-    public static function getAvailabilityItems() {
+use panix\mod\shop\components\AttributesColumns;
+use yii\jui\DatePicker;
+trait ProductTrait
+{
+    public static function getAvailabilityItems()
+    {
         return array(
             1 => self::t('AVAILABILITY_1'),
             2 => self::t('AVAILABILITY_2'),
@@ -16,9 +19,11 @@ trait ProductTrait {
             4 => self::t('AVAILABILITY_4'),
         );
     }
-    public function getGridColumns() {
+
+    public function getGridColumns()
+    {
         $columns = [];
-        $attributesColumns = new \panix\mod\shop\components\AttributesColumns();
+        $attributesColumns = new AttributesColumns();
         $attributesList = $attributesColumns->getList($this);
         //    print_r($attributesList);die;
 
@@ -27,7 +32,7 @@ trait ProductTrait {
             'attribute' => 'image',
             'format' => 'raw',
             'contentOptions' => ['class' => 'text-center image'],
-            'value' => function($model) {
+            'value' => function ($model) {
                 return $model->renderGridImage('50x50');
             },
         ];
@@ -36,36 +41,36 @@ trait ProductTrait {
             'attribute' => 'price',
             'format' => 'html',
             'contentOptions' => ['class' => 'text-center'],
-            'value' => function($model) {
+            'value' => function ($model) {
                 return Yii::$app->currency->number_format($model->price) . ' ' . Yii::$app->currency->main->symbol;
             }
         ];
         $columns['date_create'] = [
             'attribute' => 'date_create',
             'format' => 'raw',
-            'filter' => \yii\jui\DatePicker::widget([
+            'filter' => DatePicker::widget([
                 'model' => new ProductSearch(),
                 'attribute' => 'date_create',
                 'dateFormat' => 'yyyy-MM-dd',
                 'options' => ['class' => 'form-control']
             ]),
             'contentOptions' => ['class' => 'text-center'],
-            'value' => function($model) {
-                return Yii::$app->formatter->asDatetime($model->date_create, 'php:d D Y H:i:s');
+            'value' => function ($model) {
+                return ($model->date_create) ? Yii::$app->formatter->asDate($model->date_create) . ' '.Yii::t('app','IN').' ' . Yii::$app->formatter->asTime($model->date_create) : null;
             }
         ];
         $columns['date_update'] = [
             'attribute' => 'date_update',
             'format' => 'raw',
-            'filter' => \yii\jui\DatePicker::widget([
+            'filter' => DatePicker::widget([
                 'model' => new ProductSearch(),
                 'attribute' => 'date_update',
                 'dateFormat' => 'yyyy-MM-dd',
                 'options' => ['class' => 'form-control']
             ]),
             'contentOptions' => ['class' => 'text-center'],
-            'value' => function($model) {
-                return Yii::$app->formatter->asDatetime($model->date_update, 'php:d D Y H:i:s');
+            'value' => function ($model) {
+                return ($model->date_update) ? Yii::$app->formatter->asDate($model->date_update) . ' '.Yii::t('app','IN').' ' . Yii::$app->formatter->asTime($model->date_update) : null;
             }
         ];
 
@@ -74,7 +79,7 @@ trait ProductTrait {
                 'class' => $at['class'],
                 'attribute' => $at['attribute'],
                 'header' => $at['header'],
-                'contentOptions' => ['class' => 'text-center']
+                'contentOptions' => ['class' => 'text-center'],
             ];
         }
 
@@ -148,29 +153,35 @@ trait ProductTrait {
      * @param string $attr
      * @return mixed
      */
-    public function toCurrentCurrency($attr = 'price') {
+    public function toCurrentCurrency($attr = 'price')
+    {
         return Yii::$app->currency->convert($this->$attr);
     }
 
-    public function getProductAttributes() {
+    public function getProductAttributes()
+    {
         //Yii::import('mod.shop.components.AttributesRender');
         $attributes = new \panix\mod\shop\components\AttributesRender;
         return $attributes->getData($this);
     }
 
-    public function keywords() {
+    public function keywords()
+    {
         return $this->replaceMeta(Yii::$app->settings->get('shop', 'seo_products_keywords'));
     }
 
-    public function description() {
+    public function description()
+    {
         return $this->replaceMeta(Yii::$app->settings->get('shop', 'seo_products_description'));
     }
 
-    public function title() {
+    public function title()
+    {
         return $this->replaceMeta(Yii::$app->settings->get('shop', 'seo_products_title'));
     }
 
-    public function replaceMeta($text) {
+    public function replaceMeta($text)
+    {
         $attrArray = array();
         foreach ($this->getProductAttributes() as $k => $attr) {
             $attrArray['{eav_' . $k . '_value}'] = $attr->value;
@@ -178,17 +189,16 @@ trait ProductTrait {
         }
 
         $replace = ArrayHelper::merge([
-                    "{product_name}" => $this->name,
-                    "{product_price}" => $this->price,
-                    "{product_sku}" => $this->sku,
-                    "{product_pcs}" => $this->pcs,
-                    "{product_brand}" => (isset($this->manufacturer)) ? $this->manufacturer->name : null,
-                    "{product_main_category}" => (isset($this->mainCategory)) ? $this->mainCategory->name : null,
-                    "{current_currency}" => Yii::$app->currency->active->symbol,
-                        ], $attrArray);
+            "{product_name}" => $this->name,
+            "{product_price}" => $this->price,
+            "{product_sku}" => $this->sku,
+            "{product_pcs}" => $this->pcs,
+            "{product_brand}" => (isset($this->manufacturer)) ? $this->manufacturer->name : null,
+            "{product_main_category}" => (isset($this->mainCategory)) ? $this->mainCategory->name : null,
+            "{current_currency}" => Yii::$app->currency->active->symbol,
+        ], $attrArray);
         return CMS::textReplace($text, $replace);
     }
-
 
 
 }

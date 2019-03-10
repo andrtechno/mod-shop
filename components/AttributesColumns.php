@@ -5,18 +5,19 @@ namespace panix\mod\shop\components;
 use panix\mod\shop\models\Attribute;
 
 /**
- * 
  *
-  [
-    'class' => 'panix\mod\shop\components\AttributesColumns',
-    'attribute' => 'size',
-    'header' => 'Размеры',
-    'contentOptions' => ['class' => 'text-center']
-  ];
- * 
- * 
+ *
+ * [
+ * 'class' => 'panix\mod\shop\components\AttributesColumns',
+ * 'attribute' => 'size',
+ * 'header' => 'Размеры',
+ * 'contentOptions' => ['class' => 'text-center']
+ * ];
+ *
+ *
  */
-class AttributesColumns extends \yii\grid\DataColumn {
+class AttributesColumns extends \yii\grid\DataColumn
+{
 
     /**
      * @var array model attributes loaded with getEavAttributes method
@@ -29,8 +30,8 @@ class AttributesColumns extends \yii\grid\DataColumn {
     protected $_models;
 
 
-
-    public function getList($data) {
+    public function getList($data)
+    {
         $this->_attributes = $data->getEavAttributes();
         $dataResult = $this->getModels($data, false);
         $result = array();
@@ -41,33 +42,35 @@ class AttributesColumns extends \yii\grid\DataColumn {
                     'filter' => true,
                     'header' => $model->title,
                     'attribute' => $model->name,
-                    'value' => (isset($this->_attributes[$model->name])) ? $model->renderValue($this->_attributes[$model->name]) : false
+                    'value' => (isset($this->_attributes[$model->name])) ? $model->renderValue($this->_attributes[$model->name]) : null
                 );
             }
         }
         return $result;
     }
 
-    protected function renderDataCellContent($model, $key, $index) {
+    protected function renderDataCellContent($model, $key, $index)
+    {
         $this->_attributes = $model->getEavAttributes();
 
         foreach ($this->getModels() as $model) {
 
             $dataResult[$model->name] = array(
                 'title' => $model->title,
-                'value' => (isset($this->_attributes[$model->name])) ? $model->renderValue($this->_attributes[$model->name]) : false
+                'value' => (isset($this->_attributes[$model->name])) ? $model->renderValue($this->_attributes[$model->name]) : null
             );
 
         }
 
         if (!empty($dataResult)) {
-            return $dataResult[$this->attribute]['value'];
+            return $this->grid->formatter->format($dataResult[$this->attribute]['value'], 'Html');
         }
 
         return parent::renderDataCellContent($model, $key, $index);
     }
 
-    protected function getModels($data = false, $useCondition = true) {
+    protected function getModels($data = false, $useCondition = true)
+    {
 
         // $query = Attribute::find();
         if ($useCondition) {
@@ -75,10 +78,10 @@ class AttributesColumns extends \yii\grid\DataColumn {
         }
 
         $query = Attribute::find()
-                ->displayOnFront()
-                ->sorting()
-                //->where(['IN', 'name', array_keys($this->_attributes)])
-                ->all();
+            ->displayOnFront()
+            ->sorting()
+            //->where(['IN', 'name', array_keys($this->_attributes)])
+            ->all();
 
         foreach ($query as $m) {
             $this->_models[$m->name] = $m;

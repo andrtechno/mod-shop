@@ -2,14 +2,18 @@
 
 namespace panix\mod\shop;
 
+
 use Yii;
 use panix\engine\WebModule;
 use yii\web\UrlRule;
+use yii\base\BootstrapInterface;
 
-class Module extends WebModule {
+class Module extends WebModule implements BootstrapInterface
+{
+
 
     public $icon = 'shopcart';
-    public $routes = [
+    public $routes2 = [
         'shop/ajax/currency/<id:\d+>' => 'shop/ajax/currency',
         'shop' => 'shop/default/index',
 
@@ -21,18 +25,36 @@ class Module extends WebModule {
     ];
 
 
+    public function bootstrap($app)
+    {
 
+        $app->urlManager->addRules(
+            [
+                'shop/ajax/currency/<id:\d+>' => 'shop/ajax/currency',
+                'shop' => 'shop/default/index',
+                'manufacturer/<seo_alias:\w+>' => 'shop/manufacturer/view',
+                'product/<seo_alias:[0-9a-zA-Z\-]+>' => 'shop/product/view',
+                'products/search/<q:\w+>' => 'shop/category/search',
+
+                ['class' => 'panix\mod\shop\components\CategoryUrlRule'],
+            ],
+            true
+        );
+    }
 
     public function init()
     {
-        //yii <module_id>/<command>/<sub_command>
-        parent::init();
         if (Yii::$app instanceof \yii\console\Application) {
-            $this->controllerNamespace = 'app\modules\shop\commands';
+            $this->controllerNamespace = 'panix\mod\shop\commands';
         }
+        if (!(Yii::$app instanceof \yii\console\Application)) {
+            parent::init();
+        }
+
     }
 
-    public function getAdminMenu() {
+    public function getAdminMenu()
+    {
         return [
             'shop' => [
                 'label' => 'Магазин',
@@ -40,7 +62,7 @@ class Module extends WebModule {
                 'items' => [
                     [
                         'label' => 'Товары',
-                       // 'url' => ['/admin/shop'], //bug with bootstrap 4.2.x
+                        // 'url' => ['/admin/shop'], //bug with bootstrap 4.2.x
                         'icon' => $this->icon,
                         'items' => [
                             [
@@ -90,14 +112,16 @@ class Module extends WebModule {
         ];
     }
 
-    public function getAdminSidebar() {
+    public function getAdminSidebar()
+    {
         $mod = new \panix\engine\bootstrap\Nav;
         $items = $mod->findMenu($this->id);
         return $items['items'];
     }
 
 
-    public function getInfo() {
+    public function getInfo()
+    {
         return [
             'label' => Yii::t('shop/default', 'MODULE_NAME'),
             'author' => 'andrew.panix@gmail.com',

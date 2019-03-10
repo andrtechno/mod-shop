@@ -138,7 +138,7 @@ class EavBehavior extends \yii\base\Behavior
     /**
      * Returns owner model FK name.
      * @access protected
-     * @throws CException
+     * @throws UnknownPropertyException
      * @return string
      */
     protected function getModelTableFk()
@@ -331,7 +331,7 @@ class EavBehavior extends \yii\base\Behavior
     /**
      * @access public
      * @param array attributes key for load.
-     * @return CActiveRecord
+     * @return ActiveRecord
      */
     public function loadEavAttributes($attributes)
     {
@@ -395,7 +395,7 @@ class EavBehavior extends \yii\base\Behavior
     /**
      * @param array attributes values for change.
      * @param boolean whether auto save attributes.
-     * @return CActiveRecord
+     * @return ActiveRecord
      */
     public function setEavAttributes($attributes, $save = FALSE)
     {

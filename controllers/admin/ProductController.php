@@ -28,6 +28,10 @@ class ProductController extends AdminController {
                 'class' => 'panix\engine\actions\DeleteAction',
                 'modelClass' => Product::class,
             ],
+            'switch' => [
+                'class' => 'panix\engine\actions\SwitchAction',
+                'modelClass' => Product::class,
+            ],
         ];
     }
 
