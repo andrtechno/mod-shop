@@ -14,11 +14,13 @@ use panix\mod\shop\models\AttributeOption;
 use panix\mod\shop\models\ProductVariant;
 use yii\web\ForbiddenHttpException;
 
-class ProductController extends AdminController {
+class ProductController extends AdminController
+{
 
     public $tab_errors = [];
 
-    public function actions() {
+    public function actions()
+    {
         return [
             'sortable' => [
                 'class' => \panix\engine\grid\sortable\Action::class,
@@ -35,7 +37,8 @@ class ProductController extends AdminController {
         ];
     }
 
-    public function actionIndex() {
+    public function actionIndex()
+    {
         \panix\mod\shop\assets\admin\ProductIndex::register($this->view);
         $this->pageName = Yii::t('shop/admin', 'PRODUCTS');
         $this->buttons = [
@@ -55,13 +58,17 @@ class ProductController extends AdminController {
         $searchModel = new ProductSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams());
 
+
         return $this->render('index', [
-                    'dataProvider' => $dataProvider,
-                    'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+            'searchModel' => $searchModel,
         ]);
+
+
     }
 
-    public function actionUpdate($id = false) {
+    public function actionUpdate($id = false)
+    {
 
 
         if ($id === true) {
@@ -93,12 +100,9 @@ class ProductController extends AdminController {
         $post = Yii::$app->request->post();
 
 
-
-
         // Apply use_configurations, configurable_attributes, type_id
         if (Yii::$app->request->get('Product'))
             $model->attributes = Yii::$app->request->get('Product');
-
 
 
         if ($model->mainCategory)
@@ -121,7 +125,7 @@ class ProductController extends AdminController {
 
 
         $title = ($model->isNewRecord) ? Yii::t('shop/admin', 'CREATE_PRODUCT') :
-                Yii::t('shop/admin', 'UPDATE_PRODUCT');
+            Yii::t('shop/admin', 'UPDATE_PRODUCT');
         $this->pageName = $title;
         if ($model->type)
             $title .= ' "' . Html::encode($model->type->name) . '"';
@@ -147,12 +151,6 @@ class ProductController extends AdminController {
         }
 
 
-
-
-
-
-
-
         if ($model->load($post) && $model->validate() && $this->validateAttributes($model)) {
 
             $model->setRelatedProducts(Yii::$app->request->post('RelatedProductId'), []);
@@ -165,20 +163,20 @@ class ProductController extends AdminController {
             $model->setCategories(Yii::$app->request->post('categories', []), $mainCategoryId);
 
             $model->file = \yii\web\UploadedFile::getInstances($model, 'file');
-            
-            
-            if(Yii::$app->request->post('AttachmentsMainId')){
+
+
+            if (Yii::$app->request->post('AttachmentsMainId')) {
                 $test = $model->getImages();
                 //print_r($test);
                 //sdie;
             }
-      
-             
+
+
             if ($model->file) {
-               
+
                 foreach ($model->file as $file) {
-                    
-                    
+
+
                     $uniqueName = \panix\engine\CMS::gen(10);
                     $file->saveAs('uploads/' . $uniqueName . '_' . $file->baseName . '.' . $file->extension);
                     $model->attachImage('uploads/' . $uniqueName . '_' . $file->baseName . '.' . $file->extension);
@@ -202,7 +200,8 @@ class ProductController extends AdminController {
         ]);
     }
 
-    public function actionAddOptionToAttribute() {
+    public function actionAddOptionToAttribute()
+    {
         $attribute = Attribute::findOne($_GET['attr_id']);
 
         if (!$attribute)
@@ -220,14 +219,15 @@ class ProductController extends AdminController {
         Yii::$app->end();
     }
 
-    public function actionRenderVariantTable() {
+    public function actionRenderVariantTable()
+    {
         $attribute = Attribute::findOne($_GET['attr_id']);
 
         if (!$attribute)
             $this->error404(Yii::t('shop/admin', 'ERR_LOAD_ATTR'));
 
         return $this->renderPartial('tabs/variants/_table', array(
-                    'attribute' => $attribute
+            'attribute' => $attribute
         ));
     }
 
@@ -236,7 +236,8 @@ class ProductController extends AdminController {
      * @param Product $model
      * @return bool
      */
-    public function validateAttributes(Product $model) {
+    public function validateAttributes(Product $model)
+    {
         $attributes = $model->type->shopAttributes;
 
         if (empty($attributes) || $model->use_configurations) {
@@ -259,16 +260,17 @@ class ProductController extends AdminController {
      * Load attributes relative to type and available for product configurations.
      * Used on creating new product.
      */
-    public function actionLoadConfigurableOptions() {
+    public function actionLoadConfigurableOptions()
+    {
         // For configurations that  are available only dropdown and radio lists.
         // $cr = new CDbCriteria;
         //$cr->addInCondition('type', array(ShopAttribute::TYPE_DROPDOWN, ShopAttribute::TYPE_RADIO_LIST));
         //$type = ProductType::model()->with(array('shopAttributes'))->findByPk($_GET['type_id'], $cr);
 
         $type = ProductType::find($_GET['type_id'])
-                ->joinWith('shopAttributes')
-                ->where([Attribute::tableName() . '.type' => [Attribute::TYPE_DROPDOWN, Attribute::TYPE_RADIO_LIST]])
-                ->one();
+            ->joinWith('shopAttributes')
+            ->where([Attribute::tableName() . '.type' => [Attribute::TYPE_DROPDOWN, Attribute::TYPE_RADIO_LIST]])
+            ->one();
 
 //echo($type->prepare(Yii::$app->db->queryBuilder)->createCommand()->rawSql);die;
         $data = array();
@@ -291,7 +293,8 @@ class ProductController extends AdminController {
         die;
     }
 
-    protected function processConfigurations(Product $model) {
+    protected function processConfigurations(Product $model)
+    {
         $productPks = Yii::$app->request->post('ConfigurationsProductGrid_c0', array());
 
         // Clear relations
@@ -308,7 +311,8 @@ class ProductController extends AdminController {
         }
     }
 
-    protected function processAttributes(Product $model) {
+    protected function processAttributes(Product $model)
+    {
         $attributes = Yii::$app->request->post('Attribute', []);
         if (empty($attributes))
             return false;
@@ -328,7 +332,8 @@ class ProductController extends AdminController {
      * Save product variants
      * @param Product $model
      */
-    protected function processVariants(Product $model) {
+    protected function processVariants(Product $model)
+    {
         $dontDelete = array();
 
         if (!empty($_POST['variants'])) {
@@ -337,10 +342,10 @@ class ProductController extends AdminController {
                 foreach ($values['option_id'] as $option_id) {
                     // Try to load variant from DB
                     $variant = ProductVariant::find()
-                            ->where(['product_id' => $model->id,
-                                'attribute_id' => $attribute_id,
-                                'option_id' => $option_id])
-                            ->one();
+                        ->where(['product_id' => $model->id,
+                            'attribute_id' => $attribute_id,
+                            'option_id' => $option_id])
+                        ->one();
                     // If not - create new.
                     if (!$variant)
                         $variant = new ProductVariant();
@@ -352,7 +357,7 @@ class ProductController extends AdminController {
                         'price' => $values['price'][$i],
                         'price_type' => $values['price_type'][$i],
                         'sku' => $values['sku'][$i],
-                            ), false);
+                    ), false);
 
                     $variant->save(false);
                     array_push($dontDelete, $variant->id);
@@ -366,7 +371,7 @@ class ProductController extends AdminController {
             //$cr->addNotInCondition('id', $dontDelete);
             //$cr->addCondition();
             ProductVariant::deleteAll(
-                    ['AND', 'product_id=:id', ['NOT IN', 'id', $dontDelete]], [':id' => $model->id]);
+                ['AND', 'product_id=:id', ['NOT IN', 'id', $dontDelete]], [':id' => $model->id]);
             /* ProductVariant::find()->where(['NOT IN','id',$dontDelete])->deleteAll([
               'product_id'=>$model->id
               ]); */
@@ -376,7 +381,8 @@ class ProductController extends AdminController {
         }
     }
 
-    protected function findModel($id) {
+    protected function findModel($id)
+    {
         $model = new Product;
         if (($model = $model::findOne($id)) !== null) {
             return $model;
@@ -387,11 +393,12 @@ class ProductController extends AdminController {
 
     /**
      * Render popup windows
-     * 
+     *
      * @return type
      * @throws HttpException
      */
-    public function actionRenderCategoryAssignWindow() {
+    public function actionRenderCategoryAssignWindow()
+    {
         if (Yii::$app->request->isAjax) {
             return $this->renderAjax('window/category_assign_window');
         } else {
@@ -401,11 +408,12 @@ class ProductController extends AdminController {
 
     /**
      * Render popup windows
-     * 
+     *
      * @return type
      * @throws HttpException
      */
-    public function actionRenderDuplicateProductsWindow() {
+    public function actionRenderDuplicateProductsWindow()
+    {
         if (Yii::$app->request->isAjax) {
             return $this->renderPartial('window/duplicate_products_window');
         } else {
@@ -415,11 +423,12 @@ class ProductController extends AdminController {
 
     /**
      * Render popup windows
-     * 
+     *
      * @return type
      * @throws HttpException
      */
-    public function actionRenderProductsPriceWindow() {
+    public function actionRenderProductsPriceWindow()
+    {
         if (Yii::$app->request->isAjax) {
             $model = new Product;
             return $this->renderPartial('window/products_price_window', ['model' => $model]);
@@ -430,10 +439,11 @@ class ProductController extends AdminController {
 
     /**
      * Set price products
-     * 
+     *
      * @throws HttpException
      */
-    public function actionSetProducts() {
+    public function actionSetProducts()
+    {
         $request = Yii::$app->request;
         if ($request->isAjax) {
             $product_ids = $request->post('products', array());
@@ -462,7 +472,8 @@ class ProductController extends AdminController {
     /**
      * Duplicate products
      */
-    public function actionDuplicateProducts() {
+    public function actionDuplicateProducts()
+    {
         //TODO: return ids to find products
         $product_ids = Yii::$app->request->post('products', array());
         parse_str(Yii::$app->request->post('duplicate'), $duplicates);
@@ -477,10 +488,11 @@ class ProductController extends AdminController {
 
     /**
      * Assign categories to products
-     * 
+     *
      * @return type
      */
-    public function actionAssignCategories() {
+    public function actionAssignCategories()
+    {
         $categories = Yii::$app->request->post('category_ids');
         $products = Yii::$app->request->post('product_ids');
 
@@ -499,9 +511,10 @@ class ProductController extends AdminController {
         }
     }
 
-    public function actionUpdateIsActive() {
+    public function actionUpdateIsActive()
+    {
         $ids = Yii::$app->request->post('ids');
-        $switch = (int) Yii::$app->request->post('switch');
+        $switch = (int)Yii::$app->request->post('switch');
         $models = Product::find()->where(['id' => $ids])->all();
         foreach ($models as $product) {
             if (in_array($switch, array(0, 1))) {

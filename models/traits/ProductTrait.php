@@ -2,6 +2,7 @@
 
 namespace panix\mod\shop\models\traits;
 
+use panix\engine\Html;
 use panix\mod\shop\models\Attribute;
 use Yii;
 use panix\mod\shop\models\search\ProductSearch;
@@ -52,7 +53,7 @@ trait ProductTrait
             ]),
             'contentOptions' => ['class' => 'text-center'],
             'value' => function ($model) {
-                return ($model->date_create) ? Yii::$app->formatter->asDate($model->date_create) . ' '.Yii::t('app','IN').' ' . Yii::$app->formatter->asTime($model->date_create) : null;
+                return ($model->date_create) ? Yii::$app->formatter->asDate($model->date_create) . ' ' . Yii::t('app', 'IN') . ' ' . Yii::$app->formatter->asTime($model->date_create) : null;
             }
         ];
         $columns['date_update'] = [
@@ -66,7 +67,7 @@ trait ProductTrait
             ]),
             'contentOptions' => ['class' => 'text-center'],
             'value' => function ($model) {
-                return ($model->date_update) ? Yii::$app->formatter->asDate($model->date_update) . ' '.Yii::t('app','IN').' ' . Yii::$app->formatter->asTime($model->date_update) : null;
+                return ($model->date_update) ? Yii::$app->formatter->asDate($model->date_update) . ' ' . Yii::t('app', 'IN') . ' ' . Yii::$app->formatter->asTime($model->date_update) : null;
             }
         ];
 
@@ -77,13 +78,20 @@ trait ProductTrait
             //->where(['IN', 'name', array_keys($this->_attributes)])
             ->all();
 
+        $get = Yii::$app->request->get('ProductSearch');
         foreach ($query as $m) {
+
             $columns['' . $m->name] = [
-                'class' => 'panix\mod\shop\components\EavColumn',
-                'attribute' => 'eav_'.$m->name,
+                //'class' => 'panix\mod\shop\components\EavColumn',
+                'attribute' => 'eav_' . $m->name,
                 'header' => $m->title,
-               // 'filter'=>ArrayHelper::map($m->options, 'id', 'id'),
-                'filter'=>true,
+                'filter' => Html::dropDownList(
+                    'ProductSearch[eav][' . $m->name . ']',
+                    (isset($get['eav'][$m->name])) ? $get['eav'][$m->name] : null,
+                    ArrayHelper::map($m->options, 'id', 'value'),
+                    ['class' => 'form-control', 'prompt' => 'Select ' . $m->title]
+                ),
+                //'filter'=>true,
                 'contentOptions' => ['class' => 'text-center'],
             ];
         }

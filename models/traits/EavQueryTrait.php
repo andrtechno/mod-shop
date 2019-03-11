@@ -27,9 +27,9 @@ trait EavQueryTrait
     }
 
 
-    protected function getFindByEavAttributes($attributes)
+    public function getFindByEavAttributes($attributes)
     {
-        $pk = '{{%shop__product}}.id';
+        $pk = $this->modelClass::tableName() .'.id';
         $i = 0;
         foreach ($attributes as $attribute => $values) {
             // If search models with attribute name with specified values.
@@ -64,10 +64,10 @@ trait EavQueryTrait
         return $this;
     }
 
-    protected function getFindByEavAttributes2($attributes)
+    public function getFindByEavAttributes2($attributes)
     {
         //$criteria = new CDbCriteria();
-        $pk = '{{%shop__product}}.id';
+        $pk = $this->modelClass::tableName() . '.id';
 
         // $conn = $this->owner->getDbConnection();
         $i = 0;

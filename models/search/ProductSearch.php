@@ -49,6 +49,22 @@ class ProductSearch extends Product
         $query->sort();
         $query->joinWith(['translations translations']);
 
+        $className = substr(strrchr(__CLASS__, "\\"), 1);
+
+
+        if (isset($params[$className]['eav'])) {
+            $result = array();
+            foreach ($params[$className]['eav'] as $name => $eav) {
+                if (!empty($eav)) {
+                    $result[$name][] = $eav;
+                }
+            }
+
+            $query->getFindByEavAttributes2($result);
+        }
+
+
+
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -72,6 +88,13 @@ class ProductSearch extends Product
         $query->andFilterWhere([
             'id' => $this->id,
         ]);
+
+
+
+
+
+
+
         // Id of product to exclude from search
         if ($this->exclude) {
             foreach ($this->exclude as $id) {
