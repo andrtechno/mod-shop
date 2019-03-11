@@ -2,6 +2,7 @@
 
 namespace panix\mod\shop\models\query;
 
+use panix\mod\shop\models\Currency;
 use yii\db\ActiveQuery;
 use panix\engine\traits\DefaultQueryTrait;
 use panix\mod\shop\models\traits\EavQueryTrait;
@@ -64,19 +65,21 @@ class ProductQuery extends ActiveQuery
 
     /**
      * Filter products by min_price
-     * @param $value float
+     * @param $value int
      * @return $this
      */
-    public function applyMinPrice($value)
+    public function applyMinPrice(int $value)
     {
+        $tableName = $this->modelClass::tableName();
+        $tableNameCur = Currency::tableName();
         if ($value) {
             //  $this->andWhere(['>=', 'price', (int)$value]);
 
-            $this->andWhere('CASE WHEN ({{%shop__product}}.`currency_id`) THEN
-            ({{%shop__product}}.`price` * (SELECT rate FROM {{%shop__currency}} `currency` WHERE `currency`.`id`={{%shop__product}}.`currency_id`)) >= ' . (int)$value . '
+            $this->andWhere("CASE WHEN ({$tableName}.`currency_id`) THEN
+            ({$tableName}.price * (SELECT rate FROM {$tableNameCur} `currency` WHERE `currency`.`id`={$tableName}.`currency_id`)) >= {$value}
         ELSE
-        	{{%shop__product}}.price >= ' . (int)$value . '
-        END');
+        	{$tableName}.price >= {$value}
+        END");
 
         }
         return $this;
@@ -84,19 +87,40 @@ class ProductQuery extends ActiveQuery
 
     /**
      * Filter products by max_price
-     * @param $value float
+     * @param $value int
      * @return $this
      */
-    public function applyMaxPrice($value)
+    public function applyMaxPrice(int $value)
     {
+        $tableName = $this->modelClass::tableName();
+        $tableNameCur = Currency::tableName();
         if ($value) {
             //$this->andWhere(['<=', 'price', (int)$value]);
 
-            $this->andWhere('CASE WHEN ({{%shop__product}}.`currency_id`) THEN
-            ({{%shop__product}}.`price` * (SELECT rate FROM {{%shop__currency}} `currency` WHERE `currency`.`id`={{%shop__product}}.`currency_id`)) <= ' . (int)$value . '
+            $this->andWhere("CASE WHEN ({$tableName}.`currency_id`) THEN
+            ({$tableName}.price * (SELECT rate FROM {$tableNameCur} `currency` WHERE `currency`.`id`={$tableName}.`currency_id`)) <= {$value}
         ELSE
-        	{{%shop__product}}.price <= ' . (int)$value . '
-        END');
+        	{$tableName}.price <= {$value}
+        END");
+        }
+        return $this;
+    }
+
+    /**
+     * Filter products by price
+     * @param $value int
+     * @return $this
+     */
+    public function applyPrice(int $value)
+    {
+        $tableName = $this->modelClass::tableName();
+        $tableNameCur = Currency::tableName();
+        if ($value) {
+            $this->andWhere("CASE WHEN ({$tableName}.`currency_id`) THEN
+            ({$tableName}.price * (SELECT rate FROM {$tableNameCur} `currency` WHERE `currency`.`id`={$tableName}.`currency_id`)) = {$value}
+        ELSE
+        	{$tableName}.price = {$value}
+        END");
         }
         return $this;
     }
@@ -109,6 +133,32 @@ class ProductQuery extends ActiveQuery
     public function manufacturer()
     {
         $this->joinWith(['manufacturer']);
+        return $this;
+    }
+
+
+    public function aggregatePrice($function = 'MIN')
+    {
+        $tableName = $this->modelClass::tableName();
+        $this->select("{$function}((CASE WHEN ({$tableName}.`currency_id`)
+                    THEN
+                        {$tableName}.`price` * (SELECT rate FROM {{%shop__currency}} `currency` WHERE `currency`.`id`={$tableName}.`currency_id`)
+                    ELSE
+                        {$tableName}.`price`
+                END)) AS aggregation_price");
+
+        $this->addOrderBy(["aggregation_price" => ($function === 'MIN') ? SORT_ASC : SORT_DESC]);
+        $this->distinct(false);      //@todo panix 24.02.2019 added
+        $this->limit(1);
+
+
+        //var_dump($query->asArray()->one());die;
+
+        $result = $this->asArray()->one();
+
+        if ($result) {
+            return $result['aggregation_price'];
+        }
         return $this;
     }
 

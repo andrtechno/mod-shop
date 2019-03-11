@@ -8,12 +8,14 @@ use panix\engine\data\ActiveDataProvider;
 use panix\mod\shop\models\Product;
 
 /**
- * PagesSearch represents the model behind the search form about `app\modules\pages\models\Pages`.
+ * ProductSearch represents the model behind the search form about `panix\mod\shop\models\Product`.
  */
 class ProductSearch extends Product
 {
 
     public $exclude = null;
+    public $price_min;
+    public $price_max;
 
     /**
      * @inheritdoc
@@ -21,8 +23,10 @@ class ProductSearch extends Product
     public function rules()
     {
         return [
-            [['id', 'price'], 'integer'],
+            [['id'], 'integer'],
+            [['price_min', 'price_max'], 'integer'],
             [['name', 'seo_alias', 'sku', 'price'], 'safe'],
+            [['date_update', 'date_create'], 'date', 'format' => 'php:Y-m-d']
         ];
     }
 
@@ -63,6 +67,15 @@ class ProductSearch extends Product
             ],
         ]);
 
+
+        if(isset($params[$className]['price']['min'])){
+            $this->price_min = $params[$className]['price']['min'];
+        }
+        if(isset($params[$className]['price']['max'])){
+            $this->price_max = $params[$className]['price']['max'];
+        }
+
+
         $this->load($params);
 
         if (!$this->validate()) {
@@ -98,9 +111,30 @@ class ProductSearch extends Product
             $query->andWhere(['IN', 'id', $configure['conf']]);
         }
 
+        /*$query->andFilterWhere([
+            '>=',
+            'date_update',
+            $this->date_update
+        ]);*/
+
+
+        // $query->andFilterWhere(['between', 'date_update', $this->start, $this->end]);
+        //$query->andFilterWhere(['like', "DATE(CONVERT_TZ('date_update', 'UTC', '".Yii::$app->timezone."'))", $this->date_update.' 23:59:59']);
+        //  $query->andFilterWhere(['like', "DATE(CONVERT_TZ('date_create', 'UTC', '".Yii::$app->timezone."'))", $this->date_create.]);
+
         $query->andFilterWhere(['like', 'translations.name', $this->name]);
         $query->andFilterWhere(['like', 'sku', $this->sku]);
-        $query->andFilterWhere(['like', 'price', $this->price]);
+        //$query->andFilterWhere(['like', 'price', $this->price]);
+
+        //if ($this->price)
+        //    $query->applyPrice($this->price);
+
+        if ($this->price_max) {
+            $query->applyMaxPrice($this->price_max);
+        }
+        if ($this->price_min) {
+            $query->applyMinPrice($this->price_min);
+        }
 
         return $dataProvider;
     }

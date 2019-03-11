@@ -4,6 +4,7 @@ namespace panix\mod\shop\models\traits;
 
 use panix\engine\Html;
 use panix\mod\shop\models\Attribute;
+use panix\mod\shop\models\Product;
 use Yii;
 use panix\mod\shop\models\search\ProductSearch;
 use panix\engine\CMS;
@@ -37,20 +38,18 @@ trait ProductTrait
         $columns['price'] = [
             'attribute' => 'price',
             'format' => 'html',
+            'class' => 'panix\engine\grid\columns\jui\SliderColumn',
+            'max'=>(int) Product::find()->aggregatePrice('MAX'),
+            'min'=>(int) Product::find()->aggregatePrice('MIN'),
             'contentOptions' => ['class' => 'text-center'],
             'value' => function ($model) {
-                return Yii::$app->currency->number_format($model->price) . ' ' . Yii::$app->currency->main->symbol;
+                return Yii::$app->currency->number_format(Yii::$app->currency->convert($model->price, $model->currency_id)) . ' ' . Yii::$app->currency->main->symbol;
             }
         ];
         $columns['date_create'] = [
             'attribute' => 'date_create',
+            'class' => 'panix\engine\grid\columns\jui\DatepickerColumn',
             'format' => 'raw',
-            'filter' => DatePicker::widget([
-                'model' => new ProductSearch(),
-                'attribute' => 'date_create',
-                'dateFormat' => 'yyyy-MM-dd',
-                'options' => ['class' => 'form-control']
-            ]),
             'contentOptions' => ['class' => 'text-center'],
             'value' => function ($model) {
                 return ($model->date_create) ? Yii::$app->formatter->asDate($model->date_create) . ' ' . Yii::t('app', 'IN') . ' ' . Yii::$app->formatter->asTime($model->date_create) : null;
@@ -58,13 +57,8 @@ trait ProductTrait
         ];
         $columns['date_update'] = [
             'attribute' => 'date_update',
+            'class' => 'panix\engine\grid\columns\jui\DatepickerColumn',
             'format' => 'raw',
-            'filter' => DatePicker::widget([
-                'model' => new ProductSearch(),
-                'attribute' => 'date_update',
-                'dateFormat' => 'yyyy-MM-dd',
-                'options' => ['class' => 'form-control']
-            ]),
             'contentOptions' => ['class' => 'text-center'],
             'value' => function ($model) {
                 return ($model->date_update) ? Yii::$app->formatter->asDate($model->date_update) . ' ' . Yii::t('app', 'IN') . ' ' . Yii::$app->formatter->asTime($model->date_update) : null;

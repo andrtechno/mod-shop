@@ -177,7 +177,7 @@ class Product extends ActiveRecord
             [['sku', 'full_description'], 'default'], // установим ... как NULL, если они пустые
             [['name', 'seo_alias', 'main_category_id','price'], 'required'],
             [['name', 'seo_alias'], 'string', 'max' => 255],
-            [['manufacturer_id', 'type_id', 'quantity', 'views', 'added_to_cart_count', 'ordern', 'category_id'], 'integer'],
+            [['manufacturer_id', 'type_id', 'quantity', 'views', 'added_to_cart_count', 'ordern', 'category_id','currency_id'], 'integer'],
             [['name', 'seo_alias', 'full_description', 'use_configurations'], 'safe'],
             //  [['c1'], 'required'], // Attribute field
             // [['c1'], 'string', 'max' => 255], // Attribute field
