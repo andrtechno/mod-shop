@@ -295,13 +295,13 @@ class ProductController extends AdminController {
         $productPks = Yii::$app->request->post('ConfigurationsProductGrid_c0', array());
 
         // Clear relations
-        Yii::$app->db->createCommand()->delete('{{%shop_product_configurations}}', 'product_id=:id', [':id' => $model->id])->execute();
+        Yii::$app->db->createCommand()->delete('{{%shop__product_configurations}}', 'product_id=:id', [':id' => $model->id])->execute();
 
         if (!sizeof($productPks))
             return;
 
         foreach ($productPks as $pk) {
-            Yii::$app->db->createCommand()->insert('{{%shop_product_configurations}}', [
+            Yii::$app->db->createCommand()->insert('{{%shop__product_configurations}}', [
                 'product_id' => $model->id,
                 'configurable_id' => $pk
             ])->execute();

@@ -330,7 +330,7 @@ class EavBehavior extends \yii\base\Behavior
 
     /**
      * @access public
-     * @param array attributes key for load.
+     * @param array $attributes key for load.
      * @return ActiveRecord
      */
     public function loadEavAttributes($attributes)
@@ -465,8 +465,9 @@ class EavBehavior extends \yii\base\Behavior
      */
     public function getEavAttribute($attribute)
     {
-        $values = $this->getEavAttributes(array($attribute));
+        $values = $this->getEavAttributes([$attribute]);
         return $this->attributes->itemAt($attribute);
+        //return $values;
     }
 
     /**

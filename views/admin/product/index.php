@@ -1,7 +1,9 @@
 <?php
 use panix\engine\grid\GridView;
 use panix\engine\widgets\Pjax;
-echo \panix\ext\fancybox\Fancybox::widget(['target' => '.image a']);
+use panix\ext\fancybox\Fancybox;
+
+echo Fancybox::widget(['target' => '.image a']);
 /*
 use yii\jui\Dialog;
 Dialog::begin([

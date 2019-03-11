@@ -46,6 +46,7 @@ class ProductSearch extends Product
     {
         $query = Product::find();
         //$query->joinWith('translations');
+        $query->sort();
         $query->joinWith(['translations translations']);
 
 
@@ -74,7 +75,7 @@ class ProductSearch extends Product
         // Id of product to exclude from search
         if ($this->exclude) {
             foreach ($this->exclude as $id) {
-                $query->andFilterWhere(['!=', '{{%shop__product}}.id', $id]);
+                $query->andFilterWhere(['!=', self::tableName().'.id', $id]);
             }
         }
         if (isset($configure['conf'])) {

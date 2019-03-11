@@ -5,6 +5,7 @@ namespace panix\mod\shop\models\query;
 use yii\db\ActiveQuery;
 use panix\engine\traits\DefaultQueryTrait;
 use panix\mod\shop\models\traits\EavQueryTrait;
+use panix\mod\shop\models\Category;
 
 class ProductQuery extends ActiveQuery
 {
@@ -47,7 +48,7 @@ class ProductQuery extends ActiveQuery
      */
     public function applyCategories($categories)
     {
-        if ($categories instanceof \panix\mod\shop\models\Category)
+        if ($categories instanceof Category)
             $categories = [$categories->id];
         else {
             if (!is_array($categories))

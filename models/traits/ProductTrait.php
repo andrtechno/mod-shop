@@ -2,12 +2,13 @@
 
 namespace panix\mod\shop\models\traits;
 
+use panix\mod\shop\models\Attribute;
 use Yii;
 use panix\mod\shop\models\search\ProductSearch;
 use panix\engine\CMS;
 use yii\helpers\ArrayHelper;
-use panix\mod\shop\components\AttributesColumns;
 use yii\jui\DatePicker;
+
 trait ProductTrait
 {
     public static function getAvailabilityItems()
@@ -23,11 +24,6 @@ trait ProductTrait
     public function getGridColumns()
     {
         $columns = [];
-        $attributesColumns = new AttributesColumns();
-        $attributesList = $attributesColumns->getList($this);
-        //    print_r($attributesList);die;
-
-
         $columns['image'] = [
             'attribute' => 'image',
             'format' => 'raw',
@@ -74,14 +70,24 @@ trait ProductTrait
             }
         ];
 
-        foreach ($attributesList as $at) {
-            $columns[$at['attribute']] = [
-                'class' => $at['class'],
-                'attribute' => $at['attribute'],
-                'header' => $at['header'],
+
+        $query = Attribute::find()
+            ->displayOnFront()
+            ->sorting()
+            //->where(['IN', 'name', array_keys($this->_attributes)])
+            ->all();
+
+        foreach ($query as $m) {
+            $columns['' . $m->name] = [
+                'class' => 'panix\mod\shop\components\EavColumn',
+                'attribute' => 'eav_'.$m->name,
+                'header' => $m->title,
+               // 'filter'=>ArrayHelper::map($m->options, 'id', 'id'),
+                'filter'=>true,
                 'contentOptions' => ['class' => 'text-center'],
             ];
         }
+
 
         $columns['DEFAULT_CONTROL'] = [
             'class' => 'panix\engine\grid\columns\ActionColumn',

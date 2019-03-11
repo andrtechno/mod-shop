@@ -597,7 +597,7 @@ class Product extends ActiveRecord
     //public function getEavAttributes() {
     //     return $this->hasMany(mazurva\eav\models\EavAttribute::className(), ['categoryId' => 'id']);
     // }
-    public function __get222($name)
+    public function __get($name)
     {
         if (substr($name, 0, 4) === 'eav_') {
             if ($this->getIsNewRecord())
@@ -612,8 +612,8 @@ class Product extends ActiveRecord
             else
                 return null;
 
-
-            $attributeModel = Attribute::find(['name' => $attribute])->one();
+            $attributeModel = Attribute::find()->where(['name' => $attribute])->one();
+            //$attributeModel = Attribute::find(['name' => $attribute])->one();
             return $attributeModel->renderValue($value);
         }
         return parent::__get($name);
