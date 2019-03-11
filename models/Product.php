@@ -4,6 +4,7 @@ namespace panix\mod\shop\models;
 
 use app\modules\sitemap\Sitemap;
 use app\modules\sitemap\behaviors\SitemapBehavior;
+use panix\mod\user\models\User;
 use Yii;
 use panix\engine\CMS;
 use panix\engine\behaviors\TranslateBehavior;
@@ -17,8 +18,9 @@ use panix\mod\shop\models\ProductVariant;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
+use panix\engine\db\ActiveRecord;
 
-class Product extends \panix\engine\db\ActiveRecord
+class Product extends ActiveRecord
 {
 
     use traits\ProductTrait;
@@ -97,11 +99,12 @@ class Product extends \panix\engine\db\ActiveRecord
 
     public function getMainImageUrl($size = false)
     {
-        if ($this->getImage()) {
+        $image = $this->getImage();
+        if ($image) {
             if ($size) {
-                return $this->getImage()->getUrl($size);
+                return $image->getUrl($size);
             } else {
-                return $this->getImage()->getUrl();
+                return $image->getUrl();
             }
         } else {
             return CMS::placeholderUrl(array('size' => $size));
@@ -594,7 +597,7 @@ class Product extends \panix\engine\db\ActiveRecord
     //public function getEavAttributes() {
     //     return $this->hasMany(mazurva\eav\models\EavAttribute::className(), ['categoryId' => 'id']);
     // }
-    public function __get($name)
+    public function __get222($name)
     {
         if (substr($name, 0, 4) === 'eav_') {
             if ($this->getIsNewRecord())
@@ -723,7 +726,7 @@ class Product extends \panix\engine\db\ActiveRecord
                   $result = $product->price;
               } else {
 
-             $result = $product->getDisplayPrice();
+             $result = $product->getFrontPrice();
                   //$result = $product->price;
                }
           //  $result = $product->price;

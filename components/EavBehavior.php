@@ -138,7 +138,7 @@ class EavBehavior extends \yii\base\Behavior
     /**
      * Returns owner model FK name.
      * @access protected
-     * @throws UnknownPropertyException
+     * @throws \yii\base\UnknownPropertyException
      * @return string
      */
     protected function getModelTableFk()
@@ -158,7 +158,7 @@ class EavBehavior extends \yii\base\Behavior
     /**
      * Strip prefix from attribute key.
      * @access protected
-     * @param string attribute key
+     * @param string $attribute key
      * @return string
      */
     protected function stripPrefix($attribute)
@@ -172,7 +172,7 @@ class EavBehavior extends \yii\base\Behavior
 
     /**
      * Set safe attributes array.
-     * @param array safe attributes.
+     * @param array $safeAttributes attributes.
      * @return void
      */
     public function setSafeAttributes($safeAttributes)
@@ -192,7 +192,7 @@ class EavBehavior extends \yii\base\Behavior
 
     /**
      * @access protected
-     * @param string attribute key
+     * @param string $attribute key
      * @return boolean
      */
     protected function hasSafeAttribute($attribute)
@@ -474,22 +474,66 @@ class EavBehavior extends \yii\base\Behavior
      * @param array attributes values or key for filter models.
      * @return CActiveRecord
      */
-    public function withEavAttributes($attributes = array())
+    public function ___withEavAttributes($attributes = array())
     {
         // If not set attributes, search models with anything attributes exists.
         if (empty($attributes)) {
             $attributes = $this->getSafeAttributesArray();
         }
-        print_r($this->owner);
-        die;
-        // $attributes be array of elements: $attribute => $values
-        $criteria = $this->getFindByEavAttributesCriteria($attributes);
-        // Merge model criteria.
-        // $this->owner->getDbCriteria()->mergeWith($criteria);
-        // Return model.
-        return $criteria;
-    }
 
+        // $attributes be array of elements: $attribute => $values
+        return $this->getFindByEavAttributes2($attributes);
+    }
+    protected function getFindByEavAttributes2($attributes)
+    {
+        //$criteria = new CDbCriteria();
+        $pk = '{{%shop__product}}.id';
+
+        // $conn = $this->owner->getDbConnection();
+        $i = 0;
+        foreach ($attributes as $attribute => $values) {
+            // If search models with attribute name with specified values.
+            if (is_string($attribute)) {
+                // Get attribute compare operator
+                //$attribute = $conn->quoteValue($attribute);
+                if (!is_array($values)) {
+                    $values = array($values);
+                }
+                sort($values);
+
+
+                $cache = \Yii::$app->cache->get("attribute_" . $attribute);
+                //anti d-dos убирает лишние значение с запроса.
+                if ($cache) {
+                    $values = array_intersect($cache[$attribute], $values);
+                }
+                foreach ($values as $value) {
+                    //$value = $conn->quoteValue($value);
+                    $this->owner::find()->join('JOIN', '{{%shop__product_attribute_eav}} eavb' . $i, "$pk=eavb$i.`entity` AND eavb$i.`attribute` = '$attribute' AND eavb$i.`value` = '$value'");
+                    $this->owner::find()->andWhere(['IN', "`eavb$i`.`value`", $values]);
+                    /* $criteria->join .= "\nJOIN {$this->tableName} eavb$i"
+                      . "\nON t.{$pk} = eavb$i.{$this->entityField}"
+                      . "\nAND eavb$i.{$this->attributeField} = $attribute"
+                      . "\nAND eavb$i.{$this->valueField} = $value";
+                     */
+
+                    $i++;
+                }
+            } // If search models with attribute name with anything values.
+            elseif (is_int($attribute)) {
+                $this->owner::find()->join('JOIN', '{{%shop__product_attribute_eav}} eavb' . $i, "$pk=`eavb$i`.`entity` AND eavb$i.attribute = '$values'");
+                //$values = $conn->quoteValue($values);
+                /* $this->join .= "\nJOIN {{%shop__product_attribute_eav}} eavb$i"
+                         . "\nON t.{$pk} = eavb$i.entity"
+                         . "\nAND eavb$i.attribute = $values";*/
+                $i++;
+            }
+        }
+        //$this->distinct(true);
+        $this->owner::find()->groupBy("{$pk}");
+        // echo $this->createCommand()->getRawSql();die;
+        return $this->owner::find();
+    }
     /**
      * @access protected
      * @param  $attribute

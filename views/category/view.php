@@ -1,17 +1,18 @@
 <?php
 
 use yii\helpers\Url;
+use yii\helpers\Html;
 use panix\mod\shop\widgets\categories\CategoriesWidget;
 use panix\mod\shop\widgets\filters\FiltersWidget;
-use yii\helpers\Html;
+
 ?>
 
 
 <div class="row">
     <div class="col-sm-3">
         <?= CategoriesWidget::widget([]) ?>
-        <?=
-        FiltersWidget::widget([
+        <?php
+        echo FiltersWidget::widget([
             'model' => $this->context->dataModel,
             'attributes' => $this->context->eavAttributes,
         ]);

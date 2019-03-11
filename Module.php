@@ -2,32 +2,17 @@
 
 namespace panix\mod\shop;
 
-
 use Yii;
 use panix\engine\WebModule;
-use yii\web\UrlRule;
 use yii\base\BootstrapInterface;
 
 class Module extends WebModule implements BootstrapInterface
 {
 
-
     public $icon = 'shopcart';
-    public $routes2 = [
-        'shop/ajax/currency/<id:\d+>' => 'shop/ajax/currency',
-        'shop' => 'shop/default/index',
-
-        'manufacturer/<seo_alias:\w+>' => 'shop/manufacturer/view',
-        'product/<seo_alias:[0-9a-zA-Z\-]+>' => 'shop/product/view',
-        'products/search/<q:\w+>' => 'shop/category/search',
-
-        ['class' => 'panix\mod\shop\components\CategoryUrlRule'],
-    ];
-
 
     public function bootstrap($app)
     {
-
         $app->urlManager->addRules(
             [
                 'shop/ajax/currency/<id:\d+>' => 'shop/ajax/currency',
@@ -38,8 +23,11 @@ class Module extends WebModule implements BootstrapInterface
 
                 ['class' => 'panix\mod\shop\components\CategoryUrlRule'],
             ],
-            true
+            false
         );
+        $app->setComponents([
+            'currency' => ['class' => 'panix\mod\shop\components\CurrencyManager'],
+        ]);
     }
 
     public function init()
@@ -126,7 +114,7 @@ class Module extends WebModule implements BootstrapInterface
             'label' => Yii::t('shop/default', 'MODULE_NAME'),
             'author' => 'andrew.panix@gmail.com',
             'version' => '1.0',
-            'icon' => 'icon-shopcart',
+            'icon' => $this->icon,
             'description' => Yii::t('shop/default', 'MODULE_DESC'),
             'url' => ['/admin/shop'],
         ];

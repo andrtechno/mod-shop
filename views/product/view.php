@@ -78,12 +78,12 @@ echo \yii\helpers\Inflector::sentence($words);
     <div class="col-sm-6 col-xs-12">
         <div class="btn-group">
             <?php
-            if ($prev = $model->getNextOrPrev('prev')) {
+            //if ($prev = $model->getNextOrPrev('prev')) {
                 //  echo Html::a('prev ' . $prev->name, $prev->getUrl(), ['class' => 'btn btn-default']);
-            }
-            if ($next = $model->getNextOrPrev('next')) {
+            //}
+            //if ($next = $model->getNextOrPrev('next')) {
                 //  echo Html::a($next->name . ' next', $next->getUrl(), ['class' => 'btn btn-default']);
-            }
+           //}
 
 
             if ($prev = $model->objectPrev) {
@@ -149,10 +149,10 @@ echo \yii\helpers\Inflector::sentence($words);
             <li class="list-group-item">
                 Категории
                 <?php
-                foreach ($model->categories as $c) {
-                    $content[] = Html::a($c->name, $c->getUrl());
-                }
-                echo implode(', ', $content);
+                //foreach ($model->categories as $c) {
+                //    $content[] = Html::a($c->name, $c->getUrl());
+               // }
+               // echo implode(', ', $content);
                 ?>
             </li>
 

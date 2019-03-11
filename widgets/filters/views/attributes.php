@@ -3,7 +3,6 @@
 use yii\helpers\Html;
 use yii\helpers\Inflector;
 
-echo Inflector::slug('как дела');
 
 foreach ($attributes as $attrData) {
 
