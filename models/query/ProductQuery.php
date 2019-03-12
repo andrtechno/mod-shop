@@ -151,7 +151,13 @@ class ProductQuery extends ActiveQuery
         $this->addOrderBy(["aggregation_price" => ($function === 'MIN') ? SORT_ASC : SORT_DESC]);
         $this->distinct(false);
         $this->limit(1);
-        $result = $this->asArray()->one();
+
+        $result = \Yii::$app->db->cache(function ($db) {
+            return $this->asArray()->one();
+        }, 3600);
+
+
+        //$result = $this->asArray()->one();
 
         if ($result) {
             return $result['aggregation_price'];

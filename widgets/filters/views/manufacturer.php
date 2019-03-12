@@ -27,7 +27,7 @@ use yii\helpers\Html;
                 } else {
                     echo Html::a($filter['title'], $url);
                 }
-                echo $filter['count'];
+                echo $this->context->getCount($filter);
                 echo Html::endTag('li');
             }
             ?>

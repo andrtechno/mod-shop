@@ -37,7 +37,7 @@ class Product extends ActiveRecord
     private $_configurations;
     private $_related;
     public $file;
-    public $main_category_id;
+
 
     const route = '/admin/shop/default';
     const MODULE_ID = 'shop';
@@ -231,7 +231,7 @@ class Product extends ActiveRecord
 
     public function getUser()
     {
-        return $this->hasOne(User::class, ['id' => 'user_id']);
+        return $this->hasOne(User::class, ['id' => 'user_id'])->cache(3600);
     }
 
     /* public function getCategory2() {
@@ -240,53 +240,53 @@ class Product extends ActiveRecord
 
     public function getManufacturer()
     {
-        return $this->hasOne(Manufacturer::class, ['id' => 'manufacturer_id']);
+        return $this->hasOne(Manufacturer::class, ['id' => 'manufacturer_id'])->cache(3600);
     }
 
     public function getType()
     {
-        return $this->hasOne(ProductType::class, ['id' => 'type_id']);
+        return $this->hasOne(ProductType::class, ['id' => 'type_id'])->cache(3600);
     }
 
     public function getType2()
     {
-        return $this->hasOne(ProductType::class, ['type_id' => 'id']);
+        return $this->hasOne(ProductType::class, ['type_id' => 'id'])->cache(3600);
     }
 
     public function getTranslations()
     {
-        return $this->hasMany(ProductTranslate::class, ['object_id' => 'id']);
+        return $this->hasMany(ProductTranslate::class, ['object_id' => 'id'])->cache(3600);
     }
 
     public function getTranslation()
     {
-        return $this->hasOne(ProductTranslate::class, ['object_id' => 'id']);
+        return $this->hasOne(ProductTranslate::class, ['object_id' => 'id'])->cache(3600);
     }
 
     public function getRelated()
     {
-        return $this->hasMany(RelatedProduct::class, ['related_id' => 'id']);
+        return $this->hasMany(RelatedProduct::class, ['related_id' => 'id'])->cache(3600);
     }
 
     public function getRelatedProductCount()
     {
-        return $this->hasMany(RelatedProduct::class, ['product_id' => 'id'])->count();
+        return $this->hasMany(RelatedProduct::class, ['product_id' => 'id'])->cache(3600)->count();
     }
 
     public function getRelatedProducts()
     {
         return $this->hasMany(Product::class, ['id' => 'product_id'])
-            ->viaTable(RelatedProduct::tableName(), ['related_id' => 'id']);
+            ->viaTable(RelatedProduct::tableName(), ['related_id' => 'id'])->cache(3600);
     }
 
     public function getCategorization()
     {
-        return $this->hasMany(ProductCategoryRef::class, ['product' => 'id']);
+        return $this->hasMany(ProductCategoryRef::class, ['product' => 'id'])->cache(3600);
     }
 
     public function getCategories()
     {
-        return $this->hasMany(Category::class, ['id' => 'category'])->via('categorization');
+        return $this->hasMany(Category::class, ['id' => 'category'])->via('categorization')->cache(3600);
     }
 
     public function getMainCategory()
@@ -294,14 +294,14 @@ class Product extends ActiveRecord
         return $this->hasOne(Category::class, ['id' => 'category'])
             ->via('categorization', function ($query) {
                 $query->where(['is_main' => 1]);
-            });
+            })->cache(3600);
     }
 
     public function getVariants()
     {
         return $this->hasMany(ProductVariant::class, ['product_id' => 'id'])
             ->joinWith(['productAttribute', 'option'])
-            ->orderBy('{{%shop__attribute_option}}.ordern');
+            ->orderBy('{{%shop__attribute_option}}.ordern')->cache(3600);
     }
 
 //'variants' => array(self::HAS_MANY, 'ProductVariant', array('product_id'), 'with' => array('attribute', 'option'), 'order' => 'option.ordern'),

@@ -20,7 +20,7 @@ class FiltersWidget extends \panix\engine\data\Widget
     public $tagCount = 'sup';
     public $tagCountOptions = ['class' => 'filter-count'];
     //public $showEmpty = false;
-    public $_manufacturer = [];
+    //public $_manufacturer = [];
 
     /**
      * @var Category
@@ -83,8 +83,8 @@ class FiltersWidget extends \panix\engine\data\Widget
         $model = Product::find();
         //$model->attachBehaviors($model->behaviors());
         $model->published();
-        $model->applyCategories($this->model);
-
+        //$model->applyCategories($this->model);
+        $model->andWhere([Product::tableName() . '.main_category_id' => $this->model->id]);
         if (Yii::$app->request->get('min_price'))
             $model->applyMinPrice($this->convertCurrency(Yii::$app->request->getQueryParam('min_price')));
 
@@ -120,10 +120,17 @@ class FiltersWidget extends \panix\engine\data\Widget
         $model = Product::find();
         //$model->attachBehaviors($model->behaviors());
         $model->published();
-        $model->applyCategories($this->model);
+        // $model->applyCategories($this->model);
+        $model->andWhere([Product::tableName() . '.main_category_id' => $this->model->id]);
         $newData = [];
         $newData[$attribute->name][] = $option->id;
-        return $model->withEavAttributes($newData)->count();
+
+
+        $count = Product::getDb()->cache(function ($db) use ($model, $newData) {
+            return $model->withEavAttributes($newData)->count();
+        }, 3600);
+
+        return $count;
     }
 
     public function run()
@@ -181,17 +188,17 @@ class FiltersWidget extends \panix\engine\data\Widget
     }
 
 
-
     public function getCategoryManufacturers()
     {
 
         //@todo: Fix manufacturer translation
-        $dataModel = $this->model;
+
         $query = Product::find();
         $query->published();
-        $query->applyCategories($dataModel);
-
-        $queryMan = $query->addSelect(['manufacturer_id', Product::tableName() . '.id']);
+        //$query->applyCategories($dataModel);
+        $query->andWhere([Product::tableName() . '.main_category_id' => $this->model->id]);
+        $queryClone = clone $query;
+        $queryMan = $queryClone->addSelect(['manufacturer_id', Product::tableName() . '.id']);
         $queryMan->joinWith([
             'manufacturer' => function (\yii\db\ActiveQuery $query) {
                 $query->andWhere([Manufacturer::tableName() . '.switch' => 1]);
@@ -202,15 +209,16 @@ class FiltersWidget extends \panix\engine\data\Widget
         $queryMan->andWhere('manufacturer_id IS NOT NULL');
         $queryMan->groupBy('manufacturer_id');
 
-//print_r($manufacturers);die;
-        // echo $manufacturers->createCommand()->rawSql;die;
 
-
-        $manufacturers = $queryMan->all();
-
-
+        // $manufacturers = $queryMan->all();
+        $db = Yii::$app->db;
+        $manufacturers = $db->cache(function ($db) use ($queryMan) {
+            return $queryMan->all();
+        }, 3600);
+        //$manufacturers =$queryMan->all();
+        //echo $q->createCommand()->rawSql;die;
         $data = array(
-            'title' => Yii::t('app', 'Производитель'),
+            'title' => Yii::t('shop/default', 'FILTER_BY_MANUFACTURER'),
             'selectMany' => true,
             'filters' => array()
         );
@@ -221,21 +229,24 @@ class FiltersWidget extends \panix\engine\data\Widget
 
                 $m = $m->manufacturer;
                 if ($m) {
-                    $query->attachBehaviors($query->behaviors());
-                    //$query->applyMinPrice($this->convertCurrency(Yii::app()->request->getQuery('min_price')))
-                    //$query->applyMaxPrice($this->convertCurrency(Yii::app()->request->getQuery('max_price')))
-                    $query->applyManufacturers($m->id);
+                    $q = clone $queryClone;
+                    //$q->applyMinPrice($this->convertCurrency(Yii::app()->request->getQuery('min_price')))
+                    //$q->applyMaxPrice($this->convertCurrency(Yii::app()->request->getQuery('max_price')))
+                    $q->applyManufacturers($m->id);
 
+                    $count = Product::getDb()->cache(function ($db) use ($q) {
+                        return $q->count();
+                    }, 3600);
 
                     $data['filters'][] = array(
                         'title' => $m->name,
-                        'count' => $query->count(),
+                        'count' => $count,
                         'queryKey' => 'manufacturer',
                         'queryParam' => $m->id,
                     );
-                    $this->_manufacturer[$m->id] = array(
-                        'label' => $m->name,
-                    );
+                    //$this->_manufacturer[$m->id] = array(
+                    //    'label' => $m->name,
+                    //);
                 } else {
                     die('err');
                 }

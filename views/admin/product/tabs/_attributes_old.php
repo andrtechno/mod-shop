@@ -38,7 +38,7 @@ else {
 
         echo Html::beginTag('div', array('class' => 'form-group row'));
         echo '<div class="col-sm-4">' . Html::label($a->title . $required, $a->name, array('class' => $a->required ? 'required' : 'control-label')) . '</div>';
-        echo '<div class="col-sm-8 rowInput eavInput">' . $a->renderField($value) . Html::error($model, $a->name, ['class' => 'text-danger']) . $addOptionLink . '</div>';
+        echo '<div class="col-sm-8 rowInput eavInput">' . $a->renderField($value) . Html::error($model, 'name', ['class' => 'text-danger']) . $addOptionLink . '</div>';
         echo Html::endTag('div');
     }
     //   }

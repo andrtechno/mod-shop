@@ -140,16 +140,24 @@ class CategoryController extends WebController
         $query->addGroupBy(['type_id']);
         $query->distinct(true);
 
-        $typesIds = $query->createCommand()->queryColumn();
-
+        //$typesIds = $query->createCommand()->queryColumn();
+        $typesIds = Attribute::getDb()->cache(function ($db) use ($query) {
+            return $query->createCommand()->queryColumn();
+        }, 3600);
 
         // Find attributes by type
-
-        $query = Attribute::find(['IN', '`types`.type_id', $typesIds])
+        $query = Attribute::getDb()->cache(function ($db) use ($typesIds) {
+            return Attribute::find(['IN', '`types`.type_id', $typesIds])
+                ->useInFilter()
+                ->orderBy(['ordern' => SORT_DESC])
+                ->joinWith(['types', 'options'])
+                ->all();
+        }, 3600);
+        /*$query = Attribute::find(['IN', '`types`.type_id', $typesIds])
             ->useInFilter()
             ->orderBy(['ordern' => SORT_DESC])
             ->joinWith(['types', 'options'])
-            ->all();
+            ->all();*/
 
 
         $this->_eavAttributes = array();
@@ -263,7 +271,7 @@ class CategoryController extends WebController
         //$searchModel = new ProductSearch();
         //$this->query = $searchModel->searchBySite(Yii::$app->request->getQueryParams());//
 
-        $this->query->attachBehaviors($this->query->behaviors());
+       // $this->query->attachBehaviors($this->query->behaviors());
         $this->query->applyAttributes($this->activeAttributes)->published();
 
         //echo $this->createCommand()->getRawSql();die;
@@ -275,12 +283,13 @@ class CategoryController extends WebController
             //        'scopes' => array('published')
             //)));
 
-            $this->query->applyCategories($this->dataModel);
+            //$this->query->applyCategories($this->dataModel);
+            $this->query->andWhere([Product::tableName().'.main_category_id'=>$this->dataModel->id]);
             //  $this->query->with('manufacturerActive');
         } else {
             $this->query->joinWith(['manufacturer', 'translations']); //manufacturerActive
-            $this->query->andWhere(['LIKE', '{{%shop_product}}.sku', $data]);
-            $this->query->orWhere(['LIKE', '{{%shop_product_translate}}.name', $data]);
+            $this->query->andWhere(['LIKE', Product::tableName().'.sku', $data]);
+            $this->query->orWhere(['LIKE', '{{%shop__product_translate}}.name', $data]);
 
         }
 
@@ -348,7 +357,11 @@ class CategoryController extends WebController
                 'label' => Yii::t('shop/default', 'CATALOG'),
                 'url' => array('/shop')
             ];
-            $ancestors = $this->dataModel->ancestors()->addOrderBy('depth')->excludeRoot()->all();
+            $m =$this->dataModel;
+            $ancestors = Category::getDb()->cache(function ($db) use ($m) {
+                return $m->ancestors()->addOrderBy('depth')->excludeRoot()->all();
+            }, 3600);
+            //$ancestors = $this->dataModel->ancestors()->addOrderBy('depth')->excludeRoot()->all();
 
             if ($ancestors) {
                 foreach ($ancestors as $c) {
@@ -423,7 +436,9 @@ class CategoryController extends WebController
 
         if ($this->route == 'shop/category/view') {
             $manufacturers = array_filter(explode(',', $request->getQueryParam('manufacturer')));
-            $manufacturers = Manufacturer::findAll($manufacturers);
+            $manufacturers = Manufacturer::getDb()->cache(function ($db) use ($manufacturers) {
+                return Manufacturer::findAll($manufacturers);
+            }, 3600);
         }
 
         //$manufacturersIds = array_filter(explode(',', $request->getQueryParam('manufacturer')));
@@ -454,7 +469,7 @@ class CategoryController extends WebController
         if ($this->route == 'shop/category/view') {
             if (!empty($manufacturers)) {
                 $menuItems['manufacturer'] = array(
-                    'label' => Yii::t('ShopModule.default', 'FILTER_MANUFACTURER') . ':',
+                    'label' => Yii::t('shop/default', 'FILTER_MANUFACTURER') . ':',
                     'itemOptions' => array('id' => 'current-filter-manufacturer')
                 );
                 foreach ($manufacturers as $id => $manufacturer) {
@@ -463,7 +478,7 @@ class CategoryController extends WebController
                         'linkOptions' => array(
                             'class' => 'remove',
                             'data-name' => 'manufacturer',
-                            'data-target' => '#f    ilter_manufacturer_' . $manufacturer->id
+                            'data-target' => '#filter_manufacturer_' . $manufacturer->id
                         ),
                         'url' => Yii::$app->urlManager->removeUrlParam('/shop/category/view', 'manufacturer', $manufacturer->id)
                     ];
