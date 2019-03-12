@@ -2,6 +2,7 @@
 
 namespace panix\mod\shop\components;
 
+use panix\engine\Html;
 use panix\mod\shop\models\Attribute;
 use panix\mod\shop\models\Product;
 use Yii;
@@ -89,10 +90,17 @@ class AttributesRender extends \yii\base\Widget {
         $this->_models = array();
         //$cr = new CDbCriteria;
         //$cr->addInCondition('t.name', array_keys($this->_attributes));
-        $query = Attribute::find(['IN', 'name', array_keys($this->_attributes)])
+
+        $query = Attribute::getDb()->cache(function () {
+            return Attribute::find(['IN', 'name', array_keys($this->_attributes)])
                 ->displayOnFront()
                 ->sorting()
                 ->all();
+        }, 3600);
+        /*$query = Attribute::find(['IN', 'name', array_keys($this->_attributes)])
+                ->displayOnFront()
+                ->sorting()
+                ->all();*/
 
         foreach ($query as $m)
             $this->_models[$m->name] = $m;
@@ -107,12 +115,17 @@ class AttributesRender extends \yii\base\Widget {
         $this->_models = array();
         //$cr = new CDbCriteria;
         //$cr->addInCondition('t.name', array_keys($this->_attributes));
-        $query = Attribute::find(['IN', 'name', array_keys($this->_attributes)])
+        /*$query = Attribute::find(['IN', 'name', array_keys($this->_attributes)])
                 //->language($lang)
                 ->displayOnFront()
                 ->sorting()
+                ->all();*/
+        $query = Attribute::getDb()->cache(function () {
+            return Attribute::find(['IN', 'name', array_keys($this->_attributes)])
+                ->displayOnFront()
+                ->sorting()
                 ->all();
-
+        }, 3600);
 
 
 

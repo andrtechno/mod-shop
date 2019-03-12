@@ -2,9 +2,11 @@
 
 namespace panix\mod\shop\controllers;
 
+
 use Yii;
 use panix\engine\controllers\WebController;
 use panix\mod\shop\models\Product;
+use panix\mod\shop\models\Category;
 
 class ProductController extends WebController
 {
@@ -15,7 +17,12 @@ class ProductController extends WebController
         $this->dataModel->updateCounters(['views' => 1]);
         $category = $this->dataModel->mainCategory;
         if ($category) {
-            $ancestors = $category->ancestors()->excludeRoot()->addOrderBy('depth')->all();
+
+            $ancestors = Category::getDb()->cache(function () use ($category) {
+                return $category->ancestors()->excludeRoot()->addOrderBy('depth')->all();
+            }, 3600);
+
+            //$ancestors = $category->ancestors()->excludeRoot()->addOrderBy('depth')->all();
             $this->breadcrumbs[] = [
                 'label' => Yii::t('shop/default', 'CATALOG'),
                 'url' => ['/shop']
