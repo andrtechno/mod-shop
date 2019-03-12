@@ -29,7 +29,7 @@ trait EavQueryTrait
 
     public function getFindByEavAttributes($attributes)
     {
-        $pk = $this->modelClass::tableName() .'.id';
+        $pk = $this->modelClass::tableName() . '.id';
         $i = 0;
         foreach ($attributes as $attribute => $values) {
             // If search models with attribute name with specified values.
@@ -71,6 +71,7 @@ trait EavQueryTrait
 
         // $conn = $this->owner->getDbConnection();
         $i = 0;
+
         foreach ($attributes as $attribute => $values) {
             // If search models with attribute name with specified values.
             if (is_string($attribute)) {
@@ -79,6 +80,7 @@ trait EavQueryTrait
                 if (!is_array($values)) {
                     $values = array($values);
                 }
+                $values = array_unique($values);
                 sort($values);
 
 
@@ -87,18 +89,23 @@ trait EavQueryTrait
                 if ($cache) {
                     $values = array_intersect($cache[$attribute], $values);
                 }
-                foreach ($values as $value) {
-                    //$value = $conn->quoteValue($value);
-                    $this->join('JOIN', '{{%shop__product_attribute_eav}} eavb' . $i, "$pk=eavb$i.`entity` AND eavb$i.`attribute` = '$attribute' AND eavb$i.`value` = '$value'");
-                    $this->andWhere(['IN', "`eavb$i`.`value`", $values]);
-                    /* $criteria->join .= "\nJOIN {$this->tableName} eavb$i"
-                      . "\nON t.{$pk} = eavb$i.{$this->entityField}"
-                      . "\nAND eavb$i.{$this->attributeField} = $attribute"
-                      . "\nAND eavb$i.{$this->valueField} = $value";
-                     */
+                //foreach ($values as $value) {
+                //$value = $conn->quoteValue($value);
+                $this->join('JOIN', '{{%shop__product_attribute_eav}} eavb' . $i, "$pk=eavb$i.`entity`");
 
-                    $i++;
-                }
+
+
+
+
+                $this->andWhere(['IN', "`eavb$i`.`value`", $values]);
+                /* $criteria->join .= "\nJOIN {$this->tableName} eavb$i"
+                  . "\nON t.{$pk} = eavb$i.{$this->entityField}"
+                  . "\nAND eavb$i.{$this->attributeField} = $attribute"
+                  . "\nAND eavb$i.{$this->valueField} = $value";
+                 */
+
+                $i++;
+                // }
             } // If search models with attribute name with anything values.
             elseif (is_int($attribute)) {
                 $this->join('JOIN', '{{%shop__product_attribute_eav}} eavb' . $i, "$pk=`eavb$i`.`entity` AND eavb$i.attribute = '$values'");
@@ -109,6 +116,9 @@ trait EavQueryTrait
                 $i++;
             }
         }
+
+
+
         //$this->distinct(true);
         $this->groupBy("{$pk}");
         // echo $this->createCommand()->getRawSql();die;

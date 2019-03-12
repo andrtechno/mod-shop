@@ -3,6 +3,7 @@
 namespace panix\mod\shop\controllers;
 
 use app\modules\projects\models\Projects;
+use panix\mod\shop\models\Manufacturer;
 use panix\mod\shop\models\search\ProductSearch;
 use Yii;
 use panix\engine\controllers\WebController;
@@ -43,41 +44,31 @@ class CategoryController extends WebController
     /**
      * @param string $function
      * @return mixed
-     */
+
     public function aggregatePrice($function = 'MIN')
-    {
-        $query = clone $this->currentQuery;
-
-        $query->select('' . $function . '((CASE WHEN ({{%shop__product}}.`currency_id`)
-                    THEN
-                        {{%shop__product}}.`price` * (SELECT rate FROM {{%shop__currency}} `currency` WHERE `currency`.`id`={{%shop__product}}.`currency_id`)
-                    ELSE
-                        {{%shop__product}}.`price`
-                END)) AS aggregation_price');
-        /*$query->select = array(
-            ''.$function.'((CASE WHEN (`t`.`currency_id`)
-                    THEN
-                        `t`.`price` * (SELECT rate FROM `cms_shop_currency` `currency` WHERE `currency`.`id`=`t`.`currency_id`)
-                    ELSE
-                        `t`.`price`
-                END)) AS aggregation_price',
-        );*/
-        //$query->select = $function . '(`t`.`price`) as aggregation_price';
-
-        $query->addOrderBy(["aggregation_price" => ($function === 'MIN') ? SORT_ASC : SORT_DESC]);
-        $query->distinct(false);      //@todo panix 24.02.2019 added
-        $query->limit(1);
-
-
-        //var_dump($query->asArray()->one());die;
-
-        $result = $query->asArray()->one();
-
-        if ($result) {
-            return $result['aggregation_price'];
-        }
-        return null;
-    }
+     * {
+     * $query = clone $this->currentQuery;
+     *
+     * $query->select('' . $function . '((CASE WHEN ({{%shop__product}}.`currency_id`)
+     * THEN
+     * {{%shop__product}}.`price` * (SELECT rate FROM {{%shop__currency}} `currency` WHERE `currency`.`id`={{%shop__product}}.`currency_id`)
+     * ELSE
+     * {{%shop__product}}.`price`
+     * END)) AS aggregation_price');
+     *
+     * $query->addOrderBy(["aggregation_price" => ($function === 'MIN') ? SORT_ASC : SORT_DESC]);
+     * $query->distinct(false);      //@todo panix 24.02.2019 added
+     * $query->limit(1);
+     *
+     *
+     *
+     * $result = $query->asArray()->one();
+     *
+     * if ($result) {
+     * return $result['aggregation_price'];
+     * }
+     * return null;
+     * }*/
 
 
     /**
@@ -119,7 +110,7 @@ class CategoryController extends WebController
     {
         if ($this->_minPrice !== null)
             return $this->_minPrice;
-        $this->_minPrice = $this->aggregatePrice('MIN');
+        $this->_minPrice = $this->currentQuery->aggregatePrice('MIN');
         return $this->_minPrice;
     }
 
@@ -128,7 +119,7 @@ class CategoryController extends WebController
      */
     public function getMaxPrice()
     {
-        $this->_maxPrice = $this->aggregatePrice('MAX');
+        $this->_maxPrice = $this->currentQuery->aggregatePrice('MAX');
         return $this->_maxPrice;
     }
 
@@ -198,7 +189,18 @@ class CategoryController extends WebController
             if ($this->action->id === 'search') {
                 return $this->redirect(Yii::$app->urlManager->addUrlParam('/shop/category/search', $data))->send();
             } else {
-                return $this->redirect(Yii::$app->urlManager->addUrlParam('/shop/category/view', $data))->send();
+
+                /*if (!Yii::app()->request->isAjaxRequest) {
+                    if (Yii::app()->request->getPost('filter')) {
+                        foreach (Yii::app()->request->getPost('filter') as $key => $filter) {
+                            $data[$key] = $filter;
+                        }
+                    }
+                    return $this->redirect(Yii::app()->request->addUrlParam('/shop/category/view', $data));
+                }*/
+
+
+                 return $this->redirect(Yii::$app->urlManager->addUrlParam('/shop/category/view', $data))->send();
             }
         }
         return parent::beforeAction($action);
@@ -264,7 +266,7 @@ class CategoryController extends WebController
         $this->query->attachBehaviors($this->query->behaviors());
         $this->query->applyAttributes($this->activeAttributes)->published();
 
-
+        //echo $this->createCommand()->getRawSql();die;
         if ($data instanceof \panix\mod\shop\models\Category) {
             //  $cr->with = array('manufacturerActive');
             // Скрывать товары если производитель скрыт.
@@ -279,7 +281,7 @@ class CategoryController extends WebController
             $this->query->joinWith(['manufacturer', 'translations']); //manufacturerActive
             $this->query->andWhere(['LIKE', '{{%shop_product}}.sku', $data]);
             $this->query->orWhere(['LIKE', '{{%shop_product_translate}}.name', $data]);
-            //echo $this->query->createCommand()->getRawSql();
+
         }
 
         // Filter by manufacturer
@@ -293,8 +295,8 @@ class CategoryController extends WebController
         // Filter products by price range if we have min_price or max_price in request
         $this->applyPricesFilter();
 
-        $this->maxprice = (int)$this->currentQuery->max('price');
-        $this->minprice = (int)$this->currentQuery->min('price');
+       // $this->maxprice = (int)$this->currentQuery->max('price');
+       // $this->minprice = (int)$this->currentQuery->min('price');
         //$this->maxprice = $this->getMaxPrice();
         //$this->minprice = $this->getMinPrice();
 
@@ -312,8 +314,9 @@ class CategoryController extends WebController
         //$this->query->orderBy(['price'=>SORT_DESC]);
 
 
-//\panix\engine\data\ActiveDataProvider
+
         $this->provider = new \panix\engine\data\ActiveDataProvider([
+
             'query' => $this->query,
             'sort' => Product::getSort(),
             'pagination' => [
@@ -363,6 +366,10 @@ class CategoryController extends WebController
                 $itemView = '_view_' . Yii::$app->request->get('view');
             }
         }
+
+
+
+
         if (Yii::$app->request->isAjax) {
             //\Yii::$app->response->format = \yii\web\Response::FORMAT_HTML;
             return $this->renderPartial('listview', [
@@ -382,18 +389,20 @@ class CategoryController extends WebController
         $minPrice = Yii::$app->request->get('min_price');
         $maxPrice = Yii::$app->request->get('max_price');
 
-        /* $cm = Yii::$app->currency;
-          if ($cm->active->id !== $cm->main->id && ($minPrice > 0 || $maxPrice > 0)) {
-          $minPrice = $cm->activeToMain($minPrice);
-          $maxPrice = $cm->activeToMain($maxPrice);
-          } */
+        $cm = Yii::$app->currency;
+        if ($cm->active->id !== $cm->main->id && ($minPrice > 0 || $maxPrice > 0)) {
+            $minPrice = $cm->activeToMain($minPrice);
+            $maxPrice = $cm->activeToMain($maxPrice);
+        }
 
         if ($minPrice > 0)
             $this->query->applyMinPrice($minPrice);
         if ($maxPrice > 0)
             $this->query->applyMaxPrice($maxPrice);
     }
-    protected function findModel($seo_alias) {
+
+    protected function findModel($seo_alias)
+    {
         if (($this->dataModel = Category::findOne(['full_path' => $seo_alias])) !== null) {
             return $this->dataModel;
         } else {
@@ -401,5 +410,102 @@ class CategoryController extends WebController
         }
     }
 
+
+    /**
+     * Get active/applied filters to make easier to cancel them.
+     */
+    public function getActiveFilters()
+    {
+        $request = Yii::$app->request;
+        // Render links to cancel applied filters like prices, manufacturers, attributes.
+        $menuItems = [];
+
+
+        if ($this->route == 'shop/category/view') {
+            $manufacturers = array_filter(explode(',', $request->getQueryParam('manufacturer')));
+            $manufacturers = Manufacturer::findAll($manufacturers);
+        }
+
+        //$manufacturersIds = array_filter(explode(',', $request->getQueryParam('manufacturer')));
+
+
+        if ($request->getQueryParam('min_price') || $request->getQueryParam('min_price')) {
+            $menuItems['price'] = [
+                'label' => Yii::t('shop/default', 'FILTER_BY_PRICE') . ':',
+                'itemOptions' => ['id' => 'current-filter-prices']
+            ];
+        }
+        if ($request->getQueryParam('min_price')) {
+            $menuItems['price']['items'][] = [
+                'label' => Yii::t('shop/default', 'FILTER_CURRENT_PRICE_MIN', ['value' => Yii::$app->currency->number_format($this->getCurrentMinPrice()), 'currency' => Yii::$app->currency->active->symbol]),
+                'linkOptions' => ['class' => 'remove', 'data-price' => 'min_price'],
+                'url' => Yii::$app->urlManager->removeUrlParam('/shop/category/view', 'min_price')
+            ];
+        }
+
+        if ($request->getQueryParam('max_price')) {
+            $menuItems['price']['items'][] = [
+                'label' => Yii::t('shop/default', 'FILTER_CURRENT_PRICE_MAX', ['value' => Yii::$app->currency->number_format($this->getCurrentMaxPrice()), 'currency' => Yii::$app->currency->active->symbol]),
+                'linkOptions' => array('class' => 'remove', 'data-price' => 'max_price'),
+                'url' => Yii::$app->urlManager->removeUrlParam('/shop/category/view', 'max_price')
+            ];
+        }
+
+        if ($this->route == 'shop/category/view') {
+            if (!empty($manufacturers)) {
+                $menuItems['manufacturer'] = array(
+                    'label' => Yii::t('ShopModule.default', 'FILTER_MANUFACTURER') . ':',
+                    'itemOptions' => array('id' => 'current-filter-manufacturer')
+                );
+                foreach ($manufacturers as $id => $manufacturer) {
+                    $menuItems['manufacturer']['items'][] = [
+                        'label' => $manufacturer->name,
+                        'linkOptions' => array(
+                            'class' => 'remove',
+                            'data-name' => 'manufacturer',
+                            'data-target' => '#f    ilter_manufacturer_' . $manufacturer->id
+                        ),
+                        'url' => Yii::$app->urlManager->removeUrlParam('/shop/category/view', 'manufacturer', $manufacturer->id)
+                    ];
+
+                    /*array_push($menuItems, array(
+                        'label' => $this->_manufacturer[$manufacturer]['label'],
+                        'linkOptions' => array('class' => 'remove'),
+                        'url' => Yii::$app->urlManager->removeUrlParam('/shop/category/view', 'manufacturer', $id)
+                    ));*/
+                }
+            }
+        }
+
+        // Process eav attributes
+        $activeAttributes = $this->activeAttributes;
+        if (!empty($activeAttributes)) {
+            foreach ($activeAttributes as $attributeName => $value) {
+                if (isset($this->eavAttributes[$attributeName])) {
+                    $attribute = $this->eavAttributes[$attributeName];
+                    $menuItems[$attributeName] = [
+                        'label' => $attribute->title . ':',
+                        'itemOptions' => array('id' => 'current-filter-' . $attribute->name)
+                    ];
+                    foreach ($attribute->options as $option) {
+                        if (isset($activeAttributes[$attribute->name]) && in_array($option->id, $activeAttributes[$attribute->name])) {
+                            $menuItems[$attributeName]['items'][] = [
+                                'label' => $option->value . (($attribute->abbreviation) ? ' ' . $attribute->abbreviation : ''),
+                                'linkOptions' => [
+                                    'class' => 'remove',
+                                    'data-name' => $attribute->name,
+                                    'data-target' => "#filter_{$attribute->name}_{$option->id}"
+                                ],
+                                'url' => Yii::$app->urlManager->removeUrlParam('/shop/category/view', $attribute->name, $option->id)
+                            ];
+                            sort($menuItems[$attributeName]['items']);
+                        }
+                    }
+                }
+            }
+        }
+
+        return $menuItems;
+    }
 
 }

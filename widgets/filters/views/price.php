@@ -5,25 +5,19 @@ use panix\mod\shop\models\Product;
 $cm = Yii::$app->currency;
 
 
-//$getMax = $this->context->_maxprice;
-//$getMin = $this->context->_minprice;
-
-
-//$min = (int)floor($getMin2); //$cm->convert()
-//$max = (int)ceil($getMax2);
-
 
 
 $getDefaultMin = (int)floor(Yii::$app->controller->getMinPrice());
-$getDefaultMax = (int)ceil(Yii::$app->controller->_maxPrice);
+$getDefaultMax = (int)ceil(Yii::$app->controller->getMaxPrice());
 $getMax = Yii::$app->controller->currentMaxPrice;
 $getMin = Yii::$app->controller->currentMinPrice;
+
+
+
+
 $min = (int)floor($getMin); //$cm->convert()
 $max = (int)ceil($getMax);
 
-
-echo '<br>';
-echo $getDefaultMax;
 ?>
 <?php if (true) { ?>
     <div class="card bg-light filter filter-price">

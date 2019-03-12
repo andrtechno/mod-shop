@@ -12,7 +12,7 @@ class ProductController extends WebController
     public function actionView($seo_alias)
     {
         $this->findModel($seo_alias);
-
+        $this->dataModel->updateCounters(['views' => 1]);
         $category = $this->dataModel->mainCategory;
         if ($category) {
             $ancestors = $category->ancestors()->excludeRoot()->addOrderBy('depth')->all();

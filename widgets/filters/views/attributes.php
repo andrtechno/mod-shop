@@ -12,10 +12,10 @@ foreach ($attributes as $attrData) {
         ?>
 
         <div class="card filter-block" id="filter-attributes-<?= Inflector::slug($attrData['title']); ?>">
-            <div class="card-header" data-toggle="collapse" data-target="#collapse-<?= md5($attrData['title'])?>" aria-expanded="false" aria-controls="collapse-<?=md5($attrData['title'])?>">
-                <?= Html::encode($attrData['title']) ?>
+            <div class="card-header collapsed" data-toggle="collapse" data-target="#collapse-<?= md5($attrData['title'])?>" aria-expanded="true" aria-controls="collapse-<?=md5($attrData['title'])?>">
+                <h5><?= Html::encode($attrData['title']) ?></h5>
             </div>
-            <div class="collapse in" id="collapse-<?= md5($attrData['title'])?>">
+            <div class="card-collapse collapse in" id="collapse-<?= md5($attrData['title'])?>">
             <div class="card-body">
                 <ul class="filter-list">
                     <?php

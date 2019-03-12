@@ -47,6 +47,29 @@ class Product extends ActiveRecord
         return new ProductQuery(get_called_class());
     }
 
+    public function labels()
+    {
+        $result = [];
+        $new = 3;//days of new
+        if ((time() - 86400 * $new) <= strtotime($this->date_create)) {
+            $result[] = array(
+                'class' => 'success new',
+                'value' => 'Новый',
+                'tooltip' => 'от ' . Yii::$app->formatter->asDate(date('Y-m-d', strtotime($this->date_create))) . ' до ' . Yii::$app->formatter->asDate(date('Y-m-d', strtotime($this->date_create) + (86400 * $new)))
+            );
+        }
+
+
+        if (isset($this->appliedDiscount)) {
+            $result[] = array(
+                'class' => 'danger discount',
+                'value' => '-' . $this->discountSum,
+                'tooltip' => '-' . $this->discountSum . ' до ' . $this->discountEndDate
+            );
+        }
+        return $result;
+    }
+
     public function getIsAvailable()
     {
         return $this->availability == 1;
@@ -62,10 +85,12 @@ class Product extends ActiveRecord
         $html .= Html::hiddenInput('configurable_id', 0);
         return $html;
     }
+
     public function endCartForm()
     {
         return Html::endForm();
     }
+
     public static function getSort()
     {
         return new \yii\data\Sort([
@@ -175,9 +200,9 @@ class Product extends ActiveRecord
             [['full_description'], 'string'],
             ['use_configurations', 'boolean', 'on' => self::SCENARIO_INSERT],
             [['sku', 'full_description'], 'default'], // установим ... как NULL, если они пустые
-            [['name', 'seo_alias', 'main_category_id','price'], 'required'],
+            [['name', 'seo_alias', 'main_category_id', 'price'], 'required'],
             [['name', 'seo_alias'], 'string', 'max' => 255],
-            [['manufacturer_id', 'type_id', 'quantity', 'views', 'added_to_cart_count', 'ordern', 'category_id','currency_id'], 'integer'],
+            [['manufacturer_id', 'type_id', 'quantity', 'views', 'added_to_cart_count', 'ordern', 'category_id', 'currency_id'], 'integer'],
             [['name', 'seo_alias', 'full_description', 'use_configurations'], 'safe'],
             //  [['c1'], 'required'], // Attribute field
             // [['c1'], 'string', 'max' => 255], // Attribute field
@@ -722,14 +747,14 @@ class Product extends ActiveRecord
         if ($configuration instanceof Product) {
             $result = $configuration->price;
         } else {
-              if ($product->currency_id) {
-                  $result = $product->price;
-              } else {
+            if ($product->currency_id) {
+                $result = $product->price;
+            } else {
 
-             $result = $product->getFrontPrice();
-                  //$result = $product->price;
-               }
-          //  $result = $product->price;
+                $result = $product->getFrontPrice();
+                //$result = $product->price;
+            }
+            //  $result = $product->price;
         }
 
         // if $variants contains not models

@@ -18,7 +18,7 @@ Dialog::end();
 */
 Pjax::begin([
     'timeout' => 50000,
-    'id' => 'pjax-' . strtolower(basename($dataProvider->query->modelClass)),
+    'id' => 'pjax-grid-product',
     'linkSelector' => 'a:not(.linkTarget)'
 ]);
 echo GridView::widget([

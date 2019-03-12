@@ -16,6 +16,7 @@ class ProductSearch extends Product
     public $exclude = null;
     public $price_min;
     public $price_max;
+   // public $image;
 
     /**
      * @inheritdoc
@@ -25,6 +26,7 @@ class ProductSearch extends Product
         return [
             [['id'], 'integer'],
             [['price_min', 'price_max'], 'integer'],
+           // [['image'],'boolean'],
             [['name', 'seo_alias', 'sku', 'price'], 'safe'],
             [['date_update', 'date_create'], 'date', 'format' => 'php:Y-m-d']
         ];
@@ -74,7 +76,9 @@ class ProductSearch extends Product
         if(isset($params[$className]['price']['max'])){
             $this->price_max = $params[$className]['price']['max'];
         }
-
+       // if(isset($params[$className]['image'])){
+       //     $this->image = $params[$className]['image'];
+       // }
 
         $this->load($params);
 
@@ -98,6 +102,17 @@ class ProductSearch extends Product
             }
 
             $query->getFindByEavAttributes2($result);
+        }
+
+
+        //if ($this->price)
+        //    $query->applyPrice($this->price);
+
+        if ($this->price_max) {
+            $query->applyMaxPrice($this->price_max);
+        }
+        if ($this->price_min) {
+            $query->applyMinPrice($this->price_min);
         }
 
 
@@ -126,15 +141,7 @@ class ProductSearch extends Product
         $query->andFilterWhere(['like', 'sku', $this->sku]);
         //$query->andFilterWhere(['like', 'price', $this->price]);
 
-        //if ($this->price)
-        //    $query->applyPrice($this->price);
 
-        if ($this->price_max) {
-            $query->applyMaxPrice($this->price_max);
-        }
-        if ($this->price_min) {
-            $query->applyMinPrice($this->price_min);
-        }
 
         return $dataProvider;
     }

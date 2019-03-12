@@ -140,20 +140,17 @@ class ProductQuery extends ActiveQuery
     public function aggregatePrice($function = 'MIN')
     {
         $tableName = $this->modelClass::tableName();
+        $tableNameCur = Currency::tableName();
         $this->select("{$function}((CASE WHEN ({$tableName}.`currency_id`)
                     THEN
-                        {$tableName}.`price` * (SELECT rate FROM {{%shop__currency}} `currency` WHERE `currency`.`id`={$tableName}.`currency_id`)
+                        ({$tableName}.`price` * (SELECT rate FROM {$tableNameCur} `currency` WHERE `currency`.`id`={$tableName}.`currency_id`))
                     ELSE
                         {$tableName}.`price`
                 END)) AS aggregation_price");
 
         $this->addOrderBy(["aggregation_price" => ($function === 'MIN') ? SORT_ASC : SORT_DESC]);
-        $this->distinct(false);      //@todo panix 24.02.2019 added
+        $this->distinct(false);
         $this->limit(1);
-
-
-        //var_dump($query->asArray()->one());die;
-
         $result = $this->asArray()->one();
 
         if ($result) {

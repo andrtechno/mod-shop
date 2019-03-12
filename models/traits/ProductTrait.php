@@ -2,14 +2,12 @@
 
 namespace panix\mod\shop\models\traits;
 
+use Yii;
 use panix\engine\Html;
+use panix\engine\CMS;
 use panix\mod\shop\models\Attribute;
 use panix\mod\shop\models\Product;
-use Yii;
-use panix\mod\shop\models\search\ProductSearch;
-use panix\engine\CMS;
 use yii\helpers\ArrayHelper;
-use yii\jui\DatePicker;
 
 trait ProductTrait
 {
@@ -27,20 +25,54 @@ trait ProductTrait
     {
         $columns = [];
         $columns['image'] = [
+            'class' => 'panix\engine\grid\columns\ImageColumn',
             'attribute' => 'image',
-            'format' => 'raw',
-            'contentOptions' => ['class' => 'text-center image'],
+            // 'filter'=>true,
             'value' => function ($model) {
                 return $model->renderGridImage('50x50');
             },
         ];
-        $columns['name'] = 'name';
+        $columns['name'] = [
+            'attribute' => 'name',
+            'format' => 'html',
+            'contentOptions' => ['class' => 'text-left'],
+            'value' => function ($model) {
+
+                if ($model->name) {
+                    $html = $model->name;
+                    if ($model->views > 0) {
+                        $html .= " (" . Yii::t('app', 'VIEWS', ['n' => $model->views]) . ")";
+                    }
+                    if (true) {
+
+                        $labels=[];
+                        foreach ($model->labels() as $label) {
+                            $labels[] = Html::tag('span', $label['value'], [
+                                'class' => 'badge badge-'.$label['class'],
+                                'data-toggle'=>'tooltip',
+                                'title'=>$label['tooltip']
+                            ]);
+                        }
+
+
+
+                        $html .= '<br/>' . implode('', $labels);
+                    }
+
+
+                    return $html;
+                }
+                return null;
+
+            },
+        ];
+
         $columns['price'] = [
             'attribute' => 'price',
             'format' => 'html',
             'class' => 'panix\engine\grid\columns\jui\SliderColumn',
-            'max'=>(int) Product::find()->aggregatePrice('MAX'),
-            'min'=>(int) Product::find()->aggregatePrice('MIN'),
+            'max' => (int)Product::find()->aggregatePrice('MAX'),
+            'min' => (int)Product::find()->aggregatePrice('MIN'),
             'contentOptions' => ['class' => 'text-center'],
             'value' => function ($model) {
                 return Yii::$app->currency->number_format(Yii::$app->currency->convert($model->price, $model->currency_id)) . ' ' . Yii::$app->currency->main->symbol;
@@ -50,18 +82,32 @@ trait ProductTrait
             'attribute' => 'date_create',
             'class' => 'panix\engine\grid\columns\jui\DatepickerColumn',
             'format' => 'raw',
+            'headerOptions' => ['style' => 'width:150px'],
             'contentOptions' => ['class' => 'text-center'],
             'value' => function ($model) {
-                return ($model->date_create) ? Yii::$app->formatter->asDate($model->date_create) . ' ' . Yii::t('app', 'IN') . ' ' . Yii::$app->formatter->asTime($model->date_create) : null;
+                if ($model->date_create) {
+                    $html = Html::beginTag('span', ['class' => 'bootstrap-tooltip', 'title' => Yii::t('app', 'IN') . ' ' . Yii::$app->formatter->asTime($model->date_create)]);
+                    $html .= Yii::$app->formatter->asDate($model->date_create);
+                    $html .= Html::endTag('span');
+                    return $html;
+                }
+                return null;
             }
         ];
         $columns['date_update'] = [
             'attribute' => 'date_update',
             'class' => 'panix\engine\grid\columns\jui\DatepickerColumn',
             'format' => 'raw',
+            'headerOptions' => ['style' => 'width:150px', 'class' => 'text-center'],
             'contentOptions' => ['class' => 'text-center'],
             'value' => function ($model) {
-                return ($model->date_update) ? Yii::$app->formatter->asDate($model->date_update) . ' ' . Yii::t('app', 'IN') . ' ' . Yii::$app->formatter->asTime($model->date_update) : null;
+                if ($model->date_update) {
+                    $html = Html::beginTag('span', ['class' => 'bootstrap-tooltip', 'title' => Yii::t('app', 'IN') . ' ' . Yii::$app->formatter->asTime($model->date_update)]);
+                    $html .= Yii::$app->formatter->asDate($model->date_update);
+                    $html .= Html::endTag('span');
+                    return $html;
+                }
+                return null;
             }
         ];
 
@@ -154,6 +200,8 @@ trait ProductTrait
 
         return $columns;
     }
+
+
 
     /**
      * Convert price to current currency

@@ -1,5 +1,6 @@
 <?php
 echo \yii\widgets\ListView::widget([
+    //'id'=>'list-product',
     'dataProvider' => $provider,
     'itemView' => $itemView,
     //'layout' => '{sorter}{summary}{items}{pager}',

@@ -40,7 +40,7 @@ class FiltersWidget extends \panix\engine\data\Widget
         $this->_minprice = $view->context->minprice;
     }
 
-    public function getMinPrice()
+    /*public function getMinPrice()
     {
         return Yii::$app->controller->getMinPrice();
     }
@@ -48,14 +48,14 @@ class FiltersWidget extends \panix\engine\data\Widget
     public function getMaxPrice()
     {
         return Yii::$app->controller->getMaxPrice();
-    }
+    }*/
 
     /**
      * @return array of attributes used in category
      */
     public function getCategoryAttributes()
     {
-        $data = array();
+        $data = [];
 
         foreach ($this->attributes as $attribute) {
             $data[$attribute->name] = array(
@@ -64,7 +64,7 @@ class FiltersWidget extends \panix\engine\data\Widget
                 'filters' => array()
             );
             foreach ($attribute->options as $option) {
-                $count = $this->countAttributeProducts2($attribute, $option);
+                $count = $this->countAttributeProducts($attribute, $option);
                 if ($count) {
                     $data[$attribute->name]['filters'][] = array(
                         'title' => $option->value,
@@ -80,24 +80,24 @@ class FiltersWidget extends \panix\engine\data\Widget
 
     public function countAttributeProducts2($attribute, $option)
     {
-
-
-        // $dependency = new CDbCacheDependency('SELECT MAX(date_update) FROM {{shop_product}}');
-
         $model = Product::find();
-        $model->attachBehaviors($model->behaviors());
+        //$model->attachBehaviors($model->behaviors());
         $model->published();
         $model->applyCategories($this->model);
-        //$model->applyMinPrice($this->convertCurrency(Yii::$app->request->getQueryParam('min_price')));
-        //$model->applyMaxPrice($this->convertCurrency(Yii::$app->request->getQueryParam('max_price')));
 
-        //if (Yii::$app->request->get('manufacturer'))
-        //$model->applyManufacturers(explode(',', Yii::$app->request->get('manufacturer')));
+        if (Yii::$app->request->get('min_price'))
+            $model->applyMinPrice($this->convertCurrency(Yii::$app->request->getQueryParam('min_price')));
+
+        if (Yii::$app->request->get('max_price'))
+            $model->applyMaxPrice($this->convertCurrency(Yii::$app->request->getQueryParam('max_price')));
+
+        if (Yii::$app->request->get('manufacturer'))
+            $model->applyManufacturers(explode(',', Yii::$app->request->get('manufacturer')));
 
         //$data = array($attribute->name => $option->id);
         $current = $this->view->context->activeAttributes;
 
-        $newData = array();
+        $newData = [];
 
         foreach ($current as $key => $row) {
             if (!isset($newData[$key]))
@@ -108,26 +108,20 @@ class FiltersWidget extends \panix\engine\data\Widget
             } else
                 $newData[$key][] = $row;
         }
-        //$model->cache($this->cache_time,$dependency);
         $newData[$attribute->name][] = $option->id;
 
+        //echo $q->createCommand()->getRawSql();die;
         return $model->withEavAttributes($newData)->count();
 
     }
 
     public function countAttributeProducts($attribute, $option)
     {
-
-
         $model = Product::find();
-        $model->attachBehaviors($model->behaviors());
+        //$model->attachBehaviors($model->behaviors());
         $model->published();
         $model->applyCategories($this->model);
-        // $model->applyMinPrice($this->convertCurrency(Yii::app()->request->getQuery('min_price')));
-        // $model->applyMaxPrice($this->convertCurrency(Yii::app()->request->getQuery('max_price')));
-        //if (Yii::app()->request->getParam('manufacturer'))
-        //   $model->applyManufacturers(explode(',', Yii::app()->request->getParam('manufacturer')));
-        $newData = array();
+        $newData = [];
         $newData[$attribute->name][] = $option->id;
         return $model->withEavAttributes($newData)->count();
     }
@@ -135,7 +129,9 @@ class FiltersWidget extends \panix\engine\data\Widget
     public function run()
     {
         $manufacturers = $this->getCategoryManufacturers();
-        $active = $this->getActiveFilters();
+
+
+        $active = $this->view->context->getActiveFilters();
 
         if (!empty($active)) {
             echo $this->render('current', ['active' => $active]);
@@ -144,66 +140,47 @@ class FiltersWidget extends \panix\engine\data\Widget
         echo $this->render('attributes', ['attributes' => $this->getCategoryAttributes()]);
         echo $this->render('manufacturer', ['manufacturers' => $manufacturers]);
 
-    }
-
-    /**
-     * Get active/applied filters to make easier to cancel them.
-     */
-    public function getActiveFilters()
-    {
-        $request = Yii::$app->request;
-        // Render links to cancel applied filters like prices, manufacturers, attributes.
-        $menuItems = array();
-        $manufacturersIds = array_filter(explode(',', $request->getQueryParam('manufacturer')));
-
-
-        if ($request->getQueryParam('min_price')) {
-            array_push($menuItems, array(
-                'linkOptions' => array('class' => 'remove'),
-                'label' => Yii::t('shop/default', 'FILTER_CURRENT_PRICE_MIN', ['min' => (int)Yii::$app->controller->getCurrentMinPrice(), 'currency' => Yii::$app->currency->active->symbol]),
-                'url' => Yii::$app->urlManager->removeUrlParam('/shop/category/view', 'min_price')
-            ));
-        }
-
-        if ($request->getQueryParam('max_price')) {
-            array_push($menuItems, array(
-                'label' => Yii::t('shop/default', 'FILTER_CURRENT_PRICE_MAX', ['max' => (int)Yii::$app->controller->getCurrentMaxPrice(), 'currency' => Yii::$app->currency->active->symbol]),
-                'linkOptions' => array('class' => 'remove'),
-                'url' => Yii::$app->urlManager->removeUrlParam('/shop/category/view', 'max_price')
-            ));
-        }
-
-
-        foreach ($manufacturersIds as $id => $manufacturer) {
-            array_push($menuItems, array(
-                'label' => $this->_manufacturer[$manufacturer]['label'],
-                'linkOptions' => array('class' => 'remove'),
-                'url' => Yii::$app->urlManager->removeUrlParam('/shop/category/view', 'manufacturer', $id)
-            ));
-        }
-
-
-        // Process eav attributes
-        $activeAttributes = $this->view->context->activeAttributes;
-        if (!empty($activeAttributes)) {
-            foreach ($activeAttributes as $attributeName => $value) {
-                if (isset($this->view->context->eavAttributes[$attributeName])) {
-                    $attribute = $this->view->context->eavAttributes[$attributeName];
-                    foreach ($attribute->options as $option) {
-                        if (isset($activeAttributes[$attribute->name]) && in_array($option->id, $activeAttributes[$attribute->name])) {
-                            array_push($menuItems, array(
-                                'label' => $option->value,
-                                'linkOptions' => array('class' => 'remove'),
-                                'url' => Yii::$app->urlManager->removeUrlParam('/shop/category/view', $attribute->name, $option->id)
-                            ));
+        $this->view->registerJs("
+            $(function () {
+                var selector = $('.card .card-collapse');
+                selector.collapse({
+                    toggle: false
+                });
+                var panels = $.cookie();
+            
+                for (var panel in panels) {
+                    //console.log(panel);
+                    if (panel) {
+                        var panelSelector = $('#' + panel);
+                        if (panelSelector) {
+                            if (panelSelector.hasClass('card-collapse')) {
+                                if ($.cookie(panel) === '1') {
+                                    panelSelector.collapse('show');
+                                } else {
+                                    panelSelector.collapse('hide');
+                                }
+                            }
                         }
                     }
                 }
-            }
-        }
+            
+                selector.on('show.bs.collapse', function () {
+                    var active = $(this).attr('id');
+                    $.cookie(active, '1');
+            
+                });
+            
+                selector.on('hide.bs.collapse', function () {
+                    var active = $(this).attr('id');
+                    $.cookie(active, null);
+                });
+            });
+        ");
 
-        return $menuItems;
+
     }
+
+
 
     public function getCategoryManufacturers()
     {

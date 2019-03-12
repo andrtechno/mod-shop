@@ -4,10 +4,10 @@ use yii\helpers\Html;
 ?>
 <?php if($manufacturers['filters']) { ?>
 <div class="card filter-block">
-    <div class="card-header" data-toggle="collapse" data-target="#collapse-<?=md5('manufacturer')?>" aria-expanded="false" aria-controls="collapse-<?=md5('manufacturer')?>">
-        <?= Yii::t('shop/default', 'FILTER_BY_MANUFACTURER') ?>
+    <div class="card-header" data-toggle="collapse" data-target="#collapse-<?=md5('manufacturer')?>" aria-expanded="true" aria-controls="collapse-<?=md5('manufacturer')?>">
+        <h5><?= Yii::t('shop/default', 'FILTER_BY_MANUFACTURER') ?></h5>
     </div>
-    <div class="collapse in" id="collapse-<?=md5('manufacturer')?>">
+    <div class="card-collapse collapse in" id="collapse-<?=md5('manufacturer')?>">
     <div class="card-body">
         <ul class="filter-list">
             <?php
