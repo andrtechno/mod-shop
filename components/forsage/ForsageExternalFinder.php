@@ -6,6 +6,7 @@ namespace panix\mod\shop\components\forsage;
  * Find objects by external id
  */
 
+use panix\mod\images\models\Image;
 use panix\mod\shop\models\Attribute;
 use panix\mod\shop\models\AttributeOption;
 use panix\mod\shop\models\Category;
@@ -106,7 +107,7 @@ class ForsageExternalFinder
                     break;
 
                 case self::OBJECT_TYPE_IMAGE:
-                    return AttachmentModel::findOne($query['object_id']);
+                    return Image::findOne($query['object_id']);
                     break;
             }
         }

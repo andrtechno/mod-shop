@@ -6,6 +6,7 @@ use panix\engine\CMS;
 use panix\mod\shop\models\Attribute;
 use panix\mod\shop\models\AttributeOption;
 use panix\mod\shop\models\AttributeOptionTranslate;
+use panix\mod\shop\models\Category;
 use panix\mod\shop\models\Manufacturer;
 use panix\mod\shop\models\Product;
 use yii\helpers\FileHelper;
@@ -160,10 +161,10 @@ class ForsageProductsImport
         //    unset($suppliers2[$d]);
         if ($getSuppliers) {
             //if ($limit) {
-            print_r(\Yii::$app->request);
-            var_dump($offset);
-            var_dump($limit);
-            die;
+
+            //var_dump($offset);
+            //var_dump($limit);
+            //die;
                 $suppliers2 = array_slice($getSuppliers, $offset, $limit, true);
             //} else {
             //    $suppliers2 = $getSuppliers;
@@ -305,16 +306,16 @@ class ForsageProductsImport
                             if (!$manufacturer) {
                                 $manufacturer = new Manufacturer();
                                 $manufacturer->name = $product->supplier->company; //$supplier->name;
-                                $manufacturer->seo_alias = CMS::slug([$manufacturer->name]);
+                                $manufacturer->seo_alias = CMS::slug($manufacturer->name);
                                 $manufacturer->save(false);
                                 $this->createExternalId(ForsageExternalFinder::OBJECT_TYPE_MANUFACTURER, $manufacturer->id, $manufacturer->name);
                             }
                             $model->manufacturer_id = $manufacturer->id;
                             $model->name = $this->my_ucfirst($characteristics['main_category_name']) . ' ' . $manufacturer->name . ' ' . $product->vcode;
-                            $model->seo_alias = CMS::slug([$model->name]);
+                            $model->seo_alias = CMS::slug($model->name);
                         } else {
                             $model->name = $this->my_ucfirst($characteristics['main_category_name']) . ' ' . $product->vcode;
-                            $model->seo_alias = CMS::slug([$model->name]);
+                            $model->seo_alias = CMS::slug($model->name);
                         }
 
 
@@ -333,11 +334,11 @@ class ForsageProductsImport
 
                         // Set category
 
-                        /*$modelMain = ForsageExternalFinder::getObject(ForsageExternalFinder::OBJECT_TYPE_MAIN_CATEGORY, $this->my_ucfirst($characteristics['main_category_name']));
+                        $modelMain = ForsageExternalFinder::getObject(ForsageExternalFinder::OBJECT_TYPE_MAIN_CATEGORY, $this->my_ucfirst($characteristics['main_category_name']));
                         // Yii::log($this->my_ucfirst($characteristics['main_category_name']), 'info', 'console');
                         $modelCategory = ForsageExternalFinder::getObject(ForsageExternalFinder::OBJECT_TYPE_CATEGORY, $fullCategoryName);
                         if (!$modelCategory) {
-                            $modelCategory = new ShopCategory;
+                            $modelCategory = new Category();
                             $modelCategory->name = $sub_category;
                             $modelCategory->seo_alias = CMS::slug($modelCategory->name);
                             echo 'CREATE SUB CATEGORY: ' . $sub_category . PHP_EOL;
@@ -346,7 +347,7 @@ class ForsageProductsImport
 
                             $this->createExternalId(ForsageExternalFinder::OBJECT_TYPE_CATEGORY, $modelCategory->id, $fullCategoryName);
 
-                        }*/
+                        }
                         //if ($modelMain) {
                         //    $this->logstring .= " Category: {$fullCategoryName} ";
                         //    $modelCategory->saveNode(false, false,false);
@@ -354,11 +355,11 @@ class ForsageProductsImport
 
                     }
                     //this for test vor validate
-                    $fullCategoryName = 'Мужская обувь';
-                    //$categoryId = ForsageExternalFinder::getObject(ForsageExternalFinder::OBJECT_TYPE_CATEGORY, $fullCategoryName, false);
-                    //if($categoryId) {
-                    //    $model->main_category_id = $categoryId;
-                    //}
+                    $fullCategoryName = 'ddddddddddd';
+                    $categoryId = ForsageExternalFinder::getObject(ForsageExternalFinder::OBJECT_TYPE_CATEGORY, $fullCategoryName, false);
+                    if($categoryId) {
+                        $model->main_category_id = $categoryId;
+                    }
 
 
                     $model->save(false);
@@ -415,19 +416,14 @@ class ForsageProductsImport
                     //set image
                     if ($characteristics['image']) {
                         $imageModel = ForsageExternalFinder::getObject(ForsageExternalFinder::OBJECT_TYPE_IMAGE, $characteristics['supplier_name'] . '/' . $product->id . '/' . basename($characteristics['image']));
-
-
-                      //  print_r($imageModel);die;
-
-                        /*if (!$imageModel) {
-                            $image = ForsageProductImage::create($imageBuild);
-                            if ($image && !$model->attachmentsMain) {
-                                $res = $model->upload($image);
-                                if ($res) {
-                                    $this->createExternalId(ForsageExternalFinder::OBJECT_TYPE_IMAGE, $model->id, $characteristics['supplier_name'] . '/' . $product->id . '/' . basename($characteristics['image']));
-                                }
+                        if (!$imageModel) {
+                            if ($imageBuild && $model->getImage()) {
+                               // $res = $model->attachImage($imageBuild);
+                                //if ($res) {
+                                //    $this->createExternalId(ForsageExternalFinder::OBJECT_TYPE_IMAGE, $model->id, $characteristics['supplier_name'] . '/' . $product->id . '/' . basename($characteristics['image']));
+                                //}
                             }
-                        }*/
+                        }
                     }
 
 

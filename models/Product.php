@@ -96,8 +96,8 @@ class Product extends ActiveRecord
         return new \yii\data\Sort([
             //'defaultOrder'=>'ordern DESC',
             'attributes' => [
-                //'*',
-                'price' => [
+                '*',
+                'price22' => [
                     'asc' => ['price' => SORT_ASC],
                     'desc' => ['price' => SORT_DESC],
                     //'default' => SORT_ASC,
@@ -125,6 +125,7 @@ class Product extends ActiveRecord
     public function getMainImageUrl($size = false)
     {
         $image = $this->getImage();
+
         if ($image) {
             if ($size) {
                 return $image->getUrl($size);

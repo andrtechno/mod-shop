@@ -36,7 +36,7 @@ class ForsageController extends Controller
      */
     public function actionChanges2()
     {
-        Yii::import('app.php-multi-curl.*');
+       // Yii::import('app.php-multi-curl.*');
 
         $forsage = new ForsageProductsImport;
         // $products = $forsage->getSupplierProductIds(505);

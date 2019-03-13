@@ -273,6 +273,31 @@ class CategoryController extends WebController
 
        // $this->query->attachBehaviors($this->query->behaviors());
         $this->query->applyAttributes($this->activeAttributes)->published();
+        $this->query->sort();
+
+
+
+
+        if (Yii::$app->request->get('sort') == 'price' || Yii::$app->request->get('sort') == '-price') {
+            $providerConfig['sort'] = false;
+            $providerConfig['criteria']['select'] = array(
+                '(CASE WHEN (`t`.`currency_id`)
+                        THEN
+                            `t`.`price` * (SELECT rate FROM `cms_shop_currency` `currency` WHERE `currency`.`id`=`t`.`currency_id`)
+                        ELSE
+                            `t`.`price`
+                    END) AS aggregation_price',
+            );
+            // $providerConfig['criteria']['order'] = (Yii::$app->request->get('sort') == 'price') ? 'aggregation_price' : 'aggregation_price DESC';
+
+            $this->query->aggregatePriceSelect((Yii::$app->request->get('sort') == 'price') ? SORT_ASC : SORT_DESC);
+
+
+        }
+
+//echo $this->query->createCommand()->rawSql;die;
+
+
 
         //echo $this->createCommand()->getRawSql();die;
         if ($data instanceof \panix\mod\shop\models\Category) {
@@ -321,6 +346,7 @@ class CategoryController extends WebController
 
         //$this->query->addOrderBy(['price'=>SORT_DESC]);
         //$this->query->orderBy(['price'=>SORT_DESC]);
+
 
 
 

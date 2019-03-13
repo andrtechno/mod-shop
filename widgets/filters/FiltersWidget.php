@@ -2,6 +2,11 @@
 
 namespace panix\mod\shop\widgets\filters;
 
+use panix\mod\shop\models\Attribute;
+use yii\caching\DbDependency;
+use yii\caching\DbQueryDependency;
+use yii\db\ActiveQuery;
+use yii\db\QueryInterface;
 use yii\helpers\Html;
 use Yii;
 use panix\mod\shop\models\Product;
@@ -20,7 +25,7 @@ class FiltersWidget extends \panix\engine\data\Widget
     public $tagCount = 'sup';
     public $tagCountOptions = ['class' => 'filter-count'];
     //public $showEmpty = false;
-    //public $_manufacturer = [];
+
 
     /**
      * @var Category
@@ -40,15 +45,6 @@ class FiltersWidget extends \panix\engine\data\Widget
         $this->_minprice = $view->context->minprice;
     }
 
-    /*public function getMinPrice()
-    {
-        return Yii::$app->controller->getMinPrice();
-    }
-
-    public function getMaxPrice()
-    {
-        return Yii::$app->controller->getMaxPrice();
-    }*/
 
     /**
      * @return array of attributes used in category
@@ -124,11 +120,20 @@ class FiltersWidget extends \panix\engine\data\Widget
         $model->andWhere([Product::tableName() . '.main_category_id' => $this->model->id]);
         $newData = [];
         $newData[$attribute->name][] = $option->id;
+        $model->withEavAttributes($newData);
 
 
-        $count = Product::getDb()->cache(function ($db) use ($model, $newData) {
-            return $model->withEavAttributes($newData)->count();
-        }, 3600);
+        $dependencyQuery = $model;
+        $dependencyQuery->select('COUNT(*)');
+        $dependency = new DbDependency([
+            'sql' => $dependencyQuery->createCommand()->rawSql,
+        ]);
+
+
+
+        $count = Attribute::getDb()->cache(function () use ($model) {
+            return $model->count();
+        }, 3600*24,$dependency);
 
         return $count;
     }
@@ -211,10 +216,16 @@ class FiltersWidget extends \panix\engine\data\Widget
 
 
         // $manufacturers = $queryMan->all();
-        $db = Yii::$app->db;
-        $manufacturers = $db->cache(function ($db) use ($queryMan) {
+
+
+
+
+
+        $manufacturers = Manufacturer::getDb()->cache(function ($db) use ($queryMan) {
             return $queryMan->all();
         }, 3600);
+
+
         //$manufacturers =$queryMan->all();
         //echo $q->createCommand()->rawSql;die;
         $data = array(
@@ -228,15 +239,25 @@ class FiltersWidget extends \panix\engine\data\Widget
             foreach ($manufacturers as $m) {
 
                 $m = $m->manufacturer;
+
                 if ($m) {
-                    $q = clone $queryClone;
+                    $query = Product::find();
+                    $query->published();
+                    $query->andWhere([Product::tableName() . '.main_category_id' => $this->model->id]);
+
                     //$q->applyMinPrice($this->convertCurrency(Yii::app()->request->getQuery('min_price')))
                     //$q->applyMaxPrice($this->convertCurrency(Yii::app()->request->getQuery('max_price')))
-                    $q->applyManufacturers($m->id);
+                    $query->applyManufacturers($m->id);
 
-                    $count = Product::getDb()->cache(function ($db) use ($q) {
-                        return $q->count();
-                    }, 3600);
+                    $dependencyQuery = $query;
+                    $dependencyQuery->select('COUNT(*)');
+                    $dependency = new DbDependency([
+                        'sql' => $dependencyQuery->createCommand()->rawSql,
+                    ]);
+
+                    $count = Product::getDb()->cache(function () use ($query) {
+                        return $query->count();
+                    }, 3600*24,$dependency);
 
                     $data['filters'][] = array(
                         'title' => $m->name,
@@ -248,7 +269,7 @@ class FiltersWidget extends \panix\engine\data\Widget
                     //    'label' => $m->name,
                     //);
                 } else {
-                    die('err');
+                    die('err manufacturer');
                 }
             }
         }
@@ -256,33 +277,6 @@ class FiltersWidget extends \panix\engine\data\Widget
         return $data;
     }
 
-    /*
-        public function getCurrentMaxPrice() {
-            if ($this->_currentMaxPrice !== null)
-                return $this->_currentMaxPrice;
-
-            if (Yii::$app->request->get('max_price')) {
-                $this->_currentMaxPrice = Yii::$app->currency->convert(Yii::$app->request->get('max_price'));
-            } else {
-                $this->_currentMaxPrice = Yii::$app->currency->convert($this->_maxprice);
-            }
-
-            return $this->_currentMaxPrice;
-        }
-
-        public function getCurrentMinPrice() {
-            if ($this->_currentMinPrice !== null)
-                return $this->_currentMinPrice;
-
-            if (Yii::$app->request->get('min_price')) {
-                $this->_currentMinPrice = Yii::$app->currency->convert(Yii::$app->request->get('min_price'));
-            } else {
-                $this->_currentMinPrice = Yii::$app->currency->convert($this->_minprice);
-            }
-
-            return $this->_currentMinPrice;
-        }
-    */
     public function convertCurrency($sum)
     {
         $cm = Yii::$app->currency;

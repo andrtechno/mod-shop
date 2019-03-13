@@ -165,4 +165,20 @@ class ProductQuery extends ActiveQuery
         return $this;
     }
 
+
+    public function aggregatePriceSelect($order = SORT_ASC)
+    {
+        $tableName = $this->modelClass::tableName();
+        $tableNameCur = Currency::tableName();
+        $this->addSelect(['*',"(CASE WHEN ({$tableName}.`currency_id`)
+                    THEN
+                        ({$tableName}.price * (SELECT rate FROM {$tableNameCur} `currency` WHERE `currency`.`id`={$tableName}.`currency_id`))
+                    ELSE
+                        {$tableName}.price
+                END) AS aggregation_price"]);
+
+        $this->orderBy(["aggregation_price" => $order]);
+        return $this;
+    }
+
 }

@@ -24,6 +24,7 @@ class m180917_193213_shop_product extends Migration
             'user_id' => $this->integer()->unsigned(),
             'manufacturer_id' => $this->integer()->unsigned(),
             'category_id' => $this->integer()->unsigned(),
+            'main_category_id' => $this->integer()->unsigned(),
             'type_id' => $this->smallInteger()->unsigned(),
             'supplier_id' => $this->integer()->unsigned(),
             'currency_id' => $this->smallInteger()->unsigned(),
@@ -75,6 +76,7 @@ class m180917_193213_shop_product extends Migration
         $this->createIndex('date_create', Product::tableName(), 'date_create', 0);
         $this->createIndex('views', Product::tableName(), 'views', 0);
         $this->createIndex('ordern', Product::tableName(), 'ordern', 0);
+        $this->createIndex('main_category_id', Product::tableName(), 'main_category_id', 0);
 
 
         $this->createIndex('object_id', ProductTranslate::tableName(), 'object_id', 0);
