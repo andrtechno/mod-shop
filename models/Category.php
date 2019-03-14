@@ -72,9 +72,10 @@ class Category extends \panix\engine\db\ActiveRecord {
         ];
     }
 
-    public function getCountProducts() {
+    public function getCountItems() {
         return $this->hasMany(ProductCategoryRef::class, ['category' => 'id'])->count();
     }
+
 
     public function getTranslations() {
         return $this->hasMany(CategoryTranslate::class, ['object_id' => 'id']);

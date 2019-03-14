@@ -137,7 +137,7 @@ class AttributesRender extends \yii\base\Widget {
 
     public function getData(Product $model) {
 
-        $cacheId = 'product_attributes_' . strtotime($model->date_update) . '_' . strtotime($model->date_create);
+        $cacheId = 'product_attributes_' . strtotime($model->updated_at) . '_' . strtotime($model->created_at);
         $result = Yii::$app->cache->get($cacheId);
         if ($result === false) {
             foreach (Yii::$app->languageManager->languages as $lang => $l) {

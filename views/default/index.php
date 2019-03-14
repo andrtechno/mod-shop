@@ -16,7 +16,7 @@ $categories = $root->children()->all();
     foreach ($categories as $cat) {
         //  \yii\helpers\VarDumper::dump($cat,100,true);
         //  die;
-        $totalProducts = $cat->countProducts;
+        $totalProducts = $cat->countItems;
         ?>
         <div class="col-sm-3 col-md-4">
             <div class="row">
@@ -40,7 +40,7 @@ $categories = $root->children()->all();
                             ?>
                             <li>
                                 <?= Html::a($subcat->name, $subcat->getUrl()); ?>
-                                <?= Html::tag('sup', $subcat->countProducts, []); ?>
+                                <?= Html::tag('sup', $subcat->countItems, []); ?>
                             </li>
                         <?php } ?>
                     </ul>

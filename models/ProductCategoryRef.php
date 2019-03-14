@@ -2,6 +2,7 @@
 
 namespace panix\mod\shop\models;
 
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "ProductCategoryRef".
@@ -12,23 +13,26 @@ namespace panix\mod\shop\models;
  * @property integer $product
  * @property boolean $is_main
  */
-class ProductCategoryRef extends \yii\db\ActiveRecord {
-
+class ProductCategoryRef extends ActiveRecord
+{
 
 
     /**
      * @return string the associated database table name
      */
-    public static function tableName() {
+    public static function tableName()
+    {
         return '{{%shop__product_category_ref}}';
     }
-       public function getCountProducts() {
-       return $this->hasMany(ProductCategoryRef::class, ['category' => 'id'])->count();
+
+    public function getCountProducts2()
+    {
+        return $this->hasMany(static::class, ['category' => 'id'])->count();
     }
-  /*  public function relations() {
-        return array(
-            'active' => array(self::STAT, 'Product', 'id', 'condition'=>'`products`.`switch`=1'),
-            'countProducts' => array(self::HAS_MANY, 'ProductCategoryRef', 'category'),
-        );
-    }*/
+    /*  public function relations() {
+          return array(
+              'active' => array(self::STAT, 'Product', 'id', 'condition'=>'`products`.`switch`=1'),
+              'countProducts' => array(self::HAS_MANY, 'ProductCategoryRef', 'category'),
+          );
+      }*/
 }

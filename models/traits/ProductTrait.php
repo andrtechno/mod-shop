@@ -78,32 +78,32 @@ trait ProductTrait
                 return Yii::$app->currency->number_format(Yii::$app->currency->convert($model->price, $model->currency_id)) . ' ' . Yii::$app->currency->main->symbol;
             }
         ];
-        $columns['date_create'] = [
-            'attribute' => 'date_create',
+        $columns['created_at'] = [
+            'attribute' => 'created_at',
             'class' => 'panix\engine\grid\columns\jui\DatepickerColumn',
             'format' => 'raw',
             'headerOptions' => ['style' => 'width:150px'],
             'contentOptions' => ['class' => 'text-center'],
             'value' => function ($model) {
-                if ($model->date_create) {
-                    $html = Html::beginTag('span', ['class' => 'bootstrap-tooltip', 'title' => Yii::t('app', 'IN') . ' ' . Yii::$app->formatter->asTime($model->date_create)]);
-                    $html .= Yii::$app->formatter->asDate($model->date_create);
+                if ($model->created_at) {
+                    $html = Html::beginTag('span', ['class' => 'bootstrap-tooltip', 'title' => Yii::t('app', 'IN') . ' ' . Yii::$app->formatter->asTime($model->created_at)]);
+                    $html .= Yii::$app->formatter->asDate($model->created_at);
                     $html .= Html::endTag('span');
                     return $html;
                 }
                 return null;
             }
         ];
-        $columns['date_update'] = [
-            'attribute' => 'date_update',
+        $columns['updated_at'] = [
+            'attribute' => 'updated_at',
             'class' => 'panix\engine\grid\columns\jui\DatepickerColumn',
             'format' => 'raw',
             'headerOptions' => ['style' => 'width:150px', 'class' => 'text-center'],
             'contentOptions' => ['class' => 'text-center'],
             'value' => function ($model) {
-                if ($model->date_update) {
-                    $html = Html::beginTag('span', ['class' => 'bootstrap-tooltip', 'title' => Yii::t('app', 'IN') . ' ' . Yii::$app->formatter->asTime($model->date_update)]);
-                    $html .= Yii::$app->formatter->asDate($model->date_update);
+                if ($model->updated_at) {
+                    $html = Html::beginTag('span', ['class' => 'bootstrap-tooltip', 'title' => Yii::t('app', 'IN') . ' ' . Yii::$app->formatter->asTime($model->updated_at)]);
+                    $html .= Yii::$app->formatter->asDate($model->updated_at);
                     $html .= Html::endTag('span');
                     return $html;
                 }

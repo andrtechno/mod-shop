@@ -52,11 +52,11 @@ class Product extends ActiveRecord
     {
         $result = [];
         $new = 3;//days of new
-        if ((time() - 86400 * $new) <= strtotime($this->date_create)) {
+        if ((time() - 86400 * $new) <= $this->created_at) {
             $result[] = array(
                 'class' => 'success new',
                 'value' => 'Новый',
-                'tooltip' => 'от ' . Yii::$app->formatter->asDate(date('Y-m-d', strtotime($this->date_create))) . ' до ' . Yii::$app->formatter->asDate(date('Y-m-d', strtotime($this->date_create) + (86400 * $new)))
+                'tooltip' => 'от ' . Yii::$app->formatter->asDate(date('Y-m-d', $this->created_at)) . ' до ' . Yii::$app->formatter->asDate(date('Y-m-d', $this->created_at + (86400 * $new)))
             );
         }
 
@@ -654,7 +654,7 @@ class Product extends ActiveRecord
                 /**'batchSize' => 100,*/
                 'scope' => function ($model) {
                     /** @var \yii\db\ActiveQuery $model */
-                    $model->select(['seo_alias', 'date_update']);
+                    $model->select(['seo_alias', 'created_at']);
                     $model->andWhere(['switch' => 1]);
                 },
                 'dataClosure' => function ($model) {
@@ -663,7 +663,7 @@ class Product extends ActiveRecord
                         //'loc' => Url::to($model->seo_alias, true),
                         'loc' => Url::to($model->getUrl(), true),
                         //'loc' => $model->getUrl(),
-                        'lastmod' => strtotime($model->date_update),
+                        'lastmod' => $model->updated_at,
                         'changefreq' => Sitemap::DAILY,
                         'priority' => 0.8
                     ];
