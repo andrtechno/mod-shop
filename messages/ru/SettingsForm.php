@@ -1,9 +1,6 @@
 <?php
 
 return [
-    'PRICE_PENNY' => 'Активировать копейки',
-    'PRICE_DECIMAL' => 'Десятичный разделитель цены',
-    'PRICE_THOUSAND' => 'Тысячный разделитель цены',
     'PER_PAGE' => 'Количество товаров на сайте',
     'PRODUCT_RELATED_BILATERAL' => 'Активировать двустороннюю связь между товарами',
     'TAB_WM' => 'Водяной знак',
@@ -11,7 +8,6 @@ return [
     'TAB_SEO' => 'SEO товаров',
     'TAB_CAT_SEO' => 'SEO категорий',
     'TAB_GENERAL' => 'Основные',
-    'TAB_FORMATPRICE' => 'Формат цены',
     'SEO_CATEGORIES' => 'Автоматическая генерация метаданных категорий',
     'SEO_CATEGORIES_TITLE' => 'Шаблон заголовка для категории',
     'SEO_CATEGORIES_KEYWORDS' => 'Шаблон ключевых слов для категории',
