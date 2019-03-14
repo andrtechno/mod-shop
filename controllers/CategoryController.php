@@ -271,7 +271,9 @@ class CategoryController extends WebController
         //$searchModel = new ProductSearch();
         //$this->query = $searchModel->searchBySite(Yii::$app->request->getQueryParams());//
 
-       // $this->query->attachBehaviors($this->query->behaviors());
+       // print_r((new Product)->behaviors());die;
+        $this->query->attachBehaviors((new Product)->behaviors());
+
         $this->query->applyAttributes($this->activeAttributes)->published();
         $this->query->sort();
 
@@ -281,6 +283,15 @@ class CategoryController extends WebController
         if (Yii::$app->request->get('sort') == 'price' || Yii::$app->request->get('sort') == '-price') {
             $this->query->aggregatePriceSelect((Yii::$app->request->get('sort') == 'price') ? SORT_ASC : SORT_DESC);
         }
+
+
+
+
+
+
+
+       // $this->query->addSelect();
+
 
 //echo $this->query->createCommand()->rawSql;die;
 
