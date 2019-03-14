@@ -43,15 +43,15 @@ class m180917_193421_shop_attribute extends Migration
         ], $this->tableOptions);
 
 
-        $this->createIndex('name', Attribute::tableName(), 'name', 0);
-        $this->createIndex('use_in_filter', Attribute::tableName(), 'use_in_filter', 0);
-        $this->createIndex('display_on_front', Attribute::tableName(), 'display_on_front', 0);
-        $this->createIndex('ordern', Attribute::tableName(), 'ordern', 0);
-        $this->createIndex('use_in_variants', Attribute::tableName(), 'use_in_variants', 0);
-        $this->createIndex('use_in_compare', Attribute::tableName(), 'use_in_compare', 0);
+        $this->createIndex('name', Attribute::tableName(), 'name');
+        $this->createIndex('use_in_filter', Attribute::tableName(), 'use_in_filter');
+        $this->createIndex('display_on_front', Attribute::tableName(), 'display_on_front');
+        $this->createIndex('ordern', Attribute::tableName(), 'ordern');
+        $this->createIndex('use_in_variants', Attribute::tableName(), 'use_in_variants');
+        $this->createIndex('use_in_compare', Attribute::tableName(), 'use_in_compare');
 
-        $this->createIndex('object_id', AttributeTranslate::tableName(), 'object_id', 0);
-        $this->createIndex('language_id', AttributeTranslate::tableName(), 'language_id', 0);
+        $this->createIndex('object_id', AttributeTranslate::tableName(), 'object_id');
+        $this->createIndex('language_id', AttributeTranslate::tableName(), 'language_id');
     }
 
     public function down()

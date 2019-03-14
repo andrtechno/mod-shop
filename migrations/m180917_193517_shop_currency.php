@@ -32,9 +32,9 @@ class m180917_193517_shop_currency extends Migration {
 
 
 
-        $this->createIndex('is_main', Currency::tableName(), 'is_main', 0);
-        $this->createIndex('is_default', Currency::tableName(), 'is_default', 0);
-        $this->createIndex('ordern', Currency::tableName(), 'ordern', 0);
+        $this->createIndex('is_main', Currency::tableName(), 'is_main');
+        $this->createIndex('is_default', Currency::tableName(), 'is_default');
+        $this->createIndex('ordern', Currency::tableName(), 'ordern');
 
 
     }

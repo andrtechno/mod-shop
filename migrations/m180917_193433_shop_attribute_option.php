@@ -31,11 +31,11 @@ class m180917_193433_shop_attribute_option extends Migration
         ], $this->tableOptions);
 
 
-        $this->createIndex('attribute_id', AttributeOption::tableName(), 'attribute_id', 0);
+        $this->createIndex('attribute_id', AttributeOption::tableName(), 'attribute_id');
         $this->createIndex('ordern', AttributeOption::tableName(), 'ordern', 0);
 
-        $this->createIndex('object_id', AttributeOptionTranslate::tableName(), 'object_id', 0);
-        $this->createIndex('language_id', AttributeOptionTranslate::tableName(), 'language_id', 0);
+        $this->createIndex('object_id', AttributeOptionTranslate::tableName(), 'object_id');
+        $this->createIndex('language_id', AttributeOptionTranslate::tableName(), 'language_id');
 
     }
 

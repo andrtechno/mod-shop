@@ -39,14 +39,14 @@ class m180917_193505_shop_category extends Migration {
 
 
 
-        $this->createIndex('lft', Category::tableName(), 'lft', 0);
-        $this->createIndex('rgt', Category::tableName(), 'rgt', 0);
-        $this->createIndex('depth', Category::tableName(), 'depth', 0);
-        $this->createIndex('full_path', Category::tableName(), 'full_path', 0);
+        $this->createIndex('lft', Category::tableName(), 'lft');
+        $this->createIndex('rgt', Category::tableName(), 'rgt');
+        $this->createIndex('depth', Category::tableName(), 'depth');
+        $this->createIndex('full_path', Category::tableName(), 'full_path');
 
 
-        $this->createIndex('object_id', CategoryTranslate::tableName(), 'object_id', 0);
-        $this->createIndex('language_id', CategoryTranslate::tableName(), 'language_id', 0);
+        $this->createIndex('object_id', CategoryTranslate::tableName(), 'object_id');
+        $this->createIndex('language_id', CategoryTranslate::tableName(), 'language_id');
 
     }
 

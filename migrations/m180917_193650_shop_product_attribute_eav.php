@@ -19,9 +19,9 @@ class m180917_193650_shop_product_attribute_eav extends Migration {
             'value' => $this->string(255)->null(),
         ], $this->tableOptions);
 
-        $this->createIndex('entity', '{{%shop__product_attribute_eav}}', 'entity', 0);
-        $this->createIndex('attribute', '{{%shop__product_attribute_eav}}', 'attribute', 0);
-        $this->createIndex('value', '{{%shop__product_attribute_eav}}', 'value', 0);
+        $this->createIndex('entity', '{{%shop__product_attribute_eav}}', 'entity');
+        $this->createIndex('attribute', '{{%shop__product_attribute_eav}}', 'attribute');
+        $this->createIndex('value', '{{%shop__product_attribute_eav}}', 'value');
     }
 
     public function down()

@@ -24,9 +24,9 @@ class m180917_193757_shop_product_variant extends Migration
             'sku' => $this->string(255)->null(),
         ], $this->tableOptions);
 
-        $this->createIndex('attribute_id', '{{%shop__product_variant}}', 'attribute_id', 0);
-        $this->createIndex('option_id', '{{%shop__product_variant}}', 'option_id', 0);
-        $this->createIndex('product_id', '{{%shop__product_variant}}', 'product_id', 0);
+        $this->createIndex('attribute_id', '{{%shop__product_variant}}', 'attribute_id');
+        $this->createIndex('option_id', '{{%shop__product_variant}}', 'option_id');
+        $this->createIndex('product_id', '{{%shop__product_variant}}', 'product_id');
     }
 
     public function down()

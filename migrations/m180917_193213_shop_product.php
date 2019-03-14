@@ -46,8 +46,8 @@ class m180917_193213_shop_product extends Migration
             'discount' => $this->string(50),
             'markup' => $this->string(50),
             'video' => $this->text(),
-            'date_create' => $this->timestamp()->null(),
-            'date_update' => $this->timestamp(),
+            'created_at' => $this->integer(11)->null(),
+            'updated_at' => $this->integer(11)->null(),
             'switch' => $this->boolean()->defaultValue(1),
             'ordern' => $this->integer(),
         ], $this->tableOptions);
@@ -63,24 +63,24 @@ class m180917_193213_shop_product extends Migration
 
         $this->addCommentOnColumn(Product::tableName(), 'price_purchase', 'Цена закупки');
 
-        $this->createIndex('user_id', Product::tableName(), 'user_id', 0);
-        $this->createIndex('manufacturer_id', Product::tableName(), 'manufacturer_id', 0);
-        $this->createIndex('category_id', Product::tableName(), 'category_id', 0);
-        $this->createIndex('type_id', Product::tableName(), 'type_id', 0);
-        $this->createIndex('supplier_id', Product::tableName(), 'supplier_id', 0);
-        $this->createIndex('currency_id', Product::tableName(), 'currency_id', 0);
-        $this->createIndex('seo_alias', Product::tableName(), 'seo_alias', 0);
-        $this->createIndex('price', Product::tableName(), 'price', 0);
-        $this->createIndex('max_price', Product::tableName(), 'max_price', 0);
-        $this->createIndex('switch', Product::tableName(), 'switch', 0);
-        $this->createIndex('date_create', Product::tableName(), 'date_create', 0);
+        $this->createIndex('user_id', Product::tableName(), 'user_id');
+        $this->createIndex('manufacturer_id', Product::tableName(), 'manufacturer_id');
+        $this->createIndex('category_id', Product::tableName(), 'category_id');
+        $this->createIndex('type_id', Product::tableName(), 'type_id');
+        $this->createIndex('supplier_id', Product::tableName(), 'supplier_id');
+        $this->createIndex('currency_id', Product::tableName(), 'currency_id');
+        $this->createIndex('seo_alias', Product::tableName(), 'seo_alias');
+        $this->createIndex('price', Product::tableName(), 'price');
+        $this->createIndex('max_price', Product::tableName(), 'max_price');
+        $this->createIndex('switch', Product::tableName(), 'switch');
+        $this->createIndex('created_at', Product::tableName(), 'created_at');
         $this->createIndex('views', Product::tableName(), 'views', 0);
         $this->createIndex('ordern', Product::tableName(), 'ordern', 0);
-        $this->createIndex('main_category_id', Product::tableName(), 'main_category_id', 0);
+        $this->createIndex('main_category_id', Product::tableName(), 'main_category_id');
 
 
-        $this->createIndex('object_id', ProductTranslate::tableName(), 'object_id', 0);
-        $this->createIndex('language_id', ProductTranslate::tableName(), 'language_id', 0);
+        $this->createIndex('object_id', ProductTranslate::tableName(), 'object_id');
+        $this->createIndex('language_id', ProductTranslate::tableName(), 'language_id');
 
     }
 

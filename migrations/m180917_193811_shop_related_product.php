@@ -20,8 +20,8 @@ class m180917_193811_shop_related_product extends Migration
             'related_id' => $this->integer(11)->null()->unsigned(),
         ], $this->tableOptions);
 
-        $this->createIndex('product_id', '{{%shop__related_product}}', 'product_id', 0);
-        $this->createIndex('related_id', '{{%shop__related_product}}', 'related_id', 0);
+        $this->createIndex('product_id', '{{%shop__related_product}}', 'product_id');
+        $this->createIndex('related_id', '{{%shop__related_product}}', 'related_id');
     }
 
     public function down()
