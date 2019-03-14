@@ -4,12 +4,16 @@ namespace panix\mod\shop\blocks\popular;
 
 use panix\mod\shop\models\Product;
 use panix\engine\data\ActiveDataProvider;
+use panix\engine\data\Widget;
 
-class PopularBlock extends \panix\engine\data\Widget {
+class PopularBlock extends Widget
+{
 
     public $limiter = 10;
 
-    public function run() {
+    public function run()
+    {
+
         $query = Product::find();
         $query->limit($this->limiter);
         $query->orderBy('views');
@@ -17,11 +21,12 @@ class PopularBlock extends \panix\engine\data\Widget {
         //$query->with('translations');
 
         $dataProvider = new ActiveDataProvider([
-            'query' => $query,
-            'sort' => Product::getSort(),
-            'pagination' => false
-                ]
+                'query' => $query,
+                'sort' => Product::getSort(),
+                'pagination' => false
+            ]
         );
+
         return $this->render($this->skin, ['dataProvider' => $dataProvider]);
     }
 

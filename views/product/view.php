@@ -61,7 +61,7 @@ echo \yii\helpers\Inflector::sentence($words);
 <div id="info"></div>
 <div class="row">
     <div class="col-sm-6 col-xs-12">
-        <?= Html::img($model->getMainImageUrl('500x500')); ?>
+        <?= Html::img($model->getMainImage('500x500')->url); ?>
 
         <?php echo panix\mod\discounts\widgets\countdown\Countdown::widget(['model' => $model]) ?>
         <div class="dotsCont">

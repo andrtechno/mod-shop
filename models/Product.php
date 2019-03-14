@@ -19,6 +19,7 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use panix\engine\db\ActiveRecord;
+use yii\web\Response;
 
 class Product extends ActiveRecord
 {
@@ -116,31 +117,30 @@ class Product extends ActiveRecord
         ]);
     }
 
-    public function getMainImageTitle()
-    {
-        if ($this->getImage())
-            return ($this->getImage()->alt_title) ? $this->getImage()->alt_title : $this->name;
-    }
 
-    public function getMainImageUrl($size = false)
+
+    public function getMainImage($size = false)
     {
         $image = $this->getImage();
-
+        $result=[];
         if ($image) {
-            if ($size) {
-                return $image->getUrl($size);
-            } else {
-                return $image->getUrl();
-            }
+            $result['url'] = $image->getUrl($size);
+            $result['title'] = ($image->alt_title) ? $image->alt_title : $this->name;
         } else {
-            return CMS::placeholderUrl(array('size' => $size));
+            $result['url'] = CMS::placeholderUrl(['size' => $size]);
+            $result['title'] = $this->name;
         }
+
+        return (object) $result;
     }
+
 
     public function renderGridImage()
     {
-        return ($this->getImage()) ? Html::a(Html::img($this->getMainImageUrl("50x50"), ['alt' => $this->getMainImageTitle(), 'class' => 'img-thumbnail']), $this->getMainImageUrl(), ['title' => $this->name, 'data-fancybox' => 'gallery']) : Html::img($this->getMainImageUrl("50x50"), ['alt' => $this->getMainImageTitle(), 'class' => 'img-thumbnail']);
+        $small = $this->getMainImage("50x50");
+        return Html::a(Html::img($small->url, ['alt' => $small->title, 'class' => 'img-thumbnail']), $small->url, ['title' => $this->name, 'data-fancybox' => 'gallery']);
     }
+
 
     /**
      * @inheritdoc

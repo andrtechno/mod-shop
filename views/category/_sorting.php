@@ -43,16 +43,16 @@ $this->registerJs("
 
 
             <?php
-            $limits = array(Yii::$app->urlManager->removeUrlParam('/shop/category/view', 'per_page') => $this->context->allowedPageLimit[0]);
+            $limits = array(Yii::$app->urlManager->removeUrlParam('/shop/category/view', 'per-page') => $this->context->allowedPageLimit[0]);
             array_shift($this->context->allowedPageLimit);
             foreach ($this->context->allowedPageLimit as $l) {
-                $active = Yii::$app->urlManager->addUrlParam('/shop/category/view', array('per_page' => Yii::$app->request->get('per_page')));
-                $limits[Yii::$app->urlManager->addUrlParam('/shop/category/view', array('per_page' => $l))] = $l;
+                $active = Yii::$app->urlManager->addUrlParam('/shop/category/view', array('per-page' => Yii::$app->request->get('per-page')));
+                $limits[Yii::$app->urlManager->addUrlParam('/shop/category/view', array('per-page' => $l))] = $l;
             }
             ?>
             <span class=""><?= Yii::t('shop/default', 'OUTPUT_ON'); ?> </span>
             <?php
-            echo Html::dropDownList('per_page', $active, $limits, ['onChange' => 'window.location = $(this).val()', 'class' => 'custom-select', 'style' => 'width:auto;']);
+            echo Html::dropDownList('per-page', $active, $limits, ['onChange' => 'window.location = $(this).val()', 'class' => 'custom-select', 'style' => 'width:auto;']);
             ?>
             <span class=""><?= Yii::t('shop/default', 'товаров'); ?></span>
 

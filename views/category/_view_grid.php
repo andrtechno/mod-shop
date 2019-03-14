@@ -9,7 +9,7 @@ use yii\helpers\HtmlPurifier;
 <div class="product">
     <div class="product-image">
         <?php
-        echo Html::a(Html::img($model->getMainImageUrl('400x'), ['alt' => $model->name, 'class' => 'img-fluid']), $model->getUrl());
+        echo Html::a(Html::img($model->getMainImage('400x')->url, ['alt' => $model->name, 'class' => 'img-fluid']), $model->getUrl());
         ?>
     </div>
 

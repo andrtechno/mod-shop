@@ -4,11 +4,7 @@ use yii\helpers\Html;
 use panix\engine\grid\GridView;
 use yii\widgets\Pjax;
 
-
-
-
 echo \panix\ext\fancybox\Fancybox::widget(['target' => '.image a']);
-
 
 echo GridView::widget([
     'tableOptions' => ['class' => 'table table-striped'],

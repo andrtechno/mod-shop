@@ -61,7 +61,7 @@ class EavBehavior extends \yii\base\Behavior
 
     /**
      * @access protected
-     * @var ICache cache component object.
+     * @var \yii\caching\Cache cache component object.
      * @default NULL
      */
     protected $cache = NULL;
@@ -98,7 +98,7 @@ class EavBehavior extends \yii\base\Behavior
     {
         return [
             ActiveRecord::EVENT_AFTER_FIND => 'afterFind',
-            //  ActiveRecord::EVENT_BEFORE_DELETE => 'beforeDelete',
+            ActiveRecord::EVENT_AFTER_DELETE => 'afterDelete',
             //ActiveRecord::EVENT_BEFORE_INSERT => 'beforeSave',
         ];
     }
@@ -265,22 +265,20 @@ class EavBehavior extends \yii\base\Behavior
     }
 
     /**
-     * @param CEvent
+     * @param Event
      * @return void
      */
-    public function afterDelete($event)
-    {
-        // Delete all attributes.
+    public function afterDelete()
+    {    // Delete all attributes.
         $this->deleteEavAttributes(array(), TRUE);
         // Call parent method for convenience.
-        parent::afterDelete($event);
     }
 
     /**
-     * @param CEvent
+     * @param Event
      * @return void
      */
-    public function afterFind($event)
+    public function afterFind()
     {
         // Load attributes for model.
         if ($this->preload) {
@@ -293,8 +291,8 @@ class EavBehavior extends \yii\base\Behavior
     }
 
     /**
-     * @param array attributes key for save.
-     * @return CActiveRecord
+     * @param array $attributes key for save.
+     * @return null|\yii\base\Component
      */
     public function saveEavAttributes($attributes)
     {
@@ -331,7 +329,7 @@ class EavBehavior extends \yii\base\Behavior
     /**
      * @access public
      * @param array $attributes key for load.
-     * @return ActiveRecord
+     * @return null|\yii\base\Component|ActiveRecord
      */
     public function loadEavAttributes($attributes)
     {
@@ -369,9 +367,9 @@ class EavBehavior extends \yii\base\Behavior
     }
 
     /**
-     * @param array attributes key for delete.
-     * @param boolean whether auto save attributes.
-     * @return CActiveRecord
+     * @param array $attributes key for delete.
+     * @param boolean $save whether auto attributes.
+     * @return ActiveRecord
      */
     public function deleteEavAttributes($attributes = array(), $save = FALSE)
     {
@@ -412,10 +410,10 @@ class EavBehavior extends \yii\base\Behavior
     }
 
     /**
-     * @param string attribute key.
-     * @param mixed attribute value.
+     * @param string $attribute key.
+     * @param mixed $value value.
      * @param boolean whether auto save attributes.
-     * @return CActiveRecord
+     * @return ActiveRecord
      */
     public function setEavAttribute($attribute, $value, $save = FALSE)
     {
@@ -485,6 +483,7 @@ class EavBehavior extends \yii\base\Behavior
         // $attributes be array of elements: $attribute => $values
         return $this->getFindByEavAttributes2($attributes);
     }
+
     protected function getFindByEavAttributes2($attributes)
     {
         //$criteria = new CDbCriteria();
@@ -535,6 +534,7 @@ class EavBehavior extends \yii\base\Behavior
         // echo $this->createCommand()->getRawSql();die;
         return $this->owner::find();
     }
+
     /**
      * @access protected
      * @param  $attribute
