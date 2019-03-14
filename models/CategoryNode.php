@@ -2,17 +2,16 @@
 
 namespace panix\mod\shop\models;
 
-use yii\base\Component;
-use panix\mod\shop\models\Category;
+use yii\base\BaseObject;
 
 /**
  * Present Category as JsTree node.
  */
-class CategoryNode extends Component implements \ArrayAccess
+class CategoryNode extends BaseObject
 {
 
     /**
-     * @var Category
+     * @var \panix\mod\shop\models\Category
      */
     protected $model;
 
@@ -47,12 +46,14 @@ class CategoryNode extends Component implements \ArrayAccess
     {
         $this->options = &$options;
         $this->model = &$model;
+        parent::__construct([]);
         return $this;
     }
 
     /**
      * Create nodes from array
-     * @static
+     *
+     * @param array $options
      * @param array $model
      * @return array
      */
@@ -89,9 +90,6 @@ class CategoryNode extends Component implements \ArrayAccess
      */
     public function getName()
     {
-        //  if (isset($this->options['displayCount']) && $this->options['displayCount'])
-        // return "{$this->model->name} ({$this->model->countProducts})";
-        // else
         return $this->model->name;
     }
 
@@ -109,30 +107,6 @@ class CategoryNode extends Component implements \ArrayAccess
     public function getSwitch()
     {
         return $this->model->switch;
-    }
-
-    /**
-     * @param $offset
-     * @return mixed
-     */
-    public function offsetGet($offset)
-    {
-        return $this->{$offset};
-    }
-
-    public function offsetExists($offset)
-    {
-
-    }
-
-    public function offsetSet($offset, $value)
-    {
-
-    }
-
-    public function offsetUnset($offset)
-    {
-
     }
 
 }
