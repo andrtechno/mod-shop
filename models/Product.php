@@ -137,7 +137,8 @@ class Product extends ActiveRecord
     public function renderGridImage()
     {
         $small = $this->getMainImage("50x50");
-        return Html::a(Html::img($small->url, ['alt' => $small->title, 'class' => 'img-thumbnail']), $small->url, ['title' => $this->name, 'data-fancybox' => 'gallery']);
+        $big = $this->getMainImage();
+        return Html::a(Html::img($small->url, ['alt' => $small->title, 'class' => 'img-thumbnail']), $big->url, ['title' => $this->name, 'data-fancybox' => 'gallery']);
     }
 
 

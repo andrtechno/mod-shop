@@ -13,7 +13,7 @@ class ProductController extends WebController
     public function actionView($seo_alias)
     {
 
-        $this->findModel($seo_alias);
+        $this->dataModel = $this->findModel($seo_alias);
         $this->dataModel->updateCounters(['views' => 1]);
         $category = $this->dataModel->mainCategory;
         if ($category) {
@@ -70,13 +70,13 @@ class ProductController extends WebController
      */
     protected function findModel($url)
     {
-        $this->dataModel = Product::find()
+        $model = Product::find()
             ->where(['seo_alias' => $url])
             ->published()
             ->one();
 
-        if ($this->dataModel !== null) {
-            return $this->dataModel;
+        if ($model !== null) {
+            return $model;
         } else {
             $this->error404('product not found');
         }
