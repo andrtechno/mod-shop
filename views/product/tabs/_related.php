@@ -10,7 +10,7 @@
                 <li class="col-sm-3">
                     <div class="fff">
                         <div class="thumbnail">
-                            <a href="#"><img src="<?php echo $related->getMainImageUrl('360x240'); ?>" alt=""></a>
+                            <a href="#"><img src="<?php echo $related->getMainImage('360x240')->url; ?>" alt=""></a>
                         </div>
                         <div class="caption">
                             <h4>Praesent commodo</h4>

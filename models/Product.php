@@ -118,11 +118,10 @@ class Product extends ActiveRecord
     }
 
 
-
     public function getMainImage($size = false)
     {
         $image = $this->getImage();
-        $result=[];
+        $result = [];
         if ($image) {
             $result['url'] = $image->getUrl($size);
             $result['title'] = ($image->alt_title) ? $image->alt_title : $this->name;
@@ -131,7 +130,7 @@ class Product extends ActiveRecord
             $result['title'] = $this->name;
         }
 
-        return (object) $result;
+        return (object)$result;
     }
 
 
@@ -647,65 +646,61 @@ class Product extends ActiveRecord
 
     public function behaviors()
     {
-        return ArrayHelper::merge([
 
-            'sitemap' => [
-                'class' => SitemapBehavior::class,
-                /**'batchSize' => 100,*/
-                'scope' => function ($model) {
-                    /** @var \yii\db\ActiveQuery $model */
-                    $model->select(['seo_alias', 'created_at']);
-                    $model->andWhere(['switch' => 1]);
-                },
-                'dataClosure' => function ($model) {
-                    /** @var self $model */
-                    return [
-                        //'loc' => Url::to($model->seo_alias, true),
-                        'loc' => Url::to($model->getUrl(), true),
-                        //'loc' => $model->getUrl(),
-                        'lastmod' => $model->updated_at,
-                        'changefreq' => Sitemap::DAILY,
-                        'priority' => 0.8
-                    ];
-                }
-            ],
 
-            'imagesBehavior' => [
-                'class' => \panix\mod\images\behaviors\ImageBehavior::class,
-            ],
-            'slug' => [
-                'class' => \yii\behaviors\SluggableBehavior::class,
-                'attribute' => 'name',
-                'slugAttribute' => 'seo_alias',
-            ],
-            /* 'eav' => [
-              'class' => \mazurva\eav\EavBehavior::className(),
-              'valueClass' => \mazurva\eav\models\EavAttributeValue::className(), // this model for table object_attribute_value
-              ], */
-            /* 'eav' => [
-              'class' => \mirocow\eav\EavBehavior::className(),
-              // это модель для таблицы object_attribute_value
-              'valueClass' => \mirocow\eav\models\EavAttributeValue::className(),
-              ], */
-            'eav' => [
-                'class' => \panix\mod\shop\components\EavBehavior::class,
-                'tableName' => '{{%shop__product_attribute_eav}}'
-            ],
-            'seo' => [
-                'class' => \app\modules\seo\components\SeoBehavior::class,
+        $a = [];
+
+        $a['sitemap'] = [
+            'class' => SitemapBehavior::class,
+            /**'batchSize' => 100,*/
+            'scope' => function ($model) {
+                /** @var \yii\db\ActiveQuery $model */
+                $model->select(['seo_alias', 'created_at']);
+                $model->andWhere(['switch' => 1]);
+            },
+            'dataClosure' => function ($model) {
+                /** @var self $model */
+                return [
+                    //'loc' => Url::to($model->seo_alias, true),
+                    'loc' => Url::to($model->getUrl(), true),
+                    //'loc' => $model->getUrl(),
+                    'lastmod' => $model->updated_at,
+                    'changefreq' => Sitemap::DAILY,
+                    'priority' => 0.8
+                ];
+            }
+        ];
+        if (Yii::$app->getModule('images'))
+            $a['imagesBehavior'] = [
+                'class' => '\panix\mod\images\behaviors\ImageBehavior',
+            ];
+        $a['slug'] = [
+            'class' => '\yii\behaviors\SluggableBehavior',
+            'attribute' => 'name',
+            'slugAttribute' => 'seo_alias',
+        ];
+        $a['eav'] = [
+            'class' => '\panix\mod\shop\components\EavBehavior',
+            'tableName' => '{{%shop__product_attribute_eav}}'
+        ];
+        if (Yii::$app->getModule('seo'))
+            $a['seo'] = [
+                'class' => '\app\modules\seo\components\SeoBehavior',
                 'url' => $this->getUrl()
-            ],
-            'translate' => [
-                'class' => TranslateBehavior::class,
-                'translationAttributes' => [
-                    'name',
-                    'full_description'
-                ]
-            ],
-            'discountsBehavior' => [
-                'class' => \panix\mod\discounts\components\DiscountBehavior::class
-            ],
-        ], parent::behaviors());
+            ];
+        $a['translate'] = [
+            'class' => TranslateBehavior::class,
+            'translationAttributes' => [
+                'name',
+                'full_description'
+            ]
+        ];
+        if (Yii::$app->getModule('discounts'))
+            $a['discountsBehavior'] = [
+                'class' => '\panix\mod\discounts\components\DiscountBehavior'
+            ];
+
+        return ArrayHelper::merge($a, parent::behaviors());
     }
 
     /*public static function formatPrice($price)
