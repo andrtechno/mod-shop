@@ -6,32 +6,36 @@ use Yii;
 use panix\engine\controllers\WebController;
 use panix\mod\shop\models\Manufacturer;
 use panix\mod\shop\models\Product;
+use yii\web\NotFoundHttpException;
 
-class ManufacturerController extends WebController {
+class ManufacturerController extends WebController
+{
 
 
     /**
+     * Sets page limits
      * @var array
      */
     public $allowedPageLimit;
 
     /**
-     * Sets page limits
-     *
+     * @param \yii\base\Action $action
      * @return bool
      */
-    public function beforeAction($action) {
+    public function beforeAction($action)
+    {
         $this->allowedPageLimit = explode(',', Yii::$app->settings->get('shop', 'per_page'));
         return true;
     }
 
+
     /**
      * Display products by manufacturer
-     *
      * @param $seo_alias
-     * @throws CHttpException
+     * @return string
      */
-    public function actionView($seo_alias) {
+    public function actionView($seo_alias)
+    {
         $this->findModel($seo_alias);
 
         $query = Product::find();
@@ -40,28 +44,34 @@ class ManufacturerController extends WebController {
         $query->applyManufacturers($this->dataModel->id);
 
 
-
         $provider = new \panix\engine\data\ActiveDataProvider([
-            'query'=>$query, 
+            'query' => $query,
             'id' => false,
             'pagination' => array(
                 'pageSize' => $this->allowedPageLimit[0],
             )
         ]);
         return $this->render('view', array(
-                    'provider' => $provider,
+            'provider' => $provider,
+            'model' => $this->dataModel
         ));
     }
 
-    protected function findModel($seo_alias) {
-        $model = new Manufacturer;
-        if (($this->dataModel = $model::find()
-                ->published()
-                ->where(['seo_alias' => $seo_alias])
-                ->one()) !== null) {
+    /**
+     * @param $seo_alias
+     * @return mixed
+     */
+    protected function findModel($seo_alias)
+    {
+        $this->dataModel = Manufacturer::find()
+            ->where(['seo_alias' => $seo_alias])
+            ->published()
+            ->one();
+
+        if ($this->dataModel !== null) {
             return $this->dataModel;
         } else {
-            throw new NotFoundHttpException('product not found');
+            $this->error404('manufacturer not found');
         }
     }
 

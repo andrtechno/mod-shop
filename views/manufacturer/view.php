@@ -6,10 +6,10 @@ use yii\helpers\Html;
 
 
 
-<h1><?php echo Html::encode($this->context->dataModel->name); ?></h1>
-<?php if (!empty($this->context->dataModel->description)) { ?>
+<h1><?php echo Html::encode($model->name); ?></h1>
+<?php if (!empty($model->description)) { ?>
     <div>
-        <?php echo $this->context->dataModel->description ?>
+        <?php echo $model->description ?>
     </div>
 <?php } ?>
 

@@ -2,7 +2,6 @@
 
 namespace panix\mod\shop\controllers;
 
-
 use Yii;
 use panix\engine\controllers\WebController;
 use panix\mod\shop\models\Product;
@@ -13,6 +12,7 @@ class ProductController extends WebController
 
     public function actionView($seo_alias)
     {
+
         $this->findModel($seo_alias);
         $this->dataModel->updateCounters(['views' => 1]);
         $category = $this->dataModel->mainCategory;
@@ -64,10 +64,18 @@ class ProductController extends WebController
         return $this->render('view', ['model' => $this->dataModel]);
     }
 
-
+    /**
+     * @param $url
+     * @return array|null|\yii\db\ActiveRecord
+     */
     protected function findModel($url)
     {
-        if (($this->dataModel = Product::findOne(['seo_alias' => $url])) !== null) {
+        $this->dataModel = Product::find()
+            ->where(['seo_alias' => $url])
+            ->published()
+            ->one();
+
+        if ($this->dataModel !== null) {
             return $this->dataModel;
         } else {
             $this->error404('product not found');

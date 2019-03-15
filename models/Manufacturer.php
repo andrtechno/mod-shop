@@ -4,11 +4,13 @@ namespace panix\mod\shop\models;
 
 use Yii;
 use yii\helpers\ArrayHelper;
-use panix\mod\shop\models\query\ManufacturerQuery;
 use panix\engine\behaviors\TranslateBehavior;
+use panix\engine\db\ActiveRecord;
+use panix\mod\shop\models\query\ManufacturerQuery;
 use panix\mod\shop\models\translate\ManufacturerTranslate;
 
-class Manufacturer extends \panix\engine\db\ActiveRecord {
+
+class Manufacturer extends ActiveRecord {
 
     const MODULE_ID = 'shop';
     const route = '/admin/shop/manufacturer';
@@ -78,7 +80,10 @@ class Manufacturer extends \panix\engine\db\ActiveRecord {
     public function getTranslations() {
         return $this->hasMany(ManufacturerTranslate::class, ['object_id' => 'id']);
     }
-
+    public function getTranslation()
+    {
+        return $this->hasOne(ManufacturerTranslate::class, ['object_id' => 'id']);
+    }
     public function getProductsCount() {
         return $this->hasOne(Product::class, ['manufacturer_id' => 'id'])->count();
     }

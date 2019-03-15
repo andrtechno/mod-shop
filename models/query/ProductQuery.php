@@ -68,9 +68,10 @@ class ProductQuery extends ActiveQuery
      * @param $value int
      * @return $this
      */
-    public function applyMinPrice(int $value)
+    public function applyMinPrice($value)
     {
-        $tableName = $this->modelClass::tableName();
+        $class = $this->modelClass;
+        $tableName = $class::tableName();
         $tableNameCur = Currency::tableName();
         if ($value) {
             //  $this->andWhere(['>=', 'price', (int)$value]);
@@ -90,9 +91,10 @@ class ProductQuery extends ActiveQuery
      * @param $value int
      * @return $this
      */
-    public function applyMaxPrice(int $value)
+    public function applyMaxPrice($value)
     {
-        $tableName = $this->modelClass::tableName();
+        $class = $this->modelClass;
+        $tableName = $class::tableName();
         $tableNameCur = Currency::tableName();
         if ($value) {
             //$this->andWhere(['<=', 'price', (int)$value]);
@@ -111,9 +113,10 @@ class ProductQuery extends ActiveQuery
      * @param $value int
      * @return $this
      */
-    public function applyPrice(int $value)
+    public function applyPrice($value)
     {
-        $tableName = $this->modelClass::tableName();
+        $class = $this->modelClass;
+        $tableName = $class::tableName();
         $tableNameCur = Currency::tableName();
         if ($value) {
             $this->andWhere("CASE WHEN ({$tableName}.`currency_id`) THEN
@@ -139,7 +142,8 @@ class ProductQuery extends ActiveQuery
 
     public function aggregatePrice($function = 'MIN')
     {
-        $tableName = $this->modelClass::tableName();
+        $class = $this->modelClass;
+        $tableName = $class::tableName();
         $tableNameCur = Currency::tableName();
         $this->select("{$function}((CASE WHEN ({$tableName}.`currency_id`)
                     THEN
@@ -168,7 +172,8 @@ class ProductQuery extends ActiveQuery
 
     public function aggregatePriceSelect($order = SORT_ASC)
     {
-        $tableName = $this->modelClass::tableName();
+        $class = $this->modelClass;
+        $tableName = $class::tableName();
         $tableNameCur = Currency::tableName();
         $this->addSelect(['*',"(CASE WHEN ({$tableName}.`currency_id`)
                     THEN
