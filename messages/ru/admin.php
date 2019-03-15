@@ -8,14 +8,14 @@ return [
     'CREATE_CURRENCY' => 'Добавить валюту',
     'CREATE_CATEGORY' => 'Добавить категорию',
     'CREATE_ATTRIBUTE' => 'Добавить атрибут',
+    'CREATE_ATTRIBUTE_GROUP' => 'Добавить группу',
     'CURRENCY' => 'Валюта',
     'CATEGORIES' => 'Категории',
     'TYPE_PRODUCTS' => 'Тип товаров',
     'ATTRIBUTES' => 'Атрибуры',
     'PRODUCTS' => 'Продукция',
     'MANUFACTURER' => 'Производители',
-
-
+    'ATTRIBUTE_GROUP' => 'Группы атрибутов',
     'FIEND_REQUIRED' => 'Поле {field} обязательно для заполнения',
     'ADD_OPTION' => 'Добавить опцию',
     'VARIANTS_PRICE_FIX' => 'Фиксированная',

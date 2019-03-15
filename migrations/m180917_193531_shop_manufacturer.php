@@ -20,16 +20,16 @@ class m180917_193531_shop_manufacturer extends Migration {
             'cat_id' => $this->integer()->null(),
             'image' => $this->string()->null()->defaultValue(null),
             'seo_alias' => $this->string(11)->notNull()->defaultValue(null),
-            'switch' => $this->boolean(11)->notNull()->defaultValue(null),
+            'switch' => $this->boolean()->notNull()->defaultValue(null),
             'ordern' => $this->integer(),
         ], $this->tableOptions);
 
 
 
         $this->createTable(ManufacturerTranslate::tableName(), [
-            'id' => $this->primaryKey(),
-            'object_id' => $this->integer(),
-            'language_id' => $this->integer(),
+            'id' => $this->primaryKey()->unsigned(),
+            'object_id' => $this->integer()->unsigned(),
+            'language_id' => $this->tinyInteger()->unsigned(),
             'name' => $this->string(255)->notNull(),
             'description' => $this->text()->null()->defaultValue(null)
         ], $this->tableOptions);

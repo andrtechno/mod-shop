@@ -29,9 +29,9 @@ class m180917_193505_shop_category extends Migration {
 
 
         $this->createTable(CategoryTranslate::tableName(), [
-            'id' => $this->primaryKey(),
-            'object_id' => $this->integer(),
-            'language_id' => $this->integer(),
+            'id' => $this->primaryKey()->unsigned(),
+            'object_id' => $this->integer()->unsigned(),
+            'language_id' => $this->tinyInteger()->unsigned(),
             'name' => $this->string(255)->notNull(),
             'description' => $this->text()->null()->defaultValue(null),
         ], $this->tableOptions);

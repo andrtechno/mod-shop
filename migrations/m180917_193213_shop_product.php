@@ -53,9 +53,9 @@ class m180917_193213_shop_product extends Migration
         ], $this->tableOptions);
 
         $this->createTable(ProductTranslate::tableName(), [
-            'id' => $this->primaryKey(),
-            'object_id' => $this->integer(),
-            'language_id' => $this->integer(),
+            'id' => $this->primaryKey()->unsigned(),
+            'object_id' => $this->integer()->unsigned(),
+            'language_id' => $this->tinyInteger()->unsigned(),
             'name' => $this->string(255)->notNull(),
             'short_description' => $this->text()->null(),
             'full_description' => $this->text()->null(),

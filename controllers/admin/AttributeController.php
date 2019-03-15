@@ -187,7 +187,7 @@ class AttributeController extends AdminController {
         return array(
             array(
                 'label' => Yii::t('shop/admin', 'ATTRIBUTES_GROUP'),
-                'url' => array('/admin/shop/attributeGroups'),
+                'url' => array('/shop/attribute-group'),
                 'visible' => false
             ),
         );

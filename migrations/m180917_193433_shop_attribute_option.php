@@ -9,7 +9,7 @@
 use yii\db\Schema;
 use panix\engine\db\Migration;
 use panix\mod\shop\models\AttributeOption;
-use panix\mod\shop\models\AttributeOptionTranslate;
+use panix\mod\shop\models\translate\AttributeOptionTranslate;
 
 class m180917_193433_shop_attribute_option extends Migration
 {
@@ -24,9 +24,9 @@ class m180917_193433_shop_attribute_option extends Migration
 
 
         $this->createTable(AttributeOptionTranslate::tableName(), [
-            'id' => $this->primaryKey(),
-            'object_id' => $this->integer(),
-            'language_id' => $this->integer(),
+            'id' => $this->primaryKey()->unsigned(),
+            'object_id' => $this->integer()->unsigned(),
+            'language_id' => $this->tinyInteger()->unsigned(),
             'value' => $this->string(255)->notNull(),
         ], $this->tableOptions);
 
