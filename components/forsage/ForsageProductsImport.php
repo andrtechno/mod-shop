@@ -5,7 +5,7 @@ namespace panix\mod\shop\components\forsage;
 use panix\engine\CMS;
 use panix\mod\shop\models\Attribute;
 use panix\mod\shop\models\AttributeOption;
-use panix\mod\shop\models\AttributeOptionTranslate;
+use panix\mod\shop\models\translate\AttributeOptionTranslate;
 use panix\mod\shop\models\Category;
 use panix\mod\shop\models\Manufacturer;
 use panix\mod\shop\models\Product;
@@ -333,7 +333,7 @@ class ForsageProductsImport
                         }*/
 
                         // Set category
-
+                        $fullCategoryName = 'test/ddddddddddddddddd';
                         $modelMain = ForsageExternalFinder::getObject(ForsageExternalFinder::OBJECT_TYPE_MAIN_CATEGORY, $this->my_ucfirst($characteristics['main_category_name']));
                         // Yii::log($this->my_ucfirst($characteristics['main_category_name']), 'info', 'console');
                         $modelCategory = ForsageExternalFinder::getObject(ForsageExternalFinder::OBJECT_TYPE_CATEGORY, $fullCategoryName);
@@ -355,8 +355,12 @@ class ForsageProductsImport
 
                     }
                     //this for test vor validate
-                    $fullCategoryName = 'ddddddddddd';
-                    $categoryId = ForsageExternalFinder::getObject(ForsageExternalFinder::OBJECT_TYPE_CATEGORY, $fullCategoryName, false);
+                    //$fullCategoryName = 'test/ddddddddddddddddd';
+                    //$categoryId = ForsageExternalFinder::getObject(ForsageExternalFinder::OBJECT_TYPE_CATEGORY, $fullCategoryName, false);
+
+                    $categoryId = ForsageExternalFinder::getObject(ForsageExternalFinder::OBJECT_TYPE_MAIN_CATEGORY, $fullCategoryName, true);
+
+                    var_dump($categoryId);die;
                     if($categoryId) {
                         $model->main_category_id = $categoryId;
                     }

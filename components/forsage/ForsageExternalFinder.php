@@ -79,11 +79,11 @@ class ForsageExternalFinder
         if ($loadModel === true && $query['object_id']) {
             switch ($type) {
                 case self::OBJECT_TYPE_CATEGORY:
-                    return Category::findOne($query['object_id']);
+                    return Category::findOne(['full_path'=>$query['object_id']]);
                     break;
 
                 case self::OBJECT_TYPE_MAIN_CATEGORY:
-                    return Category::findOne($query['object_id']);
+                    return Category::findOne(['full_path'=>$query['object_id']]);
                     break;
 
                 case self::OBJECT_TYPE_ATTRIBUTE:
