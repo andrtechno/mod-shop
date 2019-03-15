@@ -79,38 +79,38 @@ use panix\mod\shop\models\ProductType;
                     'label' => $model::t('TAB_MAIN'),
                     'content' => $this->render('tabs/_main', ['form' => $form, 'model' => $model]),
                     'active' => true,
-                    'options' => ['id' => 'main'],
+                   // 'options' => ['id' => 'main'],
                 ];
                 $tabs[] = [
                     'label' => $model::t('TAB_WAREHOUSE'),
                     'content' => $this->render('tabs/_warehouse', ['form' => $form, 'model' => $model]),
                     'headerOptions' => [],
-                    'options' => ['id' => 'warehouse'],
+                   // 'options' => ['id' => 'warehouse'],
                 ];
                 $tabs[] = [
                     'label' => $model::t('TAB_IMG'),
                     'content' => $this->render('tabs/_images', ['form' => $form, 'model' => $model]),
                     'headerOptions' => [],
-                    'options' => ['id' => 'images'],
+                   // 'options' => ['id' => 'images'],
                 ];
                 $tabs[] = [
                     'label' => $model::t('TAB_REL'),
                     'content' => $this->render('tabs/_related', ['exclude' => $model->id, 'form' => $form, 'model' => $model]),
                     'headerOptions' => [],
-                    'options' => ['id' => 'related'],
+                   // 'options' => ['id' => 'related'],
                 ];
                  $tabs[] = [
                     'label' => $model::t('TAB_VARIANTS'),
                     'content' => $this->render('tabs/_variations', ['model' => $model]),
                     'headerOptions' => [],
-                    'options' => ['id' => 'variations'],
+                   // 'options' => ['id' => 'variations'],
                 ];
 
                 $tabs[] = [
                     'label' => $model::t('TAB_SEO'),
                     'content' => $this->render('@seo/views/admin/default/_module_seo', ['model' => $model]),
                     'headerOptions' => [],
-                    'options' => ['id' => 'seo'],
+                   // 'options' => ['id' => 'seo'],
                 ];
 
 
@@ -119,14 +119,14 @@ use panix\mod\shop\models\ProductType;
                     'label' => $model::t('TAB_CATEGORIES'),
                     'content' => $this->render('tabs/_tree', ['exclude' => $model->id, 'form' => $form, 'model' => $model]),
                     'headerOptions' => [],
-                    'options' => ['id' => 'tree'],
+                   // 'options' => ['id' => 'tree'],
                 ];
                 $tabs[] = [
                     'label' => (isset($this->context->tab_errors['attributes'])) ? Html::icon('warning', ['class' => 'text-danger']) . ' Характеристики' : 'Характеристики',
                     'encode' => false,
                     'content' => $this->render('tabs/_attributes_old', ['form' => $form, 'model' => $model]),
                     //'linkOptions' => ['class'=>'text-danger'],
-                    'options' => ['id' => 'attributes'],
+                   // 'options' => ['id' => 'attributes'],
                 ];
 
 
@@ -136,7 +136,7 @@ use panix\mod\shop\models\ProductType;
                         'label' => 'UPDATE_PRODUCT_TAB_CONF',
                         'content' => $this->render('tabs/_configurations', ['product' => $model]),
                         'headerOptions' => [],
-                        'options' => ['id' => 'configurations'],
+                      //  'options' => ['id' => 'configurations'],
                     ];
                 }
 

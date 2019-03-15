@@ -3,9 +3,9 @@
 namespace panix\mod\shop\models;
 
 use yii\helpers\ArrayHelper;
-use panix\mod\shop\models\AttributeOptionTranslate;
+use panix\mod\shop\models\translate\AttributeOptionTranslate;
 use panix\mod\shop\models\query\AttributeOptionsQuery;
-
+use panix\engine\db\ActiveRecord;
 /**
  * Shop options for dropdown and multiple select
  * This is the model class for table "AttributeOptions".
@@ -16,7 +16,7 @@ use panix\mod\shop\models\query\AttributeOptionsQuery;
  * @property string $value
  * @property integer $position
  */
-class AttributeOption extends \panix\engine\db\ActiveRecord {
+class AttributeOption extends ActiveRecord {
 
     /**
      * @return string the associated database table name

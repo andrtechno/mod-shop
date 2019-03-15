@@ -17,7 +17,7 @@ return [
     'AVAILABILITY_4' => 'Архив',
     'TEXT' => 'Описание товара',
     'MANUFACTURER_ID' => 'Производитель',
-    'CATEGORY_ID' => 'Категория',
+    'MAIN_CATEGORY_ID' => 'Категория',
     'DISCOUNT' => 'Скидка',
     'VIEWS' => 'Просмотры',
     'CURRENCY_ID'=>'Валюта',

@@ -2,9 +2,20 @@
 
 namespace panix\mod\shop\models\translate;
 
-class CategoryTranslate extends \yii\db\ActiveRecord {
+use yii\db\ActiveRecord;
 
-    public static function tableName() {
+/**
+ * Class to access category translations
+ *
+ * @property int $id
+ * @property int $object_id
+ * @property int $language_id
+ */
+class CategoryTranslate extends ActiveRecord
+{
+
+    public static function tableName()
+    {
         return '{{%shop__category_translate}}';
     }
 

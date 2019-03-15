@@ -5,7 +5,7 @@ namespace panix\mod\shop\models;
 use Yii;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
-use panix\mod\shop\models\AttributeTranslate;
+use panix\mod\shop\models\translate\AttributeTranslate;
 use panix\mod\shop\models\AttributeOption;
 use panix\mod\shop\models\query\AttributeQuery;
 use panix\engine\db\ActiveRecord;
