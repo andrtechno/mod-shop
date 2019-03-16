@@ -11,11 +11,8 @@ class SettingsForm extends SettingsModel {
     public $per_page;
 
     public $product_related_bilateral;
+    public $group_attribute;
 
-    /**
-     * Seo params
-     * @var type 
-     */
     public $seo_products;
     public $seo_products_title;
     public $seo_products_keywords;
@@ -27,8 +24,8 @@ class SettingsForm extends SettingsModel {
 
     public function rules() {
         return [
-           // [['per_page', 'price_decimal', 'price_thousand'], "required"],
-            [['product_related_bilateral', 'seo_products', 'seo_categories'], 'boolean'],
+            [['per_page'], "required"],
+            [['product_related_bilateral', 'seo_products', 'seo_categories','group_attribute'], 'boolean'],
             [['seo_products_title', 'seo_categories_title'], 'string', 'max' => 255],
             [['seo_categories_keywords', 'seo_categories_description', 'seo_products_keywords', 'seo_products_description'], 'string'],
         ];

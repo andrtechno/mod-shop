@@ -18,7 +18,6 @@ $form = ActiveForm::begin();
                     'label' => 'Общие',
                     'content' => $this->render('_global', ['form' => $form, 'model' => $model]),
                     'active' => true,
-                    'options' => ['id' => 'global'],
                 ],
                 [
                     'label' => 'SEO',

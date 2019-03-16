@@ -45,11 +45,9 @@ class AttributesRender extends \yii\base\Widget
         foreach ($this->getModels() as $model) {
             $abbr = ($model->abbreviation) ? ' ' . $model->abbreviation : '';
 
-                $value = $model->renderValue($this->_attributes[$model->name]) . $abbr;
+            $value = $model->renderValue($this->_attributes[$model->name]) . $abbr;
 
-
-            // if ($model->group && (Yii::$app->settings->get('shop', 'group_attribute'))) {
-            if (true) {
+            if ($model->group && Yii::$app->settings->get('shop', 'group_attribute')) {
                 $groups[$model->group->name][] = array(
                     'id' => $model->id,
                     'name' => $model->title,
@@ -60,15 +58,13 @@ class AttributesRender extends \yii\base\Widget
             } else {
                 $data[$model->title] = $value;
             }
-
         }
 
 
-
-            return $this->render($this->view, [
-                'data' => $data,
-                'groups' => $groups,
-            ]);
+        return $this->render($this->view, [
+            'data' => $data,
+            'groups' => $groups,
+        ]);
 
     }
 
