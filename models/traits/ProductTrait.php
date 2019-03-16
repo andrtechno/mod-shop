@@ -114,7 +114,7 @@ trait ProductTrait
 
         $query = Attribute::find()
             ->displayOnFront()
-            ->sorting()
+            ->sort()
             //->where(['IN', 'name', array_keys($this->_attributes)])
             ->all();
 

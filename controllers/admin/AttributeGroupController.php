@@ -25,14 +25,19 @@ class AttributeGroupController extends AdminController {
         $this->buttons = [
             [
                 'icon' => 'icon-add',
-                'label' => Yii::t('shop/admin', 'CREATE_ATTRIBUTE_GROUP'),
+                'label' => Yii::t('shop/AttributeGroup', 'CREATE_GROUP'),
                 'url' => ['create'],
                 'options' => ['class' => 'btn btn-success']
             ]
         ];
+
         $this->breadcrumbs[] = [
             'label' => Yii::t('shop/default', 'MODULE_NAME'),
             'url' => ['/shop']
+        ];
+        $this->breadcrumbs[] = [
+            'label' => Yii::t('shop/admin', 'ATTRIBUTES'),
+            'url' => ['/shop/attribute']
         ];
         $this->breadcrumbs[] = $this->pageName;
 
@@ -59,7 +64,7 @@ class AttributeGroupController extends AdminController {
         $this->buttons = [
             [
                 'icon' => 'icon-add',
-                'label' => Yii::t('shop/admin', 'CREATE_ATTRIBUTE_GROUP'),
+                'label' => Yii::t('shop/AttributeGroup', 'CREATE_GROUP'),
                 'url' => ['create'],
                 'options' => ['class' => 'btn btn-success']
             ]
@@ -67,6 +72,10 @@ class AttributeGroupController extends AdminController {
         $this->breadcrumbs[] = [
             'label' => $this->module->info['label'],
             'url' => $this->module->info['url'],
+        ];
+        $this->breadcrumbs[] = [
+            'label' => Yii::t('shop/admin', 'ATTRIBUTES'),
+            'url' => ['/shop/attribute']
         ];
         $this->breadcrumbs[] = [
             'label' => $this->pageName,

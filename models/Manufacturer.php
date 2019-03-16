@@ -10,18 +10,24 @@ use panix\mod\shop\models\query\ManufacturerQuery;
 use panix\mod\shop\models\translate\ManufacturerTranslate;
 
 
-class Manufacturer extends ActiveRecord {
+class Manufacturer extends ActiveRecord
+{
 
     const MODULE_ID = 'shop';
     const route = '/admin/shop/manufacturer';
 
-    public static function find() {
+    public static function find()
+    {
         return new ManufacturerQuery(get_called_class());
     }
 
-    public function getGridColumns() {
+    public function getGridColumns()
+    {
         return [
-            'name',
+            'name' => [
+                'attribute' => 'name',
+                'contentOptions' => ['class' => 'text-left'],
+            ],
             'DEFAULT_CONTROL' => [
                 'class' => 'panix\engine\grid\columns\ActionColumn',
             ],
@@ -34,7 +40,9 @@ class Manufacturer extends ActiveRecord {
             ],
         ];
     }
-    public static function getSort() {
+
+    public static function getSort()
+    {
         return new \yii\data\Sort([
             'attributes' => [
                 //'date_create',
@@ -45,7 +53,9 @@ class Manufacturer extends ActiveRecord {
             ],
         ]);
     }
-    public static function dropdown() {
+
+    public static function dropdown()
+    {
         // get and cache data
         static $dropdown;
         if ($dropdown === null) {
@@ -60,11 +70,13 @@ class Manufacturer extends ActiveRecord {
         return $dropdown;
     }
 
-    public function getUrl() {
+    public function getUrl()
+    {
         return ['/shop/manufacturer/view', 'seo_alias' => $this->seo_alias];
     }
 
-    public function transactions() {
+    public function transactions()
+    {
         return [
             self::SCENARIO_DEFAULT => self::OP_INSERT | self::OP_UPDATE,
         ];
@@ -73,33 +85,39 @@ class Manufacturer extends ActiveRecord {
     /**
      * @inheritdoc
      */
-    public static function tableName() {
+    public static function tableName()
+    {
         return '{{%shop__manufacturer}}';
     }
 
-    public function getTranslations() {
+    public function getTranslations()
+    {
         return $this->hasMany(ManufacturerTranslate::class, ['object_id' => 'id']);
     }
-    public function getTranslation()
+
+    /*public function getTranslation()
     {
         return $this->hasOne(ManufacturerTranslate::class, ['object_id' => 'id']);
-    }
-    public function getProductsCount() {
+    }*/
+
+    public function getProductsCount()
+    {
         return $this->hasOne(Product::class, ['manufacturer_id' => 'id'])->count();
     }
 
     /**
      * @inheritdoc
      */
-    public function rules() {
+    public function rules()
+    {
         return [
             [['name', 'seo_alias'], 'required'],
             [['name', 'seo_alias'], 'trim'],
             ['seo_alias', 'match',
                 'pattern' => '/^([a-z0-9-])+$/i',
-                'message' => Yii::t('app','PATTERN_URL')
+                'message' => Yii::t('app', 'PATTERN_URL')
             ],
-            ['seo_alias', '\panix\engine\validators\UrlValidator','attributeCompare'=>'name'],
+            ['seo_alias', '\panix\engine\validators\UrlValidator', 'attributeCompare' => 'name'],
             [['description'], 'string'],
             [['name', 'seo_alias'], 'string', 'max' => 255],
             [['ordern'], 'integer'],
@@ -107,16 +125,17 @@ class Manufacturer extends ActiveRecord {
         ];
     }
 
-    public function behaviors() {
+    public function behaviors()
+    {
         return ArrayHelper::merge([
-                    'translate' => [
-                        'class' => TranslateBehavior::class,
-                        'translationAttributes' => [
-                            'name',
-                            'description'
-                        ]
-                    ],
-                        ], parent::behaviors());
+            'translate' => [
+                'class' => TranslateBehavior::class,
+                'translationAttributes' => [
+                    'name',
+                    'description'
+                ]
+            ],
+        ], parent::behaviors());
     }
 
 }

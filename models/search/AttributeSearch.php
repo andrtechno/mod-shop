@@ -19,7 +19,7 @@ class AttributeSearch extends Attribute {
      */
     public function rules() {
         return [
-            [['id'], 'integer'],
+            [['id','group_id'], 'integer'],
             [['name', 'seo_alias', 'sku', 'price'], 'safe'],
         ];
     }
@@ -42,6 +42,7 @@ class AttributeSearch extends Attribute {
     public function search($params) {
         $query = Attribute::find();
         //$query->joinWith('attrtranslate');
+
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'sort' => self::getSort()
@@ -66,6 +67,7 @@ class AttributeSearch extends Attribute {
         }
 
         $query->andFilterWhere(['like', 'title', $this->title]);
+        $query->andFilterWhere(['like', 'group_id', $this->group_id]);
 
 
         return $dataProvider;

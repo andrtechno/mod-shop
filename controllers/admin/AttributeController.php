@@ -9,11 +9,13 @@ use panix\mod\shop\models\search\AttributeSearch;
 use panix\mod\shop\models\AttributeOption;
 use panix\mod\shop\models\Product;
 
-class AttributeController extends AdminController {
+class AttributeController extends AdminController
+{
 
     public $icon = 'icon-filter';
 
-    public function actions() {
+    public function actions()
+    {
         return [
             'sortableOptions' => [
                 'class' => \panix\engine\grid\sortable\Action::class,
@@ -34,7 +36,8 @@ class AttributeController extends AdminController {
         ];
     }
 
-    public function actionIndex() {
+    public function actionIndex()
+    {
         $searchModel = new AttributeSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams());
         $this->buttons = [
@@ -54,8 +57,8 @@ class AttributeController extends AdminController {
         $this->breadcrumbs[] = $this->pageName;
 
         return $this->render('index', array(
-                    'searchModel' => $searchModel,
-                    'dataProvider' => $dataProvider,
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
         ));
     }
 
@@ -63,7 +66,8 @@ class AttributeController extends AdminController {
      * Update attribute
      * @param bool $id
      */
-    public function actionUpdate($id = false) {
+    public function actionUpdate($id = false)
+    {
 
         if ($id === true)
             $model = new Attribute();
@@ -88,7 +92,6 @@ class AttributeController extends AdminController {
         $this->breadcrumbs[] = $this->pageName;
 
 
-
         $post = Yii::$app->request->post();
 
 
@@ -109,16 +112,17 @@ class AttributeController extends AdminController {
      * Save attribute options
      * @param Attribute $model
      */
-    protected function saveOptions($model) {
+    protected function saveOptions($model)
+    {
         $dontDelete = [];
         if (!empty($_POST['options'])) {
             foreach ($_POST['options'] as $key => $val) {
                 if (isset($val[0]) && $val[0] != '') {
                     $index = 0;
                     $attributeOption = AttributeOption::find()
-                            ->where(['id' => $key,
-                                'attribute_id' => $model->id])
-                            ->one();
+                        ->where(['id' => $key,
+                            'attribute_id' => $model->id])
+                        ->one();
 
                     if (!$attributeOption) {
                         $attributeOption = new AttributeOption;
@@ -129,9 +133,9 @@ class AttributeController extends AdminController {
                     foreach (Yii::$app->languageManager->languages as $lang) {
 
                         $attributeLangOption = AttributeOption::find()
-                                //->translate($lang->code)
-                                ->where(['id' => $attributeOption->id])
-                                ->one();
+                            //->translate($lang->code)
+                            ->where(['id' => $attributeOption->id])
+                            ->one();
                         $attributeLangOption->value = $val[$index];
                         $attributeLangOption->save(false);
                         ++$index;
@@ -146,10 +150,10 @@ class AttributeController extends AdminController {
             //$cr->addNotInCondition('t.id', $dontDelete);
 
             $optionsToDelete = AttributeOption::findAll(
-                            ['AND',
-                        'attribute_id=:id',
-                        ['NOT IN', 'id', $dontDelete]
-                            ], [':id' => $model->id]);
+                ['AND',
+                    'attribute_id=:id',
+                    ['NOT IN', 'id', $dontDelete]
+                ], [':id' => $model->id]);
         } else {
             // Clear all attribute options
             $optionsToDelete = AttributeOption::find()->where(['attribute_id' => $model->id])->all();
@@ -165,7 +169,8 @@ class AttributeController extends AdminController {
      * Delete attribute
      * @param array $id
      */
-    public function actionDelete($id = array()) {
+    public function actionDelete($id = array())
+    {
         if (Yii::$app->request->isPost) {
             $model = Attribute::find(['id' => $id])->all();
 
@@ -183,14 +188,33 @@ class AttributeController extends AdminController {
         }
     }
 
-    public function getAddonsMenu() {
-        return array(
-            array(
-                'label' => Yii::t('shop/admin', 'ATTRIBUTES_GROUP'),
-                'url' => array('/shop/attribute-group'),
-                'visible' => false
-            ),
-        );
+    public function getAddonsMenu()
+    {
+        return [
+            [
+                'label' => Yii::t('shop/admin', 'ATTRIBUTE_GROUP'),
+                'url' => ['/shop/attribute-group'],
+                'visible' => true
+            ],
+            [
+                'label' => Yii::t('shop/admin', 'ATTRIBUTE_GROUP'),
+                //'url' => ['/shop/attribute-group'],
+                'visible' => true,
+                'items'=>[
+                    [
+                        'label' => Yii::t('shop/admin', 'ATTRIBUTE_GROUP'),
+                        'url' => ['/shop/attribute-group'],
+                        'visible' => true
+                    ],
+                    [
+                        'label' => Yii::t('shop/admin', 'ATTRIBUTE_GROUP'),
+                        'url' => ['/shop/attribute-group'],
+                        'visible' => true
+                    ],
+                ]
+
+            ],
+        ];
     }
 
 }

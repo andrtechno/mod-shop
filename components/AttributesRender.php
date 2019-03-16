@@ -7,9 +7,10 @@ use panix\mod\shop\models\Attribute;
 use panix\mod\shop\models\Product;
 use Yii;
 
-class AttributesRender extends \yii\base\Widget {
+class AttributesRender extends \yii\base\Widget
+{
 
-    public $list = '_list';
+    public $view = '_list';
 
     /**
      * @var ActiveRecord with EAV behavior enabled
@@ -34,24 +35,41 @@ class AttributesRender extends \yii\base\Widget {
     /**
      * Render attributes table
      */
-    public function run() {
+    public function run()
+    {
         $this->_attributes = $this->model->getEavAttributes();
 
-        $data = array();
-        $groups = array();
+
+        $data = [];
+        $groups = [];
         foreach ($this->getModels() as $model) {
-            if (isset($this->_attributes[$model->name])) {
-                $data[$model->title] = $model->renderValue($this->_attributes[$model->name]);
+            $abbr = ($model->abbreviation) ? ' ' . $model->abbreviation : '';
+
+                $value = $model->renderValue($this->_attributes[$model->name]) . $abbr;
+
+
+            // if ($model->group && (Yii::$app->settings->get('shop', 'group_attribute'))) {
+            if (true) {
+                $groups[$model->group->name][] = array(
+                    'id' => $model->id,
+                    'name' => $model->title,
+                    'hint' => $model->hint,
+                    'value' => $value
+                );
+
+            } else {
+                $data[$model->title] = $value;
             }
+
         }
 
 
-        if ($data) {
-            return $this->render($this->list, array(
-                        'data' => $data,
-                        'groups' => $groups,
-            ));
-        }
+
+            return $this->render($this->view, [
+                'data' => $data,
+                'groups' => $groups,
+            ]);
+
     }
 
     /**
@@ -59,7 +77,8 @@ class AttributesRender extends \yii\base\Widget {
      * @param type $object Модель товара
      * @return string
      */
-    public function getStringAttr($object) {
+    public function getStringAttr($object)
+    {
         $this->_attributes = $object->getEavAttributes();
 
         $data = array();
@@ -83,7 +102,8 @@ class AttributesRender extends \yii\base\Widget {
     /**
      * @return array of used attribute models
      */
-    public function getModels() {
+    public function getModels()
+    {
         if (is_array($this->_models))
             return $this->_models;
 
@@ -91,16 +111,14 @@ class AttributesRender extends \yii\base\Widget {
         //$cr = new CDbCriteria;
         //$cr->addInCondition('t.name', array_keys($this->_attributes));
 
-        $query = Attribute::getDb()->cache(function () {
-            return Attribute::find(['IN', 'name', array_keys($this->_attributes)])
-                ->displayOnFront()
-                ->sorting()
-                ->all();
-        }, 3600);
-        /*$query = Attribute::find(['IN', 'name', array_keys($this->_attributes)])
-                ->displayOnFront()
-                ->sorting()
-                ->all();*/
+        // $query = Attribute::getDb()->cache(function () {
+        $query = Attribute::find()
+            ->where(['IN', 'name', array_keys($this->_attributes)])
+            ->displayOnFront()
+            ->sort()
+            ->all();
+        // }, 3600);
+
 
         foreach ($query as $m)
             $this->_models[$m->name] = $m;
@@ -108,7 +126,8 @@ class AttributesRender extends \yii\base\Widget {
         return $this->_models;
     }
 
-    public function getModelsLanguage($lang) {
+    public function getModelsLanguage($lang)
+    {
         if (is_array($this->_models))
             return $this->_models;
 
@@ -118,15 +137,15 @@ class AttributesRender extends \yii\base\Widget {
         /*$query = Attribute::find(['IN', 'name', array_keys($this->_attributes)])
                 //->language($lang)
                 ->displayOnFront()
-                ->sorting()
+                ->sort()
                 ->all();*/
         $query = Attribute::getDb()->cache(function () {
-            return Attribute::find(['IN', 'name', array_keys($this->_attributes)])
+            return Attribute::find()
+                ->where(['IN', 'name', array_keys($this->_attributes)])
                 ->displayOnFront()
-                ->sorting()
+                ->sort()
                 ->all();
         }, 3600);
-
 
 
         foreach ($query as $m)
@@ -135,7 +154,8 @@ class AttributesRender extends \yii\base\Widget {
         return $this->_models;
     }
 
-    public function getData(Product $model) {
+    public function getData(Product $model)
+    {
 
         $cacheId = 'product_attributes_' . strtotime($model->updated_at) . '_' . strtotime($model->created_at);
         $result = Yii::$app->cache->get($cacheId);
@@ -143,21 +163,21 @@ class AttributesRender extends \yii\base\Widget {
             foreach (Yii::$app->languageManager->languages as $lang => $l) {
                 $result[$lang] = array();
                 $productModel = Product::find($model->id)
-                        //->language($l->id)
-                        ->one();
+                    //->language($l->id)
+                    ->one();
                 $this->_attributes = $productModel->getEavAttributes();
                 foreach ($this->getModelsLanguage($l->id) as $data) {
                     if (isset($this->_attributes[$data->name])) {
-                        $result[$lang][$data->name] = (object) [
-                                    'name' => $data->title,
-                                    'value' => $data->renderValue($this->_attributes[$data->name]),
+                        $result[$lang][$data->name] = (object)[
+                            'name' => $data->title,
+                            'value' => $data->renderValue($this->_attributes[$data->name]),
                         ];
                     }
                 }
             }
             Yii::$app->cache->set($cacheId, $result, Yii::$app->settings->get('app', 'cache_time'));
         }
-        return (object) $result[Yii::$app->language];
+        return (object)$result[Yii::$app->language];
     }
 
 }

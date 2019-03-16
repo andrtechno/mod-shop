@@ -88,7 +88,7 @@ class AttributesRender_1 extends CWidget {
         $cr->addInCondition('t.name', array_keys($this->_attributes));
         $query = ShopAttribute::model()
                 ->displayOnFront()
-                ->sorting()
+                ->sort()
                 ->findAll($cr);
 
         foreach ($query as $m)

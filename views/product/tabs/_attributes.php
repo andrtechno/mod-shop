@@ -4,7 +4,7 @@
 
 echo panix\mod\shop\components\AttributesRender::widget([
     'model' => $model,
-    'list' => '_attributes_list',
+    'view' => '_attributes_group',
     'htmlOptions' => array(
         'class' => 'attributes'
     ),

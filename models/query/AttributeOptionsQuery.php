@@ -2,8 +2,12 @@
 
 namespace panix\mod\shop\models\query;
 
-class AttributeOptionsQuery extends \yii\db\ActiveQuery {
+use yii\db\ActiveQuery;
+use panix\engine\traits\DefaultQueryTrait;
 
-    use \panix\engine\traits\DefaultQueryTrait;
+class AttributeOptionsQuery extends ActiveQuery
+{
+
+    use DefaultQueryTrait;
 
 }

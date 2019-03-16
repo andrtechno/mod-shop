@@ -2,28 +2,37 @@
 
 namespace panix\mod\shop\models\query;
 
-class AttributeQuery extends \yii\db\ActiveQuery {
+use yii\db\ActiveQuery;
+use panix\engine\traits\DefaultQueryTrait;
 
-    use \panix\engine\traits\DefaultQueryTrait;
+class AttributeQuery extends ActiveQuery
+{
 
-    public function useInFilter() {
-        return $this->andWhere(['use_in_filter' => 1]);
+    use DefaultQueryTrait;
+
+    public function useInFilter()
+    {
+        $this->andWhere(['use_in_filter' => 1]);
+        return $this;
     }
 
-    public function useInVariants() {
-        return $this->andWhere(['use_in_variants' => 1]);
+    public function useInVariants()
+    {
+        $this->andWhere(['use_in_variants' => 1]);
+        return $this;
     }
 
-    public function useInCompare() {
-        return $this->andWhere(['use_in_compare' => 1]);
+    public function useInCompare()
+    {
+        $this->andWhere(['use_in_compare' => 1]);
+        return $this;
     }
 
-    public function displayOnFront() {
-        return $this->andWhere(['display_on_front' => 1]);
+    public function displayOnFront()
+    {
+        $this->andWhere(['display_on_front' => 1]);
+        return $this;
     }
 
-    public function sorting() {
-        return $this->orderBy(['ordern' => SORT_DESC]);
-    }
 
 }

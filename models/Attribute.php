@@ -47,11 +47,21 @@ class Attribute extends ActiveRecord
     public function getGridColumns()
     {
         return [
-            [
+            'title' => [
                 'attribute' => 'title',
                 'contentOptions' => ['class' => 'text-left'],
             ],
-            'name',
+            'name' => [
+                'attribute' => 'name',
+                'contentOptions' => ['class' => 'text-left'],
+            ],
+            'group_id' => [
+                'attribute' => 'group_id',
+                'filterInputOptions' => ['class' => 'custom-select d-inline', 'id' => null, 'prompt' => Yii::t('app','ALL')],
+                'filter' => ArrayHelper::map(AttributeGroup::find()->all(), 'id', 'name'),
+                'value' => 'group.name',
+                'contentOptions' => ['class' => 'text-center'],
+            ],
             'DEFAULT_CONTROL' => [
                 'class' => 'panix\engine\grid\columns\ActionColumn',
             ],
@@ -80,7 +90,7 @@ class Attribute extends ActiveRecord
         return '{{%shop__attribute}}';
     }
 
-    public function getAttrtranslate()
+    public function getTranslations()
     {
         return $this->hasMany(AttributeTranslate::class, ['object_id' => 'id']);
     }
@@ -94,6 +104,17 @@ class Attribute extends ActiveRecord
     {
         return $this->hasMany(AttributeOption::class, ['attribute_id' => 'id']);
     }
+
+    public function getGroups()
+    {
+        return $this->hasMany(AttributeGroup::class, ['id' => 'group_id']);
+    }
+
+    public function getGroup()
+    {
+        return $this->hasOne(AttributeGroup::class, ['id' => 'group_id']);
+    }
+
 
     public function getTypes()
     {
@@ -120,7 +141,8 @@ class Attribute extends ActiveRecord
                 'pattern' => '/^([a-z0-9-])+$/i',
                 'message' => Yii::t('app', 'PATTERN_URL')
             ],
-            //  array('type, ordern, group_id', 'numerical', 'integerOnly' => true),
+            [['hint','abbreviation'], 'string'],
+            [['id', 'group_id'], 'integer'],
             [['id', 'name', 'title', 'type'], 'safe'],
         ];
     }
@@ -130,10 +152,11 @@ class Attribute extends ActiveRecord
         return ArrayHelper::merge([
             'translate' => [
                 'class' => \panix\engine\behaviors\TranslateBehavior::class,
-                'translationRelation' => 'attrtranslate',
+                //'translationRelation' => 'attrtranslate',
                 'translationAttributes' => [
                     'title',
-                    'abbreviation'
+                    'abbreviation',
+                    'hint'
                 ]
             ],
             'slug' => [
@@ -255,6 +278,7 @@ class Attribute extends ActiveRecord
                 if (isset($data[$value]))
                     return $data[$value];
                 break;
+
         }
     }
 

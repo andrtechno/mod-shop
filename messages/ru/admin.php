@@ -8,7 +8,6 @@ return [
     'CREATE_CURRENCY' => 'Добавить валюту',
     'CREATE_CATEGORY' => 'Добавить категорию',
     'CREATE_ATTRIBUTE' => 'Добавить атрибут',
-    'CREATE_ATTRIBUTE_GROUP' => 'Добавить группу',
     'CURRENCY' => 'Валюта',
     'CATEGORIES' => 'Категории',
     'TYPE_PRODUCTS' => 'Тип товаров',

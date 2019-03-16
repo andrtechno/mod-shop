@@ -9,6 +9,7 @@ Pjax::begin([
    // 'linkSelector' => 'a:not(.linkTarget)'
 ]);
 echo GridView::widget([
+    'id'=>'grid-attribute',
     'tableOptions' => ['class' => 'table table-striped'],
     'dataProvider' => $dataProvider,
     'filterModel' => $searchModel,

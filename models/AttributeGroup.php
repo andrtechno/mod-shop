@@ -5,7 +5,7 @@ namespace panix\mod\shop\models;
 use Yii;
 use yii\helpers\ArrayHelper;
 use panix\mod\shop\models\translate\AttributeGroupTranslate;
-use panix\mod\shop\models\query\AttributeQuery;
+use panix\mod\shop\models\query\AttributeGroupQuery;
 use panix\engine\db\ActiveRecord;
 
 
@@ -23,10 +23,10 @@ class AttributeGroup extends ActiveRecord
     {
         return [
             [
-                'attribute' => 'title',
+                'attribute' => 'name',
                 'contentOptions' => ['class' => 'text-left'],
             ],
-            'name',
+
             'DEFAULT_CONTROL' => [
                 'class' => 'panix\engine\grid\columns\ActionColumn',
             ],
@@ -55,7 +55,7 @@ class AttributeGroup extends ActiveRecord
         return '{{%shop__attribute_group}}';
     }
 
-    public function getTranslation()
+    public function getTranslations()
     {
         return $this->hasMany(AttributeGroupTranslate::class, ['object_id' => 'id']);
     }
@@ -79,7 +79,7 @@ class AttributeGroup extends ActiveRecord
         return ArrayHelper::merge([
             'translate' => [
                 'class' => \panix\engine\behaviors\TranslateBehavior::class,
-                'translationRelation' => 'translation',
+               // 'translationRelation' => 'translation',
                 'translationAttributes' => [
                     'name',
                 ]

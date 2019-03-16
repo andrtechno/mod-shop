@@ -38,7 +38,7 @@ class AttributeGroupSearch extends AttributeGroup
     public function search($params)
     {
         $query = AttributeGroup::find();
-        $query->joinWith('translation');
+        $query->joinWith('translations');
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'sort' => ['defaultOrder' => ['ordern' => SORT_DESC]],
@@ -57,7 +57,7 @@ class AttributeGroupSearch extends AttributeGroup
             'id' => $this->id,
         ]);
 
-        $query->andFilterWhere(['like', 'translation.name', $this->name]);
+        $query->andFilterWhere(['like', 'translations.name', $this->name]);
 
 
         return $dataProvider;

@@ -13,6 +13,7 @@ use panix\engine\grid\GridView;
 <?=
 
 GridView::widget([
+  //  'id'=>'grid-attribute-group',
     'tableOptions' => ['class' => 'table table-striped'],
     'dataProvider' => $dataProvider,
     'filterModel' => $searchModel,

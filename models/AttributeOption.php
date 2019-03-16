@@ -18,6 +18,7 @@ use panix\engine\db\ActiveRecord;
  */
 class AttributeOption extends ActiveRecord {
 
+
     /**
      * @return string the associated database table name
      */

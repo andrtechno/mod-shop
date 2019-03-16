@@ -161,7 +161,7 @@ echo \yii\helpers\Inflector::sentence($words);
     </div>
 </div>
 <div class="row">
-    <div class="col-xs-12">
+    <div class="col">
         <?php
         $tabs = [];
         if (!empty($model->full_description)) {
@@ -190,7 +190,7 @@ echo \yii\helpers\Inflector::sentence($words);
             $tabs[] = [
                 'label' => 'Видео',
                 'content' => $this->render('tabs/_video', ['model' => $model]),
-                'options' => ['id' => 'videl'],
+                'options' => ['id' => 'video'],
             ];
         }
 

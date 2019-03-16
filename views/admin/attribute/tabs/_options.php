@@ -1,6 +1,6 @@
 <?php
 
-use panix\mod\shop\models\AttributeOptionTranslate;
+use panix\mod\shop\models\translate\AttributeOptionTranslate;
 use panix\engine\Html;
 use panix\engine\widgets\Pjax;
 use panix\mod\shop\models\AttributeOption;
