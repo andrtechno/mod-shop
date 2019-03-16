@@ -251,6 +251,7 @@ class Attribute extends ActiveRecord
                 return $value;
                 break;
             case self::TYPE_DROPDOWN:
+
             case self::TYPE_RADIO_LIST:
                 $data = ArrayHelper::map($this->options, 'id', 'value');
                 if (!is_array($value) && isset($data[$value]))

@@ -13,10 +13,11 @@ class m180917_193650_shop_product_attribute_eav extends Migration {
 
     public function up()
     {
+        // @todo сделать attribute тоже integer
         $this->createTable('{{%shop__product_attribute_eav}}', [
             'entity' => $this->integer()->unsigned(),
             'attribute' => $this->string(255)->null(),
-            'value' => $this->string(255)->null(),
+            'value' => $this->integer()->unsigned(),
         ], $this->tableOptions);
 
         $this->createIndex('entity', '{{%shop__product_attribute_eav}}', 'entity');

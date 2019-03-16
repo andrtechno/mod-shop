@@ -6,6 +6,8 @@ use Yii;
 use yii\db\ActiveRecord;
 use panix\mod\shop\components\collections\CAttributeCollection;
 use panix\mod\shop\components\collections\CList;
+use yii\db\Query;
+use yii\db\QueryBuilder;
 
 class EavBehavior extends \yii\base\Behavior
 {
@@ -296,7 +298,6 @@ class EavBehavior extends \yii\base\Behavior
      */
     public function saveEavAttributes($attributes)
     {
-
         // Delete old attributes values from DB.
         $this->getDeleteCommand($attributes)->execute();
         // Process each attributes.
@@ -373,6 +374,8 @@ class EavBehavior extends \yii\base\Behavior
      */
     public function deleteEavAttributes($attributes = array(), $save = FALSE)
     {
+
+
         // If not set attributes for deleting, delete all.
         if (empty($attributes)) {
             $attributes = $this->attributes->keys;
@@ -557,7 +560,7 @@ class EavBehavior extends \yii\base\Behavior
     /**
      * @access protected
      * @param  $attributes
-     * @return CDbCommand
+     * @return yii\db\Query
      */
     protected function getLoadEavAttributesCommand($attributes)
     {
@@ -567,7 +570,7 @@ class EavBehavior extends \yii\base\Behavior
         // if (!empty($attributes)) {
         //     $criteria->addInCondition($this->attributeField, $attributes);
         // }
-        $query = new \yii\db\Query;
+        $query = new Query;
 // compose the query
         $query->from($this->tableName)->where([$this->entityField => $this->getModelId()]);
         if (!empty($attributes)) {
@@ -585,52 +588,23 @@ class EavBehavior extends \yii\base\Behavior
     /**
      * @access protected
      * @param  $attributes
-     * @return CDbCommand
+     * @return yii\db\Command
      */
     protected function getDeleteCommand($attributes = array())
     {
-        $query = new \yii\db\Query;
-// compose the query
-        $query->from($this->tableName)->where([$this->entityField => $this->getModelId()]);
+        $condition[$this->entityField] = $this->getModelId();
         if (!empty($attributes)) {
-            $query->andWhere(['IN', $this->attributeField, $attributes]);
+            $condition[$this->attributeField] = $attributes;
         }
-
-        return $query->createCommand();
-        /* return $this->owner
-          ->getCommandBuilder()
-          ->createDeleteCommand($this->tableName, $this->getDeleteEavAttributesCriteria($attributes)); */
+        return Yii::$app->db->createCommand()->delete($this->tableName,$condition);
     }
 
-    /**
-     * @access protected
-     * @param  $attributes
-     * @return CDbCriteria
-     */
-    protected function getLoadEavAttributesCriteria($attributes = array())
-    {
-        $criteria = new CDbCriteria;
-        $criteria->addCondition("{$this->entityField} = {$this->getModelId()}");
-        if (!empty($attributes)) {
-            $criteria->addInCondition($this->attributeField, $attributes);
-        }
-        return $criteria;
-    }
 
-    /**
-     * @access protected
-     * @param  $attributes
-     * @return CDbCriteria
-     */
-    protected function getDeleteEavAttributesCriteria($attributes = array())
-    {
-        return $this->getLoadEavAttributesCriteria($attributes);
-    }
 
     protected function getFindByEavAttributesCriteria($attributes)
     {
         // $criteria = new CDbCriteria();
-        $query = new Query;
+        $query = new Query();
 // compose the query
         $query->select('id, name')
             ->from('user')

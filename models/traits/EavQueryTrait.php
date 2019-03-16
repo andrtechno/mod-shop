@@ -29,7 +29,8 @@ trait EavQueryTrait
 
     public function getFindByEavAttributes($attributes)
     {
-        $pk = $this->modelClass::tableName() . '.id';
+        $class = $this->modelClass;
+        $pk = $class::tableName() . '.id';
         $i = 0;
         foreach ($attributes as $attribute => $values) {
             // If search models with attribute name with specified values.
@@ -66,8 +67,9 @@ trait EavQueryTrait
 
     public function getFindByEavAttributes2($attributes)
     {
-        //$criteria = new CDbCriteria();
-        $pk = $this->modelClass::tableName() . '.id';
+        $class = $this->modelClass;
+
+        $pk = $class::tableName() . '.id';
 
         // $conn = $this->owner->getDbConnection();
         $i = 0;

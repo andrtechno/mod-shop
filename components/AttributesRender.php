@@ -55,9 +55,8 @@ class AttributesRender extends \yii\base\Widget
                     'value' => $value
                 );
 
-            } else {
-                $data[$model->title] = $value;
             }
+            $data[$model->title] = $value;
         }
 
 

@@ -46,18 +46,19 @@ foreach ($model->options as $k => $o) {
 
         $otest = AttributeOptionTranslate::find()->where([
                     'object_id' => $o->id,
-                    'language_id' => $l->code])
+                    'language_id' => $l->id])
                 ->one();
 
         if ($otest) {
             $data2['name' . $k] = Html::textInput('options[' . $o->id . '][]', Html::encode($otest->value), array('class' => 'form-control input-lang', 'style' => 'background-image:url(/uploads/language/' . $k . '.png);'));
         }
-        $data[$o->id] = (object) $data2;
+        $data[$o->id] = (array) $data2;
     }
 }
 
 
 foreach (Yii::$app->languageManager->languages as $k => $l) {
+
     $columns[] = [
         'header' => $l->name,
         'attribute' => 'name' . $k,
@@ -77,7 +78,7 @@ $columns[] = [
 ];
 
 
-$data_db = new \yii\data\ArrayDataProvider([
+$data_array = new \yii\data\ArrayDataProvider([
     'allModels' => $data,
     'pagination' => false,
         ]);
@@ -92,7 +93,7 @@ Pjax::begin([
 ]);
 echo panix\engine\grid\GridView::widget([
     'tableOptions' => ['class' => 'table table-striped optionsEditTable'],
-    'dataProvider' => $data_db,
+    'dataProvider' => $data_array,
     'rowOptions' => ['class' => 'sortable-column'],
     'enableLayout'=>false,
     'layout'=>'{items}',

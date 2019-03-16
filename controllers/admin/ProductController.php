@@ -186,12 +186,12 @@ class ProductController extends AdminController
             // Process variants
             $this->processVariants($model);
             $this->processConfigurations($model);
-
+           // die;
             Yii::$app->session->setFlash('success', \Yii::t('app', 'SUCCESS_CREATE'));
             if ($model->isNewRecord) {
-                return Yii::$app->getResponse()->redirect(['/admin/shop/product']);
+                return Yii::$app->getResponse()->redirect(['/shop/product']);
             } else {
-                return Yii::$app->getResponse()->redirect(['/admin/shop/product/update', 'id' => $model->id]);
+                return Yii::$app->getResponse()->redirect(['/shop/product/update', 'id' => $model->id]);
             }
         }
 
@@ -318,12 +318,12 @@ class ProductController extends AdminController
             return false;
 
         $deleteModel = Product::findOne($model->id);
-        //$deleteModel->deleteEavAttributes(array(), true);
+        $deleteModel->deleteEavAttributes(array(), true);
         // Delete empty values
-        /* foreach ($attributes as $key => $val) {
-          if (is_string($val) && $val === '')
-          $attributes->remove($key);
-          } */
+        foreach ($attributes as $key => $val) {
+            if (is_string($val) && $val === '')
+                $attributes->remove($key);
+        }
 
         return $model->setEavAttributes($attributes, true);
     }

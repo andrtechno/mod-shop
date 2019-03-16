@@ -1,9 +1,4 @@
-<?php
-
-use yii\helpers\Html;
-?>
-
-<table class="table table-striped" id="attributes-list">
+11<table class="table table-striped" id="attributes-list">
 
     <?php foreach ($data as $title => $value) { ?>
         <tr>
