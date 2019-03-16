@@ -26,6 +26,8 @@ class Product extends ActiveRecord
 
     use traits\ProductTrait;
 
+    public $translationClass = ProductTranslate::class;
+
     /**
      * @var array of attributes used to configure product
      */
@@ -256,12 +258,12 @@ class Product extends ActiveRecord
 
     public function getTranslations()
     {
-        return $this->hasMany(ProductTranslate::class, ['object_id' => 'id'])->cache(3600);
+        return $this->hasMany($this->translationClass, ['object_id' => 'id'])->cache(3600);
     }
 
     public function getTranslation()
     {
-        return $this->hasOne(ProductTranslate::class, ['object_id' => 'id'])->cache(3600);
+        return $this->hasOne($this->translationClass, ['object_id' => 'id'])->cache(3600);
     }
 
     public function getRelated()

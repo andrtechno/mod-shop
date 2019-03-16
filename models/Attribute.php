@@ -38,7 +38,7 @@ class Attribute extends ActiveRecord
     const TYPE_CHECKBOX_LIST = 6;
     const TYPE_YESNO = 7;
     const MODULE_ID = 'shop';
-
+    public $translationClass = AttributeTranslate::class;
     public static function find()
     {
         return new AttributeQuery(get_called_class());
@@ -92,7 +92,7 @@ class Attribute extends ActiveRecord
 
     public function getTranslations()
     {
-        return $this->hasMany(AttributeTranslate::class, ['object_id' => 'id']);
+        return $this->hasMany($this->translationClass, ['object_id' => 'id']);
     }
 
     /*

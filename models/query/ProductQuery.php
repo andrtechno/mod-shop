@@ -2,16 +2,18 @@
 
 namespace panix\mod\shop\models\query;
 
+
 use panix\mod\shop\models\Currency;
 use yii\db\ActiveQuery;
-use panix\engine\traits\DefaultQueryTrait;
+use panix\engine\traits\query\DefaultQueryTrait;
+use panix\engine\traits\query\TranslateQueryTrait;
 use panix\mod\shop\models\traits\EavQueryTrait;
 use panix\mod\shop\models\Category;
 
 class ProductQuery extends ActiveQuery
 {
 
-    use DefaultQueryTrait, EavQueryTrait;
+    use DefaultQueryTrait, EavQueryTrait, TranslateQueryTrait;
 
     /**
      * Product by category
@@ -23,6 +25,8 @@ class ProductQuery extends ActiveQuery
         $this->joinWith(['category']);
         return $this;
     }
+
+
 
     /**
      * @param $manufacturers array|int
@@ -175,7 +179,7 @@ class ProductQuery extends ActiveQuery
         $class = $this->modelClass;
         $tableName = $class::tableName();
         $tableNameCur = Currency::tableName();
-        $this->addSelect(['*',"(CASE WHEN ({$tableName}.`currency_id`)
+        $this->addSelect(['*', "(CASE WHEN ({$tableName}.`currency_id`)
                     THEN
                         ({$tableName}.price * (SELECT rate FROM {$tableNameCur} `currency` WHERE `currency`.`id`={$tableName}.`currency_id`))
                     ELSE

@@ -16,7 +16,6 @@ use panix\mod\shop\models\ProductType;
     <div class="card-body">
 
 
-
         <?php
         if (!$model->isNewRecord && Yii::$app->settings->get('shop', 'auto_gen_url')) {
             echo Yii::t('shop/admin', 'ENABLE_AUTOURL_MODE');
@@ -37,20 +36,20 @@ use panix\mod\shop\models\ProductType;
                 panix\mod\shop\assets\admin\ProductAsset::register($this);
 
                 if ($attributeError) {
-                    $this->theme->alert('danger',Yii::t('shop/admin', 'Выберите атрибуты для конфигурации продуктов.'),false);
+                    $this->theme->alert('danger', Yii::t('shop/admin', 'Выберите атрибуты для конфигурации продуктов.'), false);
                 }
                 ?>
                 <div class="form-group row">
                     <div class="col-sm-4"><?= Html::activeLabel($model, 'type_id', ['class' => 'control-label']); ?></div>
                     <div class="col-sm-8">
-                        <?php echo Html::activeDropDownList($model, 'type_id', ArrayHelper::map($typesList, 'id', 'name'),['class'=>'form-control']); ?>
+                        <?php echo Html::activeDropDownList($model, 'type_id', ArrayHelper::map($typesList, 'id', 'name'), ['class' => 'form-control']); ?>
                     </div>
                 </div>
 
                 <div class="form-group row">
                     <div class="col-sm-4"><?= Html::activeLabel($model, 'use_configurations', ['class' => 'control-label']); ?></div>
                     <div class="col-sm-8">
-                        <?php echo Html::activeDropDownList($model, 'use_configurations', [0 => Yii::t('app', 'NO'), 1 => Yii::t('app', 'YES')],['class'=>'form-control']); ?>
+                        <?php echo Html::activeDropDownList($model, 'use_configurations', [0 => Yii::t('app', 'NO'), 1 => Yii::t('app', 'YES')], ['class' => 'form-control']); ?>
                     </div>
                 </div>
 
@@ -65,10 +64,10 @@ use panix\mod\shop\models\ProductType;
 
 
                 $form = ActiveForm::begin([
-                            'id' => strtolower(basename(get_class($model))) . '-form',
-                            'options' => [
-                                'enctype' => 'multipart/form-data'
-                            ]
+                    'id' => strtolower(basename(get_class($model))) . '-form',
+                    'options' => [
+                        'enctype' => 'multipart/form-data'
+                    ]
                 ]);
 
 
@@ -79,56 +78,52 @@ use panix\mod\shop\models\ProductType;
                     'label' => $model::t('TAB_MAIN'),
                     'content' => $this->render('tabs/_main', ['form' => $form, 'model' => $model]),
                     'active' => true,
-                   // 'options' => ['id' => 'main'],
+                    'options' => ['class'=>'flex-sm-fill text-center nav-item'],
                 ];
                 $tabs[] = [
                     'label' => $model::t('TAB_WAREHOUSE'),
                     'content' => $this->render('tabs/_warehouse', ['form' => $form, 'model' => $model]),
                     'headerOptions' => [],
-                   // 'options' => ['id' => 'warehouse'],
+                    'options' => ['class'=>'flex-sm-fill text-center nav-item'],
                 ];
                 $tabs[] = [
                     'label' => $model::t('TAB_IMG'),
                     'content' => $this->render('tabs/_images', ['form' => $form, 'model' => $model]),
                     'headerOptions' => [],
-                   // 'options' => ['id' => 'images'],
+                    'options' => ['class'=>'flex-sm-fill text-center nav-item'],
                 ];
                 $tabs[] = [
                     'label' => $model::t('TAB_REL'),
                     'content' => $this->render('tabs/_related', ['exclude' => $model->id, 'form' => $form, 'model' => $model]),
                     'headerOptions' => [],
-                   // 'options' => ['id' => 'related'],
+                    'options' => ['class'=>'flex-sm-fill text-center nav-item'],
                 ];
-                 $tabs[] = [
+                $tabs[] = [
                     'label' => $model::t('TAB_VARIANTS'),
                     'content' => $this->render('tabs/_variations', ['model' => $model]),
                     'headerOptions' => [],
-                   // 'options' => ['id' => 'variations'],
+                    'options' => ['class'=>'flex-sm-fill text-center nav-item'],
                 ];
 
                 $tabs[] = [
                     'label' => $model::t('TAB_SEO'),
                     'content' => $this->render('@seo/views/admin/default/_module_seo', ['model' => $model]),
-                    'headerOptions' => [],
-                   // 'options' => ['id' => 'seo'],
+                    'options' => ['class'=>'flex-sm-fill text-center nav-item'],
                 ];
-
 
 
                 $tabs[] = [
                     'label' => $model::t('TAB_CATEGORIES'),
                     'content' => $this->render('tabs/_tree', ['exclude' => $model->id, 'form' => $form, 'model' => $model]),
                     'headerOptions' => [],
-                   // 'options' => ['id' => 'tree'],
+                    'options' => ['class'=>'flex-sm-fill text-center nav-item'],
                 ];
                 $tabs[] = [
                     'label' => (isset($this->context->tab_errors['attributes'])) ? Html::icon('warning', ['class' => 'text-danger']) . ' Характеристики' : 'Характеристики',
                     'encode' => false,
                     'content' => $this->render('tabs/_attributes_old', ['form' => $form, 'model' => $model]),
-                    //'linkOptions' => ['class'=>'text-danger'],
-                   // 'options' => ['id' => 'attributes'],
+                    'options' => ['class'=>'flex-sm-fill text-center nav-item'],
                 ];
-
 
 
                 if ($model->use_configurations) {
@@ -136,12 +131,15 @@ use panix\mod\shop\models\ProductType;
                         'label' => 'UPDATE_PRODUCT_TAB_CONF',
                         'content' => $this->render('tabs/_configurations', ['product' => $model]),
                         'headerOptions' => [],
-                      //  'options' => ['id' => 'configurations'],
+                        'itemOptions' => ['class'=>'flex-sm-fill text-center nav-item'],
                     ];
                 }
 
-                echo yii\bootstrap4\Tabs::widget([
+                echo \panix\engine\bootstrap\Tabs::widget([
                     //'encodeLabels'=>true,
+                    'options' => [
+                        'class' => 'nav-pills flex-column flex-sm-row nav-tabs-static'
+                    ],
                     'items' => $tabs,
                 ]);
                 ?>
@@ -150,12 +148,11 @@ use panix\mod\shop\models\ProductType;
                 </div>
 
 
-
                 <?php
                 ActiveForm::end();
             }
         } else {
-            $this->theme->alert('warning',Yii::t('shop/admin', 'Для начало необходимо создать Тип товара'),false);
+            $this->theme->alert('warning', Yii::t('shop/admin', 'Для начало необходимо создать Тип товара'), false);
         }
         ?>
     </div>

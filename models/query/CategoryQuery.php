@@ -3,12 +3,14 @@
 namespace panix\mod\shop\models\query;
 
 use panix\engine\behaviors\nestedsets\NestedSetsQueryBehavior;
-use Yii;
+use panix\engine\traits\query\TranslateQueryTrait;
+use panix\engine\traits\query\DefaultQueryTrait;
+use yii\db\ActiveQuery;
 
-class CategoryQuery extends \yii\db\ActiveQuery
+class CategoryQuery extends ActiveQuery
 {
 
-    use \panix\engine\traits\DefaultQueryTrait;
+    use DefaultQueryTrait, TranslateQueryTrait;
 
     public function behaviors()
     {

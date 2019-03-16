@@ -14,7 +14,7 @@ class Category extends \panix\engine\db\ActiveRecord {
 
     const MODULE_ID = 'shop';
     const route = '/shop/admin/category';
-
+    public $translationClass = CategoryTranslate::class;
     public $parent_id;
 
     public static function tableName() {
@@ -78,7 +78,7 @@ class Category extends \panix\engine\db\ActiveRecord {
 
 
     public function getTranslations() {
-        return $this->hasMany(CategoryTranslate::class, ['object_id' => 'id']);
+        return $this->hasMany($this->translationClass, ['object_id' => 'id']);
     }
 
     public static function flatTree() {

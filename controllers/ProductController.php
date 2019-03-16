@@ -13,6 +13,17 @@ class ProductController extends WebController
     public function actionView($seo_alias)
     {
 
+
+        $attributeLangOption = Product::find()
+            ->translate(1)
+            ->where([Product::tableName().'.id' => 2699]);
+            //->one();
+
+//echo $attributeLangOption->name;
+
+        print_r($attributeLangOption->createCommand()->rawSql);die;
+
+
         $this->dataModel = $this->findModel($seo_alias);
         $this->dataModel->updateCounters(['views' => 1]);
         $category = $this->dataModel->mainCategory;

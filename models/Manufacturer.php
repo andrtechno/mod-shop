@@ -15,7 +15,7 @@ class Manufacturer extends ActiveRecord
 
     const MODULE_ID = 'shop';
     const route = '/admin/shop/manufacturer';
-
+    public $translationClass = ManufacturerTranslate::class;
     public static function find()
     {
         return new ManufacturerQuery(get_called_class());
@@ -92,7 +92,7 @@ class Manufacturer extends ActiveRecord
 
     public function getTranslations()
     {
-        return $this->hasMany(ManufacturerTranslate::class, ['object_id' => 'id']);
+        return $this->hasMany($this->translationClass, ['object_id' => 'id']);
     }
 
     /*public function getTranslation()

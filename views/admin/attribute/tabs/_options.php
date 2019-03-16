@@ -26,6 +26,7 @@ use panix\mod\shop\models\AttributeOption;
                 <input name="sample" type="text" class="value form-control input-lang" style="background-image:url(/uploads/language/<?= $k ?>.png">
             </td>
         <?php } ?>
+        <td class="text-center">N/A</td>
         <td class="text-center">
             <a href="#" class="delete-option-attribute btn btn-sm btn-default"><i class="icon-delete"></i></a>
         </td>
@@ -41,17 +42,28 @@ $data = [];
 $data2 = [];
 $test = [];
 foreach ($model->options as $k => $o) {
+    //echo print_r($o->translations);
     $data2['delete'] = '<a href="#" class="delete-option-attribute btn btn-sm btn-default"><i class="icon-delete"></i></a>';
     foreach (Yii::$app->languageManager->languages as $k => $l) {
 
         $otest = AttributeOptionTranslate::find()->where([
-                    'object_id' => $o->id,
-                    'language_id' => $l->id])
-                ->one();
+            'object_id' => $o->id,
+            'language_id' => $l->id])
+            ->one();
+
+
+        /*$otest = AttributeOption::find()
+            ->where([AttributeOption::tableName().'.id' => $o->id])
+            ->translate($l->id)
+            ->one();*/
+
 
         if ($otest) {
             $data2['name' . $k] = Html::textInput('options[' . $o->id . '][]', Html::encode($otest->value), array('class' => 'form-control input-lang', 'style' => 'background-image:url(/uploads/language/' . $k . '.png);'));
+        }else{
+            $data2['name' . $k] = Html::textInput('options[' . $o->id . '][]', '', array('class' => 'form-control input-lang', 'style' => 'background-image:url(/uploads/language/' . $k . '.png);'));
         }
+        $data2['products'] = Html::a($o->productsCount, ['/shop/products/index', 'Product[eav][' . $model->name . ']' => $o->id], ['target' => '_blank']);
         $data[$o->id] = (array) $data2;
     }
 }
@@ -67,7 +79,12 @@ foreach (Yii::$app->languageManager->languages as $k => $l) {
     ];
     $sortAttributes[] = 'name' . $k;
 }
-
+$columns[] = [
+    'header' => Yii::t('shop/admin', 'PRODUCT_COUNT'),
+    'attribute' => 'products',
+    'format' => 'raw',
+    'contentOptions' => ['class' => 'text-center'],
+];
 $columns[] = [
     'header' => Yii::t('app', 'OPTIONS'),
     'attribute' => 'delete',

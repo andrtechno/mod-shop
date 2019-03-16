@@ -2,6 +2,7 @@
 
 namespace panix\mod\shop\controllers\admin;
 
+use panix\mod\shop\models\translate\AttributeOptionTranslate;
 use Yii;
 use panix\engine\controllers\AdminController;
 use panix\mod\shop\models\Attribute;
@@ -98,11 +99,12 @@ class AttributeController extends AdminController
         if ($model->load($post) && $model->validate()) {
             $model->save();
             $this->saveOptions($model);
-            if ($id) {
+            Yii::$app->session->setFlash('success', \Yii::t('app', 'SUCCESS_CREATE'));
+            /*if ($id) {
                 return $this->redirect(['index']);
             } else {
                 return $this->redirect(['update', 'id' => $id]);
-            }
+            }*/
         }
 
         return $this->render('update', ['model' => $model]);
@@ -116,12 +118,15 @@ class AttributeController extends AdminController
     {
         $dontDelete = [];
         if (!empty($_POST['options'])) {
-            foreach ($_POST['options'] as $key => $val) {
+
+//echo \yii\helpers\VarDumper::dumpAsString($_POST['options'],10,true);die;
+
+
+            foreach ($_POST['options'] as $id => $val) {
                 if (isset($val[0]) && $val[0] != '') {
                     $index = 0;
                     $attributeOption = AttributeOption::find()
-                        ->where(['id' => $key,
-                            'attribute_id' => $model->id])
+                        ->where(['id' => $id, 'attribute_id' => $model->id])
                         ->one();
 
                     if (!$attributeOption) {
@@ -130,14 +135,29 @@ class AttributeController extends AdminController
                     }
                     $attributeOption->save(false);
 
-                    foreach (Yii::$app->languageManager->languages as $lang) {
 
-                        $attributeLangOption = AttributeOption::find()
-                            //->translate($lang->code)
-                            ->where(['id' => $attributeOption->id])
+                    foreach (Yii::$app->languageManager->languages as $lang) {
+                        /*$attributeLangOption = AttributeOption::find()
+                            ->translate($lang->id)
+                            ->where([AttributeOption::tableName() . '.id' => $attributeOption->id])
+                            ->one();*/
+
+
+                        $attributeLangOption = AttributeOptionTranslate::find()
+                            ->where(['object_id' => $attributeOption->id, 'language_id' => $lang->id])
                             ->one();
+
+                        if (!$attributeLangOption) {
+                            $attributeLangOption = new AttributeOptionTranslate;
+                            $attributeLangOption->object_id = $attributeOption->id;
+                            $attributeLangOption->language_id = $lang->id;
+
+                        }
+
+
                         $attributeLangOption->value = $val[$index];
                         $attributeLangOption->save(false);
+
                         ++$index;
                     }
                     array_push($dontDelete, $attributeOption->id);
@@ -145,23 +165,21 @@ class AttributeController extends AdminController
             }
         }
 
-        if (sizeof($dontDelete)) {
-            // $cr = new CDbCriteria;
-            //$cr->addNotInCondition('t.id', $dontDelete);
-
-            $optionsToDelete = AttributeOption::findAll(
-                ['AND',
-                    'attribute_id=:id',
-                    ['NOT IN', 'id', $dontDelete]
-                ], [':id' => $model->id]);
+        if (count($dontDelete)) {
+            $optionsToDelete = AttributeOption::find()->where([
+                'AND', 'attribute_id=' . $model->id,
+                ['NOT IN', 'id', $dontDelete]
+            ])->all();
         } else {
             // Clear all attribute options
             $optionsToDelete = AttributeOption::find()->where(['attribute_id' => $model->id])->all();
         }
 
+
         if (!empty($optionsToDelete)) {
-            foreach ($optionsToDelete as $o)
+            foreach ($optionsToDelete as $o) {
                 $o->delete();
+            }
         }
     }
 
@@ -172,7 +190,7 @@ class AttributeController extends AdminController
     public function actionDelete($id = array())
     {
         if (Yii::$app->request->isPost) {
-            $model = Attribute::find(['id' => $id])->all();
+            $model = Attribute::find()->where(['id' => $id])->all();
 
             if (!empty($model)) {
                 foreach ($model as $m) {
@@ -200,7 +218,7 @@ class AttributeController extends AdminController
                 'label' => Yii::t('shop/admin', 'ATTRIBUTE_GROUP'),
                 //'url' => ['/shop/attribute-group'],
                 'visible' => true,
-                'items'=>[
+                'items' => [
                     [
                         'label' => Yii::t('shop/admin', 'ATTRIBUTE_GROUP'),
                         'url' => ['/shop/attribute-group'],

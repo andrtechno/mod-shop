@@ -24,5 +24,6 @@ return [
     'GRID_OPTION_DEACTIVE' => 'Не активен',
     'GRID_OPTION_SETCATEGORY' => 'Назначить категории',
     'GRID_OPTION_SETPRICE' => 'Установить единую цену',
+    'PRODUCT_COUNT' => 'Товаров'
 ];
 

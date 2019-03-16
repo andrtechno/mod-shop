@@ -2,13 +2,15 @@
 
 namespace panix\mod\shop\models\query;
 
+
 use yii\db\ActiveQuery;
-use panix\engine\traits\DefaultQueryTrait;
+use panix\engine\traits\query\DefaultQueryTrait;
+use panix\engine\traits\query\TranslateQueryTrait;
 
 class AttributeQuery extends ActiveQuery
 {
 
-    use DefaultQueryTrait;
+    use DefaultQueryTrait, TranslateQueryTrait;
 
     public function useInFilter()
     {
