@@ -26,7 +26,7 @@
         "panix/mod-csv": "*",
         "panix/wgt-jstree": "*",
         "panix/wgt-fancybox": "*",
-        "kop/yii2-scroll-pager": "*"
+        "panix/wgt-scroll-pager": "dev-master"
     },
     "autoload": {
         "psr-4": {
