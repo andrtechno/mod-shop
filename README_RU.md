@@ -47,8 +47,8 @@ php yii migrate --migrationPath=vendor/panix/mod-shop/migrations
 ```
 
 ### Автор и лицензия
-- [License](https://https://github.com/andrtechno/engine/blob/master/LICENSE.md)
-- [ss](https://https://github.com/andrtechno/engine/blob/master/LICENSE.md)
+- [Автор](https://github.com/andrtechno)
+- [Лицензия](https://github.com/andrtechno/engine/blob/master/LICENSE.md)
 
 ### Смотрите так же
 - [PIXELION CMS](https://pixelion.com.ua)

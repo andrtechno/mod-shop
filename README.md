@@ -43,8 +43,8 @@ php yii migrate --migrationPath=vendor/panix/mod-shop/migrations
 ```
 
 ### Author & License
-- [License](../engine/LICENSE.md)
-- [ss](../engine/LICENSE.md)
+- [Author](https://github.com/andrtechno)
+- [License](https://github.com/andrtechno/engine/blob/master/LICENSE.md)
 
 ### See also
 - [PIXELION CMS](https://pixelion.com.ua)
