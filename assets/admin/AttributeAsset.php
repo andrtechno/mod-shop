@@ -6,16 +6,17 @@
  */
 namespace panix\mod\shop\assets\admin;
 
-use yii\web\AssetBundle;
+
+use panix\engine\web\AssetBundle;
 
 class AttributeAsset extends AssetBundle
 {
     public $sourcePath = '@vendor/panix/mod-shop/assets/admin';
-    public $jsOptions = array(
-        'position' => \yii\web\View::POS_END
-    );
+
     public $js = [
         'js/attribute.options.js',
     ];
-
+    public $depends = [
+        'yii\web\JqueryAsset',
+    ];
 }

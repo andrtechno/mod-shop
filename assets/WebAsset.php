@@ -2,7 +2,13 @@
 
 namespace panix\mod\shop\assets;
 
-class WebAsset extends \yii\web\AssetBundle
+use panix\engine\web\AssetBundle;
+
+/**
+ * Class WebAsset
+ * @package panix\mod\shop\assets
+ */
+class WebAsset extends AssetBundle
 {
 
     public $sourcePath = '@vendor/panix/mod-shop/assets';

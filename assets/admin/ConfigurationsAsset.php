@@ -8,7 +8,7 @@
 
 namespace panix\mod\shop\assets\admin;
 
-use yii\web\AssetBundle;
+use panix\engine\web\AssetBundle;
 
 class ConfigurationsAsset extends AssetBundle {
 
@@ -18,6 +18,8 @@ class ConfigurationsAsset extends AssetBundle {
     );
     public $js = [
         'js/products.configurations.js',
-
+    ];
+    public $depends = [
+        'yii\web\JqueryAsset',
     ];
 }
