@@ -1,8 +1,15 @@
+
 # Module shop
+[Описание на Русском](README_RU.md)
 
 Module for PIXELION CMS
 
-[![Latest Stable Version](https://poser.pugx.org/panix/mod-shop/v/stable)](https://packagist.org/packages/panix/mod-shop) [![Total Downloads](https://poser.pugx.org/panix/mod-shop/downloads)](https://packagist.org/packages/panix/mod-shop) [![Monthly Downloads](https://poser.pugx.org/panix/mod-shop/d/monthly)](https://packagist.org/packages/panix/mod-shop) [![Daily Downloads](https://poser.pugx.org/panix/mod-shop/d/daily)](https://packagist.org/packages/panix/mod-shop) [![Latest Unstable Version](https://poser.pugx.org/panix/mod-shop/v/unstable)](https://packagist.org/packages/panix/mod-shop) [![License](https://poser.pugx.org/panix/mod-shop/license)](https://packagist.org/packages/panix/mod-shop)
+[![Latest Stable Version](https://poser.pugx.org/panix/mod-shop/v/stable)](https://packagist.org/packages/panix/mod-shop)
+[![Latest Unstable Version](https://poser.pugx.org/panix/mod-shop/v/unstable)](https://packagist.org/packages/panix/mod-shop)
+[![Total Downloads](https://poser.pugx.org/panix/mod-shop/downloads)](https://packagist.org/packages/panix/mod-shop)
+[![Monthly Downloads](https://poser.pugx.org/panix/mod-shop/d/monthly)](https://packagist.org/packages/panix/mod-shop)
+[![Daily Downloads](https://poser.pugx.org/panix/mod-shop/d/daily)](https://packagist.org/packages/panix/mod-shop)
+[![License](https://poser.pugx.org/panix/mod-shop/license)](https://packagist.org/packages/panix/mod-shop)
 
 
 ## Installation
@@ -35,8 +42,11 @@ to the require section of your `composer.json` file.
 php yii migrate --migrationPath=vendor/panix/mod-shop/migrations
 ```
 
+### Author & License
+- [License](LICENSE.md)
+- [ss](LICENSE.md)
 
-## See also
+### See also
 - [PIXELION CMS](https://pixelion.com.ua)
 - [Module discounts Github](https://https://github.com/andrtechno/mod-discounts)
 - [Module compare Github](https://https://github.com/andrtechno/mod-compare)
@@ -49,3 +59,8 @@ php yii migrate --migrationPath=vendor/panix/mod-shop/migrations
 * [Module sitemap Github](https://https://github.com/andrtechno/mod-sitemap)
 
 
+> [![PIXELION CMS!](https://pixelion.com.ua/uploads/logo.svg "PIXELION CMS")](https://pixelion.com.ua)  
+<i>Content Management System "PIXELION CMS"</i>  
+[www.pixelion.com.ua](https://pixelion.com.ua)
+
+> The module is under development, any moment can change everything.
