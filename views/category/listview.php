@@ -13,7 +13,7 @@ echo \yii\widgets\ListView::widget([
         'attributes'=>['price','sku']
     ],
     'pager' => [
-        'class' => \kop\y2sp\ScrollPager::class,
+        'class' => \panix\wgt\scrollpager\ScrollPager::class,
         'triggerTemplate' => '<div class="ias-trigger" style="text-align: center; cursor: pointer;"><a href="#">{text}</a></div>'
     ],
     'emptyTextOptions' => ['class' => 'alert alert-info']
