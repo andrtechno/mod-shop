@@ -23,7 +23,7 @@ class Module extends WebModule implements BootstrapInterface
 
                 ['class' => 'panix\mod\shop\components\CategoryUrlRule'],
             ],
-            false
+            true
         );
         $app->setComponents([
             'currency' => ['class' => 'panix\mod\shop\components\CurrencyManager'],
