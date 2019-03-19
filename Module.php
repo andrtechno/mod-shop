@@ -32,7 +32,7 @@ class Module extends WebModule implements BootstrapInterface
 
     public function init()
     {
-        if (Yii::$app instanceof \yii\console\Application) {
+        if (Yii::$app->id == 'console') {
             $this->controllerNamespace = 'panix\mod\shop\commands';
         }
         if (!(Yii::$app instanceof \yii\console\Application)) {
