@@ -72,7 +72,7 @@ class ManufacturerController extends AdminController {
         ];
         $this->breadcrumbs[] = [
             'label' => Yii::t('shop/default', 'MODULE_NAME'),
-            'url' => ['/admin/shop']
+            'url' => ['/shop']
         ];
         $this->breadcrumbs[] = [
             'label' => $this->pageName,
@@ -87,7 +87,7 @@ class ManufacturerController extends AdminController {
         if ($model->load($post) && $model->validate()) {
             $model->save();
             Yii::$app->session->setFlash('success', \Yii::t('app', 'SUCCESS_CREATE'));
-            return Yii::$app->getResponse()->redirect(['/admin/shop/manufacturer']);
+            return Yii::$app->getResponse()->redirect(['/shop/manufacturer']);
         }
 
         return $this->render('update', [

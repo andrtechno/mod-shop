@@ -143,7 +143,7 @@ trait ProductTrait
         $columns['DEFAULT_COLUMNS'] = [
             [
                 'class' => \panix\engine\grid\sortable\Column::class,
-                'url' => ['/admin/shop/product/sortable'],
+                'url' => ['/shop/product/sortable'],
                 'successMessage' => Yii::t('shop/admin', 'SORT_PRODUCT_SUCCESS_MESSAGE')
             ],
             [

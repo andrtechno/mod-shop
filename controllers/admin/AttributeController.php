@@ -53,7 +53,7 @@ class AttributeController extends AdminController
         $this->pageName = Yii::t('shop/admin', 'ATTRIBUTES');
         $this->breadcrumbs[] = [
             'label' => Yii::t('shop/default', 'MODULE_NAME'),
-            'url' => ['/admin/shop']
+            'url' => ['/shop']
         ];
         $this->breadcrumbs[] = $this->pageName;
 
@@ -84,7 +84,7 @@ class AttributeController extends AdminController
 
         $this->breadcrumbs[] = [
             'label' => Yii::t('shop/default', 'MODULE_NAME'),
-            'url' => ['/admin/shop']
+            'url' => ['/shop']
         ];
         $this->breadcrumbs[] = [
             'label' => Yii::t('shop/admin', 'ATTRIBUTES'),
