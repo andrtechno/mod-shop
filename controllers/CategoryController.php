@@ -374,7 +374,6 @@ class CategoryController extends WebController
             if ($c->seo_categories) {
                 $this->keywords = $this->dataModel->keywords();
                 $this->description = $this->dataModel->description();
-               // $this->title = $this->dataModel->title();
                 $this->view->title = $this->dataModel->title();
             }
 
