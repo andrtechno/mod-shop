@@ -3,10 +3,10 @@
 namespace panix\mod\shop\commands;
 
 
-use yii\console\Controller;
 use yii\db\QueryBuilder;
 use yii\helpers\Console;
 use yii\helpers\FileHelper;
+use panix\engine\console\controllers\ConsoleController;
 use panix\mod\shop\models\Attribute;
 use panix\mod\shop\models\Category;
 use panix\mod\shop\models\Manufacturer;
@@ -18,7 +18,7 @@ use panix\mod\shop\components\forsage\ForsageExternalFinder;
  * Sync "Forsage studio" API
  * @package panix\mod\shop\commands
  */
-class ForsageController extends Controller
+class ForsageController extends ConsoleController
 {
 
     public function beforeAction($action)
@@ -36,7 +36,7 @@ class ForsageController extends Controller
      */
     public function actionChanges2()
     {
-       // Yii::import('app.php-multi-curl.*');
+        // Yii::import('app.php-multi-curl.*');
 
         $forsage = new ForsageProductsImport;
         // $products = $forsage->getSupplierProductIds(505);
