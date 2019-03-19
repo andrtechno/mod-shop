@@ -8,6 +8,7 @@ use panix\engine\CMS;
 use panix\mod\shop\models\Attribute;
 use panix\mod\shop\models\Product;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Url;
 
 trait ProductTrait
 {
@@ -39,7 +40,7 @@ trait ProductTrait
             'value' => function ($model) {
 
                 if ($model->name) {
-                    $html = $model->name;
+                    $html = Html::a($model->name,$model->getUrl());
                     if ($model->views > 0) {
                         $html .= " (" . Yii::t('app', 'VIEWS', ['n' => $model->views]) . ")";
                     }
