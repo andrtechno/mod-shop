@@ -10,26 +10,33 @@ use panix\mod\shop\models\translate\CategoryTranslate;
 use panix\mod\shop\models\query\CategoryQuery;
 use panix\mod\shop\models\ProductCategoryRef;
 use panix\engine\CMS;
-class Category extends \panix\engine\db\ActiveRecord {
+use panix\engine\db\ActiveRecord;
+
+class Category extends ActiveRecord
+{
 
     const MODULE_ID = 'shop';
     const route = '/shop/admin/category';
     public $translationClass = CategoryTranslate::class;
     public $parent_id;
 
-    public static function tableName() {
+    public static function tableName()
+    {
         return '{{%shop__category}}';
     }
 
-    public static function find() {
+    public static function find()
+    {
         return new CategoryQuery(get_called_class());
     }
 
-    public function getUrl() {
+    public function getUrl()
+    {
         return ['/shop/category/view', 'seo_alias' => $this->full_path];
     }
 
-    public function rules() {
+    public function rules()
+    {
         return [
 
 
@@ -47,7 +54,8 @@ class Category extends \panix\engine\db\ActiveRecord {
         ];
     }
 
-    public function behaviors() {
+    public function behaviors()
+    {
         return [
             'TranslateBehavior' => [ // name it the way you want
                 'class' => TranslateBehavior::class,
@@ -64,24 +72,27 @@ class Category extends \panix\engine\db\ActiveRecord {
             ),
             'tree' => [
                 'class' => NestedSetsBehavior::class,
-            // 'treeAttribute' => 'tree',
-            // 'leftAttribute' => 'lft',
-            // 'rightAttribute' => 'rgt',
-            //'levelAttribute' => 'level',
+                // 'treeAttribute' => 'tree',
+                // 'leftAttribute' => 'lft',
+                // 'rightAttribute' => 'rgt',
+                //'levelAttribute' => 'level',
             ],
         ];
     }
 
-    public function getCountItems() {
+    public function getCountItems()
+    {
         return $this->hasMany(ProductCategoryRef::class, ['category' => 'id'])->count();
     }
 
 
-    public function getTranslations() {
+    public function getTranslations()
+    {
         return $this->hasMany($this->translationClass, ['object_id' => 'id']);
     }
 
-    public static function flatTree() {
+    public static function flatTree()
+    {
         $result = [];
         $categories = Category::find()->orderBy(['lft' => SORT_ASC])->all();
         array_shift($categories);
@@ -98,17 +109,20 @@ class Category extends \panix\engine\db\ActiveRecord {
         return $result;
     }
 
-    public function beforeSave($insert) {
+    public function beforeSave($insert)
+    {
         $this->rebuildFullPath();
         return parent::beforeSave($insert);
     }
 
-    public function afterSave($insert, $changedAttributes) {
+    public function afterSave($insert, $changedAttributes)
+    {
         \Yii::$app->cache->delete('CategoryUrlRule');
         return parent::afterSave($insert, $changedAttributes);
     }
 
-    public function rebuildFullPath() {
+    public function rebuildFullPath()
+    {
 
         //test=   ShopCategory::findOne($this->id);
         $ancestors = $this->ancestors()->addOrderBy('depth')->all();
@@ -138,22 +152,27 @@ class Category extends \panix\engine\db\ActiveRecord {
 //print_r($this->full_path);die;
         // return $this;
     }
-    public function keywords() {
+
+    public function keywords()
+    {
         return $this->replaceMeta(Yii::$app->settings->get('shop', 'seo_categories_keywords'));
     }
 
-    public function description() {
+    public function description()
+    {
         return $this->replaceMeta(Yii::$app->settings->get('shop', 'seo_categories_description'));
     }
 
-    public function title() {
+    public function title()
+    {
         return $this->replaceMeta(Yii::$app->settings->get('shop', 'seo_categories_title'));
     }
 
-    public function replaceMeta($text) {
+    public function replaceMeta($text)
+    {
         $replace = array(
-           // "{category_name}" => $this->name,
-           // "{sub_category_name}" => ($this->parent()->one()->name == 'root') ? '' : $this->parent()->one()->name,
+            // "{category_name}" => $this->name,
+            // "{sub_category_name}" => ($this->parent()->one()->name == 'root') ? '' : $this->parent()->one()->name,
             "{current_currency}" => Yii::$app->currency->active->symbol,
         );
         return CMS::textReplace($text, $replace);

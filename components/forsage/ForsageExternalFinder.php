@@ -47,18 +47,8 @@ class ForsageExternalFinder
                     ':object_id' => $object_id
                 ))
                 ->limit(1)
-                ->queryRow();
+                ->queryOne();
         } else {
-            /* $query = \Yii::$app->db->createCommand()
-                // ->select("*")
-                 ->from('{{%exchange_forsage}}')
-                 ->where('object_type=:type AND external_id=:externalId', array(
-                     ':type' => $type,
-                     ':externalId' => $externalId
-                 ))
-                 ->limit(1)
-                 ->queryOne();*/
-
 
             $query = (new Query())
                 ->select('*')
@@ -79,11 +69,11 @@ class ForsageExternalFinder
         if ($loadModel === true && $query['object_id']) {
             switch ($type) {
                 case self::OBJECT_TYPE_CATEGORY:
-                    return Category::findOne(['full_path'=>$query['object_id']]);
+                    return Category::findOne($query['object_id']);
                     break;
 
                 case self::OBJECT_TYPE_MAIN_CATEGORY:
-                    return Category::findOne(['full_path'=>$query['object_id']]);
+                    return Category::findOne($query['object_id']);
                     break;
 
                 case self::OBJECT_TYPE_ATTRIBUTE:
@@ -91,6 +81,10 @@ class ForsageExternalFinder
                     break;
 
                 case self::OBJECT_TYPE_PRODUCT:
+                   // $model = Product::find()
+                       // ->where(['id'=>$query['object_id']])
+                        //->detachBehavior('discounts')
+                       // ->one();
                     return Product::findOne($query['object_id']);
                     break;
 

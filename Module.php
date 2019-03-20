@@ -28,6 +28,7 @@ class Module extends WebModule implements BootstrapInterface
         $app->setComponents([
             'currency' => ['class' => 'panix\mod\shop\components\CurrencyManager'],
         ]);
+
     }
 
     public function init()

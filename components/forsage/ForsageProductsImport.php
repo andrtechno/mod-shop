@@ -73,7 +73,7 @@ class ForsageProductsImport
 
     public $product_ids = array();
     /**
-     * @var ShopCategory
+     * @var Category
      */
     protected $_rootCategory;
 
@@ -126,7 +126,7 @@ class ForsageProductsImport
 
 
                     $option = AttributeOption::find();
-                    $option->joinWith('optionTranslate');
+                    $option->joinWith('translations');
                     $option->where(['attribute_id'=>$attributeModel->id]);
                     $option->andWhere([AttributeOptionTranslate::tableName().'.value'=>$attributeValue]);
                     $opt = $option->one();
@@ -273,6 +273,7 @@ class ForsageProductsImport
 
 
 
+
                     $model->switch = ($product->quantity) ? 1 : 0;
 
                     $this->logstring .= "Visible: {$model->switch} ";
@@ -334,11 +335,14 @@ class ForsageProductsImport
 
                         // Set category
                         $fullCategoryName = 'test/ddddddddddddddddd';
-                        $modelMain = ForsageExternalFinder::getObject(ForsageExternalFinder::OBJECT_TYPE_MAIN_CATEGORY, $this->my_ucfirst($characteristics['main_category_name']));
+                        $modelMain = ForsageExternalFinder::getObject(ForsageExternalFinder::OBJECT_TYPE_MAIN_CATEGORY, $fullCategoryName);
                         // Yii::log($this->my_ucfirst($characteristics['main_category_name']), 'info', 'console');
+
+
+                        //$model->main_category_id = $modelMain->id;
                         $modelCategory = ForsageExternalFinder::getObject(ForsageExternalFinder::OBJECT_TYPE_CATEGORY, $fullCategoryName);
                         if (!$modelCategory) {
-                            $modelCategory = new Category();
+                            $modelCategory = new Category;
                             $modelCategory->name = $sub_category;
                             $modelCategory->seo_alias = CMS::slug($modelCategory->name);
                             echo 'CREATE SUB CATEGORY: ' . $sub_category . PHP_EOL;
@@ -355,12 +359,11 @@ class ForsageProductsImport
 
                     }
                     //this for test vor validate
-                    //$fullCategoryName = 'test/ddddddddddddddddd';
+                    $fullCategoryName = 'test/ddddddddddddddddd';
                     //$categoryId = ForsageExternalFinder::getObject(ForsageExternalFinder::OBJECT_TYPE_CATEGORY, $fullCategoryName, false);
 
-                    $categoryId = ForsageExternalFinder::getObject(ForsageExternalFinder::OBJECT_TYPE_MAIN_CATEGORY, $fullCategoryName, true);
+                    $categoryId = ForsageExternalFinder::getObject(ForsageExternalFinder::OBJECT_TYPE_MAIN_CATEGORY, $fullCategoryName,false);
 
-                    var_dump($categoryId);die;
                     if($categoryId) {
                         $model->main_category_id = $categoryId;
                     }
@@ -396,7 +399,6 @@ class ForsageProductsImport
                     }*/
                     if ($sub_category)
                         $this->attributeData($model, 'Тип', $sub_category, array('isFilter' => true));
-
                     if (isset($characteristics['size']))
                         $this->attributeData($model, 'Размер', $characteristics['size'], array('isFilter' => true));
                     if (isset($characteristics['season']))
@@ -420,13 +422,17 @@ class ForsageProductsImport
                     //set image
                     if ($characteristics['image']) {
                         $imageModel = ForsageExternalFinder::getObject(ForsageExternalFinder::OBJECT_TYPE_IMAGE, $characteristics['supplier_name'] . '/' . $product->id . '/' . basename($characteristics['image']));
+
+
                         if (!$imageModel) {
-                            if ($imageBuild && $model->getImage()) {
-                               // $res = $model->attachImage($imageBuild);
-                                //if ($res) {
-                                //    $this->createExternalId(ForsageExternalFinder::OBJECT_TYPE_IMAGE, $model->id, $characteristics['supplier_name'] . '/' . $product->id . '/' . basename($characteristics['image']));
-                                //}
-                            }
+                            // && $model->getImage()
+                            //if ($imageBuild) {
+                                $res = $model->attachImage($imageBuild);
+                                //  var_dump($res);die;
+                                if ($res) {
+                                    $this->createExternalId(ForsageExternalFinder::OBJECT_TYPE_IMAGE, $model->id, $characteristics['supplier_name'] . '/' . $product->id . '/' . basename($characteristics['image']));
+                                }
+                           // }
                         }
                     }
 
@@ -831,7 +837,7 @@ class ForsageProductsImport
     public function buildPathToTempFile3($fileName, $dir)
     {
         if (!file_exists(Yii::getPathOfAlias($this->tempDirectory) . DS . $dir)) {
-            CFileHelper::createDirectory(Yii::getPathOfAlias($this->tempDirectory) . DS . $dir, $mode = 0775, $recursive = true);
+            FileHelper::createDirectory(Yii::getPathOfAlias($this->tempDirectory) . DS . $dir, $mode = 0775, $recursive = true);
         }
         $fullFileName = $fileName;
 

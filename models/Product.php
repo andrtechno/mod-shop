@@ -392,6 +392,27 @@ class Product extends ActiveRecord
 
     public function afterSave($insert, $changedAttributes)
     {
+
+
+        if (true) { //Yii::$app->settings->get('shop', 'auto_add_subcategories')
+            // Авто добавление предков категории
+            // Нужно выбирать в админки самую последнию категории по уровню.
+            $category = Category::findOne($this->main_category_id);
+            $categories = [];
+            $tes = $category->ancestors()->excludeRoot()->all();
+            foreach ($tes as $cat) {
+                $categories[] = $cat->id;
+            }
+            $this->setCategories($categories, $this->main_category_id);
+        } else {
+            $mainCategoryId = 1;
+            if (isset($_POST['Product']['main_category_id']))
+                $mainCategoryId = $_POST['Product']['main_category_id'];
+
+            $this->setCategories(Yii::$app->request->post('categories', array()), $mainCategoryId);
+        }
+
+
         // Process related products
         if ($this->_related !== null) {
             $this->clearRelatedProducts();
@@ -698,8 +719,8 @@ class Product extends ActiveRecord
                 'full_description'
             ]
         ];
-        if (Yii::$app->getModule('discounts'))
-            $a['discountsBehavior'] = [
+        if (Yii::$app->getModule('discounts') && Yii::$app->id !== 'console')
+            $a['discounts'] = [
                 'class' => '\panix\mod\discounts\components\DiscountBehavior'
             ];
 
