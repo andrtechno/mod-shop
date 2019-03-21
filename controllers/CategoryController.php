@@ -2,9 +2,10 @@
 
 namespace panix\mod\shop\controllers;
 
-use app\modules\projects\models\Projects;
+
 use panix\mod\shop\models\Manufacturer;
 use panix\mod\shop\models\search\ProductSearch;
+use panix\mod\shop\models\translate\ProductTranslate;
 use Yii;
 use panix\engine\controllers\WebController;
 use panix\mod\shop\models\Product;
@@ -110,6 +111,7 @@ class CategoryController extends WebController
     {
         if ($this->_minPrice !== null)
             return $this->_minPrice;
+
         $this->_minPrice = $this->currentQuery->aggregatePrice('MIN');
         return $this->_minPrice;
     }
@@ -195,7 +197,7 @@ class CategoryController extends WebController
                 $data['max_price'] = (int)Yii::$app->request->post('max_price');
 
             if ($this->action->id === 'search') {
-                return $this->redirect(Yii::$app->urlManager->addUrlParam('/shop/category/search', $data))->send();
+                return $this->redirect(Yii::$app->urlManager->addUrlParam('/shop/category/search', $data));
             } else {
 
                 /*if (!Yii::app()->request->isAjaxRequest) {
@@ -208,7 +210,7 @@ class CategoryController extends WebController
                 }*/
 
 
-                 return $this->redirect(Yii::$app->urlManager->addUrlParam('/shop/category/view', $data))->send();
+                 return $this->redirect(Yii::$app->urlManager->addUrlParam('/shop/category/view', $data));
             }
         }
         return parent::beforeAction($action);
@@ -227,8 +229,9 @@ class CategoryController extends WebController
     public function actionSearch()
     {
 
+
         if (Yii::$app->request->isPost) {
-            return $this->redirect(Yii::$app->urlManager->addUrlParam('/shop/category/search', ['q' => Yii::$app->request->post('q')]))->send();
+            return $this->redirect(Yii::$app->urlManager->addUrlParam('/shop/category/search', ['q' => Yii::$app->request->post('q')]));
         }
         $q = Yii::$app->request->get('q');
         if (empty($q)) {
@@ -236,12 +239,11 @@ class CategoryController extends WebController
         }
 
 
+
         if (Yii::$app->request->isAjax && Yii::$app->request->get('q')) {
             $res = [];
             $model = Product::find();
-            $model->joinWith(['manufacturer', 'translations']); //manufacturerActive
-            $model->andWhere(['LIKE', '{{%shop_product}}.sku', Yii::$app->request->get('q')]);
-            $model->orWhere(['LIKE', '{{%shop_product_translate}}.name', Yii::$app->request->get('q')]);
+            $model->applySearch(Yii::$app->request->get('q'));
             //'fullurl'=>Html::a('FULL',Yii::$app->urlManager->createUrl(['/shop/category/search', 'q' => Yii::$app->request->post('q')])),
             foreach ($model->all() as $m) {
                 $res[] = [
@@ -273,8 +275,8 @@ class CategoryController extends WebController
 
        // print_r((new Product)->behaviors());die;
         $this->query->attachBehaviors((new Product)->behaviors());
-
-        $this->query->applyAttributes($this->activeAttributes)->published();
+        $this->query->applyAttributes($this->activeAttributes);
+        $this->query->published();
         $this->query->sort();
 
 
@@ -298,7 +300,7 @@ class CategoryController extends WebController
 
 
 
-        if ($data instanceof \panix\mod\shop\models\Category) {
+        if ($data instanceof Category) {
             //  $cr->with = array('manufacturerActive');
             // Скрывать товары если производитель скрыт.
             //TODO: если у товара не выбран производитель то он тоже скрывается!! need fix
@@ -310,9 +312,9 @@ class CategoryController extends WebController
             $this->query->andWhere([Product::tableName().'.main_category_id'=>$this->dataModel->id]);
             //  $this->query->with('manufacturerActive');
         } else {
-            $this->query->joinWith(['manufacturer', 'translations']); //manufacturerActive
-            $this->query->andWhere(['LIKE', Product::tableName().'.sku', $data]);
-            $this->query->orWhere(['LIKE', '{{%shop__product_translate}}.name', $data]);
+            $this->query->applySearch($data);
+
+           // $this->query->andFilterWhere(['LIKE', 'translate.name', $data]);
 
         }
 
@@ -321,6 +323,7 @@ class CategoryController extends WebController
             $manufacturers = explode(',', Yii::$app->request->get('manufacturer', ''));
             $this->query->applyManufacturers($manufacturers);
         }
+
 
         // Create clone of the current query to use later to get min and max prices.
         $this->currentQuery = clone $this->query;
@@ -379,7 +382,7 @@ class CategoryController extends WebController
 
             $this->breadcrumbs[] = [
                 'label' => Yii::t('shop/default', 'CATALOG'),
-                'url' => array('/shop')
+                'url' => ['/shop']
             ];
             $m =$this->dataModel;
             $ancestors = Category::getDb()->cache(function ($db) use ($m) {
@@ -493,7 +496,7 @@ class CategoryController extends WebController
         if ($this->route == 'shop/category/view') {
             if (!empty($manufacturers)) {
                 $menuItems['manufacturer'] = array(
-                    'label' => Yii::t('shop/default', 'FILTER_MANUFACTURER') . ':',
+                    'label' => Yii::t('shop/default', 'FILTER_BY_MANUFACTURER') . ':',
                     'itemOptions' => array('id' => 'current-filter-manufacturer')
                 );
                 foreach ($manufacturers as $id => $manufacturer) {
@@ -506,12 +509,6 @@ class CategoryController extends WebController
                         ),
                         'url' => Yii::$app->urlManager->removeUrlParam('/shop/category/view', 'manufacturer', $manufacturer->id)
                     ];
-
-                    /*array_push($menuItems, array(
-                        'label' => $this->_manufacturer[$manufacturer]['label'],
-                        'linkOptions' => array('class' => 'remove'),
-                        'url' => Yii::$app->urlManager->removeUrlParam('/shop/category/view', 'manufacturer', $id)
-                    ));*/
                 }
             }
         }

@@ -12,7 +12,9 @@ use yii\widgets\Menu;
         echo Menu::widget([
             'items' => $active,
         ]);
-        echo Html::a(Yii::t('shop/default', 'RESET_FILTERS_BTN'), $this->context->model->getUrl(), array('class' => 'btn btn-secondary'));
+        if($this->context->model) {
+            echo Html::a(Yii::t('shop/default', 'RESET_FILTERS_BTN'), $this->context->model->getUrl(), array('class' => 'btn btn-secondary'));
+        }
         ?>
     </div>
     <div class="card-footer">

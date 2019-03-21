@@ -6,6 +6,7 @@ use panix\mod\shop\models\Attribute;
 use yii\caching\DbDependency;
 use yii\caching\DbQueryDependency;
 use yii\db\ActiveQuery;
+use yii\db\Query;
 use yii\db\QueryInterface;
 use yii\helpers\Html;
 use Yii;
@@ -28,7 +29,7 @@ class FiltersWidget extends \panix\engine\data\Widget
 
 
     /**
-     * @var Category
+     * @var Query
      */
     public $model;
 
@@ -80,7 +81,8 @@ class FiltersWidget extends \panix\engine\data\Widget
         //$model->attachBehaviors($model->behaviors());
         $model->published();
         //$model->applyCategories($this->model);
-        $model->andWhere([Product::tableName() . '.main_category_id' => $this->model->id]);
+        if ($this->model)
+            $model->andWhere([Product::tableName() . '.main_category_id' => $this->model->id]);
         if (Yii::$app->request->get('min_price'))
             $model->applyMinPrice($this->convertCurrency(Yii::$app->request->getQueryParam('min_price')));
 
@@ -117,7 +119,16 @@ class FiltersWidget extends \panix\engine\data\Widget
         //$model->attachBehaviors($model->behaviors());
         $model->published();
         // $model->applyCategories($this->model);
-        $model->andWhere([Product::tableName() . '.main_category_id' => $this->model->id]);
+        if ($this->model)
+            $model->andWhere([Product::tableName() . '.main_category_id' => $this->model->id]);
+
+
+
+        if (Yii::$app->request->get('q') && Yii::$app->requestedRoute == 'shop/category/search') {
+            $model->applySearch(Yii::$app->request->get('q'));
+        }
+
+
         $newData = [];
         $newData[$attribute->name][] = $option->id;
         $model->withEavAttributes($newData);
@@ -130,10 +141,9 @@ class FiltersWidget extends \panix\engine\data\Widget
         ]);
 
 
-
         $count = Attribute::getDb()->cache(function () use ($model) {
             return $model->count();
-        }, 3600*24,$dependency);
+        }, 3600 * 24, $dependency);
 
         return $count;
     }
@@ -201,7 +211,13 @@ class FiltersWidget extends \panix\engine\data\Widget
         $query = Product::find();
         $query->published();
         //$query->applyCategories($dataModel);
-        $query->andWhere([Product::tableName() . '.main_category_id' => $this->model->id]);
+        if ($this->model)
+            $query->andWhere([Product::tableName() . '.main_category_id' => $this->model->id]);
+
+        if (Yii::$app->request->get('q') && Yii::$app->requestedRoute == 'shop/category/search') {
+            $query->applySearch(Yii::$app->request->get('q'));
+        }
+
         $queryClone = clone $query;
         $queryMan = $queryClone->addSelect(['manufacturer_id', Product::tableName() . '.id']);
         $queryMan->joinWith([
@@ -211,14 +227,12 @@ class FiltersWidget extends \panix\engine\data\Widget
         ]);
         //$queryMan->->applyMaxPrice($this->convertCurrency(Yii::$app->request->getQueryParam('max_price')))
         //$queryMan->->applyMinPrice($this->convertCurrency(Yii::$app->request->getQueryParam('min_price')))
+
         $queryMan->andWhere('manufacturer_id IS NOT NULL');
         $queryMan->groupBy('manufacturer_id');
 
 
         // $manufacturers = $queryMan->all();
-
-
-
 
 
         $manufacturers = Manufacturer::getDb()->cache(function ($db) use ($queryMan) {
@@ -243,11 +257,17 @@ class FiltersWidget extends \panix\engine\data\Widget
                 if ($m) {
                     $query = Product::find();
                     $query->published();
-                    $query->andWhere([Product::tableName() . '.main_category_id' => $this->model->id]);
+                    if ($this->model)
+                        $query->andWhere([Product::tableName() . '.main_category_id' => $this->model->id]);
 
                     //$q->applyMinPrice($this->convertCurrency(Yii::app()->request->getQuery('min_price')))
                     //$q->applyMaxPrice($this->convertCurrency(Yii::app()->request->getQuery('max_price')))
                     $query->applyManufacturers($m->id);
+
+                    if (Yii::$app->request->get('q') && Yii::$app->requestedRoute == 'shop/category/search') {
+                        $query->applySearch(Yii::$app->request->get('q'));
+                    }
+
 
                     $dependencyQuery = $query;
                     $dependencyQuery->select('COUNT(*)');
@@ -257,7 +277,7 @@ class FiltersWidget extends \panix\engine\data\Widget
 
                     $count = Product::getDb()->cache(function () use ($query) {
                         return $query->count();
-                    }, 3600*24,$dependency);
+                    }, 3600 * 24, $dependency);
 
                     $data['filters'][] = array(
                         'title' => $m->name,

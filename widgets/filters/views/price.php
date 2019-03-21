@@ -6,7 +6,6 @@ $cm = Yii::$app->currency;
 
 
 
-
 $getDefaultMin = (int)floor(Yii::$app->controller->getMinPrice());
 $getDefaultMax = (int)ceil(Yii::$app->controller->getMaxPrice());
 $getMax = Yii::$app->controller->currentMaxPrice;

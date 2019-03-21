@@ -19,9 +19,19 @@ class Module extends WebModule implements BootstrapInterface
                 'shop' => 'shop/default/index',
                 'manufacturer/<seo_alias:\w+>' => 'shop/manufacturer/view',
                 'product/<seo_alias:[0-9a-zA-Z\-]+>' => 'shop/product/view',
-                'products/search/<q:\w+>' => 'shop/category/search',
+                //'products/search/q/<q:\w+>' => 'shop/category/search',
 
-                ['class' => 'panix\mod\shop\components\CategoryUrlRule'],
+
+               /* [
+                    'class' => 'panix\mod\shop\components\SearchUrlRule',
+                    //'pattern'=>'products/search',
+                    'route'=>'shop/category/search',
+                    'defaults'=>['q'=>Yii::$app->request->get('q')]
+                ],*/
+                [
+                    'class' => 'panix\mod\shop\components\CategoryUrlRule',
+                ],
+
             ],
             true
         );

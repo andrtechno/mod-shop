@@ -2,8 +2,8 @@
 
 namespace panix\mod\shop\models\query;
 
-
 use panix\mod\shop\models\Currency;
+use panix\mod\shop\models\Product;
 use yii\db\ActiveQuery;
 use panix\engine\traits\query\DefaultQueryTrait;
 use panix\engine\traits\query\TranslateQueryTrait;
@@ -27,7 +27,6 @@ class ProductQuery extends ActiveQuery
     }
 
 
-
     /**
      * @param $manufacturers array|int
      * @return $this
@@ -37,10 +36,12 @@ class ProductQuery extends ActiveQuery
         if (!is_array($manufacturers))
             $manufacturers = array($manufacturers);
 
+
         if (empty($manufacturers))
             return $this;
 
         sort($manufacturers);
+
 
         $this->andWhere(['manufacturer_id' => $manufacturers]);
         return $this;
@@ -74,8 +75,7 @@ class ProductQuery extends ActiveQuery
      */
     public function applyMinPrice($value)
     {
-        $class = $this->modelClass;
-        $tableName = $class::tableName();
+        $tableName = Product::tableName();
         $tableNameCur = Currency::tableName();
         if ($value) {
             //  $this->andWhere(['>=', 'price', (int)$value]);
@@ -97,8 +97,7 @@ class ProductQuery extends ActiveQuery
      */
     public function applyMaxPrice($value)
     {
-        $class = $this->modelClass;
-        $tableName = $class::tableName();
+        $tableName = Product::tableName();
         $tableNameCur = Currency::tableName();
         if ($value) {
             //$this->andWhere(['<=', 'price', (int)$value]);
@@ -119,8 +118,7 @@ class ProductQuery extends ActiveQuery
      */
     public function applyPrice($value)
     {
-        $class = $this->modelClass;
-        $tableName = $class::tableName();
+        $tableName = Product::tableName();
         $tableNameCur = Currency::tableName();
         if ($value) {
             $this->andWhere("CASE WHEN ({$tableName}.`currency_id`) THEN
@@ -146,26 +144,32 @@ class ProductQuery extends ActiveQuery
 
     public function aggregatePrice($function = 'MIN')
     {
-        $class = $this->modelClass;
-        $tableName = $class::tableName();
+        $tableName = Product::tableName();
         $tableNameCur = Currency::tableName();
-        $this->select("{$function}((CASE WHEN ({$tableName}.`currency_id`)
+        $this->addSelect(['*', "{$function}((CASE WHEN ({$tableName}.`currency_id`)
                     THEN
                         ({$tableName}.`price` * (SELECT rate FROM {$tableNameCur} `currency` WHERE `currency`.`id`={$tableName}.`currency_id`))
                     ELSE
                         {$tableName}.`price`
-                END)) AS aggregation_price");
+                END)) AS aggregation_price"]);
+
+
+        /*$this->select("{$function}((CASE WHEN ({$tableName}.`currency_id`)
+                    THEN
+                        ({$tableName}.`price` * (SELECT rate FROM {$tableNameCur} `currency` WHERE `currency`.`id`={$tableName}.`currency_id`))
+                    ELSE
+                        {$tableName}.`price`
+                END)) AS aggregation_price");*/
 
         $this->addOrderBy(["aggregation_price" => ($function === 'MIN') ? SORT_ASC : SORT_DESC]);
         $this->distinct(false);
         $this->limit(1);
 
-        $result = \Yii::$app->db->cache(function ($db) {
-            return $this->asArray()->one();
-        }, 3600);
 
+        // $result = \Yii::$app->db->cache(function ($db) {
+        $result = $this->asArray()->one();
+        // }, 3600);
 
-        //$result = $this->asArray()->one();
 
         if ($result) {
             return $result['aggregation_price'];
@@ -173,11 +177,23 @@ class ProductQuery extends ActiveQuery
         return $this;
     }
 
+    /**
+     * @param null $q
+     * @return $this
+     */
+    public function applySearch($q = null)
+    {
+        if ($q) {
+            $this->joinWith(['manufacturer', 'translations as translate']);
+            $this->andWhere(['LIKE', Product::tableName() . '.sku', $q]);
+            $this->orWhere(['LIKE', 'translate.name', $q]);
+        }
+        return $this;
+    }
 
     public function aggregatePriceSelect($order = SORT_ASC)
     {
-        $class = $this->modelClass;
-        $tableName = $class::tableName();
+        $tableName = Product::tableName();
         $tableNameCur = Currency::tableName();
         $this->addSelect(['*', "(CASE WHEN ({$tableName}.`currency_id`)
                     THEN
