@@ -455,7 +455,7 @@ class CategoryController extends WebController
         $menuItems = [];
 
 
-        if ($this->route == 'shop/category/view') {
+        if ($this->route == 'shop/category/view' || $this->route == 'shop/category/search') {
             $manufacturers = array_filter(explode(',', $request->getQueryParam('manufacturer')));
             $manufacturers = Manufacturer::getDb()->cache(function ($db) use ($manufacturers) {
                 return Manufacturer::findAll($manufacturers);
@@ -475,7 +475,7 @@ class CategoryController extends WebController
             $menuItems['price']['items'][] = [
                 'label' => Yii::t('shop/default', 'FILTER_CURRENT_PRICE_MIN', ['value' => Yii::$app->currency->number_format($this->getCurrentMinPrice()), 'currency' => Yii::$app->currency->active->symbol]),
                 'linkOptions' => ['class' => 'remove', 'data-price' => 'min_price'],
-                'url' => Yii::$app->urlManager->removeUrlParam('/shop/category/view', 'min_price')
+                'url' => Yii::$app->urlManager->removeUrlParam('/' . Yii::$app->requestedRoute, 'min_price')
             ];
         }
 
@@ -483,7 +483,7 @@ class CategoryController extends WebController
             $menuItems['price']['items'][] = [
                 'label' => Yii::t('shop/default', 'FILTER_CURRENT_PRICE_MAX', ['value' => Yii::$app->currency->number_format($this->getCurrentMaxPrice()), 'currency' => Yii::$app->currency->active->symbol]),
                 'linkOptions' => array('class' => 'remove', 'data-price' => 'max_price'),
-                'url' => Yii::$app->urlManager->removeUrlParam('/shop/category/view', 'max_price')
+                'url' => Yii::$app->urlManager->removeUrlParam('/' . Yii::$app->requestedRoute, 'max_price')
             ];
         }
 
@@ -501,7 +501,7 @@ class CategoryController extends WebController
                             'data-name' => 'manufacturer',
                             'data-target' => '#filter_manufacturer_' . $manufacturer->id
                         ),
-                        'url' => Yii::$app->urlManager->removeUrlParam('/shop/category/view', 'manufacturer', $manufacturer->id)
+                        'url' => Yii::$app->urlManager->removeUrlParam('/' . Yii::$app->requestedRoute, 'manufacturer', $manufacturer->id)
                     ];
                 }
             }
@@ -526,7 +526,7 @@ class CategoryController extends WebController
                                     'data-name' => $attribute->name,
                                     'data-target' => "#filter_{$attribute->name}_{$option->id}"
                                 ],
-                                'url' => Yii::$app->urlManager->removeUrlParam('/shop/category/view', $attribute->name, $option->id)
+                                'url' => Yii::$app->urlManager->removeUrlParam('/' . Yii::$app->requestedRoute, $attribute->name, $option->id)
                             ];
                             sort($menuItems[$attributeName]['items']);
                         }
