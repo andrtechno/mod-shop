@@ -30,7 +30,7 @@ if (($q = Yii::$app->request->get('q')))
 
             <div class="col">
 
-
+                <?php echo $this->render('_sorting', ['itemView' => $itemView]); ?>
                 <div id="listview-ajax">
                     <?php
                     echo $this->render('listview',[
