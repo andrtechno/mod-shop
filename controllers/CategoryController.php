@@ -15,6 +15,7 @@ use panix\mod\shop\models\Category;
 use panix\mod\shop\models\Attribute;
 use yii\helpers\Html;
 use yii\helpers\Url;
+use yii\web\Response;
 
 class CategoryController extends WebController
 {
@@ -252,12 +253,12 @@ class CategoryController extends WebController
                         'name' => $m->name,
                         'price' => $m->getFrontPrice(),
                         'url' => $m->getUrl(),
-                        'image' => $m->getMainImageUrl('50x50'),
+                        'image' => $m->getMainImage('50x50')->url,
                     ])
                 ];
             }
-            echo \yii\helpers\Json::encode($res);
-            Yii::$app->end();
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return $res;
         }
         if (!$q) {
             return $this->render('search');
@@ -275,7 +276,7 @@ class CategoryController extends WebController
 
        // print_r((new Product)->behaviors());die;
         $this->query->attachBehaviors((new Product)->behaviors());
-        $this->query->applyAttributes($this->activeAttributes);
+
         $this->query->published();
         $this->query->sort();
 
@@ -310,11 +311,13 @@ class CategoryController extends WebController
 
             //$this->query->applyCategories($this->dataModel);
             $this->query->andWhere([Product::tableName().'.main_category_id'=>$this->dataModel->id]);
+
             //  $this->query->with('manufacturerActive');
         } else {
             $this->query->applySearch($data);
-        }
 
+        }
+        $this->query->applyAttributes($this->activeAttributes);
         // Filter by manufacturer
         if (Yii::$app->request->get('manufacturer')) {
             $manufacturers = explode(',', Yii::$app->request->get('manufacturer', ''));
@@ -344,6 +347,7 @@ class CategoryController extends WebController
 
         //$this->query->addOrderBy(['price'=>SORT_DESC]);
         //$this->query->orderBy(['price'=>SORT_DESC]);
+
 
 
 
