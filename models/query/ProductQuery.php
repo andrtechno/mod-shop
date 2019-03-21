@@ -166,9 +166,9 @@ class ProductQuery extends ActiveQuery
         $this->limit(1);
 
 
-        // $result = \Yii::$app->db->cache(function ($db) {
-        $result = $this->asArray()->one();
-        // }, 3600);
+        $result = \Yii::$app->db->cache(function ($db) {
+            return $this->asArray()->one();
+        }, 3600);
 
 
         if ($result) {

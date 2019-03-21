@@ -13,5 +13,7 @@ return [
     'SORT_BY_PRICE_ASC' => 'от дешовых к дорогом',
     'SORT_BY_PRICE_DESC' => 'от дорогих к дешевым',
     'SORT_BY_DATE_DESC' => 'по дате добавления',
-    'OUTPUT_ON' => 'показать по'
+    'OUTPUT_ON' => 'показать по',
+    'SEARCH_RESULT'=>'По Вашему запросу "{query}" {count, plural, =0{найдено} =1{найден} other{найдено}} {count, plural, =0{# товаров} =1{# товар} one{# товаров} few{# товара} many{# товаров} other{# товаров}}',
+
 ];

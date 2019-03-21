@@ -313,9 +313,6 @@ class CategoryController extends WebController
             //  $this->query->with('manufacturerActive');
         } else {
             $this->query->applySearch($data);
-
-           // $this->query->andFilterWhere(['LIKE', 'translate.name', $data]);
-
         }
 
         // Filter by manufacturer

@@ -22,24 +22,24 @@ if (($q = Yii::$app->request->get('q')))
         <div class="col-md-8">
             <h1><?=
                 Yii::t('shop/default', 'SEARCH_RESULT', [
-                    'result' => $result,
-                    'count' => $provider->totalCount
+                    'query' => $result,
+                    'count' => 1,
+                   // 'count' => $provider->totalCount
                 ]);
                 ?></h1>
 
             <div class="col">
-                <?php
-                echo \yii\widgets\ListView::widget([
-                    'dataProvider' => $provider,
-                    'itemView' => $itemView,
-                    'layout' => '{summary}{items}{pager}',
-                    'emptyText' => 'Empty',
-                    'options' => ['class' => 'row'],
-                    'itemOptions' => ['class' => 'col-sm-4'],
-                    'pager' => ['class' => \kop\y2sp\ScrollPager::class],
-                    'emptyTextOptions' => ['class' => 'alert alert-info']
-                ]);
-                ?>
+
+
+                <div id="listview-ajax">
+                    <?php
+                    echo $this->render('listview',[
+                        'itemView' => $itemView,
+                        'provider' => $provider,
+                    ]);
+                    ?>
+                </div>
+
             </div>
         </div>
     </div>
