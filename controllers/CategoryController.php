@@ -269,12 +269,12 @@ class CategoryController extends WebController
 
     public function doSearch($data, $view)
     {
-        //$this->query = ProductSearch::find();
+
         $this->query = Product::find();
         //$searchModel = new ProductSearch();
         //$this->query = $searchModel->searchBySite(Yii::$app->request->getQueryParams());//
 
-       // print_r((new Product)->behaviors());die;
+
         $this->query->attachBehaviors((new Product)->behaviors());
 
         $this->query->published();
@@ -289,14 +289,6 @@ class CategoryController extends WebController
 
 
 
-
-
-
-
-       // $this->query->addSelect();
-
-
-//echo $this->query->createCommand()->rawSql;die;
 
 
 
@@ -323,6 +315,7 @@ class CategoryController extends WebController
             $manufacturers = explode(',', Yii::$app->request->get('manufacturer', ''));
             $this->query->applyManufacturers($manufacturers);
         }
+
 
 
         // Create clone of the current query to use later to get min and max prices.
