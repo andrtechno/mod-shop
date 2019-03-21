@@ -31,11 +31,8 @@ class SearchUrlRule extends UrlRule implements UrlRuleInterface
                 }
                 $url .= '/' . implode('/', $parts);
             }
-
-
             return $url . \Yii::$app->urlManager->suffix;
         }
-
         return false;
     }
 
@@ -49,6 +46,9 @@ class SearchUrlRule extends UrlRule implements UrlRuleInterface
         if (empty($pathInfo))
             return false;
 
+        if (strpos($pathInfo, 'products/search') !== 0) {
+            return false;
+        }
 
         if (\Yii::$app->urlManager->suffix)
             $pathInfo = strtr($pathInfo, array(\Yii::$app->urlManager->suffix => ''));
@@ -58,8 +58,9 @@ class SearchUrlRule extends UrlRule implements UrlRuleInterface
         $parts = explode('/', $pathInfo);
 
         unset($parts[0]);
-        // print_r($parts);die;
+
         $ss = array_chunk($parts, 2);
+
         foreach ($ss as $k => $p) {
             $_GET[$p[0]] = $p[1];
             $params[$p[0]] = $p[1];
@@ -67,7 +68,7 @@ class SearchUrlRule extends UrlRule implements UrlRuleInterface
 
 
 
-        return ['shop/category/search', $params];
+        return [$this->route, $params];
     }
 
 }
