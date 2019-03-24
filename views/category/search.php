@@ -23,7 +23,7 @@ if (($q = Yii::$app->request->get('q')))
             <h1><?=
                 Yii::t('shop/default', 'SEARCH_RESULT', [
                     'query' => $result,
-                    'count' => 1,
+                    'count' => $provider->totalCount,
                    // 'count' => $provider->totalCount
                 ]);
                 ?></h1>

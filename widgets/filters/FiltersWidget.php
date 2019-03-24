@@ -117,7 +117,7 @@ class FiltersWidget extends \panix\engine\data\Widget
     {
         $model = Product::find();
         //$model->attachBehaviors($model->behaviors());
-        $model->published();
+
         // $model->applyCategories($this->model);
         if ($this->model)
             $model->andWhere([Product::tableName() . '.main_category_id' => $this->model->id]);
@@ -128,7 +128,7 @@ class FiltersWidget extends \panix\engine\data\Widget
             $model->applySearch(Yii::$app->request->get('q'));
         }
 
-
+        $model->published();
         $newData = [];
         $newData[$attribute->name][] = $option->id;
         $model->withEavAttributes($newData);
@@ -209,7 +209,7 @@ class FiltersWidget extends \panix\engine\data\Widget
         //@todo: Fix manufacturer translation
 
         $query = Product::find();
-        $query->published();
+
         //$query->applyCategories($dataModel);
         if ($this->model)
             $query->andWhere([Product::tableName() . '.main_category_id' => $this->model->id]);
@@ -217,7 +217,7 @@ class FiltersWidget extends \panix\engine\data\Widget
         if (Yii::$app->request->get('q') && Yii::$app->requestedRoute == 'shop/category/search') {
             $query->applySearch(Yii::$app->request->get('q'));
         }
-
+        $query->published();
         $queryClone = clone $query;
         $queryMan = $queryClone->addSelect(['manufacturer_id', Product::tableName() . '.id']);
         $queryMan->joinWith([
