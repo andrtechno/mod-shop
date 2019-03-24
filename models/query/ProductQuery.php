@@ -146,7 +146,7 @@ class ProductQuery extends ActiveQuery
     {
         $tableName = Product::tableName();
         $tableNameCur = Currency::tableName();
-        $this->addSelect(["{$function}((CASE WHEN ({$tableName}.`currency_id`)
+        $this->addSelect([$tableName.'.*',"{$function}((CASE WHEN ({$tableName}.`currency_id`)
                     THEN
                         ({$tableName}.`price` * (SELECT rate FROM {$tableNameCur} `currency` WHERE `currency`.`id`={$tableName}.`currency_id`))
                     ELSE
