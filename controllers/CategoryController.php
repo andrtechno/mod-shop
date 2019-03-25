@@ -44,36 +44,6 @@ class CategoryController extends WebController
     public $maxprice, $minprice;
 
     /**
-     * @param string $function
-     * @return mixed
-
-    public function aggregatePrice($function = 'MIN')
-     * {
-     * $query = clone $this->currentQuery;
-     *
-     * $query->select('' . $function . '((CASE WHEN ({{%shop__product}}.`currency_id`)
-     * THEN
-     * {{%shop__product}}.`price` * (SELECT rate FROM {{%shop__currency}} `currency` WHERE `currency`.`id`={{%shop__product}}.`currency_id`)
-     * ELSE
-     * {{%shop__product}}.`price`
-     * END)) AS aggregation_price');
-     *
-     * $query->addOrderBy(["aggregation_price" => ($function === 'MIN') ? SORT_ASC : SORT_DESC]);
-     * $query->distinct(false);      //@todo panix 24.02.2019 added
-     * $query->limit(1);
-     *
-     *
-     *
-     * $result = $query->asArray()->one();
-     *
-     * if ($result) {
-     * return $result['aggregation_price'];
-     * }
-     * return null;
-     * }*/
-
-
-    /**
      * @return mixed
      */
     public function getCurrentMinPrice()
@@ -279,11 +249,6 @@ class CategoryController extends WebController
 
 
 
-        if (Yii::$app->request->get('sort') == 'price' || Yii::$app->request->get('sort') == '-price') {
-            $this->query->aggregatePriceSelect((Yii::$app->request->get('sort') == 'price') ? SORT_ASC : SORT_DESC);
-        }
-       // $this->query->createCommand()->rawSql;die;
-
 
         if ($data instanceof Category) {
             //  $cr->with = array('manufacturerActive');
@@ -293,8 +258,8 @@ class CategoryController extends WebController
             //        'scopes' => array('published')
             //)));
 
-            //$this->query->applyCategories($this->dataModel);
-            $this->query->andWhere([Product::tableName().'.main_category_id'=>$this->dataModel->id]);
+            $this->query->applyCategories($this->dataModel);
+            //$this->query->andWhere([Product::tableName().'.main_category_id'=>$this->dataModel->id]);
 
             //  $this->query->with('manufacturerActive');
         } else {
@@ -334,6 +299,11 @@ class CategoryController extends WebController
         //$this->query->orderBy(['price'=>SORT_DESC]);
 
 
+
+        if (Yii::$app->request->get('sort') == 'price' || Yii::$app->request->get('sort') == '-price') {
+            $this->query->aggregatePriceSelect((Yii::$app->request->get('sort') == 'price') ? SORT_ASC : SORT_DESC);
+        }
+        // $this->query->createCommand()->rawSql;die;
 
 
 

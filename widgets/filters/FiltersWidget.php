@@ -118,9 +118,10 @@ class FiltersWidget extends \panix\engine\data\Widget
         $model = Product::find();
         //$model->attachBehaviors($model->behaviors());
 
-        // $model->applyCategories($this->model);
-        if ($this->model)
-            $model->andWhere([Product::tableName() . '.main_category_id' => $this->model->id]);
+        if ($this->model) {
+            $model->applyCategories($this->model);
+            //$model->andWhere([Product::tableName() . '.main_category_id' => $this->model->id]);
+        }
 
 
 
@@ -206,13 +207,12 @@ class FiltersWidget extends \panix\engine\data\Widget
     public function getCategoryManufacturers()
     {
 
-        //@todo: Fix manufacturer translation
-
         $query = Product::find();
 
-        //$query->applyCategories($dataModel);
-        if ($this->model)
-            $query->andWhere([Product::tableName() . '.main_category_id' => $this->model->id]);
+        if ($this->model){
+            $query->applyCategories($this->model);
+            //$query->andWhere([Product::tableName() . '.main_category_id' => $this->model->id]);
+        }
 
         if (Yii::$app->request->get('q') && Yii::$app->requestedRoute == 'shop/category/search') {
             $query->applySearch(Yii::$app->request->get('q'));
@@ -257,8 +257,10 @@ class FiltersWidget extends \panix\engine\data\Widget
                 if ($m) {
                     $query = Product::find();
                     $query->published();
-                    if ($this->model)
-                        $query->andWhere([Product::tableName() . '.main_category_id' => $this->model->id]);
+                    if ($this->model) {
+                        $query->applyCategories($this->model);
+                        //$query->andWhere([Product::tableName() . '.main_category_id' => $this->model->id]);
+                    }
 
                     //$q->applyMinPrice($this->convertCurrency(Yii::app()->request->getQuery('min_price')))
                     //$q->applyMaxPrice($this->convertCurrency(Yii::app()->request->getQuery('max_price')))

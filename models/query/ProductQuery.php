@@ -146,28 +146,12 @@ class ProductQuery extends ActiveQuery
     {
         $tableName = Product::tableName();
         $tableNameCur = Currency::tableName();
-        $this->addSelect([$tableName.'.*',"{$function}((CASE WHEN ({$tableName}.`currency_id` != NULL)
+        $this->addSelect([$tableName.'.*',"{$function}(CASE WHEN ({$tableName}.`currency_id`)
                     THEN
                         ({$tableName}.`price` * (SELECT rate FROM {$tableNameCur} WHERE {$tableNameCur}.`id`={$tableName}.`currency_id`))
                     ELSE
                         {$tableName}.`price`
-                END)) AS aggregation_price"]);
-
-
-       /* $this->addSelect(['*', "{$function}((CASE WHEN ({$tableName}.`currency_id`)
-                    THEN
-                        ({$tableName}.`price` * (SELECT rate FROM {$tableNameCur} `currency` WHERE `currency`.`id`={$tableName}.`currency_id`))
-                    ELSE
-                        {$tableName}.`price`
-                END)) AS aggregation_price"]);*/
-
-
-        /*$this->select("{$function}((CASE WHEN ({$tableName}.`currency_id`)
-                    THEN
-                        ({$tableName}.`price` * (SELECT rate FROM {$tableNameCur} `currency` WHERE `currency`.`id`={$tableName}.`currency_id`))
-                    ELSE
-                        {$tableName}.`price`
-                END)) AS aggregation_price");*/
+                END) AS aggregation_price"]);
 
         $this->addOrderBy(["aggregation_price" => ($function === 'MIN') ? SORT_ASC : SORT_DESC]);
         $this->distinct(false);
@@ -204,7 +188,7 @@ class ProductQuery extends ActiveQuery
         $tableName = Product::tableName();
         $tableNameCur = Currency::tableName();
 
-       $this->addSelect([$tableName.'.*',"(CASE WHEN ({$tableName}.`currency_id` != NULL)
+       $this->addSelect([$tableName.'.*',"(CASE WHEN ({$tableName}.`currency_id`)
                     THEN
                         ({$tableName}.`price` * (SELECT rate FROM {$tableNameCur} WHERE {$tableNameCur}.`id`={$tableName}.`currency_id`))
                     ELSE
