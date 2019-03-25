@@ -742,21 +742,21 @@ class Product extends ActiveRecord
         $this->$attr = str_replace(',', '.', $this->$attr);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getEavAttributes2($attributes = [])
+    public function getPriceByQuantity($q = 1)
     {
-        return \mirocow\eav\models\EavAttribute::find()
-            ->joinWith('entity')
-            ->where([
-                //'categoryId' => $this->categories[0]->id,
-                'entityModel' => $this::className()
-            ])
-            ->orderBy(['order' => SORT_ASC]);
+
+        return false;///delete
+        $cr = new CDbCriteria();
+        $cr->condition = '`t`.`product_id`=:pid AND `t`.`order_from` <= :from';
+        $cr->params = array(
+            ':pid' => $this->id,
+            ':from' => $q
+        );
+        $cr->order = 'order_from DESC';
+        return ShopProductPrices::model()->find($cr);
     }
 
-    public static function calculatePrices($product, array $variants, $configuration)
+    public static function calculatePrices($product, array $variants, $configuration,$quantity = 1)
     {
         if (($product instanceof Product) === false)
             $product = Product::findOne($product);
@@ -767,14 +767,12 @@ class Product extends ActiveRecord
         if ($configuration instanceof Product) {
             $result = $configuration->price;
         } else {
-            if ($product->currency_id) {
-                $result = $product->price;
-            } else {
-
-                $result = $product->getFrontPrice();
-                //$result = $product->price;
-            }
-            //  $result = $product->price;
+           // if ($quantity > 1 && ($pr = $product->getPriceByQuantity($quantity))) {
+                //$calcPrice = $item['model']->value;
+             //   $result = $pr->value;
+            //} else {
+                $result = $product->appliedDiscount ? $product->discountPrice : $product->price;
+           // }
         }
 
         // if $variants contains not models
