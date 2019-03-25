@@ -166,7 +166,7 @@ class ProductQuery extends ActiveQuery
         if ($result) {
             return $result['aggregation_price'];
         }
-        return $this;
+        return null;
     }
 
     /**
