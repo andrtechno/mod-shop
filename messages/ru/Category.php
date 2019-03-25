@@ -9,4 +9,7 @@ return [
     'CATEGORY_TREE_RENAME' => 'Категория успешно переименована.',
     'UPDATE_TITLE'=>'Редактирование {name}',
     'CREATE_TITLE'=>'Добавление',
+    'SEO_PRODUCT_TITLE' => 'Шаблон Title для товара',
+    'SEO_PRODUCT_KEYWORDS' => 'Шаблон Keywords для товара',
+    'SEO_PRODUCT_DESCRIPTION' => 'Шаблон Description для товара',
 ];

@@ -5,6 +5,7 @@ use panix\engine\bootstrap\ActiveForm;
 use panix\mod\shop\models\Category;
 use panix\ext\tinymce\TinyMce;
 use panix\engine\bootstrap\Alert;
+use panix\ext\taginput\TagInput;
 ?>
 <div class="card bg-light">
     <div class="card-header">
@@ -24,8 +25,6 @@ use panix\engine\bootstrap\Alert;
         }
         ?>
 
-
-
         <?php
         $form = ActiveForm::begin([
                     'options' => ['class' => 'form-horizontal'],
@@ -34,14 +33,10 @@ use panix\engine\bootstrap\Alert;
 
         <?= $form->field($model, 'name')->textInput(['maxlength' => 255]) ?>
         <?= $form->field($model, 'seo_alias')->textInput(['maxlength' => 255]) ?>
-
-
-        <?=
-        $form->field($model, 'description')->widget(TinyMce::class, [
-            'options' => ['rows' => 6],
-        ]);
-        ?>
-
+        <?= $form->field($model, 'description')->widget(TinyMce::class, ['options' => ['rows' => 6]]); ?>
+        <?= $form->field($model, 'seo_product_title')->textInput(['maxlength' => 255]); ?>
+        <?= $form->field($model, 'seo_product_keywords')->widget(TagInput::class); ?>
+        <?= $form->field($model, 'seo_product_description')->textarea(['options' => ['rows' => 6]]); ?>
         <div class="form-group text-center">
             <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'CREATE') : Yii::t('app', 'UPDATE'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
         </div>

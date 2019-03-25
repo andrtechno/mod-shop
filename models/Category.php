@@ -45,11 +45,11 @@ class Category extends ActiveRecord
                 'pattern' => '/^([a-z0-9-])+$/i',
                 'message' => Yii::t('app', 'PATTERN_URL')
             ],
-            [['name', 'seo_alias'], 'trim'],
+            [['name', 'seo_alias','seo_product_title'], 'trim'],
 
 
             [['name', 'seo_alias'], 'required'],
-            [['name'], 'string', 'max' => 255],
+            [['name','seo_product_title','seo_product_keywords','seo_product_description'], 'string', 'max' => 255],
             ['description', 'safe']
         ];
     }
@@ -61,7 +61,10 @@ class Category extends ActiveRecord
                 'class' => TranslateBehavior::class,
                 'translationAttributes' => [
                     'name',
-                    'description'
+                    'description',
+                    'seo_product_title',
+                    'seo_product_keywords',
+                    'seo_product_description'
                 ]
             ],
             'MenuArrayBehavior' => array(
