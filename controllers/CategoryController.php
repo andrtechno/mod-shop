@@ -282,6 +282,7 @@ class CategoryController extends WebController
         if (Yii::$app->request->get('sort') == 'price' || Yii::$app->request->get('sort') == '-price') {
             $this->query->aggregatePriceSelect((Yii::$app->request->get('sort') == 'price') ? SORT_ASC : SORT_DESC);
         }
+       // $this->query->createCommand()->rawSql;die;
 
 
         if ($data instanceof Category) {
@@ -307,7 +308,6 @@ class CategoryController extends WebController
             $manufacturers = explode(',', Yii::$app->request->get('manufacturer', ''));
             $this->query->applyManufacturers($manufacturers);
         }
-
 
 
         // Create clone of the current query to use later to get min and max prices.

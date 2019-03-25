@@ -80,10 +80,10 @@ class ProductQuery extends ActiveQuery
         if ($value) {
             //  $this->andWhere(['>=', 'price', (int)$value]);
 
-            $this->andWhere("CASE WHEN ({$tableName}.`currency_id`) THEN
-            ({$tableName}.price * (SELECT rate FROM {$tableNameCur} `currency` WHERE `currency`.`id`={$tableName}.`currency_id`)) >= {$value}
+            $this->andWhere("CASE WHEN ({$tableName}.`currency_id` != NULL) THEN
+            ({$tableName}.`price` * (SELECT rate FROM {$tableNameCur} WHERE {$tableNameCur}.`id`={$tableName}.`currency_id`)) >= {$value}
         ELSE
-        	{$tableName}.price >= {$value}
+        	{$tableName}.`price` >= {$value}
         END");
 
         }
@@ -102,10 +102,10 @@ class ProductQuery extends ActiveQuery
         if ($value) {
             //$this->andWhere(['<=', 'price', (int)$value]);
 
-            $this->andWhere("CASE WHEN ({$tableName}.`currency_id`) THEN
-            ({$tableName}.price * (SELECT rate FROM {$tableNameCur} `currency` WHERE `currency`.`id`={$tableName}.`currency_id`)) <= {$value}
+            $this->andWhere("CASE WHEN ({$tableName}.`currency_id` != NULL) THEN
+            ({$tableName}.`price` * (SELECT rate FROM {$tableNameCur} WHERE {$tableNameCur}.`id`={$tableName}.`currency_id`)) <= {$value}
         ELSE
-        	{$tableName}.price <= {$value}
+        	{$tableName}.`price` <= {$value}
         END");
         }
         return $this;
@@ -121,10 +121,10 @@ class ProductQuery extends ActiveQuery
         $tableName = Product::tableName();
         $tableNameCur = Currency::tableName();
         if ($value) {
-            $this->andWhere("CASE WHEN ({$tableName}.`currency_id`) THEN
-            ({$tableName}.price * (SELECT rate FROM {$tableNameCur} `currency` WHERE `currency`.`id`={$tableName}.`currency_id`)) = {$value}
+            $this->andWhere("CASE WHEN ({$tableName}.`currency_id` != NULL) THEN
+            ({$tableName}.`price` * (SELECT rate FROM {$tableNameCur} WHERE {$tableNameCur}.`id`={$tableName}.`currency_id`)) = {$value}
         ELSE
-        	{$tableName}.price = {$value}
+        	{$tableName}.`price` = {$value}
         END");
         }
         return $this;
@@ -146,9 +146,9 @@ class ProductQuery extends ActiveQuery
     {
         $tableName = Product::tableName();
         $tableNameCur = Currency::tableName();
-        $this->addSelect([$tableName.'.*',"{$function}((CASE WHEN ({$tableName}.`currency_id`)
+        $this->addSelect([$tableName.'.*',"{$function}((CASE WHEN ({$tableName}.`currency_id` != NULL)
                     THEN
-                        ({$tableName}.`price` * (SELECT rate FROM {$tableNameCur} `currency` WHERE `currency`.`id`={$tableName}.`currency_id`))
+                        ({$tableName}.`price` * (SELECT rate FROM {$tableNameCur} WHERE {$tableNameCur}.`id`={$tableName}.`currency_id`))
                     ELSE
                         {$tableName}.`price`
                 END)) AS aggregation_price"]);
@@ -204,22 +204,15 @@ class ProductQuery extends ActiveQuery
         $tableName = Product::tableName();
         $tableNameCur = Currency::tableName();
 
-        $this->addSelect([$tableName.'.*',"(CASE WHEN ({$tableName}.`currency_id`)
+       $this->addSelect([$tableName.'.*',"(CASE WHEN ({$tableName}.`currency_id` != NULL)
                     THEN
-                        ({$tableName}.`price` * (SELECT rate FROM {$tableNameCur} `currency` WHERE `currency`.`id`={$tableName}.`currency_id`))
+                        ({$tableName}.`price` * (SELECT rate FROM {$tableNameCur} WHERE {$tableNameCur}.`id`={$tableName}.`currency_id`))
                     ELSE
                         {$tableName}.`price`
                 END) AS aggregation_price"]);
 
-
-        /*$this->addSelect(['*', "(CASE WHEN ({$tableName}.`currency_id`)
-                    THEN
-                        ({$tableName}.`price` * (SELECT rate FROM {$tableNameCur} `currency` WHERE `currency`.`id`={$tableName}.`currency_id`))
-                    ELSE
-                        {$tableName}.`price`
-                END) AS aggregation_price"]);*/
-
         $this->orderBy(["aggregation_price" => $order]);
+
         return $this;
     }
 
