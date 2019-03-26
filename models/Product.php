@@ -292,6 +292,11 @@ class Product extends ActiveRecord
         return $this->hasMany(Category::class, ['id' => 'category'])->via('categorization')->cache(3600);
     }
 
+    public function getPrices()
+    {
+        return $this->hasMany(ProductPrices::class, ['product_id' => 'id']);
+    }
+
     public function getMainCategory()
     {
         return $this->hasOne(Category::class, ['id' => 'category'])
@@ -308,6 +313,44 @@ class Product extends ActiveRecord
     }
 
 //'variants' => array(self::HAS_MANY, 'ProductVariant', array('product_id'), 'with' => array('attribute', 'option'), 'order' => 'option.ordern'),
+
+    /**
+     * @param array $prices
+     */
+    public function processPrices(array $prices)
+    {
+        $dontDelete = array();
+
+        foreach ($prices as $index => $price) {
+            if ($price['value'] > 0) {
+
+                $record = ProductPrices::find()->where(array(
+                    'id' => $index,
+                    'product_id' => $this->id,
+                ))->one();
+
+                if (!$record) {
+                    $record = new ProductPrices;
+                }
+                $record->free_from = $price['free_from'];
+                $record->value = $price['value'];
+                $record->product_id = $this->id;
+                $record->save();
+
+                $dontDelete[] = $record->id;
+            }
+        }
+
+        // Delete not used relations
+        if (sizeof($dontDelete) > 0) {
+            ProductPrices::deleteAll(
+                ['AND', 'product_id=:id', ['NOT IN', 'id', $dontDelete]], [':id' => $this->id]);
+        } else {
+            // Delete all relations
+            ProductPrices::deleteAll('product_id=:id', [':id' => $this->id]);
+        }
+
+    }
 
     /**
      * Set product categories and main category
@@ -756,7 +799,7 @@ class Product extends ActiveRecord
         return ShopProductPrices::model()->find($cr);
     }
 
-    public static function calculatePrices($product, array $variants, $configuration,$quantity = 1)
+    public static function calculatePrices($product, array $variants, $configuration, $quantity = 1)
     {
         if (($product instanceof Product) === false)
             $product = Product::findOne($product);
@@ -767,12 +810,12 @@ class Product extends ActiveRecord
         if ($configuration instanceof Product) {
             $result = $configuration->price;
         } else {
-           // if ($quantity > 1 && ($pr = $product->getPriceByQuantity($quantity))) {
-                //$calcPrice = $item['model']->value;
-             //   $result = $pr->value;
+            // if ($quantity > 1 && ($pr = $product->getPriceByQuantity($quantity))) {
+            //$calcPrice = $item['model']->value;
+            //   $result = $pr->value;
             //} else {
-                $result = $product->appliedDiscount ? $product->discountPrice : $product->price;
-           // }
+            $result = $product->appliedDiscount ? $product->discountPrice : $product->price;
+            // }
         }
 
         // if $variants contains not models

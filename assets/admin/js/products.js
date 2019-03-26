@@ -52,3 +52,54 @@ $('#product-use_configurations, #product-type_id').change(function () {
         }
     });
 });
+
+
+
+var price_id = Math.random();
+
+$('.remove-price').click(function (e) {
+    // e.preventDefault();
+    var id = $(this).data('price-id');
+    $('#price-row-'+$(this).data('price-id')).remove();
+    return false;
+});
+
+$('#ShopProduct_unit').change(function(){
+    $('.unit-name').text($(this).find(":selected").text());
+});
+
+$('#ShopProduct_currency_id').change(function(){
+    $('.currency-name').text($(this).find(":selected").text());
+});
+
+
+$('#add-price').click(function (e) {
+    e.preventDefault();
+    var rand = parseInt(Math.random()*100000);
+    var selector = $("#extra-prices");
+    console.log('add price');
+
+
+
+    selector.prepend('<div id="price-row-'+rand+'"><hr/><div class="row required">' +
+        '<label class="col-sm-3 col-md-3 col-lg-2 col-form-label" for="productprices-'+rand+'-value">Цена</label>' +
+        '<div class="col-sm-9 col-md-3 col-lg-3">' +
+        '<div class="input-group mb-2">' +
+        '<input class="form-control flashing-input" type="text" value="0.00" name="ProductPrices['+rand+'][value]" id="productprices-'+rand+'-value">' +
+        '<div class="input-group-append"><span class="col-form-label ml-3"><span class="currency-name">грн.</span> за <span class="unit-name">шт.</span> <a href="#" onClick="$(\'#price-row-'+rand+'\').remove(); return false;" data-price-id="'+rand+'" class="remove-price btn btn-sm btn-danger"><i class="icon-delete"></i></a></span></div>' +
+        '</div>' +
+        '</div>' +
+        '</div>' +
+        '<div class="row required">' +
+        '<label class="col-sm-3 col-md-3 col-lg-2 col-form-label" for="productprices-'+rand+'-free_from">При заказе от</label>' +
+        '<div class="col-sm-9 col-md-3 col-lg-3">' +
+        '<div class="input-group mb-3 mb-sm-0">' +
+        '<input class="form-control flashing-input" type="text" value="2" name="ProductPrices['+rand+'][free_from]" id="productprices-'+rand+'-free_from">' +
+        '<div class="input-group-append"><span class="col-form-label ml-3 unit-name">шт.</span></div>' +
+        '</div>' +
+        '</div>' +
+        '</div>' +
+        '</div>');
+
+
+});

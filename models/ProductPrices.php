@@ -1,0 +1,53 @@
+<?php
+
+namespace panix\mod\shop\models;
+
+use Yii;
+use panix\mod\shop\models\query\ProductQuery;
+use yii\db\ActiveRecord;
+
+class ProductPrices extends ActiveRecord
+{
+
+
+    const route = '/admin/shop/default';
+    const MODULE_ID = 'shop';
+
+    public static function find2()
+    {
+        return new ProductQuery(get_called_class());
+    }
+
+
+    /**
+     * @inheritdoc
+     */
+    public static function tableName()
+    {
+        return '{{%shop__product_prices}}';
+    }
+
+    /**
+     * Replaces comma to dot
+     * @param $attr
+     */
+    public function commaToDot($attr)
+    {
+        $this->$attr = str_replace(',', '.', $this->$attr);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function rules()
+    {
+        return [
+            ['value', 'commaToDot'],
+            [['free_from', 'value'], 'required'],
+            [['free_from'], 'integer'],
+            [['value'], 'safe'],
+        ];
+    }
+
+
+}

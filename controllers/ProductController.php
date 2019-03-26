@@ -2,10 +2,12 @@
 
 namespace panix\mod\shop\controllers;
 
+use panix\engine\Html;
 use Yii;
 use panix\engine\controllers\WebController;
 use panix\mod\shop\models\Product;
 use panix\mod\shop\models\Category;
+use yii\helpers\Url;
 
 class ProductController extends WebController
 {
@@ -61,7 +63,34 @@ class ProductController extends WebController
             $this->description = $this->dataModel->description();
             $this->view->title = $this->dataModel->title();
         }
+
+        $this->registerSessionViews($this->dataModel->id);
+        $this->view->registerMetaTag(['property' => 'og:image', 'content' => Url::toRoute($this->dataModel->getMainImage()->url, true)]);
+        $this->view->registerMetaTag(['property' => 'og:description', 'content' => (!empty($this->dataModel->short_description)) ? $this->dataModel->short_description : $this->dataModel->name]);
+        $this->view->registerMetaTag(['property' => 'og:title', 'content' => Html::encode($this->dataModel->name)]);
+        $this->view->registerMetaTag(['property' => 'og:image:alt', 'content' => Html::encode($this->dataModel->name)]);
+        $this->view->registerMetaTag(['property' => 'og:type', 'content' => 'product']);
+        $this->view->registerMetaTag(['property' => 'og:url', 'content' => Url::toRoute($this->dataModel->getUrl(), true)]);
+
+
         return $this->render('view', ['model' => $this->dataModel]);
+    }
+
+    protected function registerSessionViews($id = null)
+    {
+        //unset($_SESSION['views']);
+        $session = Yii::$app->session->get('views');
+        Yii::$app->session->setTimeout(86400 * 7);
+
+        if (empty($session)) {
+            Yii::$app->session['views'] = [];
+        }
+
+        if (isset($session)) {
+            if (!in_array($id, $_SESSION['views'])) {
+                array_push($_SESSION['views'], $id);
+            }
+        }
     }
 
     /**

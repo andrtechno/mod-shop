@@ -10,13 +10,9 @@ use panix\ext\tinymce\TinyMce;
 <?= $form->field($model, 'seo_alias')->textInput(['maxlength' => 255]) ?>
 <?= $form->field($model, 'sku')->textInput(['maxlength' => 255]) ?>
 
-<?php
 
-if ($model->use_configurations) {
-    echo $form->field($model, 'price')->hiddenInput()->label(false);
-} else {
-    echo $form->field($model, 'price')->textInput(['maxlength' => 10]);
-}
+<?php
+echo $this->render('_prices',['model'=>$model,'form'=>$form]);
 ?>
 <?=
 
@@ -24,12 +20,7 @@ $form->field($model, 'manufacturer_id')->dropDownList(ArrayHelper::map(Manufactu
     'prompt' => 'Укажите производителя'
 ]);
 ?>
-<?=
 
-$form->field($model, 'currency_id')->dropDownList(ArrayHelper::map(\panix\mod\shop\models\Currency::find()->andWhere(['!=','id', Yii::$app->currency->main->id])->all(), 'id', 'name'), [
-    'prompt' => 'Укажите валюту'
-]);
-?>
 
 <?=
 

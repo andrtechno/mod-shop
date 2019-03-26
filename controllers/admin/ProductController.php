@@ -151,11 +151,12 @@ class ProductController extends AdminController
         }
 
 
-        if ($model->load($post) && $model->validate() && $this->validateAttributes($model)) {
+        if ($model->load($post) && $model->validate() && $this->validateAttributes($model) && $this->validatePrices($model)) {
 
             $model->setRelatedProducts(Yii::$app->request->post('RelatedProductId'), []);
 
             $model->save();
+
 
             $mainCategoryId = 1;
             if (isset($_POST['Product']['main_category_id']))
@@ -182,10 +183,12 @@ class ProductController extends AdminController
                     $model->attachImage('uploads/' . $uniqueName . '_' . $file->baseName . '.' . $file->extension);
                 }
             }
+            $model->processPrices(Yii::$app->request->post('ProductPrices', []));
             $this->processAttributes($model);
             // Process variants
             $this->processVariants($model);
             $this->processConfigurations($model);
+
            // die;
             Yii::$app->session->setFlash('success', \Yii::t('app', 'SUCCESS_CREATE'));
             if ($model->isNewRecord) {
@@ -199,7 +202,28 @@ class ProductController extends AdminController
             'model' => $model,
         ]);
     }
+    public function validatePrices(Product $model)
+    {
+        $pricesPost = Yii::$app->request->post('ProductPrices', array());
 
+        $errors = false;
+        $orderFrom = [];
+
+        foreach ($pricesPost as $index => $price) {
+            $orderFrom[] = $price['free_from'];
+            if ($price['value'] >= $model->price) {
+                $errors = true;
+                $model->addError('price', $model::t('ERROR_PRICE_MAX_BASIC'));
+            }
+        }
+
+        if (count($orderFrom) !== count(array_unique($orderFrom))) {
+            $errors = true;
+            $model->addError('price', $model::t('ERROR_PRICE_DUPLICATE_ORDER_FROM'));
+        }
+
+        return !$errors;
+    }
     public function actionAddOptionToAttribute()
     {
         $attribute = Attribute::findOne($_GET['attr_id']);
