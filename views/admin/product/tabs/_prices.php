@@ -28,7 +28,8 @@ if ($model->use_configurations) {
   
   {test}{hint}{error}
 <div class="input-group-append">
-    <span class="input-group-text">@</span>
+    <span class="input-group-text"><a id="add-price" class="text-success" href="#"><i class="icon-add"></i> <?= $model::t(\'ADD_WHOLESALE_PRICE\'); ?>
+    </a></span>
   </div>
 </div>',
     ])->textInput([
@@ -37,18 +38,12 @@ if ($model->use_configurations) {
     ]);
 }
 ?>
-<?=
 
-$form->field($model, 'currency_id')->dropDownList(ArrayHelper::map(Currency::find()->andWhere(['!=', 'id', Yii::$app->currency->main->id])->all(), 'id', 'name'), [
-    'prompt' => 'Укажите валюту'
-]);
-?>
 
 
 <div class="form-group row field_price">
 
-    <a id="add-price" class="text-success" href="#"><i class="icon-add"></i> <?= $model::t('ADD_WHOLESALE_PRICE'); ?>
-    </a>
+
 
 
     <div class="col" id="extra-prices">
