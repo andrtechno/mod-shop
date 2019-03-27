@@ -5,6 +5,7 @@ namespace panix\mod\shop;
 use Yii;
 use panix\engine\WebModule;
 use yii\base\BootstrapInterface;
+use panix\mod\admin\components\SidebarMenu;
 
 class Module extends WebModule implements BootstrapInterface
 {
@@ -117,9 +118,10 @@ class Module extends WebModule implements BootstrapInterface
 
     public function getAdminSidebar()
     {
-        $mod = new \panix\engine\bootstrap\Nav;
-        $items = $mod->findMenu($this->id);
-        return $items['items'];
+        //$mod = new SidebarMenu;
+        //$items = $mod->findMenu($this->id);
+        //return $items['items'];
+        return $this->getAdminMenu()[$this->id]['items'];
     }
 
 
