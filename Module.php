@@ -5,6 +5,7 @@ namespace panix\mod\shop;
 use Yii;
 use panix\engine\WebModule;
 use yii\base\BootstrapInterface;
+use yii\helpers\ArrayHelper;
 
 class Module extends WebModule implements BootstrapInterface
 {
@@ -109,7 +110,12 @@ class Module extends WebModule implements BootstrapInterface
                         'label' => Yii::t('app', 'SETTINGS'),
                         "url" => ['/shop/settings'],
                         'icon' => 'settings'
-                    ]
+                    ],
+                    'integration' => [
+                        'label' => 'Интеграция',
+                        'icon' => 'refresh',
+                        'items' => []
+                    ],
                 ],
             ],
         ];
@@ -117,6 +123,41 @@ class Module extends WebModule implements BootstrapInterface
 
     public function getAdminSidebar()
     {
+        /*return [
+            [
+                'label' => Yii::t('app', 'SETTINGS'),
+                "url" => ['/shop/settings'],
+                'icon' => 'settings'
+            ],
+            'integration' => [
+                'label' => 'Интеграция',
+                'icon' => $this->icon,
+                'items' => [
+                    [
+                        'label' => Yii::t('app', 'SETTINGS'),
+                        "url" => ['/shop/settings'],
+                        'icon' => 'settings'
+                    ],
+                ]
+            ],
+            'integration2' => [
+                'label' => 'Интеграция',
+                'icon' => $this->icon,
+                'items' => [
+                    [
+                        'label' => Yii::t('app', 'SETTINGS'),
+                        "url" => ['/shop/settings'],
+                        'icon' => 'settings'
+                    ],
+                    [
+                        'label' => Yii::t('app', 'SETTINGS'),
+                        "url" => ['/shop/settings'],
+                        'icon' => 'settings'
+                    ],
+                ]
+            ],
+        ];*/
+
         return (new \panix\engine\bootstrap\BackendNav)->findMenu($this->id)['items'];
     }
 
