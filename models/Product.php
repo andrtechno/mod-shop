@@ -2,8 +2,8 @@
 
 namespace panix\mod\shop\models;
 
-use app\common\modules\sitemap\Sitemap;
-use app\common\modules\sitemap\behaviors\SitemapBehavior;
+use app\modules\sitemap\Sitemap;
+use app\modules\sitemap\behaviors\SitemapBehavior;
 use panix\mod\user\models\User;
 use Yii;
 use panix\engine\CMS;
@@ -752,7 +752,7 @@ class Product extends ActiveRecord
         ];
         if (Yii::$app->getModule('seo'))
             $a['seo'] = [
-                'class' => '\app\common\modules\seo\components\SeoBehavior',
+                'class' => '\app\modules\seo\components\SeoBehavior',
                 'url' => $this->getUrl()
             ];
         $a['translate'] = [
