@@ -33,11 +33,11 @@ class AttributeGroupController extends AdminController {
 
         $this->breadcrumbs[] = [
             'label' => Yii::t('shop/default', 'MODULE_NAME'),
-            'url' => ['/shop']
+            'url' => ['/admin/shop']
         ];
         $this->breadcrumbs[] = [
             'label' => Yii::t('shop/admin', 'ATTRIBUTES'),
-            'url' => ['/shop/attribute']
+            'url' => ['/admin/shop/attribute']
         ];
         $this->breadcrumbs[] = $this->pageName;
 
@@ -75,7 +75,7 @@ class AttributeGroupController extends AdminController {
         ];
         $this->breadcrumbs[] = [
             'label' => Yii::t('shop/admin', 'ATTRIBUTES'),
-            'url' => ['/shop/attribute']
+            'url' => ['/admin/shop/attribute']
         ];
         $this->breadcrumbs[] = [
             'label' => $this->pageName,

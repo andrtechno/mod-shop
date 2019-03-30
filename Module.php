@@ -66,49 +66,49 @@ class Module extends WebModule implements BootstrapInterface
                         'items' => [
                             [
                                 'label' => Yii::t('shop/admin', 'LIST'),
-                                "url" => ['/shop/product'],
+                                "url" => ['/admin/shop/product'],
                                 'icon' => 'list',
                             ],
                             [
                                 'label' => Yii::t('shop/admin', 'CREATE_PRODUCT'),
-                                "url" => ['/shop/product/create'],
+                                "url" => ['/admin/shop/product/create'],
                                 'icon' => 'add',
                             ]
                         ]
                     ],
                     [
                         'label' => Yii::t('shop/admin', 'CATEGORIES'),
-                        "url" => ['/shop/category'],
+                        "url" => ['/admin/shop/category'],
                         'icon' => 'folder-open'
                     ],
                     [
                         'label' => Yii::t('shop/admin', 'ATTRIBUTES'),
-                        "url" => ['/shop/attribute'],
+                        "url" => ['/admin/shop/attribute'],
                         'icon' => 'filter'
                     ],
                     [
                         'label' => Yii::t('shop/admin', 'TYPE_PRODUCTS'),
-                        "url" => ['/shop/type'],
+                        "url" => ['/admin/shop/type'],
                         'icon' => 't'
                     ],
                     [
                         'label' => Yii::t('shop/admin', 'CURRENCY'),
-                        "url" => ['/shop/currency'],
+                        "url" => ['/admin/shop/currency'],
                         'icon' => 'currencies'
                     ],
                     [
                         'label' => Yii::t('shop/admin', 'MANUFACTURER'),
-                        "url" => ['/shop/manufacturer'],
+                        "url" => ['/admin/shop/manufacturer'],
                         'icon' => 'apple'
                     ],
                     [
                         'label' => Yii::t('shop/admin', 'SUPPLIER'),
-                        "url" => ['/shop/supplier'],
+                        "url" => ['/admin/shop/supplier'],
                         'icon' => 'supplier'
                     ],
                     [
                         'label' => Yii::t('app', 'SETTINGS'),
-                        "url" => ['/shop/settings'],
+                        "url" => ['/admin/shop/settings'],
                         'icon' => 'settings'
                     ],
                     'integration' => [
