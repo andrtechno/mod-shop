@@ -16,6 +16,7 @@ class Module extends WebModule implements BootstrapInterface
     {
         $app->urlManager->addRules(
             [
+
                 'shop/ajax/currency/<id:\d+>' => 'shop/ajax/currency',
                 'shop' => 'shop/default/index',
                 'manufacturer/<seo_alias:\w+>' => 'shop/manufacturer/view',
@@ -48,6 +49,10 @@ class Module extends WebModule implements BootstrapInterface
         }
         if (!(Yii::$app instanceof \yii\console\Application)) {
             parent::init();
+        }
+        if (Yii::$app->id == 'backend') {
+           // $this->setViewPath($this->getBasePath() . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'admin');
+           // $this->controllerNamespace = 'panix\mod\shop\controllers\admin';
         }
 
     }
