@@ -34,6 +34,6 @@
         }
     },
     "extra": {
-        "bootstrap": "panix\\mod\\shop\\MyTest"
+        "bootstrap": "panix\\mod\\shop\\Bootstrap"
     }
 }
