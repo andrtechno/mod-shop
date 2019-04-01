@@ -76,7 +76,11 @@ trait ProductTrait
             'min' => (int)Product::find()->aggregatePrice('MIN'),
             'contentOptions' => ['class' => 'text-center'],
             'value' => function ($model) {
-                return Yii::$app->currency->number_format(Yii::$app->currency->convert($model->price, $model->currency_id)) . ' ' . Yii::$app->currency->main->symbol;
+                $ss='';
+            if($model->appliedDiscount){
+                $ss=$model->discountPrice;
+            }
+                return $ss.Yii::$app->currency->number_format(Yii::$app->currency->convert($model->price, $model->currency_id)) . ' ' . Yii::$app->currency->main->symbol;
             }
         ];
         $columns['created_at'] = [

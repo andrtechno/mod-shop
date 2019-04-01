@@ -153,7 +153,7 @@ class ProductController extends AdminController
 
         if ($model->load($post) && $model->validate() && $this->validateAttributes($model) && $this->validatePrices($model)) {
 
-            $model->setRelatedProducts(Yii::$app->request->post('RelatedProductId'), []);
+            $model->setRelatedProducts(Yii::$app->request->post('RelatedProductId', []));
 
             $model->save();
 
@@ -189,19 +189,29 @@ class ProductController extends AdminController
             $this->processVariants($model);
             $this->processConfigurations($model);
 
-           // die;
-            Yii::$app->session->setFlash('success', \Yii::t('app', 'SUCCESS_CREATE'));
+
+
             if ($model->isNewRecord) {
+                Yii::$app->session->setFlash('success', Yii::t('app', 'SUCCESS_CREATE'));
                 return Yii::$app->getResponse()->redirect(['/shop/product']);
             } else {
-                return Yii::$app->getResponse()->redirect(['/shop/product/update', 'id' => $model->id]);
+                Yii::$app->session->setFlash('success', Yii::t('app', 'SUCCESS_UPDATE'));
+                 return Yii::$app->getResponse()->redirect(['/shop/product/update', 'id' => $model->id]);
             }
+        }else{
+
+            // print_r($model->getErrors());
+            foreach ($model->getErrors() as $key=>$error){
+                Yii::$app->session->setFlash('error', $error[0]);
+            }
+
         }
 
         return $this->render('update', [
             'model' => $model,
         ]);
     }
+
     public function validatePrices(Product $model)
     {
         $pricesPost = Yii::$app->request->post('ProductPrices', array());
@@ -224,6 +234,7 @@ class ProductController extends AdminController
 
         return !$errors;
     }
+
     public function actionAddOptionToAttribute()
     {
         $attribute = Attribute::findOne($_GET['attr_id']);
@@ -273,7 +284,8 @@ class ProductController extends AdminController
             if ($attr->required && empty($_POST['Attribute'][$attr->name])) {
                 $this->tab_errors['attributes'] = true;
                 $errors = true;
-                $model->addError($attr->name, Yii::t('shop/admin', 'FIEND_REQUIRED', ['field' => $attr->title]));
+                $model->addError($attr->name, Yii::t('yii', '{attribute} cannot be blank.', ['attribute' => $attr->title]));
+                $attr->addError($attr->name, Yii::t('yii', '{attribute} cannot be blank.', ['attribute' => $attr->title]));
             }
         }
 

@@ -192,7 +192,7 @@ class Product extends ActiveRecord
         return [
             ['price', 'commaToDot'],
             [['file'], 'file', 'maxFiles' => 10],
-            [['origin_name'], 'string', 'max' => 255],
+            [['origin_name','name', 'seo_alias'], 'string', 'max' => 255],
             [['image'], 'image'],
             ['seo_alias', '\panix\engine\validators\UrlValidator', 'attributeCompare' => 'name'],
             ['seo_alias', 'match',
@@ -200,11 +200,10 @@ class Product extends ActiveRecord
                 'message' => Yii::t('app', 'PATTERN_URL')
             ],
             [['name', 'seo_alias'], 'trim'],
-            [['full_description'], 'string'],
+            [['full_description','discount'], 'string'],
             ['use_configurations', 'boolean', 'on' => self::SCENARIO_INSERT],
             [['sku', 'full_description'], 'default'], // установим ... как NULL, если они пустые
             [['name', 'seo_alias', 'main_category_id', 'price'], 'required'],
-            [['name', 'seo_alias'], 'string', 'max' => 255],
             [['manufacturer_id', 'type_id', 'quantity', 'views', 'added_to_cart_count', 'ordern', 'category_id', 'currency_id'], 'integer'],
             [['name', 'seo_alias', 'full_description', 'use_configurations'], 'safe'],
             //  [['c1'], 'required'], // Attribute field

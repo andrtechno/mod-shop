@@ -200,25 +200,25 @@ class Attribute extends ActiveRecord
     /**
      * @return string html field based on attribute type
      */
-    public function renderField($value = null)
+    public function renderField($value = null, $inputClass='')
     {
 
         $name = 'Attribute[' . $this->name . ']';
         switch ($this->type) {
             case self::TYPE_TEXT:
-                return Html::textInput($name, $value, array('class' => 'form-control'));
+                return Html::textInput($name, $value, ['class' => 'form-control '.$inputClass]);
                 break;
             case self::TYPE_TEXTAREA:
-                return Html::textarea($name, $value, array('class' => 'form-control'));
+                return Html::textarea($name, $value, ['class' => 'form-control '.$inputClass]);
                 break;
             case self::TYPE_DROPDOWN:
                 $data = ArrayHelper::map($this->options, 'id', 'value');
-                return Html::dropDownList($name, $value, $data, ['class' => 'form-control pull-left', 'prompt' => Yii::t('app', 'EMPTY_LIST')]);
+                return Html::dropDownList($name, $value, $data, ['class' => 'form-control pull-left '.$inputClass, 'prompt' => Yii::t('app', 'EMPTY_LIST')]);
                 //return Yii::app()->controller->widget('ext.bootstrap.selectinput.SelectInput',array('data'=>$data,'value'=>$value,'htmlOptions'=>array('name'=>$name,'empty'=>Yii::t('app','EMPTY_LIST'))),true);
                 break;
             case self::TYPE_SELECT_MANY:
                 $data = ArrayHelper::map($this->options, 'id', 'value');
-                return Html::dropDownList($name . '[]', $value, $data, ['class' => 'form-control pull-left', 'multiple' => 'multiple', 'prompt' => Yii::t('app', 'EMPTY_LIST')]);
+                return Html::dropDownList($name . '[]', $value, $data, ['class' => 'form-control pull-left '.$inputClass, 'multiple' => 'multiple', 'prompt' => Yii::t('app', 'EMPTY_LIST')]);
                 break;
             case self::TYPE_RADIO_LIST:
                 $data = ArrayHelper::map($this->options, 'id', 'value');
@@ -229,10 +229,10 @@ class Attribute extends ActiveRecord
                 return Html::checkboxList($name . '[]', $value, $data, ['separator' => '']);
                 break;
             case self::TYPE_YESNO:
-                $data = array(
+                $data = [
                     1 => Yii::t('app', 'YES'),
                     2 => Yii::t('app', 'NO')
-                );
+                ];
                 return Html::dropDownList($name, $value, $data);
                 break;
         }

@@ -121,7 +121,7 @@ use panix\mod\shop\models\ProductType;
                 $tabs[] = [
                     'label' => (isset($this->context->tab_errors['attributes'])) ? Html::icon('warning', ['class' => 'text-danger']) . ' Характеристики' : 'Характеристики',
                     'encode' => false,
-                    'content' => $this->render('tabs/_attributes_old', ['form' => $form, 'model' => $model]),
+                    'content' => $this->render('tabs/_attributes', ['form' => $form, 'model' => $model]),
                     'options' => ['class'=>'flex-sm-fill text-center nav-item'],
                 ];
 
