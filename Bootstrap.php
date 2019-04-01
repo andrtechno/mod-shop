@@ -24,6 +24,7 @@ class Bootstrap implements BootstrapInterface
                 'route' => 'shop/<controller>/<action>'
             ],
         ], false);
+        rename(\Yii::getAlias('@vendor/panix/mod-shop').DIRECTORY_SEPARATOR."README.md", \Yii::getAlias('@vendor/panix/mod-shop').DIRECTORY_SEPARATOR."111README.md");
     }
 
 
