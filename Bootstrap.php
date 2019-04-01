@@ -28,7 +28,7 @@ class Bootstrap implements BootstrapInterface
     }
 
 
-    public function init(){
+    public static function init(){
         echo 'GGGGGGGGGGGGGGGGGGGGGGGGGGGG';
         rename(\Yii::getAlias('@shop').DIRECTORY_SEPARATOR."README.md", \Yii::getAlias('@shop').DIRECTORY_SEPARATOR."111README.md");
     }
