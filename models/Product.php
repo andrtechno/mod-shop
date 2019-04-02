@@ -15,6 +15,7 @@ use panix\mod\shop\models\translate\ProductTranslate;
 use panix\mod\shop\models\RelatedProduct;
 use panix\mod\shop\models\ProductCategoryRef;
 use panix\mod\shop\models\ProductVariant;
+use yii\caching\DbDependency;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -192,7 +193,7 @@ class Product extends ActiveRecord
         return [
             ['price', 'commaToDot'],
             [['file'], 'file', 'maxFiles' => 10],
-            [['origin_name','name', 'seo_alias'], 'string', 'max' => 255],
+            [['origin_name', 'name', 'seo_alias'], 'string', 'max' => 255],
             [['image'], 'image'],
             ['seo_alias', '\panix\engine\validators\UrlValidator', 'attributeCompare' => 'name'],
             ['seo_alias', 'match',
@@ -200,7 +201,7 @@ class Product extends ActiveRecord
                 'message' => Yii::t('app', 'PATTERN_URL')
             ],
             [['name', 'seo_alias'], 'trim'],
-            [['full_description','discount'], 'string'],
+            [['full_description', 'discount'], 'string'],
             ['use_configurations', 'boolean', 'on' => self::SCENARIO_INSERT],
             [['sku', 'full_description'], 'default'], // установим ... как NULL, если они пустые
             [['name', 'seo_alias', 'main_category_id', 'price'], 'required'],
@@ -308,7 +309,7 @@ class Product extends ActiveRecord
     {
         return $this->hasMany(ProductVariant::class, ['product_id' => 'id'])
             ->joinWith(['productAttribute', 'option'])
-            ->orderBy('{{%shop__attribute_option}}.ordern')->cache(3600);
+            ->orderBy(AttributeOption::tableName() . '.ordern');
     }
 
 //'variants' => array(self::HAS_MANY, 'ProductVariant', array('product_id'), 'with' => array('attribute', 'option'), 'order' => 'option.ordern'),

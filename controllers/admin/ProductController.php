@@ -193,10 +193,10 @@ class ProductController extends AdminController
 
             if ($model->isNewRecord) {
                 Yii::$app->session->setFlash('success', Yii::t('app', 'SUCCESS_CREATE'));
-                return Yii::$app->getResponse()->redirect(['/shop/product']);
+                return Yii::$app->getResponse()->redirect(['/admin/shop/product']);
             } else {
                 Yii::$app->session->setFlash('success', Yii::t('app', 'SUCCESS_UPDATE'));
-                 return Yii::$app->getResponse()->redirect(['/shop/product/update', 'id' => $model->id]);
+                 return Yii::$app->getResponse()->redirect(['/admin/shop/product/update', 'id' => $model->id]);
             }
         }else{
 

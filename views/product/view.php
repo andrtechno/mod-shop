@@ -104,7 +104,9 @@ echo \yii\helpers\Inflector::sentence($words);
         </span>
         <?= $model->beginCartForm(); ?>
 
-
+        <?php
+        echo $this->render('_configurations', ['model' => $model]);
+        ?>
         <?php if ($model->appliedDiscount) { ?>
             <span class="price price-strike">
                 <span><?= Yii::$app->currency->number_format(Yii::$app->currency->convert($model->discountPrice)) ?></span>
