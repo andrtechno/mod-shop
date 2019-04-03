@@ -3,11 +3,13 @@
 namespace panix\mod\shop\controllers;
 
 use panix\engine\Html;
+use panix\mod\shop\assets\ProductConfigureAsset;
 use Yii;
 use panix\engine\controllers\WebController;
 use panix\mod\shop\models\Product;
 use panix\mod\shop\models\Category;
 use yii\helpers\Url;
+use yii\web\View;
 
 class ProductController extends WebController
 {
@@ -71,6 +73,18 @@ class ProductController extends WebController
         $this->view->registerMetaTag(['property' => 'og:image:alt', 'content' => Html::encode($this->dataModel->name)]);
         $this->view->registerMetaTag(['property' => 'og:type', 'content' => 'product']);
         $this->view->registerMetaTag(['property' => 'og:url', 'content' => Url::toRoute($this->dataModel->getUrl(), true)]);
+
+        //Yii::app()->clientScript->registerScriptFile($this->module->assetsUrl . '/product.view.js', CClientScript::POS_END);
+        $this->view->registerJs("
+        var penny = " . Yii::$app->currency->active->penny . ";
+        var separator_thousandth = '" . Yii::$app->currency->active->separator_thousandth . "';
+        var separator_hundredth = '" . Yii::$app->currency->active->separator_hundredth . "';
+        ", View::POS_END);
+
+        if ($this->dataModel->use_configurations || $this->dataModel->processVariants())
+            ProductConfigureAsset::register($this->view);
+            //$this->view->registerJsFile($this->module->assetsUrl . '/js/product.view.configurations.js', ['position'=>View::POS_END]);
+
 
 
         return $this->render('view', ['model' => $this->dataModel]);

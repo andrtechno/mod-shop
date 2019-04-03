@@ -99,7 +99,7 @@ echo \yii\helpers\Inflector::sentence($words);
 
 
         <span class="price">
-            <span><?= Yii::$app->currency->number_format($model->getFrontPrice()); ?></span>
+            <span id="product_price"><?= Yii::$app->currency->number_format($model->getFrontPrice()); ?></span>
             <sup><?= Yii::$app->currency->active->symbol; ?></sup>
         </span>
         <?= $model->beginCartForm(); ?>
