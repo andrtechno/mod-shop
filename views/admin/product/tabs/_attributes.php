@@ -46,7 +46,7 @@ $attributes = (isset($model->type->shopAttributes)) ? $model->type->shopAttribut
 
                     $error='';
                     $inputClass='';
-                    if ($a->required) {
+                    if ($a->required && in_array($a->name,$a->getErrors())) {
                         $inputClass = 'is-invalid';
                         $error= Html::error($a, $a->name, ['class' => 'text-danger']);
                     }

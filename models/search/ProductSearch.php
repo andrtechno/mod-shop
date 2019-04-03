@@ -121,6 +121,7 @@ class ProductSearch extends Product
             foreach ($this->exclude as $id) {
                 $query->andFilterWhere(['!=', self::tableName() . '.id', $id]);
             }
+
         }
         if (isset($configure['conf'])) {
             $query->andWhere(['IN', 'id', $configure['conf']]);

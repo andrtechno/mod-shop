@@ -1,30 +1,34 @@
 <?php
 use panix\engine\Html;
 use yii\helpers\ArrayHelper;
+
 \panix\mod\shop\assets\admin\VariationsAsset::register($this);
 #Yii::app()->getClientScript()->registerScriptFile($this->module->assetsUrl . '/admin/products.variations.js', CClientScript::POS_END);
 ?>
 
 <div class="variants">
-    <div class="form-group">
-        <div class="col-sm-4"><label class="control-label">Добавить атрибут</label></div>
-        <div class="col-sm-8">     
-            <?php
-            if ($model->type) {
-                $attributes = $model->type->shopConfigurableAttributes;
+    <div class="form-group row">
+        <label class="col-form-label col-sm-4">Добавить атрибут</label>
+        <div class="col-sm-8">
 
-                echo Html::dropDownList('variantAttribute',null,
-                   ArrayHelper::map($attributes, 'id', 'title'),
-                        ['id'=>'variantAttribute','class'=>'form-control','style'=>'width:auto;']
-                );
-            }
-            ?>
-            <a href="#" id="addAttribute" class="btn btn-success"><?= Yii::t('app', 'CREATE', 0) ?></a>
+            <div class="input-group">
+                <?php
+                if ($model->type) {
+                    $attributes = $model->type->shopConfigurableAttributes;
+
+                    echo Html::dropDownList('variantAttribute', null,
+                        ArrayHelper::map($attributes, 'id', 'title'),
+                        ['id' => 'variantAttribute', 'class' => 'custom-select', 'style' => 'width:auto;']
+                    );
+                }
+                ?>
+                <div class="input-group-prepend">
+                    <a href="#" id="addAttribute" class="btn btn-success"><?= Yii::t('app', 'CREATE', 0) ?></a>
+                </div>
+            </div>
         </div>
-        <div class="clearfix"></div>
+
     </div>
-
-
 
 
     <div id="variantsData">
