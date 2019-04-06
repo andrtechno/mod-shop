@@ -7,9 +7,13 @@ use panix\mod\shop\models\Manufacturer;
 use panix\mod\shop\models\search\ManufacturerSearch;
 use panix\engine\controllers\AdminController;
 
-class ManufacturerController extends AdminController {
+class ManufacturerController extends AdminController
+{
 
-    public function actions() {
+    public $icon = 'apple';
+
+    public function actions()
+    {
         return [
             'sortable' => [
                 'class' => \panix\engine\grid\sortable\Action::class,
@@ -26,7 +30,8 @@ class ManufacturerController extends AdminController {
         ];
     }
 
-    public function actionIndex() {
+    public function actionIndex()
+    {
         $this->pageName = Yii::t('shop/admin', 'MANUFACTURER');
         $this->buttons = [
             [
@@ -46,12 +51,13 @@ class ManufacturerController extends AdminController {
         $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams());
 
         return $this->render('index', [
-                    'dataProvider' => $dataProvider,
-                    'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+            'searchModel' => $searchModel,
         ]);
     }
 
-    public function actionUpdate($id = false) {
+    public function actionUpdate($id = false)
+    {
 
 
         if ($id === true) {
@@ -85,24 +91,26 @@ class ManufacturerController extends AdminController {
         //$model->setScenario("admin");
         $post = Yii::$app->request->post();
         if ($model->load($post)) {
-            if($model->validate()){
+            if ($model->validate()) {
 
                 $model->save();
 
                 Yii::$app->session->setFlash('success', \Yii::t('app', 'SUCCESS_CREATE'));
-               // return Yii::$app->getResponse()->redirect(['/admin/shop/manufacturer']);
-            }else{
-                print_r($model->getErrors());die;
+                // return Yii::$app->getResponse()->redirect(['/admin/shop/manufacturer']);
+            } else {
+                print_r($model->getErrors());
+                die;
             }
 
         }
 
         return $this->render('update', [
-                    'model' => $model,
+            'model' => $model,
         ]);
     }
 
-    protected function findModel($id) {
+    protected function findModel($id)
+    {
         $model = new Manufacturer;
         if (($model = $model::findOne($id)) !== null) {
             return $model;

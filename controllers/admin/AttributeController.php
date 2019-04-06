@@ -13,7 +13,7 @@ use panix\mod\shop\models\Product;
 class AttributeController extends AdminController
 {
 
-    public $icon = 'icon-filter';
+    public $icon = 'sliders';
 
     public function actions()
     {

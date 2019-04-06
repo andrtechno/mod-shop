@@ -12,7 +12,8 @@ use yii\web\Response;
 /**
  * AdminController implements the CRUD actions for User model.
  */
-class CategoryController extends AdminController {
+class CategoryController extends AdminController
+{
     /*
       public function actions() {
       return [
@@ -35,8 +36,10 @@ class CategoryController extends AdminController {
       ];
       }
      */
+    public $icon = 'folder-open';
 
-    public function behaviors() {
+    public function behaviors()
+    {
         return [
             'verbs' => [
                 'class' => VerbFilter::class,
@@ -47,7 +50,8 @@ class CategoryController extends AdminController {
         ];
     }
 
-    public function actionIndex() {
+    public function actionIndex()
+    {
         $this->pageName = Yii::t('shop/admin', 'CATEGORIES');
         $this->buttons = [
             [
@@ -65,7 +69,8 @@ class CategoryController extends AdminController {
         ]);
     }
 
-    public function actionUpdate($id) {
+    public function actionUpdate($id)
+    {
         if ($id === true) {
             $model = new Category;
         } else {
@@ -74,12 +79,12 @@ class CategoryController extends AdminController {
         if (!$model) {
             $this->error404();
         }
-       // $this->pageName = Yii::t('shop/admin', 'CATEGORIES');
+        // $this->pageName = Yii::t('shop/admin', 'CATEGORIES');
         if ($model->getIsNewRecord()) {
             $this->icon = 'add';
             $this->pageName = Yii::t('shop/Category', 'CREATE_TITLE');
-        }else{
-            $this->pageName = Yii::t('shop/Category', 'UPDATE_TITLE',['name'=>$model->name]);
+        } else {
+            $this->pageName = Yii::t('shop/Category', 'UPDATE_TITLE', ['name' => $model->name]);
         }
         $this->breadcrumbs = [
             [
@@ -117,7 +122,8 @@ class CategoryController extends AdminController {
         ]);
     }
 
-    protected function findModel($id) {
+    protected function findModel($id)
+    {
         $model = new Category;
         if (($model = $model::findOne($id)) !== null) {
             return $model;
@@ -126,7 +132,8 @@ class CategoryController extends AdminController {
         }
     }
 
-    public function actionRenameNode() {
+    public function actionRenameNode()
+    {
 
 
         if (strpos($_GET['id'], 'j1_') === false) {
@@ -135,16 +142,16 @@ class CategoryController extends AdminController {
             $id = str_replace('j1_', '', $_GET['id']);
         }
 
-        $model = Category::findOne((int) $id);
+        $model = Category::findOne((int)$id);
         if ($model) {
             $model->name = $_GET['text'];
             $model->seo_alias = Inflector::slug($model->name);
             if ($model->validate()) {
                 $model->saveNode(false);
-                $success=true;
+                $success = true;
                 $message = Yii::t('shop/Category', 'CATEGORY_TREE_RENAME');
             } else {
-                $success=false;
+                $success = false;
                 $message = Yii::t('shop/Category', 'ERROR_CATEGORY_TREE_RENAME');
             }
             Yii::$app->response->format = Response::FORMAT_JSON;
@@ -156,7 +163,8 @@ class CategoryController extends AdminController {
         }
     }
 
-    public function actionCreateNode() {
+    public function actionCreateNode()
+    {
         $model = new Category;
         $parent = Category::findOne($_GET['parent_id']);
 
@@ -177,12 +185,13 @@ class CategoryController extends AdminController {
     /**
      * Drag-n-drop nodes
      */
-    public function actionMoveNode() {
+    public function actionMoveNode()
+    {
         $node = Category::findOne($_GET['id']);
         $target = Category::findOne($_GET['ref']);
 
-        if ((int) $_GET['position'] > 0) {
-            $pos = (int) $_GET['position'];
+        if ((int)$_GET['position'] > 0) {
+            $pos = (int)$_GET['position'];
             $childs = $target->children()->all();
             if (isset($childs[$pos - 1]) && $childs[$pos - 1] instanceof Category && $childs[$pos - 1]['id'] != $node->id)
                 $node->moveAfter($childs[$pos - 1]);
@@ -195,12 +204,14 @@ class CategoryController extends AdminController {
     /**
      * Redirect to category front.
      */
-    public function actionRedirect() {
+    public function actionRedirect()
+    {
         $node = Category::model()->findByPk($_GET['id']);
         $this->redirect($node->getViewUrl());
     }
 
-    public function actionSwitchNode() {
+    public function actionSwitchNode()
+    {
         //$switch = $_GET['switch'];
         $node = Category::findOne($_GET['id']);
         $node->switch = ($node->switch == 1) ? 0 : 1;
@@ -217,7 +228,8 @@ class CategoryController extends AdminController {
      * @param $id
      * @throws CHttpException
      */
-    public function actionDelete($id) {
+    public function actionDelete($id)
+    {
         $model = Category::findOne($id);
 
         //Delete if not root node

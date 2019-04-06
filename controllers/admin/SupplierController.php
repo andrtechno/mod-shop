@@ -7,14 +7,16 @@ use panix\engine\controllers\AdminController;
 use panix\mod\shop\models\search\SupplierSearch;
 use panix\mod\shop\models\Supplier;
 
-class SupplierController extends AdminController {
+class SupplierController extends AdminController
+{
 
-    public $icon = 'icon-supplier';
+    public $icon = 'supplier';
 
     /**
      * Display types list
      */
-    public function actionIndex() {
+    public function actionIndex()
+    {
 
 
         $this->pageName = Yii::t('shop/admin', 'SUPPLIER');
@@ -35,11 +37,13 @@ class SupplierController extends AdminController {
         $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams());
 
         return $this->render('index', array(
-                    'searchModel' => $searchModel,
-                    'dataProvider' => $dataProvider,
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
         ));
     }
-    public function actionUpdate($id = false) {
+
+    public function actionUpdate($id = false)
+    {
 
 
         if ($id === true) {
@@ -83,7 +87,8 @@ class SupplierController extends AdminController {
         ]);
     }
 
-    protected function findModel($id) {
+    protected function findModel($id)
+    {
         $model = new Supplier;
         if (($model = $model::findOne($id)) !== null) {
             return $model;

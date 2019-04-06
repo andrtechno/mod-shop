@@ -6,9 +6,13 @@ use Yii;
 use panix\engine\controllers\AdminController;
 use panix\mod\shop\models\forms\SettingsForm;
 
-class SettingsController extends AdminController {
+class SettingsController extends AdminController
+{
 
-    public function actionIndex() {
+    public $icon = 'settings';
+
+    public function actionIndex()
+    {
         $this->pageName = Yii::t('app', 'SETTINGS');
         $this->breadcrumbs = [
             [
@@ -23,7 +27,7 @@ class SettingsController extends AdminController {
             return Yii::$app->getResponse()->redirect(['/shop/settings']);
         }
         return $this->render('index', [
-                    'model' => $model
+            'model' => $model
         ]);
     }
 

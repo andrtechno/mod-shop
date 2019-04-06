@@ -21,10 +21,10 @@ use panix\engine\bootstrap\ActiveForm;
                     'options' => ['enctype' => 'multipart/form-data']
         ]);
         ?>
-        <?= $form->field($model, 'name')->textInput(['maxlength' => 255]) ?>
-        <?= $form->field($model, 'seo_alias')->textInput(['maxlength' => 255]) ?>
+        <?= $form->field($model, 'name')->textInput(['maxlength' => 255]); ?>
+        <?= $form->field($model, 'seo_alias')->textInput(['maxlength' => 255]); ?>
 
-        <?= $form->field($model, 'image')->fileInput() ?>
+        <?= $form->field($model, 'image')->fileInput(); ?>
 
 
 
@@ -37,8 +37,9 @@ use panix\engine\bootstrap\ActiveForm;
 
         <?php
 
-        $s = $model->getImageUrl('image','100x100');
-        echo $s;
+echo $model->getFileHtmlButton('image');
+        echo $model->getFileAbsolutePath('image');
+        echo $model->getImageUrl('image','500x500');
         ?>
 
     </div>

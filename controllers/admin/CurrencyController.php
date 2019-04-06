@@ -7,9 +7,14 @@ use panix\mod\shop\models\Currency;
 use panix\mod\shop\models\search\CurrencySearch;
 use panix\engine\controllers\AdminController;
 
-class CurrencyController extends AdminController {
+class CurrencyController extends AdminController
+{
 
-    public function actions() {
+
+    public $icon = 'currencies';
+
+    public function actions()
+    {
         return [
             'sortable' => [
                 'class' => \panix\engine\grid\sortable\Action::class,
@@ -18,7 +23,8 @@ class CurrencyController extends AdminController {
         ];
     }
 
-    public function actionActive($id) {
+    public function actionActive($id)
+    {
         $model = $this->findModel($id);
         if ($model->switch == 0)
             $model->switch = 1;
@@ -36,7 +42,8 @@ class CurrencyController extends AdminController {
             return $this->redirect(['manufacturer/index']);
     }
 
-    public function actionIndex() {
+    public function actionIndex()
+    {
         $this->pageName = Yii::t('shop/admin', 'CURRENCY');
         $this->buttons = [
             [
@@ -56,12 +63,13 @@ class CurrencyController extends AdminController {
         $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams());
 
         return $this->render('index', [
-                    'dataProvider' => $dataProvider,
-                    'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+            'searchModel' => $searchModel,
         ]);
     }
 
-    public function actionUpdate($id = false) {
+    public function actionUpdate($id = false)
+    {
 
 
         if ($id === true) {
@@ -105,7 +113,8 @@ class CurrencyController extends AdminController {
         ]);
     }
 
-    protected function findModel($id) {
+    protected function findModel($id)
+    {
         $model = new Currency;
         if (($model = $model::findOne($id)) !== null) {
             return $model;

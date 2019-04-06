@@ -89,7 +89,7 @@ class Module extends WebModule implements BootstrapInterface
                     [
                         'label' => Yii::t('shop/admin', 'ATTRIBUTES'),
                         "url" => ['/admin/shop/attribute'],
-                        'icon' => 'filter'
+                        'icon' => 'sliders'
                     ],
                     [
                         'label' => Yii::t('shop/admin', 'TYPE_PRODUCTS'),
