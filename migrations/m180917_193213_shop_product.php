@@ -8,7 +8,6 @@
  */
 use panix\mod\shop\models\Product;
 use panix\mod\shop\models\translate\ProductTranslate;
-use yii\db\Schema;
 use panix\engine\db\Migration;
 
 class m180917_193213_shop_product extends Migration
@@ -46,6 +45,7 @@ class m180917_193213_shop_product extends Migration
             'discount' => $this->string(50),
             'markup' => $this->string(50),
             'video' => $this->text(),
+            'comments' => $this->tinyInteger(1)->defaultValue(1),
             'created_at' => $this->integer(11)->null(),
             'updated_at' => $this->integer(11)->null(),
             'switch' => $this->boolean()->defaultValue(1),

@@ -204,6 +204,7 @@ class Product extends ActiveRecord
             [['name', 'seo_alias'], 'trim'],
             [['full_description', 'discount'], 'string'],
             ['use_configurations', 'boolean', 'on' => self::SCENARIO_INSERT],
+            ['comments', 'boolean'],
             [['sku', 'full_description'], 'default'], // установим ... как NULL, если они пустые
             [['name', 'seo_alias', 'main_category_id', 'price'], 'required'],
             [['manufacturer_id', 'type_id', 'quantity', 'views', 'added_to_cart_count', 'ordern', 'category_id', 'currency_id'], 'integer'],
@@ -773,6 +774,13 @@ class Product extends ActiveRecord
                 'full_description'
             ]
         ];
+        if (Yii::$app->getModule('discounts')) {
+            $a['comments'] = array(
+                'class' => '\panix\mod\comments\components\CommentBehavior',
+                'model' => static::class,
+                'owner_title' => 'name', // Attribute name to present comment owner in admin panel
+            );
+        }
         if (Yii::$app->getModule('discounts') && Yii::$app->id !== 'console')
             $a['discounts'] = [
                 'class' => '\panix\mod\discounts\components\DiscountBehavior'

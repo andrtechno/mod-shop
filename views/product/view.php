@@ -181,6 +181,13 @@ echo \yii\helpers\Inflector::sentence($words);
                 'options' => ['id' => 'attributes'],
             ];
         }
+        if (Yii::$app->hasModule('comments')) {
+        $tabs[] = [
+            'label' => Yii::t('app', 'REVIEWS', ['n' => $model->commentsCount]),
+            'content' => $this->render('tabs/_comments', ['model' => $model]),
+            'options' => ['id' => 'comments'],
+        ];
+        }
         if ($model->relatedProducts) {
             $tabs[] = [
                 'label' => 'Связи',
