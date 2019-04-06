@@ -38,6 +38,7 @@ class m180917_193531_shop_manufacturer extends Migration {
         $this->createIndex('switch', Manufacturer::tableName(), 'switch');
         $this->createIndex('ordern', Manufacturer::tableName(), 'ordern');
         $this->createIndex('seo_alias', Manufacturer::tableName(), 'seo_alias');
+        $this->createIndex('cat_id', Manufacturer::tableName(), 'cat_id');
 
         $this->createIndex('object_id', ManufacturerTranslate::tableName(), 'object_id');
         $this->createIndex('language_id', ManufacturerTranslate::tableName(), 'language_id');

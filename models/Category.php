@@ -46,8 +46,6 @@ class Category extends ActiveRecord
                 'message' => Yii::t('app', 'PATTERN_URL')
             ],
             [['name', 'seo_alias','seo_product_title'], 'trim'],
-
-
             [['name', 'seo_alias'], 'required'],
             [['name','seo_product_title','seo_product_keywords','seo_product_description'], 'string', 'max' => 255],
             ['description', 'safe']

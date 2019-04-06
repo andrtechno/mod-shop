@@ -84,10 +84,17 @@ class ManufacturerController extends AdminController {
 
         //$model->setScenario("admin");
         $post = Yii::$app->request->post();
-        if ($model->load($post) && $model->validate()) {
-            $model->save();
-            Yii::$app->session->setFlash('success', \Yii::t('app', 'SUCCESS_CREATE'));
-            return Yii::$app->getResponse()->redirect(['/shop/manufacturer']);
+        if ($model->load($post)) {
+            if($model->validate()){
+
+                $model->save();
+
+                Yii::$app->session->setFlash('success', \Yii::t('app', 'SUCCESS_CREATE'));
+               // return Yii::$app->getResponse()->redirect(['/admin/shop/manufacturer']);
+            }else{
+                print_r($model->getErrors());die;
+            }
+
         }
 
         return $this->render('update', [

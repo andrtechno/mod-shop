@@ -4,7 +4,6 @@ namespace panix\mod\shop\models;
 
 use Yii;
 use yii\helpers\ArrayHelper;
-use panix\engine\behaviors\TranslateBehavior;
 use panix\engine\db\ActiveRecord;
 use panix\mod\shop\models\query\ManufacturerQuery;
 use panix\mod\shop\models\translate\ManufacturerTranslate;
@@ -16,6 +15,8 @@ class Manufacturer extends ActiveRecord
     const MODULE_ID = 'shop';
     const route = '/admin/shop/manufacturer';
     public $translationClass = ManufacturerTranslate::class;
+
+
     public static function find()
     {
         return new ManufacturerQuery(get_called_class());
@@ -79,6 +80,7 @@ class Manufacturer extends ActiveRecord
     {
         return [
             self::SCENARIO_DEFAULT => self::OP_INSERT | self::OP_UPDATE,
+           // 'update'=>self::OP_UPDATE
         ];
     }
 
@@ -105,6 +107,8 @@ class Manufacturer extends ActiveRecord
         return $this->hasOne(Product::class, ['manufacturer_id' => 'id'])->count();
     }
 
+   // public $image;
+
     /**
      * @inheritdoc
      */
@@ -122,6 +126,7 @@ class Manufacturer extends ActiveRecord
             [['name', 'seo_alias'], 'string', 'max' => 255],
             [['ordern'], 'integer'],
             [['name', 'seo_alias'], 'safe'],
+           // [['image'], 'file', 'extensions' => ['gif', 'jpg', 'png'], 'skipOnEmpty' => true],
         ];
     }
 
@@ -129,10 +134,16 @@ class Manufacturer extends ActiveRecord
     {
         return ArrayHelper::merge([
             'translate' => [
-                'class' => TranslateBehavior::class,
+                'class' => 'panix\engine\behaviors\TranslateBehavior',
                 'translationAttributes' => [
                     'name',
                     'description'
+                ]
+            ],
+            'upload' => [
+                'class' => 'panix\engine\behaviors\UploadFileBehavior',
+                'files' => [
+                    'image' => '@uploads/manufacturer'
                 ]
             ],
         ], parent::behaviors());

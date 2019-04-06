@@ -1,7 +1,7 @@
 <?php
 
 use yii\helpers\Html;
-use yii\bootstrap4\ActiveForm;
+use panix\engine\bootstrap\ActiveForm;
 
 
 ?>
@@ -18,20 +18,13 @@ use yii\bootstrap4\ActiveForm;
         <?php
         $form = ActiveForm::begin([
                     'layout' => 'horizontal',
-                    'fieldConfig' => [
-                        'horizontalCssClasses' => [
-                            'label' => 'col-sm-4',
-                            'offset' => 'col-sm-offset-4',
-                            'wrapper' => 'col-sm-8',
-                            'error' => '',
-                            'hint' => '',
-                        ],
-                    ],
-                    'options' => ['class' => 'form-horizontal']
+                    'options' => ['enctype' => 'multipart/form-data']
         ]);
         ?>
         <?= $form->field($model, 'name')->textInput(['maxlength' => 255]) ?>
         <?= $form->field($model, 'seo_alias')->textInput(['maxlength' => 255]) ?>
+
+        <?= $form->field($model, 'image')->fileInput() ?>
 
 
 
@@ -42,7 +35,11 @@ use yii\bootstrap4\ActiveForm;
 
         <?php ActiveForm::end(); ?>
 
+        <?php
 
+        $s = $model->getImageUrl('image','100x100');
+        echo $s;
+        ?>
 
     </div>
 </div>
