@@ -17,7 +17,7 @@ if (Yii::$app->controller->getMinPrice() && Yii::$app->controller->getMaxPrice()
     echo $min;
     ?>
     <?php if (true) { ?>
-        <div class="card bg-light filter filter-price">
+        <div class="card filter filter-price">
 
             <div class="card-header">
                 <h5><?= Yii::t('shop/default', 'FILTER_BY_PRICE') ?></h5>

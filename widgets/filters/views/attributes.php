@@ -16,7 +16,7 @@ foreach ($attributes as $attrData) {
                 <h5><?= Html::encode($attrData['title']) ?></h5>
             </div>
             <div class="card-collapse collapse in" id="collapse-<?= md5($attrData['title']) ?>">
-                <div class="card-body">
+                <div class="card-body overflow">
                     <ul class="filter-list">
                         <?php
                         foreach ($attrData['filters'] as $filter) {

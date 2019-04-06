@@ -4,6 +4,7 @@ namespace panix\mod\shop\models;
 
 use app\modules\sitemap\Sitemap;
 use app\modules\sitemap\behaviors\SitemapBehavior;
+use panix\mod\comments\models\Comments;
 use panix\mod\user\models\User;
 use Yii;
 use panix\engine\CMS;
@@ -265,6 +266,16 @@ class Product extends ActiveRecord
     {
         return $this->hasOne($this->translationClass, ['object_id' => 'id'])->cache(3600);
     }
+
+    public function getCommentsCount()
+    {
+        if (Yii::$app->hasModule('comments')) {
+            return $this->hasOne(Comments::class, ['object_id' => 'id'])->count();
+        } else {
+            return false;
+        }
+    }
+
 
     public function getRelated()
     {

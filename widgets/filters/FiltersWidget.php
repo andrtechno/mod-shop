@@ -156,13 +156,14 @@ class FiltersWidget extends \panix\engine\data\Widget
 
         $active = $this->view->context->getActiveFilters();
 
+        echo Html::beginTag('div',['id'=>'filters']);
         if (!empty($active)) {
             echo $this->render('current', ['active' => $active]);
         }
         echo $this->render('price');
         echo $this->render('attributes', ['attributes' => $this->getCategoryAttributes()]);
         echo $this->render('manufacturer', ['manufacturers' => $manufacturers]);
-
+        echo Html::endTag('div');
         $this->view->registerJs("
             $(function () {
                 var selector = $('.card .card-collapse');
