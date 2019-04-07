@@ -2,8 +2,8 @@
 
 /**
  *
- * @author CORNER CMS <dev@corner-cms.com>
- * @link http://www.corner-cms.com/
+ * @author Pixelion CMS <dev@pixelion.com.ua>
+ * @link http://www.pixelion.com.ua/
  */
 
 namespace panix\mod\shop\assets\admin;
