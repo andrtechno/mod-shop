@@ -314,7 +314,7 @@ class Product extends ActiveRecord
         return $this->hasOne(Category::class, ['id' => 'category'])
             ->via('categorization', function ($query) {
                 $query->where(['is_main' => 1]);
-            })->cache(3600);
+            });
     }
 
     public function getVariants()
