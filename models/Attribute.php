@@ -39,6 +39,7 @@ class Attribute extends ActiveRecord
     const TYPE_YESNO = 7;
     const MODULE_ID = 'shop';
     public $translationClass = AttributeTranslate::class;
+
     public static function find()
     {
         return new AttributeQuery(get_called_class());
@@ -57,7 +58,7 @@ class Attribute extends ActiveRecord
             ],
             'group_id' => [
                 'attribute' => 'group_id',
-                'filterInputOptions' => ['class' => 'custom-select d-inline', 'id' => null, 'prompt' => Yii::t('app','ALL')],
+                'filterInputOptions' => ['class' => 'custom-select d-inline', 'id' => null, 'prompt' => Yii::t('app', 'ALL')],
                 'filter' => ArrayHelper::map(AttributeGroup::find()->all(), 'id', 'name'),
                 'value' => 'group.name',
                 'contentOptions' => ['class' => 'text-center'],
@@ -141,7 +142,7 @@ class Attribute extends ActiveRecord
                 'pattern' => '/^([a-z0-9-])+$/i',
                 'message' => Yii::t('app', 'PATTERN_URL')
             ],
-            [['hint','abbreviation'], 'string'],
+            [['hint', 'abbreviation'], 'string'],
             [['id', 'group_id'], 'integer'],
             [['id', 'name', 'title', 'type'], 'safe'],
         ];
@@ -200,25 +201,25 @@ class Attribute extends ActiveRecord
     /**
      * @return string html field based on attribute type
      */
-    public function renderField($value = null, $inputClass='')
+    public function renderField($value = null, $inputClass = '')
     {
 
         $name = 'Attribute[' . $this->name . ']';
         switch ($this->type) {
             case self::TYPE_TEXT:
-                return Html::textInput($name, $value, ['class' => 'form-control '.$inputClass]);
+                return Html::textInput($name, $value, ['class' => 'form-control ' . $inputClass]);
                 break;
             case self::TYPE_TEXTAREA:
-                return Html::textarea($name, $value, ['class' => 'form-control '.$inputClass]);
+                return Html::textarea($name, $value, ['class' => 'form-control ' . $inputClass]);
                 break;
             case self::TYPE_DROPDOWN:
                 $data = ArrayHelper::map($this->options, 'id', 'value');
-                return Html::dropDownList($name, $value, $data, ['class' => 'form-control pull-left '.$inputClass, 'prompt' => Yii::t('app', 'EMPTY_LIST')]);
+                return Html::dropDownList($name, $value, $data, ['class' => 'form-control pull-left ' . $inputClass, 'prompt' => Yii::t('app', 'EMPTY_LIST')]);
                 //return Yii::app()->controller->widget('ext.bootstrap.selectinput.SelectInput',array('data'=>$data,'value'=>$value,'htmlOptions'=>array('name'=>$name,'empty'=>Yii::t('app','EMPTY_LIST'))),true);
                 break;
             case self::TYPE_SELECT_MANY:
                 $data = ArrayHelper::map($this->options, 'id', 'value');
-                return Html::dropDownList($name . '[]', $value, $data, ['class' => 'form-control pull-left '.$inputClass, 'multiple' => 'multiple', 'prompt' => Yii::t('app', 'EMPTY_LIST')]);
+                return Html::dropDownList($name . '[]', $value, $data, ['class' => 'form-control pull-left ' . $inputClass, 'multiple' => 'multiple', 'prompt' => Yii::t('app', 'EMPTY_LIST')]);
                 break;
             case self::TYPE_RADIO_LIST:
                 $data = ArrayHelper::map($this->options, 'id', 'value');
