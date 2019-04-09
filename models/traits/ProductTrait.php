@@ -40,21 +40,20 @@ trait ProductTrait
             'value' => function ($model) {
 
                 if ($model->name) {
-                    $html = Html::a($model->name,$model->getUrl());
+                    $html = Html::a($model->name, $model->getUrl());
                     if ($model->views > 0) {
-                        $html .= " (" . Yii::t('app', 'VIEWS', ['n' => $model->views]) . ")";
+                        $html .= " <small>(" . Yii::t('app', 'VIEWS', ['n' => $model->views]) . ")</small>";
                     }
                     if (true) {
 
-                        $labels=[];
+                        $labels = [];
                         foreach ($model->labels() as $label) {
                             $labels[] = Html::tag('span', $label['value'], [
-                                'class' => 'badge badge-'.$label['class'],
-                                'data-toggle'=>'tooltip',
-                                'title'=>$label['tooltip']
+                                'class' => 'badge badge-' . $label['class'],
+                                'data-toggle' => 'tooltip',
+                                'title' => $label['tooltip']
                             ]);
                         }
-
 
 
                         $html .= '<br/>' . implode('', $labels);
@@ -76,11 +75,21 @@ trait ProductTrait
             'min' => (int)Product::find()->aggregatePrice('MIN'),
             'contentOptions' => ['class' => 'text-center'],
             'value' => function ($model) {
-                $ss='';
-            if($model->appliedDiscount){
-                $ss=$model->discountPrice;
-            }
-                return $ss.Yii::$app->currency->number_format(Yii::$app->currency->convert($model->price, $model->currency_id)) . ' ' . Yii::$app->currency->main->symbol;
+                $ss = '';
+                if ($model->appliedDiscount) {
+                    $price = $model->discountPrice;
+                    $ss = '<del class="text-secondary font-italic">' . $model->originalPrice . '</del> / ';
+                }else{
+                    $price = $model->price;
+                }
+                if($model->currency_id){
+                    $priceHtml = Yii::$app->currency->number_format($price);
+                    $symbol = Html::tag('sup',Yii::$app->currency->currencies[$model->currency_id]->symbol);
+                }else{
+                    $priceHtml = Yii::$app->currency->number_format(Yii::$app->currency->convert($price, $model->currency_id));
+                    $symbol = Html::tag('sup',Yii::$app->currency->main->symbol);
+                }
+                return $ss . Html::tag('span',$priceHtml,['class'=>'text-success font-weight-bold']) . ' ' . $symbol;
             }
         ];
         $columns['created_at'] = [
@@ -205,7 +214,6 @@ trait ProductTrait
 
         return $columns;
     }
-
 
 
     /**
