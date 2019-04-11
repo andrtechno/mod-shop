@@ -9,12 +9,11 @@ use panix\mod\shop\models\ProductType;
 ?>
 
 
-<div class="card bg-light">
+<div class="card">
     <div class="card-header">
         <h5><?= Html::encode($this->context->pageName) ?></h5>
     </div>
     <div class="card-body">
-
 
         <?php
         if (!$model->isNewRecord && Yii::$app->settings->get('shop', 'auto_gen_url')) {
@@ -31,8 +30,11 @@ use panix\mod\shop\models\ProductType;
                 $attributeError = false;
 
             if ($model->isNewRecord && !$model->type_id || $attributeError === true) {
-                // Display "choose type" form
-                echo Html::beginForm('', 'get', array('class' => 'form-horizontal'));
+                // Display "choose type" form?>
+
+
+                <?php
+                echo Html::beginForm('', 'get');
                 panix\mod\shop\assets\admin\ProductAsset::register($this);
 
                 if ($attributeError) {
@@ -59,7 +61,9 @@ use panix\mod\shop\models\ProductType;
                     <?= Html::submitButton(Yii::t('app', 'CREATE', 0), ['name' => false, 'class' => 'btn btn-success']); ?>
                 </div>
                 <?php
-                echo Html::endForm();
+                echo Html::endForm(); ?>
+
+                <?php
             } else {
 
 
@@ -78,37 +82,37 @@ use panix\mod\shop\models\ProductType;
                     'label' => $model::t('TAB_MAIN'),
                     'content' => $this->render('tabs/_main', ['form' => $form, 'model' => $model]),
                     'active' => true,
-                    'options' => ['class'=>'flex-sm-fill text-center nav-item'],
+                    'options' => ['class' => 'flex-sm-fill text-center nav-item'],
                 ];
                 $tabs[] = [
                     'label' => $model::t('TAB_WAREHOUSE'),
                     'content' => $this->render('tabs/_warehouse', ['form' => $form, 'model' => $model]),
                     'headerOptions' => [],
-                    'options' => ['class'=>'flex-sm-fill text-center nav-item'],
+                    'options' => ['class' => 'flex-sm-fill text-center nav-item'],
                 ];
                 $tabs[] = [
                     'label' => $model::t('TAB_IMG'),
                     'content' => $this->render('tabs/_images', ['form' => $form, 'model' => $model]),
                     'headerOptions' => [],
-                    'options' => ['class'=>'flex-sm-fill text-center nav-item'],
+                    'options' => ['class' => 'flex-sm-fill text-center nav-item'],
                 ];
                 $tabs[] = [
                     'label' => $model::t('TAB_REL'),
                     'content' => $this->render('tabs/_related', ['exclude' => $model->id, 'form' => $form, 'model' => $model]),
                     'headerOptions' => [],
-                    'options' => ['class'=>'flex-sm-fill text-center nav-item'],
+                    'options' => ['class' => 'flex-sm-fill text-center nav-item'],
                 ];
                 $tabs[] = [
                     'label' => $model::t('TAB_VARIANTS'),
                     'content' => $this->render('tabs/_variations', ['model' => $model]),
                     'headerOptions' => [],
-                    'options' => ['class'=>'flex-sm-fill text-center nav-item'],
+                    'options' => ['class' => 'flex-sm-fill text-center nav-item'],
                 ];
 
                 $tabs[] = [
                     'label' => $model::t('TAB_SEO'),
                     'content' => $this->render('@seo/views/admin/default/_module_seo', ['model' => $model]),
-                    'options' => ['class'=>'flex-sm-fill text-center nav-item'],
+                    'options' => ['class' => 'flex-sm-fill text-center nav-item'],
                 ];
 
 
@@ -116,13 +120,13 @@ use panix\mod\shop\models\ProductType;
                     'label' => $model::t('TAB_CATEGORIES'),
                     'content' => $this->render('tabs/_tree', ['exclude' => $model->id, 'form' => $form, 'model' => $model]),
                     'headerOptions' => [],
-                    'options' => ['class'=>'flex-sm-fill text-center nav-item'],
+                    'options' => ['class' => 'flex-sm-fill text-center nav-item'],
                 ];
                 $tabs[] = [
                     'label' => (isset($this->context->tab_errors['attributes'])) ? Html::icon('warning', ['class' => 'text-danger']) . ' Характеристики' : 'Характеристики',
                     'encode' => false,
                     'content' => $this->render('tabs/_attributes', ['form' => $form, 'model' => $model]),
-                    'options' => ['class'=>'flex-sm-fill text-center nav-item'],
+                    'options' => ['class' => 'flex-sm-fill text-center nav-item'],
                 ];
 
 
@@ -131,7 +135,7 @@ use panix\mod\shop\models\ProductType;
                         'label' => 'UPDATE_PRODUCT_TAB_CONF',
                         'content' => $this->render('tabs/_configurations', ['product' => $model]),
                         'headerOptions' => [],
-                        'itemOptions' => ['class'=>'flex-sm-fill text-center nav-item'],
+                        'itemOptions' => ['class' => 'flex-sm-fill text-center nav-item'],
                     ];
                 }
 
@@ -142,9 +146,12 @@ use panix\mod\shop\models\ProductType;
                     ],
                     'items' => $tabs,
                 ]);
+
                 ?>
                 <div class="form-group text-center">
+
                     <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'CREATE') : Yii::t('app', 'UPDATE'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+                    <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'CREATE1') : Yii::t('app', 'Изменить и выйти'), ['class' => $model->isNewRecord ? 'btn btn-outline-success' : 'btn btn-outline-primary','value'=>'/admin/shop/product']) ?>
                 </div>
 
 
@@ -155,6 +162,45 @@ use panix\mod\shop\models\ProductType;
             $this->theme->alert('warning', Yii::t('shop/admin', 'Для начало необходимо создать Тип товара'), false);
         }
         ?>
+
     </div>
 </div>
+<?php
 
+$this->registerJs('
+$(document).ready(function () {
+        $("body").on("beforeSubmit111", "form#product-form", function () {
+            var form = $(this);
+            // return false if form still have some validation errors
+            if (form.find(".has-error").length) 
+            {
+                return false;
+            }
+            // submit form
+            
+               var $input = $("#product-file");
+    var fd = new FormData;
+    
+      fd.append(\'img\', $input.prop(\'files\')[0]);
+            $.ajax({
+            url    : form.attr("action"),
+            type   : "post",
+             processData: false,
+        contentType: false,
+            data   : fd, //form.serialize(),
+            success: function (response) 
+            {
+                var getupdatedata = $(response).find("#filter_id_test");
+                // $.pjax.reload("#note_update_id"); for pjax update
+                $("#yiiikap").html(getupdatedata);
+                //console.log(getupdatedata);
+            },
+            error  : function () 
+            {
+                console.log(\'internal server error\');
+            }
+            });
+            return false;
+         });
+    });
+');

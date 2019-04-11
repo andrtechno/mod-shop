@@ -41,5 +41,8 @@ return [
     'ADD_WHOLESALE_PRICE' => 'Добавить оптовую цену',
     'ERROR_PRICE_DUPLICATE_ORDER_FROM' => 'Цена за это количество уже присутствует.',
     'ERROR_PRICE_MAX_BASIC' => 'Цена не должна превышать основной цены.',
-    'FREE_FROM' => 'При заказе от',
+    'FROM' => 'При заказе от',
+    'UNIT_THING' => 'шт.',
+    'UNIT_METER' => 'метр.',
+    'UNIT_BOX' => 'ящик.',
 ];

@@ -91,10 +91,10 @@ $('#add-price').click(function (e) {
         '</div>' +
         '</div>' +
         '<div class="row required">' +
-        '<label class="col-sm-3 col-md-3 col-lg-2 col-form-label" for="productprices-'+rand+'-free_from">При заказе от</label>' +
+        '<label class="col-sm-3 col-md-3 col-lg-2 col-form-label" for="productprices-'+rand+'-from">При заказе от</label>' +
         '<div class="col-sm-9 col-md-3 col-lg-3">' +
         '<div class="input-group mb-3 mb-sm-0">' +
-        '<input class="form-control flashing-input" type="text" value="2" name="ProductPrices['+rand+'][free_from]" id="productprices-'+rand+'-free_from">' +
+        '<input class="form-control flashing-input" type="text" value="2" name="ProductPrices['+rand+'][from]" id="productprices-'+rand+'-from">' +
         '<div class="input-group-append"><span class="col-form-label ml-3 unit-name">шт.</span></div>' +
         '</div>' +
         '</div>' +

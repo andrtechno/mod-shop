@@ -143,7 +143,7 @@ trait ProductTrait
                     'ProductSearch[eav][' . $m->name . ']',
                     (isset($get['eav'][$m->name])) ? $get['eav'][$m->name] : null,
                     ArrayHelper::map($m->options, 'id', 'value'),
-                    ['class' => 'form-control', 'prompt' => 'Select ' . $m->title]
+                    ['class' => 'form-control w-auto', 'prompt' => 'Select ' . $m->title]
                 ),
                 //'filter'=>true,
                 'contentOptions' => ['class' => 'text-center'],

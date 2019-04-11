@@ -21,7 +21,7 @@ class m180917_193313_shop_product_prices extends Migration
             'id' => $this->primaryKey()->unsigned(),
             'product_id' => $this->integer()->unsigned(),
             'value' => $this->money(10, 2),
-            'free_from' => $this->tinyInteger()->unsigned(),
+            'from' => $this->tinyInteger()->unsigned(),
         ], $this->tableOptions);
 
         $this->createIndex('product_id', ProductPrices::tableName(), 'product_id');

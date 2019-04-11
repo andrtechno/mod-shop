@@ -15,22 +15,25 @@ if ($model->use_configurations) {
 } else {
     echo $form->field($model, 'price', [
         'parts' => [
-                '{label_currency}'=>Html::activeLabel($model,'currency_id'),
-            '{test}'=>Html::activeDropDownList($model,'currency_id',ArrayHelper::map(Currency::find()->andWhere(['!=', 'id', Yii::$app->currency->main->id])->all(), 'id', 'name'),['class'=>'form-control', 'prompt' => 'Укажите валюту'])
+            '{label_unit}' => Html::activeLabel($model, 'unit'),
+            '{unit}'=>Html::activeDropDownList($model, 'unit', $model->getUnits(), ['class' => 'form-control', 'prompt' => 'Ед. измерения']),
+            '{label_currency}' => Html::activeLabel($model, 'currency_id'),
+            '{currency}' => Html::activeDropDownList($model, 'currency_id', ArrayHelper::map(Currency::find()->andWhere(['!=', 'id', Yii::$app->currency->main->id])->all(), 'id', 'name'), ['class' => 'form-control', 'prompt' => 'Укажите валюту'])
         ],
-        'template' => '{label}<div class="input-group col-sm-8 col-lg-10">
+        'template' => '{label}
+<div class="input-group col-sm-8 col-lg-10">{input}
 
-{input}
 
-
-    <span class="input-group-text">{label_currency}</span>
-
+  <span class="input-group-text">{label_unit}</span>
+  {unit}
   
-  {test}{hint}{error}
+<span class="input-group-text">{label_currency}</span>
+{currency}{hint}{error}
 <div class="input-group-append">
-    <span class="input-group-text"><a id="add-price" class="text-success" href="#"><i class="icon-add"></i> <?= $model::t(\'ADD_WHOLESALE_PRICE\'); ?>
-    </a></span>
+    <span class="input-group-text"><a id="add-price" class="text-success" href="#"><i class="icon-add"></i></a></span>
   </div>
+  
+
 </div>',
     ])->textInput([
 
@@ -40,10 +43,7 @@ if ($model->use_configurations) {
 ?>
 
 
-
 <div class="form-group row field_price">
-
-
 
 
     <div class="col" id="extra-prices">
@@ -72,10 +72,10 @@ if ($model->use_configurations) {
 
 
                 <div class="row">
-                    <?php echo Html::label($model::t('FREE_FROM'), 'productprices-' . $price->id . '-free_from', array('class' => 'col-sm-3 col-md-3 col-lg-2 col-form-label', 'required' => true)); ?>
+                    <?php echo Html::label($model::t('FROM'), 'productprices-' . $price->id . '-from', array('class' => 'col-sm-3 col-md-3 col-lg-2 col-form-label', 'required' => true)); ?>
                     <div class="col-sm-9 col-md-6 col-lg-5 col-xl-3">
                         <div class="input-group mb-3 mb-sm-0">
-                            <?php echo Html::textInput('ProductPrices[' . $price->id . '][free_from]', $price->free_from, array('class' => 'float-left form-control')); ?>
+                            <?php echo Html::textInput('ProductPrices[' . $price->id . '][from]', $price->from, array('class' => 'float-left form-control')); ?>
                             <div class="input-group-append">
                                 <span class="col-form-label ml-3 unit-name">шт.</span>
                             </div>

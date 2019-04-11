@@ -4,23 +4,27 @@ use yii\helpers\Json;
 if (count($model->processVariants())) { ?>
     <div class="errors" id="productErrors"></div>
 
-    <table class="table table-bordered configurations">
+    <div class="configurations">
         <?php
         $jsVariantsData = array();
 
         foreach ($model->processVariants() as $variant) {
             $dropDownData = array();
-            echo '<tr><td class="attr_name">';
-            echo $variant['attribute']->title . ':';
-            echo '</td><td>';
+            echo '<div class="form-group row">';
+            echo Html::label($variant['attribute']->title.':','eav-'.$variant['attribute']->id,['class'=>'col-sm-3 col-form-label attr_name']);
 
             foreach ($variant['options'] as $v) {
                 $jsVariantsData[$v->id] = $v;
                 $price = ($v->price > 0) ? ' (+'.$v->price.' '.Yii::$app->currency->active->symbol.')':'';
                 $dropDownData[$v->id] = $v->option->value .$price;
             }
-            echo Html::dropDownList('eav[' . $variant['attribute']->id . ']', null, $dropDownData, array('class' => 'variantData form-control', 'empty' => Yii::t('app','EMPTY_LIST')));
-            echo '</td></tr>';
+            echo ' <div class="col-sm-9">';
+            echo Html::dropDownList('eav[' . $variant['attribute']->id . ']', null, $dropDownData, [
+                    'id'=>'eav-'.$variant['attribute']->id,
+                    'class' => 'variantData custom-select w-auto',
+                'empty' => Yii::t('app','EMPTY_LIST')
+            ]);
+            echo '</div></div>';
         }
 
         // Register variant prices script
@@ -49,16 +53,18 @@ if (count($model->processVariants())) { ?>
             foreach ($confData['attributes'] as $attr) {
                // $attr->name .= $confData['prices'];
                 if (isset($confData['data'][$attr->name])) {
-                    echo '<tr><td class="attr_name">';
-
-                    echo $attr->title . ':';
-                    echo '</td><td>';
-                    echo Html::dropDownList('configurations[' . $attr->name . ']', null, array_flip($confData['data'][$attr->name]), array('class' => 'eavData form-control'));
-                    echo '</td></tr>';
+                    echo '<div class="form-group row">';
+                    echo Html::label($attr->title.':','conf-'.$attr->name,['class'=>'col-sm-3 col-form-label attr_name']);
+                    echo ' <div class="col-sm-9">';
+                    echo Html::dropDownList('configurations[' . $attr->name . ']', null, array_flip($confData['data'][$attr->name]), [
+                        'id'=>'conf-'.$attr->name,
+                            'class' => 'eavData custom-select w-auto'
+                    ]);
+                    echo '</div></div>';
                 }
             }
         }
         ?>
-    </table>
+    </div>
 
 <?php } ?>

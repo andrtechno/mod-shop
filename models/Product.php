@@ -204,14 +204,24 @@ class Product extends ActiveRecord
             [['name', 'seo_alias'], 'trim'],
             [['full_description', 'discount'], 'string'],
             ['use_configurations', 'boolean', 'on' => self::SCENARIO_INSERT],
-            ['comments', 'boolean'],
+            ['enable_comments', 'boolean'],
             [['sku', 'full_description'], 'default'], // установим ... как NULL, если они пустые
-            [['name', 'seo_alias', 'main_category_id', 'price'], 'required'],
-            [['manufacturer_id', 'type_id', 'quantity', 'views', 'added_to_cart_count', 'ordern', 'category_id', 'currency_id'], 'integer'],
+            [['name', 'seo_alias', 'main_category_id', 'price', 'unit'], 'required'],
+            [['manufacturer_id', 'type_id', 'quantity', 'views', 'added_to_cart_count', 'ordern', 'category_id', 'currency_id', 'unit'], 'integer'],
             [['name', 'seo_alias', 'full_description', 'use_configurations'], 'safe'],
             //  [['c1'], 'required'], // Attribute field
             // [['c1'], 'string', 'max' => 255], // Attribute field
         ];
+    }
+
+    public function getUnits()
+    {
+        return array(
+            0 => self::t('UNKNOWN'),
+            1 => self::t('UNIT_THING'),
+            2 => self::t('UNIT_METER'),
+            3 => self::t('UNIT_BOX'),
+        );
     }
 
     public function processVariants()
@@ -260,12 +270,12 @@ class Product extends ActiveRecord
 
     public function getTranslations()
     {
-        return $this->hasMany($this->translationClass, ['object_id' => 'id'])->cache(3600);
+        return $this->hasMany($this->translationClass, ['object_id' => 'id']);
     }
 
     public function getTranslation()
     {
-        return $this->hasOne($this->translationClass, ['object_id' => 'id'])->cache(3600);
+        return $this->hasOne($this->translationClass, ['object_id' => 'id']);
     }
 
     public function getCommentsCount()
@@ -344,7 +354,7 @@ class Product extends ActiveRecord
                 if (!$record) {
                     $record = new ProductPrices;
                 }
-                $record->free_from = $price['free_from'];
+                $record->from = $price['from'];
                 $record->value = $price['value'];
                 $record->product_id = $this->id;
                 $record->save();

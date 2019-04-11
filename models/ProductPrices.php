@@ -43,8 +43,8 @@ class ProductPrices extends ActiveRecord
     {
         return [
             ['value', 'commaToDot'],
-            [['free_from', 'value'], 'required'],
-            [['free_from'], 'integer'],
+            [['from', 'value'], 'required'],
+            [['from'], 'integer'],
             [['value'], 'safe'],
         ];
     }

@@ -190,18 +190,19 @@ class ProductController extends AdminController
             $this->processConfigurations($model);
 
 
-
             if ($model->isNewRecord) {
                 Yii::$app->session->setFlash('success', Yii::t('app', 'SUCCESS_CREATE'));
-                return Yii::$app->getResponse()->redirect(['/admin/shop/product']);
+                if (!Yii::$app->request->isAjax)
+                    return Yii::$app->getResponse()->redirect(['/admin/shop/product']);
             } else {
                 Yii::$app->session->setFlash('success', Yii::t('app', 'SUCCESS_UPDATE'));
-                 return Yii::$app->getResponse()->redirect(['/admin/shop/product/update', 'id' => $model->id]);
+                if (!Yii::$app->request->isAjax)
+                    return Yii::$app->getResponse()->redirect(['/admin/shop/product/update', 'id' => $model->id]);
             }
-        }else{
+        } else {
 
             // print_r($model->getErrors());
-            foreach ($model->getErrors() as $key=>$error){
+            foreach ($model->getErrors() as $key => $error) {
                 Yii::$app->session->setFlash('error', $error[0]);
             }
 
@@ -220,7 +221,7 @@ class ProductController extends AdminController
         $orderFrom = [];
 
         foreach ($pricesPost as $index => $price) {
-            $orderFrom[] = $price['free_from'];
+            $orderFrom[] = $price['from'];
             if ($price['value'] >= $model->price) {
                 $errors = true;
                 $model->addError('price', $model::t('ERROR_PRICE_MAX_BASIC'));
