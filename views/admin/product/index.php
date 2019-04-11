@@ -4,22 +4,11 @@ use panix\engine\widgets\Pjax;
 use panix\ext\fancybox\Fancybox;
 
 echo Fancybox::widget(['target' => '.image a']);
-/*
-use yii\jui\Dialog;
-Dialog::begin([
-    'clientOptions' => [
-        'modal' => true,
-    ],
-]);
 
-echo 'Dialog contents here...';
-
-Dialog::end();
-*/
 Pjax::begin([
-    'timeout' => 50000,
+    //'timeout' => 50000,
     'id' => 'pjax-grid-product',
-    'linkSelector' => 'a:not(.linkTarget)'
+    //'linkSelector' => 'a:not(.linkTarget)'
 ]);
 echo GridView::widget([
     'id'=>'grid-product',

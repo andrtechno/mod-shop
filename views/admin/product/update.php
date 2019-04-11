@@ -151,7 +151,7 @@ use panix\mod\shop\models\ProductType;
                 <div class="form-group text-center">
 
                     <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'CREATE') : Yii::t('app', 'UPDATE'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
-                    <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'CREATE1') : Yii::t('app', 'Изменить и выйти'), ['class' => $model->isNewRecord ? 'btn btn-outline-success' : 'btn btn-outline-primary','value'=>'/admin/shop/product']) ?>
+                    <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'CREATE1') : Yii::t('app', 'Изменить и выйти'), ['class' => $model->isNewRecord ? 'btn btn-outline-success' : 'btn btn-outline-primary','value'=>'/admin/shop/product','name'=>'redirect']) ?>
                 </div>
 
 

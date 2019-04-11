@@ -65,6 +65,10 @@ class ProductSearch extends Product
                 //'defaultOrder' => ['date_create' => SORT_ASC],
                 'attributes' => [
                     'price',
+                    'name'=>[
+                        'asc' => ['translations.name' => SORT_ASC],
+                        'desc' => ['translations.name' => SORT_DESC],
+                    ]
                 ],
             ],
         ]);

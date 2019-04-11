@@ -152,7 +152,7 @@ class ProductController extends AdminController
 
 
         if ($model->load($post) && $model->validate() && $this->validateAttributes($model) && $this->validatePrices($model)) {
-
+         //   print_r($post['redirect']);
             $model->setRelatedProducts(Yii::$app->request->post('RelatedProductId', []));
 
             $model->save();
@@ -196,8 +196,9 @@ class ProductController extends AdminController
                     return Yii::$app->getResponse()->redirect(['/admin/shop/product']);
             } else {
                 Yii::$app->session->setFlash('success', Yii::t('app', 'SUCCESS_UPDATE'));
+                $redirect = (isset($post['redirect'])) ? $post['redirect'] : ['/admin/shop/product/update', 'id' => $model->id];
                 if (!Yii::$app->request->isAjax)
-                    return Yii::$app->getResponse()->redirect(['/admin/shop/product/update', 'id' => $model->id]);
+                    return Yii::$app->getResponse()->redirect($redirect);
             }
         } else {
 
