@@ -51,7 +51,7 @@ $id = $this->context->id;
         ]);
         ?>
 
-        <div class="input-group-btn"><?= Html::submitButton('Найти', ['class' => 'btn btn-default']); ?></div>
+        <div class="input-group-append"><?= Html::submitButton('Найти', ['class' => 'btn btn-secondary']); ?></div>
     </div>
 
 
