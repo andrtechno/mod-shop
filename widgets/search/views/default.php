@@ -7,7 +7,7 @@ use yii\helpers\Url;
 $id = $this->context->id;
 ?>
 
-<div id="search-box">
+<div id="search-box" class="m-auto w-100">
     <?= Html::beginForm(Yii::$app->urlManager->createUrl(['/shop/category/search', 'q' => $value]), 'post', ['id' => 'search-form-'.$id]) ?>
     <div class="input-group">
 
@@ -53,11 +53,8 @@ $id = $this->context->id;
 
         <div class="input-group-append"><?= Html::submitButton('Найти', ['class' => 'btn btn-secondary']); ?></div>
     </div>
-
-
-
+    <small class="text-muted">Например: <strong>Apple X</strong></small>
     <?= Html::endForm() ?>
-    <?= Html::a('GO', '#', array('onClick' => '$("#search-form").submit();', 'class' => 'search-button')); ?>
 </div>
 <?php
 $this->registerJs("
