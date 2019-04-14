@@ -181,7 +181,7 @@ class CategoryController extends WebController
                 }*/
 
 
-                 return $this->redirect(Yii::$app->urlManager->addUrlParam('/shop/category/view', $data));
+                return $this->redirect(Yii::$app->urlManager->addUrlParam('/shop/category/view', $data));
             }
         }
         return parent::beforeAction($action);
@@ -208,7 +208,6 @@ class CategoryController extends WebController
         if (empty($q)) {
             $q = '+';
         }
-
 
 
         if (Yii::$app->request->isAjax && Yii::$app->request->get('q')) {
@@ -248,8 +247,6 @@ class CategoryController extends WebController
         $this->query->sort();
 
 
-
-
         if ($data instanceof Category) {
             //  $cr->with = array('manufacturerActive');
             // Скрывать товары если производитель скрыт.
@@ -280,8 +277,8 @@ class CategoryController extends WebController
         // Filter products by price range if we have min_price or max_price in request
         $this->applyPricesFilter();
 
-       // $this->maxprice = (int)$this->currentQuery->max('price');
-       // $this->minprice = (int)$this->currentQuery->min('price');
+        // $this->maxprice = (int)$this->currentQuery->max('price');
+        // $this->minprice = (int)$this->currentQuery->min('price');
         //$this->maxprice = $this->getMaxPrice();
         //$this->minprice = $this->getMinPrice();
 
@@ -299,12 +296,10 @@ class CategoryController extends WebController
         //$this->query->orderBy(['price'=>SORT_DESC]);
 
 
-
         if (Yii::$app->request->get('sort') == 'price' || Yii::$app->request->get('sort') == '-price') {
             $this->query->aggregatePriceSelect((Yii::$app->request->get('sort') == 'price') ? SORT_ASC : SORT_DESC);
         }
         // $this->query->createCommand()->rawSql;die;
-
 
 
         $this->provider = new \panix\engine\data\ActiveDataProvider([
@@ -320,6 +315,8 @@ class CategoryController extends WebController
 
         // $this->provider->sort = Product::getSort();
 
+        $this->pageName = $this->dataModel->name;
+        $name = '';
 
         if ($view != 'search') {
             $this->view->registerJs("
@@ -340,7 +337,7 @@ class CategoryController extends WebController
                 'label' => Yii::t('shop/default', 'CATALOG'),
                 'url' => ['/shop']
             ];
-            $m =$this->dataModel;
+            $m = $this->dataModel;
             $ancestors = Category::getDb()->cache(function ($db) use ($m) {
                 return $m->ancestors()->addOrderBy('depth')->excludeRoot()->all();
             }, 3600);
@@ -354,8 +351,10 @@ class CategoryController extends WebController
                     ];
                 }
             }
-            $this->breadcrumbs[] = $this->dataModel->name;
+
+            $name = $this->dataModel->name;
         }
+
         $itemView = '_view_grid';
         if (Yii::$app->request->get('view')) {
             if (in_array(Yii::$app->request->get('view'), ['list', 'table', 'grid'])) {
@@ -364,7 +363,43 @@ class CategoryController extends WebController
         }
 
 
+        $filterData = $this->getActiveFilters();
 
+
+        unset($filterData['price']);
+        if ($filterData) {
+
+            foreach ($filterData as $filterKey => $filterItems) {
+                if ($filterKey == 'manufacturer') {
+                    $manufacturerNames = array();
+                    foreach ($filterItems['items'] as $mKey => $mItems) {
+                        $manufacturerNames[] = $mItems['label'];
+                    }
+                    $sep = (count($manufacturerNames) > 2) ? ', ' : ' и ';
+                    $name .= ' ' . implode($sep, $manufacturerNames);
+                    $this->pageName .= ' ' . implode($sep, $manufacturerNames);
+                } else {
+                    $attributesNames[$filterKey] = array();
+                    foreach ($filterItems['items'] as $mKey => $mItems) {
+                        $attributesNames[$filterKey][] = $mItems['label'];
+                    }
+                    if (isset($filterData['manufacturer'])) {
+                        $prefix = '; ';
+                    } else {
+                        $prefix = ' ';
+                    }
+
+                    $sep = (count($attributesNames[$filterKey]) > 2) ? ', ' : ' и ';
+                    $name .= $prefix . $filterItems['label'] . ' ' . implode($sep, $attributesNames[$filterKey]);
+                    $this->pageName .= $prefix . $filterItems['label'] . ' ' . implode($sep, $attributesNames[$filterKey]);
+                }
+            }
+            $this->breadcrumbs[] = [
+                'label' => $this->dataModel->name,
+                'url' => $this->dataModel->getUrl()
+            ];
+        }
+        $this->breadcrumbs[] = $name;
 
         if (Yii::$app->request->isAjax) {
             //\Yii::$app->response->format = \yii\web\Response::FORMAT_HTML;

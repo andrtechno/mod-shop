@@ -45,9 +45,9 @@ class Category extends ActiveRecord
                 'pattern' => '/^([a-z0-9-])+$/i',
                 'message' => Yii::t('app', 'PATTERN_URL')
             ],
-            [['name', 'seo_alias','seo_product_title'], 'trim'],
+            [['name', 'seo_alias', 'seo_product_title'], 'trim'],
             [['name', 'seo_alias'], 'required'],
-            [['name','seo_product_title','seo_product_keywords','seo_product_description'], 'string', 'max' => 255],
+            [['name', 'seo_product_title', 'seo_product_keywords', 'seo_product_description'], 'string', 'max' => 255],
             ['description', 'safe']
         ];
     }
@@ -149,31 +149,43 @@ class Category extends ActiveRecord
             $parts[] = $this->seo_alias;
             $this->full_path = implode('/', array_filter($parts));
         }
-
-//print_r($this->full_path);die;
-        // return $this;
     }
 
     public function keywords()
     {
-        return $this->replaceMeta(Yii::$app->settings->get('shop', 'seo_categories_keywords'));
+        if ($this->seo_product_keywords) {
+            $value = $this->seo_product_keywords;
+        } else {
+            $value = Yii::$app->settings->get('shop', 'seo_categories_keywords');
+        }
+        return $this->replaceMeta($value);
     }
 
     public function description()
     {
-        return $this->replaceMeta(Yii::$app->settings->get('shop', 'seo_categories_description'));
+        if ($this->seo_product_description) {
+            $value = $this->seo_product_description;
+        } else {
+            $value = Yii::$app->settings->get('shop', 'seo_categories_description');
+        }
+        return $this->replaceMeta($value);
     }
 
     public function title()
     {
-        return $this->replaceMeta(Yii::$app->settings->get('shop', 'seo_categories_title'));
+        if ($this->seo_product_title) {
+            $value = $this->seo_product_title;
+        } else {
+            $value = Yii::$app->settings->get('shop', 'seo_categories_title');
+        }
+        return $this->replaceMeta($value);
     }
 
     public function replaceMeta($text)
     {
         $replace = array(
-            // "{category_name}" => $this->name,
-            // "{sub_category_name}" => ($this->parent()->one()->name == 'root') ? '' : $this->parent()->one()->name,
+            "{category_name}" => $this->name,
+            "{sub_category_name}" => ($this->parent()->one()->name == 'root') ? '' : $this->parent()->one()->name,
             "{current_currency}" => Yii::$app->currency->active->symbol,
         );
         return CMS::textReplace($text, $replace);

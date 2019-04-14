@@ -79,17 +79,17 @@ trait ProductTrait
                 if ($model->appliedDiscount) {
                     $price = $model->discountPrice;
                     $ss = '<del class="text-secondary font-italic">' . $model->originalPrice . '</del> / ';
-                }else{
+                } else {
                     $price = $model->price;
                 }
-                if($model->currency_id){
+                if ($model->currency_id) {
                     $priceHtml = Yii::$app->currency->number_format($price);
-                    $symbol = Html::tag('sup',Yii::$app->currency->currencies[$model->currency_id]->symbol);
-                }else{
+                    $symbol = Html::tag('sup', Yii::$app->currency->currencies[$model->currency_id]->symbol);
+                } else {
                     $priceHtml = Yii::$app->currency->number_format(Yii::$app->currency->convert($price, $model->currency_id));
-                    $symbol = Html::tag('sup',Yii::$app->currency->main->symbol);
+                    $symbol = Html::tag('sup', Yii::$app->currency->main->symbol);
                 }
-                return $ss . Html::tag('span',$priceHtml,['class'=>'text-success font-weight-bold']) . ' ' . $symbol;
+                return $ss . Html::tag('span', $priceHtml, ['class' => 'text-success font-weight-bold']) . ' ' . $symbol;
             }
         ];
         $columns['created_at'] = [
@@ -236,18 +236,47 @@ trait ProductTrait
 
     public function keywords()
     {
+        // if (empty(Yii::app()->settings->get('shop', 'auto_gen_tpl_keywords'))) {
+        if ($this->mainCategory) {
+            if (!empty($this->mainCategory->seo_product_keywords)) {
+                return $this->replaceMeta($this->mainCategory->seo_product_keywords);
+            } else {
+                return $this->replaceMeta($this->mainCategory->parent()->find()->seo_product_keywords);
+            }
+        }
+        // }
         return $this->replaceMeta(Yii::$app->settings->get('shop', 'seo_products_keywords'));
     }
 
     public function description()
     {
+        //if (empty(Yii::app()->settings->get('shop', 'auto_gen_tpl_description'))) {
+        if ($this->mainCategory) {
+            if (!empty($this->mainCategory->seo_product_description)) {
+                return $this->replaceMeta($this->mainCategory->seo_product_description);
+            } else {
+                return $this->replaceMeta($this->mainCategory->parent()->find()->seo_product_description);
+            }
+        }
+        // }
         return $this->replaceMeta(Yii::$app->settings->get('shop', 'seo_products_description'));
     }
 
     public function title()
     {
+        //@todo под вопросом для СЕО, нужено ли "auto_gen_tpl_title"
+        // if (empty(Yii::app()->settings->get('shop', 'auto_gen_tpl_title'))) {
+        if ($this->mainCategory) {
+            if (!empty($this->mainCategory->seo_product_title)) {
+                return $this->replaceMeta($this->mainCategory->seo_product_title);
+            } else {
+                return $this->replaceMeta($this->mainCategory->parent()->find()->seo_product_title);
+            }
+        }
+        // }
         return $this->replaceMeta(Yii::$app->settings->get('shop', 'seo_products_title'));
     }
+
 
     public function replaceMeta($text)
     {
