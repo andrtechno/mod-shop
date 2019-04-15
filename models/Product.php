@@ -381,32 +381,31 @@ class Product extends ActiveRecord
      */
     public function setCategories(array $categories, $main_category)
     {
-        $dontDelete = array();
+        $dontDelete = [];
 
 
-        // if (!Category::model()->countByAttributes(array('id' => $main_category)))
-        //    $main_category = 1;
+
+         if (!Category::find()->where(['id' => $main_category])->count())
+            $main_category = 1;
 
         if (!in_array($main_category, $categories))
             array_push($categories, $main_category);
 
 
+
         foreach ($categories as $c) {
-            /* $count = ProductCategoryRef::model()->countByAttributes(array(
-              'category' => $c,
-              'product' => $this->id,
-              )); */
-            $count = ProductCategoryRef::find()->where(array(
+
+            $count = ProductCategoryRef::find()->where([
                 'category' => $c,
                 'product' => $this->id,
-            ))->count();
+            ])->count();
 
 
             if ($count == 0) {
                 $record = new ProductCategoryRef;
                 $record->category = (int)$c;
                 $record->product = $this->id;
-                //$record->switch = $this->switch; // new param
+                $record->switch = $this->switch; // new param
                 $record->save(false);
             }
 
@@ -416,21 +415,21 @@ class Product extends ActiveRecord
         // Clear main category
         ProductCategoryRef::updateAll([
             'is_main' => 0,
-            // 'switch' => $this->switch
-        ], 'product=:p', array(':p' => $this->id));
+             'switch' => $this->switch
+        ], 'product=:p', [':p' => $this->id]);
 
         // Set main category
-        ProductCategoryRef::updateAll(array(
+        ProductCategoryRef::updateAll([
             'is_main' => 1,
             'switch' => $this->switch,
-        ), 'product=:p AND category=:c', array(':p' => $this->id, ':c' => $main_category));
+        ], 'product=:p AND category=:c', [':p' => $this->id, ':c' => $main_category]);
 
         // Delete not used relations
         if (sizeof($dontDelete) > 0) {
             // $cr = new CDbCriteria;
             // $cr->addNotInCondition('category', $dontDelete);
             //    $query = ShopProductCategoryRef::deleteAll(['product=:id','category NOT IN (:cats)'],[':id'=>$this->id,':cats'=>implode(',',$dontDelete)]);
-            $query = ProductCategoryRef::deleteAll(
+            ProductCategoryRef::deleteAll(
                 ['AND', 'product=:id', ['NOT IN', 'category', $dontDelete]], [':id' => $this->id]);
             // ->andWhere(['not in','category',$dontDelete]);
             //  foreach($query as $q){
@@ -440,6 +439,7 @@ class Product extends ActiveRecord
             // Delete all relations 
             ProductCategoryRef::deleteAll('product=:id', [':id' => $this->id]);
         }
+
     }
 
     public function setRelatedProducts($ids = [])

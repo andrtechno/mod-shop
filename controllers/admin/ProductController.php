@@ -105,8 +105,6 @@ class ProductController extends AdminController
             $model->attributes = Yii::$app->request->get('Product');
 
 
-        if ($model->mainCategory)
-            $model->main_category_id = $model->mainCategory->id;
 
 
         // On create new product first display "Choose type" form first.
@@ -117,16 +115,24 @@ class ProductController extends AdminController
                 $this->error404(Yii::t('shop/admin', 'ERR_PRODUCT_TYPE'));
         }
 
+
+        //if ($model->mainCategory)
+        //    $model->main_category_id = $model->mainCategory->id;
+
+
         // Or set selected category from type pre-set.
-        if ($model->type && !Yii::$app->request->isPost && $model->isNewRecord)
+        if ($model->type && !Yii::$app->request->isPost && $model->isNewRecord){
             $model->main_category_id = $model->type->main_category;
+        }
 
         //$model->setScenario("admin");
 
 
         $title = ($model->isNewRecord) ? Yii::t('shop/admin', 'CREATE_PRODUCT') :
             Yii::t('shop/admin', 'UPDATE_PRODUCT');
+
         $this->pageName = $title;
+
         if ($model->type)
             $title .= ' "' . Html::encode($model->type->name) . '"';
 
