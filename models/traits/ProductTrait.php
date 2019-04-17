@@ -234,19 +234,6 @@ trait ProductTrait
         return $attributes->getData($this);
     }
 
-    public function keywords()
-    {
-        // if (empty(Yii::app()->settings->get('shop', 'auto_gen_tpl_keywords'))) {
-        if ($this->mainCategory) {
-            if (!empty($this->mainCategory->seo_product_keywords)) {
-                return $this->replaceMeta($this->mainCategory->seo_product_keywords);
-            } else {
-                return $this->replaceMeta($this->mainCategory->parent()->find()->seo_product_keywords);
-            }
-        }
-        // }
-        return $this->replaceMeta(Yii::$app->settings->get('shop', 'seo_products_keywords'));
-    }
 
     public function description()
     {

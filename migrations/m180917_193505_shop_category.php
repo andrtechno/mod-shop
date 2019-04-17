@@ -35,7 +35,6 @@ class m180917_193505_shop_category extends Migration {
             'name' => $this->string(255)->notNull(),
             'description' => $this->text()->null()->defaultValue(null),
             'seo_product_title' => $this->string(255)->null()->defaultValue(null),
-            'seo_product_keywords' => $this->string(255)->null()->defaultValue(null),
             'seo_product_description' => $this->text()->null()->defaultValue(null),
         ], $this->tableOptions);
 

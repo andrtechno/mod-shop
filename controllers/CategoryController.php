@@ -328,7 +328,6 @@ class CategoryController extends WebController
 
             $c = Yii::$app->settings->get('shop');
             if ($c->seo_categories) {
-                $this->keywords = $this->dataModel->keywords();
                 $this->description = $this->dataModel->description();
                 $this->view->title = $this->dataModel->title();
             }

@@ -47,7 +47,7 @@ class Category extends ActiveRecord
             ],
             [['name', 'seo_alias', 'seo_product_title'], 'trim'],
             [['name', 'seo_alias'], 'required'],
-            [['name', 'seo_product_title', 'seo_product_keywords', 'seo_product_description'], 'string', 'max' => 255],
+            [['name', 'seo_product_title', 'seo_product_description'], 'string', 'max' => 255],
             ['description', 'safe']
         ];
     }
@@ -61,7 +61,6 @@ class Category extends ActiveRecord
                     'name',
                     'description',
                     'seo_product_title',
-                    'seo_product_keywords',
                     'seo_product_description'
                 ]
             ],
@@ -149,16 +148,6 @@ class Category extends ActiveRecord
             $parts[] = $this->seo_alias;
             $this->full_path = implode('/', array_filter($parts));
         }
-    }
-
-    public function keywords()
-    {
-        if ($this->seo_product_keywords) {
-            $value = $this->seo_product_keywords;
-        } else {
-            $value = Yii::$app->settings->get('shop', 'seo_categories_keywords');
-        }
-        return $this->replaceMeta($value);
     }
 
     public function description()
