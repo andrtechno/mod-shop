@@ -229,6 +229,7 @@ trait ProductTrait
 
     public function getProductAttributes()
     {
+        /** @var $this Product */
         //Yii::import('mod.shop.components.AttributesRender');
         $attributes = new \panix\mod\shop\components\AttributesRender;
         return $attributes->getData($this);
@@ -237,36 +238,42 @@ trait ProductTrait
 
     public function description()
     {
-        //if (empty(Yii::app()->settings->get('shop', 'auto_gen_tpl_description'))) {
+        /** @var $this Product */
         if ($this->mainCategory) {
             if (!empty($this->mainCategory->seo_product_description)) {
                 return $this->replaceMeta($this->mainCategory->seo_product_description);
             } else {
-                return $this->replaceMeta($this->mainCategory->parent()->find()->seo_product_description);
+
+                $parent = $this->mainCategory->parent()->one();
+                if ($parent) {
+                    return $this->replaceMeta($parent->seo_product_description);
+                }
             }
         }
-        // }
         return $this->replaceMeta(Yii::$app->settings->get('shop', 'seo_products_description'));
     }
 
     public function title()
     {
-        //@todo под вопросом для СЕО, нужено ли "auto_gen_tpl_title"
-        // if (empty(Yii::app()->settings->get('shop', 'auto_gen_tpl_title'))) {
+        /** @var $this Product */
         if ($this->mainCategory) {
             if (!empty($this->mainCategory->seo_product_title)) {
-                return $this->replaceMeta($this->mainCategory->seo_product_title);
+                return $this->replaceMeta($this->mainCategory->seo_product_title).'zzz3';
             } else {
-                return $this->replaceMeta($this->mainCategory->parent()->find()->seo_product_title);
+                $parent = $this->mainCategory->parent()->one();
+                if ($parent) {
+                    return $this->replaceMeta($parent->seo_product_title).'zzz2';
+                }
+
             }
         }
-        // }
-        return $this->replaceMeta(Yii::$app->settings->get('shop', 'seo_products_title'));
+        return $this->replaceMeta(Yii::$app->settings->get('shop', 'seo_products_title')).'zzz';
     }
 
 
     public function replaceMeta($text)
     {
+        /** @var $this Product */
         $attrArray = array();
         foreach ($this->getProductAttributes() as $k => $attr) {
             $attrArray['{eav_' . $k . '_value}'] = $attr->value;

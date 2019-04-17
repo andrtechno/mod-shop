@@ -62,8 +62,11 @@ class ProductController extends WebController
 
         if (Yii::$app->settings->get('shop', 'seo_products')) {
             $this->description = $this->dataModel->description();
-            $this->view->title = $this->dataModel->title();
+
         }
+        $this->view->title = $this->dataModel->title();
+
+
 
         $this->registerSessionViews($this->dataModel->id);
         $this->view->registerMetaTag(['property' => 'og:image', 'content' => Url::toRoute($this->dataModel->getMainImage()->url, true)]);
