@@ -1,20 +1,63 @@
-<div class="carousel slide" id="myCarousel">
-    <div class="carousel-inner row">
-        <?php foreach ($model->relatedProducts as $data) { ?>
-            <div class="item col-md-3">
-                <?php echo $this->render('/category/_view_grid', [
-                    'model' => $data
-                ]); ?>
-            </div>
-        <?php } ?>
+<?php
+use panix\ext\owlcarousel\OwlCarouselWidget;
+
+OwlCarouselWidget::begin([
+    'container' => 'div',
+    'containerOptions' => [
+        // 'id' => 'container-id',
+         'class' => '_view_grid'
+    ],
+    'pluginOptions' => [
+        'autoplay' => false,
+        'autoplayTimeout' => 3000,
+        'items' => 3,
+        'loop' => false,
+        'margin' => 0,
+        'responsiveClass' => true,
+        'responsive' => [
+            0 => [
+                'items' => 1,
+                'nav' => false,
+                'dots'=>true
+            ],
+            426 => [
+                'items' => 2,
+                'nav' => false
+            ],
+            768 => [
+                'items' => 2,
+                'nav' => false
+            ],
+            1024 => [
+                'items' => 4,
+                'nav' => true,
+                'dots'=>true
+            ]
+        ]
+    ]
+]);
+?>
+<?php foreach ($model->relatedProducts as $data) { ?>
+    <div class="item">
+        <?php echo $this->render('/category/_view_grid', [
+            'model' => $data
+        ]); ?>
     </div>
-    <nav>
-        <ul class="control-box pager">
-            <li><a data-slide="prev" href="#myCarousel" class=""><i class="glyphicon glyphicon-chevron-left"></i></a>
-            </li>
-            <li><a data-slide="next" href="#myCarousel" class=""><i class="glyphicon glyphicon-chevron-right"></i></li>
-        </ul>
-    </nav>
-</div>
+    <div class="item">
+        <?php echo $this->render('/category/_view_grid', [
+            'model' => $data
+        ]); ?>
+    </div>
+    <div class="item">
+        <?php echo $this->render('/category/_view_grid', [
+            'model' => $data
+        ]); ?>
+    </div>
+    <div class="item">
+        <?php echo $this->render('/category/_view_grid', [
+            'model' => $data
+        ]); ?>
+    </div>
+<?php } ?>
 
-
+<?php OwlCarouselWidget::end(); ?>

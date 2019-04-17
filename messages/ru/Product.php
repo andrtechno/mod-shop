@@ -1,5 +1,6 @@
 <?php
 return [
+    'NOT_AVAILABLE' => 'Нет в наличии',
     'NAME' => 'Название товара',
     'SEO_ALIAS' => 'Транслит ссылка',
     'IMAGE' => 'Изображение',
@@ -19,7 +20,7 @@ return [
     'MAIN_CATEGORY_ID' => 'Категория',
     'DISCOUNT' => 'Скидка',
     'VIEWS' => 'Просмотры',
-    'CURRENCY_ID'=>'Валюта',
+    'CURRENCY_ID' => 'Валюта',
     'HINT_AUTO_DECREASE_QUANTITY' => 'Автоматически уменьшать количество при создании заказа',
     'HINT_DISCOUNT' => 'Укажите целое число или процент. Например 10%.',
     'ADDED_TO_CART_COUNT' => 'Добавление в корзину',

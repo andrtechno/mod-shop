@@ -60,10 +60,9 @@ class ProductController extends WebController
             }
         }
 
-        if (Yii::$app->settings->get('shop', 'seo_products')) {
-            $this->description = $this->dataModel->description();
 
-        }
+        $this->description = $this->dataModel->description();
+
         $this->view->title = $this->dataModel->title();
 
 

@@ -250,7 +250,7 @@ trait ProductTrait
                 }
             }
         }
-        return $this->replaceMeta(Yii::$app->settings->get('shop', 'seo_products_description'));
+      //  return $this->replaceMeta(Yii::$app->settings->get('shop', 'seo_products_description'));
     }
 
     public function title()
@@ -258,16 +258,16 @@ trait ProductTrait
         /** @var $this Product */
         if ($this->mainCategory) {
             if (!empty($this->mainCategory->seo_product_title)) {
-                return $this->replaceMeta($this->mainCategory->seo_product_title).'zzz3';
+                return $this->replaceMeta($this->mainCategory->seo_product_title);
             } else {
                 $parent = $this->mainCategory->parent()->one();
                 if ($parent) {
-                    return $this->replaceMeta($parent->seo_product_title).'zzz2';
+                    return $this->replaceMeta($parent->seo_product_title);
                 }
 
             }
         }
-        return $this->replaceMeta(Yii::$app->settings->get('shop', 'seo_products_title')).'zzz';
+       // return $this->name;
     }
 
 

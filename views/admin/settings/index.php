@@ -23,11 +23,6 @@ $form = ActiveForm::begin();
                     'label' => 'SEO',
                     'items' => [
                         [
-                            'label' => 'Товаров',
-                            'contentOptions' => ['id' => 'seo_products'],
-                            'content' => $this->render('_seo_products', ['form' => $form, 'model' => $model]),
-                        ],
-                        [
                             'label' => 'Категорий',
                             'contentOptions' => ['id' => 'seo_categories'],
                             'content' => $this->render('_seo_categories', ['form' => $form, 'model' => $model]),
