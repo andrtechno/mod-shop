@@ -122,12 +122,13 @@ class Product extends ActiveRecord
     }
 
 
-    public function getMainImage($size = false)
+    public function getMainImage($size = false, $scheme = false)
     {
+        /** @var $image \panix\mod\images\behaviors\ImageBehavior */
         $image = $this->getImage();
         $result = [];
         if ($image) {
-            $result['url'] = $image->getUrl($size);
+            $result['url'] = $image->getUrl($size, $scheme);
             $result['title'] = ($image->alt_title) ? $image->alt_title : $this->name;
         } else {
             $result['url'] = CMS::placeholderUrl(['size' => $size]);
@@ -384,13 +385,11 @@ class Product extends ActiveRecord
         $dontDelete = [];
 
 
-
-         if (!Category::find()->where(['id' => $main_category])->count())
+        if (!Category::find()->where(['id' => $main_category])->count())
             $main_category = 1;
 
         if (!in_array($main_category, $categories))
             array_push($categories, $main_category);
-
 
 
         foreach ($categories as $c) {
@@ -415,7 +414,7 @@ class Product extends ActiveRecord
         // Clear main category
         ProductCategoryRef::updateAll([
             'is_main' => 0,
-             'switch' => $this->switch
+            'switch' => $this->switch
         ], 'product=:p', [':p' => $this->id]);
 
         // Set main category
