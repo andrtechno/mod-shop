@@ -29,7 +29,6 @@ GridView::widget([
         [
             'attribute' => 'name',
             'format' => 'raw',
-            'contentOptions' => ['class' => 'text-center'],
             'value' => function ($model) {
                 return Html::a($model->product->name, $model->product->getUrl()); //$model->renderGridImage('50x50');
             },

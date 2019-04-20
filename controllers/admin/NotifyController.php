@@ -65,7 +65,7 @@ class NotifyController extends AdminController
 
     public function actionDeliverySend()
     {
-        Yii::app()->request->enableCsrfValidation = false;
+        Yii::$app->request->enableCsrfValidation = false;
         $model = new ShopProduct('search');
         $data = $model->search(array('today' => true))->getData();
         $config = Yii::app()->settings->get('app');
