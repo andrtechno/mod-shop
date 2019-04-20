@@ -122,13 +122,13 @@ class Product extends ActiveRecord
     }
 
 
-    public function getMainImage($size = false, $scheme = false)
+    public function getMainImage($size = false)
     {
         /** @var $image \panix\mod\images\behaviors\ImageBehavior */
         $image = $this->getImage();
         $result = [];
         if ($image) {
-            $result['url'] = $image->getUrl($size, $scheme);
+            $result['url'] = $image->getUrl($size);
             $result['title'] = ($image->alt_title) ? $image->alt_title : $this->name;
         } else {
             $result['url'] = CMS::placeholderUrl(['size' => $size]);

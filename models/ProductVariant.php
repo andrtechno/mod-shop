@@ -1,8 +1,6 @@
 <?php
 namespace panix\mod\shop\models;
 
-use panix\mod\shop\models\Attribute;
-use panix\mod\shop\models\AttributeOption;
 /**
  * This is the model class for table "ProductVariant".
  *
@@ -38,17 +36,6 @@ class ProductVariant extends \yii\db\ActiveRecord {
         ];
     }
 
-    /**
-     * @return array relational rules.
-     
-    public function relations() {
-        return array(
-            'attribute' => array(self::BELONGS_TO, 'Attribute', 'attribute_id'),
-            'option' => array(self::BELONGS_TO, 'AttributeOption', 'option_id'),
-        );
-    }*/
-
-    
     public function getProductAttribute() {
         return $this->hasOne(Attribute::class, ['id' => 'attribute_id']);
     }
