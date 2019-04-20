@@ -30,6 +30,8 @@ class Product extends ActiveRecord
 
     public $translationClass = ProductTranslate::class;
 
+    const SCENARIO_INSERT = 'insert';
+
     /**
      * @var array of attributes used to configure product
      */
@@ -166,7 +168,6 @@ class Product extends ActiveRecord
       ];
       } */
 
-    const SCENARIO_INSERT = 'insert';
 
     public function scenarios()
     {
@@ -206,7 +207,7 @@ class Product extends ActiveRecord
             [['full_description', 'discount'], 'string'],
             ['use_configurations', 'boolean', 'on' => self::SCENARIO_INSERT],
             ['enable_comments', 'boolean'],
-            [['sku', 'full_description'], 'default'], // установим ... как NULL, если они пустые
+            [['sku', 'full_description', 'unit'], 'default'], // установим ... как NULL, если они пустые
             [['name', 'seo_alias', 'main_category_id', 'price', 'unit'], 'required'],
             [['manufacturer_id', 'type_id', 'quantity', 'views', 'added_to_cart_count', 'ordern', 'category_id', 'currency_id', 'unit'], 'integer'],
             [['name', 'seo_alias', 'full_description', 'use_configurations'], 'safe'],
@@ -218,7 +219,6 @@ class Product extends ActiveRecord
     public function getUnits()
     {
         return array(
-            0 => self::t('UNKNOWN'),
             1 => self::t('UNIT_THING'),
             2 => self::t('UNIT_METER'),
             3 => self::t('UNIT_BOX'),

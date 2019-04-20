@@ -16,9 +16,14 @@ if ($model->use_configurations) {
     echo $form->field($model, 'price', [
         'parts' => [
             '{label_unit}' => Html::activeLabel($model, 'unit'),
-            '{unit}'=>Html::activeDropDownList($model, 'unit', $model->getUnits(), ['class' => 'form-control', 'prompt' => 'Ед. измерения']),
+            '{unit}' => Html::activeDropDownList($model, 'unit', $model->getUnits(), ['class' => 'custom-select']),
             '{label_currency}' => Html::activeLabel($model, 'currency_id'),
-            '{currency}' => Html::activeDropDownList($model, 'currency_id', ArrayHelper::map(Currency::find()->andWhere(['!=', 'id', Yii::$app->currency->main->id])->all(), 'id', 'name'), ['class' => 'form-control', 'prompt' => 'Укажите валюту'])
+            '{currency}' => Html::activeDropDownList($model, 'currency_id', ArrayHelper::map(Currency::find()->andWhere(['!=', 'id', Yii::$app->currency->main->id])->all(), 'id', 'name'), [
+                'class' => 'custom-select',
+                'prompt' => $model::t('SELECT_CURRENCY', [
+                    'currency' => Yii::$app->currency->main->iso
+                ])
+            ])
         ],
         'template' => '{label}
 <div class="input-group col-sm-8 col-lg-10">{input}
@@ -30,7 +35,7 @@ if ($model->use_configurations) {
 <span class="input-group-text">{label_currency}</span>
 {currency}{hint}{error}
 <div class="input-group-append">
-    <span class="input-group-text"><a id="add-price" class="text-success" href="#"><i class="icon-add"></i></a></span>
+    <a id="add-price" class="text-success btn btn-outline-success" href="#"><i class="icon-add"></i></a>
   </div>
   
 
