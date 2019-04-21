@@ -138,7 +138,6 @@ class NotifyController extends AdminController
         $siteName = Yii::$app->settings->get('app', 'sitename');
 
 
-
         foreach ($record as $row) {
             if (!$row->product)
                 continue;
@@ -149,7 +148,7 @@ class NotifyController extends AdminController
             $mailer = Yii::$app->mailer;
             $mailer->htmlLayout = "@common/mail/layouts/html";
             $mail = $mailer->compose(['html' => "@shop/mail/{$lang}/product_notify"], [
-                'data'=>$row,
+                'data' => $row,
                 'product' => $row->product,
                 'site_name' => $siteName
             ]);
@@ -165,11 +164,10 @@ class NotifyController extends AdminController
             ]));
             $mail->send();
 
-
-             $row->delete();
+            //$row->delete();
         }
         Yii::$app->session->setFlash('success', Yii::t('shop/admin', 'Сообщения успешно отправлены.'));
-        $this->redirect(['index']);
+        //$this->redirect(['index']);
     }
 
 }

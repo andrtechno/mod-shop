@@ -52,6 +52,21 @@ class CategoryController extends AdminController
 
     public function actionIndex()
     {
+
+
+        if (!Yii::$app->request->get('id')) {
+            $model = new Category;
+        } else {
+            $model = $this->findModel(Yii::$app->request->get('id'));
+        }
+
+        if ($model->getIsNewRecord()) {
+            $this->icon = 'add';
+            $this->pageName = Yii::t('shop/Category', 'CREATE_TITLE');
+        } else {
+            $this->pageName = Yii::t('shop/Category', 'UPDATE_TITLE', ['name' => $model->name]);
+        }
+
         $this->pageName = Yii::t('shop/admin', 'CATEGORIES');
         $this->buttons = [
             [
@@ -65,38 +80,8 @@ class CategoryController extends AdminController
             'url' => $this->module->info['url'],
         ];
         $this->breadcrumbs[] = $this->pageName;
-        return $this->render('index', [
-        ]);
-    }
 
-    public function actionUpdate($id)
-    {
-        if ($id === true) {
-            $model = new Category;
-        } else {
-            $model = Category::findOne($id);
-        }
-        if (!$model) {
-            $this->error404();
-        }
-        // $this->pageName = Yii::t('shop/admin', 'CATEGORIES');
-        if ($model->getIsNewRecord()) {
-            $this->icon = 'add';
-            $this->pageName = Yii::t('shop/Category', 'CREATE_TITLE');
-        } else {
-            $this->pageName = Yii::t('shop/Category', 'UPDATE_TITLE', ['name' => $model->name]);
-        }
-        $this->breadcrumbs = [
-            [
-                'label' => Yii::t('shop/default', 'MODULE_NAME'),
-                'url' => ['/admin/shop']
-            ],
-            [
-                'label' => Yii::t('shop/admin', 'CATEGORIES'),
-                'url' => ['/admin/shop/category']
-            ],
-            $this->pageName
-        ];
+
         $post = Yii::$app->request->post();
         if ($model->load($post) && $model->validate()) {
 
@@ -108,19 +93,21 @@ class CategoryController extends AdminController
                 }
 
                 $model->appendTo($parent_id);
+                Yii::$app->session->setFlash('success', Yii::t('app', 'SUCCESS_UPDATE'));
                 return $this->redirect(['index']);
             } else {
                 $model->saveNode();
+                Yii::$app->session->setFlash('success', Yii::t('app', 'SUCCESS_UPDATE'));
                 return $this->redirect(['update', 'id' => $model->id]);
             }
-
-            Yii::$app->session->setFlash('success', \Yii::t('app', 'SUCCESS_UPDATE'));
-            //return Yii::$app->getResponse()->redirect(['/admin/shop/category']);
         }
-        return $this->render('update', [
+
+
+        return $this->render('index', [
             'model' => $model,
         ]);
     }
+
 
     protected function findModel($id)
     {
@@ -128,7 +115,7 @@ class CategoryController extends AdminController
         if (($model = $model::findOne($id)) !== null) {
             return $model;
         } else {
-            throw new NotFoundHttpException('The requested page does not exist.');
+            $this->error404();
         }
     }
 

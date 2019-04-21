@@ -7,7 +7,8 @@ use panix\engine\grid\GridView;
 echo \panix\ext\fancybox\Fancybox::widget(['target' => '.image a']);
 
 Pjax::begin([
-    'id' => 'pjax-container', 'enablePushState' => false,
+    'id' => 'pjax-container',
+    'enablePushState' => false,
 ]);
 ?>
 <?=

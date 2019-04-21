@@ -1,82 +1,62 @@
 <?php
 
 use yii\helpers\Html;
-use panix\mod\shop\models\Category;
-use panix\mod\shop\models\CategoryNode;
+use panix\engine\bootstrap\ActiveForm;
 
-\panix\mod\shop\assets\admin\CategoryAsset::register($this);
+use panix\ext\taginput\TagInput;
+
+$form = ActiveForm::begin();
 ?>
 
-<div class="card bg-light">
-    <div class="card-header">
-        <h5><?= Html::encode($this->context->pageName) ?></h5>
+<div class="row">
+    <div class="col-sm-12 col-md-7 col-lg-8">
+        <div class="card bg-light">
+            <div class="card-header">
+                <h5><?= Html::encode($this->context->pageName) ?></h5>
+            </div>
+            <div class="card-body">
+
+
+                <?php
+
+
+                $tabs = [];
+
+
+                $tabs[] = [
+                    'label' => $model::t('TAB_MAIN'),
+                    'content' => $this->render('_main', ['form' => $form, 'model' => $model]),
+                    'active' => true,
+                    'options' => ['class' => 'flex-sm-fill text-center nav-item'],
+                ];
+                $tabs[] = [
+                    'label' => $model::t('TAB_SEO'),
+                    'content' => $this->render('@seo/views/admin/default/_module_seo', ['model' => $model]),
+                    'options' => ['class' => 'flex-sm-fill text-center nav-item'],
+                ];
+
+                echo \panix\engine\bootstrap\Tabs::widget([
+                    //'encodeLabels'=>true,
+                    'options' => [
+                        'class' => 'nav-pills flex-column flex-sm-row nav-tabs-static'
+                    ],
+                    'items' => $tabs,
+                ]);
+
+                ?>
+
+
+            </div>
+            <div class="card-footer text-center">
+
+                <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'CREATE') : Yii::t('app', 'UPDATE'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+
+            </div>
+
+        </div>
+        <?php ActiveForm::end(); ?>
     </div>
-    <div class="card-body">
-        <?php
-        echo \panix\ext\jstree\JsTree::widget([
-            'id' => 'CategoryTree',
-            'name' => 'jstree',
-            'data' => CategoryNode::fromArray(Category::findOne(1)->children()->all(), ['switch' => true]),
-            'core' => [
-                'force_text' => true,
-                'animation' => 0,
-                'strings' => [
-                    'Loading ...' => Yii::t('app', 'LOADING')
-                ],
-                "themes" => ["stripes" => true, 'responsive' => true, "variant" => "large"],
-                'check_callback' => true
-            ],
-            'plugins' => ['dnd', 'contextmenu', 'search', 'wholerow', 'state'],
-            'contextmenu' => [
-                'items' => new yii\web\JsExpression('function($node) {
-                var tree = $("#jsTree_CategoryTree").jstree(true);
-                return {
-                    "Switch": {
-                        "icon":"icon-eye",
-                        "label": "' . Yii::t('app', 'Скрыть показать') . '",
-                        "action": function (obj) {
-                            $node = tree.get_node($node);
-                            categorySwitch($node);
-                        }
-                    }, 
-                    "Add": {
-                        "icon":"icon-add",
-                        "label": "' . Yii::t('app', 'CREATE') . '",
-                        "action": function (obj) {
-                            $node = tree.get_node($node);
-                            console.log($node);
-                            window.location = "/admin/shop/category/create?parent_id="+$node.id.replace("node_", "");
-                        }
-                    }, 
-                    "Edit": {
-                        "icon":"icon-edit",
-                        "label": "' . Yii::t('app', 'UPDATE') . '",
-                        "action": function (obj) {
-                            $node = tree.get_node($node);
-                           window.location = "/admin/shop/category/update?id="+$node.id.replace("node_", "");
-                        }
-                    },  
-                    "Rename": {
-                        "icon":"icon-rename",
-                        "label": "' . Yii::t('app', 'RENAME') . '",
-                        "action": function (obj) {
-                            console.log($node);
-                            tree.edit($node);
-                        }
-                    },                         
-                    "Remove": {
-                        "icon":"icon-trashcan",
-                        "label": "' . Yii::t('app', 'DELETE') . '",
-                        "action": function (obj) {
-                            if (confirm("' . Yii::t('app', 'DELETE_CONFIRM') . '\nТак же будут удалены все товары.")) {
-                                tree.delete_node($node);
-                            }
-                        }
-                    }
-                };
-      }')
-            ]
-        ]);
-        ?>
+    <div class="col-sm-12 col-md-5 col-lg-4">
+        <?= $this->render('_category', ['model' => $model]); ?>
     </div>
 </div>
