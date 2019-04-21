@@ -758,10 +758,10 @@ class Product extends ActiveRecord
                 ];
             }
         ];
-       // if (Yii::$app->getModule('images'))
-            $a['imagesBehavior'] = [
-                'class' => '\panix\mod\images\behaviors\ImageBehavior',
-            ];
+        // if (Yii::$app->getModule('images'))
+        $a['imagesBehavior'] = [
+            'class' => '\panix\mod\images\behaviors\ImageBehavior',
+        ];
         $a['slug'] = [
             'class' => '\yii\behaviors\SluggableBehavior',
             'attribute' => 'name',
@@ -815,20 +815,24 @@ class Product extends ActiveRecord
 
     public function getPriceByQuantity($q = 1)
     {
-
-        return false;///delete
-        $cr = new CDbCriteria();
-        $cr->condition = '`t`.`product_id`=:pid AND `t`.`order_from` <= :from';
-        $cr->params = array(
-            ':pid' => $this->id,
-            ':from' => $q
-        );
-        $cr->order = 'order_from DESC';
-        return ShopProductPrices::model()->find($cr);
+        if ($q >= 1) {
+            return ProductPrices::find()
+                ->where(['product_id' => $this->id, 'from' => $q])
+                ->orderBy(['from'=>SORT_DESC])
+                ->one();
+        }
     }
 
+    /**
+     * @param $product Product
+     * @param array $variants
+     * @param $configuration
+     * @param int $quantity
+     * @return float|int|mixed|null
+     */
     public static function calculatePrices($product, array $variants, $configuration, $quantity = 1)
     {
+       // print_r($product);die;
         if (($product instanceof Product) === false)
             $product = Product::findOne($product);
 
@@ -838,12 +842,12 @@ class Product extends ActiveRecord
         if ($configuration instanceof Product) {
             $result = $configuration->price;
         } else {
-            // if ($quantity > 1 && ($pr = $product->getPriceByQuantity($quantity))) {
-            //$calcPrice = $item['model']->value;
-            //   $result = $pr->value;
-            //} else {
-            $result = $product->appliedDiscount ? $product->discountPrice : $product->price;
-            // }
+
+            if ($quantity > 1 && ($pr = $product->getPriceByQuantity($quantity))) {
+                $result = $pr->value;
+            } else {
+                $result = $product->appliedDiscount ? $product->discountPrice : $product->price;
+            }
         }
 
         // if $variants contains not models
