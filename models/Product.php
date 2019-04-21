@@ -844,9 +844,19 @@ class Product extends ActiveRecord
         } else {
 
             if ($quantity > 1 && ($pr = $product->getPriceByQuantity($quantity))) {
-                $result = $pr->value;
+                if($product->currency_id){
+                    $result = Yii::$app->currency->convert($pr->value,$product->currency_id);
+                }else{
+                    $result = $pr->value;
+                }
+
             } else {
-                $result = $product->appliedDiscount ? $product->discountPrice : $product->price;
+                if($product->currency_id){
+                    $result = Yii::$app->currency->convert($product->appliedDiscount ? $product->discountPrice : $product->price,$product->currency_id);
+                }else{
+                    $result = $product->appliedDiscount ? $product->discountPrice : $product->price;
+                }
+
             }
         }
 
