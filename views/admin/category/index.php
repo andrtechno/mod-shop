@@ -27,18 +27,18 @@ $form = ActiveForm::begin();
                     'label' => $model::t('TAB_MAIN'),
                     'content' => $this->render('_main', ['form' => $form, 'model' => $model]),
                     'active' => true,
-                    'options' => ['class' => 'flex-sm-fill text-center nav-item'],
+                    'options' => ['class' => 'text-center nav-item'],
                 ];
                 $tabs[] = [
                     'label' => $model::t('TAB_SEO'),
                     'content' => $this->render('@seo/views/admin/default/_module_seo', ['model' => $model]),
-                    'options' => ['class' => 'flex-sm-fill text-center nav-item'],
+                    'options' => ['class' => 'text-center nav-item'],
                 ];
 
                 echo \panix\engine\bootstrap\Tabs::widget([
                     //'encodeLabels'=>true,
                     'options' => [
-                        'class' => 'nav-pills flex-column flex-sm-row nav-tabs-static'
+                        'class' => 'nav-pills'
                     ],
                     'items' => $tabs,
                 ]);

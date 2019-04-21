@@ -356,7 +356,7 @@ class CategoryController extends WebController
 
         $itemView = '_view_grid';
         if (Yii::$app->request->get('view')) {
-            if (in_array(Yii::$app->request->get('view'), ['list', 'table', 'grid'])) {
+            if (in_array(Yii::$app->request->get('view'), ['list', 'grid'])) {
                 $itemView = '_view_' . Yii::$app->request->get('view');
             }
         }
