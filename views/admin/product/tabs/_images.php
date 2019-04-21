@@ -117,7 +117,7 @@ echo panix\engine\grid\GridView::widget([
             'format' => 'raw',
             'contentOptions' => ['class' => 'text-center image'],
             'value' => function($model) {
-                return Html::a(Html::img($model->getUrl('100x100'), ['class' => '']), $model->getUrl(), ['class' => 'img-thumbnail fancybox']);
+                return Html::a(Html::img($model->getUrl('100x100'), ['class' => 'img-thumbnail']), $model->getUrl(), ['class' => 'fancybox']);
             },
         ],
         [

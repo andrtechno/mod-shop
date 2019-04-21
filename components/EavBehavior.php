@@ -206,9 +206,10 @@ class EavBehavior extends \yii\base\Behavior
     }
 
     /**
-     * @return void
+     * EavBehavior constructor.
+     * @param array $config
      */
-    public function __construct()
+    public function __construct($config = [])
     {
         // Prepare attributes collection.
         $this->attributes = new CAttributeCollection;
@@ -219,12 +220,12 @@ class EavBehavior extends \yii\base\Behavior
 
         // Prepare changed attributes list.
         $this->changedAttributes = new CList;
+
+        parent::__construct($config);
     }
 
     /**
-     * @throws CException
-     * @param CComponent
-     * @return void
+     * @param \yii\base\Component $owner
      */
     public function attach($owner)
     {
@@ -243,7 +244,7 @@ class EavBehavior extends \yii\base\Behavior
           } */
         // Prepare cache component.
         $this->cache = Yii::$app->{$this->cacheId};
-        if (!($this->cache instanceof ICache)) {
+        if (!($this->cache instanceof \yii\caching\Cache)) {
             // If not set cache component, use dummy cache.
             $this->cache = new \yii\caching\DummyCache();
         }
@@ -252,10 +253,10 @@ class EavBehavior extends \yii\base\Behavior
     }
 
     /**
-     * @param CEvent
+     * @param Event
      * @return void
      */
-    public function afterSave($event)
+    public function afterSave()
     {
         // TODO afterSave не срабатывает если модель не была изменена
         // Save changed attributes.
@@ -263,7 +264,6 @@ class EavBehavior extends \yii\base\Behavior
         $this->saveEavAttributes($this->changedAttributes->toArray());
         // }
         // Call parent method for convenience.
-        parent::afterSave($event);
     }
 
     /**
@@ -288,8 +288,6 @@ class EavBehavior extends \yii\base\Behavior
                 $this->loadEavAttributes($this->getSafeAttributesArray());
             }
         }
-        // Call parent method for convenience.
-        // parent::afterFind($event);
     }
 
     /**
@@ -369,8 +367,8 @@ class EavBehavior extends \yii\base\Behavior
 
     /**
      * @param array $attributes key for delete.
-     * @param boolean $save whether auto attributes.
-     * @return ActiveRecord
+     * @param bool $save whether auto attributes.
+     * @return ActiveRecord|\yii\base\Component
      */
     public function deleteEavAttributes($attributes = array(), $save = FALSE)
     {
@@ -394,8 +392,8 @@ class EavBehavior extends \yii\base\Behavior
     }
 
     /**
-     * @param array attributes values for change.
-     * @param boolean whether auto save attributes.
+     * @param array $attributes values for change.
+     * @param bool $save whether auto save attributes.
      * @return ActiveRecord
      */
     public function setEavAttributes($attributes, $save = FALSE)
@@ -415,7 +413,7 @@ class EavBehavior extends \yii\base\Behavior
     /**
      * @param string $attribute key.
      * @param mixed $value value.
-     * @param boolean whether auto save attributes.
+     * @param bool $save whether auto save attributes.
      * @return ActiveRecord
      */
     public function setEavAttribute($attribute, $value, $save = FALSE)
@@ -424,7 +422,7 @@ class EavBehavior extends \yii\base\Behavior
     }
 
     /**
-     * @param array attributes key for get.
+     * @param array $attributes key for get.
      * @return array
      */
     public function getEavAttributes($attributes = [])
@@ -579,10 +577,6 @@ class EavBehavior extends \yii\base\Behavior
 
         return $query;
 
-
-        /* return $this->owner
-          ->getCommandBuilder()
-          ->createFindCommand($this->tableName, $this->getLoadEavAttributesCriteria($attributes)); */
     }
 
     /**
@@ -600,105 +594,5 @@ class EavBehavior extends \yii\base\Behavior
     }
 
 
-
-    protected function getFindByEavAttributesCriteria($attributes)
-    {
-        // $criteria = new CDbCriteria();
-        $query = new Query();
-// compose the query
-        $query->select('id, name')
-            ->from('user')
-            ->limit(10);
-        $pk = $this->getModelTableFk();
-
-        //  $conn = $this->owner->getDbConnection();
-        $i = 0;
-        foreach ($attributes as $attribute => $values) {
-            // If search models with attribute name with specified values.
-            if (is_string($attribute)) {
-                // Get attribute compare operator
-                // $attribute = $conn->quoteValue($attribute);
-                if (!is_array($values)) {
-                    $values = array($values);
-                }
-                $values = array_unique($values);
-                sort($values);
-
-
-                $cache = Yii::$app->cache->get("attribute_" . $attribute);
-                //anti d-dos убирает лишние значение с запроса.
-                if ($cache) {
-                    $values = array_intersect($cache[$attribute], $values);
-                }
-
-                foreach ($values as $value) {
-                    // $value = $conn->quoteValue($value);
-                    $criteria->join .= "\nJOIN {$this->tableName} eavb$i"
-                        . "\nON t.{$pk} = eavb$i.{$this->entityField}";
-                    //  . "\nAND eavb$i.{$this->attributeField} = $attribute"
-                    //  . "\nAND eavb$i.{$this->valueField} = $value";
-                    //$criteria->addCondition("eavb$i.{$this->attributeField}=$attribute");
-                    $criteria->addInCondition("eavb$i.{$this->valueField}", $values);
-
-                    $i++;
-                }
-            } // If search models with attribute name with anything values.
-            elseif (is_int($attribute)) {
-                // $values = $conn->quoteValue($values);
-                $this->owner->join('JOIN', "{$this->tableName} eavb" . $i, "$pk=`eavb$i`.`{$this->entityField}` AND eavb$i.{$this->attributeField} = $values");
-                /*$criteria->join .= "\nJOIN {$this->tableName} eavb$i"
-                        . "\nON t.{$pk} = eavb$i.{$this->entityField}"
-                        . "\nAND eavb$i.{$this->attributeField} = $values";*/
-                $i++;
-            }
-        }
-        //$this->owner->distinct(true);
-        //$this->owner->groupBy("{$pk}");
-        return $this;
-    }
-
-    /**
-     * @access protected
-     * @param  $attributes
-     * @return CDbCriteria
-     */
-    protected function getFindByEavAttributesCriteria2($attributes)
-    {
-        $criteria = new CDbCriteria();
-        $pk = $this->getModelTableFk();
-
-        $conn = $this->owner->getDbConnection();
-        $i = 0;
-        foreach ($attributes as $attribute => $values) {
-            // If search models with attribute name with specified values.
-            if (is_string($attribute)) {
-                // Get attribute compare operator
-                $attribute = $conn->quoteValue($attribute);
-                if (!is_array($values)) {
-                    $values = array($values);
-                }
-                foreach ($values as $value) {
-                    $value = $conn->quoteValue($value);
-                    $criteria->join .= "\nJOIN {$this->tableName} eavb$i"
-                        . "\nON t.{$pk} = eavb$i.{$this->entityField}"
-                        . "\nAND eavb$i.{$this->attributeField} = $attribute"
-                        . "\nAND eavb$i.{$this->valueField} = $value";
-
-
-                    $i++;
-                }
-            } // If search models with attribute name with anything values.
-            elseif (is_int($attribute)) {
-                $values = $conn->quoteValue($values);
-                $criteria->join .= "\nJOIN {$this->tableName} eavb$i"
-                    . "\nON t.{$pk} = eavb$i.{$this->entityField}"
-                    . "\nAND eavb$i.{$this->attributeField} = $values";
-                $i++;
-            }
-        }
-        $criteria->distinct = true;
-        $criteria->group .= "t.{$pk}";
-        return $criteria;
-    }
 
 }

@@ -185,8 +185,11 @@ class ProductController extends AdminController
 
 
                     $uniqueName = \panix\engine\CMS::gen(10);
-                    $file->saveAs('uploads/' . $uniqueName . '_' . $file->baseName . '.' . $file->extension);
-                    $model->attachImage('uploads/' . $uniqueName . '_' . $file->baseName . '.' . $file->extension);
+                   // $file->saveAs(Yii::getAlias('@uploads').'/' . $uniqueName . '_' . $file->baseName . '.' . $file->extension);
+                   // $model->attachImage('uploads/' . $uniqueName . '_' . $file->baseName . '.' . $file->extension);
+
+                    $file->saveAs(Yii::getAlias('@uploads').'/' . $uniqueName . '_' . $file->baseName . '.' . $file->extension);
+                    $model->attachImage(Yii::getAlias('@uploads').'/' . $uniqueName . '_' . $file->baseName . '.' . $file->extension);
                 }
             }
             $model->processPrices(Yii::$app->request->post('ProductPrices', []));

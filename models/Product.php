@@ -758,7 +758,7 @@ class Product extends ActiveRecord
                 ];
             }
         ];
-        if (Yii::$app->getModule('images'))
+       // if (Yii::$app->getModule('images'))
             $a['imagesBehavior'] = [
                 'class' => '\panix\mod\images\behaviors\ImageBehavior',
             ];

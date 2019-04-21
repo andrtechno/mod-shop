@@ -2,12 +2,11 @@
 use panix\ext\owlcarousel\OwlCarouselWidget;
 
 OwlCarouselWidget::begin([
-    'container' => 'div',
     'containerOptions' => [
         // 'id' => 'container-id',
          'class' => '_view_grid'
     ],
-    'pluginOptions' => [
+    'options' => [
         'autoplay' => false,
         'autoplayTimeout' => 3000,
         'items' => 3,
