@@ -5,7 +5,7 @@ use panix\engine\bootstrap\ActiveForm;
 
 use panix\ext\taginput\TagInput;
 
-$form = ActiveForm::begin();
+$form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]);
 ?>
 
 <div class="row">

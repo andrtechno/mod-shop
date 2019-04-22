@@ -2,6 +2,7 @@
 
 namespace panix\mod\shop\models;
 
+use panix\engine\behaviors\UploadFileBehavior;
 use Yii;
 use panix\engine\behaviors\TranslateBehavior;
 use panix\engine\behaviors\nestedsets\NestedSetsBehavior;
@@ -39,7 +40,7 @@ class Category extends ActiveRecord
     {
         return [
 
-
+            [['image'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg'],
             ['seo_alias', '\panix\engine\validators\UrlValidator', 'attributeCompare' => 'name'],
             ['seo_alias', 'match',
                 'pattern' => '/^([a-z0-9-])+$/i',
@@ -69,6 +70,12 @@ class Category extends ActiveRecord
                 'labelAttr' => 'name',
                 // 'countProduct'=>false,
                 'urlExpression' => '["/shop/category/view", "seo_alias"=>$model->full_path]',
+            ),
+            'upload' => array(
+                'class' => UploadFileBehavior::class,
+                'files'=>[
+                    'image'=>'@uploads/categories'
+                ]
             ),
             'tree' => [
                 'class' => NestedSetsBehavior::class,

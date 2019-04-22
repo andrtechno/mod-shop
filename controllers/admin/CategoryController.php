@@ -94,11 +94,11 @@ class CategoryController extends AdminController
 
                 $model->appendTo($parent_id);
                 Yii::$app->session->setFlash('success', Yii::t('app', 'SUCCESS_UPDATE'));
-                return $this->redirect(['index']);
+                return $this->redirect(['/admin/shop/category/index']);
             } else {
                 $model->saveNode();
                 Yii::$app->session->setFlash('success', Yii::t('app', 'SUCCESS_UPDATE'));
-                return $this->redirect(['update', 'id' => $model->id]);
+                return $this->redirect(['/admin/shop/category/index', 'id' => $model->id]);
             }
         }
 

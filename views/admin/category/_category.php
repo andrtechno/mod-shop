@@ -5,6 +5,7 @@ use panix\mod\shop\models\Category;
 use panix\mod\shop\models\CategoryNode;
 
 \panix\mod\shop\assets\admin\CategoryAsset::register($this);
+
 ?>
 
 <div class="card bg-light">
@@ -14,13 +15,10 @@ use panix\mod\shop\models\CategoryNode;
     <div class="card-body">
         <?php
 
-
-
-
         echo \panix\ext\jstree\JsTree::widget([
             'id' => 'CategoryTree',
             'name' => 'jstree',
-            'allOpen'=>true,
+            'allOpen' => true,
             'data' => CategoryNode::fromArray(Category::findOne(1)->children()->all(), ['switch' => true]),
             'core' => [
                 'force_text' => true,
