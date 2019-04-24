@@ -2,6 +2,7 @@
 
 namespace panix\mod\shop;
 
+use panix\mod\admin\widgets\sidebar\BackendNav;
 use Yii;
 use panix\engine\WebModule;
 use yii\base\BootstrapInterface;
@@ -168,7 +169,7 @@ class Module extends WebModule implements BootstrapInterface
             ],
         ];*/
 
-        return (new \panix\engine\bootstrap\BackendNav)->findMenu($this->id)['items'];
+        return (new BackendNav())->findMenu($this->id)['items'];
     }
 
 
