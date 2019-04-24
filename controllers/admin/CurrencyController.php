@@ -71,14 +71,7 @@ class CurrencyController extends AdminController
     public function actionUpdate($id = false)
     {
 
-
-        if ($id === true) {
-            $model = Yii::$app->getModule("shop")->model("Currency");
-        } else {
-            $model = $this->findModel($id);
-        }
-
-
+        $model = Currency::findModel($id);
         $this->pageName = Yii::t('shop/admin', 'CURRENCY');
         $this->buttons = [
             [
@@ -113,14 +106,5 @@ class CurrencyController extends AdminController
         ]);
     }
 
-    protected function findModel($id)
-    {
-        $model = new Currency;
-        if (($model = $model::findOne($id)) !== null) {
-            return $model;
-        } else {
-            $this->error404();
-        }
-    }
 
 }

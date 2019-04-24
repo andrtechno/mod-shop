@@ -45,13 +45,7 @@ class SupplierController extends AdminController
     public function actionUpdate($id = false)
     {
 
-
-        if ($id === true) {
-            $model = new Supplier;
-        } else {
-            $model = $this->findModel($id);
-        }
-
+        $model = Supplier::findModel($id);
 
         $this->pageName = Yii::t('shop/admin', 'SUPPLIER');
         $this->buttons = [
@@ -87,13 +81,4 @@ class SupplierController extends AdminController
         ]);
     }
 
-    protected function findModel($id)
-    {
-        $model = new Supplier;
-        if (($model = $model::findOne($id)) !== null) {
-            return $model;
-        } else {
-            $this->error404();
-        }
-    }
 }

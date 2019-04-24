@@ -66,18 +66,13 @@ class AttributeController extends AdminController
     /**
      * Update attribute
      * @param bool $id
+     * @return string
      */
     public function actionUpdate($id = false)
     {
 
-        if ($id === true)
-            $model = new Attribute();
-        else {
-            $model = Attribute::findOne($id);
-        }
+        $model = Attribute::findModel($id,Yii::t('shop/admin', 'NO_FOUND_ATTR'));
 
-        if (!$model)
-            $this->error404(Yii::t('shop/admin', 'NO_FOUND_ATTR'));
 
 
         $this->pageName = ($model->isNewRecord) ? $model::t('CREATE_ATTRIBUTES') : $model::t('UPDATE_ATTRIBUTES');

@@ -59,12 +59,7 @@ class ManufacturerController extends AdminController
     public function actionUpdate($id = false)
     {
 
-
-        if ($id === true) {
-            $model = Yii::$app->getModule("shop")->model("Manufacturer");
-        } else {
-            $model = $this->findModel($id);
-        }
+        $model = Manufacturer::findModel($id);
 
 
         $this->pageName = Yii::t('shop/admin', 'MANUFACTURER');
@@ -109,14 +104,5 @@ class ManufacturerController extends AdminController
         ]);
     }
 
-    protected function findModel($id)
-    {
-        $model = new Manufacturer;
-        if (($model = $model::findOne($id)) !== null) {
-            return $model;
-        } else {
-            $this->error404();
-        }
-    }
 
 }

@@ -53,12 +53,7 @@ class CategoryController extends AdminController
     public function actionIndex()
     {
 
-
-        if (!Yii::$app->request->get('id')) {
-            $model = new Category;
-        } else {
-            $model = $this->findModel(Yii::$app->request->get('id'));
-        }
+        $model = Category::findModel(Yii::$app->request->get('id'));
 
         if ($model->getIsNewRecord()) {
             $this->icon = 'add';
@@ -87,9 +82,9 @@ class CategoryController extends AdminController
 
             if ($model->getIsNewRecord()) {
                 if (Yii::$app->request->get('parent_id')) {
-                    $parent_id = Category::findOne(Yii::$app->request->get('parent_id'));
+                    $parent_id = Category::findModel(Yii::$app->request->get('parent_id'));
                 } else {
-                    $parent_id = Category::findOne(1);
+                    $parent_id = Category::findModel(1);
                 }
 
                 $model->appendTo($parent_id);
@@ -109,15 +104,6 @@ class CategoryController extends AdminController
     }
 
 
-    protected function findModel($id)
-    {
-        $model = new Category;
-        if (($model = $model::findOne($id)) !== null) {
-            return $model;
-        } else {
-            $this->error404();
-        }
-    }
 
     public function actionRenameNode()
     {

@@ -52,13 +52,7 @@ class AttributeGroupController extends AdminController {
 
     public function actionUpdate($id = false) {
 
-
-        if ($id === true) {
-            $model = new AttributeGroup;
-        } else {
-            $model = $this->findModel($id);
-        }
-
+        $model = AttributeGroup::findModel($id);
 
         $this->pageName = Yii::t('shop/admin', 'ATTRIBUTE_GROUP');
         $this->buttons = [

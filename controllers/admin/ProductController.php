@@ -71,12 +71,7 @@ class ProductController extends AdminController
     {
 
 
-        if ($id === true) {
-            $model = new Product;
-        } else {
-            $model = $this->findModel($id);
-        }
-
+        $model = Product::findModel($id);
 
         $this->pageName = Yii::t('shop/default', 'MODULE_NAME');
 
@@ -428,15 +423,6 @@ class ProductController extends AdminController
         }
     }
 
-    protected function findModel($id)
-    {
-        $model = new Product;
-        if (($model = $model::findOne($id)) !== null) {
-            return $model;
-        } else {
-            $this->error404();
-        }
-    }
 
     /**
      * Render popup windows

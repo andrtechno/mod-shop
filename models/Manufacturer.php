@@ -8,7 +8,6 @@ use panix\engine\db\ActiveRecord;
 use panix\mod\shop\models\query\ManufacturerQuery;
 use panix\mod\shop\models\translate\ManufacturerTranslate;
 
-
 class Manufacturer extends ActiveRecord
 {
 

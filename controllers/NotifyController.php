@@ -1,6 +1,6 @@
 <?php
 
-namespace panix\mod\cart\controllers;
+namespace panix\mod\shop\controllers;
 
 use panix\mod\shop\models\ProductNotifications;
 use Yii;
