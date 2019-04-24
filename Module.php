@@ -6,7 +6,6 @@ use panix\mod\admin\widgets\sidebar\BackendNav;
 use Yii;
 use panix\engine\WebModule;
 use yii\base\BootstrapInterface;
-use yii\helpers\ArrayHelper;
 
 class Module extends WebModule implements BootstrapInterface
 {
@@ -51,10 +50,7 @@ class Module extends WebModule implements BootstrapInterface
         if (!(Yii::$app instanceof \yii\console\Application)) {
             parent::init();
         }
-        if (Yii::$app->id == 'backend') {
-           // $this->setViewPath($this->getBasePath() . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'admin');
-           // $this->controllerNamespace = 'panix\mod\shop\controllers\admin';
-        }
+
 
     }
 
@@ -181,7 +177,7 @@ class Module extends WebModule implements BootstrapInterface
             'version' => '1.0',
             'icon' => $this->icon,
             'description' => Yii::t('shop/default', 'MODULE_DESC'),
-            'url' => ['/shop'],
+            'url' => ['/admin/shop'],
         ];
     }
 
