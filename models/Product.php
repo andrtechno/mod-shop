@@ -2,8 +2,8 @@
 
 namespace panix\mod\shop\models;
 
-use app\modules\sitemap\Sitemap;
-use app\modules\sitemap\behaviors\SitemapBehavior;
+use panix\mod\sitemap\Sitemap;
+use panix\mod\sitemap\behaviors\SitemapBehavior;
 use panix\mod\comments\models\Comments;
 use panix\mod\user\models\User;
 use Yii;
@@ -733,7 +733,7 @@ class Product extends ActiveRecord
 
         $a['sitemap'] = [
             'class' => SitemapBehavior::class,
-            /**'batchSize' => 100,*/
+            //'batchSize' => 100,
             'scope' => function ($model) {
                 /** @var \yii\db\ActiveQuery $model */
                 $model->select(['seo_alias', 'created_at']);
