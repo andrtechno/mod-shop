@@ -161,8 +161,7 @@ use panix\mod\shop\models\ProductType;
 
                 </div>
                 <div class="card-footer text-center">
-                    <?= Html::submitButton(Yii::t('app', 'SAVE'), ['class' => 'btn btn-success']) ?>
-                    <?= Html::submitButton(Yii::t('app', 'SAVE_RETURN'), ['class' => 'btn btn-link', 'value' => \yii\helpers\Url::to(['index']), 'name' => 'redirect']) ?>
+                    <?= $model->submitButton(); ?>
                 </div>
                 <?php
                 ActiveForm::end();

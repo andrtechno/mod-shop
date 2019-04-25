@@ -19,7 +19,7 @@ $form = ActiveForm::begin([
         <?= $form->field($model, 'name')->textInput(['maxlength' => 255]) ?>
     </div>
     <div class="card-footer text-center">
-        <?= Html::submitButton(Yii::t('app', 'SAVE'), ['class' => 'btn btn-success']) ?>
+        <?= $model->submitButton(); ?>
     </div>
 </div>
 <?php ActiveForm::end(); ?>

@@ -34,7 +34,7 @@ use yii\helpers\Html;
         ?>
 
         <div class="form-group text-center">
-            <?= Html::submitButton(Yii::t('app', 'SAVE'), array('class' => 'btn btn-success')); ?>
+            <?= $model->submitButton(); ?>
         </div>
 
         <?php echo Html::endForm(); ?>
