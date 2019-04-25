@@ -9,19 +9,12 @@ use panix\mod\user\models\User;
 use Yii;
 use panix\engine\CMS;
 use panix\engine\behaviors\TranslateBehavior;
-use panix\mod\shop\models\Category;
-use panix\mod\shop\models\Manufacturer;
 use panix\mod\shop\models\query\ProductQuery;
 use panix\mod\shop\models\translate\ProductTranslate;
-use panix\mod\shop\models\RelatedProduct;
-use panix\mod\shop\models\ProductCategoryRef;
-use panix\mod\shop\models\ProductVariant;
-use yii\caching\DbDependency;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use panix\engine\db\ActiveRecord;
-use yii\web\Response;
 
 class Product extends ActiveRecord
 {

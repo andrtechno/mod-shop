@@ -23,7 +23,7 @@ class ProductController extends AdminController
     {
         return [
             'sortable' => [
-                'class' => \panix\engine\grid\sortable\Action::class,
+                'class' => 'panix\engine\grid\sortable\Action',
                 'modelClass' => Product::class,
             ],
             'delete' => [
@@ -63,14 +63,10 @@ class ProductController extends AdminController
             'dataProvider' => $dataProvider,
             'searchModel' => $searchModel,
         ]);
-
-
     }
 
     public function actionUpdate($id = false)
     {
-
-
         $model = Product::findModel($id);
 
         $this->pageName = Yii::t('shop/default', 'MODULE_NAME');
@@ -98,8 +94,6 @@ class ProductController extends AdminController
         // Apply use_configurations, configurable_attributes, type_id
         if (Yii::$app->request->get('Product'))
             $model->attributes = Yii::$app->request->get('Product');
-
-
 
 
         // On create new product first display "Choose type" form first.
@@ -200,7 +194,7 @@ class ProductController extends AdminController
                     return Yii::$app->getResponse()->redirect(['/admin/shop/product']);
             } else {
                 Yii::$app->session->setFlash('success', Yii::t('app', 'SUCCESS_UPDATE'));
-                $redirect = (isset($post['redirect'])) ? $post['redirect'] : ['/admin/shop/product/update', 'id' => $model->id];
+                $redirect = (isset($post['redirect'])) ? $post['redirect'] : Yii::$app->request->url;
                 if (!Yii::$app->request->isAjax)
                     return Yii::$app->getResponse()->redirect($redirect);
             }

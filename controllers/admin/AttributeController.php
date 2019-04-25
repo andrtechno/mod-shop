@@ -70,10 +70,7 @@ class AttributeController extends AdminController
      */
     public function actionUpdate($id = false)
     {
-
         $model = Attribute::findModel($id,Yii::t('shop/admin', 'NO_FOUND_ATTR'));
-
-
 
         $this->pageName = ($model->isNewRecord) ? $model::t('CREATE_ATTRIBUTES') : $model::t('UPDATE_ATTRIBUTES');
 

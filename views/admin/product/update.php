@@ -161,9 +161,8 @@ use panix\mod\shop\models\ProductType;
 
                 </div>
                 <div class="card-footer text-center">
-                    <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'CREATE') : Yii::t('app', 'UPDATE'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
-                    <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'CREATE1') : Yii::t('app', 'Изменить и выйти'), ['class' => $model->isNewRecord ? 'btn btn-outline-success' : 'btn btn-outline-primary', 'value' => '/admin/shop/product', 'name' => 'redirect']) ?>
-
+                    <?= Html::submitButton(Yii::t('app', 'SAVE'), ['class' => 'btn btn-success']) ?>
+                    <?= Html::submitButton(Yii::t('app', 'SAVE_RETURN'), ['class' => 'btn btn-link', 'value' => \yii\helpers\Url::to(['index']), 'name' => 'redirect']) ?>
                 </div>
                 <?php
                 ActiveForm::end();
