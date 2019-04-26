@@ -736,7 +736,7 @@ class Product extends ActiveRecord
             //'batchSize' => 100,
             'scope' => function ($model) {
                 /** @var \yii\db\ActiveQuery $model */
-                $model->select(['seo_alias', 'created_at']);
+                $model->select(['seo_alias', 'updated_at']);
                 $model->andWhere(['switch' => 1]);
             },
             'dataClosure' => function ($model) {
@@ -744,10 +744,9 @@ class Product extends ActiveRecord
                 return [
                     //'loc' => Url::to($model->seo_alias, true),
                     'loc' => Url::to($model->getUrl(), true),
-                    //'loc' => $model->getUrl(),
                     'lastmod' => $model->updated_at,
-                    'changefreq' => Sitemap::DAILY,
-                    'priority' => 0.8
+                    'changefreq' => SitemapBehavior::CHANGEFREQ_DAILY,
+                    'priority' => 0.9
                 ];
             }
         ];
