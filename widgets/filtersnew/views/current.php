@@ -2,6 +2,10 @@
 use yii\helpers\Html;
 use yii\widgets\Menu;
 
+/**
+ * @var $dataModel \panix\mod\shop\models\Category
+ * @var $active \panix\mod\shop\controllers\CategoryController Method getActiveFilters()
+ */
 ?>
 <div class="card" id="filter-current">
     <div class="card-header">

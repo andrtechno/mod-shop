@@ -162,6 +162,8 @@ class CategoryController extends WebController
 
         $this->allowedPageLimit = explode(',', Yii::$app->settings->get('shop', 'per_page'));
 
+        Url::remember();
+
         if (Yii::$app->request->post('min_price') || Yii::$app->request->post('max_price')) {
             $data = [];
             if (Yii::$app->request->post('min_price'))
@@ -413,7 +415,7 @@ class CategoryController extends WebController
             }else{
                 return $this->renderPartial('@shop/widgets/filtersnew/views/current', [
                     'dataModel'=>$this->dataModel,
-                    'active'=>$this->getActiveFilters()
+                    'active'=>$filterData
                 ]);
             }
 

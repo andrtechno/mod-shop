@@ -5,15 +5,16 @@ namespace panix\mod\shop\widgets\filtersnew;
 use panix\mod\shop\models\Attribute;
 use yii\caching\DbDependency;
 use yii\caching\DbQueryDependency;
-use yii\db\ActiveQuery;
-use yii\db\Query;
-use yii\db\QueryInterface;
 use yii\helpers\Html;
 use Yii;
 use panix\mod\shop\models\Product;
 use panix\mod\shop\models\Manufacturer;
 use panix\engine\data\Widget;
 
+/**
+ * Class FiltersWidget
+ * @package panix\mod\shop\widgets\filtersnew
+ */
 class FiltersWidget extends Widget
 {
 
@@ -30,7 +31,7 @@ class FiltersWidget extends Widget
 
 
     /**
-     * @var Query
+     * @var \panix\mod\shop\models\query\CategoryQuery
      */
     public $model;
 
@@ -159,8 +160,9 @@ class FiltersWidget extends Widget
 
         $active = $this->view->context->getActiveFilters();
 
+
         echo Html::beginTag('div',['id'=>'filters']);
-        echo Html::beginForm(array('/shop/category/view', 'seo_alias' => $this->model->full_path), 'POST', array('id' => 'filter-form'));
+        echo Html::beginForm($this->model->getUrl(), 'GET', array('id' => 'filter-form'));
 
 
 
