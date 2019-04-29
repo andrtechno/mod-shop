@@ -2,6 +2,7 @@
 
 namespace panix\mod\shop\controllers\admin;
 
+use panix\mod\shop\bundles\admin\ProductIndex;
 use Yii;
 use yii\helpers\Html;
 use yii\helpers\Json;
@@ -39,7 +40,7 @@ class ProductController extends AdminController
 
     public function actionIndex()
     {
-        \panix\mod\shop\assets\admin\ProductIndex::register($this->view);
+        ProductIndex::register($this->view);
         $this->pageName = Yii::t('shop/admin', 'PRODUCTS');
         $this->buttons = [
             [

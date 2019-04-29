@@ -1,6 +1,6 @@
 <?php
 
-namespace panix\mod\shop\assets;
+namespace panix\mod\shop\bundles;
 
 use panix\engine\web\AssetBundle;
 
@@ -11,7 +11,7 @@ use panix\engine\web\AssetBundle;
 class ProductConfigureAsset extends AssetBundle
 {
 
-    public $sourcePath = '@vendor/panix/mod-shop/assets';
+    public $sourcePath = __DIR__.'/../assets';
 
     public $js = [
         'js/product.view.configurations.js',
