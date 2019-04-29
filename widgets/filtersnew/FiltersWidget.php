@@ -12,8 +12,9 @@ use yii\helpers\Html;
 use Yii;
 use panix\mod\shop\models\Product;
 use panix\mod\shop\models\Manufacturer;
+use panix\engine\data\Widget;
 
-class FiltersWidget extends \panix\engine\data\Widget
+class FiltersWidget extends Widget
 {
 
     /**
@@ -161,9 +162,15 @@ class FiltersWidget extends \panix\engine\data\Widget
         echo Html::beginTag('div',['id'=>'filters']);
         echo Html::beginForm(array('/shop/category/view', 'seo_alias' => $this->model->full_path), 'POST', array('id' => 'filter-form'));
 
+
+
+
+
+        echo Html::beginTag('div', ['id' => 'ajax_filter_current']);
         if (!empty($active)) {
-            echo $this->render('current', ['active' => $active]);
+            echo $this->render('current', ['active' => $active,'dataModel'=>$this->model]);
         }
+        echo Html::endTag('div');
         echo $this->render('price');
         echo $this->render('attributes', ['attributes' => $this->getCategoryAttributes()]);
         echo $this->render('manufacturer', ['manufacturers' => $manufacturers]);

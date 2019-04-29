@@ -3,7 +3,7 @@
 use yii\helpers\Html;
 use yii\widgets\Pjax;
 
-\panix\mod\shop\assets\AdminAsset::register($this);
+\panix\mod\shop\bundles\AdminAsset::register($this);
 ?>
 
 <?php

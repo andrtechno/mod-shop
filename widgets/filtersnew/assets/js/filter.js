@@ -75,9 +75,9 @@ function getSerializeObjects() {
 }
 
 function formattedURL(objects) {
-    var uri = '/' + categoryFullUrl;
-
-    delete objects.token;
+    var uri = categoryFullUrl;
+    console.log(yii.getCsrfParam());
+    delete objects[yii.getCsrfParam()];
     //delete objects.min_price;
     //delete objects.max_price;
 
@@ -101,19 +101,22 @@ var flagDeletePrices = false;
 $(function () {
 
     var form = $('#filter-form');
-
+//_csrf
 
     $(document).on('change', '#filter-form input[type="checkbox"]', function (e) {
 
-        console.log('change');
+
         var objects = getSerializeObjects();
         if (flagDeletePrices) {
             delete objects.min_price;
             delete objects.max_price;
         }
 
-        $.fn.yiiListView.update('shop-products', {url: formattedURL(objects)});
-
+        //$.fn.yiiListView.update('shop-products', {url: formattedURL(objects)});
+        $.get(formattedURL(objects), {ajax:true}, function (data) {
+            $('#listview-ajax').html(data);
+        });
+        console.log('change', formattedURL(objects));
         currentFilters(formattedURL(objects));
         //reload path by url
         //window.location.pathname = uri;
@@ -125,7 +128,7 @@ $(function () {
 
     //for price block
     $('#filter-form input[type="text"]').change(function (e) {
-        e.preventDefault();
+
         var slider = $("#filter-price-slider");
         var min = slider.slider("option", "min");
         var max = slider.slider("option", "max");
@@ -157,7 +160,7 @@ $(function () {
         //window.location.pathname = uri;
 
         history.pushState(null, $('title').text(), formattedURL(getSerializeObjects()));
-
+        e.preventDefault();
     });
 
 

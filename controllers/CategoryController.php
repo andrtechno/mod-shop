@@ -6,6 +6,7 @@ namespace panix\mod\shop\controllers;
 use panix\mod\shop\models\Manufacturer;
 use panix\mod\shop\models\search\ProductSearch;
 use panix\mod\shop\models\translate\ProductTranslate;
+use panix\mod\shop\models\TypeAttribute;
 use Yii;
 use panix\engine\controllers\WebController;
 use panix\mod\shop\models\Product;
@@ -120,9 +121,10 @@ class CategoryController extends WebController
 
         // Find attributes by type
         $query = Attribute::getDb()->cache(function ($db) use ($typesIds) {
-            return Attribute::find(['IN', '`types`.type_id', $typesIds])
+            return Attribute::find()
+                ->andWhere(['IN', TypeAttribute::tableName().'.type_id', $typesIds])
                 ->useInFilter()
-                ->orderBy(['ordern' => SORT_DESC])
+                ->addOrderBy(['ordern' => SORT_DESC])
                 ->joinWith(['types', 'options'])
                 ->all();
         }, 3600);
@@ -317,7 +319,7 @@ class CategoryController extends WebController
 
         $this->pageName = $this->dataModel->name;
         $name = '';
-
+        $this->view->registerJs("var categoryFullUrl = '" . Url::to($this->dataModel->getUrl()) . "';", yii\web\View::POS_HEAD, 'categoryFullUrl');
         if ($view != 'search') {
             $this->view->registerJs("
         var penny = '" . Yii::$app->currency->active->penny . "';
@@ -402,10 +404,19 @@ class CategoryController extends WebController
 
         if (Yii::$app->request->isAjax) {
             //\Yii::$app->response->format = \yii\web\Response::FORMAT_HTML;
-            return $this->renderPartial('listview', [
-                'provider' => $this->provider,
-                'itemView' => $itemView
-            ]);
+
+            if(Yii::$app->request->get('ajax')){
+                return $this->renderPartial('listview', [
+                    'provider' => $this->provider,
+                    'itemView' => $itemView
+                ]);
+            }else{
+                return $this->renderPartial('@shop/widgets/filtersnew/views/current', [
+                    'dataModel'=>$this->dataModel,
+                    'active'=>$this->getActiveFilters()
+                ]);
+            }
+
         } else {
             return $this->render($view, [
                 'provider' => $this->provider,

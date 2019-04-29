@@ -1,5 +1,3 @@
-
-
 <?php
 
 use panix\mod\shop\models\CategoryNode;

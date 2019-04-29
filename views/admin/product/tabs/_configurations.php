@@ -14,7 +14,7 @@ use panix\engine\data\ActiveDataProvider;
  * @var Product $model
  */
 
-\panix\mod\shop\assets\admin\ConfigurationsAsset::register($this);
+\panix\mod\shop\bundles\admin\ConfigurationsAsset::register($this);
 // For grid view we use new products instance
 $model =  Product::find(); 
 $model2 =  new Product; 
