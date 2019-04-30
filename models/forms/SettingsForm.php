@@ -6,7 +6,7 @@ use panix\engine\SettingsModel;
 
 class SettingsForm extends SettingsModel {
 
-    protected $category = 'shop';
+    public static $category = 'shop';
     protected $module = 'shop';
     public $per_page;
 
