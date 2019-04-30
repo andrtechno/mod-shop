@@ -3,7 +3,7 @@
 namespace panix\mod\shop\controllers;
 
 use panix\engine\Html;
-use panix\mod\shop\ProductConfigureAsset;
+use panix\mod\shop\bundles\ProductConfigureAsset;
 use Yii;
 use panix\engine\controllers\WebController;
 use panix\mod\shop\models\Product;
