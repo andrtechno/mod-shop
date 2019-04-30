@@ -765,7 +765,7 @@ class Product extends ActiveRecord
         ];
         if (Yii::$app->getModule('seo'))
             $a['seo'] = [
-                'class' => '\app\modules\seo\components\SeoBehavior',
+                'class' => '\panix\mod\seo\components\SeoBehavior',
                 'url' => $this->getUrl()
             ];
         $a['translate'] = [
