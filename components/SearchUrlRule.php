@@ -11,6 +11,9 @@ class SearchUrlRule extends UrlRule implements UrlRuleInterface
     public $pattern = 'products/search/q/<q:\w+>';
     public $route = 'shop/category/search';
 
+    /**
+     * @inheritdoc
+     */
     public function createUrl($manager, $route, $params)
     {
 
@@ -36,8 +39,9 @@ class SearchUrlRule extends UrlRule implements UrlRuleInterface
         return false;
     }
 
-
-
+    /**
+     * @inheritdoc
+     */
     public function parseRequest($manager, $request)
     {
         $params = [];
@@ -65,7 +69,6 @@ class SearchUrlRule extends UrlRule implements UrlRuleInterface
             $_GET[$p[0]] = $p[1];
             $params[$p[0]] = $p[1];
         }
-
 
 
         return [$this->route, $params];
