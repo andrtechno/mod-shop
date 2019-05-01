@@ -30,7 +30,7 @@ use panix\mod\shop\models\CategoryNode;
             'id' => 'CategoryTree',
             'name' => 'jstree',
             'allOpen' => true,
-            'data' => CategoryNode::fromArray(Category::findOne(1)->children()->all(), ['switch' => true]),
+            'data' => CategoryNode::fromArray(Category::find()->where(['id' => 1])->all(), ['switch' => true]),
             'core' => [
                 'force_text' => true,
                 'animation' => 0,
