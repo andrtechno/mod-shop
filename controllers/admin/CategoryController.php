@@ -53,7 +53,9 @@ class CategoryController extends AdminController
 
     public function actionIndex()
     {
-
+        /**
+         * @var \panix\engine\behaviors\nestedsets\NestedSetsBehavior|Category $model
+         */
         $model = Category::findModel(Yii::$app->request->get('id'));
 
         if ($model->getIsNewRecord()) {
@@ -108,8 +110,9 @@ class CategoryController extends AdminController
 
     public function actionRenameNode()
     {
-
-
+        /**
+         * @var \panix\engine\behaviors\nestedsets\NestedSetsBehavior|Category $model
+         */
         if (strpos(Yii::$app->request->get('id'), 'j1_') === false) {
             $id = Yii::$app->request->get('id');
         } else {
@@ -139,6 +142,10 @@ class CategoryController extends AdminController
 
     public function actionCreateNode()
     {
+        /**
+         * @var \panix\engine\behaviors\nestedsets\NestedSetsBehavior|Category $model
+         * @var \panix\engine\behaviors\nestedsets\NestedSetsBehavior|Category $parent
+         */
         $model = new Category;
         $parent = Category::findModel(Yii::$app->request->get('parent_id'));
 
@@ -161,6 +168,10 @@ class CategoryController extends AdminController
      */
     public function actionMoveNode()
     {
+        /**
+         * @var \panix\engine\behaviors\nestedsets\NestedSetsBehavior|Category $node
+         * @var \panix\engine\behaviors\nestedsets\NestedSetsBehavior|Category $target
+         */
         $node = Category::findModel(Yii::$app->request->get('id'));
         $target = Category::findOne($_GET['ref']);
 
@@ -186,7 +197,9 @@ class CategoryController extends AdminController
 
     public function actionSwitchNode()
     {
-        //$switch = $_GET['switch'];
+        /**
+         * @var \panix\engine\behaviors\nestedsets\NestedSetsBehavior|Category $node
+         */
         $node = Category::findOne(Yii::$app->request->get('id'));
         $node->switch = ($node->switch == 1) ? 0 : 1;
         $node->saveNode();
@@ -203,6 +216,10 @@ class CategoryController extends AdminController
      */
     public function actionDelete($id)
     {
+        /**
+         * @var \panix\engine\behaviors\nestedsets\NestedSetsBehavior|Category $model
+         * @var \panix\engine\behaviors\nestedsets\NestedSetsBehavior|Category $subCategory
+         */
         $model = Category::findModel($id);
 
         //Delete if not root node
