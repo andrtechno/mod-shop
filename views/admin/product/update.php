@@ -35,7 +35,7 @@ use panix\mod\shop\models\ProductType;
 
                 <?php
                 echo Html::beginForm('', 'get');
-                panix\mod\shop\assets\admin\ProductAsset::register($this);
+                panix\mod\shop\bundles\admin\ProductAsset::register($this);
 
                 if ($attributeError) {
                     $this->theme->alert('danger', Yii::t('shop/admin', 'Выберите атрибуты для конфигурации продуктов.'), false);
