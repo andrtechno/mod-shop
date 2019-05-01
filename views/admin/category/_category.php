@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use panix\mod\shop\models\Category;
 use panix\mod\shop\models\CategoryNode;
 
-\panix\mod\shop\assets\admin\CategoryAsset::register($this);
+\panix\mod\shop\bundles\admin\CategoryAsset::register($this);
 
 ?>
 
