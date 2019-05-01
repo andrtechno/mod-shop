@@ -8,11 +8,22 @@ use panix\mod\shop\models\CategoryNode;
 
 ?>
 
-<div class="card bg-light">
+<div class="card">
     <div class="card-header">
         <h5><?= Html::encode($this->context->pageName) ?></h5>
     </div>
     <div class="card-body">
+        <div class="form-group mt-3">
+            <div class="col-12">
+                <input class="form-control" placeholder="Поиск..." type="text"
+                       onkeyup='$("#jsTree_CategoryTree").jstree(true).search($(this).val())'/>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="alert alert-info">
+                <?= Yii::t('app/admin', "USE_DND"); ?>
+            </div>
+        </div>
         <?php
 
         echo \panix\ext\jstree\JsTree::widget([
@@ -26,10 +37,14 @@ use panix\mod\shop\models\CategoryNode;
                 'strings' => [
                     'Loading ...' => Yii::t('app', 'LOADING')
                 ],
-                "themes" => ["stripes" => true, 'responsive' => true, "variant" => "large"],
+                "themes" => [
+                    "stripes" => true,
+                    'responsive' => true,
+                    "variant" => "large"
+                ],
                 'check_callback' => true
             ],
-            'plugins' => ['dnd', 'contextmenu', 'search', 'wholerow', 'state'],
+            'plugins' => ['dnd', 'contextmenu', 'search'], //, 'wholerow', 'state'
             'contextmenu' => [
                 'items' => new yii\web\JsExpression('function($node) {
                 var tree = $("#jsTree_CategoryTree").jstree(true);

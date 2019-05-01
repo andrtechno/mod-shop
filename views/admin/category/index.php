@@ -5,15 +5,17 @@ use panix\engine\bootstrap\ActiveForm;
 
 use panix\ext\taginput\TagInput;
 
-$form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]);
+
 ?>
 
 <div class="row">
     <div class="col-sm-12 col-md-7 col-lg-8">
-        <div class="card bg-light">
+        <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
+        <div class="card">
             <div class="card-header">
                 <h5><?= Html::encode($this->context->pageName) ?></h5>
             </div>
+
             <div class="card-body">
 
 
