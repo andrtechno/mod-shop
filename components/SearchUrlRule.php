@@ -3,9 +3,12 @@
 namespace panix\mod\shop\components;
 
 use yii\web\UrlRule;
-use yii\web\UrlRuleInterface;
 
-class SearchUrlRule extends UrlRule implements UrlRuleInterface
+/**
+ * Class SearchUrlRule
+ * @package panix\mod\shop\components
+ */
+class SearchUrlRule extends UrlRule
 {
 
     public $pattern = 'products/search/q/<q:\w+>';
@@ -17,7 +20,7 @@ class SearchUrlRule extends UrlRule implements UrlRuleInterface
     public function createUrl($manager, $route, $params)
     {
 
-        if ($route === 'shop/category/search') {
+        if ($route === $this->route) {
 
             /*if (isset($params['q'])) {
                 $url = trim($params['q'], '/');

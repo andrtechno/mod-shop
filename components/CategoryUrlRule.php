@@ -2,22 +2,27 @@
 
 namespace panix\mod\shop\components;
 
-use panix\mod\shop\models\Category;
-use yii\web\UrlRuleInterface;
 use yii\web\UrlRule;
+use panix\mod\shop\models\Category;
 
+/**
+ * Class CategoryUrlRule
+ * @package panix\mod\shop\components
+ */
 class CategoryUrlRule extends UrlRule
 {
-//class CategoryUrlRule extends Object implements UrlRuleInterface {
-    // public $connectionID = 'db';
+
     public $pattern = 'shop/category/view';
     public $route = 'shop/category/view';
 
+    /**
+     * @inheritdoc
+     */
     public function createUrl($manager, $route, $params)
     {
 
 
-        if ($route === 'shop/category/view') {
+        if ($route === $this->route) {
 
             if (isset($params['seo_alias'])) {
                 $url = trim($params['seo_alias'], '/');
@@ -71,7 +76,7 @@ class CategoryUrlRule extends UrlRule
                 $params['seo_alias'] = ltrim($path['full_path']);
 
 
-                return ['shop/category/view', $params];
+                return [$this->route, $params];
             }
         }
 
