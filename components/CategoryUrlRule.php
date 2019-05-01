@@ -38,7 +38,7 @@ class CategoryUrlRule extends UrlRule
                 $url .= '/' . implode('/', $parts);
             }
 
-            return $url . \Yii::$app->urlManager->suffix;
+            return $url . $this->suffix;
         }
 
         return false;
@@ -53,8 +53,8 @@ class CategoryUrlRule extends UrlRule
         if (empty($pathInfo))
             return false;
 
-        if (\Yii::$app->urlManager->suffix)
-            $pathInfo = strtr($pathInfo, array(\Yii::$app->urlManager->suffix => ''));
+        if ($this->suffix)
+            $pathInfo = strtr($pathInfo, [$this->suffix => '']);
 
 
         foreach ($this->getAllPaths() as $path) {

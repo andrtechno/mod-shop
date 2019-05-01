@@ -37,7 +37,7 @@ class SearchUrlRule extends UrlRule
                 }
                 $url .= '/' . implode('/', $parts);
             }
-            return $url . \Yii::$app->urlManager->suffix;
+            return $url . $this->suffix;
         }
         return false;
     }
@@ -57,8 +57,8 @@ class SearchUrlRule extends UrlRule
             return false;
         }
 
-        if (\Yii::$app->urlManager->suffix)
-            $pathInfo = strtr($pathInfo, array(\Yii::$app->urlManager->suffix => ''));
+        if ($this->suffix)
+            $pathInfo = strtr($pathInfo, [$this->suffix => '']);
 
         $pathInfo = str_replace('products/search', '', $pathInfo);
 
