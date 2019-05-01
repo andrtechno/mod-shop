@@ -166,8 +166,8 @@ class CategoryController extends AdminController
 
         if ((int)$_GET['position'] > 0) {
             $pos = (int)$_GET['position'];
-            $childs = $target->children()->all()->asArray();
-            if (isset($childs[$pos - 1]) && $childs[$pos - 1] instanceof Category && $childs[$pos - 1]['id'] != $node->id)
+            $childs = $target->children()->all();
+            if (isset($childs[$pos - 1]) && $childs[$pos - 1]['id'] != $node->id)
                 $node->moveAfter($childs[$pos - 1]);
         } else
             $node->moveAsFirst($target);
