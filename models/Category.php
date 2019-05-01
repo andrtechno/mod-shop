@@ -130,31 +130,21 @@ class Category extends ActiveRecord
 
     public function rebuildFullPath()
     {
-
-        //test=   ShopCategory::findOne($this->id);
+        // Create category full path.
         $ancestors = $this->ancestors()->addOrderBy('depth')->all();
-        // $ancestors = $this->find()->leaves()->all();
-        // $ancestors= $this->parent_id->getLeaves()->all();
-        // if($this->parent_id > 1){
-        //     $test = ShopCategory::findOne($this->parent_id);
-        //     $ancestors =  $test->leaves()->all();
-        // }
-        // 
-        //   print_r($ancestors);
-
-
         if (sizeof($ancestors)) {
             // Remove root category from path
-            //  if($this->parent_id == 1){
             unset($ancestors[0]);
-            // }
-            $parts = [];
+
+            $parts = array();
             foreach ($ancestors as $ancestor)
                 $parts[] = $ancestor->seo_alias;
 
             $parts[] = $this->seo_alias;
             $this->full_path = implode('/', array_filter($parts));
         }
+
+        return $this;
     }
 
     public function description()

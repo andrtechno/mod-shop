@@ -1,5 +1,5 @@
-
-$('#jsTree_CategoryTree').bind('move_node.jstree', function (node, parent) {
+var treeSelector = $('#jsTree_CategoryTree');
+treeSelector.bind('move_node.jstree', function (node, parent) {
     $.ajax({
         type: 'GET',
         url: '/admin/shop/category/move-node',
@@ -11,7 +11,7 @@ $('#jsTree_CategoryTree').bind('move_node.jstree', function (node, parent) {
     });
 });
 
-$('#jsTree_CategoryTree').bind('rename_node.jstree', function (node, text) {
+treeSelector.bind('rename_node.jstree', function (node, text) {
     if (text.old !== text.text) {
         $.ajax({
             type: 'GET',
@@ -33,7 +33,7 @@ $('#jsTree_CategoryTree').bind('rename_node.jstree', function (node, text) {
     }
 });
 //Need dev.
-$('#jsTree_CategoryTree').bind('create_node.jstree', function (node, parent, position) {
+treeSelector.bind('create_node.jstree', function (node, parent, position) {
 
 
     $.ajax({
@@ -50,7 +50,7 @@ $('#jsTree_CategoryTree').bind('create_node.jstree', function (node, parent, pos
     });
 });
 
-$('#jsTree_CategoryTree').bind("delete_node.jstree", function (node, parent) {
+treeSelector.bind("delete_node.jstree", function (node, parent) {
     $.ajax({
         type: 'GET',
         url: "/admin/shop/category/delete",
@@ -71,7 +71,7 @@ function categorySwitch(node) {
         success: function (data) {
             var icon = (data.switch) ? 'icon-eye' : 'icon-eye-close';
             common.notify(data.message,'success');
-            $('#jsTree_CategoryTree').jstree(true).set_icon(node, icon);
+            treeSelector.jstree(true).set_icon(node, icon);
         }
     });
 }

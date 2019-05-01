@@ -2,6 +2,7 @@
 
 namespace panix\mod\shop\controllers\admin;
 
+use panix\engine\CMS;
 use Yii;
 use panix\engine\controllers\AdminController;
 use panix\mod\shop\models\Category;
@@ -109,16 +110,16 @@ class CategoryController extends AdminController
     {
 
 
-        if (strpos($_GET['id'], 'j1_') === false) {
-            $id = $_GET['id'];
+        if (strpos(Yii::$app->request->get('id'), 'j1_') === false) {
+            $id = Yii::$app->request->get('id');
         } else {
-            $id = str_replace('j1_', '', $_GET['id']);
+            $id = str_replace('j1_', '', Yii::$app->request->get('id'));
         }
 
         $model = Category::findOne((int)$id);
         if ($model) {
             $model->name = $_GET['text'];
-            $model->seo_alias = Inflector::slug($model->name);
+            $model->seo_alias = CMS::slug($model->name);
             if ($model->validate()) {
                 $model->saveNode(false);
                 $success = true;
@@ -139,10 +140,10 @@ class CategoryController extends AdminController
     public function actionCreateNode()
     {
         $model = new Category;
-        $parent = Category::findOne($_GET['parent_id']);
+        $parent = Category::findModel(Yii::$app->request->get('parent_id'));
 
         $model->name = $_GET['text'];
-        $model->seo_alias = Inflector::slug($model->name);
+        $model->seo_alias = CMS::slug($model->name);
         if ($model->validate()) {
             $model->appendTo($parent);
             $message = Yii::t('shop/Category', 'CATEGORY_TREE_CREATE');
@@ -160,12 +161,12 @@ class CategoryController extends AdminController
      */
     public function actionMoveNode()
     {
-        $node = Category::findOne($_GET['id']);
+        $node = Category::findModel(Yii::$app->request->get('id'));
         $target = Category::findOne($_GET['ref']);
 
         if ((int)$_GET['position'] > 0) {
             $pos = (int)$_GET['position'];
-            $childs = $target->children()->all();
+            $childs = $target->children()->all()->asArray();
             if (isset($childs[$pos - 1]) && $childs[$pos - 1] instanceof Category && $childs[$pos - 1]['id'] != $node->id)
                 $node->moveAfter($childs[$pos - 1]);
         } else
@@ -179,14 +180,14 @@ class CategoryController extends AdminController
      */
     public function actionRedirect()
     {
-        $node = Category::model()->findByPk($_GET['id']);
-        $this->redirect($node->getViewUrl());
+        $node = Category::findModel(Yii::$app->request->get('id'));
+        return $this->redirect($node->getViewUrl());
     }
 
     public function actionSwitchNode()
     {
         //$switch = $_GET['switch'];
-        $node = Category::findOne($_GET['id']);
+        $node = Category::findOne(Yii::$app->request->get('id'));
         $node->switch = ($node->switch == 1) ? 0 : 1;
         $node->saveNode();
 
@@ -199,11 +200,10 @@ class CategoryController extends AdminController
 
     /**
      * @param $id
-     * @throws CHttpException
      */
     public function actionDelete($id)
     {
-        $model = Category::findOne($id);
+        $model = Category::findModel($id);
 
         //Delete if not root node
         if ($model && $model->id != 1) {
