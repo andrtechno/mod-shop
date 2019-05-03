@@ -9,14 +9,16 @@ use panix\mod\shop\models\ProductType;
 use panix\mod\shop\models\search\ProductTypeSearch;
 use panix\mod\shop\models\Attribute;
 
-class TypeController extends AdminController {
+class TypeController extends AdminController
+{
 
     public $icon = 'icon-t';
 
     /**
      * Display types list
      */
-    public function actionIndex() {
+    public function actionIndex()
+    {
 
 
         $this->pageName = Yii::t('shop/admin', 'TYPE_PRODUCTS');
@@ -32,19 +34,19 @@ class TypeController extends AdminController {
         $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams());
 
 
-
         return $this->render('index', array(
-                    'searchModel' => $searchModel,
-                    'dataProvider' => $dataProvider,
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
         ));
     }
 
     /**
      * Update product type
      * @param bool $id
-     * @throws CHttpException
+     * @return string|\yii\web\Response
      */
-    public function actionUpdate($id = false) {
+    public function actionUpdate($id = false)
+    {
 
 
         /* $this->breadcrumbs = array(
@@ -62,8 +64,7 @@ class TypeController extends AdminController {
             $this->error404(Yii::t('shop/admin', 'NO_FOUND_TYPEPRODUCT'));
 
         $this->pageName = ($model->isNewRecord) ? Yii::t('shop/admin', 'Создание нового типа продукта') :
-                Yii::t('shop/admin', 'Редактирование типа продукта');
-
+            Yii::t('shop/admin', 'Редактирование типа продукта');
 
 
         $this->breadcrumbs[] = [
@@ -76,7 +77,7 @@ class TypeController extends AdminController {
         ];
         $this->breadcrumbs[] = $this->pageName;
 
-        \panix\mod\shop\assets\admin\ProductTypeAsset::register($this->view);
+        \panix\mod\shop\bundles\admin\ProductTypeAsset::register($this->view);
 
         $post = Yii::$app->request->post();
 
@@ -102,20 +103,22 @@ class TypeController extends AdminController {
         }
 
         $allAttributes = Attribute::find()
-                ->where(['NOT IN', 'id', ArrayHelper::map($model->attributeRelation, 'attribute_id', 'attribute_id')])
-                ->all();
+            ->where(['NOT IN', 'id', ArrayHelper::map($model->attributeRelation, 'attribute_id', 'attribute_id')])
+            ->all();
 
         return $this->render('update', array(
-                    'model' => $model,
-                    'attributes' => $allAttributes,
+            'model' => $model,
+            'attributes' => $allAttributes,
         ));
     }
 
     /**
      * Delete type
      * @param array $id
+     * @return \yii\web\Response
      */
-    public function actionDelete($id = array()) {
+    public function actionDelete($id = array())
+    {
         if (Yii::$app->request->isPost) {
             $model = ProductType::model()->findAllByPk($_REQUEST['id']);
 
