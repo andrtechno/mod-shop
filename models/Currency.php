@@ -3,10 +3,10 @@
 namespace panix\mod\shop\models;
 
 //use panix\shop\models\query\ShopManufacturerQuery;
-use yii\helpers\ArrayHelper;
+use \panix\engine\db\ActiveRecord;
 
 
-class Currency extends \panix\engine\db\ActiveRecord {
+class Currency extends ActiveRecord {
 
     const MODULE_ID = 'shop';
 
