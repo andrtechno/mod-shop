@@ -14,13 +14,15 @@ use panix\mod\shop\models\ProductCategoryRef;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
-class ProductType extends \panix\engine\db\ActiveRecord {
+class ProductType extends \panix\engine\db\ActiveRecord
+{
 
 
     const MODULE_ID = 'shop';
 
 
-    public static function getCSort() {
+    public static function getCSort()
+    {
         $sort = new \yii\data\Sort([
             'attributes' => [
                 'age',
@@ -33,12 +35,12 @@ class ProductType extends \panix\engine\db\ActiveRecord {
         return $sort;
     }
 
- 
 
     /**
      * @inheritdoc
      */
-    public static function tableName() {
+    public static function tableName()
+    {
         return '{{%shop__product_type}}';
     }
 
@@ -52,40 +54,38 @@ class ProductType extends \panix\engine\db\ActiveRecord {
     /**
      * @inheritdoc
      */
-    public function rules() {
+    public function rules()
+    {
         return [
             [['name'], 'trim'],
             [['name'], 'required'],
             [['name'], 'string', 'max' => 255],
-            [['name','categories_preset'], 'safe'],
+            [['name', 'categories_preset'], 'safe'],
         ];
     }
-    public function relations2222() {
-        return array(
-          //  'attributeRelation' => array(self::HAS_MANY, 'ShopTypeAttribute', 'type_id'),
-            'shopAttributes' => array(self::HAS_MANY, 'Attribute', array('attribute_id' => 'id'), 'through' => 'attributeRelation', 'scopes' => 'applyTranslateCriteria'),
-            'shopConfigurableAttributes' => array(self::HAS_MANY, 'Attribute', array('attribute_id' => 'id'), 'through' => 'attributeRelation', 'condition' => 'use_in_variants=1'),
-         //   'productsCount' => array(self::STAT, 'Product', 'type_id'),
-        );
-    }
-    public function getProductsCount() {
+
+    public function getProductsCount()
+    {
         return $this->hasOne(Product::class, ['id' => 'type_id'])->count();
     }
 
-    public function getAttributeRelation() {
+    public function getAttributeRelation()
+    {
         return $this->hasMany(TypeAttribute::class, ['type_id' => 'id']);
     }
 
-    public function getShopAttributes() {
-        return $this->hasMany(Attribute::class, ['id' => 'attribute_id'])->via('attributeRelation');
+    public function getShopAttributes()
+    {
+        return $this->hasMany(Attribute::class, ['id' => 'attribute_id'])
+            ->via('attributeRelation');
     }
-    public function getShopConfigurableAttributes() {
-        return $this->hasMany(Attribute::class, ['id' => 'attribute_id'])->andWhere('use_in_variants=1')->via('attributeRelation');
+
+    public function getShopConfigurableAttributes()
+    {
+        return $this->hasMany(Attribute::class, ['id' => 'attribute_id'])
+            ->andWhere('use_in_variants=1')
+            ->via('attributeRelation');
     }
-
-
-
-
 
 
     /**
@@ -93,7 +93,8 @@ class ProductType extends \panix\engine\db\ActiveRecord {
      * @param $attributes array of attributes id. array(1,3,5)
      * @return mixed
      */
-    public function useAttributes($attributes) {
+    public function useAttributes($attributes)
+    {
         // Clear all relations
         TypeAttribute::deleteAll(['type_id' => $this->id]);
 
@@ -110,13 +111,18 @@ class ProductType extends \panix\engine\db\ActiveRecord {
         }
     }
 
-    public function afterDelete() {
+    /**
+     * @inheritdoc
+     */
+    public function afterDelete()
+    {
         // Clear type attribute relations
         TypeAttribute::deleteAll(['type_id' => $this->id]);
         return parent::afterDelete();
     }
 
-    public function __toString() {
+    public function __toString()
+    {
         return $this->name;
     }
 
