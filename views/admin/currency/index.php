@@ -23,12 +23,8 @@ GridView::widget([
     },
     'columns' => [
         [
-            'class' => \panix\engine\grid\sortable\Column::class,
+            'class' => 'panix\engine\grid\sortable\Column',
             'url' => ['/admin/shop/currency/sortable']
-        ],
-        [
-            'class' => 'yii\grid\SerialColumn',
-            'contentOptions' => ['class' => 'text-center']
         ],
         'name',
         [

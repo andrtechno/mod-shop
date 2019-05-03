@@ -23,7 +23,7 @@ GridView::widget([
     },
     'columns' => [
         [
-            'class' => \panix\engine\grid\sortable\Column::class,
+            'class' => 'panix\engine\grid\sortable\Column',
             'url' => ['/shop/attribute-group/sortable']
         ],
         'name',
