@@ -16,6 +16,10 @@ class Manufacturer extends ActiveRecord
     public $translationClass = ManufacturerTranslate::class;
 
 
+    /**
+     * @inheritdoc
+     * @return ManufacturerQuery
+     */
     public static function find()
     {
         return new ManufacturerQuery(get_called_class());
