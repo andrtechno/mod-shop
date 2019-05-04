@@ -157,8 +157,7 @@ trait ProductTrait
         $columns['DEFAULT_COLUMNS'] = [
             [
                 'class' => \panix\engine\grid\sortable\Column::class,
-                'url' => ['/shop/product/sortable'],
-                'successMessage' => Yii::t('shop/admin', 'SORT_PRODUCT_SUCCESS_MESSAGE')
+                'url' => ['/shop/product/sortable']
             ],
             [
                 'class' => 'panix\engine\grid\columns\CheckboxColumn',

@@ -26,6 +26,7 @@ class ProductController extends AdminController
             'sortable' => [
                 'class' => 'panix\engine\grid\sortable\Action',
                 'modelClass' => Product::class,
+                'successMessage' => Yii::t('shop/admin', 'SORT_PRODUCT_SUCCESS_MESSAGE')
             ],
             'delete' => [
                 'class' => 'panix\engine\actions\DeleteAction',
