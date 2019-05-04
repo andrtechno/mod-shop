@@ -63,7 +63,7 @@ foreach ($model->options as $k => $o) {
         }else{
             $data2['name' . $k] = Html::textInput('options[' . $o->id . '][]', '', ['class' => 'form-control input-lang', 'style' => 'background-image:url(/uploads/language/' . $k . '.png);']);
         }
-        $data2['products'] = Html::a($o->productsCount, ['/admin/shop/product/index', 'Product[eav][' . $model->name . ']' => $o->id], ['target' => '_blank']);
+        $data2['products'] = Html::a($o->productsCount, ['/admin/shop/product/index', 'ProductSearch[eav][' . $model->name . ']' => $o->id], ['target' => '_blank']);
         $data[$o->id] = (array) $data2;
     }
 }
