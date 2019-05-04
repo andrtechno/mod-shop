@@ -11,7 +11,7 @@ $form = ActiveForm::begin([
     'options' => ['class' => 'form-horizontal']
 ]);
 ?>
-<div class="card bg-light">
+<div class="card">
     <div class="card-header">
         <h3 class="card-title"><?= $this->context->pageName ?></h3>
     </div>

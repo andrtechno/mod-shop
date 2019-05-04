@@ -3,7 +3,7 @@
 use yii\helpers\Html;
 ?>
 
-<div class="card bg-light">
+<div class="card">
     <div class="card-header">
         <h5><?= Html::encode($this->context->pageName) ?></h5>
     </div>
