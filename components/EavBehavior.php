@@ -3,6 +3,7 @@
 namespace panix\mod\shop\components;
 
 use Yii;
+use yii\base\Exception;
 use yii\db\ActiveRecord;
 use panix\mod\shop\components\collections\CAttributeCollection;
 use panix\mod\shop\components\collections\CList;
@@ -226,12 +227,13 @@ class EavBehavior extends \yii\base\Behavior
 
     /**
      * @param \yii\base\Component $owner
+     * @throws Exception
      */
     public function attach($owner)
     {
         // Check required property tableName.
         if (!is_string($this->tableName) || empty($this->tableName)) {
-            throw new CException(self::t('yii', 'Property "{class}.{property}" is not defined.', array('{class}' => get_class($this), '{property}' => 'tableName')));
+            throw new Exception(self::t('yii', 'Property "{class}.{property}" is not defined.', array('{class}' => get_class($this), '{property}' => 'tableName')));
         }
         // Prepare translate component for behavior messages.
         /*  if (!Yii::$app->hasComponent(__CLASS__ . 'Messages')) {
@@ -459,7 +461,7 @@ class EavBehavior extends \yii\base\Behavior
     }
 
     /**
-     * @param string attribute for get.
+     * @param string $attribute for get.
      * @return mixed
      */
     public function getEavAttribute($attribute)
@@ -471,8 +473,8 @@ class EavBehavior extends \yii\base\Behavior
 
     /**
      * Limit current AR query to have all attributes and values specified.
-     * @param array attributes values or key for filter models.
-     * @return CActiveRecord
+     * @param array $attributes values or key for filter models.
+     * @return ActiveRecord
      */
     public function ___withEavAttributes($attributes = array())
     {
@@ -540,7 +542,7 @@ class EavBehavior extends \yii\base\Behavior
      * @access protected
      * @param  $attribute
      * @param  $value
-     * @return CDbCommand
+     * @return yii\db\Command
      */
     protected function getSaveEavAttributeCommand($attribute, $value)
     {
