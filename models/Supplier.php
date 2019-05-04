@@ -24,7 +24,6 @@ class Supplier extends ActiveRecord
             ],
             'phone' => [
                 'attribute' => 'phone',
-                //'format' => 'tel',
                 'contentOptions' => ['class' => 'text-center'],
             ],
             'email' => [
