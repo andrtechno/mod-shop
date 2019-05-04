@@ -76,6 +76,7 @@ class EavBehavior extends \yii\base\Behavior
      * @default new CAttributeCollection
      */
     protected $attributes = NULL;
+    protected $attributes2;
 
     /**
      * @access protected
@@ -216,6 +217,7 @@ class EavBehavior extends \yii\base\Behavior
     {
         // Prepare attributes collection.
         $this->attributes = new CAttributeCollection;
+        $this->attributes2 = [];
 
         //$this->attributes->caseSensitive = true;
         // Prepare safe attributes list.
@@ -346,7 +348,7 @@ class EavBehavior extends \yii\base\Behavior
         // Query DB.
 
 
-        $data = $this->getLoadEavAttributesCommand($attributes)->all();
+        $data = $this->getLoadEavAttributesQuery($attributes)->all();
         foreach ($data as $row) {
             $attribute = $this->stripPrefix($row[$this->attributeField]);
             $value = $row[$this->valueField];
@@ -471,9 +473,10 @@ class EavBehavior extends \yii\base\Behavior
      */
     public function getEavAttribute($attribute)
     {
+
         $values = $this->getEavAttributes([$attribute]);
-        return $this->attributes->itemAt($attribute);
-        //return $values;
+        //return $this->attributes->itemAt($attribute);
+        return $values;
     }
 
     /**
@@ -496,10 +499,8 @@ class EavBehavior extends \yii\base\Behavior
     {
         /** @var \panix\mod\shop\models\Product $owner */
         $owner = $this->owner;
-        //$criteria = new CDbCriteria();
         $pk = '{{%shop__product}}.id';
 
-        // $conn = $this->owner->getDbConnection();
         $i = 0;
         foreach ($attributes as $attribute => $values) {
             // If search models with attribute name with specified values.
@@ -569,7 +570,7 @@ class EavBehavior extends \yii\base\Behavior
      * @param  $attributes
      * @return yii\db\Query
      */
-    protected function getLoadEavAttributesCommand($attributes)
+    protected function getLoadEavAttributesQuery($attributes)
     {
         //  print_r($attributes);
         // return [];

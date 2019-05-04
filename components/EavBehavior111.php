@@ -343,7 +343,7 @@ class EavBehavior extends \yii\base\Behavior
         // Query DB.
 
 
-        $data = $this->getLoadEavAttributesCommand($attributes)->all();
+        $data = $this->getLoadEavAttributesQuery($attributes)->all();
         foreach ($data as $row) {
             $attribute = $this->stripPrefix($row[$this->attributeField]);
             $value = $row[$this->valueField];
@@ -564,7 +564,7 @@ class EavBehavior extends \yii\base\Behavior
      * @param  $attributes
      * @return yii\db\Query
      */
-    protected function getLoadEavAttributesCommand($attributes)
+    protected function getLoadEavAttributesQuery($attributes)
     {
         //  print_r($attributes);
         // return [];
