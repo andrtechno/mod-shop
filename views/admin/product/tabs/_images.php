@@ -110,7 +110,6 @@ echo panix\engine\grid\GridView::widget([
         [
             'class' => 'panix\engine\grid\sortable\Column',
             'url' => ['/images/default/sortable'],
-            'successMessage' => Yii::t('shop/admin', 'SORT_IMAGE_SUCCESS_MESSAGE')
         ],
         [
             'attribute' => 'image',

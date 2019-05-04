@@ -27,5 +27,5 @@ return [
     'GRID_OPTION_SETCATEGORY' => 'Назначить категории',
     'GRID_OPTION_SETPRICE' => 'Установить единую цену',
     'PRODUCT_COUNT' => 'Товаров',
-    'MAIL_PRODUCT_NOTIFY_SUBJECT'=>'{site_name} уведомляет о наличии интересующего Вас товара'
+    'MAIL_PRODUCT_NOTIFY_SUBJECT' => '{site_name} уведомляет о наличии интересующего Вас товара',
 ];

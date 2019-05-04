@@ -43,7 +43,7 @@ $data2 = [];
 $test = [];
 foreach ($model->options as $k => $o) {
     //echo print_r($o->translations);
-    $data2['delete'] = '<a href="#" class="delete-option-attribute btn btn-sm btn-default"><i class="icon-delete"></i></a>';
+    $data2['delete'] = '<a href="#" class="delete-option-attribute btn btn-sm btn-outline-danger"><i class="icon-delete"></i></a>';
     foreach (Yii::$app->languageManager->languages as $k => $l) {
 
         $otest = AttributeOptionTranslate::find()->where([

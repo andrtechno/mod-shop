@@ -3,6 +3,7 @@
 namespace panix\mod\shop\models;
 
 use Yii;
+use yii\caching\DbDependency;
 use yii\db\Exception;
 use yii\helpers\ArrayHelper;
 use panix\mod\shop\models\translate\AttributeOptionTranslate;
@@ -58,7 +59,18 @@ class AttributeOption extends ActiveRecord
 
     public function getProductsCount()
     {
-        return $this->hasMany(ProductAttributesEav::class, ['value' => 'id'])->count();
+        $query = $this->hasMany(ProductAttributesEav::class, ['value' => 'id']);
+
+
+        $dependencyQuery = $query;
+        $dependencyQuery->select('COUNT(*)');
+        $dependency = new DbDependency([
+            'sql' => $dependencyQuery->createCommand()->rawSql,
+        ]);
+
+
+        //print_r($query->createCommand()->rawSql);die;
+        return $query->cache(3200, $dependency)->count();
     }
 
 
