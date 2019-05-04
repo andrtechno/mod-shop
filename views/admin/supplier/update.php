@@ -15,7 +15,7 @@ use panix\engine\bootstrap\ActiveForm;
         ?>
         <?= $form->field($model, 'name')->textInput(['maxlength' => 255]) ?>
         <?= $form->field($model, 'address')->textInput(['maxlength' => 255]) ?>
-        <?= $form->field($model, 'phone')->widget(\borales\extensions\phoneInput\PhoneInput::class) ?>
+        <?= $form->field($model, 'phone')->widget(\panix\ext\telinput\PhoneInput::class) ?>
         <?= $form->field($model, 'email')->textInput(['maxlength' => 255]) ?>
         <div class="form-group text-center">
             <?= $model->submitButton(); ?>
