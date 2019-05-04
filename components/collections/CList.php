@@ -2,6 +2,9 @@
 
 namespace panix\mod\shop\components\collections;
 
+use Yii;
+use yii\base\Exception;
+
 class CList extends \yii\base\Component implements \ArrayAccess, \Countable {
 
     /**
@@ -78,7 +81,7 @@ class CList extends \yii\base\Component implements \ArrayAccess, \Countable {
         elseif ($index >= 0 && $index < $this->_c) // in case the value is null
             return $this->_d[$index];
         else
-            throw new CException(Yii::t('yii', 'List index "{index}" is out of bound.', array('{index}' => $index)));
+            throw new Exception(Yii::t('yii', 'List index "{index}" is out of bound.', array('{index}' => $index)));
     }
 
     /**
@@ -97,7 +100,7 @@ class CList extends \yii\base\Component implements \ArrayAccess, \Countable {
      * will be moved one step towards the end.
      * @param integer $index the specified position.
      * @param mixed $item new item
-     * @throws CException If the index specified exceeds the bound or the list is read-only
+     * @throws Exception If the index specified exceeds the bound or the list is read-only
      */
     public function insertAt($index, $item) {
         if (!$this->_r) {
@@ -107,9 +110,9 @@ class CList extends \yii\base\Component implements \ArrayAccess, \Countable {
                 array_splice($this->_d, $index, 0, array($item));
                 $this->_c++;
             } else
-                throw new CException(Yii::t('yii', 'List index "{index}" is out of bound.', array('{index}' => $index)));
+                throw new Exception(Yii::t('yii', 'List index "{index}" is out of bound.', array('{index}' => $index)));
         } else
-            throw new CException(Yii::t('yii', 'The list is read only.'));
+            throw new Exception(Yii::t('yii', 'The list is read only.'));
     }
 
     /**
@@ -118,7 +121,7 @@ class CList extends \yii\base\Component implements \ArrayAccess, \Countable {
      * The first item found will be removed from the list.
      * @param mixed $item the item to be removed.
      * @return integer the index at which the item is being removed
-     * @throws CException If the item does not exist
+     * @throws Exception If the item does not exist
      */
     public function remove($item) {
         if (($index = $this->indexOf($item)) >= 0) {
@@ -132,7 +135,7 @@ class CList extends \yii\base\Component implements \ArrayAccess, \Countable {
      * Removes an item at the specified position.
      * @param integer $index the index of the item to be removed.
      * @return mixed the removed item.
-     * @throws CException If the index specified exceeds the bound or the list is read-only
+     * @throws Exception If the index specified exceeds the bound or the list is read-only
      */
     public function removeAt($index) {
         if (!$this->_r) {
@@ -146,9 +149,9 @@ class CList extends \yii\base\Component implements \ArrayAccess, \Countable {
                     return $item;
                 }
             } else
-                throw new CException(Yii::t('yii', 'List index "{index}" is out of bound.', array('{index}' => $index)));
+                throw new Exception(Yii::t('yii', 'List index "{index}" is out of bound.', array('{index}' => $index)));
         } else
-            throw new CException(Yii::t('yii', 'The list is read only.'));
+            throw new Exception(Yii::t('yii', 'The list is read only.'));
     }
 
     /**
@@ -189,7 +192,7 @@ class CList extends \yii\base\Component implements \ArrayAccess, \Countable {
      * Copies iterable data into the list.
      * Note, existing data in the list will be cleared first.
      * @param mixed $data the data to be copied from, must be an array or object implementing Traversable
-     * @throws CException If data is neither an array nor a Traversable.
+     * @throws Exception If data is neither an array nor a Traversable.
      */
     public function copyFrom($data) {
         if (is_array($data) || ($data instanceof Traversable)) {
@@ -201,24 +204,24 @@ class CList extends \yii\base\Component implements \ArrayAccess, \Countable {
                 $this->add($item);
         }
         elseif ($data !== null)
-            throw new CException(Yii::t('yii', 'List data must be an array or an object implementing Traversable.'));
+            throw new Exception(Yii::t('yii', 'List data must be an array or an object implementing Traversable.'));
     }
 
     /**
      * Merges iterable data into the map.
      * New data will be appended to the end of the existing data.
      * @param mixed $data the data to be merged with, must be an array or object implementing Traversable
-     * @throws CException If data is neither an array nor an iterator.
+     * @throws Exception If data is neither an array nor an iterator.
      */
     public function mergeWith($data) {
-        if (is_array($data) || ($data instanceof Traversable)) {
+        if (is_array($data) || ($data instanceof \Traversable)) {
             if ($data instanceof CList)
                 $data = $data->_d;
             foreach ($data as $item)
                 $this->add($item);
         }
         elseif ($data !== null)
-            throw new CException(Yii::t('yii', 'List data must be an array or an object implementing Traversable.'));
+            throw new Exception(Yii::t('yii', 'List data must be an array or an object implementing Traversable.'));
     }
 
     /**
@@ -236,7 +239,7 @@ class CList extends \yii\base\Component implements \ArrayAccess, \Countable {
      * This method is required by the interface ArrayAccess.
      * @param integer $offset the offset to retrieve item.
      * @return mixed the item at the offset
-     * @throws CException if the offset is invalid
+     * @throws Exception if the offset is invalid
      */
     public function offsetGet($offset) {
         return $this->itemAt($offset);
