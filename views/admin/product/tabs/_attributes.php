@@ -50,7 +50,8 @@ $attributes = (isset($model->type->shopAttributes)) ? $model->type->shopAttribut
 
                     $error = '';
                     $inputClass = '';
-                    if ($a->required && in_array($a->name, $a->getErrors())) {
+
+                    if ($a->required && array_key_exists($a->name,$model->getErrors())) {
                         $inputClass = 'is-invalid';
                         $error = Html::error($a, $a->name, ['class' => 'text-danger']);
                     }
