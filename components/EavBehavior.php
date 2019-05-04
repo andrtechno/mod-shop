@@ -2,6 +2,7 @@
 
 namespace panix\mod\shop\components;
 
+
 use Yii;
 use yii\base\Exception;
 use yii\db\ActiveRecord;
@@ -190,6 +191,7 @@ class EavBehavior extends \yii\base\Behavior
      */
     protected function getSafeAttributesArray()
     {
+
         return $this->safeAttributes->count() == 0 ? $this->attributes->keys : $this->safeAttributes->toArray();
     }
 
@@ -215,7 +217,7 @@ class EavBehavior extends \yii\base\Behavior
         // Prepare attributes collection.
         $this->attributes = new CAttributeCollection;
 
-        $this->attributes->caseSensitive = true;
+        //$this->attributes->caseSensitive = true;
         // Prepare safe attributes list.
         $this->safeAttributes = new CList;
 
@@ -233,7 +235,7 @@ class EavBehavior extends \yii\base\Behavior
     {
         // Check required property tableName.
         if (!is_string($this->tableName) || empty($this->tableName)) {
-            throw new Exception(self::t('yii', 'Property "{class}.{property}" is not defined.', array('{class}' => get_class($this), '{property}' => 'tableName')));
+            throw new Exception(Yii::t('yii', 'Property "{class}.{property}" is not defined.', array('{class}' => get_class($this), '{property}' => 'tableName')));
         }
         // Prepare translate component for behavior messages.
         /*  if (!Yii::$app->hasComponent(__CLASS__ . 'Messages')) {
@@ -274,7 +276,7 @@ class EavBehavior extends \yii\base\Behavior
      */
     public function afterDelete()
     {    // Delete all attributes.
-        $this->deleteEavAttributes(array(), TRUE);
+        $this->deleteEavAttributes([], TRUE);
         // Call parent method for convenience.
     }
 
@@ -284,6 +286,7 @@ class EavBehavior extends \yii\base\Behavior
      */
     public function afterFind()
     {
+
         // Load attributes for model.
         if ($this->preload) {
             if ($this->owner->getPrimaryKey()) {
@@ -306,7 +309,7 @@ class EavBehavior extends \yii\base\Behavior
             if (!is_null($values = $this->attributes->itemAt($attribute))) {
                 // Create array of values for convenience.
                 if (!is_array($values)) {
-                    $values = array($values);
+                    $values = [$values];
                 }
                 // Save each value of attribute into DB.
                 foreach ($values as $value) {
@@ -356,11 +359,13 @@ class EavBehavior extends \yii\base\Behavior
                     $current[] = $value;
                     $value = $current;
                 } else
-                    $value = array($current, $value);
+                    $value = [$current, $value];
             }
 
             $this->attributes->add($attribute, $value);
         }
+
+
         // Save loaded attributes to cache.
         //$this->cache->set($this->getCacheKey(), $this->attributes->toArray());
         // Return model.
@@ -420,7 +425,7 @@ class EavBehavior extends \yii\base\Behavior
      */
     public function setEavAttribute($attribute, $value, $save = FALSE)
     {
-        return $this->setEavAttributes(array($attribute => $value), $save);
+        return $this->setEavAttributes([$attribute => $value], $save);
     }
 
     /**
@@ -434,7 +439,7 @@ class EavBehavior extends \yii\base\Behavior
             $attributes = $this->getSafeAttributesArray();
         }
         // Values array.
-        $values = array();
+        $values = [];
         // Queue for load.
         $loadQueue = new CList;
         foreach ($attributes as $attribute) {
@@ -489,6 +494,8 @@ class EavBehavior extends \yii\base\Behavior
 
     protected function getFindByEavAttributes2($attributes)
     {
+        /** @var \panix\mod\shop\models\Product $owner */
+        $owner = $this->owner;
         //$criteria = new CDbCriteria();
         $pk = '{{%shop__product}}.id';
 
@@ -500,7 +507,7 @@ class EavBehavior extends \yii\base\Behavior
                 // Get attribute compare operator
                 //$attribute = $conn->quoteValue($attribute);
                 if (!is_array($values)) {
-                    $values = array($values);
+                    $values = [$values];
                 }
                 sort($values);
 
@@ -512,8 +519,8 @@ class EavBehavior extends \yii\base\Behavior
                 }
                 foreach ($values as $value) {
                     //$value = $conn->quoteValue($value);
-                    $this->owner::find()->join('JOIN', '{{%shop__product_attribute_eav}} eavb' . $i, "$pk=eavb$i.`entity` AND eavb$i.`attribute` = '$attribute' AND eavb$i.`value` = '$value'");
-                    $this->owner::find()->andWhere(['IN', "`eavb$i`.`value`", $values]);
+                    $owner::find()->join('JOIN', '{{%shop__product_attribute_eav}} eavb' . $i, "$pk=eavb$i.`entity` AND eavb$i.`attribute` = '$attribute' AND eavb$i.`value` = '$value'");
+                    $owner::find()->andWhere(['IN', "`eavb$i`.`value`", $values]);
                     /* $criteria->join .= "\nJOIN {$this->tableName} eavb$i"
                       . "\nON t.{$pk} = eavb$i.{$this->entityField}"
                       . "\nAND eavb$i.{$this->attributeField} = $attribute"
@@ -524,7 +531,7 @@ class EavBehavior extends \yii\base\Behavior
                 }
             } // If search models with attribute name with anything values.
             elseif (is_int($attribute)) {
-                $this->owner::find()->join('JOIN', '{{%shop__product_attribute_eav}} eavb' . $i, "$pk=`eavb$i`.`entity` AND eavb$i.attribute = '$values'");
+                $owner::find()->join('JOIN', '{{%shop__product_attribute_eav}} eavb' . $i, "$pk=`eavb$i`.`entity` AND eavb$i.attribute = '$values'");
                 //$values = $conn->quoteValue($values);
                 /* $this->join .= "\nJOIN {{%shop__product_attribute_eav}} eavb$i"
                          . "\nON t.{$pk} = eavb$i.entity"
@@ -533,9 +540,9 @@ class EavBehavior extends \yii\base\Behavior
             }
         }
         //$this->distinct(true);
-        $this->owner::find()->groupBy("{$pk}");
+        $owner::find()->groupBy("{$pk}");
         // echo $this->createCommand()->getRawSql();die;
-        return $this->owner::find();
+        return $owner::find();
     }
 
     /**
@@ -546,11 +553,11 @@ class EavBehavior extends \yii\base\Behavior
      */
     protected function getSaveEavAttributeCommand($attribute, $value)
     {
-        $data = array(
+        $data = [
             $this->entityField => $this->getModelId(),
             $this->attributeField => $attribute,
             $this->valueField => $value,
-        );
+        ];
         return $this->owner->db->createCommand()->insert($this->tableName, $data);
         /* return $this->owner
           ->getCommandBuilder()

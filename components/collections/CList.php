@@ -195,7 +195,7 @@ class CList extends \yii\base\Component implements \ArrayAccess, \Countable {
      * @throws Exception If data is neither an array nor a Traversable.
      */
     public function copyFrom($data) {
-        if (is_array($data) || ($data instanceof Traversable)) {
+        if (is_array($data) || ($data instanceof \Traversable)) {
             if ($this->_c > 0)
                 $this->clear();
             if ($data instanceof CList)
