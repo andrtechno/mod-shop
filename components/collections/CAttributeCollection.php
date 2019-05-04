@@ -15,7 +15,7 @@ class CAttributeCollection extends CMap {
      * a key value if the key exists in the collection.
      * @param string $name the property name or the event name
      * @return mixed the property value or the event handler list
-     * @throws CException if the property/event is not defined.
+     * @throws Exception if the property/event is not defined.
      */
     public function __get($name) {
         if ($this->contains($name))
@@ -30,7 +30,7 @@ class CAttributeCollection extends CMap {
      * to the collection.
      * @param string $name the property name or event name
      * @param mixed $value the property value or event handler
-     * @throws CException If the property is not defined or read-only.
+     * @throws Exception If the property is not defined or read-only.
      */
     public function __set($name, $value) {
         $this->add($name, $value);
@@ -160,10 +160,10 @@ class CAttributeCollection extends CMap {
      * @param mixed $data the data to be merged with, must be an array or object implementing Traversable
      * @param boolean $recursive whether the merging should be recursive.
      *
-     * @throws CException If data is neither an array nor an iterator.
+     * @throws Exception If data is neither an array nor an iterator.
      */
     public function mergeWith($data, $recursive = true) {
-        if (!$this->caseSensitive && (is_array($data) || $data instanceof Traversable)) {
+        if (!$this->caseSensitive && (is_array($data) || $data instanceof \Traversable)) {
             $d = array();
             foreach ($data as $key => $value)
                 $d[strtolower($key)] = $value;

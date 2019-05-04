@@ -2,6 +2,10 @@
 
 namespace panix\mod\shop\components\collections;
 
+
+use Yii;
+use yii\base\Exception;
+
 class CMap extends \yii\base\Component implements \ArrayAccess, \Countable {
 
     /**
@@ -19,12 +23,13 @@ class CMap extends \yii\base\Component implements \ArrayAccess, \Countable {
      * Initializes the list with an array or an iterable object.
      * @param array $data the initial data. Default is null, meaning no initialization.
      * @param boolean $readOnly whether the list is read-only
-     * @throws CException If data is not null and neither an array nor an iterator.
+     * @throws Exception If data is not null and neither an array nor an iterator.
      */
     public function __construct($data = null, $readOnly = false) {
         if ($data !== null)
             $this->copyFrom($data);
         $this->setReadOnly($readOnly);
+        parent::__construct([]);
     }
 
     /**
@@ -84,7 +89,7 @@ class CMap extends \yii\base\Component implements \ArrayAccess, \Countable {
      * Note, if the specified key already exists, the old value will be overwritten.
      * @param mixed $key key
      * @param mixed $value value
-     * @throws CException if the map is read-only
+     * @throws Exception if the map is read-only
      */
     public function add($key, $value) {
         if (!$this->_r) {
@@ -93,14 +98,14 @@ class CMap extends \yii\base\Component implements \ArrayAccess, \Countable {
             else
                 $this->_d[$key] = $value;
         } else
-            throw new CException(Yii::t('yii', 'The map is read only.'));
+            throw new Exception(Yii::t('yii', 'The map is read only.'));
     }
 
     /**
      * Removes an item from the map by its key.
      * @param mixed $key the key of the item to be removed
      * @return mixed the removed value, null if no such key exists.
-     * @throws CException if the map is read-only
+     * @throws Exception if the map is read-only
      */
     public function remove($key) {
         if (!$this->_r) {
@@ -114,7 +119,7 @@ class CMap extends \yii\base\Component implements \ArrayAccess, \Countable {
                 return null;
             }
         } else
-            throw new CException(Yii::t('yii', 'The map is read only.'));
+            throw new Exception(Yii::t('yii', 'The map is read only.'));
     }
 
     /**
@@ -144,10 +149,10 @@ class CMap extends \yii\base\Component implements \ArrayAccess, \Countable {
      * Copies iterable data into the map.
      * Note, existing data in the map will be cleared first.
      * @param mixed $data the data to be copied from, must be an array or object implementing Traversable
-     * @throws CException If data is neither an array nor an iterator.
+     * @throws Exception If data is neither an array nor an iterator.
      */
     public function copyFrom($data) {
-        if (is_array($data) || $data instanceof Traversable) {
+        if (is_array($data) || $data instanceof \Traversable) {
             if ($this->getCount() > 0)
                 $this->clear();
             if ($data instanceof CMap)
@@ -156,7 +161,7 @@ class CMap extends \yii\base\Component implements \ArrayAccess, \Countable {
                 $this->add($key, $value);
         }
         elseif ($data !== null)
-            throw new CException(Yii::t('yii', 'Map data must be an array or an object implementing Traversable.'));
+            throw new Exception(Yii::t('yii', 'Map data must be an array or an object implementing Traversable.'));
     }
 
     /**
@@ -174,14 +179,14 @@ class CMap extends \yii\base\Component implements \ArrayAccess, \Countable {
      * @param mixed $data the data to be merged with, must be an array or object implementing Traversable
      * @param boolean $recursive whether the merging should be recursive.
      *
-     * @throws CException If data is neither an array nor an iterator.
+     * @throws Exception If data is neither an array nor an iterator.
      */
     public function mergeWith($data, $recursive = true) {
-        if (is_array($data) || $data instanceof Traversable) {
+        if (is_array($data) || $data instanceof \Traversable) {
             if ($data instanceof CMap)
                 $data = $data->_d;
             if ($recursive) {
-                if ($data instanceof Traversable) {
+                if ($data instanceof \Traversable) {
                     $d = array();
                     foreach ($data as $key => $value)
                         $d[$key] = $value;
@@ -194,7 +199,7 @@ class CMap extends \yii\base\Component implements \ArrayAccess, \Countable {
                     $this->add($key, $value);
             }
         } elseif ($data !== null)
-            throw new CException(Yii::t('yii', 'Map data must be an array or an object implementing Traversable.'));
+            throw new Exception(Yii::t('yii', 'Map data must be an array or an object implementing Traversable.'));
     }
 
     /**
