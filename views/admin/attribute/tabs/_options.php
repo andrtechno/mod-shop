@@ -5,7 +5,7 @@ use panix\engine\Html;
 use panix\engine\widgets\Pjax;
 use panix\mod\shop\models\AttributeOption;
 
-\panix\mod\shop\assets\admin\AttributeAsset::register($this);
+\panix\mod\shop\bundles\admin\AttributeAsset::register($this);
 ?>
 
 <style type="text/css">
@@ -59,11 +59,11 @@ foreach ($model->options as $k => $o) {
 
 
         if ($otest) {
-            $data2['name' . $k] = Html::textInput('options[' . $o->id . '][]', Html::encode($otest->value), array('class' => 'form-control input-lang', 'style' => 'background-image:url(/uploads/language/' . $k . '.png);'));
+            $data2['name' . $k] = Html::textInput('options[' . $o->id . '][]', Html::encode($otest->value), ['class' => 'form-control input-lang', 'style' => 'background-image:url(/uploads/language/' . $k . '.png);']);
         }else{
-            $data2['name' . $k] = Html::textInput('options[' . $o->id . '][]', '', array('class' => 'form-control input-lang', 'style' => 'background-image:url(/uploads/language/' . $k . '.png);'));
+            $data2['name' . $k] = Html::textInput('options[' . $o->id . '][]', '', ['class' => 'form-control input-lang', 'style' => 'background-image:url(/uploads/language/' . $k . '.png);']);
         }
-        $data2['products'] = Html::a($o->productsCount, ['/shop/products/index', 'Product[eav][' . $model->name . ']' => $o->id], ['target' => '_blank']);
+        $data2['products'] = Html::a($o->productsCount, ['/admin/shop/product/index', 'Product[eav][' . $model->name . ']' => $o->id], ['target' => '_blank']);
         $data[$o->id] = (array) $data2;
     }
 }
