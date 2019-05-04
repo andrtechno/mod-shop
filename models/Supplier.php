@@ -57,7 +57,7 @@ class Supplier extends ActiveRecord
         return [
             [['address', 'phone', 'name'], 'required'],
             [['address', 'name'], 'trim'],
-            //['phone', '\panix\engine\validators\PhoneValidator'],
+            ['phone', '\panix\ext\telinput\PhoneInputValidator'],
             [['email'], 'email'],
             [['address'], 'string'],
             [['address'], 'string', 'max' => 255],
