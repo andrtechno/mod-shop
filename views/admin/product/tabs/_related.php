@@ -20,13 +20,14 @@ use yii\widgets\Pjax;
         <tr>
             <input type="hidden" value="<?php echo $related->id ?>" name="RelatedProductId[]">
             <td class="image text-center relatedProductLine<?php echo $related->id ?>"><?php echo $related->renderGridImage('50x50'); ?></td>
-            <td><?php
-                echo Html::a($related->name, array('/admin/shop/products/update', 'id' => $related->id), array(
+            <td>
+                <?= Html::a($related->name, array('/admin/shop/products/update', 'id' => $related->id), [
                     'target' => '_blank'
-                ));
-                ?></td>
-            <td class="text-center"><a class="btn btn-danger" href="#"
-                                       onclick="$(this).parents('tr').remove();"><?php echo Yii::t('app', 'DELETE') ?></a>
+                ]);
+                ?>
+            </td>
+            <td class="text-center">
+                <a class="btn btn-danger" href="#" onclick="$(this).parents('tr').remove();"><?= Yii::t('app', 'DELETE') ?></a>
             </td>
         </tr>
     <?php } ?>
@@ -102,7 +103,7 @@ echo \panix\engine\grid\GridView::widget([
                 'add' => function ($url, $model) {
                     return Html::a('<i class="icon-add"></i>', $model->id . '/' . Html::encode($model->name), [
                         'title' => Yii::t('yii', 'add'),
-                        'class' => 'btn btn-success',
+                        'class' => 'btn btn-sm btn-success',
                         'onClick' => 'return AddRelatedProduct(this);',
                         'data-pjax' => false
                     ]);

@@ -6,7 +6,7 @@ use panix\mod\shop\models\Attribute;
 //$chosen = array(); // Array of ids to enable chosen
 $attributes = (isset($model->type->shopAttributes)) ? $model->type->shopAttributes : [];
 ?>
-<div clsas="container-fluid">
+<div>
     <div class="row ml-0z mr-0z">
         <?php
         if (empty($attributes)) {
@@ -38,11 +38,11 @@ $attributes = (isset($model->type->shopAttributes)) ? $model->type->shopAttribut
                     //$a->required ? $required = ' <span class="required">*</span>' : $required = null;
 
                     if ($a->type == Attribute::TYPE_DROPDOWN) {
-                        $addOptionLink = Html::a(Html::icon('add'), '#', array(
+                        $addOptionLink = Html::a(Html::icon('add') . ' ' . Yii::t('shop/admin', 'ADD_OPTION'), '#', array(
                             'rel' => $a->id,
                             'data-name' => $a->getIdByName(),
                             'onclick' => 'js: return addNewOption($(this));',
-                            'class' => 'btn btn-success btn-sm float-left',
+                            'class' => 'btn btn-success btn-sm mt-2 float-right',
                             'title' => Yii::t('shop/admin', 'ADD_OPTION')
                         ));
                     } else
@@ -51,9 +51,9 @@ $attributes = (isset($model->type->shopAttributes)) ? $model->type->shopAttribut
                     $error = '';
                     $inputClass = '';
 
-                    if ($a->required && array_key_exists($a->name,$model->getErrors())) {
+                    if ($a->required && array_key_exists($a->name, $model->getErrors())) {
                         $inputClass = 'is-invalid';
-                        $error = Html::error($a, $a->name, ['class' => 'text-danger']);
+                        $error = Html::error($a, $a->name);
                     }
 
                     echo Html::beginTag('div', array('class' => 'form-group row ' . ($a->required ? 'required' : '')));
