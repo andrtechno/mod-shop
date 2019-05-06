@@ -11,13 +11,15 @@ use panix\ext\owlcarousel\OwlCarouselWidget;
         'containerOptions' => ['class' => 'owl-brands'],
         'options' => [
             'nav' => true,
-            'margin' => 5,
+            'margin' => 20,
+            'navText' => ['', ''],
             'responsiveClass' => true,
             'responsive' => [
                 0 => [
                     'items' => 1,
                     'nav' => false,
-                    'dots' => true
+                    'dots' => true,
+                    'center' => true,
                 ],
                 426 => [
                     'items' => 2,
@@ -28,24 +30,19 @@ use panix\ext\owlcarousel\OwlCarouselWidget;
                     'nav' => false
                 ],
                 1024 => [
-                    'items' => 4,
+                    'items' => 6,
                     'nav' => true,
-                    'dots' => true
+                    'dots' => false
                 ]
             ]
         ]
     ]);
     foreach ($model as $data) { ?>
 
-        <div class="d-flex align-items-center">
-            <div>
-                <?php
-                echo Html::a(Html::img($data->getImageUrl('image', '100x80'), ['alt' => $data->name, 'class' => 'img-fluid']), $data->getUrl(), ['class' => 'd-block m-auto1','style'=>'height:100px']);
-                ?>
-                <div class="text-center h5">
-                    <?= $data->name; ?>
-                </div>
-            </div>
+        <div class="text-center">
+            <?php
+            echo Html::a(Html::img($data->getImageUrl('image', '200x150'), ['alt' => $data->name, 'class' => 'd-inline-block img-fluid']), $data->getUrl(), ['class' => 'd-inline-block m-auto1']);
+            ?>
         </div>
 
     <?php }

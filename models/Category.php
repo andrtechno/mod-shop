@@ -41,7 +41,8 @@ class Category extends ActiveRecord
         return [
 
             [['image'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg'],
-            ['seo_alias', '\panix\engine\validators\UrlValidator', 'attributeCompare' => 'name'],
+            // ['seo_alias', '\panix\engine\validators\UrlValidator', 'attributeCompare' => 'name'],
+            ['seo_alias', 'fullPathValidator'],
             ['seo_alias', 'match',
                 'pattern' => '/^([a-z0-9-])+$/i',
                 'message' => Yii::t('app', 'PATTERN_URL')
@@ -52,6 +53,16 @@ class Category extends ActiveRecord
             ['description', 'safe']
         ];
     }
+
+
+    public function fullPathValidator($attribute)
+    {
+        $count = Category::find()->where(['full_path' => $this->parent_id->full_path . '/' . $this->{$attribute}])->count();
+        if ($count) {
+            $this->addError($attribute, 'Такой URL уже есть!');
+        }
+    }
+
 
     public function behaviors()
     {
@@ -73,8 +84,8 @@ class Category extends ActiveRecord
             ),
             'upload' => array(
                 'class' => UploadFileBehavior::class,
-                'files'=>[
-                    'image'=>'@uploads/categories'
+                'files' => [
+                    'image' => '@uploads/categories'
                 ]
             ),
             'tree' => [

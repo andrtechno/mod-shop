@@ -81,16 +81,18 @@ class CategoryController extends AdminController
 
 
         $post = Yii::$app->request->post();
+        if (Yii::$app->request->get('parent_id')) {
+            $model->parent_id = Category::findModel(Yii::$app->request->get('parent_id'));
+        } else {
+            $model->parent_id = Category::findModel(1);
+        }
         if ($model->load($post) && $model->validate()) {
 
             if ($model->getIsNewRecord()) {
-                if (Yii::$app->request->get('parent_id')) {
-                    $parent_id = Category::findModel(Yii::$app->request->get('parent_id'));
-                } else {
-                    $parent_id = Category::findModel(1);
-                }
 
-                $model->appendTo($parent_id);
+
+
+                $model->appendTo($model->parent_id);
                 Yii::$app->session->setFlash('success', Yii::t('app', 'SUCCESS_UPDATE'));
                 return $this->redirect(['/admin/shop/category/index']);
             } else {
