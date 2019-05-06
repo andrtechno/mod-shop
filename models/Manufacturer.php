@@ -32,16 +32,16 @@ class Manufacturer extends ActiveRecord
             'image' => [
                 'class' => 'panix\engine\grid\columns\ImageColumn',
                 'attribute' => 'image',
-                'value'=>function($model){
+                'value' => function ($model) {
                     return Html::a(Html::img($model->getImageUrl('image', '50x50'), ['alt' => $model->name, 'class' => 'img-thumbnail_']), $model->getImageUrl('image'), ['title' => $this->name, 'data-fancybox' => 'gallery']);
                 }
             ],
             'name' => [
                 'attribute' => 'name',
-                'format'=>'html',
+                'format' => 'html',
                 'contentOptions' => ['class' => 'text-left'],
-                'value'=>function($model){
-                    return Html::a($model->name, $model->getUrl(),['target'=>'_blank']);
+                'value' => function ($model) {
+                    return Html::a($model->name, $model->getUrl(), ['target' => '_blank']);
                 }
             ],
             'DEFAULT_CONTROL' => [
@@ -138,6 +138,7 @@ class Manufacturer extends ActiveRecord
             ],
             ['slug', '\panix\engine\validators\UrlValidator', 'attributeCompare' => 'name'],
             [['description'], 'string'],
+            [['description'], 'default', 'value' => null],
             [['name', 'slug'], 'string', 'max' => 255],
             [['ordern'], 'integer'],
             [['name', 'slug'], 'safe'],

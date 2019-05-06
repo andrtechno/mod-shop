@@ -18,16 +18,32 @@ $form = ActiveForm::begin([
             <h5><?= Html::encode($this->context->pageName) ?></h5>
         </div>
         <div class="card-body">
+            <?php
+            $tabs = [];
 
-            <?= $form->field($model, 'name')->textInput(['maxlength' => 255]); ?>
-            <?= $form->field($model, 'slug')->textInput(['maxlength' => 255]); ?>
-            <?= $form->field($model, 'image', [
-                'parts' => [
-                    '{buttons}' => $model->getFileHtmlButton('image')
+
+            $tabs[] = [
+                'label' => $model::t('TAB_MAIN'),
+                'content' => $this->render('_main', ['form' => $form, 'model' => $model]),
+                'active' => true,
+                'options' => ['class' => 'flex-sm-fill text-center nav-item'],
+            ];
+
+            $tabs[] = [
+                'label' => Yii::t('seo/default','TAB_SEO'),
+                'content' => $this->render('@seo/views/admin/default/_module_seo', ['model' => $model]),
+                'options' => ['class' => 'flex-sm-fill text-center nav-item'],
+            ];
+
+
+            echo \panix\engine\bootstrap\Tabs::widget([
+                //'encodeLabels'=>true,
+                'options' => [
+                    'class' => 'nav-pills flex-column flex-sm-row nav-tabs-static'
                 ],
-                'template' => '{label}{beginWrapper}{input}{buttons}{error}{hint}{endWrapper}'
-            ])->fileInput() ?>
-
+                'items' => $tabs,
+            ]);
+            ?>
 
         </div>
         <div class="card-footer text-center">

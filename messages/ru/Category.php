@@ -12,6 +12,5 @@ return [
     'IMAGE' => 'Изображение',
     'SEO_PRODUCT_TITLE' => 'Шаблон Title для товара',
     'SEO_PRODUCT_DESCRIPTION' => 'Шаблон Description для товара',
-    'TAB_MAIN' => 'Основные',
-    'TAB_SEO' => 'SEO'
+    'TAB_MAIN' => 'Основные'
 ];

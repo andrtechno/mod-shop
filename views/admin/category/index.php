@@ -32,7 +32,7 @@ use panix\ext\taginput\TagInput;
                     'options' => ['class' => 'text-center nav-item'],
                 ];
                 $tabs[] = [
-                    'label' => $model::t('TAB_SEO'),
+                    'label' => Yii::t('seo/default','TAB_SEO'),
                     'content' => $this->render('@seo/views/admin/default/_module_seo', ['model' => $model]),
                     'options' => ['class' => 'text-center nav-item'],
                 ];

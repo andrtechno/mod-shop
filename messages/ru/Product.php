@@ -31,7 +31,6 @@ return [
     'TAB_VARIANTS' => 'Варианты',
     'TAB_REL' => 'Связи товаров',
     'TAB_IMG' => 'Изображение',
-    'TAB_SEO' => 'СЕО',
     'TAB_WAREHOUSE' => 'Склад',
     'TAB_CATEGORIES' => 'Категории',
     'TYPE_ID' => 'Тип товара',
