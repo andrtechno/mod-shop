@@ -33,7 +33,7 @@ class Category extends ActiveRecord
 
     public function getUrl()
     {
-        return ['/shop/category/view', 'seo_alias' => $this->full_path];
+        return ['/shop/category/view', 'slug' => $this->full_path];
     }
 
     public function rules()
@@ -41,14 +41,14 @@ class Category extends ActiveRecord
         return [
 
             [['image'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg'],
-            // ['seo_alias', '\panix\engine\validators\UrlValidator', 'attributeCompare' => 'name'],
-            ['seo_alias', 'fullPathValidator'],
-            ['seo_alias', 'match',
+            // ['slug', '\panix\engine\validators\UrlValidator', 'attributeCompare' => 'name'],
+            ['slug', 'fullPathValidator'],
+            ['slug', 'match',
                 'pattern' => '/^([a-z0-9-])+$/i',
                 'message' => Yii::t('app', 'PATTERN_URL')
             ],
-            [['name', 'seo_alias', 'seo_product_title'], 'trim'],
-            [['name', 'seo_alias'], 'required'],
+            [['name', 'slug', 'seo_product_title'], 'trim'],
+            [['name', 'slug'], 'required'],
             [['name', 'seo_product_title', 'seo_product_description'], 'string', 'max' => 255],
             ['description', 'safe']
         ];
@@ -80,7 +80,7 @@ class Category extends ActiveRecord
                 'class' => MenuArrayBehavior::class,
                 'labelAttr' => 'name',
                 // 'countProduct'=>false,
-                'urlExpression' => '["/shop/category/view", "seo_alias"=>$model->full_path]',
+                'urlExpression' => '["/shop/category/view", "slug"=>$model->full_path]',
             ),
             'upload' => array(
                 'class' => UploadFileBehavior::class,
@@ -149,9 +149,9 @@ class Category extends ActiveRecord
 
             $parts = array();
             foreach ($ancestors as $ancestor)
-                $parts[] = $ancestor->seo_alias;
+                $parts[] = $ancestor->slug;
 
-            $parts[] = $this->seo_alias;
+            $parts[] = $this->slug;
             $this->full_path = implode('/', array_filter($parts));
         }
 

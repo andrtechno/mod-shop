@@ -152,7 +152,7 @@ class Product extends ActiveRecord
 
     public function getUrl()
     {
-        return ['/shop/product/view', 'seo_alias' => $this->seo_alias];
+        return ['/shop/product/view', 'slug' => $this->slug];
     }
 
     /* public function transactions() {
@@ -189,21 +189,21 @@ class Product extends ActiveRecord
         return [
             ['price', 'commaToDot'],
             [['file'], 'file', 'maxFiles' => 10],
-            [['origin_name', 'name', 'seo_alias'], 'string', 'max' => 255],
+            [['origin_name', 'name', 'slug'], 'string', 'max' => 255],
             [['image'], 'image'],
-            ['seo_alias', '\panix\engine\validators\UrlValidator', 'attributeCompare' => 'name'],
-            ['seo_alias', 'match',
+            ['slug', '\panix\engine\validators\UrlValidator', 'attributeCompare' => 'name'],
+            ['slug', 'match',
                 'pattern' => '/^([a-z0-9-])+$/i',
                 'message' => Yii::t('app', 'PATTERN_URL')
             ],
-            [['name', 'seo_alias'], 'trim'],
+            [['name', 'slug'], 'trim'],
             [['full_description', 'discount'], 'string'],
             ['use_configurations', 'boolean', 'on' => self::SCENARIO_INSERT],
             ['enable_comments', 'boolean'],
             [['sku', 'full_description', 'unit'], 'default'], // установим ... как NULL, если они пустые
-            [['name', 'seo_alias', 'main_category_id', 'price', 'unit'], 'required'],
+            [['name', 'slug', 'main_category_id', 'price', 'unit'], 'required'],
             [['manufacturer_id', 'type_id', 'quantity', 'views', 'added_to_cart_count', 'ordern', 'category_id', 'currency_id', 'unit'], 'integer'],
-            [['name', 'seo_alias', 'full_description', 'use_configurations'], 'safe'],
+            [['name', 'slug', 'full_description', 'use_configurations'], 'safe'],
             //  [['c1'], 'required'], // Attribute field
             // [['c1'], 'string', 'max' => 255], // Attribute field
         ];
@@ -736,13 +736,13 @@ class Product extends ActiveRecord
             //'batchSize' => 100,
             'scope' => function ($model) {
                 /** @var \yii\db\ActiveQuery $model */
-                $model->select(['seo_alias', 'updated_at']);
+                $model->select(['slug', 'updated_at']);
                 $model->andWhere(['switch' => 1]);
             },
             'dataClosure' => function ($model) {
                 /** @var self $model */
                 return [
-                    //'loc' => Url::to($model->seo_alias, true),
+                    //'loc' => Url::to($model->slug, true),
                     'loc' => Url::to($model->getUrl(), true),
                     'lastmod' => $model->updated_at,
                     'changefreq' => SitemapBehavior::CHANGEFREQ_DAILY,
@@ -757,7 +757,7 @@ class Product extends ActiveRecord
         $a['slug'] = [
             'class' => '\yii\behaviors\SluggableBehavior',
             'attribute' => 'name',
-            'slugAttribute' => 'seo_alias',
+            'slugAttribute' => 'slug',
         ];
         $a['eav'] = [
             'class' => '\panix\mod\shop\components\EavBehavior',

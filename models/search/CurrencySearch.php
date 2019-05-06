@@ -18,7 +18,7 @@ class CurrencySearch extends Currency {
     public function rules() {
         return [
             [['id'], 'integer'],
-            [['name','seo_alias','is_default'], 'safe'],
+            [['name','slug','is_default'], 'safe'],
         ];
     }
 

@@ -124,7 +124,7 @@ class CategoryController extends AdminController
         $model = Category::findOne((int)$id);
         if ($model) {
             $model->name = $_GET['text'];
-            $model->seo_alias = CMS::slug($model->name);
+            $model->slug = CMS::slug($model->name);
             if ($model->validate()) {
                 $model->saveNode(false);
                 $success = true;
@@ -152,12 +152,12 @@ class CategoryController extends AdminController
         $parent = Category::findModel(Yii::$app->request->get('parent_id'));
 
         $model->name = $_GET['text'];
-        $model->seo_alias = CMS::slug($model->name);
+        $model->slug = CMS::slug($model->name);
         if ($model->validate()) {
             $model->appendTo($parent);
             $message = Yii::t('shop/Category', 'CATEGORY_TREE_CREATE');
         } else {
-            $message = $model->getError('seo_alias');
+            $message = $model->getError('slug');
         }
         Yii::$app->response->format = Response::FORMAT_JSON;
         return [

@@ -17,7 +17,7 @@ use yii\helpers\Html;
                         $class = '';
                     } else {
                         $datatoggle = '';
-                        $href = Yii::$app->urlManager->createUrl($item['url'][0], array('seo_alias' => $item['url']['seo_alias']));
+                        $href = Yii::$app->urlManager->createUrl($item['url'][0], array('slug' => $item['url']['slug']));
                         $class = 'no-arrow';
                     }
                     ?>

@@ -193,7 +193,7 @@ class CategoryController extends WebController
 
     public function actionView()
     {
-        $this->dataModel = $this->findModel(Yii::$app->request->getQueryParam('seo_alias'));
+        $this->dataModel = $this->findModel(Yii::$app->request->getQueryParam('slug'));
         // $this->canonical = Yii::$app->urlManager->createAbsoluteUrl($this->dataModel->getUrl());
         return $this->doSearch($this->dataModel, 'view');
     }
@@ -444,9 +444,9 @@ class CategoryController extends WebController
             $this->query->applyMaxPrice($maxPrice);
     }
 
-    protected function findModel($seo_alias)
+    protected function findModel($slug)
     {
-        if (($this->dataModel = Category::findOne(['full_path' => $seo_alias])) !== null) {
+        if (($this->dataModel = Category::findOne(['full_path' => $slug])) !== null) {
             return $this->dataModel;
         } else {
             $this->error404('category not found');

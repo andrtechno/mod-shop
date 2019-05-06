@@ -88,7 +88,7 @@ class Manufacturer extends ActiveRecord
 
     public function getUrl()
     {
-        return ['/shop/manufacturer/view', 'seo_alias' => $this->seo_alias];
+        return ['/shop/manufacturer/view', 'slug' => $this->slug];
     }
 
     public function transactions()
@@ -130,17 +130,17 @@ class Manufacturer extends ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'seo_alias'], 'required'],
-            [['name', 'seo_alias'], 'trim'],
-            ['seo_alias', 'match',
+            [['name', 'slug'], 'required'],
+            [['name', 'slug'], 'trim'],
+            ['slug', 'match',
                 'pattern' => '/^([a-z0-9-])+$/i',
                 'message' => Yii::t('app', 'PATTERN_URL')
             ],
-            ['seo_alias', '\panix\engine\validators\UrlValidator', 'attributeCompare' => 'name'],
+            ['slug', '\panix\engine\validators\UrlValidator', 'attributeCompare' => 'name'],
             [['description'], 'string'],
-            [['name', 'seo_alias'], 'string', 'max' => 255],
+            [['name', 'slug'], 'string', 'max' => 255],
             [['ordern'], 'integer'],
-            [['name', 'seo_alias'], 'safe'],
+            [['name', 'slug'], 'safe'],
             [['image'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg'],
         ];
     }

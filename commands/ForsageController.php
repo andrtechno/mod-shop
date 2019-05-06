@@ -299,7 +299,7 @@ class ForsageController extends ConsoleController
     {
         if (isset($items)) {
             foreach ($items as $item) {
-//$item['url']['seo_alias']
+//$item['url']['slug']
                 echo "(NULL," . $item['id'] . "," . ForsageExternalFinder::OBJECT_TYPE_CATEGORY . ",'" . $item['label'] . "')," . PHP_EOL;
                 if (isset($item['items']))
                     $this->recursiveGetSql($item['items']);
@@ -327,7 +327,7 @@ class ForsageController extends ConsoleController
                 if (!$manufacturer) { //new
                     $manufacturer = new Manufacturer;
                     $manufacturer->name = $supplier_name;
-                    $manufacturer->seo_alias = CMS::translit($manufacturer->name);
+                    $manufacturer->slug = CMS::translit($manufacturer->name);
                     $manufacturer->save(false);
                     Yii::app()->db->createCommand()->insert('{{exchange_forsage}}', array(
                         'object_type' => ForsageExternalFinder::OBJECT_TYPE_MANUFACTURER,

@@ -39,15 +39,15 @@ class CategoriesWidget extends Widget
             foreach ($data as $obj) {
 
                 $i++;
-                if (isset($_GET['seo_alias']) && stripos($_GET['seo_alias'], $obj['url']['seo_alias']) !== false) {
+                if (isset($_GET['slug']) && stripos($_GET['slug'], $obj['url']['slug']) !== false) {
                     $ariaExpanded = 'true';
                     $collapseClass = 'collapse in';
                 } else {
                     $ariaExpanded = 'false';
                     $collapseClass = 'collapse';
                 }
-                if (Yii::$app->request->get('seo_alias')) {
-                    $activeClass = ($obj['url']['seo_alias'] === $_GET['seo_alias']) ? 'active' : '';
+                if (Yii::$app->request->get('slug')) {
+                    $activeClass = ($obj['url']['slug'] === $_GET['slug']) ? 'active' : '';
                 } else {
                     $activeClass = '';
                 }
@@ -68,7 +68,7 @@ class CategoriesWidget extends Widget
                     $html .= Html::endTag('div');
                 } else {
 
-                    // $html .= Html::a($obj['label'], Yii::$app->urlManager->createUrl([$obj['url'][0], ['seo_alias' => $obj['url']['seo_alias']]]));
+                    // $html .= Html::a($obj['label'], Yii::$app->urlManager->createUrl([$obj['url'][0], ['slug' => $obj['url']['slug']]]));
                     $html .= Html::a($obj['label'], Yii::$app->urlManager->createUrl($obj['url']));
                     $html .= Html::tag('sup', $obj['total_count'], []);
                 }

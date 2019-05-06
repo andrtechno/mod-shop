@@ -21,7 +21,7 @@ class m180917_193505_shop_category extends Migration {
             'lft' => $this->integer()->notNull(),
             'rgt' => $this->integer()->notNull(),
             'depth' => $this->integer()->notNull(),
-            'seo_alias' => $this->string(255)->null()->defaultValue(null),
+            'slug' => $this->string(255)->null()->defaultValue(null),
             'full_path' => $this->string(255)->null(),
             'image' => $this->string(50),
             'switch' => $this->boolean()->defaultValue(1),

@@ -31,12 +31,12 @@ class ManufacturerController extends WebController
 
     /**
      * Display products by manufacturer
-     * @param $seo_alias
+     * @param $slug
      * @return string
      */
-    public function actionView($seo_alias)
+    public function actionView($slug)
     {
-        $this->findModel($seo_alias);
+        $this->findModel($slug);
 
         $query = Product::find();
         $query->attachBehaviors($query->behaviors());
@@ -58,13 +58,13 @@ class ManufacturerController extends WebController
     }
 
     /**
-     * @param $seo_alias
+     * @param $slug
      * @return mixed
      */
-    protected function findModel($seo_alias)
+    protected function findModel($slug)
     {
         $this->dataModel = Manufacturer::find()
-            ->where(['seo_alias' => $seo_alias])
+            ->where(['slug' => $slug])
             ->published()
             ->one();
 

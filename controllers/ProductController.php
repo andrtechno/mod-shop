@@ -14,10 +14,10 @@ use yii\web\View;
 class ProductController extends WebController
 {
 
-    public function actionView($seo_alias)
+    public function actionView($slug)
     {
 
-        $this->dataModel = $this->findModel($seo_alias);
+        $this->dataModel = $this->findModel($slug);
         $this->dataModel->updateCounters(['views' => 1]);
         $category = $this->dataModel->mainCategory;
         if ($category) {
@@ -51,7 +51,7 @@ class ProductController extends WebController
                     'label' => $category->name . ' ' . $this->dataModel->manufacturer->name,
                     'url' => [
                         '/shop/category/view',
-                        'seo_alias' => $category->full_path,
+                        'slug' => $category->full_path,
                         'manufacturer' => $this->dataModel->manufacturer->id
                     ]
                 ];
@@ -115,7 +115,7 @@ class ProductController extends WebController
     protected function findModel($url)
     {
         $model = Product::find()
-            ->where(['seo_alias' => $url])
+            ->where(['slug' => $url])
             ->published()
             ->one();
 

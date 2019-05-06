@@ -70,7 +70,7 @@ class ProductsDuplicator extends \yii\base\Component {
             $product->$attr = $model->$attr;
 
         $product->name .= $this->getSuffix();
-        $product->seo_alias .= CMS::translit($this->getSuffix()) . '-' . time();
+        $product->slug .= CMS::translit($this->getSuffix()) . '-' . time();
         $product->main_category_id = $model->mainCategory->id;
 
         $product->scenario = 'duplicate';

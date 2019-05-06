@@ -19,7 +19,7 @@ class m180917_193531_shop_manufacturer extends Migration {
             'id' => $this->primaryKey()->unsigned(),
             'cat_id' => $this->integer()->null(),
             'image' => $this->string()->null()->defaultValue(null),
-            'seo_alias' => $this->string(11)->notNull()->defaultValue(null),
+            'slug' => $this->string(11)->notNull()->defaultValue(null),
             'switch' => $this->boolean()->notNull()->defaultValue(null),
             'ordern' => $this->integer(),
         ], $this->tableOptions);
@@ -37,7 +37,7 @@ class m180917_193531_shop_manufacturer extends Migration {
 
         $this->createIndex('switch', Manufacturer::tableName(), 'switch');
         $this->createIndex('ordern', Manufacturer::tableName(), 'ordern');
-        $this->createIndex('seo_alias', Manufacturer::tableName(), 'seo_alias');
+        $this->createIndex('slug', Manufacturer::tableName(), 'slug');
         $this->createIndex('cat_id', Manufacturer::tableName(), 'cat_id');
 
         $this->createIndex('object_id', ManufacturerTranslate::tableName(), 'object_id');

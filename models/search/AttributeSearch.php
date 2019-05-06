@@ -20,7 +20,7 @@ class AttributeSearch extends Attribute {
     public function rules() {
         return [
             [['id','group_id'], 'integer'],
-            [['name', 'seo_alias', 'sku', 'price'], 'safe'],
+            [['name', 'slug', 'sku', 'price'], 'safe'],
         ];
     }
 

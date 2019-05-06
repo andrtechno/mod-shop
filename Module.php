@@ -19,8 +19,8 @@ class Module extends WebModule implements BootstrapInterface
 
                 'shop/ajax/currency/<id:\d+>' => 'shop/ajax/currency',
                 'shop' => 'shop/default/index',
-                'manufacturer/<seo_alias:\w+>' => 'shop/manufacturer/view',
-                'product/<seo_alias:[0-9a-zA-Z\-]+>' => 'shop/product/view',
+                'manufacturer/<slug:\w+>' => 'shop/manufacturer/view',
+                'product/<slug:[0-9a-zA-Z\-]+>' => 'shop/product/view',
                 //'products/search/q/<q:\w+>' => 'shop/category/search',
 
                 [

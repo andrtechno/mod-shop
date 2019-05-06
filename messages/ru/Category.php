@@ -1,7 +1,7 @@
 <?php
 return [
     'NAME' => 'Название категории',
-    'SEO_ALIAS' => 'Транслит ссылка',
+    'SLUG' => 'URL-адрес',
     'DESCRIPTION' => 'Описание',
     'CATEGORY_TREE_SWITCH_ON' => 'Категория успешно скрыта',
     'CATEGORY_TREE_SWITCH_OFF' => 'Категория успешно показана',

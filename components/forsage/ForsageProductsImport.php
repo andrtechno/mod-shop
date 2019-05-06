@@ -307,16 +307,16 @@ class ForsageProductsImport
                             if (!$manufacturer) {
                                 $manufacturer = new Manufacturer();
                                 $manufacturer->name = $product->supplier->company; //$supplier->name;
-                                $manufacturer->seo_alias = CMS::slug($manufacturer->name);
+                                $manufacturer->slug = CMS::slug($manufacturer->name);
                                 $manufacturer->save(false);
                                 $this->createExternalId(ForsageExternalFinder::OBJECT_TYPE_MANUFACTURER, $manufacturer->id, $manufacturer->name);
                             }
                             $model->manufacturer_id = $manufacturer->id;
                             $model->name = $this->my_ucfirst($characteristics['main_category_name']) . ' ' . $manufacturer->name . ' ' . $product->vcode;
-                            $model->seo_alias = CMS::slug($model->name);
+                            $model->slug = CMS::slug($model->name);
                         } else {
                             $model->name = $this->my_ucfirst($characteristics['main_category_name']) . ' ' . $product->vcode;
-                            $model->seo_alias = CMS::slug($model->name);
+                            $model->slug = CMS::slug($model->name);
                         }
 
 
@@ -344,7 +344,7 @@ class ForsageProductsImport
                         if (!$modelCategory) {
                             $modelCategory = new Category;
                             $modelCategory->name = $sub_category;
-                            $modelCategory->seo_alias = CMS::slug($modelCategory->name);
+                            $modelCategory->slug = CMS::slug($modelCategory->name);
                             echo 'CREATE SUB CATEGORY: ' . $sub_category . PHP_EOL;
                             if ($modelMain)
                                 $modelCategory->appendTo($modelMain);

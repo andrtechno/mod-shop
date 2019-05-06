@@ -27,7 +27,7 @@ class ProductSearch extends Product
             [['id'], 'integer'],
             [['price_min', 'price_max'], 'integer'],
            // [['image'],'boolean'],
-            [['name', 'seo_alias', 'sku', 'price'], 'safe'],
+            [['name', 'slug', 'sku', 'price'], 'safe'],
             [['created_at', 'updated_at'], 'date', 'format' => 'php:Y-m-d']
         ];
     }

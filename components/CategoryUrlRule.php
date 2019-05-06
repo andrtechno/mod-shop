@@ -24,9 +24,9 @@ class CategoryUrlRule extends UrlRule
 
         if ($route === $this->route) {
 
-            if (isset($params['seo_alias'])) {
-                $url = trim($params['seo_alias'], '/');
-                unset($params['seo_alias']);
+            if (isset($params['slug'])) {
+                $url = trim($params['slug'], '/');
+                unset($params['slug']);
             } else {
                 $url = '';
             }
@@ -60,7 +60,7 @@ class CategoryUrlRule extends UrlRule
         foreach ($this->getAllPaths() as $path) {
 
             if ($path['full_path'] !== '' && strpos($pathInfo, $path['full_path']) === 0) {
-                $_GET['seo_alias'] = $path['full_path'];
+                $_GET['slug'] = $path['full_path'];
                 $uri = str_replace($path['full_path'], '', $pathInfo);
                 $parts = explode('/', $uri);
                 unset($parts[0]);
@@ -73,7 +73,7 @@ class CategoryUrlRule extends UrlRule
                     $params[$p[0]] = $p[1];
                 }
 
-                $params['seo_alias'] = ltrim($path['full_path']);
+                $params['slug'] = ltrim($path['full_path']);
 
 
                 return [$this->route, $params];

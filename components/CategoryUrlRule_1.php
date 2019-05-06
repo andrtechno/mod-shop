@@ -10,9 +10,9 @@ class CategoryUrlRule extends Object implements UrlRuleInterface {
     public function createUrl($manager, $route, $params) {
 
         if ($route === 'shop/category/view') {
-            if (isset($params['seo_alias'])) {
-                $url = trim($params['seo_alias'], '/');
-                unset($params['seo_alias']);
+            if (isset($params['slug'])) {
+                $url = trim($params['slug'], '/');
+                unset($params['slug']);
             } else {
                 $url = '';
             }
@@ -43,9 +43,9 @@ class CategoryUrlRule extends Object implements UrlRuleInterface {
         //if (preg_match('%^(\w+)(/(\w+))?$%', $pathInfo, $matches)) {
         foreach ($this->getAllPaths() as $path) {
             if ($path['full_path'] !== '' && strpos($pathInfo, $path['full_path']) === 0) {
-                $_GET['seo_alias'] = $path['full_path'];
+                $_GET['slug'] = $path['full_path'];
 
-                $params['seo_alias'] = ltrim($path['full_path']);
+                $params['slug'] = ltrim($path['full_path']);
               //  var_dump($params);
                   // die;
                 //// \Yii::$app->urlManager->parsePathInfo($params);
