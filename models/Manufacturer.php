@@ -30,11 +30,9 @@ class Manufacturer extends ActiveRecord
     {
         return [
             'image' => [
+                'class' => 'panix\engine\grid\columns\ImageColumn',
                 'attribute' => 'image',
-                'format'=>'html',
-                'contentOptions' => ['class' => 'text-center','style'=>'width:100px'],
                 'value'=>function($model){
-                    //return Html::img($model->getImageUrl('image', '100x80'));
                     return Html::a(Html::img($model->getImageUrl('image', '50x50'), ['alt' => $model->name, 'class' => 'img-thumbnail_']), $model->getImageUrl('image'), ['title' => $this->name, 'data-fancybox' => 'gallery']);
                 }
             ],
@@ -46,7 +44,6 @@ class Manufacturer extends ActiveRecord
                     return Html::a($model->name, $model->getUrl(),['target'=>'_blank']);
                 }
             ],
-
             'DEFAULT_CONTROL' => [
                 'class' => 'panix\engine\grid\columns\ActionColumn',
             ],
