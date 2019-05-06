@@ -2,6 +2,7 @@
 
 namespace panix\mod\shop\models;
 
+use panix\engine\Html;
 use Yii;
 use yii\helpers\ArrayHelper;
 use panix\engine\db\ActiveRecord;
@@ -28,10 +29,24 @@ class Manufacturer extends ActiveRecord
     public function getGridColumns()
     {
         return [
+            'image' => [
+                'attribute' => 'image',
+                'format'=>'html',
+                'contentOptions' => ['class' => 'text-center','style'=>'width:100px'],
+                'value'=>function($model){
+                    //return Html::img($model->getImageUrl('image', '100x80'));
+                    return Html::a(Html::img($model->getImageUrl('image', '50x50'), ['alt' => $model->name, 'class' => 'img-thumbnail_']), $model->getImageUrl('image'), ['title' => $this->name, 'data-fancybox' => 'gallery']);
+                }
+            ],
             'name' => [
                 'attribute' => 'name',
+                'format'=>'html',
                 'contentOptions' => ['class' => 'text-left'],
+                'value'=>function($model){
+                    return Html::a($model->name, $model->getUrl(),['target'=>'_blank']);
+                }
             ],
+
             'DEFAULT_CONTROL' => [
                 'class' => 'panix\engine\grid\columns\ActionColumn',
             ],
@@ -83,7 +98,7 @@ class Manufacturer extends ActiveRecord
     {
         return [
             self::SCENARIO_DEFAULT => self::OP_INSERT | self::OP_UPDATE,
-           // 'update'=>self::OP_UPDATE
+            // 'update'=>self::OP_UPDATE
         ];
     }
 
@@ -110,7 +125,7 @@ class Manufacturer extends ActiveRecord
         return $this->hasOne(Product::class, ['manufacturer_id' => 'id'])->count();
     }
 
-   // public $image;
+    // public $image;
 
     /**
      * @inheritdoc
@@ -129,7 +144,7 @@ class Manufacturer extends ActiveRecord
             [['name', 'seo_alias'], 'string', 'max' => 255],
             [['ordern'], 'integer'],
             [['name', 'seo_alias'], 'safe'],
-           // [['image'], 'file', 'extensions' => ['gif', 'jpg', 'png'], 'skipOnEmpty' => true],
+            [['image'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg'],
         ];
     }
 
@@ -146,7 +161,10 @@ class Manufacturer extends ActiveRecord
             'upload' => [
                 'class' => 'panix\engine\behaviors\UploadFileBehavior',
                 'files' => [
-                    'image' => '@uploads/manufacturer'
+                    'image' => '@uploads/manufacturer',
+                ],
+                'options' => [
+                    'watermark' => false
                 ]
             ],
         ], parent::behaviors());

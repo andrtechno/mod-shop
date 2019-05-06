@@ -7,40 +7,31 @@ use panix\engine\bootstrap\ActiveForm;
 ?>
 
 
+<?php
+$form = ActiveForm::begin([
+    'layout' => 'horizontal',
+    'options' => ['enctype' => 'multipart/form-data']
+]);
+?>
+    <div class="card">
+        <div class="card-header">
+            <h5><?= Html::encode($this->context->pageName) ?></h5>
+        </div>
+        <div class="card-body">
 
-<div class="card">
-    <div class="card-header">
-        <h5><?= Html::encode($this->context->pageName) ?></h5>
-    </div>
-    <div class="card-body">
+            <?= $form->field($model, 'name')->textInput(['maxlength' => 255]); ?>
+            <?= $form->field($model, 'seo_alias')->textInput(['maxlength' => 255]); ?>
+            <?= $form->field($model, 'image', [
+                'parts' => [
+                    '{buttons}' => $model->getFileHtmlButton('image')
+                ],
+                'template' => '{label}{beginWrapper}{input}{buttons}{error}{hint}{endWrapper}'
+            ])->fileInput() ?>
 
 
-        <?php
-        $form = ActiveForm::begin([
-                    'layout' => 'horizontal',
-                    'options' => ['enctype' => 'multipart/form-data']
-        ]);
-        ?>
-        <?= $form->field($model, 'name')->textInput(['maxlength' => 255]); ?>
-        <?= $form->field($model, 'seo_alias')->textInput(['maxlength' => 255]); ?>
-
-        <?= $form->field($model, 'image')->fileInput(); ?>
-
-
-
-
-        <div class="form-group text-center">
+        </div>
+        <div class="card-footer text-center">
             <?= $model->submitButton(); ?>
         </div>
-
-        <?php ActiveForm::end(); ?>
-
-        <?php
-
-echo $model->getFileHtmlButton('image');
-        echo $model->getFileAbsolutePath('image');
-        echo $model->getImageUrl('image','500x500');
-        ?>
-
     </div>
-</div>
+<?php ActiveForm::end(); ?>
