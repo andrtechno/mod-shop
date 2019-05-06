@@ -91,7 +91,7 @@ class Manufacturer extends ActiveRecord
         return ['/shop/manufacturer/view', 'slug' => $this->slug];
     }
 
-    public function transactions()
+    public function transactions222()
     {
         return [
             self::SCENARIO_DEFAULT => self::OP_INSERT | self::OP_UPDATE,
@@ -148,24 +148,31 @@ class Manufacturer extends ActiveRecord
 
     public function behaviors()
     {
-        return ArrayHelper::merge([
-            'translate' => [
-                'class' => 'panix\engine\behaviors\TranslateBehavior',
-                'translationAttributes' => [
-                    'name',
-                    'description'
-                ]
+        $a = [];
+         if (Yii::$app->getModule('seo'))
+           $a['seo'] = [
+                'class' => '\panix\mod\seo\components\SeoBehavior',
+                'url' => $this->getUrl()
+            ];
+
+        $a['translate'] = [
+            'class' => 'panix\engine\behaviors\TranslateBehavior',
+            'translationAttributes' => [
+                'name',
+                'description'
+            ]
+        ];
+        $a['upload'] = [
+            'class' => 'panix\engine\behaviors\UploadFileBehavior',
+            'files' => [
+                'image' => '@uploads/manufacturer',
             ],
-            'upload' => [
-                'class' => 'panix\engine\behaviors\UploadFileBehavior',
-                'files' => [
-                    'image' => '@uploads/manufacturer',
-                ],
-                'options' => [
-                    'watermark' => false
-                ]
-            ],
-        ], parent::behaviors());
+            'options' => [
+                'watermark' => false
+            ]
+        ];
+
+        return ArrayHelper::merge($a, parent::behaviors());
     }
 
 }
