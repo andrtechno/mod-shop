@@ -149,8 +149,8 @@ class Manufacturer extends ActiveRecord
     public function behaviors()
     {
         $a = [];
-         if (Yii::$app->getModule('seo'))
-           $a['seo'] = [
+        if (Yii::$app->getModule('seo'))
+            $a['seo'] = [
                 'class' => '\panix\mod\seo\components\SeoBehavior',
                 'url' => $this->getUrl()
             ];
