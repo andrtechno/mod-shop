@@ -43,6 +43,7 @@ class ManufacturerController extends WebController
         $query->published();
         $query->applyManufacturers($this->dataModel->id);
 
+        $this->view->title = $this->dataModel->name;
 
         $provider = new \panix\engine\data\ActiveDataProvider([
             'query' => $query,
