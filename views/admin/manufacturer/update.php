@@ -9,7 +9,6 @@ use panix\engine\bootstrap\ActiveForm;
 
 <?php
 $form = ActiveForm::begin([
-    'layout' => 'horizontal',
     'options' => ['enctype' => 'multipart/form-data']
 ]);
 ?>
