@@ -189,7 +189,7 @@ class Product extends ActiveRecord
         return [
             ['price', 'commaToDot'],
             [['file'], 'file', 'maxFiles' => 10],
-            [['origin_name', 'name', 'slug'], 'string', 'max' => 255],
+            [['name', 'slug'], 'string', 'max' => 255],
             [['image'], 'image'],
             ['slug', '\panix\engine\validators\UrlValidator', 'attributeCompare' => 'name'],
             ['slug', 'match',
