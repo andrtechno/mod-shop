@@ -407,17 +407,18 @@ class CategoryController extends WebController
         if (Yii::$app->request->isAjax) {
             //\Yii::$app->response->format = \yii\web\Response::FORMAT_HTML;
 
-            if(Yii::$app->request->get('ajax')){
-                return $this->renderPartial('listview', [
-                    'provider' => $this->provider,
-                    'itemView' => $itemView
-                ]);
-            }else{
+            if(Yii::$app->request->get('render') == 'active-filters'){
                 return $this->renderPartial('@shop/widgets/filtersnew/views/current', [
                     'dataModel'=>$this->dataModel,
                     'active'=>$filterData
                 ]);
+            }else {
+                return $this->renderPartial('listview', [
+                    'provider' => $this->provider,
+                    'itemView' => $itemView
+                ]);
             }
+
 
         } else {
             return $this->render($view, [

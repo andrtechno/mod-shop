@@ -62,6 +62,7 @@ function currentFilters(url) {
     xhrCurrentFilter = $.ajax({
         type: 'GET',
         url: url,
+    data:{render:'active-filters'},
         beforeSend: function () {
             containerFilterCurrent.addClass('loading');
         },
@@ -113,7 +114,7 @@ $(function () {
         }
 
         //$.fn.yiiListView.update('shop-products', {url: formattedURL(objects)});
-        $.get(formattedURL(objects), {ajax:true}, function (data) {
+        $.get(formattedURL(objects), {}, function (data) {
             $('#listview-ajax').html(data);
         });
         console.log('change', formattedURL(objects));
