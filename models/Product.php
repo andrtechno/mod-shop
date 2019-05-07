@@ -272,16 +272,6 @@ class Product extends ActiveRecord
         return $this->hasOne($this->translationClass, ['object_id' => 'id']);
     }
 
-    public function getCommentsCount()
-    {
-        if (Yii::$app->hasModule('comments')) {
-            return $this->hasOne(Comments::class, ['object_id' => 'id'])->count();
-        } else {
-            return false;
-        }
-    }
-
-
     public function getRelated()
     {
         return $this->hasMany(RelatedProduct::class, ['related_id' => 'id'])->cache(3600);
@@ -778,7 +768,7 @@ class Product extends ActiveRecord
         if (Yii::$app->getModule('discounts')) {
             $a['comments'] = array(
                 'class' => '\panix\mod\comments\components\CommentBehavior',
-                'model' => static::class,
+                //'handlerClass' => static::class,
                 'owner_title' => 'name', // Attribute name to present comment owner in admin panel
             );
         }
