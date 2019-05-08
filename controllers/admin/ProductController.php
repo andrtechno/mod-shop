@@ -419,12 +419,11 @@ class ProductController extends AdminController
         }
     }
 
-
     /**
      * Render popup windows
      *
-     * @return type
-     * @throws HttpException
+     * @return string
+     * @throws ForbiddenHttpException
      */
     public function actionRenderCategoryAssignWindow()
     {
@@ -438,8 +437,8 @@ class ProductController extends AdminController
     /**
      * Render popup windows
      *
-     * @return type
-     * @throws HttpException
+     * @return string
+     * @throws ForbiddenHttpException
      */
     public function actionRenderDuplicateProductsWindow()
     {
@@ -453,8 +452,8 @@ class ProductController extends AdminController
     /**
      * Render popup windows
      *
-     * @return type
-     * @throws HttpException
+     * @return string
+     * @throws ForbiddenHttpException
      */
     public function actionRenderProductsPriceWindow()
     {
@@ -469,7 +468,7 @@ class ProductController extends AdminController
     /**
      * Set price products
      *
-     * @throws HttpException
+     * @throws ForbiddenHttpException
      */
     public function actionSetProducts()
     {
@@ -494,7 +493,7 @@ class ProductController extends AdminController
                 Yii::$app->end();
             }
         } else {
-            throw new HttpException(403, Yii::t('app/error', '403'));
+            throw new ForbiddenHttpException(Yii::t('app/error', '403'));
         }
     }
 
