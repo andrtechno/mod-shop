@@ -19,7 +19,7 @@ Module for PIXELION CMS
 #### Запустите
 
 ```
-php composer.phar require --prefer-dist panix/mod-shop "*"
+php composer require --prefer-dist panix/mod-shop "*"
 ```
 
 или добавте в ваш
