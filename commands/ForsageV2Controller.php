@@ -2,6 +2,11 @@
 
 namespace panix\mod\shop\commands;
 
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Pool;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
 use Yii;
 use yii\db\QueryBuilder;
 use yii\helpers\Console;
@@ -10,110 +15,42 @@ use panix\engine\console\controllers\ConsoleController;
 use panix\mod\shop\models\Attribute;
 use panix\mod\shop\models\Category;
 use panix\mod\shop\models\Manufacturer;
-use panix\mod\shop\components\forsage\ForsageProductsImport;
-use panix\mod\shop\components\forsage\ForsageExternalFinder;
+use panix\mod\shop\components\forsagev2\ForsageProductsImport;
+use panix\mod\shop\components\forsagev2\ForsageExternalFinder;
 
 
 /**
  * Sync "Forsage studio" API
  * @package panix\mod\shop\commands
  */
-class ForsageController extends ConsoleController
+class ForsageV2Controller extends ConsoleController
 {
 
-    public function beforeAction($action)
-    {
-        $forsage = new ForsageProductsImport();
-        if (!file_exists(\Yii::getAlias($forsage->tempDirectory))) {
-            FileHelper::createDirectory(\Yii::getAlias($forsage->tempDirectory));
-        }
-
-        return parent::beforeAction($action);
-    }
-
-    /**
-     * asdasdas
-     */
-    public function actionChanges2()
-    {
-        // Yii::import('app.php-multi-curl.*');
-
-        $forsage = new ForsageProductsImport;
-        // $products = $forsage->getSupplierProductIds(505);
-
-        $products = $forsage->getChanges();
-
-        $options = [
-            CURLOPT_TIMEOUT => 1000,
-            CURLOPT_CONNECTTIMEOUT => 5000,
-            CURLOPT_USERAGENT => 'Multi-cURL client v1.5.0',
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HEADER => false,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_BINARYTRANSFER => true,
-        ];
-
-        if ($products) {
-            $c = array();
-            echo count($products) . PHP_EOL;
-            $chunkProducts = array_chunk($products, 100, true);
-            //$chunkProducts = array_chunk($products, 100, true);
-
-            $i = 0;
-
-            foreach ($chunkProducts as $k2 => $products1) {
-                echo 'Page: ' . $k2 . PHP_EOL;
-                $c = array();
-                foreach ($products1 as $k => $product_id) {
-                    $c[$k] = new Curl($options);
-                    $c[$k]->makeGet("https://forsage-studio.com/api/get_product/{$product_id}?token={$forsage->apikey}");
-                }
-                $mc = new MultiCurl();
-
-                $mc->addCurls($c);
-                $allSuccess = $mc->exec();
-                if ($allSuccess) {
-                    foreach ($c as $resp) {
-                        $i++;
-                        $data = CJSON::decode($resp->getResponse()->getBody(), false);
-                        //$forsage->insert_update($data->product);
-                        $forsage->insert_update($data->product, 1);
-                    }
-                } else {
-                    foreach ($c as $resp) {
-                        var_dump($resp->getResponse()->getError());
-                    }
-                }
-                $mc->reset();
-
-            }
-            echo 'Total items: ' . $i . PHP_EOL;
-        }
-    }
 
     public function actionChanges()
     {
+        $starttime = microtime(true);
         $forsage = new ForsageProductsImport;
         $forsage->change();
-        \Yii::debug('ForsageCommand actionChanges start', 'info');
+        $this->log(sprintf("[Time: %f sec]", microtime(true) - $starttime));
     }
 
     public function actionSupplierProducts($id = false)
     {
         if ((int)$id) {
-            \Yii::debug('ForsageCommand actionSupplierProducts start', 'info');
+            Yii::debug('ForsageCommand actionSupplierProducts start', 'info');
             $forsage = new ForsageProductsImport;
             $products = $forsage->getSupplierProductIds((int)$id);
             if ($products) {
                 $log = "Products count: " . count($products);
                 echo $log . PHP_EOL;
-                \Yii::debug($log, 'info');
+                Yii::debug($log, 'info');
                 foreach ($products as $product_id) {
                     $product = $forsage->getProduct((int)$product_id);
                     $forsage->insert_update($product);
                 }
             }
-            \Yii::debug('ForsageCommand actionSupplierProducts end', 'info');
+            Yii::debug('ForsageCommand actionSupplierProducts end', 'info');
 
         }
     }
@@ -128,13 +65,15 @@ class ForsageController extends ConsoleController
     public function actionAddProduct(int $id = 0, $insert = true)
     {
         if ($id) {
+            $this->log('ForsageCommand actionAddProduct start');
             $forsage = new ForsageProductsImport;
             $product = $forsage->getProduct($id);
             if ($insert)
                 $forsage->insert_update($product);
             else
                 print_r($product);
-            \Yii::debug('ForsageCommand actionAddProduct start', 'info');
+
+
         }
 
     }
@@ -147,7 +86,7 @@ class ForsageController extends ConsoleController
         if ($suppliers) {
 
         }
-        \Yii::debug('ForsageCommand actionAddSuppliers start', 'info');
+        $this->log('ForsageCommand actionAddSuppliers start');
     }
 
     /**
@@ -155,9 +94,12 @@ class ForsageController extends ConsoleController
      */
     public function actionProducts()
     {
+        $starttime = microtime(true);
         $forsage = new ForsageProductsImport;
         $forsage->products();
-        \Yii::debug('ForsageCommand actionProducts start', 'info');
+
+        $this->log('ForsageCommand actionProducts start');
+        $this->log(sprintf("[Time: %f sec]", microtime(true) - $starttime));
     }
 
     /**
@@ -170,10 +112,9 @@ class ForsageController extends ConsoleController
     {
         $forsage = new ForsageProductsImport;
         $forsage->importAll($offset, $limit);
-        \Yii::debug('ForsageCommand actionImportAll start', 'info');
+        $this->log('ForsageCommand actionImportAll start');
 
     }
-
 
     public function actionSetSql()
     {
@@ -360,5 +301,25 @@ class ForsageController extends ConsoleController
         } else {
             echo $this->ansiFormat(' Table already exists', Console::FG_RED);
         }
+    }
+
+
+    public function beforeAction($action)
+    {
+        $forsage = new ForsageProductsImport();
+        if (!file_exists(\Yii::getAlias($forsage->tempDirectory))) {
+            FileHelper::createDirectory(\Yii::getAlias($forsage->tempDirectory));
+        }
+
+        return parent::beforeAction($action);
+    }
+
+    /**
+     * @param string $message
+     */
+    private function log($message)
+    {
+        $this->stdout($message, Console::FG_YELLOW);
+        Yii::debug($message, 'info');
     }
 }
