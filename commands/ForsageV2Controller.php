@@ -2,11 +2,7 @@
 
 namespace panix\mod\shop\commands;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Pool;
-use GuzzleHttp\Psr7\Request;
-use GuzzleHttp\Psr7\Response;
+
 use Yii;
 use yii\db\QueryBuilder;
 use yii\helpers\Console;
@@ -26,12 +22,12 @@ use panix\mod\shop\components\forsagev2\ForsageExternalFinder;
 class ForsageV2Controller extends ConsoleController
 {
 
-
     public function actionChanges()
     {
         $starttime = microtime(true);
         $forsage = new ForsageProductsImport;
         $forsage->change();
+
         $this->log(sprintf("[Time: %f sec]", microtime(true) - $starttime));
     }
 

@@ -191,7 +191,7 @@ class ForsageProductsImport
     public function change()
     {
         $supplier_products = $this->getChanges();
-        if ($supplier_products) {
+        if (is_array($supplier_products)) {
             if (count($supplier_products) > 0) {
                 foreach ($supplier_products as $product_key => $product_id) {
                     $product = $this->getProduct($product_id);
@@ -227,10 +227,10 @@ class ForsageProductsImport
         $this->logstring = '------- ';
         $characteristics = array();
 
-        if (isset($product->characteristics)) {
+        if (isset($product['characteristics'])) {
 
             //$this->logstring .='FID: '.$product->id.' ';
-            $characteristics = $this->getOptionsProduct($product->characteristics, $change);
+            $characteristics = $this->getOptionsProduct($product['characteristics'], $change);
         } else {
             //$this->logstring .='FID: Unknown ';
             $characteristics['ignoreFlag'] = true;
@@ -254,25 +254,25 @@ class ForsageProductsImport
 
                 if ($imageBuild) {
                     $createExId = false;
-                    $model = ForsageExternalFinder::getObject(ForsageExternalFinder::OBJECT_TYPE_PRODUCT, $product->id);
+                    $model = ForsageExternalFinder::getObject(ForsageExternalFinder::OBJECT_TYPE_PRODUCT, $product['id']);
 
 
                     if (!$model) {
                         $model = new Product();
                         $model->type_id = self::DEFAULT_TYPE;
-                        $model->sku = $product->vcode;
+                        $model->sku = $product['vcode'];
                         $createExId = true;
-                        $this->logstring .= "Insert: FID: {$product->id} ";
+                        $this->logstring .= "Insert: FID: {$product['id']} ";
                     } else {
-                        $this->logstring .= "Update: FID: {$product->id}, PID: {$model->id} ";
+                        $this->logstring .= "Update: FID: {$product['id']}, PID: {$model->id} ";
                     }
 
 
-                    $model->switch = ($product->quantity) ? 1 : 0;
+                    $model->switch = ($product['quantity']) ? 1 : 0;
 
                     $this->logstring .= "Visible: {$model->switch} ";
 
-                    if ($product->quantity) {
+                    if ($product['quantity']) {
                         $model->availability = 1;//есть на складе
                     } else {
                         $model->availability = 2;//нет на складе
@@ -284,7 +284,7 @@ class ForsageProductsImport
                     //    $model->in_box = $characteristics['in_box'];
                     //    $model->in_ros = $characteristics['in_box'];
                     //}
-                    $model->quantity = $product->quantity;
+                    $model->quantity = $product['quantity'];
                     // $model->exchange_service = 'forsage';
                     if (isset($characteristics['currency_id'])) {
                         $model->currency_id = $characteristics['currency_id'];
@@ -296,20 +296,20 @@ class ForsageProductsImport
                     }
 
                     if (isset($characteristics['main_category_name'])) {
-                        if (isset($product->supplier->company) && !empty($product->supplier->company)) {
-                            $manufacturer = ForsageExternalFinder::getObject(ForsageExternalFinder::OBJECT_TYPE_MANUFACTURER, $product->supplier->company); //$supplier->name
+                        if (isset($product['supplier']['company']) && !empty($product['supplier']['company'])) {
+                            $manufacturer = ForsageExternalFinder::getObject(ForsageExternalFinder::OBJECT_TYPE_MANUFACTURER, $product['supplier']['company']); //$supplier->name
                             if (!$manufacturer) {
                                 $manufacturer = new Manufacturer();
-                                $manufacturer->name = $product->supplier->company; //$supplier->name;
+                                $manufacturer->name = $product['supplier']['company']; //$supplier->name;
                                 $manufacturer->slug = CMS::slug($manufacturer->name);
                                 $manufacturer->save(false);
                                 $this->createExternalId(ForsageExternalFinder::OBJECT_TYPE_MANUFACTURER, $manufacturer->id, $manufacturer->name);
                             }
                             $model->manufacturer_id = $manufacturer->id;
-                            $model->name = $this->my_ucfirst($characteristics['main_category_name']) . ' ' . $manufacturer->name . ' ' . $product->vcode;
+                            $model->name = $this->my_ucfirst($characteristics['main_category_name']) . ' ' . $manufacturer->name . ' ' . $product['vcode'];
                             $model->slug = CMS::slug($model->name);
                         } else {
-                            $model->name = $this->my_ucfirst($characteristics['main_category_name']) . ' ' . $product->vcode;
+                            $model->name = $this->my_ucfirst($characteristics['main_category_name']) . ' ' . $product['vcode'];
                             $model->slug = CMS::slug($model->name);
                         }
 
@@ -327,13 +327,17 @@ class ForsageProductsImport
                             $model->supplier_id = $supplierModal->id;
                         }*/
 
-                        // Set category
-                        $fullCategoryName = 'test/ddddddddddddddddd';
+                    }
+                    //this for test vor validate
+                    $fullCategoryName = 'test/ddddddddddddddddd';
+                    $categoryId = ForsageExternalFinder::getObject(ForsageExternalFinder::OBJECT_TYPE_MAIN_CATEGORY, $fullCategoryName, false);
+
+
+                    if ($categoryId) {
+                        $model->main_category_id = $categoryId;
+                    } else {
                         $modelMain = ForsageExternalFinder::getObject(ForsageExternalFinder::OBJECT_TYPE_MAIN_CATEGORY, $fullCategoryName);
-                        // Yii::log($this->my_ucfirst($characteristics['main_category_name']), 'info', 'console');
-
-
-                        //$model->main_category_id = $modelMain->id;
+                        $model->main_category_id = $modelMain->id;
                         $modelCategory = ForsageExternalFinder::getObject(ForsageExternalFinder::OBJECT_TYPE_CATEGORY, $fullCategoryName);
                         if (!$modelCategory) {
                             $modelCategory = new Category;
@@ -346,22 +350,8 @@ class ForsageProductsImport
                             $this->createExternalId(ForsageExternalFinder::OBJECT_TYPE_CATEGORY, $modelCategory->id, $fullCategoryName);
 
                         }
-                        //if ($modelMain) {
-                        //    $this->logstring .= " Category: {$fullCategoryName} ";
-                        //    $modelCategory->saveNode(false, false,false);
-                        //}
-
                     }
-                    //this for test vor validate
-                    $fullCategoryName = 'test/ddddddddddddddddd';
-                    //$categoryId = ForsageExternalFinder::getObject(ForsageExternalFinder::OBJECT_TYPE_CATEGORY, $fullCategoryName, false);
-
-                    $categoryId = ForsageExternalFinder::getObject(ForsageExternalFinder::OBJECT_TYPE_MAIN_CATEGORY, $fullCategoryName, false);
-
-                    if ($categoryId) {
-                        $model->main_category_id = $categoryId;
-                    }
-
+                    //  print_r($categoryId);die;
 
                     $model->save(false);
 
@@ -374,7 +364,7 @@ class ForsageProductsImport
 
                     // Create product external id
                     if ($createExId === true)
-                        $this->createExternalId(ForsageExternalFinder::OBJECT_TYPE_PRODUCT, $model->id, $product->id);
+                        $this->createExternalId(ForsageExternalFinder::OBJECT_TYPE_PRODUCT, $model->id, $product['id']);
 
                     /* $categoryId = ForsageExternalFinder::getObject(ForsageExternalFinder::OBJECT_TYPE_CATEGORY, $fullCategoryName, false);
                      if (is_numeric($categoryId)) {
@@ -415,7 +405,7 @@ class ForsageProductsImport
 
                     //set image
                     if ($characteristics['image']) {
-                        $imageModel = ForsageExternalFinder::getObject(ForsageExternalFinder::OBJECT_TYPE_IMAGE, $characteristics['supplier_name'] . '/' . $product->id . '/' . basename($characteristics['image']));
+                        $imageModel = ForsageExternalFinder::getObject(ForsageExternalFinder::OBJECT_TYPE_IMAGE, $characteristics['supplier_name'] . '/' . $product['id'] . '/' . basename($characteristics['image']));
 
 
                         if (!$imageModel) {
@@ -424,7 +414,7 @@ class ForsageProductsImport
                             $res = $model->attachImage($imageBuild);
                             //  var_dump($res);die;
                             if ($res) {
-                                $this->createExternalId(ForsageExternalFinder::OBJECT_TYPE_IMAGE, $model->id, $characteristics['supplier_name'] . '/' . $product->id . '/' . basename($characteristics['image']));
+                                $this->createExternalId(ForsageExternalFinder::OBJECT_TYPE_IMAGE, $model->id, $characteristics['supplier_name'] . '/' . $product['id'] . '/' . basename($characteristics['image']));
                             }
                             // }
                         }
@@ -450,33 +440,34 @@ class ForsageProductsImport
      */
     public function getOptionsProduct($characteristics, $changes = 0)
     {
-        $result = array();
+
+        $result = [];
         // $result['image'] = false;
         $result['ignoreFlag'] = true;
-        $result['errors'] = array();
-        $result['images'] = array();
+        $result['errors'] = [];
+        $result['images'] = [];
         $sex = false;
         $type = false;
 
         foreach ($characteristics as $characteristic) {
             $children = false;
             $cattype = false;
-            if ($characteristic->name == 'Фото 1') {
+            if ($characteristic['name'] == 'Фото 1') {
                 $result['ignoreFlag'] = false;
-                $result['image'] = $characteristic->value;
-                $result['images'][] = $characteristic->value;
+                $result['image'] = $characteristic['value'];
+                $result['images'][] = $characteristic['value'];
             }
-            if ($characteristic->name == 'Фото 2') {
+            if ($characteristic['name'] == 'Фото 2') {
                 $result['ignoreFlag'] = false;
-                $result['image'] = $characteristic->value;
-                $result['images'][] = $characteristic->value;
+                $result['image'] = $characteristic['value'];
+                $result['images'][] = $characteristic['value'];
             }
-            if ($characteristic->name == 'Пар в ящике') {
-                $result['in_box'] = $characteristic->value;
+            if ($characteristic['name'] == 'Пар в ящике') {
+                $result['in_box'] = $characteristic['value'];
             }
-            if ($characteristic->name == 'Поставщик') {
-                $result['supplier_name'] = $characteristic->value;
-                //  $result['supplier_id'] = $characteristic->id;
+            if ($characteristic['name'] == 'Поставщик') {
+                $result['supplier_name'] = $characteristic['value'];
+                $result['supplier_id'] = $characteristic['id'];
             }
             /*-if ($characteristic->name == 'Категория') {
                 if (!empty($characteristic->value)) {
@@ -492,68 +483,68 @@ class ForsageProductsImport
                     $result['ignoreFlag'] = true;
                 }
             }*/
-            if ($characteristic->name == 'Цена продажи') {
-                $result['price'] = $characteristic->value;
+            if ($characteristic['name'] == 'Цена продажи') {
+                $result['price'] = $characteristic['value'];
             }
-            if ($characteristic->name == 'Цена закупки') {
-                $result['price_purchase'] = $characteristic->value;
+            if ($characteristic['name'] == 'Цена закупки') {
+                $result['price_purchase'] = $characteristic['value'];
             }
             if ($characteristic->name == 'Размерная сетка') {
-                $result['size'] = str_replace(' - ', '-', $characteristic->value);
+                $result['size'] = str_replace(' - ', '-', $characteristic['value']);
             }
 
-            if ($characteristic->name == 'Цвет') {
-                if (!empty($characteristic->value)) {
-                    $result['color'] = $characteristic->value;
+            if ($characteristic['name'] == 'Цвет') {
+                if (!empty($characteristic['value'])) {
+                    $result['color'] = $characteristic['value'];
                 }
             }
-            if ($characteristic->name == 'Материал изделия') {
-                if (!empty($characteristic->value)) {
-                    $result['material_ware'] = $characteristic->value;
+            if ($characteristic['name'] == 'Материал изделия') {
+                if (!empty($characteristic['value'])) {
+                    $result['material_ware'] = $characteristic['value'];
                 }
             }
-            if ($characteristic->name == 'Материал подкладки') {
-                if (!empty($characteristic->value)) {
-                    $result['material_lining'] = $characteristic->value;
+            if ($characteristic['name'] == 'Материал подкладки') {
+                if (!empty($characteristic['value'])) {
+                    $result['material_lining'] = $characteristic['value'];
                 }
             }
-            if ($characteristic->name == 'Материал подошвы') {
-                if (!empty($characteristic->value)) {
-                    $result['material_foot'] = $characteristic->value;
+            if ($characteristic['name'] == 'Материал подошвы') {
+                if (!empty($characteristic['value'])) {
+                    $result['material_foot'] = $characteristic['value'];
                 }
             }
-            if ($characteristic->name == 'Страна') {
-                if (!empty($characteristic->value)) {
-                    $result['country'] = $characteristic->value;
+            if ($characteristic['name'] == 'Страна') {
+                if (!empty($characteristic['value'])) {
+                    $result['country'] = $characteristic['value'];
                 }
             }
 
 
-            if ($characteristic->name == 'Валюта продажи') {
+            if ($characteristic['name'] == 'Валюта продажи') {
                 if ($characteristic->value == 'доллар') {
                     $result['currency_id'] = 2;
                 }
 
             }
-            if ($characteristic->name == 'Сезон') {
-                if (!empty($characteristic->value)) {
-                    if (isset($this->getSeasonData($characteristic->value)->name)) {
-                        $result['season'] = $this->getSeasonData($characteristic->value)->name;
+            if ($characteristic['name'] == 'Сезон') {
+                if (!empty($characteristic['value'])) {
+                    if (isset($this->getSeasonData($characteristic['value'])->name)) {
+                        $result['season'] = $this->getSeasonData($characteristic['value'])->name;
                     } else {
-                        $result['errors'][$characteristic->name] = 'Не правильный';
+                        $result['errors'][$characteristic['name']] = 'Не правильный';
                         $result['ignoreFlag'] = true;
                     }
                 } else {
-                    $result['errors'][$characteristic->name] = "Пустой";
+                    $result['errors'][$characteristic['name']] = "Пустой";
                     $result['ignoreFlag'] = true;
                 }
 
             }
 
-            if ($characteristic->name == 'Тип') {
-                if (!empty($characteristic->value)) {
-                    $result['main_category_name'] = $characteristic->value;
-                    $type = $characteristic->value;
+            if ($characteristic['name'] == 'Тип') {
+                if (!empty($characteristic['value'])) {
+                    $result['main_category_name'] = $characteristic['value'];
+                    $type = $characteristic['value'];
                     // $cattype = $result['main_category_name'];
                     // if (in_array($characteristic->value, array('девочка', 'мальчик'))) {
                     //     $children = $characteristic->value;
@@ -564,7 +555,7 @@ class ForsageProductsImport
                 }
             }
 
-            if ($characteristic->name == 'Пол') { //женщины, мужчины и дети
+            if ($characteristic['name'] == 'Пол') { //женщины, мужчины и дети
                 if ($characteristic->value == 'женщины') {
                     $result['main_category_name'] = 'Женские';
                     $sex = $result['main_category_name'];
@@ -590,7 +581,7 @@ class ForsageProductsImport
         } elseif ($sex == 'Женские') {
             $result['main_category_name'] = $sex;
         } elseif ($sex == 'Дети') {
-            if (in_array($type, array('девочка', 'мальчик'))) {
+            if (in_array($type, ['девочка', 'мальчик'])) {
                 //  $children = $characteristic->value;
                 $result['main_category_name'] = $this->my_ucfirst($type);
             } else {
@@ -608,10 +599,10 @@ class ForsageProductsImport
 
     public function getProductCategory($product)
     {
-        if (isset($product->category)) {
-            if ($product->category->name == 'Обувь') {
-                if (isset($product->category->child)) {
-                    return $product->category->child->name;
+        if (isset($product['category'])) {
+            if ($product['category']['name'] == 'Обувь') {
+                if (isset($product['category']['child'])) {
+                    return $product['category']['child']['name'];
                 } else {
                     self::log('no find category child');
                     return false;
@@ -626,13 +617,13 @@ class ForsageProductsImport
 
     public function getProductSupplier($product)
     {
-        $result = array();
-        if (isset($product->supplier)) {
-            if (isset($product->supplier->company)) {
-                $result['name'] = $product->supplier->company;
+        $result = [];
+        if (isset($product['supplier'])) {
+            if (isset($product['supplier']['company'])) {
+                $result['name'] = $product['supplier']['company'];
             }
-            if (isset($product->supplier->address)) {
-                $result['address'] = $product->supplier->address;
+            if (isset($product['supplier']['address'])) {
+                $result['address'] = $product['supplier']['address'];
             }
             return (object)$result;
         }
@@ -642,7 +633,7 @@ class ForsageProductsImport
 
     private function getSeasonData($id)
     {
-        $result= [];
+        $result = [];
         $id = mb_strtolower($id);
         if ($id == 'демисезон') {
             $result = array('name' => 'Весна-Осень', 'id' => 8);
@@ -653,7 +644,7 @@ class ForsageProductsImport
         } else {
             self::log('SEASION: ' . $id);
         }
-        return (object) $result;
+        return (object)$result;
     }
 
     /**
@@ -678,9 +669,9 @@ class ForsageProductsImport
         $url = "https://forsage-studio.com/api/get_products_by_supplier/{$supplier_id}?token={$this->apikey}"; //&start_date={$date}&end_date={$date}
 
         $response = $this->conn_curl($url);
-        if (isset($response->success)) {
-            if ($response->success == 'true') {
-                return $response->product_ids;
+        if (isset($response['success'])) {
+            if ($response['success'] == 'true') {
+                return $response['product_ids'];
             }
         } else {
             self::log('Method getSupplierProductIds Error success SID: ' . $supplier_id);
@@ -694,7 +685,7 @@ class ForsageProductsImport
         $response = $this->conn_curl($url);
         if (isset($response['success'])) {
             if ($response['success'] == 'true') {
-                return $response->characteristics;
+                return $response['characteristics'];
             }
         } else {
             self::log('Method getRefbookCharacteristics Error success');
@@ -710,7 +701,7 @@ class ForsageProductsImport
         $response = $this->conn_curl($url);
         if (isset($response['success'])) {
             if ($response['success'] == 'true') {
-                return $response->product;
+                return $response['product'];
             }
         } else {
             self::log('Method getProduct Error success PID: ' . $product_id);
@@ -724,7 +715,7 @@ class ForsageProductsImport
         $response = $this->conn_curl($url);
         if (isset($response)) {
 
-            return (array) $response;
+            return (array)$response;
         } else {
             self::log('Method getSuppliers Error success');
             return false;
@@ -733,9 +724,9 @@ class ForsageProductsImport
 
     public function getChanges()
     {
-
+        $start_date = strtotime(date('Y-m-d'));
         $end_date = strtotime(date('Y-m-d'));
-        $start_date = strtotime(date('Y-m-d'));// - 86400 * 1;
+
 
         $url = "https://forsage-studio.com/api/get_changes/?token={$this->apikey}&start_date={$start_date}&end_date={$end_date}";
 
@@ -763,9 +754,9 @@ class ForsageProductsImport
      */
     public function getProducts($start_data = null)
     {
-        if(!$start_data) {
+        if (!$start_data) {
             $start_date = strtotime(date('Y-m-d'));// - 86400 * 1;
-        }else{
+        } else {
             $start_date = strtotime($start_data);// - 86400 * 1;
         }
         $end_date = strtotime(date('Y-m-d'));
@@ -779,7 +770,7 @@ class ForsageProductsImport
 
         if (isset($response['success'])) {
             if ($response['success'] == 'true') {
-                return $response->products;
+                return $response['products'];
             } else {
                 return false;
             }
@@ -913,7 +904,43 @@ class ForsageProductsImport
 
     }
 
-    public function buildPathToTempFile($fileName, $dir)
+    public function buildPathToTempFile($fileName,$dir){
+
+        $dir = str_replace($this->replacesDirsName, '', $dir);
+        $dir = mb_strtolower($dir);
+        if (!$dir && !$fileName) {
+            return false;
+        }
+        if (!file_exists(\Yii::getAlias($this->tempDirectory) . DIRECTORY_SEPARATOR . $dir)) {
+            FileHelper::createDirectory(\Yii::getAlias($this->tempDirectory) . DIRECTORY_SEPARATOR . $dir, $mode = 0775, $recursive = true);
+        }
+        $fullFileName = $fileName;
+
+        $tmp = explode('/', $fileName);
+        $fileName = end($tmp);
+        $newFilePath = \Yii::getAlias($this->tempDirectory) . DIRECTORY_SEPARATOR . $dir . DIRECTORY_SEPARATOR . $fileName;
+
+
+
+        $fh = fopen($newFilePath, 'w');
+        $client = new Client([
+            'transport' => 'yii\httpclient\CurlTransport'
+        ]);
+        $response = $client->createRequest()
+            ->setMethod('GET')
+            ->setUrl(str_replace(" ", "%20", $fullFileName))
+            ->setOutputFile($fh)
+            ->send();
+
+        if($response->isOk){
+           // print_r($response);die;
+            return $newFilePath;
+        }else{
+            return false;
+        }
+
+    }
+    public function _buildPathToTempFile($fileName, $dir)
     {
 
         $dir = str_replace($this->replacesDirsName, '', $dir);

@@ -15,8 +15,11 @@ use yii\widgets\Pjax;
     <?php
     //print_r($model->relatedProducts2);
     ?>
-    <?php foreach ($model->relatedProducts as $related) { ?>
+    <?php
 
+
+
+    foreach ($model->relatedProducts as $related) { ?>
         <tr>
             <input type="hidden" value="<?php echo $related->id ?>" name="RelatedProductId[]">
             <td class="image text-center relatedProductLine<?php echo $related->id ?>"><?php echo $related->renderGridImage('50x50'); ?></td>
