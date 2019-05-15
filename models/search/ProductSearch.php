@@ -16,7 +16,7 @@ class ProductSearch extends Product
     public $exclude = null;
     public $price_min;
     public $price_max;
-   // public $image;
+    // public $image;
 
     /**
      * @inheritdoc
@@ -25,8 +25,8 @@ class ProductSearch extends Product
     {
         return [
             [['id'], 'integer'],
-            [['price_min', 'price_max','supplier_id'], 'integer'],
-           // [['image'],'boolean'],
+            [['price_min', 'price_max', 'supplier_id', 'manufacturer_id'], 'integer'],
+            // [['image'],'boolean'],
             [['name', 'slug', 'sku', 'price'], 'safe'],
             [['created_at', 'updated_at'], 'date', 'format' => 'php:Y-m-d']
         ];
@@ -65,7 +65,7 @@ class ProductSearch extends Product
                 //'defaultOrder' => ['date_create' => SORT_ASC],
                 'attributes' => [
                     'price',
-                    'name'=>[
+                    'name' => [
                         'asc' => ['translations.name' => SORT_ASC],
                         'desc' => ['translations.name' => SORT_DESC],
                     ]
@@ -74,15 +74,15 @@ class ProductSearch extends Product
         ]);
 
 
-        if(isset($params[$className]['price']['min'])){
+        if (isset($params[$className]['price']['min'])) {
             $this->price_min = $params[$className]['price']['min'];
         }
-        if(isset($params[$className]['price']['max'])){
+        if (isset($params[$className]['price']['max'])) {
             $this->price_max = $params[$className]['price']['max'];
         }
-       // if(isset($params[$className]['image'])){
-       //     $this->image = $params[$className]['image'];
-       // }
+        // if(isset($params[$className]['image'])){
+        //     $this->image = $params[$className]['image'];
+        // }
 
         $this->load($params);
 
@@ -145,7 +145,7 @@ class ProductSearch extends Product
         $query->andFilterWhere(['like', 'translations.name', $this->name]);
         $query->andFilterWhere(['like', 'sku', $this->sku]);
         $query->andFilterWhere(['like', 'supplier_id', $this->supplier_id]);
-
+        $query->andFilterWhere(['like', 'manufacturer_id', $this->manufacturer_id]);
 
 
         return $dataProvider;

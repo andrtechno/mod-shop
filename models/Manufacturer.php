@@ -33,7 +33,7 @@ class Manufacturer extends ActiveRecord
                 'class' => 'panix\engine\grid\columns\ImageColumn',
                 'attribute' => 'image',
                 'value' => function ($model) {
-                    return Html::a(Html::img($model->getImageUrl('image', '50x50'), ['alt' => $model->name, 'class' => 'img-thumbnail_']), $model->getImageUrl('image'), ['title' => $this->name, 'data-fancybox' => 'gallery']);
+                    return Html::a(Html::img($model->getImageUrl('image', '50x50'), ['alt' => $model->name, 'class' => 'img-thumbnail_']), $model->getImageUrl('image'), ['title' => $model->name, 'data-fancybox' => 'gallery']);
                 }
             ],
             'name' => [
@@ -42,6 +42,15 @@ class Manufacturer extends ActiveRecord
                 'contentOptions' => ['class' => 'text-left'],
                 'value' => function ($model) {
                     return Html::a($model->name, $model->getUrl(), ['target' => '_blank']);
+                }
+            ],
+            'products' => [
+                'header' => static::t('PRODUCTS_COUNT'),
+                'format' => 'html',
+                'attribute' => 'productsCount',
+                'contentOptions' => ['class' => 'text-center'],
+                'value' => function ($model) {
+                    return Html::a($model->productsCount, ['/admin/shop/product', 'ProductSearch[manufacturer_id]' => $model->id]);
                 }
             ],
             'DEFAULT_CONTROL' => [
@@ -121,8 +130,6 @@ class Manufacturer extends ActiveRecord
     {
         return $this->hasOne(Product::class, ['manufacturer_id' => 'id'])->count();
     }
-
-    // public $image;
 
     /**
      * @inheritdoc
