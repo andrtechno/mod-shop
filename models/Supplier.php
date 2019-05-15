@@ -2,8 +2,8 @@
 
 namespace panix\mod\shop\models;
 
-use Yii;
 use panix\engine\db\ActiveRecord;
+use panix\engine\Html;
 
 class Supplier extends ActiveRecord
 {
@@ -27,9 +27,18 @@ class Supplier extends ActiveRecord
                 'contentOptions' => ['class' => 'text-center'],
             ],
             'email' => [
-                'format'=>'email',
+                'format' => 'email',
                 'attribute' => 'email',
                 'contentOptions' => ['class' => 'text-center'],
+            ],
+            'products' => [
+                'header' => static::t('PRODUCTS_COUNT'),
+                'format' => 'html',
+                'attribute' => 'productsCount',
+                'contentOptions' => ['class' => 'text-center'],
+                'value' => function ($model) {
+                    return Html::a($model->productsCount, ['/admin/shop/product', 'ProductSearch[supplier_id]' => $model->id]);
+                }
             ],
             'DEFAULT_CONTROL' => [
                 'class' => 'panix\engine\grid\columns\ActionColumn',
@@ -64,5 +73,8 @@ class Supplier extends ActiveRecord
         ];
     }
 
-
+    public function getProductsCount()
+    {
+        return $this->hasOne(Product::class, ['supplier_id' => 'id'])->count();
+    }
 }

@@ -202,7 +202,7 @@ class Product extends ActiveRecord
             ['enable_comments', 'boolean'],
             [['sku', 'full_description', 'unit'], 'default'], // установим ... как NULL, если они пустые
             [['name', 'slug', 'main_category_id', 'price', 'unit'], 'required'],
-            [['manufacturer_id', 'type_id', 'quantity', 'views', 'added_to_cart_count', 'ordern', 'category_id', 'currency_id', 'unit'], 'integer'],
+            [['manufacturer_id', 'type_id', 'quantity', 'views', 'added_to_cart_count', 'ordern', 'category_id', 'currency_id', 'unit', 'supplier_id'], 'integer'],
             [['name', 'slug', 'full_description', 'use_configurations'], 'safe'],
             //  [['c1'], 'required'], // Attribute field
             // [['c1'], 'string', 'max' => 255], // Attribute field
@@ -800,7 +800,7 @@ class Product extends ActiveRecord
         if ($q >= 1) {
             return ProductPrices::find()
                 ->where(['product_id' => $this->id, 'from' => $q])
-                ->orderBy(['from'=>SORT_DESC])
+                ->orderBy(['from' => SORT_DESC])
                 ->one();
         }
     }
@@ -814,7 +814,7 @@ class Product extends ActiveRecord
      */
     public static function calculatePrices($product, array $variants, $configuration, $quantity = 1)
     {
-       // print_r($product);die;
+        // print_r($product);die;
         if (($product instanceof Product) === false)
             $product = Product::findOne($product);
 
@@ -826,16 +826,16 @@ class Product extends ActiveRecord
         } else {
 
             if ($quantity > 1 && ($pr = $product->getPriceByQuantity($quantity))) {
-                if($product->currency_id){
-                    $result = Yii::$app->currency->convert($pr->value,$product->currency_id);
-                }else{
+                if ($product->currency_id) {
+                    $result = Yii::$app->currency->convert($pr->value, $product->currency_id);
+                } else {
                     $result = $pr->value;
                 }
 
             } else {
-                if($product->currency_id){
-                    $result = Yii::$app->currency->convert($product->appliedDiscount ? $product->discountPrice : $product->price,$product->currency_id);
-                }else{
+                if ($product->currency_id) {
+                    $result = Yii::$app->currency->convert($product->appliedDiscount ? $product->discountPrice : $product->price, $product->currency_id);
+                } else {
                     $result = $product->appliedDiscount ? $product->discountPrice : $product->price;
                 }
 

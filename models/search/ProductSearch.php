@@ -25,7 +25,7 @@ class ProductSearch extends Product
     {
         return [
             [['id'], 'integer'],
-            [['price_min', 'price_max'], 'integer'],
+            [['price_min', 'price_max','supplier_id'], 'integer'],
            // [['image'],'boolean'],
             [['name', 'slug', 'sku', 'price'], 'safe'],
             [['created_at', 'updated_at'], 'date', 'format' => 'php:Y-m-d']
@@ -144,7 +144,7 @@ class ProductSearch extends Product
 
         $query->andFilterWhere(['like', 'translations.name', $this->name]);
         $query->andFilterWhere(['like', 'sku', $this->sku]);
-        //$query->andFilterWhere(['like', 'price', $this->price]);
+        $query->andFilterWhere(['like', 'supplier_id', $this->supplier_id]);
 
 
 

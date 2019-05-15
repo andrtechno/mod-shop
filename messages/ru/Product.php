@@ -18,6 +18,7 @@ return [
     'SELECT_CURRENCY' => '{currency} (по умолчанию)',
     'TEXT' => 'Описание товара',
     'UNIT' => 'Ед. измерения',
+    'SUPPLIER_ID' => 'Поставщик',
     'MANUFACTURER_ID' => 'Производитель',
     'MAIN_CATEGORY_ID' => 'Категория',
     'DISCOUNT' => 'Скидка',
