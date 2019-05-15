@@ -11,6 +11,7 @@ echo GridView::widget([
     'dataProvider' => $dataProvider,
     'layoutOptions' => ['title' => 'Popular'],
     'enableColumns'=>false,
+    'enableLayout'=>false,
     'columns' => [
         [
             'format' => 'raw',
