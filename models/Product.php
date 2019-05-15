@@ -442,7 +442,7 @@ class Product extends ActiveRecord
 
 
         if (true) { //Yii::$app->settings->get('shop', 'auto_add_subcategories')
-            // Авто добавление предков категории
+            // Авто добавление в предков категории
             // Нужно выбирать в админки самую последнию категории по уровню.
             $category = Category::findOne($this->main_category_id);
             $categories = [];
@@ -456,7 +456,7 @@ class Product extends ActiveRecord
             if (isset($_POST['Product']['main_category_id']))
                 $mainCategoryId = $_POST['Product']['main_category_id'];
 
-            $this->setCategories(Yii::$app->request->post('categories', array()), $mainCategoryId);
+            $this->setCategories(Yii::$app->request->post('categories', []), $mainCategoryId);
         }
 
 
@@ -611,7 +611,7 @@ class Product extends ActiveRecord
     public function afterDelete()
     {
         $this->clearRelatedProducts();
-        RelatedProduct::deleteAll('related_id=:id', array('id' => $this->id));
+        RelatedProduct::deleteAll(['related_id' => $this->id]);
 
         // Delete categorization
         ProductCategoryRef::deleteAll([
@@ -627,10 +627,10 @@ class Product extends ActiveRecord
             $this->removeImages();
         }
         // Clear configurable attributes
-        Yii::$app->db->createCommand()->delete('{{%shop__product_configurable_attributes}}', 'product_id=:id', [':id' => $this->id])->execute();
+        Yii::$app->db->createCommand()->delete('{{%shop__product_configurable_attributes}}', ['product_id' => $this->id])->execute();
         // Delete configurations
-        Yii::$app->db->createCommand()->delete('{{%shop__product_configurations}}', 'product_id=:id', [':id' => $this->id])->execute();
-        Yii::$app->db->createCommand()->delete('{{%shop__product_configurations}}', 'configurable_id=:id', [':id' => $this->id])->execute();
+        Yii::$app->db->createCommand()->delete('{{%shop__product_configurations}}', ['product_id' => $this->id])->execute();
+        Yii::$app->db->createCommand()->delete('{{%shop__product_configurations}}', ['configurable_id' => $this->id])->execute();
         /* if (Yii::app()->hasModule('wishlist')) {
           Yii::import('mod.wishlist.models.WishlistProducts');
           $wishlistProduct = WishlistProducts::model()->findByAttributes(array('product_id' => $this->id));
@@ -766,11 +766,11 @@ class Product extends ActiveRecord
             ]
         ];
         if (Yii::$app->getModule('comments')) {
-            $a['comments'] = array(
+            $a['comments'] = [
                 'class' => '\panix\mod\comments\components\CommentBehavior',
                 //'handlerClass' => static::class,
                 'owner_title' => 'name', // Attribute name to present comment owner in admin panel
-            );
+            ];
         }
         if (Yii::$app->getModule('discounts') && Yii::$app->id !== 'console')
             $a['discounts'] = [

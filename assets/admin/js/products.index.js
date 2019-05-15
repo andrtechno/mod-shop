@@ -87,7 +87,7 @@ function showCategoryAssignWindow(el_clicked) {
         responsive: true,
         width: 'auto',
         close: function () {
-            $(this).remove();
+            dialog.dialog("close");
         },
         open: function () {
             $('.ui-dialog').position({
@@ -98,7 +98,7 @@ function showCategoryAssignWindow(el_clicked) {
             });
 
             $('.ui-widget-overlay').bind('click', function () {
-                $('#set_categories_dialog').dialog('close');
+                dialog.dialog('close');
             });
 
         },
@@ -146,7 +146,7 @@ function showCategoryAssignWindow(el_clicked) {
                 },
             }, {
                 text: common.message.cancel,
-                'class': 'btn btn-default',
+                'class': 'btn btn-secondary',
                 click: function () {
                     $(this).dialog("close");
                 }
@@ -200,7 +200,7 @@ function showDuplicateProductsWindow(link_clicked) {
             },
             {
                 text: common.message.cancel,
-                'class': 'btn btn-default',
+                'class': 'btn btn-secondary',
                 click: function () {
                     $(this).dialog("close");
                 }
@@ -255,7 +255,7 @@ function setProductsPrice(link_clicked) {
                 }
             }, {
                 text: common.message.cancel,
-                'class': 'btn btn-default',
+                'class': 'btn btn-secondary',
                 click: function () {
                     $(this).dialog("close");
                 }
