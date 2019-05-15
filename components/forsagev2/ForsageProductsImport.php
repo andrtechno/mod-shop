@@ -522,7 +522,7 @@ class ForsageProductsImport
 
 
             if ($characteristic['name'] == 'Валюта продажи') {
-                if ($characteristic->value == 'доллар') {
+                if ($characteristic['value'] == 'доллар') {
                     $result['currency_id'] = 2;
                 }
 
@@ -557,13 +557,13 @@ class ForsageProductsImport
             }
 
             if ($characteristic['name'] == 'Пол') { //женщины, мужчины и дети
-                if ($characteristic->value == 'женщины') {
+                if ($characteristic['value'] == 'женщины') {
                     $result['main_category_name'] = 'Женские';
                     $sex = $result['main_category_name'];
-                } elseif ($characteristic->value == 'мужчины') {
+                } elseif ($characteristic['value'] == 'мужчины') {
                     $result['main_category_name'] = 'Мужские';
                     $sex = $result['main_category_name'];
-                } elseif ($characteristic->value == 'дети') {
+                } elseif ($characteristic['value'] == 'дети') {
                     $sex = 'Дети';
                     /*if ($cattype) {
                         $result['main_category_name'] = $cattype;
