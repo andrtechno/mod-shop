@@ -1,12 +1,11 @@
 <?php
 
 use yii\helpers\Html;
+
 ?>
 
 
-
-
-<h1><?php echo Html::encode($model->name); ?></h1>
+<h1><?= Html::encode(($this->h1) ? $this->h1 : $model->name); ?></h1>
 <?php if (!empty($model->description)) { ?>
     <div>
         <?php echo $model->description ?>
