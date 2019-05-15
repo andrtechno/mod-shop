@@ -39,7 +39,7 @@ class CategoryNode extends BaseObject
      * @var array category children
      */
     protected $_children;
-    protected $options = array();
+    protected $options = [];
 
 
     public function __construct($model, $options = [])
@@ -59,7 +59,7 @@ class CategoryNode extends BaseObject
      */
     public static function fromArray($model, $options = [])
     {
-        $result = array();
+        $result = [];
         foreach ($model as $row) {
             //if(isset($options['switch'])){
             // if($row->switch) //$options['switch'] ||
@@ -74,7 +74,7 @@ class CategoryNode extends BaseObject
      */
     public function getHasChildren()
     {
-        return (boolean)$this->model->children()->count();
+        return (boolean) $this->model->children()->count();
     }
 
     /**
