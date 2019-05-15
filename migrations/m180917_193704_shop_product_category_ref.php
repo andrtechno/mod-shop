@@ -8,28 +8,29 @@
  */
 use yii\db\Schema;
 use panix\engine\db\Migration;
+use panix\mod\shop\models\ProductCategoryRef;
 
 class m180917_193704_shop_product_category_ref extends Migration {
 
     public function up()
     {
-        $this->createTable('{{%shop__product_category_ref}}', [
-            'id' => $this->primaryKey()->unsigned(),
-            'product' => $this->integer()->notNull(),
-            'category' => $this->integer()->notNull(),
+        $this->createTable(ProductCategoryRef::tableName(), [
+            'id' => $this->primaryKey()->unsigned()->unsigned(),
+            'product' => $this->integer()->notNull()->unsigned(),
+            'category' => $this->integer()->notNull()->unsigned(),
             'is_main' => $this->boolean()->null(),
             'switch' => $this->boolean()->defaultValue(1),
         ], $this->tableOptions);
 
-        $this->createIndex('product', '{{%shop__product_category_ref}}', 'product');
-        $this->createIndex('category', '{{%shop__product_category_ref}}', 'category');
-        $this->createIndex('switch', '{{%shop__product_category_ref}}', 'switch');
-        $this->createIndex('is_main', '{{%shop__product_category_ref}}', 'is_main');
+        $this->createIndex('product', ProductCategoryRef::tableName(), 'product');
+        $this->createIndex('category', ProductCategoryRef::tableName(), 'category');
+        $this->createIndex('switch', ProductCategoryRef::tableName(), 'switch');
+        $this->createIndex('is_main', ProductCategoryRef::tableName(), 'is_main');
     }
 
     public function down()
     {
-        $this->dropTable('{{%shop__product_category_ref}}');
+        $this->dropTable(ProductCategoryRef::tableName());
     }
 
 }

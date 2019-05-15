@@ -6,26 +6,27 @@
  *
  * Class m180917_193811_shop_related_product
  */
-use yii\db\Schema;
+
 use panix\engine\db\Migration;
+use panix\mod\shop\models\RelatedProduct;
 
 class m180917_193811_shop_related_product extends Migration
 {
 
     public function up()
     {
-        $this->createTable('{{%shop__related_product}}', [
+        $this->createTable(RelatedProduct::tableName(), [
             'id' => $this->primaryKey()->unsigned(),
             'product_id' => $this->integer(11)->null()->unsigned(),
             'related_id' => $this->integer(11)->null()->unsigned(),
         ], $this->tableOptions);
 
-        $this->createIndex('product_id', '{{%shop__related_product}}', 'product_id');
-        $this->createIndex('related_id', '{{%shop__related_product}}', 'related_id');
+        $this->createIndex('product_id', RelatedProduct::tableName(), 'product_id');
+        $this->createIndex('related_id', RelatedProduct::tableName(), 'related_id');
     }
 
     public function down()
     {
-        $this->dropTable('{{%shop__related_product}}');
+        $this->dropTable(RelatedProduct::tableName());
     }
 }

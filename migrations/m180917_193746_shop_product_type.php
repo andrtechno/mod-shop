@@ -6,14 +6,14 @@
  * 
  * Class m180917_193746_shop_product_type
  */
-use yii\db\Schema;
-use panix\engine\db\Migration;
 
+use panix\engine\db\Migration;
+use panix\mod\shop\models\ProductType;
 class m180917_193746_shop_product_type extends Migration {
 
     public function up()
     {
-        $this->createTable('{{%shop__product_type}}', [
+        $this->createTable(ProductType::tableName(), [
             'id' => $this->primaryKey()->unsigned(),
             'name' => $this->string(255)->null(),
             'categories_preset' => $this->text()->null()->defaultValue(null),
@@ -24,7 +24,7 @@ class m180917_193746_shop_product_type extends Migration {
 
     public function down()
     {
-        $this->dropTable('{{%shop__product_type}}');
+        $this->dropTable(ProductType::tableName());
     }
 
 }

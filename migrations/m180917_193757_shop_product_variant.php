@@ -6,15 +6,16 @@
  *
  * Class m180917_193757_shop_product_variant
  */
-use yii\db\Schema;
+
 use panix\engine\db\Migration;
+use panix\mod\shop\models\ProductVariant;
 
 class m180917_193757_shop_product_variant extends Migration
 {
 
     public function up()
     {
-        $this->createTable('{{%shop__product_variant}}', [
+        $this->createTable(ProductVariant::tableName(), [
             'id' => $this->primaryKey()->unsigned(),
             'attribute_id' => $this->integer(11)->null()->unsigned(),
             'option_id' => $this->integer(11)->null()->unsigned(),
@@ -24,14 +25,14 @@ class m180917_193757_shop_product_variant extends Migration
             'sku' => $this->string(255)->null(),
         ], $this->tableOptions);
 
-        $this->createIndex('attribute_id', '{{%shop__product_variant}}', 'attribute_id');
-        $this->createIndex('option_id', '{{%shop__product_variant}}', 'option_id');
-        $this->createIndex('product_id', '{{%shop__product_variant}}', 'product_id');
+        $this->createIndex('attribute_id', ProductVariant::tableName(), 'attribute_id');
+        $this->createIndex('option_id', ProductVariant::tableName(), 'option_id');
+        $this->createIndex('product_id', ProductVariant::tableName(), 'product_id');
     }
 
     public function down()
     {
-        $this->dropTable('{{%shop__product_variant}}');
+        $this->dropTable(ProductVariant::tableName());
     }
 
 }

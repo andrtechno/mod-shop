@@ -6,8 +6,9 @@
  *
  * Class m180917_193557_shop_suppliers
  */
-use yii\db\Schema;
+
 use panix\engine\db\Migration;
+use panix\mod\shop\models\Supplier;
 
 class m180917_193557_shop_suppliers extends Migration
 {
@@ -15,7 +16,7 @@ class m180917_193557_shop_suppliers extends Migration
     public function up()
     {
 
-        $this->createTable('{{%shop__suppliers}}', [
+        $this->createTable(Supplier::tableName(), [
             'id' => $this->primaryKey()->unsigned(),
             'name' => $this->string(255)->null()->defaultValue(null),
             'phone' => $this->string(255)->null()->defaultValue(null),
@@ -26,7 +27,7 @@ class m180917_193557_shop_suppliers extends Migration
 
     public function down()
     {
-        $this->dropTable('{{%shop__suppliers}}');
+        $this->dropTable(Supplier::tableName());
 
     }
 
