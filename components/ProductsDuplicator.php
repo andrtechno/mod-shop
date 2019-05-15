@@ -27,6 +27,7 @@ class ProductsDuplicator extends \yii\base\Component {
 
     public function __construct() {
         $this->_suffix = ' (' . Yii::t('shop/admin', 'копия') . ')';
+        parent::__construct([]);
     }
 
     /**
@@ -36,7 +37,7 @@ class ProductsDuplicator extends \yii\base\Component {
      * @param array $duplicate list of product parts to copy: images, variants, etc...
      * @return array of new product ids
      */
-    public function createCopy(array $ids, array $duplicate = array()) {
+    public function createCopy(array $ids, array $duplicate = []) {
 
         $this->duplicate = $duplicate;
         $new_ids = array();
@@ -70,7 +71,7 @@ class ProductsDuplicator extends \yii\base\Component {
             $product->$attr = $model->$attr;
 
         $product->name .= $this->getSuffix();
-        $product->slug .= CMS::translit($this->getSuffix()) . '-' . time();
+        $product->slug .= CMS::slug($this->getSuffix()) . '-' . time();
         $product->main_category_id = $model->mainCategory->id;
 
         $product->scenario = 'duplicate';
@@ -82,7 +83,7 @@ class ProductsDuplicator extends \yii\base\Component {
                     if (method_exists($this, $method_name))
                         $this->$method_name($model, $product);
                 }
-                $product->setCategories(array(), $model->mainCategory->id);
+                $product->setCategories([], $model->mainCategory->id);
                 return $product;
             }else {
                 die(__FUNCTION__ . ': Error save');

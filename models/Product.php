@@ -211,11 +211,11 @@ class Product extends ActiveRecord
 
     public function getUnits()
     {
-        return array(
+        return [
             1 => self::t('UNIT_THING'),
             2 => self::t('UNIT_METER'),
             3 => self::t('UNIT_BOX'),
-        );
+        ];
     }
 
     public function processVariants()

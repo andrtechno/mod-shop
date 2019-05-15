@@ -10,7 +10,6 @@ use panix\engine\bootstrap\Alert;
 if (Yii::$app->request->get('parent_id')) {
     $parent = Category::findOne(Yii::$app->request->get('parent_id'));
     echo Alert::widget([
-        'closeButton' => false,
         'options' => [
             'class' => 'alert-info',
         ],
