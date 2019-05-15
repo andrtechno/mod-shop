@@ -381,25 +381,26 @@ class ForsageProductsImport
                              $model->setCategories(array($categoryId), $categoryId);
                          }
                      }*/
-                    if ($sub_category)
-                        $this->attributeData($model, 'Тип', $sub_category, array('isFilter' => true));
-                    if (isset($characteristics['size']))
-                        $this->attributeData($model, 'Размер', $characteristics['size'], array('isFilter' => true));
-                    if (isset($characteristics['season']))
-                        $this->attributeData($model, 'Сезон', $characteristics['season'], array('isFilter' => true));
-                    if (isset($characteristics['color']))
-                        $this->attributeData($model, 'Цвет', $characteristics['color'], array('isFilter' => true));
-                    if (isset($characteristics['material_ware']))
-                        $this->attributeData($model, 'Материал изделия', $characteristics['material_ware'], array('isFilter' => true));
-                    if (isset($characteristics['material_lining']))
-                        $this->attributeData($model, 'Материал подкладки', $characteristics['material_lining'], array('isFilter' => true));
-                    if (isset($characteristics['material_foot']))
-                        $this->attributeData($model, 'Материал подошвы', $characteristics['material_foot'], array('isFilter' => true));
-                    if (isset($characteristics['country']))
-                        $this->attributeData($model, 'Страна производителя', $characteristics['country'], array('isFilter' => true));
 
+                    //print_r($product);die;
+                    if ($sub_category)
+                        $this->attributeData($model, 'Тип', $sub_category, ['isFilter' => true]);
+                    if (isset($characteristics['size']))
+                        $this->attributeData($model, 'Размер', $characteristics['size'], ['isFilter' => true]);
+                    if (isset($characteristics['season']))
+                        $this->attributeData($model, 'Сезон', $characteristics['season'], ['isFilter' => true]);
+                    if (isset($characteristics['color']))
+                        $this->attributeData($model, 'Цвет', $characteristics['color'], ['isFilter' => true]);
+                    if (isset($characteristics['material_ware']))
+                        $this->attributeData($model, 'Материал изделия', $characteristics['material_ware'], ['isFilter' => true]);
+                    if (isset($characteristics['material_lining']))
+                        $this->attributeData($model, 'Материал подкладки', $characteristics['material_lining'], ['isFilter' => true]);
+                    if (isset($characteristics['material_foot']))
+                        $this->attributeData($model, 'Материал подошвы', $characteristics['material_foot'], ['isFilter' => true]);
+                    if (isset($characteristics['country']))
+                        $this->attributeData($model, 'Страна производителя', $characteristics['country'], ['isFilter' => true]);
                     if (isset($characteristics['in_box'])) {
-                        $this->attributeData($model, 'Пар в ящике', $characteristics['in_box'], array('isFilter' => false));
+                        $this->attributeData($model, 'Пар в ящике', $characteristics['in_box'], ['isFilter' => false]);
                     }
 
 
@@ -489,7 +490,7 @@ class ForsageProductsImport
             if ($characteristic['name'] == 'Цена закупки') {
                 $result['price_purchase'] = $characteristic['value'];
             }
-            if ($characteristic->name == 'Размерная сетка') {
+            if ($characteristic['name'] == 'Размерная сетка') {
                 $result['size'] = str_replace(' - ', '-', $characteristic['value']);
             }
 
