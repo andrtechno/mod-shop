@@ -765,7 +765,7 @@ class Product extends ActiveRecord
                 'full_description'
             ]
         ];
-        if (Yii::$app->getModule('discounts')) {
+        if (Yii::$app->getModule('comments')) {
             $a['comments'] = array(
                 'class' => '\panix\mod\comments\components\CommentBehavior',
                 //'handlerClass' => static::class,

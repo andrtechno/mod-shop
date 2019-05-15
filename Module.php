@@ -12,6 +12,9 @@ class Module extends WebModule implements BootstrapInterface
 
     public $icon = 'shopcart';
 
+    /**
+     * @inheritdoc
+     */
     public function bootstrap($app)
     {
         $app->urlManager->addRules(
