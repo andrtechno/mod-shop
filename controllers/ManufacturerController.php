@@ -2,13 +2,12 @@
 
 namespace panix\mod\shop\controllers;
 
+use panix\mod\shop\components\FilterController;
 use Yii;
-use panix\engine\controllers\WebController;
 use panix\mod\shop\models\Manufacturer;
 use panix\mod\shop\models\Product;
-use yii\web\NotFoundHttpException;
 
-class ManufacturerController extends WebController
+class ManufacturerController extends FilterController
 {
 
 

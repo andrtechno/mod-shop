@@ -5,7 +5,13 @@ use yii\helpers\Html;
 ?>
 
 <div class="container">
+    <?php
+    echo \panix\mod\shop\widgets\filtersnew\FiltersWidget::widget([
+        'model' => $this->context->dataModel,
+        'attributes' => $this->context->eavAttributes,
+    ]);
 
+    ?>
     <div class="row">
         <h1><?= Html::encode(($this->h1) ? $this->h1 : $model->name); ?></h1>
         <?php if (!empty($model->description)) { ?>

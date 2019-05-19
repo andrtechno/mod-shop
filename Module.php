@@ -22,7 +22,7 @@ class Module extends WebModule implements BootstrapInterface
 
                 'shop/ajax/currency/<id:\d+>' => 'shop/ajax/currency',
                 'shop' => 'shop/default/index',
-                'manufacturer/<slug:[0-9a-zA-Z\-]+>' => 'shop/manufacturer/view',
+                'manufacturer/<slug:[0-9a-z\-]+>' => 'shop/manufacturer/view',
                 'product/<slug:[0-9a-zA-Z\-]+>' => 'shop/product/view',
                 //'products/search/q/<q:\w+>' => 'shop/category/search',
 
