@@ -33,7 +33,7 @@ class ProductQuery extends ActiveQuery
     public function applyManufacturers($manufacturers)
     {
         if (!is_array($manufacturers))
-            $manufacturers = array($manufacturers);
+            $manufacturers = [$manufacturers];
 
 
         if (empty($manufacturers))

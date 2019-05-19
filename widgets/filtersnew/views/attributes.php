@@ -1,9 +1,9 @@
 <?php
 
-
 use yii\helpers\Html;
 use yii\helpers\Inflector;
 
+//var_dump($attributes);
 
 foreach ($attributes as $attrData) {
     if (count($attrData['filters']) > 0) {

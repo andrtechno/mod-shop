@@ -103,7 +103,7 @@ class FiltersWidget extends Widget
 
         foreach ($current as $key => $row) {
             if (!isset($newData[$key]))
-                $newData[$key] = array();
+                $newData[$key] = [];
             if (is_array($row)) {
                 foreach ($row as $v)
                     $newData[$key][] = $v;
@@ -122,9 +122,11 @@ class FiltersWidget extends Widget
         $model = Product::find();
         //$model->attachBehaviors($model->behaviors());
 
-        if ($this->model) {
+        if ($this->model && $this->model instanceof \panix\mod\shop\models\Category) {
             $model->applyCategories($this->model);
             //$model->andWhere([Product::tableName() . '.main_category_id' => $this->model->id]);
+        }elseif($this->model instanceof \panix\mod\shop\models\Manufacturer){
+            $model->applyManufacturers($this->model->id);
         }
 
 

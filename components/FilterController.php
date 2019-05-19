@@ -45,9 +45,9 @@ class FilterController extends WebController
         if ($this->_minPrice !== null)
             return $this->_minPrice;
 
-        if ($this->currentQuery) {
+       // if ($this->currentQuery) {
             $this->_minPrice = $this->currentQuery->aggregatePrice('MIN');
-        }
+       // }
 
         return $this->_minPrice;
     }
@@ -102,7 +102,9 @@ class FilterController extends WebController
         // Find category types
 
         $model = Product::find();
-        $query = $model->applyCategories($this->dataModel)->published();
+        $query = $model
+            //->applyCategories($this->dataModel)
+            ->published();
 
         unset($model);
 
@@ -112,12 +114,12 @@ class FilterController extends WebController
         $query->distinct(true);
 
         //$typesIds = $query->createCommand()->queryColumn();
-        $typesIds = Attribute::getDb()->cache(function ($db) use ($query) {
+        $typesIds = Attribute::getDb()->cache(function () use ($query) {
             return $query->createCommand()->queryColumn();
         }, 3600);
 
         // Find attributes by type
-        $query = Attribute::getDb()->cache(function ($db) use ($typesIds) {
+        $query = Attribute::getDb()->cache(function () use ($typesIds) {
             return Attribute::find()
                 ->andWhere(['IN', TypeAttribute::tableName() . '.type_id', $typesIds])
                 ->useInFilter()
@@ -132,7 +134,7 @@ class FilterController extends WebController
             ->all();*/
 
 
-        $this->_eavAttributes = array();
+        $this->_eavAttributes = [];
         foreach ($query as $attr)
             $this->_eavAttributes[$attr->name] = $attr;
         return $this->_eavAttributes;
@@ -140,14 +142,14 @@ class FilterController extends WebController
 
     public function getActiveAttributes()
     {
-        $data = array();
+        $data = [];
 
         foreach (array_keys($_GET) as $key) {
             if (array_key_exists($key, $this->eavAttributes)) {
                 if ((boolean)$this->eavAttributes[$key]->select_many === true) {
                     $data[$key] = explode(',', $_GET[$key]);
                 } else {
-                    $data[$key] = array($_GET[$key]);
+                    $data[$key] = [$_GET[$key]];
                 }
             }
         }
