@@ -76,7 +76,7 @@ function getSerializeObjects() {
 }
 
 function formattedURL(objects) {
-    var uri = categoryFullUrl;
+    var uri = current_url;
     console.log(yii.getCsrfParam());
     delete objects[yii.getCsrfParam()];
     //delete objects.min_price;

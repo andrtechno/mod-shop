@@ -4,9 +4,9 @@ namespace panix\mod\shop\widgets\filtersnew;
 
 use panix\mod\shop\models\Attribute;
 use yii\caching\DbDependency;
-use yii\caching\DbQueryDependency;
 use yii\helpers\Html;
 use Yii;
+use panix\mod\shop\models\Category;
 use panix\mod\shop\models\Product;
 use panix\mod\shop\models\Manufacturer;
 use panix\engine\data\Widget;
@@ -122,10 +122,10 @@ class FiltersWidget extends Widget
         $model = Product::find();
         //$model->attachBehaviors($model->behaviors());
 
-        if ($this->model && $this->model instanceof \panix\mod\shop\models\Category) {
+        if ($this->model instanceof Category) {
             $model->applyCategories($this->model);
             //$model->andWhere([Product::tableName() . '.main_category_id' => $this->model->id]);
-        }elseif($this->model instanceof \panix\mod\shop\models\Manufacturer){
+        }elseif($this->model instanceof Manufacturer){
             $model->applyManufacturers($this->model->id);
         }
 

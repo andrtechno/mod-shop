@@ -178,13 +178,9 @@ class CategoryController extends FilterController
 
         $this->pageName = $this->dataModel->name;
         $name = '';
-        $this->view->registerJs("var categoryFullUrl = '" . Url::to($this->dataModel->getUrl()) . "';", yii\web\View::POS_HEAD, 'categoryFullUrl');
+        $this->view->registerJs("var current_url = '" . Url::to($this->dataModel->getUrl()) . "';", yii\web\View::POS_HEAD, 'current_url');
         if ($view != 'search') {
-            $this->view->registerJs("
-        var penny = '" . Yii::$app->currency->active->penny . "';
-        var separator_thousandth = '" . Yii::$app->currency->active->separator_thousandth . "';
-        var separator_hundredth = '" . Yii::$app->currency->active->separator_hundredth . "';
-     ", yii\web\View::POS_HEAD, 'numberformat');
+
 
 
             $c = Yii::$app->settings->get('shop');

@@ -9,6 +9,7 @@ use panix\mod\shop\models\Product;
 use panix\mod\shop\models\TypeAttribute;
 use panix\engine\controllers\WebController;
 use yii\base\Exception;
+use yii\helpers\Url;
 
 class FilterController extends WebController
 {
@@ -35,6 +36,17 @@ class FilterController extends WebController
      * @var string
      */
     public $maxprice, $minprice;
+
+
+    public function beforeAction($action)
+    {
+        $this->view->registerJs("
+        var penny = '" . Yii::$app->currency->active->penny . "';
+        var separator_thousandth = '" . Yii::$app->currency->active->separator_thousandth . "';
+        var separator_hundredth = '" . Yii::$app->currency->active->separator_hundredth . "';
+     ", yii\web\View::POS_HEAD, 'numberformat');
+        return parent::beforeAction($action);
+    }
 
 
     /**

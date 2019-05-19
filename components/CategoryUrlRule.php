@@ -12,7 +12,6 @@ use panix\mod\shop\models\Category;
 class CategoryUrlRule extends UrlRule
 {
 
-    public $pattern = 'shop/category/view';
     public $route = 'shop/category/view';
 
     /**

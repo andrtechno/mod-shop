@@ -6,10 +6,10 @@ use panix\mod\shop\components\FilterController;
 use Yii;
 use panix\mod\shop\models\Manufacturer;
 use panix\mod\shop\models\Product;
+use yii\helpers\Url;
 
 class ManufacturerController extends FilterController
 {
-
 
     /**
      * Sets page limits
@@ -49,13 +49,7 @@ class ManufacturerController extends FilterController
 
         $this->view->title = $this->dataModel->name;
 
-
-        $this->view->registerJs("
-        var penny = '" . Yii::$app->currency->active->penny . "';
-        var separator_thousandth = '" . Yii::$app->currency->active->separator_thousandth . "';
-        var separator_hundredth = '" . Yii::$app->currency->active->separator_hundredth . "';
-     ", yii\web\View::POS_HEAD, 'numberformat');
-
+        $this->view->registerJs("var current_url = '" . Url::to($this->dataModel->getUrl()) . "';", yii\web\View::POS_HEAD, 'current_url');
         $provider = new \panix\engine\data\ActiveDataProvider([
             'query' => $query,
             'id' => false,
