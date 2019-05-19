@@ -164,10 +164,6 @@ class FiltersWidget extends Widget
         echo Html::beginTag('div',['id'=>'filters']);
         echo Html::beginForm($this->model->getUrl(), 'GET', array('id' => 'filter-form'));
 
-
-
-
-
         echo Html::beginTag('div', ['id' => 'ajax_filter_current']);
         if (!empty($active)) {
             echo $this->render('current', ['active' => $active,'dataModel'=>$this->model]);

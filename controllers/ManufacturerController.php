@@ -24,7 +24,7 @@ class ManufacturerController extends FilterController
     public function beforeAction($action)
     {
         $this->allowedPageLimit = explode(',', Yii::$app->settings->get('shop', 'per_page'));
-        return true;
+        return parent::beforeAction($action);
     }
 
 
@@ -38,11 +38,20 @@ class ManufacturerController extends FilterController
         $this->findModel($slug);
 
         $query = Product::find();
-        $query->attachBehaviors($query->behaviors());
+        $query->attachBehaviors((new Product)->behaviors());
         $query->published();
         $query->applyManufacturers($this->dataModel->id);
-
+        $query->applyAttributes($this->activeAttributes);
+        $this->currentQuery = clone $query;
+        $this->applyPricesFilter();
         $this->view->title = $this->dataModel->name;
+
+
+        $this->view->registerJs("
+        var penny = '" . Yii::$app->currency->active->penny . "';
+        var separator_thousandth = '" . Yii::$app->currency->active->separator_thousandth . "';
+        var separator_hundredth = '" . Yii::$app->currency->active->separator_hundredth . "';
+     ", yii\web\View::POS_HEAD, 'numberformat');
 
         $provider = new \panix\engine\data\ActiveDataProvider([
             'query' => $query,

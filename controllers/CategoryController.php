@@ -285,23 +285,6 @@ class CategoryController extends FilterController
         }
     }
 
-    public function applyPricesFilter()
-    {
-        $minPrice = Yii::$app->request->get('min_price');
-        $maxPrice = Yii::$app->request->get('max_price');
-
-        $cm = Yii::$app->currency;
-        if ($cm->active->id !== $cm->main->id && ($minPrice > 0 || $maxPrice > 0)) {
-            $minPrice = $cm->activeToMain($minPrice);
-            $maxPrice = $cm->activeToMain($maxPrice);
-        }
-
-        if ($minPrice > 0)
-            $this->query->applyMinPrice($minPrice);
-        if ($maxPrice > 0)
-            $this->query->applyMaxPrice($maxPrice);
-    }
-
     protected function findModel($slug)
     {
         if (($this->dataModel = Category::findOne(['full_path' => $slug])) !== null) {
