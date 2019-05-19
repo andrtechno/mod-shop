@@ -43,6 +43,7 @@ use panix\ext\owlcarousel\OwlCarouselWidget;
             <?php
             echo Html::a(Html::img($data->getImageUrl('image', '200x150'), ['alt' => $data->name, 'class' => 'd-inline-block img-fluid']), $data->getUrl(), ['class' => 'd-inline-block m-auto1']);
             ?>
+            <h3><?=$data->name;?></h3>
         </div>
 
     <?php }

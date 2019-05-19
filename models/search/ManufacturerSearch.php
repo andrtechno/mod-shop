@@ -54,7 +54,6 @@ class ManufacturerSearch extends Manufacturer {
         }
 
         $query->andFilterWhere(['id' => $this->id]);
-
         $query->andFilterWhere(['like', 'name', $this->name]);
 
         return $dataProvider;

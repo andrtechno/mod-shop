@@ -79,21 +79,6 @@ class Manufacturer extends ActiveRecord
         ]);
     }
 
-    public static function dropdown()
-    {
-        // get and cache data
-        static $dropdown;
-        if ($dropdown === null) {
-
-            // get all records from database and generate
-            $models = static::find()->all();
-            foreach ($models as $model) {
-                $dropdown[$model->id] = $model->name;
-            }
-        }
-
-        return $dropdown;
-    }
 
     public function getUrl()
     {
@@ -116,16 +101,19 @@ class Manufacturer extends ActiveRecord
         return '{{%shop__manufacturer}}';
     }
 
+    /**
+     * Manufacturer translation relation
+     * @return \yii\db\ActiveQuery
+     */
     public function getTranslations()
     {
         return $this->hasMany($this->translationClass, ['object_id' => 'id']);
     }
 
-    /*public function getTranslation()
-    {
-        return $this->hasOne(ManufacturerTranslate::class, ['object_id' => 'id']);
-    }*/
-
+    /**
+     * Products count relation
+     * @return int|string
+     */
     public function getProductsCount()
     {
         return $this->hasOne(Product::class, ['manufacturer_id' => 'id'])->count();
@@ -153,6 +141,9 @@ class Manufacturer extends ActiveRecord
         ];
     }
 
+    /**
+     * @inheritdoc
+     */
     public function behaviors()
     {
         $a = [];
