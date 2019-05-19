@@ -275,7 +275,7 @@ trait ProductTrait
     public function replaceMeta($text)
     {
         /** @var $this Product */
-        $attrArray = array();
+        $attrArray = [];
         foreach ($this->getProductAttributes() as $k => $attr) {
             $attrArray['{eav_' . $k . '_value}'] = $attr->value;
             $attrArray['{eav_' . $k . '_name}'] = $attr->name;
@@ -285,9 +285,8 @@ trait ProductTrait
             "{product_name}" => $this->name,
             "{product_price}" => $this->price,
             "{product_sku}" => $this->sku,
-            "{product_pcs}" => $this->pcs,
             "{product_brand}" => (isset($this->manufacturer)) ? $this->manufacturer->name : null,
-            "{product_main_category}" => (isset($this->mainCategory)) ? $this->mainCategory->name : null,
+            "{category_name}" => (isset($this->mainCategory)) ? $this->mainCategory->name : null,
             "{current_currency}" => Yii::$app->currency->active->symbol,
         ], $attrArray);
         return CMS::textReplace($text, $replace);

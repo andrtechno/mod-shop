@@ -19,7 +19,7 @@ $form = ActiveForm::begin();
                     'content' => $this->render('_global', ['form' => $form, 'model' => $model]),
                     'active' => true,
                 ],
-                [
+               /* [
                     'label' => 'SEO',
                     'items' => [
                         [
@@ -28,7 +28,7 @@ $form = ActiveForm::begin();
                             'content' => $this->render('_seo_categories', ['form' => $form, 'model' => $model]),
                         ],
                     ],
-                ],
+                ],*/
             ],
         ]);
         ?>
