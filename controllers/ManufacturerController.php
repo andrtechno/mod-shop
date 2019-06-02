@@ -52,15 +52,22 @@ class ManufacturerController extends FilterController
         $this->view->registerJs("var current_url = '" . Url::to($this->dataModel->getUrl()) . "';", yii\web\View::POS_HEAD, 'current_url');
         $provider = new \panix\engine\data\ActiveDataProvider([
             'query' => $query,
-            'id' => false,
-            'pagination' => array(
+            'id' => null,
+            'pagination' => [
                 'pageSize' => $this->allowedPageLimit[0],
-            )
+            ]
         ]);
-        return $this->render('view', array(
+
+
+        $this->breadcrumbs[] = [
+            'label' => Yii::t('shop/default', 'CATALOG'),
+            'url' => ['/shop']
+        ];
+
+        return $this->render('view', [
             'provider' => $provider,
             'model' => $this->dataModel
-        ));
+        ]);
     }
 
     /**
