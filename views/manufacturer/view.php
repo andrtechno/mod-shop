@@ -37,7 +37,7 @@ use yii\helpers\Html;
             'layout' => '{summary}{items}{pager}',
             'itemOptions' => ['class' => 'item product col-sm-422'],
             'options' => ['class' => 'list-view _view_grid'],
-            'summaryOptions' => ['class' => 'col-sm-12 summary'],
+            //'summaryOptions' => ['class' => 'summary'],
             'emptyTextOptions' => ['class' => 'col-sm-12 alert alert-info'],
             //'beforeItem'=>function ($model, $key, $index, $widget){
             //return 'ss';
