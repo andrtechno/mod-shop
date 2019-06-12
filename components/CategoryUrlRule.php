@@ -13,7 +13,7 @@ class CategoryUrlRule extends UrlRule
 {
 
     public $route = 'shop/category/view';
-
+    public $pattern = '';
     /**
      * @inheritdoc
      */

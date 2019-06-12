@@ -109,13 +109,13 @@ class ProductController extends WebController
     }
 
     /**
-     * @param $url
+     * @param $slug
      * @return array|null|\yii\db\ActiveRecord
      */
-    protected function findModel($url)
+    protected function findModel($slug)
     {
         $model = Product::find()
-            ->where(['slug' => $url])
+            ->where(['slug' => $slug])
             ->published()
             ->one();
 

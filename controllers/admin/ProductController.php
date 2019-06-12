@@ -42,6 +42,10 @@ class ProductController extends AdminController
     public function actionIndex()
     {
         ProductIndex::register($this->view);
+
+        $searchModel = new ProductSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams());
+
         $this->pageName = Yii::t('shop/admin', 'PRODUCTS');
         $this->buttons = [
             [
@@ -57,10 +61,6 @@ class ProductController extends AdminController
         ];
         $this->breadcrumbs[] = $this->pageName;
 
-        $searchModel = new ProductSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams());
-
-
         return $this->render('index', [
             'dataProvider' => $dataProvider,
             'searchModel' => $searchModel,
@@ -74,7 +74,7 @@ class ProductController extends AdminController
         $this->pageName = Yii::t('shop/default', 'MODULE_NAME');
 
 
-        if (!$model->isNewRecord) {
+        if (!$model->isNewRecord && $model->switch) {
             $this->buttons[] = [
                 'icon' => 'icon-eye',
                 'label' => Yii::t('shop/admin', 'VIEW_PRODUCT'),
@@ -83,12 +83,12 @@ class ProductController extends AdminController
             ];
         }
 
-        $this->buttons[] = [
-            'icon' => 'icon-add',
-            'label' => Yii::t('shop/admin', 'CREATE_PRODUCT'),
-            'url' => ['create'],
-            'options' => ['class' => 'btn btn-success']
-        ];
+            $this->buttons[] = [
+                'icon' => 'icon-add',
+                'label' => Yii::t('shop/admin', 'CREATE_PRODUCT'),
+                'url' => ['create'],
+                'options' => ['class' => 'btn btn-success']
+            ];
 
         $post = Yii::$app->request->post();
 
@@ -112,7 +112,7 @@ class ProductController extends AdminController
 
 
         // Or set selected category from type pre-set.
-        if ($model->type && !Yii::$app->request->isPost && $model->isNewRecord){
+        if ($model->type && !Yii::$app->request->isPost && $model->isNewRecord) {
             $model->main_category_id = $model->type->main_category;
         }
 
@@ -149,7 +149,7 @@ class ProductController extends AdminController
 
 
         if ($model->load($post) && $model->validate() && $this->validateAttributes($model) && $this->validatePrices($model)) {
-         //   print_r($post['redirect']);
+            //   print_r($post['redirect']);
             $model->setRelatedProducts(Yii::$app->request->post('RelatedProductId', []));
 
             $model->save();
@@ -176,11 +176,11 @@ class ProductController extends AdminController
 
 
                     $uniqueName = \panix\engine\CMS::gen(10);
-                   // $file->saveAs(Yii::getAlias('@uploads').'/' . $uniqueName . '_' . $file->baseName . '.' . $file->extension);
-                   // $model->attachImage('uploads/' . $uniqueName . '_' . $file->baseName . '.' . $file->extension);
+                    // $file->saveAs(Yii::getAlias('@uploads').'/' . $uniqueName . '_' . $file->baseName . '.' . $file->extension);
+                    // $model->attachImage('uploads/' . $uniqueName . '_' . $file->baseName . '.' . $file->extension);
 
-                    $file->saveAs(Yii::getAlias('@uploads').'/' . $uniqueName . '_' . $file->baseName . '.' . $file->extension);
-                    $model->attachImage(Yii::getAlias('@uploads').'/' . $uniqueName . '_' . $file->baseName . '.' . $file->extension);
+                    $file->saveAs(Yii::getAlias('@uploads') . '/' . $uniqueName . '_' . $file->baseName . '.' . $file->extension);
+                    $model->attachImage(Yii::getAlias('@uploads') . '/' . $uniqueName . '_' . $file->baseName . '.' . $file->extension);
                 }
             }
             $model->processPrices(Yii::$app->request->post('ProductPrices', []));

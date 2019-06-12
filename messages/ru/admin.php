@@ -8,6 +8,8 @@ return [
     'CREATE_CATEGORY' => 'Добавить категорию',
     'CREATE_ATTRIBUTE' => 'Добавить атрибут',
     'CREATE_SUPPLIER' => 'Добавить поставщика',
+    'VIEW_PRODUCT' => 'Просмотр товара',
+    'UPDATE_PRODUCT' => 'Редактирование товара',
     'CURRENCY' => 'Валюта',
     'SUPPLIER' => 'Поставщики',
     'NOTIFIER' => 'Уведомление',

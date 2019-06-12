@@ -21,10 +21,12 @@ class Module extends WebModule implements BootstrapInterface
             [
 
                 'shop/ajax/currency/<id:\d+>' => 'shop/ajax/currency',
+                'shop/notify' => 'shop/notify/index',
                 'shop' => 'shop/default/index',
-                'manufacturer/<slug:[0-9a-z\-]+>' => 'shop/manufacturer/view',
-                'product/<slug:[0-9a-zA-Z\-]+>' => 'shop/product/view',
+                'manufacturer/<slug:[0-9a-zA-Z\-]+>' => 'shop/manufacturer/view',
+
                 //'products/search/q/<q:\w+>' => 'shop/category/search',
+                'product/<slug:[0-9a-zA-Z\-]+>' => 'shop/product/view',
 
                 [
                     'class' => 'panix\mod\shop\components\SearchUrlRule',

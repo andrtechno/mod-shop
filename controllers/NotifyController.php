@@ -2,10 +2,11 @@
 
 namespace panix\mod\shop\controllers;
 
-use panix\mod\shop\models\ProductNotifications;
 use Yii;
 use panix\engine\controllers\WebController;
 use panix\mod\shop\models\Product;
+use panix\mod\shop\models\ProductNotifications;
+use yii\web\Response;
 
 class NotifyController extends WebController
 {
@@ -17,16 +18,17 @@ class NotifyController extends WebController
 
     public function actionIndex()
     {
-        header('Content-Type: application/json');
-        $json = array();
+        $json = [];
         $product = Product::findOne(Yii::$app->request->post('product_id'));
 
         if (!$product)
             $this->error404();
 
+        $post = Yii::$app->request->post();
+
         $record = new ProductNotifications();
-        if (isset($_POST['ProductNotifications'])) {
-            $record->attributes = array('email' => $_POST['ProductNotifications']['email']);
+        if ($record->load($post)) {
+           // $record->attributes = array('email' => $_POST['ProductNotifications']['email']);
             $record->product_id = $product->id;
             if ($record->validate() && $record->hasEmail() === false) {
                 $record->save();
@@ -37,9 +39,10 @@ class NotifyController extends WebController
                 $json['status'] = 'ERROR';
             }
         }
-        $json['data'] = $this->renderPartial('_form', array('model' => $record, 'product' => $product), true);
+        $json['data'] = $this->renderPartial('_form', ['model' => $record, 'product' => $product]);
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return $json;
 
-        echo CJSON::encode($json);
         // $this->render('_form', array('model' => $record, 'product' => $product));
     }
 
