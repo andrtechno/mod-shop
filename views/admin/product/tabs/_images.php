@@ -8,7 +8,7 @@ use panix\engine\bootstrap\Modal;
 
 ?>
 <?= Fancybox::widget(['target' => 'a.fancybox']); ?>
-
+<?= $form->field($model, 'video')->textInput(['maxlength' => 255])->hint('Пример: https://www.youtube.com/watch?v=[ID]') ?>
 <?= $form->field($model, 'file[]')->fileInput(['multiple' => true]); ?>
 
 

@@ -182,6 +182,15 @@ class Product extends ActiveRecord
     }
 
     /**
+     * @param string $img default, hqdefault, mqdefault, sddefault, maxresdefault OR 0,1,2,3
+     * @return string
+     */
+    public function getVideoPreview($img = 'default')
+    {
+        return "https://img.youtube.com/vi/" . CMS::parse_yturl($this->video) . "/{$img}.jpg";
+    }
+
+    /**
      * @inheritdoc
      */
     public function rules()
@@ -189,7 +198,8 @@ class Product extends ActiveRecord
         return [
             ['price', 'commaToDot'],
             [['file'], 'file', 'maxFiles' => 10],
-            [['name', 'slug'], 'string', 'max' => 255],
+            [['name', 'slug', 'video'], 'string', 'max' => 255],
+            ['video', 'url'],
             [['image'], 'image'],
             ['slug', '\panix\engine\validators\UrlValidator', 'attributeCompare' => 'name'],
             ['slug', 'match',

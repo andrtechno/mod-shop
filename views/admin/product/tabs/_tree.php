@@ -1,5 +1,16 @@
 <?php
 
+/**
+ * Bug https://github.com/yiisoft/yii2-jui/issues/62
+ *
+ * if $.fn.button.noConflict is not a function
+ *
+ * Solution is add .noConflict in \vendor\yiisoft\yii2-jui\src\Dialog.php at line 45
+ *
+ * change to ($.fn.button && $.fn.button.noConflict !== undefined)
+ */
+
+
 use panix\mod\shop\models\CategoryNode;
 use panix\mod\shop\models\Category;
 
@@ -9,18 +20,17 @@ echo \panix\ext\jstree\JsTree::widget([
     'allOpen'=>true,
     'data' => CategoryNode::fromArray(Category::findOne(1)->children()->all()),
     'core' => [
+        'force_text' => true,
+        'animation' => 0,
         'strings' => [
             'Loading ...' => Yii::t('app', 'LOADING')
         ],
-        'check_callback' => true,
         "themes" => [
             "stripes" => true,
             'responsive' => true,
-            "variant" => "large",
-           // 'name' => 'default-dark',
-           // "dots" => true,
-           // "icons" => true
+            "variant" => "large"
         ],
+        'check_callback' => true
     ],
     'plugins' => ['search', 'checkbox'],
     'checkbox' => [
@@ -59,4 +69,5 @@ if (isset($_POST['categories']) && !empty($_POST['categories'])) {
 }
 
 ?>
+111
 
