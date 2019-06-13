@@ -67,10 +67,13 @@ $this->registerJs($script); //$position
     <?php
 
 Modal::begin([
-    'options'=>['id'=>'cropper-modal','style'=>'width:100%'],
+    'options'=>[
+            'id'=>'cropper-modal',
+        'style'=>'width:100%'
+    ],
     'title' => '<h2>Cropper</h2>',
     'toggleButton' => false,
-    'bodyOptions'=>['id'=>'cropper-body']
+    'bodyOptions'=>['id'=>'cropper-body','style'=>'width:100%']
 ]);
 
 echo 'Say hello...';
@@ -150,7 +153,7 @@ echo panix\engine\grid\GridView::widget([
                     return Html::a(Html::icon('resize'), ['s'], array('class' => 'btn btn-sm btn-default attachment-zoom', 'data-fancybox' => 'gallery'));
                 },
                 'settings' => function ($url, $data, $key) {
-                    return Html::a(Html::icon('settings'), ['/images/edit-crop', 'id' => $data->id], array('class' => 'btn btn-sm btn-default copper'));
+                    return Html::a(Html::icon('settings'), ['/admin/images/default/edit-crop', 'id' => $data->id], array('class' => 'btn btn-sm btn-default copper'));
                 },
                 'delete' => function ($url, $data, $key) use ($model) {
                     return Html::a(Html::icon('delete'), ['/images/default/delete', 'id' => $data->id], array('class' => 'btn btn-sm btn-danger attachment-delete linkTarget', 'data-id' => $data->id, 'data-object_id' => $model->id, 'data-model' => get_class($model)));
