@@ -107,7 +107,16 @@ class ProductController extends WebController
             }
         }
     }
+    public function actionComments($slug){
+        if(Yii::$app->request->isAjax){
 
+        }
+        $model = Product::find()
+            ->where(['slug' => $slug])
+            ->published()
+            ->one();
+        return $this->renderAjax('tabs/_comments',['model'=>$model]);
+    }
     /**
      * @param $slug
      * @return array|null|\yii\db\ActiveRecord

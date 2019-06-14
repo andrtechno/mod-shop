@@ -26,7 +26,9 @@ class Module extends WebModule implements BootstrapInterface
                 'manufacturer/<slug:[0-9a-zA-Z\-]+>' => 'shop/manufacturer/view',
 
                 //'products/search/q/<q:\w+>' => 'shop/category/search',
+                //'product/<slug:[0-9a-zA-Z\-]+>/tab/<tab:[0-9a-zA-Z\-]+>' => 'shop/product/<tab>',
                 'product/<slug:[0-9a-zA-Z\-]+>' => 'shop/product/view',
+
 
                 [
                     'class' => 'panix\mod\shop\components\SearchUrlRule',
