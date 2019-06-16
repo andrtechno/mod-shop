@@ -13,7 +13,7 @@ $form = ActiveForm::begin([
 ?>
 <div class="card">
     <div class="card-header">
-        <h3 class="card-title"><?= $this->context->pageName ?></h3>
+        <h5 class="card-title"><?= $this->context->pageName ?></h5>
     </div>
     <div class="card-body">
         <?php

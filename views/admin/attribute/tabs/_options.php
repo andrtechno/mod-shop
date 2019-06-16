@@ -20,13 +20,13 @@ use panix\mod\shop\models\AttributeOption;
 
 <table>
     <tr class="copyMe">
-        <td class="text-center">N/A</td>
+        <td class="text-center">&mdash;</td>
         <?php foreach (Yii::$app->languageManager->languages as $k => $l) { ?>
             <td>
-                <input name="sample" type="text" class="value form-control input-lang" style="background-image:url(/uploads/language/<?= $k ?>.png">
+                <input name="sample" type="text" class="value form-control input-lang" style="background-image:url(/uploads/language/<?= $k ?>.png" />
             </td>
         <?php } ?>
-        <td class="text-center">N/A</td>
+        <td class="text-center">&mdash;</td>
         <td class="text-center">
             <a href="#" class="delete-option-attribute btn btn-sm btn-default"><i class="icon-delete"></i></a>
         </td>

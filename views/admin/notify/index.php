@@ -72,7 +72,7 @@ GridView::widget([
             'format' => 'html',
             'contentOptions' => ['class' => 'text-center', 'data-confirm' => Yii::t('cart/default', 'Вы уверены?')],
             'value' => function ($model) {
-                return Html::a('Отправить письмо', ["/admin/shop/notify/send", "product_id" => $model->product_id], ['class' => 'btn btn-sm btn-primary']);
+                return Html::a(Yii::t('app','SEND_LETTER'), ["/admin/shop/notify/send", "product_id" => $model->product_id], ['class' => 'btn btn-sm btn-primary']);
             },
         ],
         [
