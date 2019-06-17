@@ -35,7 +35,7 @@ class ManufacturerController extends AdminController
         $this->pageName = Yii::t('shop/admin', 'MANUFACTURER');
         $this->buttons = [
             [
-                'icon' => 'icon-add',
+                'icon' => 'add',
                 'label' => Yii::t('shop/admin', 'CREATE_MANUFACTURER'),
                 'url' => ['create'],
                 'options' => ['class' => 'btn btn-success']
@@ -65,7 +65,7 @@ class ManufacturerController extends AdminController
         $this->pageName = Yii::t('shop/admin', 'MANUFACTURER');
         $this->buttons = [
             [
-                'icon' => 'icon-add',
+                'icon' => 'add',
                 'label' => Yii::t('shop/admin', 'CREATE_MANUFACTURER'),
                 'url' => ['create'],
                 'options' => ['class' => 'btn btn-success']

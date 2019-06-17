@@ -24,7 +24,7 @@ class AttributeGroupController extends AdminController {
         $this->pageName = Yii::t('shop/admin', 'ATTRIBUTE_GROUP');
         $this->buttons = [
             [
-                'icon' => 'icon-add',
+                'icon' => 'add',
                 'label' => Yii::t('shop/AttributeGroup', 'CREATE_GROUP'),
                 'url' => ['create'],
                 'options' => ['class' => 'btn btn-success']
@@ -57,7 +57,7 @@ class AttributeGroupController extends AdminController {
         $this->pageName = Yii::t('shop/admin', 'ATTRIBUTE_GROUP');
         $this->buttons = [
             [
-                'icon' => 'icon-add',
+                'icon' => 'add',
                 'label' => Yii::t('shop/AttributeGroup', 'CREATE_GROUP'),
                 'url' => ['create'],
                 'options' => ['class' => 'btn btn-success']

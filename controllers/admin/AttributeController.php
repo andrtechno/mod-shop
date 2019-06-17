@@ -43,7 +43,7 @@ class AttributeController extends AdminController
         $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams());
         $this->buttons = [
             [
-                'icon' => 'icon-add',
+                'icon' => 'add',
                 'label' => Yii::t('shop/admin', 'CREATE_ATTRIBUTE'),
                 'url' => ['create'],
                 'options' => ['class' => 'btn btn-success']

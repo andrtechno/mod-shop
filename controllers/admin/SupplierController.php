@@ -27,7 +27,7 @@ class SupplierController extends AdminController
         $this->breadcrumbs[] = $this->pageName;
         $this->buttons = [
             [
-                'icon' => 'icon-add',
+                'icon' => 'add',
                 'label' => Yii::t('shop/admin', 'CREATE_SUPPLIER'),
                 'url' => ['create'],
                 'options' => ['class' => 'btn btn-success']
@@ -50,7 +50,7 @@ class SupplierController extends AdminController
         $this->pageName = Yii::t('shop/admin', 'SUPPLIER');
         $this->buttons = [
             [
-                'icon' => 'icon-add',
+                'icon' => 'add',
                 'label' => Yii::t('shop/admin', 'CREATE_SUPPLIER'),
                 'url' => ['create'],
                 'options' => ['class' => 'btn btn-success']
