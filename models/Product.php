@@ -16,6 +16,33 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use panix\engine\db\ActiveRecord;
 
+/**
+ * Class Product
+ * @property integer $manufacturer_id Manufacturer
+ * @property integer $type_id Type
+ * @property integer $supplier_id Supplier
+ * @property integer $currency_id Currency
+ * @property integer $use_configurations
+ * @property string $slug
+ * @property float $price Price
+ * @property float $max_price Max price
+ * @property float $price_purchase
+ * @property boolean $unit Unit
+ * @property boolean $sku Product article
+ * @property integer $quantity
+ * @property integer $availability
+ * @property integer $auto_decrease_quantity
+ * @property integer $views
+ * @property integer $created_at
+ * @property integer $updated_at
+ * @property boolean $switch
+ * @property integer $added_to_cart_count
+ * @property integer $votes
+ * @property integer $rating
+ * @property string $discount Discount
+ * @property string $video Youtube video URL
+ * @property integer $ordern
+ */
 class Product extends ActiveRecord
 {
 
@@ -397,7 +424,11 @@ class Product extends ActiveRecord
                 $record = new ProductCategoryRef;
                 $record->category = (int)$c;
                 $record->product = $this->id;
-                $record->switch = $this->switch; // new param
+                if ($this->scenario == 'duplicate') {
+                    $record->switch = 1;
+                } else {
+                    $record->switch = $this->switch;
+                }
                 $record->save(false);
             }
 

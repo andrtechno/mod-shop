@@ -68,7 +68,7 @@ class ProductsDuplicator extends \yii\base\Component {
 
 
         foreach ($behaviors['translate']['translationAttributes'] as $attr)
-            $product->$attr = $model->$attr;
+            $product->{$attr} = $model->{$attr};
 
         $product->name .= $this->getSuffix();
         $product->slug .= CMS::slug($this->getSuffix()) . '-' . time();

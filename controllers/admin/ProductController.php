@@ -503,11 +503,11 @@ class ProductController extends AdminController
     public function actionDuplicateProducts()
     {
         //TODO: return ids to find products
-        $product_ids = Yii::$app->request->post('products', array());
+        $product_ids = Yii::$app->request->post('products', []);
         parse_str(Yii::$app->request->post('duplicate'), $duplicates);
 
         if (!isset($duplicates['copy']))
-            $duplicates['copy'] = array();
+            $duplicates['copy'] = [];
 
         $duplicator = new \panix\mod\shop\components\ProductsDuplicator;
         $ids = $duplicator->createCopy($product_ids, $duplicates['copy']);
