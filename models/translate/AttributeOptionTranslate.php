@@ -10,6 +10,7 @@ use yii\db\ActiveRecord;
  * @property int $id
  * @property int $object_id
  * @property int $language_id
+ * @property string $value
  */
 class AttributeOptionTranslate extends ActiveRecord
 {

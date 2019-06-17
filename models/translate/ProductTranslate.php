@@ -10,10 +10,16 @@ use yii\db\ActiveRecord;
  * @property int $id
  * @property int $object_id
  * @property int $language_id
+ * @property string $name
+ * @property string $short_description
+ * @property string $full_description
  */
 class ProductTranslate extends ActiveRecord
 {
 
+    /**
+     * @inheritdoc
+     */
     public static function tableName()
     {
         return '{{%shop__product_translate}}';
