@@ -511,7 +511,8 @@ class ProductController extends AdminController
 
         $duplicator = new \panix\mod\shop\components\ProductsDuplicator;
         $ids = $duplicator->createCopy($product_ids, $duplicates['copy']);
-        echo '/admin/shop/product/?Product[id]=' . implode(',', $ids);
+        //return $this->redirect('/admin/shop/product/?Product[id]=' . implode(',', $ids));
+
     }
 
     /**

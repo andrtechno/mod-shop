@@ -2,13 +2,16 @@
 
 namespace panix\mod\shop\components;
 
+
+use panix\mod\images\models\Image;
 use Yii;
 use panix\mod\shop\models\Product;
 use panix\mod\shop\models\RelatedProduct;
 use panix\mod\shop\models\ProductVariant;
 use panix\engine\CMS;
 
-class ProductsDuplicator extends \yii\base\Component {
+class ProductsDuplicator extends \yii\base\Component
+{
 
     /**
      * @var array
@@ -25,7 +28,8 @@ class ProductsDuplicator extends \yii\base\Component {
      */
     private $_suffix;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->_suffix = ' (' . Yii::t('shop/admin', 'копия') . ')';
         parent::__construct([]);
     }
@@ -37,7 +41,8 @@ class ProductsDuplicator extends \yii\base\Component {
      * @param array $duplicate list of product parts to copy: images, variants, etc...
      * @return array of new product ids
      */
-    public function createCopy(array $ids, array $duplicate = []) {
+    public function createCopy(array $ids, array $duplicate = [])
+    {
 
         $this->duplicate = $duplicate;
         $new_ids = array();
@@ -59,7 +64,8 @@ class ProductsDuplicator extends \yii\base\Component {
      * @param Product $model
      * @return Product
      */
-    public function duplicateProduct(Product $model) {
+    public function duplicateProduct(Product $model)
+    {
 
         $product = new Product;
         $product->attributes = $model->attributes;
@@ -85,7 +91,7 @@ class ProductsDuplicator extends \yii\base\Component {
                 }
                 $product->setCategories([], $model->mainCategory->id);
                 return $product;
-            }else {
+            } else {
                 die(__FUNCTION__ . ': Error save');
                 return false;
             }
@@ -102,29 +108,28 @@ class ProductsDuplicator extends \yii\base\Component {
      * @param Product $original
      * @param Product $copy
      */
-    protected function copyImages(Product $original, Product $copy) {
-        $images = $original->attachments;
+    protected function copyImages(Product $original, Product $copy)
+    {
 
+        $images = $original->getImages();
+        $dir = Yii::$app->getModule('images')->imagesStorePath;
         if (!empty($images)) {
             foreach ($images as $image) {
-                $image_copy = new AttachmentModel();
+                $image_copy = new Image();
 
-
-
-                $image_copy->product_id = $copy->id;
-                $image_copy->name = $copy->id . '_' . $image->name;
+                $image_copy->object_id = $copy->id;
+                $image_copy->alt_title = $image->alt_title;
                 $image_copy->is_main = $image->is_main;
-                $image_copy->user_id = $image->user_id;
-                $image_copy->title = $image->title;
-
+                $image_copy->filePath = $image->filePath;
+                $image_copy->modelName = $image->modelName;
+                $image_copy->urlAlias = $copy->getAlias();
 
                 if ($image_copy->validate()) {
                     if ($image_copy->save()) {
-                        copy($image->filePath, $image_copy->filePath);
-                    } else {
-                        die(__FUNCTION__ . ': Error save');
+                        copy(Yii::getAlias($dir) . DIRECTORY_SEPARATOR . $image->filePath, Yii::getAlias($dir) . DIRECTORY_SEPARATOR . $image_copy->filePath);
                     }
                 } else {
+                    print_r($image_copy->getErrors());
                     die(__FUNCTION__ . ': Error validate');
                 }
             }
@@ -137,7 +142,8 @@ class ProductsDuplicator extends \yii\base\Component {
      * @param Product $original
      * @param Product $copy
      */
-    protected function copyAttributes(Product $original, Product $copy) {
+    protected function copyAttributes(Product $original, Product $copy)
+    {
         $attributes = $original->getEavAttributes();
 
         if (!empty($attributes)) {
@@ -157,7 +163,8 @@ class ProductsDuplicator extends \yii\base\Component {
      * @param Product $original
      * @param Product $copy
      */
-    protected function copyRelated(Product $original, Product $copy) {
+    protected function copyRelated(Product $original, Product $copy)
+    {
         $related = $original->related;
 
         if (!empty($related)) {
@@ -183,7 +190,8 @@ class ProductsDuplicator extends \yii\base\Component {
      * @param Product $original
      * @param Product $copy
      */
-    public function copyVariants(Product $original, Product $copy) {
+    public function copyVariants(Product $original, Product $copy)
+    {
         $variants = $original->variants;
 
         if (!empty($variants)) {
@@ -203,14 +211,16 @@ class ProductsDuplicator extends \yii\base\Component {
     /**
      * @param $str string product suffix
      */
-    public function setSuffix($str) {
+    public function setSuffix($str)
+    {
         $this->_suffix = $str;
     }
 
     /**
      * @return string
      */
-    public function getSuffix() {
+    public function getSuffix()
+    {
         return $this->_suffix;
     }
 
