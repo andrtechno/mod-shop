@@ -9,13 +9,17 @@ use panix\engine\db\ActiveRecord;
 use panix\mod\shop\models\query\ManufacturerQuery;
 use panix\mod\shop\models\translate\ManufacturerTranslate;
 
+/**
+ * Class Manufacturer
+ * @property integer $id
+ * @property string $name ManufacturerTranslate
+ */
 class Manufacturer extends ActiveRecord
 {
 
     const MODULE_ID = 'shop';
     const route = '/admin/shop/manufacturer';
     public $translationClass = ManufacturerTranslate::class;
-
 
     /**
      * @inheritdoc
