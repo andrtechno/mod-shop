@@ -37,12 +37,12 @@ class AttributeData {
     public function getData() {
         $result=[];
         foreach (Yii::$app->languageManager->languages as $lang => $l) {
-            $result[$lang] = array();
+            $result[$lang] = [];
             foreach ($this->getModels($l->id) as $data) {
-                $result[$lang][$data->name] = (object) array(
+                $result[$lang][$data->name] = (object) [
                     'name' => $data->title,
                     'value' => $data->renderValue($this->attributes[$data->name]),
-                );
+                ];
             }
         }
 
