@@ -191,6 +191,7 @@ class ForsageProductsImport
     public function change()
     {
         $supplier_products = $this->getChanges();
+
         if (is_array($supplier_products)) {
             if (count($supplier_products) > 0) {
                 foreach ($supplier_products as $product_key => $product_id) {
@@ -211,7 +212,6 @@ class ForsageProductsImport
         $products = $this->getProducts();
         if ($products) {
             foreach ($products as $product) {
-
                 $this->insert_update($product);
             }
         }
@@ -725,11 +725,11 @@ class ForsageProductsImport
 
     public function getChanges()
     {
-        $start_date = strtotime(date('Y-m-d'));
-        $end_date = strtotime(date('Y-m-d'));
+        $start_date = strtotime(date('Y-m-d')) - 86400*5;
+        $end_date = strtotime(date('Y-m-d')) - 86400*5;
 
-
-        $url = "https://forsage-studio.com/api/get_changes/?token={$this->apikey}&start_date={$start_date}&end_date={$end_date}";
+        //products = "full" or "changes"
+        $url = "https://forsage-studio.com/api/get_changes/?token={$this->apikey}&start_date={$start_date}&end_date={$end_date}&products=full";
 
         $response = $this->conn_curl($url);
 
@@ -798,7 +798,7 @@ class ForsageProductsImport
     /**
      * Builds path to downloaded files. E.g: we receive
      * file with name 'import/df3/fl1.jpg' and build path to temp dir,
-     * protected/runtime/fl1.jpg
+     * runtime/fl1.jpg
      *
      * @param $fileName
      * @return string

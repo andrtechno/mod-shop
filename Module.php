@@ -17,30 +17,27 @@ class Module extends WebModule implements BootstrapInterface
      */
     public function bootstrap($app)
     {
+        $rules['shop/ajax/currency/<id:\d+>'] =  'shop/ajax/currency';
+        $rules['shop/notify'] =  'shop/notify/index';
+        $rules['shop'] = 'shop/default/index';
+        $rules['manufacturer/<slug:[0-9a-zA-Z\-]+>'] =  'shop/manufacturer/view';
+        $rules['product/<slug:[0-9a-zA-Z\-]+>'] = 'shop/product/view';
+
+        if (!($app instanceof \panix\engine\console\Application)) {
+            $rules[] = [
+                'class' => 'panix\mod\shop\components\SearchUrlRule',
+                //'pattern'=>'products/search',
+                'route' => 'shop/category/search',
+                'defaults' => ['q' => Yii::$app->request->get('q')]
+            ];
+
+            $rules[] = [
+                'class' => 'panix\mod\shop\components\CategoryUrlRule',
+            ];
+        }
+
         $app->urlManager->addRules(
-            [
-
-                'shop/ajax/currency/<id:\d+>' => 'shop/ajax/currency',
-                'shop/notify' => 'shop/notify/index',
-                'shop' => 'shop/default/index',
-                'manufacturer/<slug:[0-9a-zA-Z\-]+>' => 'shop/manufacturer/view',
-
-                //'products/search/q/<q:\w+>' => 'shop/category/search',
-                //'product/<slug:[0-9a-zA-Z\-]+>/tab/<tab:[0-9a-zA-Z\-]+>' => 'shop/product/<tab>',
-                'product/<slug:[0-9a-zA-Z\-]+>' => 'shop/product/view',
-
-
-                [
-                    'class' => 'panix\mod\shop\components\SearchUrlRule',
-                    //'pattern'=>'products/search',
-                    'route' => 'shop/category/search',
-                    'defaults' => ['q' => Yii::$app->request->get('q')]
-                ],
-                [
-                    'class' => 'panix\mod\shop\components\CategoryUrlRule',
-                ],
-
-            ],
+            $rules,
             true
         );
         $app->setComponents([

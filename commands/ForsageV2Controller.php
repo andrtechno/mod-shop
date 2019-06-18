@@ -22,14 +22,6 @@ use panix\mod\shop\components\forsagev2\ForsageExternalFinder;
 class ForsageV2Controller extends ConsoleController
 {
 
-    public function actionChanges()
-    {
-        $starttime = microtime(true);
-        $forsage = new ForsageProductsImport;
-        $forsage->change();
-
-        $this->log(sprintf("[Time: %f sec]", microtime(true) - $starttime));
-    }
 
     public function actionSupplierProducts($id = false)
     {
@@ -85,6 +77,14 @@ class ForsageV2Controller extends ConsoleController
         $this->log('ForsageCommand actionAddSuppliers start');
     }
 
+    public function actionChanges()
+    {
+        $starttime = microtime(true);
+        $forsage = new ForsageProductsImport;
+        $forsage->change();
+
+        $this->log(sprintf("[Time: %f sec]", microtime(true) - $starttime));
+    }
     /**
      * Добавляем новые товары за сегодня.
      */
