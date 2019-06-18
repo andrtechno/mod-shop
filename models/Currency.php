@@ -4,6 +4,18 @@ namespace panix\mod\shop\models;
 
 use \panix\engine\db\ActiveRecord;
 
+/**
+ * Class Currency
+ * @property boolean $is_main
+ * @property string $name
+ * @property float $rate
+ * @property string $iso
+ * @property string $symbol
+ * @property string $is_default
+ * @property boolean $penny
+ * @property string $separator_thousandth
+ * @property string $separator_hundredth
+ */
 class Currency extends ActiveRecord
 {
 
@@ -37,11 +49,11 @@ class Currency extends ActiveRecord
 
     public static function fpSeparator()
     {
-        return array(
+        return [
             ' ' => self::t('SPACE'),
             ',' => self::t('COMMA'),
             '.' => self::t('DOT')
-        );
+        ];
     }
 
 }
