@@ -191,7 +191,7 @@ class ForsageProductsImport
     public function change()
     {
         $supplier_products = $this->getChanges();
-
+print_r($supplier_products);die;
         if (is_array($supplier_products)) {
             if (count($supplier_products) > 0) {
                 foreach ($supplier_products as $product_key => $product_id) {
@@ -725,14 +725,14 @@ class ForsageProductsImport
 
     public function getChanges()
     {
-        $start_date = strtotime(date('Y-m-d')) - 86400*5;
-        $end_date = strtotime(date('Y-m-d')) - 86400*5;
+        $start_date = strtotime(date('Y-m-d'));
+        $end_date = strtotime(date('Y-m-d')) + 86400;
 
         //products = "full" or "changes"
-        $url = "https://forsage-studio.com/api/get_changes/?token={$this->apikey}&start_date={$start_date}&end_date={$end_date}&products=full";
+        $url = "https://forsage-studio.com/api/get_changes/?token={$this->apikey}&start_date={$start_date}&end_date={$end_date}&products=changes";
 
         $response = $this->conn_curl($url);
-
+print_r($response);die;
         if ($response) {
 
             if (isset($response['success'])) {

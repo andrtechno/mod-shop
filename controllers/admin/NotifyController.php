@@ -146,19 +146,14 @@ class NotifyController extends AdminController
              * @var $mailer \yii\swiftmailer\Mailer
              */
             $mailer = Yii::$app->mailer;
-            $mailer->htmlLayout = "@common/mail/layouts/html";
+            $mailer->htmlLayout = "@app/mail/layouts/html";
             $mail = $mailer->compose(['html' => "@shop/mail/{$lang}/product_notify"], [
                 'data' => $row,
                 'product' => $row->product,
                 'site_name' => $siteName
             ]);
             $mail->setFrom(['noreply@' . Yii::$app->request->serverName => $siteName . ' robot']);
-            // ->setFrom('noreply@' . Yii::$app->request->serverName)
-            // ->setTo([$row->email => $row->email])
             $mail->setTo($row->email);
-            //->setCc($row->email) //copy
-            //->setBcc(Yii::$app->settings->get('app','email')) //hidden copy
-            // ->setHtmlBody($this->renderPartial('@cart/mail/admin.tpl', ['order' => $order, 'test' => '1111']))
             $mail->setSubject(Yii::t('shop/admin', 'MAIL_PRODUCT_NOTIFY_SUBJECT', [
                 'site_name' => $siteName
             ]));
@@ -167,7 +162,7 @@ class NotifyController extends AdminController
             //$row->delete();
         }
         Yii::$app->session->setFlash('success', Yii::t('shop/admin', 'Сообщения успешно отправлены.'));
-        //$this->redirect(['index']);
+        $this->redirect('index');
     }
 
 }

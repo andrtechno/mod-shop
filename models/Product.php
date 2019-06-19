@@ -18,6 +18,7 @@ use panix\engine\db\ActiveRecord;
 
 /**
  * Class Product
+ * @property integer $id Product id
  * @property integer $manufacturer_id Manufacturer
  * @property integer $type_id Type
  * @property integer $supplier_id Supplier
@@ -239,7 +240,7 @@ class Product extends ActiveRecord
             ['enable_comments', 'boolean'],
             [['sku', 'full_description', 'unit'], 'default'], // установим ... как NULL, если они пустые
             [['name', 'slug', 'main_category_id', 'price', 'unit'], 'required'],
-            [['manufacturer_id', 'type_id', 'quantity', 'views', 'added_to_cart_count', 'ordern', 'category_id', 'currency_id', 'unit', 'supplier_id'], 'integer'],
+            [['manufacturer_id', 'type_id', 'quantity', 'views', 'availability', 'added_to_cart_count', 'ordern', 'category_id', 'currency_id', 'unit', 'supplier_id'], 'integer'],
             [['name', 'slug', 'full_description', 'use_configurations'], 'safe'],
             //  [['c1'], 'required'], // Attribute field
             // [['c1'], 'string', 'max' => 255], // Attribute field

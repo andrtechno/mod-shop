@@ -17,9 +17,11 @@ class Module extends WebModule implements BootstrapInterface
      */
     public function bootstrap($app)
     {
-        $rules['shop/ajax/currency/<id:\d+>'] =  'shop/ajax/currency';
-        $rules['shop/notify'] =  'shop/notify/index';
+
+
         $rules['shop'] = 'shop/default/index';
+        $rules['shop/notify'] =  'shop/notify/index';
+        $rules['shop/ajax/currency/<id:\d+>'] =  'shop/ajax/currency';
         $rules['manufacturer/<slug:[0-9a-zA-Z\-]+>'] =  'shop/manufacturer/view';
         $rules['product/<slug:[0-9a-zA-Z\-]+>'] = 'shop/product/view';
 

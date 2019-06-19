@@ -13,7 +13,6 @@ class ProductNotificationsSearch extends ProductNotifications {
     public function rules() {
         return [
             [['id', 'product_id'], 'integer'],
-            [['email'], 'safe'],
         ];
     }
 
@@ -50,9 +49,6 @@ class ProductNotificationsSearch extends ProductNotifications {
         }
 
         $query->andFilterWhere(['id' => $this->id]);
-        $query->andFilterWhere(['like', 'email', $this->email]);
-        //$query->andFilterWhere(['like', 'product.name', $this->name]);
-        //$query->andFilterWhere(['like', 'product.quantity', $this->product->quantity]);
 
         return $dataProvider;
     }

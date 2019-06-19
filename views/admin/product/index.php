@@ -6,9 +6,8 @@ use panix\ext\fancybox\Fancybox;
 echo Fancybox::widget(['target' => '.image a']);
 
 Pjax::begin([
-    //'timeout' => 50000,
+    'timeout' => false,
     'id' => 'pjax-grid-product',
-    //'linkSelector' => 'a:not(.linkTarget)'
 ]);
 echo GridView::widget([
     'id'=>'grid-product',

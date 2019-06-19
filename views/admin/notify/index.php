@@ -35,22 +35,14 @@ GridView::widget([
             },
         ],
         [
-            'attribute' => 'email',
-            'format' => 'raw',
-            'contentOptions' => ['class' => 'text-center'],
-            'value' => function ($model) {
-                return Html::mailto($model->email, $model->email);
-            },
-        ],
-        [
             'attribute' => 'product.availability',
             'format' => 'raw',
             'contentOptions' => ['class' => 'text-center'],
             'value' => function ($model) {
                 $class = '';
-                if ($model->product->availability) {
+                if ($model->product->availability == 1) {
                     $class = 'badge-success';
-                } else {
+                } elseif ($model->product->availability == 2) {
                     $class = 'badge-danger';
                 }
                 return Html::tag('span', $model->product->availabilityItems[$model->product->availability], ['class' => 'badge ' . $class]); //$model->renderGridImage('50x50');
@@ -72,7 +64,11 @@ GridView::widget([
             'format' => 'html',
             'contentOptions' => ['class' => 'text-center', 'data-confirm' => Yii::t('cart/default', 'Вы уверены?')],
             'value' => function ($model) {
-                return Html::a(Yii::t('app','SEND_LETTER'), ["/admin/shop/notify/send", "product_id" => $model->product_id], ['class' => 'btn btn-sm btn-primary']);
+                if ($model->product->availability == 1) {
+                    return Html::a(Yii::t('app', 'SEND_LETTER'), ["/admin/shop/notify/send", "product_id" => $model->product_id], ['class' => 'btn btn-sm btn-primary']);
+                } else {
+                    return '&mdash;';
+                }
             },
         ],
         [
