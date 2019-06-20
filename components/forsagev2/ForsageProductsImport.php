@@ -191,14 +191,15 @@ class ForsageProductsImport
     public function change()
     {
         $supplier_products = $this->getChanges();
-print_r($supplier_products);die;
+
         if (is_array($supplier_products)) {
             if (count($supplier_products) > 0) {
-                foreach ($supplier_products as $product_key => $product_id) {
-                    $product = $this->getProduct($product_id);
-                    if ($product) {
-                        $this->insert_update($product, 1);
-                    }
+                foreach ($supplier_products as $product_key => $product) {
+                    print_r($product);die;
+                    //$product = $this->getProduct($product_id);
+                    //if ($product) {
+                       // $this->insert_update($product, 1);
+                    //}
                 }
             }
         }
@@ -729,15 +730,15 @@ print_r($supplier_products);die;
         $end_date = strtotime(date('Y-m-d')) + 86400;
 
         //products = "full" or "changes"
-        $url = "https://forsage-studio.com/api/get_changes/?token={$this->apikey}&start_date={$start_date}&end_date={$end_date}&products=changes";
+        $url = "https://forsage-studio.com/api/get_changes/?token={$this->apikey}&start_date={$start_date}&end_date={$end_date}&products=full";
 
         $response = $this->conn_curl($url);
-print_r($response);die;
-        if ($response) {
 
+        if ($response) {
             if (isset($response['success'])) {
                 if ($response['success'] == 'true') {
-                    return $response['product_ids'];
+                    //return $response['product_ids'];
+                    return $response;
                 } else {
                     self::log('Method getChanges response no true');
                     return false;

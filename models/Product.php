@@ -284,6 +284,20 @@ class Product extends ActiveRecord
     /* public function getCategory2() {
       return $this->hasOne(Category::className(), ['id' => 'category_id']);
       } */
+    public function getSets()
+    {
+        return $this->hasMany(Sets::class, ['product_id' => 'id']);
+    }
+
+
+
+
+
+
+
+
+
+
 
     public function getManufacturer()
     {

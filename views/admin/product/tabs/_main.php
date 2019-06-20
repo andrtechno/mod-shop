@@ -1,11 +1,17 @@
 <?php
 
-use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use panix\mod\shop\models\Manufacturer;
 use panix\mod\shop\models\Category;
 use panix\ext\tinymce\TinyMce;
+
+/**
+ * @var panix\engine\bootstrap\ActiveForm $form
+ */
 ?>
+
+
+
 <?= $form->field($model, 'name')->textInput(['maxlength' => 255]) ?>
 <?= $form->field($model, 'slug')->textInput(['maxlength' => 255]) ?>
 <?= $form->field($model, 'sku')->textInput(['maxlength' => 255]) ?>

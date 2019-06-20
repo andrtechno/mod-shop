@@ -10,14 +10,11 @@ Pjax::begin([
     'id' => 'pjax-container',
     'enablePushState' => false,
 ]);
-?>
-<?=
-
-GridView::widget([
+echo GridView::widget([
     'tableOptions' => ['class' => 'table table-striped'],
     'dataProvider' => $dataProvider,
     'filterModel' => $searchModel,
-    'layoutOptions' => ['title' => $this->context->pageName], //'{items}{pager}{summary}'
+    //'layoutOptions' => ['title' => $this->context->pageName], //'{items}{pager}{summary}'
     'columns' => [
         [
             'attribute' => 'image',
@@ -61,11 +58,10 @@ GridView::widget([
         ],
         [
             // 'attribute' => 'test',
-            'format' => 'html',
-            'contentOptions' => ['class' => 'text-center', 'data-confirm' => Yii::t('cart/default', 'Вы уверены?')],
+            'format' => 'raw',
             'value' => function ($model) {
                 if ($model->product->availability == 1) {
-                    return Html::a(Yii::t('app', 'SEND_LETTER'), ["/admin/shop/notify/send", "product_id" => $model->product_id], ['class' => 'btn btn-sm btn-primary']);
+                    return Html::a(Yii::t('app', 'SEND_LETTER'), ['send', 'product_id' => $model->product_id], ['class' => 'btn btn-sm btn-primary','data-pjax'=>0]);
                 } else {
                     return '&mdash;';
                 }
@@ -77,5 +73,4 @@ GridView::widget([
         ]
     ]
 ]);
-?>
-<?php Pjax::end(); ?>
+Pjax::end();

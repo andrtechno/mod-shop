@@ -3,11 +3,9 @@
 namespace panix\mod\shop\controllers\admin;
 
 use Yii;
-use panix\mod\shop\models\ProductNotifications;
-use panix\mod\shop\models\search\ProductNotificationsSearch;
 use panix\engine\controllers\AdminController;
 
-class NotifyController extends AdminController
+class SetsController extends AdminController
 {
 
     public $buttons = false;
