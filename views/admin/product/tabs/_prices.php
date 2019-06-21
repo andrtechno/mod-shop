@@ -4,7 +4,8 @@ use yii\helpers\ArrayHelper;
 use panix\mod\shop\models\Currency;
 
 /**
- * @var $form \panix\engine\bootstrap\ActiveForm
+ * @var \panix\engine\bootstrap\ActiveForm $form
+ * @var \panix\mod\shop\models\Product $model
  */
 ?>
 
@@ -45,50 +46,77 @@ if ($model->use_configurations) {
         'maxlength' => 10
     ]);
 }
+
+
+
+
+$commonAttributeOptions = [
+    'enableAjaxValidation'   => true,
+    'enableClientValidation' => false,
+    'validateOnChange'       => false,
+    'validateOnSubmit'       => true,
+    'validateOnBlur'         => false,
+];
+$enableActiveForm = true;
 ?>
 
-
-<div class="form-group row field_price">
-
-
-    <div class="col" id="extra-prices">
-        <?php foreach ($model->prices as $price) { ?>
-
-            <div id="price-row-<?= $price->id ?>">
-                <hr/>
-                <div class="row">
-                    <?php echo Html::label('Цена', 'productprices-' . $price->id . '-value', array('class' => 'col-sm-3 col-md-3 col-lg-2 col-form-label', 'required' => true)); ?>
-                    <div class="col-sm-9 col-md-6 col-lg-5 col-xl-3">
-                        <div class="input-group mb-2">
-                            <?php echo Html::textInput('ProductPrices[' . $price->id . '][value]', $price->value, array('class' => 'float-left form-control')); ?>
-                            <div class="input-group-append">
-                                    <span class="col-form-label ml-3">
-                                        <span class="currency-name">грн.</span> за
-                                        <span class="unit-name">шт.</span>
-                                        <a href="#" data-price-id="<?= $price->id ?>"
-                                           class="remove-price btn btn-sm btn-danger">
-                                            <i class="icon-delete"></i>
-                                        </a>
-                                    </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="row">
-                    <?php echo Html::label($model::t('FROM'), 'productprices-' . $price->id . '-from', array('class' => 'col-sm-3 col-md-3 col-lg-2 col-form-label', 'required' => true)); ?>
-                    <div class="col-sm-9 col-md-6 col-lg-5 col-xl-3">
-                        <div class="input-group mb-3 mb-sm-0">
-                            <?php echo Html::textInput('ProductPrices[' . $price->id . '][from]', $price->from, array('class' => 'float-left form-control')); ?>
-                            <div class="input-group-append">
-                                <span class="col-form-label ml-3 unit-name">шт.</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        <?php } ?>
-    </div>
-
-</div>
+<?php /*echo \panix\ext\multipleinput\MultipleInput::widget([
+    'model' => $model,
+    'attribute' => 'questions',
+    'attributeOptions' => $commonAttributeOptions,
+    'columns' => [
+        [
+            'name' => 'question',
+            'title' => 'question',
+            'type' => 'textarea',
+        ],
+        [
+            'name' => 'answers',
+            'title' => 'answers',
+            'type'  => \panix\ext\multipleinput\MultipleInput::class,
+            'options' => [
+                'attributeOptions' => $commonAttributeOptions,
+                'columns' => [
+                    [
+                        'name' => 'right',
+                        'title' => 'asddasdsa',
+                        'type' => \panix\ext\multipleinput\MultipleInputColumn::TYPE_CHECKBOX
+                    ],
+                    [
+                        'name' => 'answer'
+                    ]
+                ]
+            ]
+        ]
+    ],
+]);*/ ?>
+<?php echo $form->field($model, 'prices1')->widget(\panix\ext\multipleinput\MultipleInput::class, [
+    //'model' => $model,
+    //'attribute' => 'phone',
+    //'max' => 5,
+    'min' => 0, // should be at least 2 rows
+    'allowEmptyList' => false,
+    'enableGuessTitle' => true,
+    'sortable' => true,
+    'addButtonPosition' => \panix\ext\multipleinput\MultipleInput::POS_HEADER, // show add button in the header
+    'columns' => [
+        [
+            'name' => 'number',
+            'title' => 'Цена',
+            'type' => \panix\ext\multipleinput\MultipleInputColumn::TYPE_TEXT_INPUT,
+            'enableError' => true,
+            // 'title' => 'phone',
+            'headerOptions' => [
+                'style' => 'width: 250px;',
+            ],
+        ],
+        [
+            'name' => 'count',
+            'enableError' => false,
+            'title' => 'Количество',
+            'headerOptions' => [
+                'style' => 'width: 250px;',
+            ],
+        ],
+    ]
+]);
