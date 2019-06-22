@@ -125,7 +125,7 @@ class Product extends ActiveRecord
             //'defaultOrder'=>'ordern DESC',
             'attributes' => [
                 '*',
-                'price22' => [
+                'price' => [
                     'asc' => ['price' => SORT_ASC],
                     'desc' => ['price' => SORT_DESC],
                     //'default' => SORT_ASC,
@@ -134,6 +134,11 @@ class Product extends ActiveRecord
                 'sku' => [
                     'asc' => ['sku' => SORT_ASC],
                     'desc' => ['sku' => SORT_DESC],
+                ],
+                'created_at' => [
+                    'asc' => ['created_at' => SORT_ASC],
+                    'desc' => ['created_at' => SORT_DESC],
+                    'label' => 'по дате добавления'
                 ],
                 'name' => [
                     'default' => SORT_ASC,

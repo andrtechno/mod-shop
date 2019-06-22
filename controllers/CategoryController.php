@@ -77,6 +77,7 @@ class CategoryController extends FilterController
             $model->applySearch(Yii::$app->request->get('q'));
             //'fullurl'=>Html::a('FULL',Yii::$app->urlManager->createUrl(['/shop/category/search', 'q' => Yii::$app->request->post('q')])),
             foreach ($model->all() as $m) {
+                /** @var Product $m */
                 $res[] = [
                     'url' => Url::to($m->getUrl()),
                     'renderItem' => $this->renderPartial('@shop/widgets/search/views/_item', [
