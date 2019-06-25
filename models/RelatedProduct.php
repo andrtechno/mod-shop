@@ -2,6 +2,8 @@
 
 namespace panix\mod\shop\models;
 
+use yii\db\ActiveRecord;
+
 /**
  * This is the model class for table "RelatedProduct".
  *
@@ -10,12 +12,14 @@ namespace panix\mod\shop\models;
  * @property integer $product_id
  * @property integer $related_id
  */
-class RelatedProduct extends \yii\db\ActiveRecord {
+class RelatedProduct extends ActiveRecord
+{
 
     /**
-     * @return string the associated database table name
+     * @inheritdoc
      */
-    public static function tableName() {
+    public static function tableName()
+    {
         return '{{%shop__related_product}}';
     }
 

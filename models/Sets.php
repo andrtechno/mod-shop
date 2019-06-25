@@ -35,8 +35,8 @@ class Sets extends ActiveRecord
 
     //public function getProducts()
     //{
-   //     return $this->hasMany(SetsProduct::class, ['set_id' => 'id']);
-   // }
+    //     return $this->hasMany(SetsProduct::class, ['set_id' => 'id']);
+    // }
 
     public function getProduction()
     {
@@ -46,10 +46,16 @@ class Sets extends ActiveRecord
     public function getProducts()
     {
         $q = $this->hasMany(SetsProduct::class, ['set_id' => 'id']);
-           // ->via('production');
+        // ->via('production');
 
 
         return $q;
+    }
+
+
+    public function getProduct()
+    {
+        return $this->hasOne(Product::class, ['product_relation_id' => 'id']);
     }
 
     /**

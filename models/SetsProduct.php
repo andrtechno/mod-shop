@@ -32,13 +32,6 @@ class SetsProduct extends ActiveRecord
         return '{{%shop__sets_product}}';
     }
 
-
-
-
-
-
-
-
     /**
      * @inheritdoc
      */
@@ -55,4 +48,17 @@ class SetsProduct extends ActiveRecord
             [['image'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg'],
         ];
     }
+
+
+
+    public function getProduct2()
+    {
+        return $this->hasOne(Product::class, ['id' => 'product']);
+    }
+
+    public function getProducts2()
+    {
+        return $this->hasMany(Product::class, ['product_id' => 'id']);
+    }
+
 }
