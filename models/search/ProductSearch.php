@@ -61,7 +61,7 @@ class ProductSearch extends Product
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'sort' => self::getSort(),
-            'sort22' => [
+            /*'sort22' => [
                 //'defaultOrder' => ['created_at' => SORT_ASC],
                 'attributes' => [
                     'price',
@@ -71,7 +71,7 @@ class ProductSearch extends Product
                         'desc' => ['translations.name' => SORT_DESC],
                     ]
                 ],
-            ],
+            ],*/
         ]);
 
 

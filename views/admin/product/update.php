@@ -8,7 +8,17 @@ use panix\mod\shop\models\ProductType;
 
 ?>
 
+    <div class="col-sm-4">
+        sadsda
+    </div>
+    <div class="col-sm-4">
 
+        <span class="badge badge-secondary"><?= $model->views; ?> просмотров</span>
+    </div>
+    <div class="col-sm-4">
+        <?php var_dump($model->switch); ?>
+        <span class="badge badge-secondary">Товар скрыт</span>
+    </div>
     <div class="card">
         <div class="card-header">
             <h5><?= Html::encode($this->context->pageName) ?></h5>

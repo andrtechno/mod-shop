@@ -164,7 +164,7 @@ class Manufacturer extends ActiveRecord
                 'description'
             ]
         ];
-        $a['upload'] = [
+        $a['uploadFile'] = [
             'class' => 'panix\engine\behaviors\UploadFileBehavior',
             'files' => [
                 'image' => '@uploads/manufacturer',
