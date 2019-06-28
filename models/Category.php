@@ -6,10 +6,8 @@ use panix\engine\behaviors\UploadFileBehavior;
 use Yii;
 use panix\engine\behaviors\TranslateBehavior;
 use panix\engine\behaviors\nestedsets\NestedSetsBehavior;
-use panix\engine\behaviors\MenuArrayBehavior;
 use panix\mod\shop\models\translate\CategoryTranslate;
 use panix\mod\shop\models\query\CategoryQuery;
-use panix\mod\shop\models\ProductCategoryRef;
 use panix\engine\CMS;
 use panix\engine\db\ActiveRecord;
 
@@ -98,12 +96,6 @@ class Category extends ActiveRecord
                     'seo_product_description'
                 ]
             ],
-            'MenuArrayBehavior' => array(
-                'class' => MenuArrayBehavior::class,
-                'labelAttr' => 'name',
-                // 'countProduct'=>false,
-                'urlExpression' => '["/shop/category/view", "slug"=>$model->full_path]',
-            ),
             'uploadFile' => array(
                 'class' => UploadFileBehavior::class,
                 'files' => [
