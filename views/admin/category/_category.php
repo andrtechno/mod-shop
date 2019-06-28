@@ -2,7 +2,6 @@
 
 use yii\helpers\Html;
 use panix\mod\shop\models\Category;
-use panix\mod\shop\models\CategoryNode;
 
 \panix\mod\shop\bundles\admin\CategoryAsset::register($this);
 
@@ -30,9 +29,7 @@ use panix\mod\shop\models\CategoryNode;
             'id' => 'CategoryTree',
             'name' => 'jstree',
             'allOpen' => true,
-           // 'data' => CategoryNode::fromArray(Category::find()->andWhere(['id' => 1])->all(), ['switch' => true]),
-            'data' => CategoryNode::fromArray(Category::findAll(['id' => 1]), ['switch' => true]),
-            // 'data' => CategoryNode::fromArray(Category::find()->options(1), ['switch' => true]),
+            'data'=>Category::find()->dataFancytree(),
             'core' => [
                 'force_text' => true,
                 'animation' => 0,

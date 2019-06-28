@@ -3,7 +3,6 @@
 namespace panix\mod\shop\widgets\categories;
 
 use panix\mod\shop\models\Category;
-use panix\mod\shop\models\CategoryNode;
 use panix\engine\data\Widget;
 use yii\helpers\Html;
 use Yii;

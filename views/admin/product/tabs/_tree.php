@@ -10,15 +10,13 @@
  * change to ($.fn.button && $.fn.button.noConflict !== undefined)
  */
 
-
-use panix\mod\shop\models\CategoryNode;
 use panix\mod\shop\models\Category;
 
 echo \panix\ext\jstree\JsTree::widget([
     'id' => 'CategoryTree',
     'name' => 'jstree',
     'allOpen'=>true,
-    'data' => CategoryNode::fromArray(Category::findOne(1)->children()->all()),
+    'data' => Category::find()->dataFancytree(2),
     'core' => [
         'force_text' => true,
         'animation' => 0,
@@ -67,7 +65,3 @@ if (isset($_POST['categories']) && !empty($_POST['categories'])) {
         $this->registerJs("$('#jsTree_CategoryTree').checkNode({$c->id});");
     }
 }
-
-?>
-111
-

@@ -1,6 +1,5 @@
 <?php
 
-use panix\mod\shop\models\CategoryNode;
 use panix\mod\shop\models\Category;
 
 ?>
@@ -25,7 +24,7 @@ echo \panix\ext\jstree\JsTree::widget([
     'id' => 'TypeCategoryTree',
     'name' => 'jstree',
     'allOpen' => true,
-    'data' => CategoryNode::fromArray(Category::findOne(1)->children()->all()),
+    'data' => Category::find()->dataFancytree(2),
     'core' => array(
         'strings' => array('Loading ...' => Yii::t('app', 'LOADING')),
         'check_callback' => true,
