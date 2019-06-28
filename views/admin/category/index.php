@@ -17,14 +17,8 @@ use panix\ext\taginput\TagInput;
             </div>
 
             <div class="card-body">
-
-
                 <?php
-
-
                 $tabs = [];
-
-
                 $tabs[] = [
                     'label' => $model::t('TAB_MAIN'),
                     'content' => $this->render('_main', ['form' => $form, 'model' => $model]),
@@ -50,11 +44,8 @@ use panix\ext\taginput\TagInput;
 
             </div>
             <div class="card-footer text-center">
-
                 <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'CREATE') : Yii::t('app', 'UPDATE'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
-
             </div>
-
         </div>
         <?php ActiveForm::end(); ?>
     </div>

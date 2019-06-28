@@ -3,6 +3,7 @@
 namespace panix\mod\shop\controllers\admin;
 
 use panix\engine\CMS;
+use panix\mod\shop\models\translate\CategoryTranslate;
 use Yii;
 use panix\engine\controllers\AdminController;
 use panix\mod\shop\models\Category;
@@ -39,17 +40,6 @@ class CategoryController extends AdminController
      */
     public $icon = 'folder-open';
 
-    public function behaviors()
-    {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::class,
-                'actions' => [
-                    'delete2' => ['post'],
-                ],
-            ],
-        ];
-    }
 
     public function actionIndex()
     {
@@ -91,7 +81,6 @@ class CategoryController extends AdminController
             if ($model->getIsNewRecord()) {
 
 
-
                 $model->appendTo($model->parent_id);
                 Yii::$app->session->setFlash('success', Yii::t('app', 'SUCCESS_UPDATE'));
                 return $this->redirect(['/admin/shop/category/index']);
@@ -107,7 +96,6 @@ class CategoryController extends AdminController
             'model' => $model,
         ]);
     }
-
 
 
     public function actionRenameNode()
@@ -175,17 +163,38 @@ class CategoryController extends AdminController
          * @var \panix\engine\behaviors\nestedsets\NestedSetsBehavior|Category $target
          */
         $node = Category::findModel(Yii::$app->request->get('id'));
-        $target = Category::findOne($_GET['ref']);
+        $target = Category::findOne(Yii::$app->request->get('ref'));
 
-        if ((int)$_GET['position'] > 0) {
-            $pos = (int)$_GET['position'];
+
+        $pos = (int) Yii::$app->request->get('position');
+
+        if ($pos == 1) {
+
             $childs = $target->children()->all();
-            if (isset($childs[$pos - 1]) && $childs[$pos - 1]['id'] != $node->id)
+            if (isset($childs[$pos - 1]) && $childs[$pos - 1]['id'] != $node->id) {
+                // die('moveAfter');
                 $node->moveAfter($childs[$pos - 1]);
-        } else
-            $node->moveAsFirst($target);
+           }
+        }elseif($pos == 2){
+            $childs = $target->children()
+                //->orderBy(['lft'=>SORT_DESC])
+                ->all();
+           // echo count($childs);die;
+           // if (isset($childs[$pos - 1]) && $childs[$pos - 1]['id'] != $node->id) {
+                // die('moveAfter');
 
-        $node->rebuildFullPath()->saveNode(false);
+
+            if (isset($childs[$pos - 1]) && $childs[$pos - 1]['id'] != $node->id) {
+                $node->moveAfter($childs[$pos - 1]);
+            }
+
+        } else{
+            $node->moveAsFirst($target);
+        }
+
+        //$s = $node->rebuildFullPath();
+
+        $node->saveNode(false);
     }
 
     /**
@@ -233,4 +242,56 @@ class CategoryController extends AdminController
         }
     }
 
+    public function actionCreateRoot()
+    {
+
+        Yii::$app->db->createCommand()->truncateTable(Category::tableName())->execute();
+        Yii::$app->db->createCommand()->truncateTable(CategoryTranslate::tableName())->execute();
+
+
+        $model = new Category;
+        $model->name = 'Каталог продукции';
+        $model->lft = 1;
+        $model->rgt = 2;
+        $model->depth = 1;
+        $model->slug = 'root';
+        $model->full_path = '';
+        if ($model->validate()) {
+            $model->saveNode();
+
+            $model2 = new Category;
+            $model2->name = 'Category 1';
+            $model2->slug = CMS::slug($model2->name);
+            $model2->full_path = CMS::slug($model2->name);
+            $model2->appendTo($model);
+
+
+            $model2 = new Category;
+            $model2->name = 'Category 2';
+            $model2->slug = CMS::slug($model2->name);
+            $model2->full_path = CMS::slug($model2->name);
+            $model2->appendTo($model);
+
+
+            $model3 = new Category;
+            $model3->name = 'Category 2-1';
+            $model3->slug = CMS::slug($model3->name);
+            $model3->full_path = CMS::slug($model3->name);
+            $model3->appendTo($model2);
+
+
+
+            $model2 = new Category;
+            $model2->name = 'Category 3';
+            $model2->slug = CMS::slug($model2->name);
+            $model2->full_path = CMS::slug($model2->name);
+            $model2->appendTo($model);
+
+        } else {
+            print_r($model->getErrors());
+            die;
+        }
+
+        ///return $this->redirect('index');
+    }
 }

@@ -13,6 +13,24 @@ use panix\mod\shop\models\ProductCategoryRef;
 use panix\engine\CMS;
 use panix\engine\db\ActiveRecord;
 
+/**
+ * Class Category
+ * @package panix\mod\shop\models
+ *
+ * @property integer $id
+ * @property integer $tree
+ * @property integer $lft
+ * @property integer $rgt
+ * @property integer $depth
+ * @property string $slug
+ * @property string $image
+ * @property string $name
+ * @property string $description
+ * @property string $seo_product_title
+ * @property string $seo_product_description
+ * @property string $full_path
+ * @property integer $switch
+ */
 class Category extends ActiveRecord
 {
 
@@ -39,7 +57,6 @@ class Category extends ActiveRecord
     public function rules()
     {
         return [
-
             [['image'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg'],
             // ['slug', '\panix\engine\validators\UrlValidator', 'attributeCompare' => 'name'],
             ['slug', 'fullPathValidator'],
@@ -48,6 +65,7 @@ class Category extends ActiveRecord
                 'message' => Yii::t('app', 'PATTERN_URL')
             ],
             [['name', 'slug', 'seo_product_title'], 'trim'],
+            [['image'], 'default'],
             [['name', 'slug'], 'required'],
             [['name', 'seo_product_title', 'seo_product_description'], 'string', 'max' => 255],
             ['description', 'safe']
@@ -57,9 +75,11 @@ class Category extends ActiveRecord
 
     public function fullPathValidator($attribute)
     {
-        $count = Category::find()->where(['full_path' => $this->parent_id->full_path . '/' . $this->{$attribute}])->count();
-        if ($count) {
-            $this->addError($attribute, 'Такой URL уже есть!');
+        if ($this->parent_id) {
+            $count = Category::find()->where(['full_path' => $this->parent_id->full_path . '/' . $this->{$attribute}])->count();
+            if ($count) {
+                $this->addError($attribute, 'Такой URL уже есть!');
+            }
         }
     }
 
@@ -82,7 +102,7 @@ class Category extends ActiveRecord
                 // 'countProduct'=>false,
                 'urlExpression' => '["/shop/category/view", "slug"=>$model->full_path]',
             ),
-            'upload' => array(
+            'uploadFile' => array(
                 'class' => UploadFileBehavior::class,
                 'files' => [
                     'image' => '@uploads/categories'
@@ -90,6 +110,7 @@ class Category extends ActiveRecord
             ),
             'tree' => [
                 'class' => NestedSetsBehavior::class,
+                'hasManyRoots'=>false
                 // 'treeAttribute' => 'tree',
                 // 'leftAttribute' => 'lft',
                 // 'rightAttribute' => 'rgt',
@@ -116,7 +137,9 @@ class Category extends ActiveRecord
         array_shift($categories);
 
         foreach ($categories as $c) {
-
+            /**
+             * @var Category $c
+             */
             if ($c->depth > 1) {
                 $result[$c->id] = str_repeat('--', $c->depth - 1) . ' ' . $c->name;
             } else {
@@ -142,12 +165,14 @@ class Category extends ActiveRecord
     public function rebuildFullPath()
     {
         // Create category full path.
-        $ancestors = $this->ancestors()->addOrderBy('depth')->all();
+        $ancestors = $this->ancestors()
+            ->orderBy('depth')
+            ->all();
         if (sizeof($ancestors)) {
             // Remove root category from path
             unset($ancestors[0]);
 
-            $parts = array();
+            $parts = [];
             foreach ($ancestors as $ancestor)
                 $parts[] = $ancestor->slug;
 

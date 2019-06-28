@@ -5,7 +5,15 @@ use panix\mod\shop\models\Category;
 use panix\mod\shop\models\CategoryNode;
 
 \panix\mod\shop\bundles\admin\CategoryAsset::register($this);
-
+foreach (Category::findAll(['id' => 1]) as $s){
+    echo $s->name.PHP_EOL.'<br>';
+    foreach($s->children()->all() as $ss){
+        echo '---'.$ss->name.'<br>';
+        foreach($ss->children()->all() as $sss){
+            echo '-----'.$sss->name.'<br>';
+        }
+    }
+}
 ?>
 
 <div class="card">
@@ -30,7 +38,9 @@ use panix\mod\shop\models\CategoryNode;
             'id' => 'CategoryTree',
             'name' => 'jstree',
             'allOpen' => true,
-            'data' => CategoryNode::fromArray(Category::find()->where(['id' => 1])->all(), ['switch' => true]),
+           // 'data' => CategoryNode::fromArray(Category::find()->andWhere(['id' => 1])->all(), ['switch' => true]),
+            'data' => CategoryNode::fromArray(Category::findAll(['id' => 1]), ['switch' => true]),
+            // 'data' => CategoryNode::fromArray(Category::find()->options(1), ['switch' => true]),
             'core' => [
                 'force_text' => true,
                 'animation' => 0,
