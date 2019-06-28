@@ -20,7 +20,7 @@ class m180917_193505_shop_category extends Migration {
             'tree' => $this->integer()->unsigned()->null(),
             'lft' => $this->integer()->unsigned()->notNull(),
             'rgt' => $this->integer()->unsigned()->notNull(),
-            'depth' => $this->integer()->unsigned()->notNull(),
+            'depth' => $this->smallInteger(5)->unsigned()->notNull(),
             'slug' => $this->string(255)->null()->defaultValue(null),
             'full_path' => $this->string(255)->null(),
             'image' => $this->string(50)->null(),

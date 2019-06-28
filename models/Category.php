@@ -59,6 +59,8 @@ class Category extends ActiveRecord
         return [
             [['image'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg'],
             // ['slug', '\panix\engine\validators\UrlValidator', 'attributeCompare' => 'name'],
+
+            ['slug', '\panix\engine\validators\UrlValidator', 'attributeCompare' => 'name'],
             ['slug', 'fullPathValidator'],
             ['slug', 'match',
                 'pattern' => '/^([a-z0-9-])+$/i',
@@ -110,7 +112,7 @@ class Category extends ActiveRecord
             ),
             'tree' => [
                 'class' => NestedSetsBehavior::class,
-                'hasManyRoots'=>false
+                'hasManyRoots' => false
                 // 'treeAttribute' => 'tree',
                 // 'leftAttribute' => 'lft',
                 // 'rightAttribute' => 'rgt',
@@ -150,12 +152,18 @@ class Category extends ActiveRecord
         return $result;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function beforeSave($insert)
     {
         $this->rebuildFullPath();
         return parent::beforeSave($insert);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function afterSave($insert, $changedAttributes)
     {
         \Yii::$app->cache->delete('CategoryUrlRule');
@@ -166,7 +174,7 @@ class Category extends ActiveRecord
     {
         // Create category full path.
         $ancestors = $this->ancestors()
-            ->orderBy('depth')
+            //->orderBy('depth')
             ->all();
         if (sizeof($ancestors)) {
             // Remove root category from path

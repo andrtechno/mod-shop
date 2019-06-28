@@ -192,8 +192,7 @@ class CategoryController extends AdminController
             $node->moveAsFirst($target);
         }
 
-        //$s = $node->rebuildFullPath();
-
+        $node->rebuildFullPath();
         $node->saveNode(false);
     }
 
@@ -262,21 +261,18 @@ class CategoryController extends AdminController
             $model2 = new Category;
             $model2->name = 'Category 1';
             $model2->slug = CMS::slug($model2->name);
-            $model2->full_path = CMS::slug($model2->name);
             $model2->appendTo($model);
 
 
             $model2 = new Category;
             $model2->name = 'Category 2';
             $model2->slug = CMS::slug($model2->name);
-            $model2->full_path = CMS::slug($model2->name);
             $model2->appendTo($model);
 
 
             $model3 = new Category;
             $model3->name = 'Category 2-1';
             $model3->slug = CMS::slug($model3->name);
-            $model3->full_path = CMS::slug($model3->name);
             $model3->appendTo($model2);
 
 
@@ -284,7 +280,6 @@ class CategoryController extends AdminController
             $model2 = new Category;
             $model2->name = 'Category 3';
             $model2->slug = CMS::slug($model2->name);
-            $model2->full_path = CMS::slug($model2->name);
             $model2->appendTo($model);
 
         } else {

@@ -5,15 +5,7 @@ use panix\mod\shop\models\Category;
 use panix\mod\shop\models\CategoryNode;
 
 \panix\mod\shop\bundles\admin\CategoryAsset::register($this);
-foreach (Category::findAll(['id' => 1]) as $s){
-    echo $s->name.PHP_EOL.'<br>';
-    foreach($s->children()->all() as $ss){
-        echo '---'.$ss->name.'<br>';
-        foreach($ss->children()->all() as $sss){
-            echo '-----'.$sss->name.'<br>';
-        }
-    }
-}
+
 ?>
 
 <div class="card">
