@@ -10,6 +10,7 @@ use panix\mod\shop\models\translate\CategoryTranslate;
 use panix\mod\shop\models\query\CategoryQuery;
 use panix\engine\CMS;
 use panix\engine\db\ActiveRecord;
+use yii\helpers\ArrayHelper;
 
 /**
  * Class Category
@@ -34,7 +35,21 @@ class Category extends ActiveRecord
 
     const MODULE_ID = 'shop';
     const route = '/shop/admin/category';
-    public $translationClass = CategoryTranslate::class;
+
+    /**
+     * Translate options
+     * @var array
+     */
+    public $translationOptions = [
+        'model'=>CategoryTranslate::class,
+        'translationAttributes' => [
+            'name',
+            'description',
+            'seo_product_title',
+            'seo_product_description'
+        ]
+    ];
+
     public $parent_id;
 
     public static function tableName()
@@ -83,34 +98,23 @@ class Category extends ActiveRecord
         }
     }
 
-
     public function behaviors()
     {
-        return [
-            'TranslateBehavior' => [ // name it the way you want
-                'class' => TranslateBehavior::class,
-                'translationAttributes' => [
-                    'name',
-                    'description',
-                    'seo_product_title',
-                    'seo_product_description'
-                ]
-            ],
-            'uploadFile' => array(
-                'class' => UploadFileBehavior::class,
-                'files' => [
-                    'image' => '@uploads/categories'
-                ]
-            ),
-            'tree' => [
-                'class' => NestedSetsBehavior::class,
-                'hasManyRoots' => false
-                // 'treeAttribute' => 'tree',
-                // 'leftAttribute' => 'lft',
-                // 'rightAttribute' => 'rgt',
-                //'levelAttribute' => 'level',
-            ],
+        $a['uploadFile'] = [
+            'class' => UploadFileBehavior::class,
+            'files' => [
+                'image' => '@uploads/categories'
+            ]
         ];
+        $a['tree'] = [
+            'class' => NestedSetsBehavior::class,
+            'hasManyRoots' => false
+            // 'treeAttribute' => 'tree',
+            // 'leftAttribute' => 'lft',
+            // 'rightAttribute' => 'rgt',
+            //'levelAttribute' => 'level',
+        ];
+        return ArrayHelper::merge(parent::behaviors(), $a);
     }
 
     public function getCountItems()
@@ -119,10 +123,10 @@ class Category extends ActiveRecord
     }
 
 
-    public function getTranslations()
-    {
-        return $this->hasMany($this->translationClass, ['object_id' => 'id']);
-    }
+    //public function getTranslations()
+    //{
+   //     return $this->hasMany($this->translationClass, ['object_id' => 'id']);
+    //}
 
     public static function flatTree()
     {

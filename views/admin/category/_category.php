@@ -62,7 +62,7 @@ use panix\mod\shop\models\Category;
                         "action": function (obj) {
                             $node = tree.get_node($node);
                             console.log($node);
-                            window.location = "/admin/shop/category/index?parent_id="+$node.id.replace("node_", "");
+                            window.location = common.language_path+"/admin/shop/category/index?parent_id="+$node.id.replace("node_", "");
                         }
                     }, 
                     "Edit": {
@@ -70,7 +70,7 @@ use panix\mod\shop\models\Category;
                         "label": "' . Yii::t('app', 'UPDATE') . '",
                         "action": function (obj) {
                             $node = tree.get_node($node);
-                           window.location = "/admin/shop/category/index?id="+$node.id.replace("node_", "");
+                            window.location = common.language_path+"/admin/shop/category/index?id="+$node.id.replace("node_", "");
                         }
                     },  
                     "Rename": {
