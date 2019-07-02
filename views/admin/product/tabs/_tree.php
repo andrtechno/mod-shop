@@ -16,7 +16,7 @@ echo \panix\ext\jstree\JsTree::widget([
     'id' => 'CategoryTree',
     'name' => 'jstree',
     'allOpen'=>true,
-    'data' => Category::find()->dataFancytree(2),
+    'data' => Category::find()->dataFancytree(1),
     'core' => [
         'force_text' => true,
         'animation' => 0,

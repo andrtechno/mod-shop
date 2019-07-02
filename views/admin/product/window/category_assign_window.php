@@ -9,7 +9,7 @@ echo \panix\ext\jstree\JsTree::widget([
     'id' => 'CategoryAssignTreeDialog',
     'name' => 'jstree',
     'allOpen'=>true,
-    'data' => Category::find()->dataFancytree(2),
+    'data' => Category::find()->dataFancytree(1),
     'core' => [
         'strings' => [
             'Loading ...' => Yii::t('app', 'LOADING')
