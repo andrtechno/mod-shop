@@ -49,7 +49,6 @@ class CategoryController extends AdminController
         $model = Category::findModel(Yii::$app->request->get('id'));
 
         if ($model->getIsNewRecord()) {
-            $this->icon = 'add';
             $this->pageName = Yii::t('shop/Category', 'CREATE_TITLE');
         } else {
             $this->pageName = Yii::t('shop/Category', 'UPDATE_TITLE', ['name' => $model->name]);
