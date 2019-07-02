@@ -28,7 +28,6 @@ class CategoryQuery extends ActiveQuery
 
     public function excludeRoot()
     {
-        // $this->addWhere(['condition' => 'id != 1']);
         $this->andWhere(['!=', 'id', 1]);
         return $this;
     }

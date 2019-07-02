@@ -18,15 +18,10 @@ class CategoriesWidget extends Widget
     public function run()
     {
 
-        $model = Category::findOne(1);
+        // $model = Category::findOne(1);
+        $model = Category::find()->dataFancytree(1);
 
-        if (!$model) {
-            die(__CLASS__ . 'err');
-        } else {
-            $result = $model->menuArray();
-        }
-
-        return $this->render($this->skin, ['result' => $result]);
+        return $this->render($this->skin, ['result' => $model]);
     }
 
     public function recursive($data, $i = 0)
@@ -34,50 +29,41 @@ class CategoriesWidget extends Widget
         $html = '';
 
         if (isset($data)) {
-            $html .= Html::beginTag('ul');
+
             foreach ($data as $obj) {
 
-                $i++;
-                if (isset($_GET['slug']) && stripos($_GET['slug'], $obj['url']['slug']) !== false) {
+
+                $iconClass = (isset($obj['folder'])) ? 'icon-folder-open' : '';
+                if (Yii::$app->request->get('slug') && stripos(Yii::$app->request->get('slug'), $obj['url']) !== false) {
                     $ariaExpanded = 'true';
-                    $collapseClass = 'collapse in';
+                    $collapseClass = 'collapse in ';
                 } else {
                     $ariaExpanded = 'false';
-                    $collapseClass = 'collapse';
+                    $collapseClass = 'collapse ';
                 }
+
                 if (Yii::$app->request->get('slug')) {
-                    $activeClass = ($obj['url']['slug'] === $_GET['slug']) ? 'active' : '';
+                    $activeClass = ($obj['url'] === '/' . Yii::$app->request->get('slug')) ? 'active' : '';
                 } else {
                     $activeClass = '';
                 }
 
-
-                $html .= Html::beginTag('li', array('class' => $activeClass));
-                if (isset($obj['items'])) {
-                    $html .= Html::a($obj['label'], '#collapse' . $obj['id'], array(
+                if (isset($obj['children'])) {
+                    $html .= Html::a($obj['title'], '#collapse' . $obj['key'], array(
                         'data-toggle' => 'collapse',
                         'aria-expanded' => $ariaExpanded,
-                        'aria-controls' => 'collapse' . $obj['id'],
-                        'class' => 'collapsed plus-minus'
+                        'aria-controls' => 'collapse' . $obj['key'],
+                        'class' => "nav-link collapsed {$activeClass} {$iconClass}"
                     ));
-                    $html .= Html::tag('sup', $obj['total_count'], []);
-                    $html .= Html::beginTag('div', array('class' => $collapseClass, 'id' => 'collapse' . $obj['id']));
-                    $html .= $this->recursive($obj['items'], $i);
-
+                    $html .= Html::beginTag('div', ['class' => $collapseClass, 'id' => 'collapse' . $obj['key']]);
+                    $html .= $this->recursive($obj['children'], $i);
                     $html .= Html::endTag('div');
                 } else {
-
-                    // $html .= Html::a($obj['label'], Yii::$app->urlManager->createUrl([$obj['url'][0], ['slug' => $obj['url']['slug']]]));
-                    $html .= Html::a($obj['label'], Yii::$app->urlManager->createUrl($obj['url']));
-                    $html .= Html::tag('sup', $obj['total_count'], []);
+                    $html .= Html::a($obj['title'], Yii::$app->urlManager->createUrl($obj['url']), ['class' => "nav-link {$activeClass} {$iconClass}"]);
                 }
-                $html .= Html::endTag('li');
             }
-            $html .= Html::endTag('ul');
-        } else {
-            //$parent[$obj['id']] = $obj['id'];
-            $html .= Html::a($data['label'], '');
-            $html .= Html::tag('sup', $data['total_count'], []);
+            $i++;
+
         }
         return $html;
     }

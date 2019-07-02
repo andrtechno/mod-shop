@@ -1,11 +1,7 @@
 <?php
 
-use yii\helpers\Html;
+use panix\engine\Html;
 use panix\engine\bootstrap\ActiveForm;
-
-use panix\ext\taginput\TagInput;
-
-
 ?>
 
 <div class="row">
@@ -19,10 +15,12 @@ use panix\ext\taginput\TagInput;
             <div class="card-body">
                 <?php
                 $tabs = [];
+
                 $tabs[] = [
                     'label' => $model::t('TAB_MAIN'),
                     'content' => $this->render('_main', ['form' => $form, 'model' => $model]),
                     'active' => true,
+                    'encode' => false,
                     'options' => ['class' => 'text-center nav-item'],
                 ];
                 $tabs[] = [

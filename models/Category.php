@@ -123,7 +123,7 @@ class Category extends ActiveRecord
 
         foreach ($categories as $c) {
             /**
-             * @var Category $c
+             * @var self $c
              */
             if ($c->depth > 1) {
                 $result[$c->id] = str_repeat('--', $c->depth - 1) . ' ' . $c->name;
@@ -149,7 +149,7 @@ class Category extends ActiveRecord
      */
     public function afterSave($insert, $changedAttributes)
     {
-        \Yii::$app->cache->delete('CategoryUrlRule');
+
 
         $childrens = $this->descendants()->all();
         if ($childrens) {
@@ -158,6 +158,7 @@ class Category extends ActiveRecord
                 $children->saveNode(false);
             }
         }
+        Yii::$app->cache->delete('CategoryUrlRule');
         return parent::afterSave($insert, $changedAttributes);
     }
     /**
