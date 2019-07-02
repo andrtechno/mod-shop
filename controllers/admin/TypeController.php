@@ -81,8 +81,8 @@ class TypeController extends AdminController
 
         $post = Yii::$app->request->post();
 
-
-        if ($model->load($post) && $model->validate()) {
+        $isNew = $model->isNewRecord;
+        if ($model->load($post)) {
 
             if (Yii::$app->request->post('categories')) {
                 $model->categories_preset = serialize(Yii::$app->request->post('categories'));
@@ -98,7 +98,10 @@ class TypeController extends AdminController
                 // Set type attributes
 
                 $model->useAttributes(Yii::$app->request->post('attributes', []));
-                return $this->redirect('index');
+                Yii::$app->session->setFlash('success', Yii::t('app', ($isNew) ? 'SUCCESS_CREATE' : 'SUCCESS_UPDATE'));
+                $redirect = (isset($post['redirect'])) ? $post['redirect'] : Yii::$app->request->url;
+                if (!Yii::$app->request->isAjax)
+                    return $this->redirect($redirect);
             }
         }
 

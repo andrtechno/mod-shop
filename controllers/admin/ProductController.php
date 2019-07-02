@@ -147,7 +147,7 @@ class ProductController extends AdminController
                 $model->configurable_attributes = $_GET['Product']['configurable_attributes'];
         }
 
-
+        $isNew = $model->isNewRecord;
         if ($model->load($post) && $model->validate() && $this->validateAttributes($model) && $this->validatePrices($model)) {
             //   print_r($post['redirect']);
             $model->setRelatedProducts(Yii::$app->request->post('RelatedProductId', []));
@@ -190,7 +190,7 @@ class ProductController extends AdminController
             $this->processConfigurations($model);
 
 
-            if ($model->isNewRecord) {
+            /*if ($model->isNewRecord) {
                 Yii::$app->session->setFlash('success', Yii::t('app', 'SUCCESS_CREATE'));
                 if (!Yii::$app->request->isAjax)
                     return Yii::$app->getResponse()->redirect(['/admin/shop/product']);
@@ -199,7 +199,11 @@ class ProductController extends AdminController
                 $redirect = (isset($post['redirect'])) ? $post['redirect'] : Yii::$app->request->url;
                 if (!Yii::$app->request->isAjax)
                     return Yii::$app->getResponse()->redirect($redirect);
-            }
+            }*/
+            Yii::$app->session->setFlash('success', Yii::t('app', ($isNew) ? 'SUCCESS_CREATE' : 'SUCCESS_UPDATE'));
+            $redirect = (isset($post['redirect'])) ? $post['redirect'] : Yii::$app->request->url;
+            if (!Yii::$app->request->isAjax)
+                return $this->redirect($redirect);
         } else {
 
             // print_r($model->getErrors());

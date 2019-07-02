@@ -2,24 +2,12 @@
 
 namespace panix\mod\shop\models;
 
-use Yii;
-use panix\engine\CMS;
-use panix\engine\behaviors\TranslateBehavior;
-use panix\mod\shop\models\Category;
-use panix\mod\shop\models\Manufacturer;
-use panix\mod\shop\models\query\ProductQuery;
-use panix\mod\shop\models\translate\ProductTranslate;
-use panix\mod\shop\models\RelatedProduct;
-use panix\mod\shop\models\ProductCategoryRef;
-use yii\helpers\ArrayHelper;
-use yii\helpers\Html;
+use panix\engine\db\ActiveRecord;
 
-class ProductType extends \panix\engine\db\ActiveRecord
+class ProductType extends ActiveRecord
 {
 
-
     const MODULE_ID = 'shop';
-
 
     public static function getCSort()
     {

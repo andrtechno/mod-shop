@@ -24,27 +24,38 @@ echo \panix\ext\jstree\JsTree::widget([
     'id' => 'TypeCategoryTree',
     'name' => 'jstree',
     'allOpen' => true,
-    'data' => Category::find()->dataFancytree(2),
-    'core' => array(
-        'strings' => array('Loading ...' => Yii::t('app', 'LOADING')),
+    'data' => Category::find()->dataFancytree(1),
+    'core' => [
+        'animation' => 0,
+        'strings' => ['Loading ...' => Yii::t('app', 'LOADING')],
         'check_callback' => true,
-        "themes" => array("variant" => "large", "stripes" => true, 'responsive' => true),
-    ),
-    'plugins' => array('search', 'checkbox'),
-    'checkbox' => array(
+        "themes" => ["variant" => "large", "stripes" => true, 'responsive' => true],
+    ],
+    'plugins' => [
+        'search',
+        'checkbox',
+      //  'state',
+      // 'wholerow',
+       // 'types'
+    ],
+    'checkbox' => [
         'three_state' => false,
         'tie_selection' => false,
         'whole_node' => false,
         "keep_selected_style" => true
-    ),
+    ],
 ]);
 
 // Check tree nodes
 $categories = unserialize($model->categories_preset);
 if (!is_array($categories))
-    $categories = array();
+    $categories = [];
 
 foreach ($categories as $id) {
     $this->registerJs("$('#jsTree_TypeCategoryTree').checkNode({$id});");
+    //$this->registerJs("$('#jsTree_TypeCategoryTree').jstree('check_node','node_{$id}');");
 }
+
+
+
 ?>
