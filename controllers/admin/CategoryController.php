@@ -110,7 +110,7 @@ class CategoryController extends AdminController
 
         $model = Category::findOne((int)$id);
         if ($model) {
-            $model->name = $_GET['text'];
+            $model->name = Yii::$app->request->get('text');
             $model->slug = CMS::slug($model->name);
             if ($model->validate()) {
                 $model->saveNode(false);

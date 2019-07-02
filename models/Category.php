@@ -35,20 +35,7 @@ class Category extends ActiveRecord
 
     const MODULE_ID = 'shop';
     const route = '/shop/admin/category';
-
-    /**
-     * Translate options
-     * @var array
-     */
-    public $translationOptions = [
-        'model'=>CategoryTranslate::class,
-        'translationAttributes' => [
-            'name',
-            'description',
-            'seo_product_title',
-            'seo_product_description'
-        ]
-    ];
+    public $translationClass = CategoryTranslate::class;
 
     public $parent_id;
 
@@ -106,13 +93,18 @@ class Category extends ActiveRecord
                 'image' => '@uploads/categories'
             ]
         ];
+        $a['translate'] = [
+            'class' => 'panix\engine\behaviors\TranslateBehavior',
+            'translationAttributes' => [
+                'name',
+                'description',
+                'seo_product_title',
+                'seo_product_description'
+            ]
+        ];
         $a['tree'] = [
             'class' => NestedSetsBehavior::class,
             'hasManyRoots' => false
-            // 'treeAttribute' => 'tree',
-            // 'leftAttribute' => 'lft',
-            // 'rightAttribute' => 'rgt',
-            //'levelAttribute' => 'level',
         ];
         return ArrayHelper::merge(parent::behaviors(), $a);
     }
@@ -122,11 +114,6 @@ class Category extends ActiveRecord
         return $this->hasMany(ProductCategoryRef::class, ['category' => 'id'])->count();
     }
 
-
-    //public function getTranslations()
-    //{
-   //     return $this->hasMany($this->translationClass, ['object_id' => 'id']);
-    //}
 
     public static function flatTree()
     {
@@ -163,8 +150,25 @@ class Category extends ActiveRecord
     public function afterSave($insert, $changedAttributes)
     {
         \Yii::$app->cache->delete('CategoryUrlRule');
+
+        $childrens = $this->descendants()->all();
+        if ($childrens) {
+            foreach ($childrens as $children) {
+                $children->full_path = $this->slug . '/' . $children->full_path;
+                $children->saveNode(false);
+            }
+        }
         return parent::afterSave($insert, $changedAttributes);
     }
+    /**
+     * Category translation relation
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTranslations()
+    {
+        return $this->hasMany($this->translationClass, ['object_id' => 'id']);
+    }
+
 
     public function rebuildFullPath()
     {
@@ -172,7 +176,8 @@ class Category extends ActiveRecord
         $ancestors = $this->ancestors()
             //->orderBy('depth')
             ->all();
-        if (sizeof($ancestors)) {
+        if ($ancestors) {
+            //if (sizeof($ancestors)) {
             // Remove root category from path
             unset($ancestors[0]);
 
