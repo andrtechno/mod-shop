@@ -2,6 +2,7 @@
 
 namespace panix\mod\shop\widgets\categories;
 
+use panix\engine\CMS;
 use panix\mod\shop\models\Category;
 use panix\engine\data\Widget;
 use yii\helpers\Html;
@@ -24,16 +25,14 @@ class CategoriesWidget extends Widget
         return $this->render($this->skin, ['result' => $model]);
     }
 
-    public function recursive($data, $i = 0)
+    public function recursive($data, $i = 0, $ulOptions = array())
     {
         $html = '';
-
         if (isset($data)) {
-
+            $html .= Html::beginTag('ul', $ulOptions);
             foreach ($data as $obj) {
 
-
-                $iconClass = (isset($obj['folder'])) ? 'icon-folder-open' : '';
+                $i++;
                 if (Yii::$app->request->get('slug') && stripos(Yii::$app->request->get('slug'), $obj['url']) !== false) {
                     $ariaExpanded = 'true';
                     $collapseClass = 'collapse in ';
@@ -47,25 +46,41 @@ class CategoriesWidget extends Widget
                 } else {
                     $activeClass = '';
                 }
-
                 if (isset($obj['children'])) {
-                    $html .= Html::a($obj['title'], '#collapse' . $obj['key'], array(
+                    $toggleBtn = Html::button('+', [
+                       // 'class' => 'btn btn-sm btn-link',
                         'data-toggle' => 'collapse',
                         'aria-expanded' => $ariaExpanded,
-                        'aria-controls' => 'collapse' . $obj['key'],
-                        'class' => "nav-link collapsed {$activeClass} {$iconClass}"
-                    ));
-                    $html .= Html::beginTag('div', ['class' => $collapseClass, 'id' => 'collapse' . $obj['key']]);
-                    $html .= $this->recursive($obj['children'], $i);
-                    $html .= Html::endTag('div');
+                        'data-target'=>'#' . $this->hash($obj['key']),
+                        'aria-controls' => '#' . $this->hash($obj['key']),
+                        'class' => "collapsed {$activeClass}"
+                    ]);
                 } else {
-                    $html .= Html::a($obj['title'], Yii::$app->urlManager->createUrl($obj['url']), ['class' => "nav-link {$activeClass} {$iconClass}"]);
+                    $toggleBtn = '';
+
                 }
+                $html .= Html::beginTag('li', []);
+                // $iconClass = (isset($obj['folder'])) ? 'icon-folder-open' : '';
+
+
+                if (isset($obj['children'])) {
+                    $html .= Html::a($obj['title'], '#' . $this->hash($obj['key']));
+                    $html .= $toggleBtn;
+                    $ulOptions = ['class' => $collapseClass, 'id' => $this->hash($obj['key'])];
+                    $html .= $this->recursive($obj['children'], $i, $ulOptions);
+                } else {
+                    $html .= Html::a($obj['title'], Yii::$app->urlManager->createUrl($obj['url']), ['class' => "nav-link1 {$activeClass}"]);
+                }
+                $html .= Html::endTag('li');
             }
-            $i++;
+            $html .= Html::endTag('ul');
 
         }
         return $html;
     }
 
+    private function hash($key)
+    {
+        return 'collapse-' . CMS::hash('catalog-' . $key);
+    }
 }
