@@ -16,6 +16,7 @@ use yii\db\ActiveRecord;
  */
 class AttributeTranslate extends ActiveRecord
 {
+    public static $translationAttributes = ['title', 'abbreviation', 'hint'];
 
     /**
      * @inheritdoc

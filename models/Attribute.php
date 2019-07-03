@@ -91,11 +91,6 @@ class Attribute extends ActiveRecord
         return '{{%shop__attribute}}';
     }
 
-    public function getTranslations()
-    {
-        return $this->hasMany($this->translationClass, ['object_id' => 'id']);
-    }
-
     /*
         public function ___getAttrtranslateOne() {
             return $this->hasOne(AttributeTranslate::className(), ['object_id' => 'id']);
@@ -151,15 +146,6 @@ class Attribute extends ActiveRecord
     public function behaviors()
     {
         return ArrayHelper::merge([
-            'translate' => [
-                'class' => \panix\engine\behaviors\TranslateBehavior::class,
-                //'translationRelation' => 'attrtranslate',
-                'translationAttributes' => [
-                    'title',
-                    'abbreviation',
-                    'hint'
-                ]
-            ],
             'slug' => [
                 'class' => \yii\behaviors\SluggableBehavior::class,
                 'attribute' => 'title',

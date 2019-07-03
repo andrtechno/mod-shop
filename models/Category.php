@@ -93,20 +93,11 @@ class Category extends ActiveRecord
                 'image' => '@uploads/categories'
             ]
         ];
-        $a['translate'] = [
-            'class' => 'panix\engine\behaviors\TranslateBehavior',
-            'translationAttributes' => [
-                'name',
-                'description',
-                'seo_product_title',
-                'seo_product_description'
-            ]
-        ];
         $a['tree'] = [
             'class' => NestedSetsBehavior::class,
             'hasManyRoots' => false
         ];
-        return ArrayHelper::merge(parent::behaviors(), $a);
+        return ArrayHelper::merge($a, parent::behaviors());
     }
 
     public function getCountItems()
@@ -161,15 +152,6 @@ class Category extends ActiveRecord
         Yii::$app->cache->delete('CategoryUrlRule');
         return parent::afterSave($insert, $changedAttributes);
     }
-    /**
-     * Category translation relation
-     * @return \yii\db\ActiveQuery
-     */
-    public function getTranslations()
-    {
-        return $this->hasMany($this->translationClass, ['object_id' => 'id']);
-    }
-
 
     public function rebuildFullPath()
     {

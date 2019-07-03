@@ -3,7 +3,6 @@
 namespace panix\mod\shop\models;
 
 use Yii;
-use yii\helpers\ArrayHelper;
 use panix\mod\shop\models\translate\AttributeGroupTranslate;
 use panix\mod\shop\models\query\AttributeGroupQuery;
 use panix\engine\db\ActiveRecord;
@@ -13,6 +12,7 @@ class AttributeGroup extends ActiveRecord
 {
 
     const MODULE_ID = 'shop';
+    public $translationClass = AttributeGroupTranslate::class;
 
     public static function find2()
     {
@@ -55,11 +55,6 @@ class AttributeGroup extends ActiveRecord
         return '{{%shop__attribute_group}}';
     }
 
-    public function getTranslations()
-    {
-        return $this->hasMany(AttributeGroupTranslate::class, ['object_id' => 'id']);
-    }
-
 
     /**
      * @return array validation rules for model attributes.
@@ -74,20 +69,6 @@ class AttributeGroup extends ActiveRecord
         ];
     }
 
-    public function behaviors()
-    {
-        return ArrayHelper::merge([
-            'translate' => [
-                'class' => \panix\engine\behaviors\TranslateBehavior::class,
-               // 'translationRelation' => 'translation',
-                'translationAttributes' => [
-                    'name',
-                ]
-            ],
-        ], parent::behaviors());
-    }
-
-
 
     public static function getSort()
     {
@@ -100,7 +81,6 @@ class AttributeGroup extends ActiveRecord
             ],
         ]);
     }
-
 
 
 }

@@ -14,7 +14,11 @@ use yii\db\ActiveRecord;
  */
 class AttributeGroupTranslate extends ActiveRecord
 {
+    public static $translationAttributes = ['name'];
 
+    /**
+     * @inheritdoc
+     */
     public static function tableName()
     {
         return '{{%shop__attribute_group_translate}}';

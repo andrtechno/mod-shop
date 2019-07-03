@@ -14,6 +14,7 @@ use yii\db\ActiveRecord;
  */
 class AttributeOptionTranslate extends ActiveRecord
 {
+    public static $translationAttributes = ['value'];
 
     public static function tableName()
     {

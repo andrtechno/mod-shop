@@ -105,14 +105,6 @@ class Manufacturer extends ActiveRecord
         return '{{%shop__manufacturer}}';
     }
 
-    /**
-     * Manufacturer translation relation
-     * @return \yii\db\ActiveQuery
-     */
-    public function getTranslations()
-    {
-        return $this->hasMany($this->translationClass, ['object_id' => 'id']);
-    }
 
     /**
      * Products count relation
@@ -157,13 +149,6 @@ class Manufacturer extends ActiveRecord
                 'url' => $this->getUrl()
             ];
 
-        $a['translate'] = [
-            'class' => 'panix\engine\behaviors\TranslateBehavior',
-            'translationAttributes' => [
-                'name',
-                'description'
-            ]
-        ];
         $a['uploadFile'] = [
             'class' => 'panix\engine\behaviors\UploadFileBehavior',
             'files' => [

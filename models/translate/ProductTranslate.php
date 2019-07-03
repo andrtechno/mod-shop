@@ -16,6 +16,7 @@ use yii\db\ActiveRecord;
  */
 class ProductTranslate extends ActiveRecord
 {
+    public static $translationAttributes = ['name', 'full_description'];
 
     /**
      * @inheritdoc

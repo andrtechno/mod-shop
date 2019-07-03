@@ -319,16 +319,6 @@ class Product extends ActiveRecord
         return $this->hasOne(ProductType::class, ['type_id' => 'id'])->cache(3600);
     }
 
-    public function getTranslations()
-    {
-        return $this->hasMany($this->translationClass, ['object_id' => 'id']);
-    }
-
-    public function getTranslation()
-    {
-        return $this->hasOne($this->translationClass, ['object_id' => 'id']);
-    }
-
     public function getRelated()
     {
         return $this->hasMany(RelatedProduct::class, ['related_id' => 'id'])->cache(3600);
@@ -819,13 +809,7 @@ class Product extends ActiveRecord
                 'class' => '\panix\mod\seo\components\SeoBehavior',
                 'url' => $this->getUrl()
             ];
-        $a['translate'] = [
-            'class' => TranslateBehavior::class,
-            'translationAttributes' => [
-                'name',
-                'full_description'
-            ]
-        ];
+
         if (Yii::$app->getModule('comments')) {
             $a['comments'] = [
                 'class' => '\panix\mod\comments\components\CommentBehavior',

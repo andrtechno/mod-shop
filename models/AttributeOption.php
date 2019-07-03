@@ -52,11 +52,6 @@ class AttributeOption extends ActiveRecord
         ];
     }
 
-    public function getTranslations()
-    {
-        return $this->hasMany($this->translationClass, ['object_id' => 'id']);
-    }
-
     public function getProductsCount()
     {
         $query = $this->hasMany(ProductAttributesEav::class, ['value' => 'id']);
@@ -77,20 +72,6 @@ class AttributeOption extends ActiveRecord
     public function getAttr()
     {
         return $this->hasOne(Attribute::class, ['id' => 'attribute_id']);
-    }
-
-
-    public function behaviors()
-    {
-        return ArrayHelper::merge([
-            'translate' => [
-                'class' => \panix\engine\behaviors\TranslateBehavior::class,
-                //'translationRelation' => 'optionTranslate',
-                'translationAttributes' => [
-                    'value',
-                ]
-            ],
-        ], parent::behaviors());
     }
 
     public function beforeSave2($insert)
