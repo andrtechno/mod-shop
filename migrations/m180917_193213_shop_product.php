@@ -47,8 +47,8 @@ class m180917_193213_shop_product extends Migration
             'markup' => $this->string(50),
             'video' => $this->text(),
             'enable_comments' => $this->tinyInteger(1)->defaultValue(1)->unsigned(),
-            'created_at' => $this->integer(11)->null(),
-            'updated_at' => $this->integer(11)->null(),
+            'created_at' => $this->timestamp(),
+            'updated_at' => $this->timestamp()->defaultExpression('CURRENT_TIMESTAMP'),
             'switch' => $this->boolean()->defaultValue(1),
             'ordern' => $this->integer(),
         ], $this->tableOptions);
