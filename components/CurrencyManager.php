@@ -9,7 +9,8 @@ use panix\mod\shop\models\Currency;
 /**
  * Class to work with currencies
  */
-class CurrencyManager extends Component {
+class CurrencyManager extends Component
+{
 
     /**
      * @var array available currencies
@@ -36,7 +37,8 @@ class CurrencyManager extends Component {
      */
     public $cacheKey = 'currency_manager';
 
-    public function init() {
+    public function init()
+    {
         foreach ($this->loadCurrencies() as $currency) {
             $this->_currencies[$currency->id] = $currency;
             if ($currency->is_main)
@@ -44,28 +46,33 @@ class CurrencyManager extends Component {
             if ($currency->is_default)
                 $this->_default = $currency;
         }
-
-        $this->setActive($this->detectActive()->id);
+        if ($this->detectActive()) {
+            $this->setActive($this->detectActive()->id);
+        }
     }
 
     /**
      * @return array
      */
-    public function getCurrencies() {
+    public function getCurrencies()
+    {
         return $this->_currencies;
     }
-    
+
     /**
      * @return array
      */
-    public function getSymbol($id) {
+    public function getSymbol($id)
+    {
         return $this->_currencies[$id]->symbol;
     }
+
     /**
      * Detect user active currency
      * @return Currency
      */
-    public function detectActive() {
+    public function detectActive()
+    {
         // Detect currency from session
         $sessCurrency = Yii::$app->session['currency'];
 
@@ -77,7 +84,8 @@ class CurrencyManager extends Component {
     /**
      * @param int $id currency id
      */
-    public function setActive($id) {
+    public function setActive($id)
+    {
         if (isset($this->_currencies[$id]))
             $this->_active = $this->_currencies[$id];
         else
@@ -90,14 +98,16 @@ class CurrencyManager extends Component {
      * get active currency
      * @return Currency
      */
-    public function getActive() {
+    public function getActive()
+    {
         return $this->_active;
     }
 
     /**
      * @return Currency main currency
      */
-    public function getMain() {
+    public function getMain()
+    {
         return $this->_main;
     }
 
@@ -107,7 +117,8 @@ class CurrencyManager extends Component {
      * @param mixed $id Currency. If not set, sum will be converted to active currency
      * @return float converted sum
      */
-    public function convert($sum, $id = null) {
+    public function convert($sum, $id = null)
+    {
         if ($id !== null && isset($this->_currencies[$id]))
             $currency = $this->_currencies[$id];
         else
@@ -116,31 +127,34 @@ class CurrencyManager extends Component {
         return $currency->rate * $sum;
     }
 
-    public function number_format($sum) {
+    public function number_format($sum)
+    {
         $format = number_format($sum, $this->_active->penny, $this->_active->separator_thousandth, $this->_active->separator_hundredth);
         return iconv("windows-1251", "UTF-8", $format);
     }
-    
+
     /**
      * Convert from active currency to main
      * @param $sum
      * @return float
      */
-    public function activeToMain($sum) {
+    public function activeToMain($sum)
+    {
         return $sum / $this->getActive()->rate;
     }
 
     /**
      * @return array
      */
-    public function loadCurrencies() {
+    public function loadCurrencies()
+    {
         $currencies = Yii::$app->cache->get($this->cacheKey);
 
         if (!$currencies) {
             $currencies = Currency::find()
-                    //->asArray()
-                    ->all();
-            Yii::$app->cache->set($this->cacheKey, $currencies,Yii::$app->settings->get('app','cache_time'));
+                //->asArray()
+                ->all();
+            Yii::$app->cache->set($this->cacheKey, $currencies, Yii::$app->settings->get('app', 'cache_time'));
         }
 
         return $currencies;

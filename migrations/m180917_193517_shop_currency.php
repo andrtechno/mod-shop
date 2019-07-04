@@ -1,5 +1,6 @@
 <?php
 
+namespace panix\mod\shop\migrations;
 /**
  * Generation migrate by PIXELION CMS
  * @author PIXELION CMS development team <dev@pixelion.com.ua>
@@ -29,14 +30,14 @@ class m180917_193517_shop_currency extends Migration {
             'ordern' => $this->integer(),
         ], $this->tableOptions);
 
-
-
-
         $this->createIndex('is_main', Currency::tableName(), 'is_main');
         $this->createIndex('is_default', Currency::tableName(), 'is_default');
         $this->createIndex('ordern', Currency::tableName(), 'ordern');
 
-
+        $columns = ['name', 'iso', 'symbol', 'rate', 'penny', 'separator_hundredth', 'separator_thousandth', 'is_main', 'is_default', 'ordern'];
+        $this->batchInsert(Currency::tableName(), $columns, [
+            ['Гривна', 'UAH', 'грн.', 1, 0, ' ', ' ', 1, 1, 1],
+        ]);
     }
 
     public function down()

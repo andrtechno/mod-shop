@@ -1,5 +1,6 @@
 <?php
 
+namespace panix\mod\shop\migrations;
 /**
  * Generation migrate by PIXELION CMS
  * @author PIXELION CMS development team <dev@pixelion.com.ua>

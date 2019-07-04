@@ -1,4 +1,7 @@
 <?php
+
+namespace panix\mod\shop\migrations;
+
 /**
  * Generation migrate by PIXELION CMS
  *
@@ -12,7 +15,8 @@ use panix\engine\db\Migration;
 use panix\mod\shop\models\AttributeGroup;
 use panix\mod\shop\models\translate\AttributeGroupTranslate;
 
-class m190315_062942_shop_attribute_group extends Migration {
+class m190315_062942_shop_attribute_group extends Migration
+{
 
     public function up()
     {
@@ -22,7 +26,6 @@ class m190315_062942_shop_attribute_group extends Migration {
             'switch' => $this->boolean()->notNull()->defaultValue(null),
             'ordern' => $this->integer(),
         ], $this->tableOptions);
-
 
 
         $this->createTable(AttributeGroupTranslate::tableName(), [

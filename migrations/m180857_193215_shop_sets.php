@@ -1,5 +1,7 @@
 <?php
 
+namespace panix\mod\shop\migrations;
+
 /**
  * Generation migrate by PIXELION CMS
  * @author PIXELION CMS development team <dev@pixelion.com.ua>
@@ -33,7 +35,7 @@ class m180857_193215_shop_sets extends Migration
     public function down()
     {
         $this->dropTable(Sets::tableName());
-        $this->dropTable(SetsProduct::tableName());
+        //$this->dropTable(SetsProduct::tableName());
     }
 
 }

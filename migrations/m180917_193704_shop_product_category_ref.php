@@ -1,16 +1,19 @@
 <?php
 
+namespace panix\mod\shop\migrations;
+
 /**
  * Generation migrate by PIXELION CMS
  * @author PIXELION CMS development team <dev@pixelion.com.ua>
- * 
+ *
  * Class m180917_193704_shop_product_category_ref
  */
 use yii\db\Schema;
 use panix\engine\db\Migration;
 use panix\mod\shop\models\ProductCategoryRef;
 
-class m180917_193704_shop_product_category_ref extends Migration {
+class m180917_193704_shop_product_category_ref extends Migration
+{
 
     public function up()
     {

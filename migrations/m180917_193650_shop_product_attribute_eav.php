@@ -1,15 +1,18 @@
 <?php
 
+namespace panix\mod\shop\migrations;
+
 /**
  * Generation migrate by PIXELION CMS
  * @author PIXELION CMS development team <dev@pixelion.com.ua>
- * 
+ *
  * Class m180917_193650_shop_product_attribute_eav
  */
 use yii\db\Schema;
 use panix\engine\db\Migration;
 
-class m180917_193650_shop_product_attribute_eav extends Migration {
+class m180917_193650_shop_product_attribute_eav extends Migration
+{
 
     public function up()
     {
