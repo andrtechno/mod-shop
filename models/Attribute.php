@@ -3,6 +3,7 @@
 namespace panix\mod\shop\models;
 
 use Yii;
+use yii\caching\DbDependency;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use panix\mod\shop\models\translate\AttributeTranslate;
@@ -91,14 +92,12 @@ class Attribute extends ActiveRecord
         return '{{%shop__attribute}}';
     }
 
-    /*
-        public function ___getAttrtranslateOne() {
-            return $this->hasOne(AttributeTranslate::className(), ['object_id' => 'id']);
-        }
-    */
     public function getOptions()
     {
-        return $this->hasMany(AttributeOption::class, ['attribute_id' => 'id']);
+        $table = self::tableName();
+        $dependency = new DbDependency();
+        $dependency->sql = "SELECT MAX(updated_at) FROM {$table}";
+        return $this->hasMany(AttributeOption::class, ['attribute_id' => 'id'])->cache(3600, $dependency);
     }
 
     public function getGroups()
@@ -110,7 +109,6 @@ class Attribute extends ActiveRecord
     {
         return $this->hasOne(AttributeGroup::class, ['id' => 'group_id']);
     }
-
 
     public function getTypes()
     {

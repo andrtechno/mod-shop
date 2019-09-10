@@ -24,7 +24,7 @@ use yii\helpers\HtmlPurifier;
             <div>
                 <span class="price">
                     <span><?= $model->priceRange() ?></span>
-                    <sup><?= Yii::$app->currency->active->symbol ?></sup>
+                    <sup><?= Yii::$app->currency->active['symbol'] ?></sup>
                 </span>
             </div>
 
@@ -36,7 +36,7 @@ use yii\helpers\HtmlPurifier;
                     <span class="price price-strike">
                         discount
                         <span><?= Yii::$app->currency->number_format(Yii::$app->currency->convert($model->originalPrice)) ?></span>
-                        <sup><?= Yii::$app->currency->active->symbol ?></sup>
+                        <sup><?= Yii::$app->currency->active['symbol'] ?></sup>
                     </span>
                 </div>
 

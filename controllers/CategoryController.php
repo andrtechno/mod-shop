@@ -128,6 +128,11 @@ class CategoryController extends FilterController
         $this->query->published();
         $this->query->applyAttributes($this->activeAttributes);
         // Filter by manufacturer
+		
+	if (empty(Yii::$app->request->get('manufacturer')) && isset($_GET['manufacturer'])) {
+			//todo panix
+			// throw new CHttpException(404, Yii::t('ShopModule.default', 'NOFIND_CATEGORY'));
+		}
         if (Yii::$app->request->get('manufacturer')) {
             $manufacturers = explode(',', Yii::$app->request->get('manufacturer', ''));
             $this->query->applyManufacturers($manufacturers);
@@ -249,6 +254,7 @@ class CategoryController extends FilterController
                     $sep = (count($attributesNames[$filterKey]) > 2) ? ', ' : ' и ';
                     $name .= $prefix . $filterItems['label'] . ' ' . implode($sep, $attributesNames[$filterKey]);
                     $this->pageName .= $prefix . $filterItems['label'] . ' ' . implode($sep, $attributesNames[$filterKey]);
+                    $this->view->title = $this->pageName;
                 }
             }
             $this->breadcrumbs[] = [

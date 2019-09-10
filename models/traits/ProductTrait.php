@@ -84,10 +84,10 @@ trait ProductTrait
                 }
                 if ($model->currency_id) {
                     $priceHtml = Yii::$app->currency->number_format($price);
-                    $symbol = Html::tag('sup', Yii::$app->currency->currencies[$model->currency_id]->symbol);
+                    $symbol = Html::tag('sup', Yii::$app->currency->currencies[$model->currency_id]['symbol']);
                 } else {
                     $priceHtml = Yii::$app->currency->number_format(Yii::$app->currency->convert($price, $model->currency_id));
-                    $symbol = Html::tag('sup', Yii::$app->currency->main->symbol);
+                    $symbol = Html::tag('sup', Yii::$app->currency->main['symbol']);
                 }
                 return $ss . Html::tag('span', $priceHtml, ['class' => 'text-success font-weight-bold']) . ' ' . $symbol;
             }
@@ -126,11 +126,23 @@ trait ProductTrait
         ];
 
 
-        $query = Attribute::find()
+        /*$query2 = Attribute::find()
+            ->cache(3600)
             ->displayOnFront()
             ->sort()
             //->where(['IN', 'name', array_keys($this->_attributes)])
-            ->all();
+            ->all();*/
+
+
+        $db = Attribute::getDb();
+        $query = $db->cache(function () {
+            return Attribute::find()
+                ->displayOnFront()
+                ->sort()
+                ->all();
+        }, 3600);
+
+
 
         $get = Yii::$app->request->get('ProductSearch');
         foreach ($query as $m) {
@@ -287,7 +299,7 @@ trait ProductTrait
             "{product_sku}" => $this->sku,
             "{product_brand}" => (isset($this->manufacturer)) ? $this->manufacturer->name : null,
             "{category_name}" => (isset($this->mainCategory)) ? $this->mainCategory->name : null,
-            "{current_currency}" => Yii::$app->currency->active->symbol,
+            "{current_currency}" => Yii::$app->currency->active['symbol'],
         ], $attrArray);
         return CMS::textReplace($text, $replace);
     }

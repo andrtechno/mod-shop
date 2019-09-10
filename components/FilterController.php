@@ -41,9 +41,9 @@ class FilterController extends WebController
     public function beforeAction($action)
     {
         $this->view->registerJs("
-        var penny = '" . Yii::$app->currency->active->penny . "';
-        var separator_thousandth = '" . Yii::$app->currency->active->separator_thousandth . "';
-        var separator_hundredth = '" . Yii::$app->currency->active->separator_hundredth . "';
+        var penny = '" . Yii::$app->currency->active['penny'] . "';
+        var separator_thousandth = '" . Yii::$app->currency->active['separator_thousandth'] . "';
+        var separator_hundredth = '" . Yii::$app->currency->active['separator_hundredth'] . "';
      ", yii\web\View::POS_HEAD, 'numberformat');
         return parent::beforeAction($action);
     }
@@ -158,6 +158,11 @@ class FilterController extends WebController
 
         foreach (array_keys($_GET) as $key) {
             if (array_key_exists($key, $this->eavAttributes)) {
+				
+				        if (empty($_GET[$key]) && isset($_GET[$key])) {
+		//	 throw new CHttpException(404, Yii::t('ShopModule.default', 'NOFIND_CATEGORY'));
+		}
+		
                 if ((boolean)$this->eavAttributes[$key]->select_many === true) {
                     $data[$key] = explode(',', $_GET[$key]);
                 } else {
@@ -196,7 +201,7 @@ class FilterController extends WebController
         }
         if ($request->getQueryParam('min_price')) {
             $menuItems['price']['items'][] = [
-                'label' => Yii::t('shop/default', 'FILTER_CURRENT_PRICE_MIN', ['value' => Yii::$app->currency->number_format($this->getCurrentMinPrice()), 'currency' => Yii::$app->currency->active->symbol]),
+                'label' => Yii::t('shop/default', 'FILTER_CURRENT_PRICE_MIN', ['value' => Yii::$app->currency->number_format($this->getCurrentMinPrice()), 'currency' => Yii::$app->currency->active['symbol']]),
                 'linkOptions' => ['class' => 'remove', 'data-price' => 'min_price'],
                 'url' => Yii::$app->urlManager->removeUrlParam('/' . Yii::$app->requestedRoute, 'min_price')
             ];
@@ -204,7 +209,7 @@ class FilterController extends WebController
 
         if ($request->getQueryParam('max_price')) {
             $menuItems['price']['items'][] = [
-                'label' => Yii::t('shop/default', 'FILTER_CURRENT_PRICE_MAX', ['value' => Yii::$app->currency->number_format($this->getCurrentMaxPrice()), 'currency' => Yii::$app->currency->active->symbol]),
+                'label' => Yii::t('shop/default', 'FILTER_CURRENT_PRICE_MAX', ['value' => Yii::$app->currency->number_format($this->getCurrentMaxPrice()), 'currency' => Yii::$app->currency->active['symbol']]),
                 'linkOptions' => array('class' => 'remove', 'data-price' => 'max_price'),
                 'url' => Yii::$app->urlManager->removeUrlParam('/' . Yii::$app->requestedRoute, 'max_price')
             ];

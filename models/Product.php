@@ -11,6 +11,7 @@ use panix\engine\CMS;
 use panix\engine\behaviors\TranslateBehavior;
 use panix\mod\shop\models\query\ProductQuery;
 use panix\mod\shop\models\translate\ProductTranslate;
+use yii\caching\DbDependency;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -293,15 +294,6 @@ class Product extends ActiveRecord
     {
         return $this->hasMany(Sets::class, ['product_id' => 'id']);
     }
-
-
-
-
-
-
-
-
-
 
 
     public function getManufacturer()
@@ -747,6 +739,12 @@ class Product extends ActiveRecord
     public function __get($name)
     {
         if (substr($name, 0, 4) === 'eav_') {
+
+            $table = Attribute::tableName();
+            $dependency = new DbDependency();
+            $dependency->sql = "SELECT MAX(updated_at) FROM {$table}";
+
+
             if ($this->getIsNewRecord())
                 return null;
 
@@ -759,8 +757,7 @@ class Product extends ActiveRecord
             else
                 return null;
 
-            $attributeModel = Attribute::find()->where(['name' => $attribute])->one();
-            //$attributeModel = Attribute::find(['name' => $attribute])->one();
+            $attributeModel = Attribute::find()->where(['name' => $attribute])->cache(3600, $dependency)->one();
             return $attributeModel->renderValue($value);
         }
         return parent::__get($name);

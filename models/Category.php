@@ -200,7 +200,7 @@ class Category extends ActiveRecord
         $replace = [
             "{category_name}" => $this->name,
             "{sub_category_name}" => ($this->parent()->one()->name == 'root') ? '' : $this->parent()->one()->name,
-            "{current_currency}" => Yii::$app->currency->active->symbol,
+            "{current_currency}" => Yii::$app->currency->active['symbol'],
         ];
         return CMS::textReplace($text, $replace);
     }

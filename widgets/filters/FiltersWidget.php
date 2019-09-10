@@ -303,7 +303,7 @@ class FiltersWidget extends \panix\engine\data\Widget
     public function convertCurrency($sum)
     {
         $cm = Yii::$app->currency;
-        if ($cm->active->id != $cm->main->id)
+        if ($cm->active['id'] != $cm->main['id'])
             return $cm->activeToMain($sum);
         return $sum;
     }

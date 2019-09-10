@@ -77,9 +77,9 @@ class ProductController extends WebController
 
         //Yii::app()->clientScript->registerScriptFile($this->module->assetsUrl . '/product.view.js', CClientScript::POS_END);
         $this->view->registerJs("
-        var penny = " . Yii::$app->currency->active->penny . ";
-        var separator_thousandth = '" . Yii::$app->currency->active->separator_thousandth . "';
-        var separator_hundredth = '" . Yii::$app->currency->active->separator_hundredth . "';
+        var penny = " . Yii::$app->currency->active['penny'] . ";
+        var separator_thousandth = '" . Yii::$app->currency->active['separator_thousandth'] . "';
+        var separator_hundredth = '" . Yii::$app->currency->active['separator_hundredth'] . "';
         ", View::POS_END);
 
         if ($this->dataModel->use_configurations || $this->dataModel->processVariants())

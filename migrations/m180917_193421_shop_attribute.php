@@ -31,6 +31,8 @@ class m180917_193421_shop_attribute extends Migration
             'select_many' => $this->boolean()->null(),
             'ordern' => $this->integer(11)->null(),
             'required' => $this->boolean()->null(),
+            'created_at' => $this->integer(),
+            'updated_at' => $this->integer(),
         ], $this->tableOptions);
 
 

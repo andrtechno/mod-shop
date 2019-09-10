@@ -100,7 +100,7 @@ echo \yii\helpers\Inflector::sentence($words);
 
         <span class="price">
             <span id="product_price"><?= Yii::$app->currency->number_format($model->getFrontPrice()); ?></span>
-            <sup><?= Yii::$app->currency->active->symbol; ?></sup>
+            <sup><?= Yii::$app->currency->active['symbol']; ?></sup>
         </span>
         <?= $model->beginCartForm(); ?>
 
@@ -110,7 +110,7 @@ echo \yii\helpers\Inflector::sentence($words);
         <?php if ($model->appliedDiscount) { ?>
             <span class="price price-strike">
                 <span><?= Yii::$app->currency->number_format(Yii::$app->currency->convert($model->discountPrice)) ?></span>
-                <sup><?= Yii::$app->currency->active->symbol ?></sup>
+                <sup><?= Yii::$app->currency->active['symbol'] ?></sup>
             </span>
         <?php } ?>
         <?php

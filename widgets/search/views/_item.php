@@ -8,6 +8,6 @@ use panix\engine\Html;
     </div>
     <div class="autocomplete-info">
         <div><?= Html::a($name,$url,[]); ?></div>
-        <div><?=$price?> <?= Yii::$app->currency->active->symbol ?></div>
+        <div><?=$price?> <?= Yii::$app->currency->active['symbol'] ?></div>
     </div>
 </div>

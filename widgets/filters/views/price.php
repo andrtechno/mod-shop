@@ -68,7 +68,7 @@ if (Yii::$app->controller->getMinPrice() && Yii::$app->controller->getMaxPrice()
         Цена от
         <span id="mn" class="price price-sm"><?php echo Yii::$app->currency->number_format($getMin); ?></span>
         до   <span id="mx" class="price price-sm"><?php echo Yii::$app->currency->number_format($getMax); ?></span>
-        (<?= Yii::$app->currency->active->symbol ?>)</span>
+        (<?= Yii::$app->currency->active['symbol'] ?>)</span>
 
                     <?php echo Html::submitButton('OK', ['class' => 'btn btn-sm btn-warning']); ?>
                     <?php echo Html::endForm(); ?>

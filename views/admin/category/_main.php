@@ -30,10 +30,10 @@ if (Yii::$app->request->get('parent_id')) {
 <?= $form->field($model, 'description')->widget(TinyMce::class, ['options' => ['rows' => 6]]); ?>
 <?= $form->field($model, 'seo_product_title')->textInput(['maxlength' => 255])
     ->hint(Yii::t('shop/admin', 'META_CAT_TPL', [
-        'currency' => Yii::$app->currency->active->symbol
+        'currency' => Yii::$app->currency->active['symbol']
     ])); ?>
 <?= $form->field($model, 'seo_product_description')->textarea(['options' => ['rows' => 6]])
     ->hint(Yii::t('shop/admin', 'META_CAT_TPL', [
-        'currency' => Yii::$app->currency->active->symbol
+        'currency' => Yii::$app->currency->active['symbol']
     ])); ?>
 

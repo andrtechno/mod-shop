@@ -27,6 +27,7 @@ class m180917_193517_shop_currency extends Migration {
             'separator_thousandth' => $this->string(5)->null()->defaultValue(null),
             'is_main' => $this->boolean()->defaultValue(0),
             'is_default' => $this->boolean()->defaultValue(0),
+            'switch' => $this->boolean()->notNull()->defaultValue(null),
             'ordern' => $this->integer(),
         ], $this->tableOptions);
 
@@ -34,9 +35,9 @@ class m180917_193517_shop_currency extends Migration {
         $this->createIndex('is_default', Currency::tableName(), 'is_default');
         $this->createIndex('ordern', Currency::tableName(), 'ordern');
 
-        $columns = ['name', 'iso', 'symbol', 'rate', 'penny', 'separator_hundredth', 'separator_thousandth', 'is_main', 'is_default', 'ordern'];
+        $columns = ['name', 'iso', 'symbol', 'rate', 'penny', 'separator_hundredth', 'separator_thousandth', 'is_main', 'is_default', 'switch', 'ordern'];
         $this->batchInsert(Currency::tableName(), $columns, [
-            ['Гривна', 'UAH', 'грн.', 1, 0, ' ', ' ', 1, 1, 1],
+            ['Гривна', 'UAH', 'грн.', 1, 0, ' ', ' ', 1, 1, 1, 1],
         ]);
     }
 

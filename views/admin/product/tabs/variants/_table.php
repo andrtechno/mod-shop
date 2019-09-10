@@ -21,7 +21,7 @@ use yii\helpers\ArrayHelper;
         </tr>
         <tr>
             <th>Значение</th>
-            <th><?=Yii::t('shop/Product','PRICE')?> (<?=Yii::$app->currency->main->iso?>)</th>
+            <th><?=Yii::t('shop/Product','PRICE')?> (<?=Yii::$app->currency->main['iso'] ?>)</th>
             <th>Тип цены</th>
             <th><?=Yii::t('shop/Product','SKU')?></th>
             <th class="text-center">

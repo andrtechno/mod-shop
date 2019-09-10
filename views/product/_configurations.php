@@ -15,7 +15,7 @@ if (count($model->processVariants())) { ?>
 
             foreach ($variant['options'] as $v) {
                 $jsVariantsData[$v->id] = $v;
-                $price = ($v->price > 0) ? ' (+'.$v->price.' '.Yii::$app->currency->active->symbol.')':'';
+                $price = ($v->price > 0) ? ' (+'.$v->price.' '.Yii::$app->currency->active['symbol'].')':'';
                 $dropDownData[$v->id] = $v->option->value .$price;
             }
             echo ' <div class="col-sm-9">';
