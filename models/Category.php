@@ -29,6 +29,8 @@ use yii\helpers\ArrayHelper;
  * @property string $seo_product_description
  * @property string $full_path
  * @property integer $switch
+ * @property string getMetaDescription()
+ * @property string getMetaTitle()
  */
 class Category extends ActiveRecord
 {
@@ -175,33 +177,40 @@ class Category extends ActiveRecord
         return $this;
     }
 
-    public function description()
+    /**
+     * @return string
+     */
+    public function getMetaDescription()
     {
         if ($this->seo_product_description) {
             $value = $this->seo_product_description;
         } else {
             $value = Yii::$app->settings->get('shop', 'seo_categories_description');
         }
-        return $this->replaceMeta($value);
+        return $value;
     }
 
-    public function title()
+    /**
+     * @return string
+     */
+    public function getMetaTitle()
     {
         if ($this->seo_product_title) {
             $value = $this->seo_product_title;
         } else {
             $value = Yii::$app->settings->get('shop', 'seo_categories_title');
         }
-        return $this->replaceMeta($value);
+        return $value;
     }
 
-    public function replaceMeta($text)
+    public function replaceMeta($text,$parentCategory)
     {
         $replace = [
             "{category_name}" => $this->name,
-            "{sub_category_name}" => ($this->parent()->one()->name == 'root') ? '' : $this->parent()->one()->name,
+            "{sub_category_name}" => ($parentCategory->name == 'root') ? '' : $parentCategory->name,
             "{current_currency}" => Yii::$app->currency->active['symbol'],
         ];
         return CMS::textReplace($text, $replace);
     }
+
 }

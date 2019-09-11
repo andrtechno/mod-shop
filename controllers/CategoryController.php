@@ -100,7 +100,7 @@ class CategoryController extends FilterController
 
     public function doSearch($data, $view)
     {
-
+        $model = $this->dataModel;
         $this->query = Product::find();
         //$searchModel = new ProductSearch();
         //$this->query = $searchModel->searchBySite(Yii::$app->request->getQueryParams());//
@@ -117,7 +117,7 @@ class CategoryController extends FilterController
             //        'scopes' => array('published')
             //)));
 
-            $this->query->applyCategories($this->dataModel);
+            $this->query->applyCategories($model);
             //$this->query->andWhere([Product::tableName().'.main_category_id'=>$this->dataModel->id]);
 
             //  $this->query->with('manufacturerActive');
@@ -182,39 +182,40 @@ class CategoryController extends FilterController
 
         // $this->provider->sort = Product::getSort();
 
-        $this->pageName = $this->dataModel->name;
+        $this->pageName = $model->name;
         $name = '';
-        $this->view->registerJs("var current_url = '" . Url::to($this->dataModel->getUrl()) . "';", yii\web\View::POS_HEAD, 'current_url');
+        $this->view->registerJs("var current_url = '" . Url::to($model->getUrl()) . "';", yii\web\View::POS_HEAD, 'current_url');
         if ($view != 'search') {
 
 
 
             $c = Yii::$app->settings->get('shop');
             if ($c->seo_categories) {
-                $this->description = $this->dataModel->description();
-                $this->view->title = $this->dataModel->title();
+                $categoryParent = $model->parent()->one();
+                $this->description = $model->replaceMeta($model->metaDescription,$categoryParent);
+                $this->view->title = $model->replaceMeta($model->metaTitle,$categoryParent);
             }
 
             $this->breadcrumbs[] = [
                 'label' => Yii::t('shop/default', 'CATALOG'),
                 'url' => ['/shop']
             ];
-            $m = $this->dataModel;
-            $ancestors = Category::getDb()->cache(function ($db) use ($m) {
-                return $m->ancestors()->addOrderBy('depth')->excludeRoot()->all();
-            }, 3600);
-            //$ancestors = $this->dataModel->ancestors()->addOrderBy('depth')->excludeRoot()->all();
+
+            $ancestors = $model->ancestors()->addOrderBy('depth')->excludeRoot()->cache(3600)->all();
+            //$ancestors = Category::getDb()->cache(function ($db) use ($m) {
+           //     return $m->ancestors()->addOrderBy('depth')->excludeRoot()->all();
+           // }, 3600);
 
             if ($ancestors) {
-                foreach ($ancestors as $c) {
+                foreach ($ancestors as $category) {
                     $this->breadcrumbs[] = [
-                        'label' => $c->name,
-                        'url' => $c->getUrl()
+                        'label' => $category->name,
+                        'url' => $category->getUrl()
                     ];
                 }
             }
 
-            $name = $this->dataModel->name;
+            $name = $model->name;
         }
 
         $itemView = '_view_grid';
@@ -258,8 +259,8 @@ class CategoryController extends FilterController
                 }
             }
             $this->breadcrumbs[] = [
-                'label' => $this->dataModel->name,
-                'url' => $this->dataModel->getUrl()
+                'label' => $model->name,
+                'url' => $model->getUrl()
             ];
         }
         $this->breadcrumbs[] = $name;
@@ -269,7 +270,7 @@ class CategoryController extends FilterController
 
             if (Yii::$app->request->get('render') == 'active-filters') {
                 return $this->renderPartial('@shop/widgets/filtersnew/views/current', [
-                    'dataModel' => $this->dataModel,
+                    'dataModel' => $model,
                     'active' => $filterData
                 ]);
             } else {

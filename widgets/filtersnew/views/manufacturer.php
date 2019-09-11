@@ -5,10 +5,10 @@ use yii\helpers\Html;
 ?>
 <?php if ($manufacturers['filters']) { ?>
     <div class="card filter-block">
-        <div class="card-header" data-toggle="collapse" data-target="#collapse-<?= md5('manufacturer') ?>"
-             aria-expanded="true" aria-controls="collapse-<?= md5('manufacturer') ?>">
-            <h5><?= Yii::t('shop/default', 'FILTER_BY_MANUFACTURER') ?></h5>
-        </div>
+        <a class="card-header h5" data-toggle="collapse" href="#collapse-<?= md5('manufacturer') ?>"
+           aria-expanded="true" aria-controls="collapse-<?= md5('manufacturer') ?>">
+            <?= Yii::t('shop/default', 'FILTER_BY_MANUFACTURER') ?>
+        </a>
         <div class="card-collapse collapse in" id="collapse-<?= md5('manufacturer') ?>">
             <div class="card-body">
                 <ul class="filter-list">
@@ -30,7 +30,7 @@ use yii\helpers\Html;
                             $checked = false;
                             //echo Html::a($filter['title'], $url);
                         }
-                        echo Html::checkBox('filter['.$filter['queryKey'].'][]', $checked, array('value' => $filter['queryParam'], 'id' => 'filter_' . $filter['queryKey'] . '_' . $filter['queryParam']));
+                        echo Html::checkBox('filter[' . $filter['queryKey'] . '][]', $checked, array('value' => $filter['queryParam'], 'id' => 'filter_' . $filter['queryKey'] . '_' . $filter['queryParam']));
                         echo Html::label($filter['title'], 'filter_' . $filter['queryKey'] . '_' . $filter['queryParam']);
 
 

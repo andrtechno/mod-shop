@@ -272,7 +272,7 @@ class FilterController extends WebController
         $maxPrice = Yii::$app->request->get('max_price');
 
         $cm = Yii::$app->currency;
-        if ($cm->active->id !== $cm->main->id && ($minPrice > 0 || $maxPrice > 0)) {
+        if ($cm->active['id'] !== $cm->main['id'] && ($minPrice > 0 || $maxPrice > 0)) {
             $minPrice = $cm->activeToMain($minPrice);
             $maxPrice = $cm->activeToMain($maxPrice);
         }

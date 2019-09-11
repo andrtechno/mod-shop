@@ -18,11 +18,11 @@ if (Yii::$app->controller->getMinPrice() && Yii::$app->controller->getMaxPrice()
     ?>
     <?php if (true) { ?>
         <div class="card filter filter-price">
-            <div class="card-header collapsed" data-toggle="collapse"
-                 data-target="#collapse-<?= md5('prices') ?>" aria-expanded="true"
-                 aria-controls="collapse-<?= md5('prices') ?>">
-                <h5><?= Yii::t('shop/default', 'FILTER_BY_PRICE') ?></h5>
-            </div>
+            <a class="card-header collapsed h5" data-toggle="collapse"
+               href="#collapse-<?= md5('prices') ?>" aria-expanded="true"
+               aria-controls="collapse-<?= md5('prices') ?>">
+                <?= Yii::t('shop/default', 'FILTER_BY_PRICE') ?>
+            </a>
             <div class="card-collapse collapse in" id="collapse-<?= md5('prices') ?>">
                 <div class="card-body">
                     <?php
