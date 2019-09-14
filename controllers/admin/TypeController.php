@@ -98,10 +98,7 @@ class TypeController extends AdminController
                 // Set type attributes
 
                 $model->useAttributes(Yii::$app->request->post('attributes', []));
-                Yii::$app->session->setFlash('success', Yii::t('app', ($isNew) ? 'SUCCESS_CREATE' : 'SUCCESS_UPDATE'));
-                $redirect = (isset($post['redirect'])) ? $post['redirect'] : Yii::$app->request->url;
-                if (!Yii::$app->request->isAjax)
-                    return $this->redirect($redirect);
+                $this->redirectPage($isNew, $post);
             }
         }
 

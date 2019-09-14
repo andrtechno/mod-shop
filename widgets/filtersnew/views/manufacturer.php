@@ -10,7 +10,7 @@ use yii\helpers\Html;
             <?= Yii::t('shop/default', 'FILTER_BY_MANUFACTURER') ?>
         </a>
         <div class="card-collapse collapse in" id="collapse-<?= md5('manufacturer') ?>">
-            <div class="card-body">
+            <div class="card-body overflow">
                 <ul class="filter-list">
                     <?php
                     foreach ($manufacturers['filters'] as $filter) {
