@@ -14,7 +14,7 @@ class CategoryController extends FilterController
 
     public $allowedPageLimit = [];
     public $provider;
-
+    public $currentUrl;
 
     public function beforeAction($action)
     {
@@ -25,10 +25,10 @@ class CategoryController extends FilterController
 
         if (Yii::$app->request->post('min_price') || Yii::$app->request->post('max_price')) {
             $data = [];
-            if (Yii::$app->request->post('min_price'))
-                $data['min_price'] = (int)Yii::$app->request->post('min_price');
-            if (Yii::$app->request->post('max_price'))
-                $data['max_price'] = (int)Yii::$app->request->post('max_price');
+            //if (Yii::$app->request->post('min_price'))
+            //    $data['min_price'] = (int)Yii::$app->request->post('min_price');
+            //if (Yii::$app->request->post('max_price'))
+            //    $data['max_price'] = (int)Yii::$app->request->post('max_price');
 
             if ($this->action->id === 'search') {
                 return $this->redirect(Yii::$app->urlManager->addUrlParam('/shop/category/search', $data));
@@ -44,9 +44,10 @@ class CategoryController extends FilterController
                 }*/
 
 
-                return $this->redirect(Yii::$app->urlManager->addUrlParam('/shop/category/view', $data));
+                // return $this->redirect(Yii::$app->urlManager->addUrlParam('/shop/category/view', $data));
             }
         }
+
         return parent::beforeAction($action);
     }
 
@@ -54,6 +55,7 @@ class CategoryController extends FilterController
     {
         $this->dataModel = $this->findModel(Yii::$app->request->getQueryParam('slug'));
         // $this->canonical = Yii::$app->urlManager->createAbsoluteUrl($this->dataModel->getUrl());
+        $this->currentUrl = $this->dataModel->getUrl();
         return $this->doSearch($this->dataModel, 'view');
     }
 
@@ -128,11 +130,11 @@ class CategoryController extends FilterController
         $this->query->published();
         $this->query->applyAttributes($this->activeAttributes);
         // Filter by manufacturer
-		
-	if (empty(Yii::$app->request->get('manufacturer')) && isset($_GET['manufacturer'])) {
-			//todo panix
-			// throw new CHttpException(404, Yii::t('ShopModule.default', 'NOFIND_CATEGORY'));
-		}
+
+        if (empty(Yii::$app->request->get('manufacturer')) && isset($_GET['manufacturer'])) {
+            //todo panix
+            // throw new CHttpException(404, Yii::t('ShopModule.default', 'NOFIND_CATEGORY'));
+        }
         if (Yii::$app->request->get('manufacturer')) {
             $manufacturers = explode(',', Yii::$app->request->get('manufacturer', ''));
             $this->query->applyManufacturers($manufacturers);
@@ -141,7 +143,7 @@ class CategoryController extends FilterController
 
         // Create clone of the current query to use later to get min and max prices.
         $this->currentQuery = clone $this->query;
-        // Filter products by price range if we have min_price or max_price in request
+        // Filter products by price range if we have min or max in request
         $this->applyPricesFilter();
 
         // $this->maxprice = (int)$this->currentQuery->max('price');
@@ -166,9 +168,8 @@ class CategoryController extends FilterController
         if (Yii::$app->request->get('sort') == 'price' || Yii::$app->request->get('sort') == '-price') {
             $this->query->aggregatePriceSelect((Yii::$app->request->get('sort') == 'price') ? SORT_ASC : SORT_DESC);
         }
-        // $this->query->createCommand()->rawSql;die;
 
-
+       //echo $this->query->createCommand()->rawSql;die;
         $this->provider = new \panix\engine\data\ActiveDataProvider([
 
             'query' => $this->query,
@@ -180,20 +181,17 @@ class CategoryController extends FilterController
             ]
         ]);
 
-        // $this->provider->sort = Product::getSort();
-
         $this->pageName = $model->name;
         $name = '';
         $this->view->registerJs("var current_url = '" . Url::to($model->getUrl()) . "';", yii\web\View::POS_HEAD, 'current_url');
         if ($view != 'search') {
 
 
-
             $c = Yii::$app->settings->get('shop');
             if ($c->seo_categories) {
                 $categoryParent = $model->parent()->one();
-                $this->description = $model->replaceMeta($model->metaDescription,$categoryParent);
-                $this->view->title = $model->replaceMeta($model->metaTitle,$categoryParent);
+                $this->description = $model->replaceMeta($model->metaDescription, $categoryParent);
+                $this->view->title = $model->replaceMeta($model->metaTitle, $categoryParent);
             }
 
             $this->breadcrumbs[] = [
@@ -203,8 +201,8 @@ class CategoryController extends FilterController
 
             $ancestors = $model->ancestors()->addOrderBy('depth')->excludeRoot()->cache(3600)->all();
             //$ancestors = Category::getDb()->cache(function ($db) use ($m) {
-           //     return $m->ancestors()->addOrderBy('depth')->excludeRoot()->all();
-           // }, 3600);
+            //     return $m->ancestors()->addOrderBy('depth')->excludeRoot()->all();
+            // }, 3600);
 
             if ($ancestors) {
                 foreach ($ancestors as $category) {
@@ -228,6 +226,25 @@ class CategoryController extends FilterController
 
         $filterData = $this->getActiveFilters();
 
+
+        $currentUrl[] = '/shop/category/view';
+        $currentUrl['slug'] = $model->full_path;
+        //  print_r($filterData);die;
+        foreach ($filterData as $name => $filter) {
+            if (isset($filter['name'])) { //attributes
+                $currentUrl[$filter['name']] = [];
+                if (isset($filter['items'])) {
+                    $params = [];
+                    foreach ($filter['items'] as $item) {
+                        $params[] = $item['value'];
+                    }
+                    $currentUrl[$filter['name']] = implode(',', $params);
+                }
+            }
+        }
+
+
+        $this->currentUrl = Url::to($currentUrl);
 
         unset($filterData['price']);
         if ($filterData) {
@@ -268,17 +285,35 @@ class CategoryController extends FilterController
         if (Yii::$app->request->isAjax) {
             //\Yii::$app->response->format = \yii\web\Response::FORMAT_HTML;
 
-            if (Yii::$app->request->get('render') == 'active-filters') {
-                return $this->renderPartial('@shop/widgets/filtersnew/views/current', [
-                    'dataModel' => $model,
-                    'active' => $filterData
-                ]);
-            } else {
-                return $this->renderPartial('listview', [
+            //  if (Yii::$app->request->get('render') == 'active-filters') {
+
+
+            Yii::$app->response->format = Response::FORMAT_JSON;
+
+            return [
+                'currentFilters' => $filterData,
+                'full_url' => Url::to($this->currentUrl),
+                'items' => $this->renderPartial('listview', [
                     'provider' => $this->provider,
                     'itemView' => $itemView
-                ]);
-            }
+                ]),
+                'currentFiltersData' => $this->renderPartial('@shop/widgets/filtersnew/views/current', [
+                    'dataModel' => $model,
+                    'active' => $filterData
+                ])
+            ];
+
+
+            return $this->renderPartial('@shop/widgets/filtersnew/views/current', [
+                'dataModel' => $model,
+                'active' => $filterData
+            ]);
+            //  } else {
+            return $this->renderPartial('listview', [
+                'provider' => $this->provider,
+                'itemView' => $itemView
+            ]);
+            //  }
 
 
         } else {
@@ -298,5 +333,10 @@ class CategoryController extends FilterController
         }
     }
 
+    public function actionAjaxFilterPrices()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return [];
+    }
 
 }

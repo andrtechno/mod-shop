@@ -51,28 +51,6 @@ $(function () {
     });
 });
 
-
-var form = $('#filter-form');
-var xhrFilters;
-var flagDeletePrices = false;
-
-function filter_ajax(){
-    var objects = getSerializeObjects();
-    if (xhrFilters && xhrFilters.readyState !== 4) {
-        xhrFilters.onreadystatechange = null;
-        xhrFilters.abort();
-    }
-    var containerFilterCurrent = $('#ajax_filter_current');
-    xhrFilters = $.getJSON(formattedURL(objects), {}, function (data) {
-        $('#listview-ajax').html(data.items);
-        form.attr('action',data.full_url);
-        containerFilterCurrent.html(data.currentFiltersData).removeClass('loading');
-        history.pushState(null, $('title').text(), data.full_url);
-    });
-}
-
-
-/*
 var xhrCurrentFilter;
 function currentFilters(url) {
     var containerFilterCurrent = $('#ajax_filter_current');
@@ -94,21 +72,20 @@ function currentFilters(url) {
         }
     });
 }
-*/
 function getSerializeObjects() {
     return $.extend($('#filter-form').serializeObject(), $('#sorting-form').serializeObject())
 }
 
 function formattedURL(objects) {
     var uri = current_url;
-    //console.log(yii.getCsrfParam());
+    console.log(yii.getCsrfParam());
     delete objects[yii.getCsrfParam()];
     //delete objects.min_price;
     //delete objects.max_price;
 
     $.each(objects, function (name, values) {
         if (values !== '') {
-            var matches = name.match(/filter\[([a-zA-Z0-9-_]+)\]\[]|/i);
+            var matches = name.match(/filter\[([a-zA-Z0-9-_]+)\]\[]/i);
             uri += (matches) ? '/' + matches[1] : '/' + name;
 
 
@@ -119,34 +96,35 @@ function formattedURL(objects) {
             }
         }
     });
-    console.log(uri);
     return uri;
 }
 
-
-
+var flagDeletePrices = false;
 $(function () {
 
-    $(document).on('click','#filter-current a', function(e){
-
-        console.log('click current filter close');
-        e.preventDefault();
-        return false;
-    });
+    var form = $('#filter-form');
+//_csrf
 
     $(document).on('change', '#filter-form input[type="checkbox"]', function (e) {
 
         flagDeletePrices=true;
         var objects = getSerializeObjects();
         if (flagDeletePrices) {
-            //delete objects.min_price;
-           // delete objects.max_price;
+            delete objects.min_price;
+            delete objects.max_price;
         }
 
         //$.fn.yiiListView.update('shop-products', {url: formattedURL(objects)});
+        $.get(formattedURL(objects), {}, function (data) {
+            $('#listview-ajax').html(data);
+            //console.log(data);
+        });
+        console.log('change', formattedURL(objects));
+        //currentFilters(formattedURL(objects));
+        //reload path by url
+        //window.location.pathname = uri;
 
-        filter_ajax();
-
+        history.pushState(null, $('title').text(), formattedURL(objects));
         e.preventDefault();
     });
 
