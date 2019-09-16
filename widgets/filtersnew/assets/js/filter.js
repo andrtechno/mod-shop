@@ -53,6 +53,9 @@ $(function () {
 
 
 var form = $('#filter-form');
+var sortForm = $('#sorting-form');
+var ajaxSelector = $('#listview-ajax');
+var containerFilterCurrent = $('#ajax_filter_current');
 var xhrFilters;
 var flagDeletePrices = false;
 
@@ -62,12 +65,21 @@ function filter_ajax(){
         xhrFilters.onreadystatechange = null;
         xhrFilters.abort();
     }
-    var containerFilterCurrent = $('#ajax_filter_current');
-    xhrFilters = $.getJSON(formattedURL(objects), {}, function (data) {
-        $('#listview-ajax').html(data.items);
-        form.attr('action',data.full_url);
-        containerFilterCurrent.html(data.currentFiltersData).removeClass('loading');
-        history.pushState(null, $('title').text(), data.full_url);
+
+
+    xhrFilters = $.ajax({
+        dataType: "json",
+        url: formattedURL(objects),
+        data: {},
+        success: function (data) {
+            ajaxSelector.html(data.items).toggleClass('loading');
+            form.attr('action',data.full_url);
+            containerFilterCurrent.html(data.currentFiltersData).removeClass('loading');
+            history.pushState(null, $('title').text(), data.full_url);
+        },
+        beforeSend:function(){
+            ajaxSelector.toggleClass('loading');
+        }
     });
 }
 
@@ -96,7 +108,7 @@ function currentFilters(url) {
 }
 */
 function getSerializeObjects() {
-    return $.extend($('#filter-form').serializeObject(), $('#sorting-form').serializeObject())
+    return $.extend(form.serializeObject(), sortForm.serializeObject())
 }
 
 function formattedURL(objects) {
@@ -189,7 +201,7 @@ $(function () {
     });
 
 
-    $('#sorting-form').change(function (e) {
+    sortForm.change(function (e) {
         e.preventDefault();
         $.fn.yiiListView.update('shop-products', {url: formattedURL(getSerializeObjects())});
         history.pushState(null, $('title').text(), formattedURL(getSerializeObjects()));
@@ -200,9 +212,5 @@ $(function () {
         $.fn.yiiListView.update('shop-products', {url: $(this).attr('href')});
         history.pushState(null, $('title').text(), $(this).attr('href'));
     });
-
-
-    //curret filter
-
 
 });

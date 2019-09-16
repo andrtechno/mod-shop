@@ -245,10 +245,10 @@ class Attribute extends ActiveRecord
             case self::TYPE_SELECT_MANY:
             case self::TYPE_CHECKBOX_LIST:
                 $data = ArrayHelper::map($this->options, 'id', 'value');
-                $result = array();
+                $result = [];
 
                 if (!is_array($value))
-                    $value = array($value);
+                    $value = [$value];
 
                 foreach ($data as $key => $val) {
                     if (in_array($key, $value))
@@ -257,10 +257,10 @@ class Attribute extends ActiveRecord
                 return implode(', ', $result);
                 break;
             case self::TYPE_YESNO:
-                $data = array(
+                $data = [
                     1 => Yii::t('app', 'YES'),
                     2 => Yii::t('app', 'NO')
-                );
+                ];
                 if (isset($data[$value]))
                     return $data[$value];
                 break;

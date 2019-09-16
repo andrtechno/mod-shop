@@ -2,25 +2,26 @@
 
 namespace panix\mod\shop\components;
 
+use Yii;
+use yii\base\Widget;
 use panix\engine\Html;
 use panix\mod\shop\models\Attribute;
 use panix\mod\shop\models\Product;
-use Yii;
 
-class AttributesRender extends \yii\base\Widget
+class AttributesRender extends Widget
 {
 
     public $view = '_list';
 
     /**
-     * @var ActiveRecord with EAV behavior enabled
+     * @var Attribute with EAV behavior enabled
      */
     public $model;
 
     /**
      * @var array table element attributes
      */
-    public $htmlOptions = array();
+    public $htmlOptions = [];
 
     /**
      * @var array model attributes loaded with getEavAttributes method
@@ -28,7 +29,7 @@ class AttributesRender extends \yii\base\Widget
     protected $_attributes;
 
     /**
-     * @var array of ShopAttribute models
+     * @var array of Attribute models
      */
     protected $_models;
 
@@ -37,12 +38,16 @@ class AttributesRender extends \yii\base\Widget
      */
     public function run()
     {
-        $this->_attributes = $this->model->getEavAttributes();
+
+        $eav = $this->model;
+        /** @var \panix\mod\shop\components\EavBehavior $eav */
+        $this->_attributes = $eav->getEavAttributes();
 
 
         $data = [];
         $groups = [];
         foreach ($this->getModels() as $model) {
+            /** @var Attribute $model */
             $abbr = ($model->abbreviation) ? ' ' . $model->abbreviation : '';
 
             $value = $model->renderValue($this->_attributes[$model->name]) . $abbr;
@@ -69,7 +74,7 @@ class AttributesRender extends \yii\base\Widget
 
     /**
      * Для авто заполнение short_description товара
-     * @param type $object Модель товара
+     * @param object $object Модель товара
      * @return string
      */
     public function getStringAttr($object)

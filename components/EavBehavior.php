@@ -436,6 +436,7 @@ class EavBehavior extends \yii\base\Behavior
      */
     public function getEavAttributes($attributes = [])
     {
+
         // Get all attributes if not specified.
         if (empty($attributes)) {
             $attributes = $this->getSafeAttributesArray();
