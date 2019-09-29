@@ -7,6 +7,8 @@ namespace panix\mod\shop\migrations;
  *
  * Class m180917_193213_shop_product
  */
+use panix\engine\components\Settings;
+use panix\mod\shop\models\forms\SettingsForm;
 use panix\mod\shop\models\Product;
 use panix\mod\shop\models\translate\ProductTranslate;
 use panix\engine\db\Migration;
@@ -85,6 +87,13 @@ class m180917_193213_shop_product extends Migration
         $this->createIndex('object_id', ProductTranslate::tableName(), 'object_id');
         $this->createIndex('language_id', ProductTranslate::tableName(), 'language_id');
 
+
+        $settings = [];
+        foreach (SettingsForm::defaultSettings() as $key => $value) {
+            $settings[] = [SettingsForm::$category, $key, $value];
+        }
+
+        $this->batchInsert(Settings::tableName(), ['category', 'param', 'value'], $settings);
     }
 
     /**

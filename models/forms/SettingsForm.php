@@ -26,5 +26,15 @@ class SettingsForm extends SettingsModel {
         ];
     }
 
+    /**
+     * Настройки по умолчанию
+     * @return array
+     */
+    public static function defaultSettings()
+    {
+        return [
+            'per_page' => '10,20,30',
+        ];
+    }
 
 }
