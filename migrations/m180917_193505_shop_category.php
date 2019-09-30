@@ -52,7 +52,7 @@ class m180917_193505_shop_category extends Migration {
             [1, 2, 1, 'root', '', 1]
         ]);
 
-        $this->batchInsert(CategoryTranslate::tableName(), ['object_id', 'language_id', 'name', 'text'], [
+        $this->batchInsert(CategoryTranslate::tableName(), ['object_id', 'language_id', 'name', 'description'], [
             [1, 1, 'Каталог продукции', '']
         ]);
 
