@@ -8,11 +8,14 @@ namespace panix\mod\shop\migrations;
  *
  * Class m180857_193215_shop_sets
  */
+use panix\mod\rbac\migrations\MigrationTrait;
 use panix\mod\shop\models\Sets;
 use panix\engine\db\Migration;
 
 class m180857_193215_shop_sets extends Migration
 {
+
+    use MigrationTrait;
 
     /**
      * {@inheritdoc}
@@ -27,6 +30,10 @@ class m180857_193215_shop_sets extends Migration
         ], $this->tableOptions);
 
         $this->createIndex('product_id', Sets::tableName(), 'product_id');
+
+
+        $this->createRole('test', 'tester desrc');
+
     }
 
     /**
