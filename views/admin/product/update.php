@@ -7,17 +7,18 @@ use yii\helpers\ArrayHelper;
 use panix\mod\shop\models\ProductType;
 
 ?>
+    <div class="row">
+        <div class="col-sm-4">
+            sadsda
+        </div>
+        <div class="col-sm-4">
 
-    <div class="col-sm-4">
-        sadsda
-    </div>
-    <div class="col-sm-4">
-
-        <span class="badge badge-secondary"><?= $model->views; ?> просмотров</span>
-    </div>
-    <div class="col-sm-4">
-        <?php var_dump($model->switch); ?>
-        <span class="badge badge-secondary">Товар скрыт</span>
+            <span class="badge badge-secondary"><?= $model->views; ?> просмотров</span>
+        </div>
+        <div class="col-sm-4">
+            <?php var_dump($model->switch); ?>
+            <span class="badge badge-secondary">Товар скрыт</span>
+        </div>
     </div>
     <div class="card">
         <div class="card-header">
@@ -48,7 +49,7 @@ use panix\mod\shop\models\ProductType;
                 panix\mod\shop\bundles\admin\ProductAsset::register($this);
 
                 if ($attributeError) {
-                    $this->theme->alert('danger', Yii::t('shop/admin', 'Выберите атрибуты для конфигурации продуктов.'), false);
+                    echo '<div class="alert alert-danger">'.Yii::t('shop/admin', 'SELECT_ATTRIBUTE_PRODUCT').'</div>';
                 }
                 ?>
                 <div class="card-body">
@@ -129,7 +130,7 @@ use panix\mod\shop\models\ProductType;
                     ];
 
                     $tabs[] = [
-                        'label' => Yii::t('seo/default','TAB_SEO'),
+                        'label' => Yii::t('seo/default', 'TAB_SEO'),
                         'content' => $this->render('@seo/views/admin/default/_module_seo', ['model' => $model]),
                         'options' => ['class' => 'flex-sm-fill text-center nav-item'],
                     ];
@@ -177,7 +178,8 @@ use panix\mod\shop\models\ProductType;
                 ActiveForm::end();
             }
         } else {
-            $this->theme->alert('warning', Yii::t('shop/admin', 'Для начало необходимо создать Тип товара'), false);
+            echo $this->theme->alert('test');
+            echo '<div class="alert alert-danger">'.Yii::t('shop/admin', 'SELECT_TYPE_PRODUCT').'</div>';
         }
         ?>
 
