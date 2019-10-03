@@ -4,7 +4,8 @@ namespace panix\mod\shop\models\forms;
 
 use panix\engine\SettingsModel;
 
-class SettingsForm extends SettingsModel {
+class SettingsForm extends SettingsModel
+{
 
     public static $category = 'shop';
     protected $module = 'shop';
@@ -17,10 +18,11 @@ class SettingsForm extends SettingsModel {
     public $seo_categories_title;
     public $seo_categories_description;
 
-    public function rules() {
+    public function rules()
+    {
         return [
             [['per_page'], "required"],
-            [['product_related_bilateral', 'seo_categories','group_attribute'], 'boolean'],
+            [['product_related_bilateral', 'seo_categories', 'group_attribute'], 'boolean'],
             [['seo_categories_title'], 'string', 'max' => 255],
             [['seo_categories_description'], 'string'],
         ];
@@ -34,6 +36,11 @@ class SettingsForm extends SettingsModel {
     {
         return [
             'per_page' => '10,20,30',
+            'seo_categories' => false,
+            'product_related_bilateral' => false,
+            'group_attribute' => false,
+            'seo_categories_title' => '',
+            'seo_categories_description' => ''
         ];
     }
 

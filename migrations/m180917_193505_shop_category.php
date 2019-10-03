@@ -35,8 +35,9 @@ class m180917_193505_shop_category extends Migration {
             'language_id' => $this->tinyInteger()->unsigned(),
             'name' => $this->string(255)->notNull(),
             'description' => $this->text()->null()->defaultValue(null),
+            'seo_product_title' => $this->string(255),
+            'seo_product_description' => $this->text(),
         ], $this->tableOptions);
-
 
         $this->createIndex('lft', Category::tableName(), 'lft');
         $this->createIndex('rgt', Category::tableName(), 'rgt');
@@ -52,8 +53,8 @@ class m180917_193505_shop_category extends Migration {
             [1, 2, 1, 'root', '', 1]
         ]);
 
-        $this->batchInsert(CategoryTranslate::tableName(), ['object_id', 'language_id', 'name', 'description'], [
-            [1, 1, 'Каталог продукции', '']
+        $this->batchInsert(CategoryTranslate::tableName(), ['object_id', 'language_id', 'name'], [
+            [1, 1, 'Каталог продукции']
         ]);
 
     }

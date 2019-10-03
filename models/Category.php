@@ -71,6 +71,7 @@ class Category extends ActiveRecord
             [['name', 'slug', 'seo_product_title'], 'trim'],
             [['image'], 'default'],
             [['name', 'slug'], 'required'],
+            [['seo_product_title', 'seo_product_description','description'], 'default', 'value' => null],
             [['name', 'seo_product_title', 'seo_product_description'], 'string', 'max' => 255],
             ['description', 'safe']
         ];
@@ -203,7 +204,7 @@ class Category extends ActiveRecord
         return $value;
     }
 
-    public function replaceMeta($text,$parentCategory)
+    public function replaceMeta($text, $parentCategory)
     {
         $replace = [
             "{category_name}" => $this->name,
