@@ -1,18 +1,21 @@
 <?php
 
 namespace panix\mod\shop\migrations;
+
 /**
  * Generation migrate by PIXELION CMS
  * @author PIXELION CMS development team <dev@pixelion.com.ua>
- * 
+ *
  * Class m180917_193531_shop_manufacturer
  */
-use yii\db\Schema;
+use Yii;
+use panix\engine\CMS;
 use panix\engine\db\Migration;
 use panix\mod\shop\models\Manufacturer;
 use panix\mod\shop\models\translate\ManufacturerTranslate;
 
-class m180917_193531_shop_manufacturer extends Migration {
+class m180917_193531_shop_manufacturer extends Migration
+{
 
     public function up()
     {
@@ -24,7 +27,6 @@ class m180917_193531_shop_manufacturer extends Migration {
             'switch' => $this->boolean()->notNull()->defaultValue(null),
             'ordern' => $this->integer(),
         ], $this->tableOptions);
-
 
 
         $this->createTable(ManufacturerTranslate::tableName(), [
@@ -43,6 +45,21 @@ class m180917_193531_shop_manufacturer extends Migration {
 
         $this->createIndex('object_id', ManufacturerTranslate::tableName(), 'object_id');
         $this->createIndex('language_id', ManufacturerTranslate::tableName(), 'language_id');
+
+        $brands = ['Apple', 'Nokia', 'Samsung', 'LG', 'Philips'];
+        foreach ($brands as $key => $brand) {
+            $id = $key + 1;
+            $this->batchInsert(Manufacturer::tableName(), ['cat_id', 'slug', 'switch', 'ordern'], [
+                [NULL, CMS::slug($brand), 1, $id]
+            ]);
+
+            foreach (Yii::$app->languageManager->getLanguages(false) as $lang) {
+                $this->batchInsert(ManufacturerTranslate::tableName(), ['object_id', 'language_id', 'name', 'description'], [
+                    [$id, $lang['id'], $brand, '']
+                ]);
+            }
+        }
+
 
     }
 

@@ -5,7 +5,7 @@ namespace panix\mod\shop\components;
 use yii\web\UrlRuleInterface;
 use yii\base\Object;
 
-class CategoryUrlRule extends Object implements UrlRuleInterface {
+class CategoryUrlRule_1 extends Object implements UrlRuleInterface {
 
     public function createUrl($manager, $route, $params) {
 

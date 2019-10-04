@@ -36,10 +36,10 @@ class SupplierController extends AdminController
         $searchModel = new SupplierSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams());
 
-        return $this->render('index', array(
+        return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-        ));
+        ]);
     }
 
     public function actionUpdate($id = false)

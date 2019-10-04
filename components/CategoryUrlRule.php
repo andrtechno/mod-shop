@@ -14,13 +14,12 @@ class CategoryUrlRule extends UrlRule
 
     public $route = 'shop/category/view';
     public $pattern = '';
+    public $cacheDuration = 0;
     /**
      * @inheritdoc
      */
     public function createUrl($manager, $route, $params)
     {
-
-
         if ($route === $this->route) {
 
             if (isset($params['slug'])) {
@@ -101,7 +100,7 @@ class CategoryUrlRule extends UrlRule
                 return strlen($b['full_path']) - strlen($a['full_path']);
             });
 
-            \Yii::$app->cache->set(__CLASS__, $allPaths);
+            \Yii::$app->cache->set(__CLASS__, $allPaths, $this->cacheDuration);
         }
 
         return $allPaths;

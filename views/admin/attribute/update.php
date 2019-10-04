@@ -8,48 +8,48 @@ echo \panix\engine\bootstrap\Alert::widget([
     'options' => [
         'class' => 'alert-info',
     ],
-    'closeButton'=>false,
+    'closeButton' => false,
     'body' => Yii::t('shop/Attribute', 'INFO', ['productType' => Html::a('типу товара', '/admin/shop/productType')]),
 ]);
 
 ?>
 
+<?php
+$form = ActiveForm::begin([
+    'id' => basename(get_class($model)),
+    'options' => [
+        'class' => 'form-horizontal',
+    ]
+]);
+?>
+    <div class="card">
+        <div class="card-header">
+            <h5><?= Html::encode($this->context->pageName) ?></h5>
+        </div>
+        <div class="card-body">
 
-<div class="card">
-    <div class="card-header">
-        <h5><?= Html::encode($this->context->pageName) ?></h5>
-    </div>
-    <div class="card-body">
-        <?php
-        $form = ActiveForm::begin([
-            'id' => basename(get_class($model)),
-            'options' => [
-                'class' => 'form-horizontal',
-            ]
-        ]);
-        ?>
-        <?php
-        echo panix\engine\bootstrap\Tabs::widget([
-            'options' => ['id' => 'attributes-tabs'],
-            'items' => [
-                [
-                    'label' => 'Основные',
-                    'content' => $this->render('tabs/_main', ['form' => $form, 'model' => $model]),
-                    'active' => true,
+            <?php
+            echo panix\engine\bootstrap\Tabs::widget([
+                'options' => ['id' => 'attributes-tabs'],
+                'items' => [
+                    [
+                        'label' => 'Основные',
+                        'content' => $this->render('tabs/_main', ['form' => $form, 'model' => $model]),
+                        'active' => true,
 
+                    ],
+                    [
+                        'label' => 'Опции',
+                        'content' => $this->render('tabs/_options', ['form' => $form, 'model' => $model]),
+                        'headerOptions' => [],
+
+                    ],
                 ],
-                [
-                    'label' => 'Опции',
-                    'content' => $this->render('tabs/_options', ['form' => $form, 'model' => $model]),
-                    'headerOptions' => [],
-
-                ],
-            ],
-        ]);
-        ?>
-        <div class="form-group text-center">
+            ]);
+            ?>
+        </div>
+        <div class="card-footer text-center">
             <?= $model->submitButton(); ?>
         </div>
-        <?php ActiveForm::end(); ?>
     </div>
-</div>
+<?php ActiveForm::end(); ?>

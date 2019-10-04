@@ -8,7 +8,8 @@ namespace panix\mod\shop\migrations;
  * Class m180917_193421_shop_attribute
  */
 
-use yii\db\Schema;
+use Yii;
+use panix\engine\CMS;
 use panix\engine\db\Migration;
 use panix\mod\shop\models\Attribute;
 use panix\mod\shop\models\translate\AttributeTranslate;
@@ -55,6 +56,9 @@ class m180917_193421_shop_attribute extends Migration
 
         $this->createIndex('object_id', AttributeTranslate::tableName(), 'object_id');
         $this->createIndex('language_id', AttributeTranslate::tableName(), 'language_id');
+
+
+
     }
 
     public function down()

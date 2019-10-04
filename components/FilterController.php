@@ -32,18 +32,14 @@ class FilterController extends WebController
      */
     public $_maxPrice, $_minPrice;
 
-    /**
-     * @var string
-     */
-    //public $maxprice, $minprice;
-
+    public $currentUrl;
 
     public function beforeAction($action)
     {
         if (Yii::$app->request->get('price')) {
             $this->prices = explode(',', Yii::$app->request->get('price'));
             //foreach ($this->prices as $key=>$price) {
-               // $this->prices[]=$price;
+            // $this->prices[]=$price;
             //}
         }
         $this->view->registerJs("
@@ -213,7 +209,7 @@ class FilterController extends WebController
                 'value' => Yii::$app->currency->number_format($this->getCurrentMinPrice()),
                 'label' => Yii::t('shop/default', 'FILTER_CURRENT_PRICE_MIN', ['value' => Yii::$app->currency->number_format($this->getCurrentMinPrice()), 'currency' => Yii::$app->currency->active['symbol']]),
                 'linkOptions' => ['class' => 'remove', 'data-price' => 'min_price'],
-                'url' => Yii::$app->urlManager->removeUrlParam('/' . Yii::$app->requestedRoute, 'price',Yii::$app->controller->prices[0])
+                'url' => Yii::$app->urlManager->removeUrlParam('/' . Yii::$app->requestedRoute, 'price', Yii::$app->controller->prices[0])
             ];
         }
 
@@ -223,10 +219,9 @@ class FilterController extends WebController
                 'value' => Yii::$app->currency->number_format($this->getCurrentMaxPrice()),
                 'label' => Yii::t('shop/default', 'FILTER_CURRENT_PRICE_MAX', ['value' => Yii::$app->currency->number_format($this->getCurrentMaxPrice()), 'currency' => Yii::$app->currency->active['symbol']]),
                 'linkOptions' => array('class' => 'remove', 'data-price' => 'max_price'),
-                'url' => Yii::$app->urlManager->removeUrlParam('/' . Yii::$app->requestedRoute, 'price',Yii::$app->controller->prices[1])
+                'url' => Yii::$app->urlManager->removeUrlParam('/' . Yii::$app->requestedRoute, 'price', Yii::$app->controller->prices[1])
             ];
         }
-
 
 
         /*if ($request->getQueryParam('min_price') || $request->getQueryParam('min_price')) {

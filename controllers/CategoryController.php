@@ -182,6 +182,7 @@ class CategoryController extends FilterController
         ]);
 
         $this->pageName = $model->name;
+        $this->view->title = $this->pageName;
         $name = '';
         $this->view->registerJs("var current_url = '" . Url::to($model->getUrl()) . "';", yii\web\View::POS_HEAD, 'current_url');
         if ($view != 'search') {

@@ -2,11 +2,12 @@
 
 namespace panix\mod\shop\controllers;
 
-use panix\mod\shop\components\FilterController;
+
 use Yii;
+use yii\helpers\Url;
 use panix\mod\shop\models\Manufacturer;
 use panix\mod\shop\models\Product;
-use yii\helpers\Url;
+use panix\mod\shop\components\FilterController;
 
 class ManufacturerController extends FilterController
 {
@@ -27,6 +28,12 @@ class ManufacturerController extends FilterController
         return parent::beforeAction($action);
     }
 
+    public function actionIndex()
+    {
+        $model = Manufacturer::find()->published()->all();
+        $this->currentUrl = '/';
+        return $this->render('index', ['model' => $model]);
+    }
 
     /**
      * Display products by manufacturer
@@ -36,7 +43,7 @@ class ManufacturerController extends FilterController
     public function actionView($slug)
     {
         $this->findModel($slug);
-
+        $this->currentUrl = Url::to($this->dataModel->getUrl());
         $query = Product::find();
         $query->attachBehaviors((new Product)->behaviors());
         $query->published();
