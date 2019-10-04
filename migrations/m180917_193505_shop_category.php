@@ -7,7 +7,7 @@ namespace panix\mod\shop\migrations;
  * 
  * Class m180917_193505_shop_category
  */
-use yii\db\Schema;
+use Yii;
 use panix\engine\db\Migration;
 use panix\mod\shop\models\Category;
 use panix\mod\shop\models\translate\CategoryTranslate;
@@ -53,10 +53,11 @@ class m180917_193505_shop_category extends Migration {
             [1, 2, 1, 'root', '', 1]
         ]);
 
-        $this->batchInsert(CategoryTranslate::tableName(), ['object_id', 'language_id', 'name'], [
-            [1, 1, 'Каталог продукции']
-        ]);
-
+        foreach (Yii::$app->languageManager->getLanguages(false) as $lang) {
+            $this->batchInsert(CategoryTranslate::tableName(), ['object_id', 'language_id', 'name'], [
+                [1, $lang['id'], 'Каталог продукции']
+            ]);
+        }
     }
 
     public function down()
