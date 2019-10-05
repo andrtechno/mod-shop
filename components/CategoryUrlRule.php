@@ -9,15 +9,12 @@ use panix\mod\shop\models\Category;
  * Class CategoryUrlRule
  * @package panix\mod\shop\components
  */
-class CategoryUrlRule extends UrlRule
+class CategoryUrlRule extends BaseUrlRule
 {
 
-    public $route = 'shop/category/view';
+    /*public $route = 'shop/category/view';
     public $pattern = '';
     public $cacheDuration = 0;
-    /**
-     * @inheritdoc
-     */
     public function createUrl($manager, $route, $params)
     {
         if ($route === $this->route) {
@@ -82,7 +79,7 @@ class CategoryUrlRule extends UrlRule
         }
 
         return false;
-    }
+    }*/
 
     protected function getAllPaths()
     {

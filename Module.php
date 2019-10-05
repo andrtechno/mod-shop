@@ -3,6 +3,8 @@
 namespace panix\mod\shop;
 
 use panix\mod\admin\widgets\sidebar\BackendNav;
+use panix\mod\shop\models\Category;
+use panix\mod\shop\models\Manufacturer;
 use Yii;
 use panix\engine\WebModule;
 use yii\base\BootstrapInterface;
@@ -19,10 +21,10 @@ class Module extends WebModule implements BootstrapInterface
     {
 
 
-        $rules['shop'] = 'shop/default/index';
-        $rules['shop/notify'] =  'shop/notify/index';
-        $rules['shop/ajax/currency/<id:\d+>'] =  'shop/ajax/currency';
-        $rules['manufacturer'] =  'shop/manufacturer/index';
+        $rules['catalog'] = 'shop/default/index';
+        $rules['shop/notify'] = 'shop/notify/index';
+        $rules['shop/ajax/currency/<id:\d+>'] = 'shop/ajax/currency';
+        $rules['manufacturer'] = 'shop/manufacturer/index';
         //$rules['manufacturer/<slug:[0-9a-zA-Z\-]+>'] =  'shop/manufacturer/view';
         $rules['product/<slug:[0-9a-zA-Z\-]+>'] = 'shop/product/view';
 
@@ -37,11 +39,19 @@ class Module extends WebModule implements BootstrapInterface
 
             $rules[] = [
                 'class' => 'panix\mod\shop\components\ManufacturerUrlRule',
-            ];
-
+                'route' => 'shop/manufacturer/view',
+                'index' => 'manufacturer',
+           ];
             $rules[] = [
                 'class' => 'panix\mod\shop\components\CategoryUrlRule',
+                'route' => 'shop/category/view',
+                'index' => 'catalog',
+                'alias' => 'full_path',
             ];
+
+            /*$rules[] = [
+                'class' => 'panix\mod\shop\components\CategoryUrlRule',
+            ];*/
         }
 
         $app->urlManager->addRules(

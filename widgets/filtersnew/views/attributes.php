@@ -6,7 +6,7 @@ use yii\helpers\Inflector;
 //var_dump($attributes);
 
 foreach ($attributes as $attrData) {
-    if (count($attrData['filters']) > 0) {
+    if (count($attrData['filters']) > 1) {
         ?>
 
         <div class="card filter-block" id="filter-attributes-<?= Inflector::slug($attrData['title']); ?>">

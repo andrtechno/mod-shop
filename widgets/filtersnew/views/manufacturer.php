@@ -3,7 +3,7 @@
 use yii\helpers\Html;
 
 ?>
-<?php if ($manufacturers['filters']) { ?>
+<?php if ($manufacturers['filters'] && count($manufacturers['filters']) > 1) { ?>
     <div class="card filter-block">
         <a class="card-header h5" data-toggle="collapse" href="#collapse-<?= md5('manufacturer') ?>"
            aria-expanded="true" aria-controls="collapse-<?= md5('manufacturer') ?>">
