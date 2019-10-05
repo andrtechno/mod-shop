@@ -29,24 +29,15 @@ use yii\helpers\Html;
             </div>
         <?php } ?>
 
+        <div id="listview-ajax">
+            <?php
+            echo $this->render('listview',[
+                'provider' => $provider,
+                'itemView'=>$this->context->itemView
+            ]);
+            ?>
 
-        <?php
-        echo \panix\engine\widgets\ListView::widget([
-            'dataProvider' => $provider,
-            'itemView' => '@shop/views/category/_view_grid',
-            'layout' => '{summary}{items}{pager}',
-            'itemOptions' => ['class' => 'item product col-sm-422'],
-            'options' => ['class' => 'list-view _view_grid'],
-            //'summaryOptions' => ['class' => 'summary'],
-            'emptyTextOptions' => ['class' => 'col-sm-12 alert alert-info'],
-            //'beforeItem'=>function ($model, $key, $index, $widget){
-            //return 'ss';
-            //}
-            'pager' => [
-                'options' => ['class' => 'col-sm-12 pagination']
-            ]
-        ]);
-        ?>
+        </div>
     </div>
 </div>
 

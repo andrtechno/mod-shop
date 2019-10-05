@@ -13,6 +13,11 @@ use yii\helpers\Url;
 
 class FilterController extends WebController
 {
+    /**
+     * Sets page limits
+     * @var array
+     */
+    public $allowedPageLimit;
 
     public $query, $currentQuery, $prices;
 
@@ -33,9 +38,28 @@ class FilterController extends WebController
     public $_maxPrice, $_minPrice;
 
     public $currentUrl;
-
+    public $itemView = '_view_grid';
+    public $per_page;
     public function beforeAction($action)
     {
+
+
+        if (Yii::$app->request->get('view')) {
+            if (in_array(Yii::$app->request->get('view'), ['list', 'grid'])) {
+                $this->itemView = '_view_' . Yii::$app->request->get('view');
+            }
+        }
+
+
+        $this->allowedPageLimit = explode(',', Yii::$app->settings->get('shop', 'per_page'));
+
+
+        $this->per_page = (int)$this->allowedPageLimit[0];
+        if (Yii::$app->request->get('per_page') && in_array($_GET['per_page'], $this->allowedPageLimit)) {
+            $this->per_page = (int)Yii::$app->request->get('per_page');
+        }
+
+
         if (Yii::$app->request->get('price')) {
             $this->prices = explode(',', Yii::$app->request->get('price'));
             //foreach ($this->prices as $key=>$price) {

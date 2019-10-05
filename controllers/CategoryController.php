@@ -12,14 +12,12 @@ use panix\mod\shop\models\Category;
 class CategoryController extends FilterController
 {
 
-    public $allowedPageLimit = [];
+
     public $provider;
     public $currentUrl;
 
     public function beforeAction($action)
     {
-
-        $this->allowedPageLimit = explode(',', Yii::$app->settings->get('shop', 'per_page'));
 
         Url::remember();
 
@@ -151,14 +149,14 @@ class CategoryController extends FilterController
         //$this->maxprice = $this->getMaxPrice();
         //$this->minprice = $this->getMinPrice();
 
-        $per_page = (int)$this->allowedPageLimit[0];
+        //$per_page = (int)$this->allowedPageLimit[0];
 
         // if (isset($_GET['per_page']) && in_array((int) $_GET['per_page'], $this->allowedPageLimit))
         //    $per_page = (int) $_GET['per_page'];
 
-        if (Yii::$app->request->get('per_page') && in_array($_GET['per_page'], $this->allowedPageLimit)) {
-            $per_page = (int)Yii::$app->request->get('per_page');
-        }
+        //if (Yii::$app->request->get('per_page') && in_array($_GET['per_page'], $this->allowedPageLimit)) {
+        //    $per_page = (int)Yii::$app->request->get('per_page');
+        //}
 
 
         //$this->query->addOrderBy(['price'=>SORT_DESC]);
@@ -175,7 +173,7 @@ class CategoryController extends FilterController
             'query' => $this->query,
             'sort' => Product::getSort(),
             'pagination' => [
-                'pageSize' => $per_page,
+                'pageSize' => $this->per_page,
                 // 'defaultPageSize' =>(int)  $this->allowedPageLimit[0],
                 // 'pageSizeLimit' => $this->allowedPageLimit,
             ]
@@ -217,12 +215,7 @@ class CategoryController extends FilterController
             $name = $model->name;
         }
 
-        $itemView = '_view_grid';
-        if (Yii::$app->request->get('view')) {
-            if (in_array(Yii::$app->request->get('view'), ['list', 'grid'])) {
-                $itemView = '_view_' . Yii::$app->request->get('view');
-            }
-        }
+
 
 
         $filterData = $this->getActiveFilters();
@@ -284,11 +277,6 @@ class CategoryController extends FilterController
         $this->breadcrumbs[] = $name;
 
         if (Yii::$app->request->isAjax) {
-            //\Yii::$app->response->format = \yii\web\Response::FORMAT_HTML;
-
-            //  if (Yii::$app->request->get('render') == 'active-filters') {
-
-
             Yii::$app->response->format = Response::FORMAT_JSON;
 
             return [
@@ -296,7 +284,7 @@ class CategoryController extends FilterController
                 'full_url' => Url::to($this->currentUrl),
                 'items' => $this->renderPartial('listview', [
                     'provider' => $this->provider,
-                    'itemView' => $itemView
+                    'itemView' => $this->itemView
                 ]),
                 'currentFiltersData' => $this->renderPartial('@shop/widgets/filtersnew/views/current', [
                     'dataModel' => $model,
@@ -305,22 +293,22 @@ class CategoryController extends FilterController
             ];
 
 
-            return $this->renderPartial('@shop/widgets/filtersnew/views/current', [
+            /*return $this->renderPartial('@shop/widgets/filtersnew/views/current', [
                 'dataModel' => $model,
                 'active' => $filterData
             ]);
             //  } else {
             return $this->renderPartial('listview', [
                 'provider' => $this->provider,
-                'itemView' => $itemView
-            ]);
+                'itemView' => $this->itemView
+            ]);*/
             //  }
 
 
         } else {
             return $this->render($view, [
                 'provider' => $this->provider,
-                'itemView' => $itemView
+                'itemView' => $this->itemView
             ]);
         }
     }

@@ -5,6 +5,7 @@ namespace panix\mod\shop\controllers;
 
 use Yii;
 use yii\helpers\Url;
+use yii\web\Response;
 use panix\mod\shop\models\Manufacturer;
 use panix\mod\shop\models\Product;
 use panix\mod\shop\components\FilterController;
@@ -12,21 +13,6 @@ use panix\mod\shop\components\FilterController;
 class ManufacturerController extends FilterController
 {
 
-    /**
-     * Sets page limits
-     * @var array
-     */
-    public $allowedPageLimit;
-
-    /**
-     * @param \yii\base\Action $action
-     * @return bool
-     */
-    public function beforeAction($action)
-    {
-        $this->allowedPageLimit = explode(',', Yii::$app->settings->get('shop', 'per_page'));
-        return parent::beforeAction($action);
-    }
 
     public function actionIndex()
     {
@@ -42,15 +28,16 @@ class ManufacturerController extends FilterController
      */
     public function actionView($slug)
     {
-        $this->findModel($slug);
-        $this->currentUrl = Url::to($this->dataModel->getUrl());
-        $query = Product::find();
-        $query->attachBehaviors((new Product)->behaviors());
-        $query->published();
-        $query->applyManufacturers($this->dataModel->id);
-        $query->applyAttributes($this->activeAttributes);
 
-        $this->currentQuery = clone $query;
+        $this->findModel($slug);
+       // $this->currentUrl = Url::to($this->dataModel->getUrl());
+        $this->query = Product::find();
+        $this->query->attachBehaviors((new Product)->behaviors());
+        $this->query->published();
+        $this->query->applyManufacturers($this->dataModel->id);
+        $this->query->applyAttributes($this->activeAttributes);
+
+        $this->currentQuery = clone $this->query;
 
         $this->applyPricesFilter();
 
@@ -58,10 +45,10 @@ class ManufacturerController extends FilterController
 
         $this->view->registerJs("var current_url = '" . Url::to($this->dataModel->getUrl()) . "';", yii\web\View::POS_HEAD, 'current_url');
         $provider = new \panix\engine\data\ActiveDataProvider([
-            'query' => $query,
+            'query' => $this->query,
             'id' => null,
             'pagination' => [
-                'pageSize' => $this->allowedPageLimit[0],
+                'pageSize' => $this->per_page,
             ]
         ]);
 
@@ -71,10 +58,52 @@ class ManufacturerController extends FilterController
             'url' => ['/shop']
         ];
 
-        return $this->render('view', [
-            'provider' => $provider,
-            'model' => $this->dataModel
-        ]);
+        $filterData = $this->getActiveFilters();
+
+
+
+
+        $currentUrl[] = '/shop/manufacturer/view';
+        $currentUrl['slug'] = $this->dataModel->slug;
+        //  print_r($filterData);die;
+        foreach ($filterData as $name => $filter) {
+            if (isset($filter['name'])) { //attributes
+                $currentUrl[$filter['name']] = [];
+                if (isset($filter['items'])) {
+                    $params = [];
+                    foreach ($filter['items'] as $item) {
+                        $params[] = $item['value'];
+                    }
+                    $currentUrl[$filter['name']] = implode(',', $params);
+                }
+            }
+        }
+
+        $this->currentUrl = Url::to($currentUrl);
+
+        if (Yii::$app->request->isAjax) {
+
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return [
+                'currentFilters' => $filterData,
+                'full_url' => Url::to($this->currentUrl),
+                'items' => $this->renderPartial('listview', [
+                    'provider' => $provider,
+                    'itemView' => $this->itemView
+                ]),
+                'currentFiltersData' => $this->renderPartial('@shop/widgets/filtersnew/views/current', [
+                    'dataModel' => $this->dataModel,
+                    'active' => $filterData
+                ])
+            ];
+
+        }else{
+            return $this->render('view', [
+                'provider' => $provider,
+                'model' => $this->dataModel
+            ]);
+        }
+
     }
 
     /**

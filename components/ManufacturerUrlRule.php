@@ -2,6 +2,7 @@
 
 namespace panix\mod\shop\components;
 
+use yii\helpers\VarDumper;
 use yii\web\UrlRule;
 use panix\mod\shop\models\Manufacturer;
 
@@ -13,8 +14,9 @@ class ManufacturerUrlRule extends UrlRule
 {
 
     public $route = 'shop/manufacturer/view';
-    public $pattern = '';
+    public $pattern = 'manufacturer/<slug:[0-9a-zA-Z\-]+>';
     public $cacheDuration = 0;
+
     /**
      * @inheritdoc
      */
@@ -36,7 +38,7 @@ class ManufacturerUrlRule extends UrlRule
                 $url .= '/' . implode('/', $parts);
             }
 
-            return $url . $this->suffix;
+            return 'manufacturer/' . $url . $this->suffix;
         }
 
         return false;
@@ -54,29 +56,27 @@ class ManufacturerUrlRule extends UrlRule
         if ($this->suffix)
             $pathInfo = strtr($pathInfo, [$this->suffix => '']);
 
-
+//echo $pathInfo;die;
         foreach ($this->getAllPaths() as $path) {
 
-            if ($path['full_path'] !== '' && strpos($pathInfo, $path['full_path']) === 0) {
-                $_GET['slug'] = $path['full_path'];
-                $uri = str_replace($path['full_path'], '', $pathInfo);
-                $parts = explode('/', $uri);
-                unset($parts[0]);
-                //$pathInfo = implode($parts, '/');
-                //   print_r(array_chunk($parts, 2));
-                $ss = array_chunk($parts, 2);
+            if ($path['slug'] !== '' && strpos(str_replace('manufacturer/', '', $pathInfo), $path['slug']) === 0) {
+                $_GET['slug'] = $path['slug'];
 
-                foreach ($ss as $k => $p) {
-                    // print_r($p);
-                    if (isset($p[1])) {
+                $parts = explode('/', $pathInfo);
+                $paramsList = array_chunk($parts, 2);
+                unset($paramsList[0]);
+                foreach ($paramsList as $k => $p) {
+                    if (isset($p[0])) {
                         $_GET[$p[0]] = $p[1];
+                       // $params[$p[0]] = strpos( $p[1],',') ? explode(',', $p[1]) : $p[1];
                         $params[$p[0]] = $p[1];
                     }
                 }
 
-                $params['slug'] = ltrim($path['full_path']);
+                $params['slug'] = ltrim($path['slug']);
 
-
+                //echo VarDumper::dump($params, 10, true);
+                //die;
                 return [$this->route, $params];
             }
         }
@@ -96,7 +96,7 @@ class ManufacturerUrlRule extends UrlRule
 
             // Sort paths by length.
             usort($allPaths, function ($a, $b) {
-                return strlen($b['full_path']) - strlen($a['full_path']);
+                return strlen($b['slug']) - strlen($a['slug']);
             });
 
             \Yii::$app->cache->set(__CLASS__, $allPaths, $this->cacheDuration);
