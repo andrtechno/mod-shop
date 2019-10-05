@@ -8,22 +8,28 @@ namespace panix\mod\shop\migrations;
  * @author PIXELION CMS development team <dev@pixelion.com.ua>
  * @link http://pixelion.com.ua PIXELION CMS
  *
- * Class m190316_061840_insert_shop_attribute
+ * Class m190316_061840_shop_insert
  */
 
-use panix\mod\shop\models\AttributeOption;
-use panix\mod\shop\models\translate\AttributeOptionTranslate;
+
+use panix\mod\shop\models\Category;
+use panix\mod\shop\models\translate\CategoryTranslate;
+use panix\mod\shop\models\TypeAttribute;
 use Yii;
 use panix\engine\CMS;
 use panix\engine\db\Migration;
 use panix\mod\shop\models\Attribute;
 use panix\mod\shop\models\translate\AttributeTranslate;
+use panix\mod\shop\models\AttributeOption;
+use panix\mod\shop\models\ProductType;
+use panix\mod\shop\models\translate\AttributeOptionTranslate;
 
-class m190316_061840_insert_shop_attribute extends Migration
+class m190316_061840_shop_insert extends Migration
 {
 
     public function up()
     {
+
 
         $list = [
             'Размер' => [
@@ -53,11 +59,9 @@ class m190316_061840_insert_shop_attribute extends Migration
             if (isset($data['options'])) {
                 $o = 1;
                 foreach ($data['options'] as $option) {
-
                     $this->batchInsert(AttributeOption::tableName(), ['attribute_id', 'ordern'], [
                         [$o, $o]
                     ]);
-
                     foreach (Yii::$app->languageManager->getLanguages(false) as $lang) {
                         $this->batchInsert(AttributeOptionTranslate::tableName(), ['object_id', 'language_id', 'value'], [
                             [$o, $lang['id'], $option]
@@ -69,6 +73,58 @@ class m190316_061840_insert_shop_attribute extends Migration
             }
 
             $i++;
+        }
+
+
+        $this->batchInsert(ProductType::tableName(), ['name'], [
+            ['Основной']
+        ]);
+        $i = 1;
+        foreach ($list as $name => $data) {
+            $this->batchInsert(TypeAttribute::tableName(), ['type_id', 'attribute_id'], [
+                [1, $i]
+            ]);
+            $i++;
+        }
+
+
+        //Add Root Category
+        $this->batchInsert(Category::tableName(), ['lft', 'rgt', 'depth', 'slug', 'full_path', 'switch'], [
+            [1, 2, 1, 'root', '', 1]
+        ]);
+
+        foreach (Yii::$app->languageManager->getLanguages(false) as $lang) {
+            $this->batchInsert(CategoryTranslate::tableName(), ['object_id', 'language_id', 'name'], [
+                [1, $lang['id'], 'Каталог продукции']
+            ]);
+        }
+
+
+        $categories = [
+            'Обувь'=>['Женская','Мужская','Детская'],
+            'Смартфоны, ТВ и электроника'=>[
+                'Телефоны',
+                'Телевизоры',
+                'Планшеты',
+                'AV-ресиверы',
+                'Акустика Hi-Fi'
+            ]
+        ];
+
+        foreach ($categories as $cat_name => $cat){
+            $parent_id = Category::findModel(1);
+            $s = new Category();
+            $s->name = $cat_name;
+            $s->slug = CMS::slug($s->name);
+            $catParent = $s->appendTo($parent_id);
+            if(is_array($cat)){
+                foreach ($cat as $c){
+                    $subCategory = new Category();
+                    $subCategory->name = $c;
+                    $subCategory->slug = CMS::slug($subCategory->name);
+                    $subCategory->appendTo($s);
+                }
+            }
         }
 
     }

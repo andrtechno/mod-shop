@@ -48,16 +48,6 @@ class m180917_193505_shop_category extends Migration {
         $this->createIndex('object_id', CategoryTranslate::tableName(), 'object_id');
         $this->createIndex('language_id', CategoryTranslate::tableName(), 'language_id');
 
-
-        $this->batchInsert(Category::tableName(), ['lft', 'rgt', 'depth', 'slug', 'full_path', 'switch'], [
-            [1, 2, 1, 'root', '', 1]
-        ]);
-
-        foreach (Yii::$app->languageManager->getLanguages(false) as $lang) {
-            $this->batchInsert(CategoryTranslate::tableName(), ['object_id', 'language_id', 'name'], [
-                [1, $lang['id'], 'Каталог продукции']
-            ]);
-        }
     }
 
     public function down()

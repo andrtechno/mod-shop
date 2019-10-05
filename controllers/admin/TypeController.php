@@ -30,14 +30,22 @@ class TypeController extends AdminController
         // $this->topButtons = array(array('label' => Yii::t('shop/admin', 'Создать тип'),
         //         'url' => $this->createUrl('create'), 'htmlOptions' => array('class' => 'btn btn-success')));
 
+
+        $this->buttons = [
+            [
+                'label' => Yii::t('app', 'CREATE'),
+                'url' => ['/admin/shop/type/create'],
+                'options' => ['class' => 'btn btn-success']
+            ]
+        ];
         $searchModel = new ProductTypeSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams());
 
 
-        return $this->render('index', array(
+        return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-        ));
+        ]);
     }
 
     /**
@@ -49,22 +57,10 @@ class TypeController extends AdminController
     {
 
 
-        /* $this->breadcrumbs = array(
-          Yii::t('shop/default', 'MODULE_NAME') => array('/admin/shop'),
-          Yii::t('shop/admin', 'TYPE_PRODUCTS') => $this->createUrl('index'),
-          $this->pageName
-          ); */
+        $model = ProductType::findModel($id, Yii::t('shop/admin', 'NO_FOUND_TYPE_PRODUCT'));
 
-        if ($id === true)
-            $model = new ProductType;
-        else
-            $model = ProductType::findOne($id);
-
-        if (!$model)
-            $this->error404(Yii::t('shop/admin', 'NO_FOUND_TYPEPRODUCT'));
-
-        $this->pageName = ($model->isNewRecord) ? Yii::t('shop/admin', 'Создание нового типа продукта') :
-            Yii::t('shop/admin', 'Редактирование типа продукта');
+        $this->pageName = ($model->isNewRecord) ? Yii::t('shop/admin', 'TYPE_CREATE') :
+            Yii::t('shop/admin', 'TYPE_UPDATE');
 
 
         $this->breadcrumbs[] = [
@@ -95,9 +91,10 @@ class TypeController extends AdminController
 
             if ($model->validate()) {
                 $model->save();
-                // Set type attributes
 
+                // Set type attributes
                 $model->useAttributes(Yii::$app->request->post('attributes', []));
+
                 $this->redirectPage($isNew, $post);
             }
         }
@@ -106,10 +103,10 @@ class TypeController extends AdminController
             ->where(['NOT IN', 'id', ArrayHelper::map($model->attributeRelation, 'attribute_id', 'attribute_id')])
             ->all();
 
-        return $this->render('update', array(
+        return $this->render('update', [
             'model' => $model,
             'attributes' => $allAttributes,
-        ));
+        ]);
     }
 
     /**
@@ -117,7 +114,7 @@ class TypeController extends AdminController
      * @param array $id
      * @return \yii\web\Response
      */
-    public function actionDelete($id = array())
+    public function actionDelete($id = [])
     {
         if (Yii::$app->request->isPost) {
             $model = ProductType::model()->findAllByPk($_REQUEST['id']);
@@ -125,7 +122,7 @@ class TypeController extends AdminController
             if (!empty($model)) {
                 foreach ($model as $m) {
                     if ($m->productsCount > 0) {
-                        $this->error404(Yii::t('shop/admin', 'ERR_DEL_TYPE_PRODUCT'));
+                        $this->error404(Yii::t('shop/admin', 'ERROR_DEL_TYPE_PRODUCT'));
                     } else {
                         $m->delete();
                     }
