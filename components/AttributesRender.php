@@ -64,8 +64,7 @@ class AttributesRender extends Widget
             $data[$model->title] = $value;
         }
 
-
-        return $this->render($this->view, [
+        return $this->render('@shop/views/product/'.$this->view, [
             'data' => $data,
             'groups' => $groups,
         ]);

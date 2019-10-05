@@ -1,4 +1,7 @@
 <?php
+/**
+ * @var $groups \panix\mod\shop\models\AttributeGroup
+ */
 
 use yii\helpers\Html;
 
@@ -16,30 +19,24 @@ use yii\helpers\Html;
                 <?php foreach ($group as $item) { ?>
                     <tr>
                         <td>
-
-                                <span>
-                                    <?= Html::encode($item['name']) ?>
-                                    <?php if (!empty($item['hint'])) { ?>
-                                        <a href="javascript:void(0)" title="<?= Html::encode($item['name']) ?>"
-                                           class="attribute-popover<?= $item['id']; ?>"><i class="icon-info"></i></a>
-
-                                <?php Yii::app()->clientScript->registerScript('attribute-popover-' . $item['id'], "$('.attribute-popover" . $item['id'] . "').popover({html: true,trigger: 'focus',content: function () {return $('#attribute-popover-" . $item['id'] . "').html();}});"); ?>
+                            <span><?= Html::encode($item['name']) ?>
+                                <?php if (!empty($item['hint'])) { ?>
+                                    <a href="javascript:void(0)" title="<?= Html::encode($item['name']) ?>"
+                                       class="attribute-popover<?= $item['id']; ?>"><i class="icon-info"></i></a>
+                                <?php $this->registerJsScript('attribute-popover-' . $item['id'], "$('.attribute-popover" . $item['id'] . "').popover({html: true,trigger: 'focus',content: function () {return $('#attribute-popover-" . $item['id'] . "').html();}});"); ?>
 
 
 
-                                        <div id="attribute-popover-<?= $item['id']; ?>" class="d-none">
+                                    <div id="attribute-popover-<?= $item['id']; ?>" class="d-none">
                                         <?= $item['hint']; ?>
                                     </div>
-                                    <?php } ?>
-                                </span>
-
-
+                                <?php } ?>
+                            </span>
                         </td>
                         <td class="text-right">
                             <span class="font-weight-bold"><?= Html::encode($item['value']) ?></span>
                         </td>
                     </tr>
-
                 <?php } ?>
             </table>
         </div>

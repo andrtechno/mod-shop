@@ -34,7 +34,7 @@ class m190316_061840_shop_insert extends Migration
     {
 
 
-        $list = [
+        $attributesList = [
             'Размер' => [
                 'type' => Attribute::TYPE_DROPDOWN,
                 'display_on_front' => true,
@@ -47,7 +47,7 @@ class m190316_061840_shop_insert extends Migration
             ],
         ];
         $i = 1;
-        foreach ($list as $name => $data) {
+        foreach ($attributesList as $name => $data) {
             $this->batchInsert(Attribute::tableName(), ['name', 'type', 'display_on_front', 'use_in_filter', 'use_in_variants', 'use_in_compare', 'select_many', 'required'], [
                 [CMS::slug($name), $data['type'], $data['display_on_front'], $data['use_in_filter'], $data['use_in_variants'], $data['use_in_compare'], $data['select_many'], $data['required']]
             ]);
@@ -82,7 +82,7 @@ class m190316_061840_shop_insert extends Migration
             ['Основной']
         ]);
         $i = 1;
-        foreach ($list as $name => $data) {
+        foreach ($attributesList as $name => $data) {
             $this->batchInsert(TypeAttribute::tableName(), ['type_id', 'attribute_id'], [
                 [1, $i]
             ]);
@@ -140,7 +140,7 @@ class m190316_061840_shop_insert extends Migration
             ],
             [
                 'name' => 'test2',
-                'price' => '100.00',
+                'price' => '200.00',
                 'type_id' => 1,
                 'manufacturer_id' => 4,
                 'main_category' => 2
@@ -148,8 +148,8 @@ class m190316_061840_shop_insert extends Migration
         ];
         foreach ($products as $product_key => $product) {
             $id = $product_key + 1;
-            $this->batchInsert(Product::tableName(), ['price', 'slug', 'manufacturer_id', 'main_category_id', 'created_at', 'updated_at', 'ordern'], [
-                [$product['price'], CMS::slug($product['name']), $product['manufacturer_id'], $product['main_category'], time(), time(), $id]
+            $this->batchInsert(Product::tableName(), ['price', 'slug', 'manufacturer_id', 'main_category_id', 'type_id', 'created_at', 'updated_at', 'ordern'], [
+                [$product['price'], CMS::slug($product['name']), $product['manufacturer_id'], $product['main_category'], $product['type_id'], time(), time(), $id]
             ]);
             foreach (Yii::$app->languageManager->getLanguages(false) as $lang) {
                 $this->batchInsert(ProductTranslate::tableName(), ['object_id', 'language_id', 'name'], [
@@ -160,10 +160,14 @@ class m190316_061840_shop_insert extends Migration
                 [$id, $product['main_category'], 1]
             ]);
 
-            /*$this->batchInsert('{{%shop__product_attribute_eav}}', ['entity', 'attribute', 'value'], [
-                [$id, $product['main_category'], 1]
-            ]);*/
+
         }
+        $this->batchInsert('{{%shop__product_attribute_eav}}', ['entity', 'attribute', 'value'], [
+            [1, CMS::slug(array_keys($attributesList)[0]), 3]
+        ]);
+        $this->batchInsert('{{%shop__product_attribute_eav}}', ['entity', 'attribute', 'value'], [
+            [2, CMS::slug(array_keys($attributesList)[0]), 2]
+        ]);
     }
 
     public function down()
