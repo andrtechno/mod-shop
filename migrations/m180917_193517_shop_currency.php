@@ -28,7 +28,7 @@ class m180917_193517_shop_currency extends Migration {
             'is_main' => $this->boolean()->defaultValue(0),
             'is_default' => $this->boolean()->defaultValue(0),
             'switch' => $this->boolean()->notNull()->defaultValue(null),
-            'ordern' => $this->integer(),
+            'ordern' => $this->integer()->unsigned(),
         ], $this->tableOptions);
 
         $this->createIndex('is_main', Currency::tableName(), 'is_main');

@@ -246,6 +246,7 @@ class Product extends ActiveRecord
             ['enable_comments', 'boolean'],
             [['sku', 'full_description', 'unit'], 'default'], // установим ... как NULL, если они пустые
             [['name', 'slug', 'main_category_id', 'price', 'unit'], 'required'],
+            ['price', 'double'],
             [['manufacturer_id', 'type_id', 'quantity', 'views', 'availability', 'added_to_cart_count', 'ordern', 'category_id', 'currency_id', 'unit', 'supplier_id'], 'integer'],
             [['name', 'slug', 'full_description', 'use_configurations'], 'safe'],
             //  [['c1'], 'required'], // Attribute field

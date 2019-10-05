@@ -30,7 +30,7 @@ class m180917_193421_shop_attribute extends Migration
             'use_in_variants' => $this->boolean()->null(),
             'use_in_compare' => $this->boolean()->defaultValue(0),
             'select_many' => $this->boolean()->null(),
-            'ordern' => $this->integer(11)->null(),
+            'ordern' => $this->integer(11)->unsigned(),
             'required' => $this->boolean()->null(),
             'created_at' => $this->integer(),
             'updated_at' => $this->integer(),

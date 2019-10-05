@@ -53,7 +53,7 @@ class m180917_193213_shop_product extends Migration
             'created_at' => $this->integer(),
             'updated_at' => $this->integer(),
             'switch' => $this->boolean()->defaultValue(1),
-            'ordern' => $this->integer(),
+            'ordern' => $this->integer()->unsigned(),
         ], $this->tableOptions);
 
         $this->createTable(ProductTranslate::tableName(), [

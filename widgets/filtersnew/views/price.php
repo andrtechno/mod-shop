@@ -19,6 +19,7 @@ $max = (int)ceil($getMax);
 
 var_dump($getDefaultMin);
 var_dump($getDefaultMax);
+if($getDefaultMin != $getDefaultMax){
 ?>
 
     <div class="card filter filter-price">
@@ -104,4 +105,4 @@ var_dump($getDefaultMax);
             </div>
         </div>
     </div>
-<?php // } ?>
+<?php  } ?>

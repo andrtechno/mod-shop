@@ -24,7 +24,7 @@ class m190315_062942_shop_attribute_group extends Migration
             'id' => $this->primaryKey()->unsigned(),
             'name' => $this->string()->null()->defaultValue(null),
             'switch' => $this->boolean()->notNull()->defaultValue(null),
-            'ordern' => $this->integer(),
+            'ordern' => $this->integer()->unsigned(),
         ], $this->tableOptions);
 
 

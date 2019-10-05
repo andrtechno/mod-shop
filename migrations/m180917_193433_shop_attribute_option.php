@@ -20,7 +20,7 @@ class m180917_193433_shop_attribute_option extends Migration
         $this->createTable(AttributeOption::tableName(), [
             'id' => $this->primaryKey()->unsigned(),
             'attribute_id' => $this->integer()->null(),
-            'ordern' => $this->integer(),
+            'ordern' => $this->integer()->unsigned(),
         ], $this->tableOptions);
 
 
