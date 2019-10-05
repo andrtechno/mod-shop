@@ -33,7 +33,7 @@ class Module extends WebModule implements BootstrapInterface
             $rules[] = [
                 'class' => 'panix\mod\shop\components\SearchUrlRule',
                 //'pattern'=>'products/search',
-                'route' => 'shop/category/search',
+                'route' => 'shop/catalog/search',
                 'defaults' => ['q' => Yii::$app->request->get('q')]
             ];
 
@@ -44,7 +44,7 @@ class Module extends WebModule implements BootstrapInterface
            ];
             $rules[] = [
                 'class' => 'panix\mod\shop\components\CategoryUrlRule',
-                'route' => 'shop/category/view',
+                'route' => 'shop/catalog/view',
                 'index' => 'catalog',
                 'alias' => 'full_path',
             ];

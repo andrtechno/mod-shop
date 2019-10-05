@@ -2,15 +2,15 @@
 
 namespace panix\mod\shop\models;
 
-use panix\engine\behaviors\UploadFileBehavior;
+
 use Yii;
-use panix\engine\behaviors\TranslateBehavior;
+use yii\helpers\ArrayHelper;
 use panix\engine\behaviors\nestedsets\NestedSetsBehavior;
 use panix\mod\shop\models\translate\CategoryTranslate;
 use panix\mod\shop\models\query\CategoryQuery;
 use panix\engine\CMS;
 use panix\engine\db\ActiveRecord;
-use yii\helpers\ArrayHelper;
+use panix\engine\behaviors\UploadFileBehavior;
 
 /**
  * Class Category
@@ -53,7 +53,7 @@ class Category extends ActiveRecord
 
     public function getUrl()
     {
-        return ['/shop/category/view', 'slug' => $this->full_path];
+        return ['/shop/catalog/view', 'slug' => $this->full_path];
     }
 
     public function rules()
