@@ -144,7 +144,28 @@ class m190316_061840_shop_insert extends Migration
                 'type_id' => 1,
                 'manufacturer_id' => 4,
                 'main_category' => 2
-            ]
+            ],
+            [
+                'name' => 'test3',
+                'price' => '200.00',
+                'type_id' => 1,
+                'manufacturer_id' => 2,
+                'main_category' => 2
+            ],
+            [
+                'name' => 'test4',
+                'price' => '240.00',
+                'type_id' => 1,
+                'manufacturer_id' => 3,
+                'main_category' => 2
+            ],
+            [
+                'name' => 'test5',
+                'price' => '600.00',
+                'type_id' => 1,
+                'manufacturer_id' => 4,
+                'main_category' => 2
+            ],
         ];
         foreach ($products as $product_key => $product) {
             $id = $product_key + 1;
@@ -167,6 +188,15 @@ class m190316_061840_shop_insert extends Migration
         ]);
         $this->batchInsert('{{%shop__product_attribute_eav}}', ['entity', 'attribute', 'value'], [
             [2, CMS::slug(array_keys($attributesList)[0]), 2]
+        ]);
+        $this->batchInsert('{{%shop__product_attribute_eav}}', ['entity', 'attribute', 'value'], [
+            [3, CMS::slug(array_keys($attributesList)[0]), 2]
+        ]);
+        $this->batchInsert('{{%shop__product_attribute_eav}}', ['entity', 'attribute', 'value'], [
+            [4, CMS::slug(array_keys($attributesList)[0]), 2]
+        ]);
+        $this->batchInsert('{{%shop__product_attribute_eav}}', ['entity', 'attribute', 'value'], [
+            [5, CMS::slug(array_keys($attributesList)[0]), 2]
         ]);
     }
 

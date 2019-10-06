@@ -7,7 +7,7 @@ use panix\mod\shop\widgets\filters\FiltersWidget;
 
 ?>
 
-
+zzzzzzzzzzzzzzzzz
 <div class="row">
     <div class="col-sm-3">
         <?= CategoriesWidget::widget([]) ?>

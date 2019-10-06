@@ -40,9 +40,8 @@ class ManufacturerController extends FilterController
         $this->currentQuery = clone $this->query;
 
         $this->applyPricesFilter();
-
+        $this->pageName = $this->dataModel->name;
         $this->view->title = $this->dataModel->name;
-
         $this->view->registerJs("var current_url = '" . Url::to($this->dataModel->getUrl()) . "';", yii\web\View::POS_HEAD, 'current_url');
         $provider = new \panix\engine\data\ActiveDataProvider([
             'query' => $this->query,
