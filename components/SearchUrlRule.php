@@ -11,8 +11,8 @@ use yii\web\UrlRule;
 class SearchUrlRule extends UrlRule
 {
 
-    public $pattern = 'products/search/q/<q:\w+>';
-    public $route = 'shop/category/search';
+    public $pattern = 'search/q/<q:\w+>';
+    public $route = 'shop/search/index';
 
     /**
      * @inheritdoc
@@ -28,7 +28,7 @@ class SearchUrlRule extends UrlRule
             } else {
                 $url = '';
             }*/
-            $url = 'products/search';
+            $url = 'search';
             //$url='';
             $parts = [];
             if (!empty($params)) {
@@ -53,14 +53,14 @@ class SearchUrlRule extends UrlRule
         if (empty($pathInfo))
             return false;
 
-        if (strpos($pathInfo, 'products/search') !== 0) {
+        if (strpos($pathInfo, 'search') !== 0) {
             return false;
         }
 
         if ($this->suffix)
             $pathInfo = strtr($pathInfo, [$this->suffix => '']);
 
-        $pathInfo = str_replace('products/search', '', $pathInfo);
+        $pathInfo = str_replace('search', '', $pathInfo);
 
         $parts = explode('/', $pathInfo);
 

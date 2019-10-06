@@ -87,7 +87,7 @@ class ManufacturerController extends FilterController
             return [
                 'currentFilters' => $filterData,
                 'full_url' => Url::to($this->currentUrl),
-                'items' => $this->renderPartial('listview', [
+                'items' => $this->renderPartial('@shop/views/catalog/listview', [
                     'provider' => $provider,
                     'itemView' => $this->itemView
                 ]),

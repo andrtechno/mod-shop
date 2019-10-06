@@ -22,7 +22,7 @@ class Module extends WebModule implements BootstrapInterface
 
 
         $rules['catalog'] = 'shop/default/index';
-        $rules['catalog/search/ajax'] = 'shop/search/ajax';
+        $rules['search/ajax'] = 'shop/search/ajax';
         $rules['shop/notify'] = 'shop/notify/index';
         $rules['shop/ajax/currency/<id:\d+>'] = 'shop/ajax/currency';
         $rules['manufacturer'] = 'shop/manufacturer/index';

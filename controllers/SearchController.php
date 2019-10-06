@@ -2,6 +2,7 @@
 
 namespace panix\mod\shop\controllers;
 
+use panix\engine\Html;
 use Yii;
 use yii\helpers\Url;
 use yii\web\Response;
@@ -22,15 +23,17 @@ class SearchController extends FilterController
         $this->query->sort();
 
         $this->query->published();
-        $this->query->applyAttributes($this->activeAttributes);
-        $this->query->applySearch(Yii::$app->request->get('q'));
+
+
 
         // Filter by manufacturer
         if (Yii::$app->request->get('manufacturer')) {
             $manufacturers = explode(',', Yii::$app->request->get('manufacturer', ''));
             $this->query->applyManufacturers($manufacturers);
         }
-
+        $this->query->groupBy(Product::tableName() . '.`id`');
+        $this->query->applySearch(Yii::$app->request->get('q'));
+        $this->query->applyAttributes($this->activeAttributes);
 
         // Create clone of the current query to use later to get min and max prices.
         $this->currentQuery = clone $this->query;
@@ -40,7 +43,7 @@ class SearchController extends FilterController
         if (Yii::$app->request->get('sort') == 'price' || Yii::$app->request->get('sort') == '-price') {
             $this->query->aggregatePriceSelect((Yii::$app->request->get('sort') == 'price') ? SORT_ASC : SORT_DESC);
         }
-        $this->query->groupBy(Product::tableName() . '.`id`');
+
         //echo $this->query->createCommand()->rawSql;die;
         $this->provider = new \panix\engine\data\ActiveDataProvider([
             'query' => $this->query,
@@ -50,7 +53,11 @@ class SearchController extends FilterController
             ]
         ]);
 
-
+        $this->pageName = Yii::t('shop/default', 'SEARCH_RESULT', [
+            'query' => Html::encode(Yii::$app->request->get('q')),
+            'count' => $this->provider->totalCount,
+        ]);
+        $this->view->title = $this->pageName;
         $filterData = $this->getActiveFilters();
 
         if (Yii::$app->request->isAjax) {

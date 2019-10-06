@@ -210,7 +210,7 @@ class FilterController extends WebController
         $menuItems = [];
 
 
-        if ($this->route == 'shop/category/view' || $this->route == 'shop/category/search') {
+        if ($this->route == 'shop/catalog/view' || $this->route == 'shop/search/index') {
             $manufacturers = array_filter(explode(',', $request->getQueryParam('manufacturer')));
             $manufacturers = Manufacturer::getDb()->cache(function ($db) use ($manufacturers) {
                 return Manufacturer::findAll($manufacturers);
@@ -230,7 +230,7 @@ class FilterController extends WebController
         if (isset(Yii::$app->controller->prices[0])) {
             $menuItems['price']['items'][] = [
                 // 'name'=>'min_price',
-                'value' => Yii::$app->currency->number_format($this->getCurrentMinPrice()),
+                'value' => Yii::$app->currency->number_format($this->getCurrentMinPrice()).'zzz',
                 'label' => Yii::t('shop/default', 'FILTER_CURRENT_PRICE_MIN', ['value' => Yii::$app->currency->number_format($this->getCurrentMinPrice()), 'currency' => Yii::$app->currency->active['symbol']]),
                 'linkOptions' => ['class' => 'remove', 'data-price' => 'min_price'],
                 'url' => Yii::$app->urlManager->removeUrlParam('/' . Yii::$app->requestedRoute, 'price', Yii::$app->controller->prices[0])
@@ -275,7 +275,7 @@ class FilterController extends WebController
             ];
         }*/
 
-        if ($this->route == 'shop/category/view') {
+        if ($this->route == 'shop/catalog/view') {
             if (!empty($manufacturers)) {
                 $menuItems['manufacturer'] = [
                     'name' => 'manufacturer',

@@ -131,7 +131,7 @@ class FiltersWidget extends Widget
 
 
 
-        if (Yii::$app->request->get('q') && Yii::$app->requestedRoute == 'shop/category/search') {
+        if (Yii::$app->request->get('q') && Yii::$app->requestedRoute == 'shop/search/index') {
             $model->applySearch(Yii::$app->request->get('q'));
         }
 
@@ -227,7 +227,7 @@ class FiltersWidget extends Widget
             //$query->andWhere([Product::tableName() . '.main_category_id' => $this->model->id]);
         }
 
-        if (Yii::$app->request->get('q') && Yii::$app->requestedRoute == 'shop/category/search') {
+        if (Yii::$app->request->get('q') && Yii::$app->requestedRoute == 'shop/search/index') {
             $query->applySearch(Yii::$app->request->get('q'));
         }
         $query->published();
@@ -279,7 +279,7 @@ class FiltersWidget extends Widget
                     //$q->applyMaxPrice($this->convertCurrency(Yii::app()->request->getQuery('max_price')))
                     $query->applyManufacturers($m->id);
 
-                    if (Yii::$app->request->get('q') && Yii::$app->requestedRoute == 'shop/category/search') {
+                    if (Yii::$app->request->get('q') && Yii::$app->requestedRoute == 'shop/search/index') {
                         $query->applySearch(Yii::$app->request->get('q'));
                     }
 
