@@ -30,7 +30,7 @@ use panix\mod\shop\widgets\filters\FiltersWidget;
 
         <div id="listview-ajax">
         <?php
-        echo $this->render('listview',[
+        echo $this->render('@shop/views/catalog/listview',[
             'itemView' => $itemView,
             'provider' => $provider,
         ]);

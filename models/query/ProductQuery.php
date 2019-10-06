@@ -2,12 +2,13 @@
 
 namespace panix\mod\shop\models\query;
 
-use panix\mod\shop\models\Product;
 use yii\db\ActiveQuery;
 use panix\engine\traits\query\DefaultQueryTrait;
 use panix\engine\traits\query\TranslateQueryTrait;
 use panix\mod\shop\models\traits\EavQueryTrait;
 use panix\mod\shop\models\Category;
+use panix\mod\shop\models\Product;
+use panix\mod\shop\models\ProductCategoryRef;
 
 class ProductQuery extends ActiveQuery
 {
@@ -60,12 +61,11 @@ class ProductQuery extends ActiveQuery
                 $categories = [$categories];
         }
         //  $tableName = ($this->modelClass)->tableName();
-        $this->leftJoin('{{%shop__product_category_ref}}', '{{%shop__product_category_ref}}.`product`=' . $this->modelClass::tableName() . '.`id`');
-        $this->andWhere(['{{%shop__product_category_ref}}.`category`' => $categories]);
+        $this->leftJoin(ProductCategoryRef::tableName(), ProductCategoryRef::tableName() . '.`product`=' . $this->modelClass::tableName() . '.`id`');
+        $this->andWhere([ProductCategoryRef::tableName() . '.`category`' => $categories]);
 
         return $this;
     }
-
 
 
     /**
@@ -78,7 +78,6 @@ class ProductQuery extends ActiveQuery
         $this->joinWith(['manufacturer']);
         return $this;
     }
-
 
 
     /**
@@ -94,7 +93,6 @@ class ProductQuery extends ActiveQuery
         }
         return $this;
     }
-
 
 
 }

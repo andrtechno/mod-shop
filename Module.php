@@ -22,6 +22,7 @@ class Module extends WebModule implements BootstrapInterface
 
 
         $rules['catalog'] = 'shop/default/index';
+        $rules['catalog/search/ajax'] = 'shop/search/ajax';
         $rules['shop/notify'] = 'shop/notify/index';
         $rules['shop/ajax/currency/<id:\d+>'] = 'shop/ajax/currency';
         $rules['manufacturer'] = 'shop/manufacturer/index';
@@ -33,7 +34,7 @@ class Module extends WebModule implements BootstrapInterface
             $rules[] = [
                 'class' => 'panix\mod\shop\components\SearchUrlRule',
                 //'pattern'=>'products/search',
-                'route' => 'shop/catalog/search',
+                'route' => 'shop/search/index',
                 'defaults' => ['q' => Yii::$app->request->get('q')]
             ];
 

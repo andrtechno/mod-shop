@@ -31,7 +31,7 @@ use yii\helpers\Html;
         <?php echo $this->render('@shop/views/catalog/_sorting', ['itemView' => $this->context->itemView]); ?>
         <div id="listview-ajax">
             <?php
-            echo $this->render('listview',[
+            echo $this->render('@shop/views/catalog/listview',[
                 'provider' => $provider,
                 'itemView'=>$this->context->itemView
             ]);

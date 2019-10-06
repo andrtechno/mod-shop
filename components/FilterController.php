@@ -43,7 +43,7 @@ class FilterController extends WebController
     public function beforeAction($action)
     {
 
-
+        Url::remember();
         if (Yii::$app->request->get('view')) {
             if (in_array(Yii::$app->request->get('view'), ['list', 'grid'])) {
                 $this->itemView = '_view_' . Yii::$app->request->get('view');

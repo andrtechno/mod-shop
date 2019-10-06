@@ -8,7 +8,7 @@ $id = $this->context->id;
 ?>
 
 <div id="search-box" class="m-auto w-100">
-    <?= Html::beginForm(Yii::$app->urlManager->createUrl(['/shop/category/search', 'q' => $value]), 'post', ['id' => 'search-form-'.$id]) ?>
+    <?= Html::beginForm(Yii::$app->urlManager->createUrl(['/shop/search/index', 'q' => $value]), 'post', ['id' => 'search-form-'.$id]) ?>
     <div class="input-group">
 
         <?php
@@ -22,7 +22,7 @@ $id = $this->context->id;
             'clientOptions' => [
                 'source' => new JsExpression('function (request, response) {
                     $.ajax({
-                        url: "' . Url::to(['/shop/category/search']) . '",
+                        url: "' . Url::to(['/shop/search/ajax']) . '",
                         data: { q: request.term },
                         dataType: "json",
                         success: response,
