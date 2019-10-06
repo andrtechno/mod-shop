@@ -12,21 +12,8 @@ use panix\mod\shop\models\Category;
 class SearchController extends FilterController
 {
 
-
     public $provider;
     public $currentUrl;
-
-    public function beforeAction($action)
-    {
-
-        //if (Yii::$app->request->post('min_price') || Yii::$app->request->post('max_price')) {
-            $data = [];
-           // if ($this->action->id === 'search') {
-           //     return $this->redirect(Yii::$app->urlManager->addUrlParam('/shop/search/index', $data));
-           // }
-        //}
-        return parent::beforeAction($action);
-    }
 
     public function actionIndex()
     {
@@ -53,7 +40,7 @@ class SearchController extends FilterController
         if (Yii::$app->request->get('sort') == 'price' || Yii::$app->request->get('sort') == '-price') {
             $this->query->aggregatePriceSelect((Yii::$app->request->get('sort') == 'price') ? SORT_ASC : SORT_DESC);
         }
-        $this->query->groupBy(Product::tableName().'.`id`');
+        $this->query->groupBy(Product::tableName() . '.`id`');
         //echo $this->query->createCommand()->rawSql;die;
         $this->provider = new \panix\engine\data\ActiveDataProvider([
             'query' => $this->query,
@@ -130,11 +117,6 @@ class SearchController extends FilterController
         //}
     }
 
-    public function doSearch($data, $view)
-    {
-
-    }
-
     protected function findModel($slug)
     {
         if (($this->dataModel = Category::findOne(['full_path' => $slug])) !== null) {
@@ -142,12 +124,6 @@ class SearchController extends FilterController
         } else {
             $this->error404('category not found');
         }
-    }
-
-    public function actionAjaxFilterPrices()
-    {
-        Yii::$app->response->format = Response::FORMAT_JSON;
-        return [];
     }
 
 }

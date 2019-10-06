@@ -16,126 +16,34 @@ class CatalogController extends FilterController
     public $provider;
     public $currentUrl;
 
-    public function beforeAction($action)
-    {
-
-        Url::remember();
-
-        if (Yii::$app->request->post('min_price') || Yii::$app->request->post('max_price')) {
-            $data = [];
-            //if (Yii::$app->request->post('min_price'))
-            //    $data['min_price'] = (int)Yii::$app->request->post('min_price');
-            //if (Yii::$app->request->post('max_price'))
-            //    $data['max_price'] = (int)Yii::$app->request->post('max_price');
-
-            if ($this->action->id === 'search') {
-                return $this->redirect(Yii::$app->urlManager->addUrlParam('/shop/catalog/search', $data));
-            } else {
-
-                /*if (!Yii::app()->request->isAjaxRequest) {
-                    if (Yii::app()->request->getPost('filter')) {
-                        foreach (Yii::app()->request->getPost('filter') as $key => $filter) {
-                            $data[$key] = $filter;
-                        }
-                    }
-                    return $this->redirect(Yii::app()->request->addUrlParam('/shop/catalog/view', $data));
-                }*/
-
-
-                // return $this->redirect(Yii::$app->urlManager->addUrlParam('/shop/catalog/view', $data));
-            }
-        }
-
-        return parent::beforeAction($action);
-    }
-
     public function actionView()
     {
         $this->dataModel = $this->findModel(Yii::$app->request->getQueryParam('slug'));
-        // $this->canonical = Yii::$app->urlManager->createAbsoluteUrl($this->dataModel->getUrl());
         $this->currentUrl = $this->dataModel->getUrl();
-        return $this->doSearch($this->dataModel, 'view');
-    }
-
-    /**
-     * Search products
-     */
-    public function actionSearch()
-    {
-        if (Yii::$app->request->isPost) {
-            return $this->redirect(Yii::$app->urlManager->addUrlParam('/shop/catalog/search', ['q' => Yii::$app->request->post('q')]));
-        }
-        $q = Yii::$app->request->get('q');
-        if (empty($q)) {
-            $q = '+';
-        }
-
-
-        if (Yii::$app->request->isAjax && Yii::$app->request->get('q')) {
-            $res = [];
-            $model = Product::find();
-            $model->applySearch(Yii::$app->request->get('q'));
-            //'fullurl'=>Html::a('FULL',Yii::$app->urlManager->createUrl(['/shop/catalog/search', 'q' => Yii::$app->request->post('q')])),
-            foreach ($model->all() as $m) {
-                /** @var Product $m */
-                $res[] = [
-                    'url' => Url::to($m->getUrl()),
-                    'renderItem' => $this->renderPartial('@shop/widgets/search/views/_item', [
-                        'name' => $m->name,
-                        'price' => $m->getFrontPrice(),
-                        'url' => $m->getUrl(),
-                        'image' => $m->getMainImage('50x50')->url,
-                    ])
-                ];
-            }
-            Yii::$app->response->format = Response::FORMAT_JSON;
-            return $res;
-        }
-        if (!$q) {
-            return $this->render('search');
-        } else {
-            return $this->doSearch($q, 'search');
-        }
-    }
-
-    public function doSearch($data, $view)
-    {
-       // $model = $this->dataModel;
         $this->query = Product::find();
-        //$searchModel = new ProductSearch();
-        //$this->query = $searchModel->searchBySite(Yii::$app->request->getQueryParams());//
         $this->query->attachBehaviors((new Product)->behaviors());
-
         $this->query->sort();
 
 
-        if ($data instanceof Category) {
-            //  $cr->with = array('manufacturerActive');
-            // Скрывать товары если производитель скрыт.
-            //TODO: если у товара не выбран производитель то он тоже скрывается!! need fix
-            //$this->query->with(array('manufacturer' => array(
-            //        'scopes' => array('published')
-            //)));
+        //  $cr->with = array('manufacturerActive');
+        // Скрывать товары если производитель скрыт.
+        //TODO: если у товара не выбран производитель то он тоже скрывается!! need fix
+        //$this->query->with(array('manufacturer' => array(
+        //        'scopes' => array('published')
+        //)));
 
-            $this->query->applyCategories($this->dataModel);
-            //$this->query->andWhere([Product::tableName().'.main_category_id'=>$this->dataModel->id]);
+        $this->query->applyCategories($this->dataModel);
+        //$this->query->andWhere([Product::tableName().'.main_category_id'=>$this->dataModel->id]);
 
-            //  $this->query->with('manufacturerActive');
-            $this->pageName = $this->dataModel->name;
-            $this->view->title = $this->pageName;
-            $this->view->registerJs("var current_url = '" . Url::to($this->dataModel->getUrl()) . "';", yii\web\View::POS_HEAD, 'current_url');
-        } else {
-            $this->query->applySearch($data);
+        //  $this->query->with('manufacturerActive');
+        $this->pageName = $this->dataModel->name;
+        $this->view->title = $this->pageName;
+        $this->view->registerJs("var current_url = '" . Url::to($this->dataModel->getUrl()) . "';", yii\web\View::POS_HEAD, 'current_url');
 
-        }
         $this->query->published();
         $this->query->applyAttributes($this->activeAttributes);
         // Filter by manufacturer
 
-        if (empty(Yii::$app->request->get('manufacturer')) && isset($_GET['manufacturer'])) {
-            //todo panix
-            // throw new CHttpException(404, Yii::t('ShopModule.default', 'NOFIND_CATEGORY'));
-        }
         if (Yii::$app->request->get('manufacturer')) {
             $manufacturers = explode(',', Yii::$app->request->get('manufacturer', ''));
             $this->query->applyManufacturers($manufacturers);
@@ -152,15 +60,6 @@ class CatalogController extends FilterController
         //$this->maxprice = $this->getMaxPrice();
         //$this->minprice = $this->getMinPrice();
 
-        //$per_page = (int)$this->allowedPageLimit[0];
-
-        // if (isset($_GET['per_page']) && in_array((int) $_GET['per_page'], $this->allowedPageLimit))
-        //    $per_page = (int) $_GET['per_page'];
-
-        //if (Yii::$app->request->get('per_page') && in_array($_GET['per_page'], $this->allowedPageLimit)) {
-        //    $per_page = (int)Yii::$app->request->get('per_page');
-        //}
-
 
         //$this->query->addOrderBy(['price'=>SORT_DESC]);
         //$this->query->orderBy(['price'=>SORT_DESC]);
@@ -170,7 +69,7 @@ class CatalogController extends FilterController
             $this->query->aggregatePriceSelect((Yii::$app->request->get('sort') == 'price') ? SORT_ASC : SORT_DESC);
         }
 
-       //echo $this->query->createCommand()->rawSql;die;
+        //echo $this->query->createCommand()->rawSql;die;
         $this->provider = new \panix\engine\data\ActiveDataProvider([
 
             'query' => $this->query,
@@ -183,100 +82,93 @@ class CatalogController extends FilterController
         ]);
 
 
-
-        if ($view != 'search') {
-
-
-            $c = Yii::$app->settings->get('shop');
-            if ($c->seo_categories) {
-                $categoryParent = $this->dataModel->parent()->one();
-                $this->description = $this->dataModel->replaceMeta($this->dataModel->metaDescription, $categoryParent);
-                $this->view->title = $this->dataModel->replaceMeta($this->dataModel->metaTitle, $categoryParent);
-            }
-
-            $this->breadcrumbs[] = [
-                'label' => Yii::t('shop/default', 'CATALOG'),
-                'url' => ['/catalog']
-            ];
-
-            $ancestors = $this->dataModel->ancestors()->addOrderBy('depth')->excludeRoot()->cache(3600)->all();
-            //$ancestors = Category::getDb()->cache(function ($db) use ($m) {
-            //     return $m->ancestors()->addOrderBy('depth')->excludeRoot()->all();
-            // }, 3600);
-
-            if ($ancestors) {
-                foreach ($ancestors as $category) {
-                    $this->breadcrumbs[] = [
-                        'label' => $category->name,
-                        'url' => $category->getUrl()
-                    ];
-                }
-            }
-
-            $name = $this->dataModel->name;
+        $c = Yii::$app->settings->get('shop');
+        if ($c->seo_categories) {
+            $categoryParent = $this->dataModel->parent()->one();
+            $this->description = $this->dataModel->replaceMeta($this->dataModel->metaDescription, $categoryParent);
+            $this->view->title = $this->dataModel->replaceMeta($this->dataModel->metaTitle, $categoryParent);
         }
 
+        $this->breadcrumbs[] = [
+            'label' => Yii::t('shop/default', 'CATALOG'),
+            'url' => ['/catalog']
+        ];
 
+        $ancestors = $this->dataModel->ancestors()->addOrderBy('depth')->excludeRoot()->cache(3600)->all();
+        //$ancestors = Category::getDb()->cache(function ($db) use ($m) {
+        //     return $m->ancestors()->addOrderBy('depth')->excludeRoot()->all();
+        // }, 3600);
 
-        if ($data instanceof Category) {
-            $filterData = $this->getActiveFilters();
-
-
-            $currentUrl[] = '/shop/catalog/view';
-            $currentUrl['slug'] = $this->dataModel->full_path;
-            //  print_r($filterData);die;
-            foreach ($filterData as $name => $filter) {
-                if (isset($filter['name'])) { //attributes
-                    $currentUrl[$filter['name']] = [];
-                    if (isset($filter['items'])) {
-                        $params = [];
-                        foreach ($filter['items'] as $item) {
-                            $params[] = $item['value'];
-                        }
-                        $currentUrl[$filter['name']] = implode(',', $params);
-                    }
-                }
-            }
-
-
-            $this->currentUrl = Url::to($currentUrl);
-
-            unset($filterData['price']);
-            if ($filterData) {
-                $name = '';
-                foreach ($filterData as $filterKey => $filterItems) {
-                    if ($filterKey == 'manufacturer') {
-                        $manufacturerNames = array();
-                        foreach ($filterItems['items'] as $mKey => $mItems) {
-                            $manufacturerNames[] = $mItems['label'];
-                        }
-                        $sep = (count($manufacturerNames) > 2) ? ', ' : ' и ';
-                        $name .= ' ' . implode($sep, $manufacturerNames);
-                        $this->pageName .= ' ' . implode($sep, $manufacturerNames);
-                    } else {
-                        $attributesNames[$filterKey] = array();
-                        foreach ($filterItems['items'] as $mKey => $mItems) {
-                            $attributesNames[$filterKey][] = $mItems['label'];
-                        }
-                        if (isset($filterData['manufacturer'])) {
-                            $prefix = '; ';
-                        } else {
-                            $prefix = ' ';
-                        }
-
-                        $sep = (count($attributesNames[$filterKey]) > 2) ? ', ' : ' и ';
-                        $name .= $prefix . $filterItems['label'] . ' ' . implode($sep, $attributesNames[$filterKey]);
-                        $this->pageName .= $prefix . $filterItems['label'] . ' ' . implode($sep, $attributesNames[$filterKey]);
-                        $this->view->title = $this->pageName;
-                    }
-                }
+        if ($ancestors) {
+            foreach ($ancestors as $category) {
                 $this->breadcrumbs[] = [
-                    'label' => $this->dataModel->name,
-                    'url' => $this->dataModel->getUrl()
+                    'label' => $category->name,
+                    'url' => $category->getUrl()
                 ];
             }
-            $this->breadcrumbs[] = $name;
         }
+
+        $name = $this->dataModel->name;
+
+
+        $filterData = $this->getActiveFilters();
+
+
+        $currentUrl[] = '/shop/catalog/view';
+        $currentUrl['slug'] = $this->dataModel->full_path;
+        //  print_r($filterData);die;
+        foreach ($filterData as $name => $filter) {
+            if (isset($filter['name'])) { //attributes
+                $currentUrl[$filter['name']] = [];
+                if (isset($filter['items'])) {
+                    $params = [];
+                    foreach ($filter['items'] as $item) {
+                        $params[] = $item['value'];
+                    }
+                    $currentUrl[$filter['name']] = implode(',', $params);
+                }
+            }
+        }
+
+
+        $this->currentUrl = Url::to($currentUrl);
+
+        unset($filterData['price']);
+        if ($filterData) {
+            $name = '';
+            foreach ($filterData as $filterKey => $filterItems) {
+                if ($filterKey == 'manufacturer') {
+                    $manufacturerNames = array();
+                    foreach ($filterItems['items'] as $mKey => $mItems) {
+                        $manufacturerNames[] = $mItems['label'];
+                    }
+                    $sep = (count($manufacturerNames) > 2) ? ', ' : ' и ';
+                    $name .= ' ' . implode($sep, $manufacturerNames);
+                    $this->pageName .= ' ' . implode($sep, $manufacturerNames);
+                } else {
+                    $attributesNames[$filterKey] = array();
+                    foreach ($filterItems['items'] as $mKey => $mItems) {
+                        $attributesNames[$filterKey][] = $mItems['label'];
+                    }
+                    if (isset($filterData['manufacturer'])) {
+                        $prefix = '; ';
+                    } else {
+                        $prefix = ' ';
+                    }
+
+                    $sep = (count($attributesNames[$filterKey]) > 2) ? ', ' : ' и ';
+                    $name .= $prefix . $filterItems['label'] . ' ' . implode($sep, $attributesNames[$filterKey]);
+                    $this->pageName .= $prefix . $filterItems['label'] . ' ' . implode($sep, $attributesNames[$filterKey]);
+                    $this->view->title = $this->pageName;
+                }
+            }
+            $this->breadcrumbs[] = [
+                'label' => $this->dataModel->name,
+                'url' => $this->dataModel->getUrl()
+            ];
+        }
+        $this->breadcrumbs[] = $name;
+
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
 
@@ -307,7 +199,7 @@ class CatalogController extends FilterController
 
 
         } else {
-            return $this->render($view, [
+            return $this->render('view', [
                 'provider' => $this->provider,
                 'itemView' => $this->itemView
             ]);
