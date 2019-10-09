@@ -1,6 +1,7 @@
 <?php
 
 namespace panix\mod\shop\migrations;
+
 /**
  * Generation migrate by PIXELION CMS
  * @author PIXELION CMS development team <dev@pixelion.com.ua>
@@ -15,6 +16,7 @@ use panix\engine\db\Migration;
 class m180917_193213_shop_product extends Migration
 {
     public $settingsForm = 'panix\mod\shop\models\forms\SettingsForm';
+
     /**
      * {@inheritdoc}
      */
@@ -31,10 +33,10 @@ class m180917_193213_shop_product extends Migration
             'currency_id' => $this->smallInteger()->unsigned(),
             'use_configurations' => $this->boolean()->defaultValue(0),
             'slug' => $this->string(255)->notNull(),
-            'price' => $this->money(10,2),
+            'price' => $this->money(10, 2),
             'unit' => $this->tinyInteger(1)->unsigned()->defaultValue(1),
-            'max_price' => $this->money(10,2),
-            'price_purchase' => $this->money(10,2),
+            'max_price' => $this->money(10, 2),
+            'price_purchase' => $this->money(10, 2)->comment('Цена закупки'),
             'lbl' => $this->boolean()->null(),
             'sku' => $this->string(50),
             'quantity' => $this->smallInteger(2)->unsigned()->defaultValue(1),
@@ -42,7 +44,7 @@ class m180917_193213_shop_product extends Migration
             'availability' => $this->tinyInteger(1)->unsigned()->defaultValue(1),
             'auto_decrease_quantity' => $this->smallInteger(2)->unsigned()->defaultValue(0),
             'views' => $this->integer()->unsigned()->defaultValue(0),
-			'reviews' => $this->integer()->unsigned()->defaultValue(0),
+            'reviews' => $this->integer()->unsigned()->defaultValue(0),
             'added_to_cart_count' => $this->integer()->defaultValue(0),
             'votes' => $this->integer()->unsigned()->defaultValue(0),
             'rating' => $this->integer()->unsigned()->defaultValue(0),
@@ -65,7 +67,6 @@ class m180917_193213_shop_product extends Migration
             'full_description' => $this->text()->null(),
         ], $this->tableOptions);
 
-        $this->addCommentOnColumn(Product::tableName(), 'price_purchase', 'Цена закупки');
 
         $this->createIndex('user_id', Product::tableName(), 'user_id');
         $this->createIndex('manufacturer_id', Product::tableName(), 'manufacturer_id');
@@ -78,15 +79,15 @@ class m180917_193213_shop_product extends Migration
         $this->createIndex('max_price', Product::tableName(), 'max_price');
         $this->createIndex('switch', Product::tableName(), 'switch');
         $this->createIndex('created_at', Product::tableName(), 'created_at');
-        $this->createIndex('views', Product::tableName(), 'views', 0);
-        $this->createIndex('ordern', Product::tableName(), 'ordern', 0);
+        $this->createIndex('views', Product::tableName(), 'views');
+        $this->createIndex('ordern', Product::tableName(), 'ordern');
         $this->createIndex('main_category_id', Product::tableName(), 'main_category_id');
 
 
         $this->createIndex('object_id', ProductTranslate::tableName(), 'object_id');
         $this->createIndex('language_id', ProductTranslate::tableName(), 'language_id');
         $this->loadSettings();
-
+        $this->loadColumns('grid-product', Product::class, ['image', 'name', 'price', 'created_at']);
     }
 
     /**

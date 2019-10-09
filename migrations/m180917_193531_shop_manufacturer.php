@@ -8,6 +8,7 @@ namespace panix\mod\shop\migrations;
  *
  * Class m180917_193531_shop_manufacturer
  */
+
 use Yii;
 use panix\engine\CMS;
 use panix\engine\db\Migration;
@@ -60,6 +61,7 @@ class m180917_193531_shop_manufacturer extends Migration
             }
         }
 
+        $this->loadColumns('grid-manufacturer', Manufacturer::class, ['image', 'name', 'products']);
 
     }
 
