@@ -129,7 +129,7 @@ class Manufacturer extends ActiveRecord
             ],
             ['slug', '\panix\engine\validators\UrlValidator', 'attributeCompare' => 'name'],
             [['description'], 'string'],
-            [['description'], 'default', 'value' => null],
+            [['description', 'image'], 'default', 'value' => null],
             [['name', 'slug'], 'string', 'max' => 255],
             [['ordern'], 'integer'],
             [['name', 'slug'], 'safe'],

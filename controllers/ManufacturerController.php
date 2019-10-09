@@ -18,6 +18,7 @@ class ManufacturerController extends FilterController
     {
         $model = Manufacturer::find()->published()->all();
         $this->currentUrl = '/';
+        $this->pageName = Yii::t('shop/default','MANUFACTURER');
         return $this->render('index', ['model' => $model]);
     }
 
