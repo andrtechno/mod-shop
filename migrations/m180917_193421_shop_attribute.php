@@ -26,15 +26,15 @@ class m180917_193421_shop_attribute extends Migration
             'name' => $this->string(255)->notNull(),
             'type' => $this->string(10)->notNull(),
             'display_on_front' => $this->boolean()->defaultValue(1),
-            'use_in_filter' => $this->boolean()->null(),
-            'use_in_variants' => $this->boolean()->null(),
+            'use_in_filter' => $this->boolean()->defaultValue(0),
+            'use_in_variants' => $this->boolean()->defaultValue(0),
             'use_in_compare' => $this->boolean()->defaultValue(0),
-            'select_many' => $this->boolean()->null(),
-            'ordern' => $this->integer(11)->unsigned(),
-            'required' => $this->boolean()->null(),
+            'select_many' => $this->boolean()->defaultValue(0),
+            'required' => $this->boolean()->defaultValue(0),
             'created_at' => $this->integer(),
             'updated_at' => $this->integer(),
             'sort' => $this->tinyInteger(1)->defaultValue(NULL),
+            'ordern' => $this->integer(11)->unsigned(),
         ], $this->tableOptions);
 
 

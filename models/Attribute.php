@@ -121,23 +121,22 @@ class Attribute extends ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'title'], 'required'],
+            [['name', 'title', 'type'], 'required'],
             [['name', 'title'], 'trim'],
             ['name', '\panix\engine\validators\UrlValidator',
                 'attributeCompare' => 'title',
                 'attributeSlug' => 'name',
-                'message' => 'Индификатор занят'
+                'message' => self::t('ID_BUSY')
             ],
             [['name', 'title', 'abbreviation'], 'string', 'max' => 255],
             [['required', 'use_in_compare', 'use_in_filter', 'select_many', 'display_on_front', 'use_in_variants'], 'boolean'],
-            // array('name', 'unique'),
             ['name', 'match',
                 'pattern' => '/^([a-z0-9-])+$/i',
                 'message' => Yii::t('app', 'PATTERN_URL')
             ],
             [['sort'], 'default', 'value' => null],
             [['hint', 'abbreviation'], 'string'],
-            [['id', 'group_id','sort'], 'integer'],
+            [['id', 'group_id', 'sort', 'type'], 'integer'],
             [['id', 'name', 'title', 'type'], 'safe'],
         ];
     }
