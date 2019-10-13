@@ -198,22 +198,22 @@ class AttributeController extends AdminController
         return [
             [
                 'label' => Yii::t('shop/admin', 'ATTRIBUTE_GROUP'),
-                'url' => ['/shop/attribute-group'],
+                'url' => ['/admin/shop/attribute-group'],
                 'visible' => true
             ],
             [
                 'label' => Yii::t('shop/admin', 'ATTRIBUTE_GROUP'),
-                //'url' => ['/shop/attribute-group'],
+                //'url' => ['/admin/shop/attribute-group'],
                 'visible' => true,
                 'items' => [
                     [
                         'label' => Yii::t('shop/admin', 'ATTRIBUTE_GROUP'),
-                        'url' => ['/shop/attribute-group'],
+                        'url' => ['/admin/shop/attribute-group'],
                         'visible' => true
                     ],
                     [
                         'label' => Yii::t('shop/admin', 'ATTRIBUTE_GROUP'),
-                        'url' => ['/shop/attribute-group'],
+                        'url' => ['/admin/shop/attribute-group'],
                         'visible' => true
                     ],
                 ]
