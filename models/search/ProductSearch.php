@@ -75,14 +75,20 @@ class ProductSearch extends Product
         ]);
         if (isset($params[$className]['price']['min'])) {
             $this->price_min = $params[$className]['price']['min'];
+            if (!is_numeric($this->price_min)) {
+                $this->addError('price', Yii::t('yii', '{attribute} must be a number.', ['attribute' => 'min']));
+                return $dataProvider;
+            }
         }
         if (isset($params[$className]['price']['max'])) {
             $this->price_max = $params[$className]['price']['max'];
+            if (!is_numeric($this->price_max)) {
+                $this->addError('price', Yii::t('yii', '{attribute} must be a number.', ['attribute' => 'max']));
+                return $dataProvider;
+            }
         }
-        if (!is_numeric($this->price_max) || !is_numeric($this->price_min)) {
-            $this->addError('price', 'No valid price range');
-            return $dataProvider;
-        }
+
+
         $this->load($params);
 
         if (!$this->validate()) {
