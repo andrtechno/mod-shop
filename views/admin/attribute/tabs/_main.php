@@ -19,8 +19,8 @@ $form->field($model, 'group_id')->dropDownList(ArrayHelper::map(AttributeGroup::
 <?= $form->field($model, 'select_many')->dropDownList([1 => Yii::t('app', 'YES'), 0 => Yii::t('app', 'NO')]); ?>
 <?= $form->field($model, 'use_in_compare')->dropDownList([1 => Yii::t('app', 'YES'), 0 => Yii::t('app', 'NO')]); ?>
 
-<?= $form->field($model, 'type')->dropDownList(Attribute::getTypesList()); ?>
-
+<?= $form->field($model, 'type')->dropDownList(Attribute::typesList()); ?>
+<?= $form->field($model, 'sort')->dropDownList(Attribute::sortList(),['prompt'=>$model::t('SORT_DEFAULT')]); ?>
 
 
 

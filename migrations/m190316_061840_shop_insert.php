@@ -48,8 +48,8 @@ class m190316_061840_shop_insert extends Migration
         ];
         $i = 1;
         foreach ($attributesList as $name => $data) {
-            $this->batchInsert(Attribute::tableName(), ['name', 'type', 'display_on_front', 'use_in_filter', 'use_in_variants', 'use_in_compare', 'select_many', 'required'], [
-                [CMS::slug($name), $data['type'], $data['display_on_front'], $data['use_in_filter'], $data['use_in_variants'], $data['use_in_compare'], $data['select_many'], $data['required']]
+            $this->batchInsert(Attribute::tableName(), ['name', 'type', 'display_on_front', 'use_in_filter', 'use_in_variants', 'use_in_compare', 'select_many', 'required', 'created_at', 'updated_at'], [
+                [CMS::slug($name), $data['type'], $data['display_on_front'], $data['use_in_filter'], $data['use_in_variants'], $data['use_in_compare'], $data['select_many'], $data['required'], time(), time()]
             ]);
 
             foreach (Yii::$app->languageManager->getLanguages(false) as $lang) {

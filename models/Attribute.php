@@ -135,8 +135,9 @@ class Attribute extends ActiveRecord
                 'pattern' => '/^([a-z0-9-])+$/i',
                 'message' => Yii::t('app', 'PATTERN_URL')
             ],
+            [['sort'], 'default', 'value' => null],
             [['hint', 'abbreviation'], 'string'],
-            [['id', 'group_id'], 'integer'],
+            [['id', 'group_id','sort'], 'integer'],
             [['id', 'name', 'title', 'type'], 'safe'],
         ];
     }
@@ -157,9 +158,9 @@ class Attribute extends ActiveRecord
      * @static
      * @return array
      */
-    public static function getTypesList()
+    public static function typesList()
     {
-        return array(
+        return [
             self::TYPE_TEXT => 'Text',
             self::TYPE_TEXTAREA => 'Textarea',
             self::TYPE_DROPDOWN => 'Dropdown (Filter)',
@@ -167,7 +168,19 @@ class Attribute extends ActiveRecord
             self::TYPE_RADIO_LIST => 'Radio List (Filter)',
             self::TYPE_CHECKBOX_LIST => 'Checkbox List (Filter)',
             self::TYPE_YESNO => 'Yes/No',
-        );
+        ];
+    }
+
+    /**
+     * Get sorting list
+     * @return array
+     */
+    public static function sortList()
+    {
+        return [
+            SORT_ASC => self::t('SORT_ASC'),
+            SORT_DESC => self::t('SORT_DESC'),
+        ];
     }
 
     public static function getSort()
@@ -285,7 +298,7 @@ class Attribute extends ActiveRecord
      */
     public static function getTypeTitle($type)
     {
-        $list = self::getTypesList();
+        $list = self::typesList();
         return $list[$type];
     }
 

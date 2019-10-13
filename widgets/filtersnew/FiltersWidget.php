@@ -75,6 +75,11 @@ class FiltersWidget extends Widget
                     );
                 }
             }
+            if($attribute->sort == SORT_ASC){
+                sort($data[$attribute->name]['filters']);
+            }elseif($attribute->sort == SORT_DESC){
+                rsort($data[$attribute->name]['filters']);
+            }
         }
         return $data;
     }
