@@ -204,5 +204,10 @@ class Module extends WebModule implements BootstrapInterface
         ];
     }
 
+    public function getWidgetsList(){
+        return [
+          ''
+        ];
+    }
 
 }
