@@ -73,18 +73,16 @@ class ProductSearch extends Product
                 ],
             ],*/
         ]);
-
-
         if (isset($params[$className]['price']['min'])) {
             $this->price_min = $params[$className]['price']['min'];
         }
         if (isset($params[$className]['price']['max'])) {
             $this->price_max = $params[$className]['price']['max'];
         }
-        // if(isset($params[$className]['image'])){
-        //     $this->image = $params[$className]['image'];
-        // }
-
+        if (!is_numeric($this->price_max) || !is_numeric($this->price_min)) {
+            $this->addError('price', 'No valid price range');
+            return $dataProvider;
+        }
         $this->load($params);
 
         if (!$this->validate()) {
@@ -109,17 +107,12 @@ class ProductSearch extends Product
             $query->getFindByEavAttributes2($result);
         }
 
-
-        //if ($this->price)
-        //    $query->applyPrice($this->price);
-
-        if ($this->price_max) {
-            $query->applyMaxPrice($this->price_max);
+        if (isset($params[$className]['price']['max'])) {
+            $query->applyPrice($params[$className]['price']['max'], '<=');
         }
-        if ($this->price_min) {
-            $query->applyMinPrice($this->price_min);
+        if (isset($params[$className]['price']['min'])) {
+            $query->applyPrice($params[$className]['price']['min'], '>=');
         }
-
 
         // Id of product to exclude from search
         if ($this->exclude) {

@@ -8,7 +8,6 @@ use panix\engine\CMS;
 use panix\mod\shop\models\Attribute;
 use panix\mod\shop\models\Product;
 use yii\helpers\ArrayHelper;
-use yii\helpers\Url;
 
 trait ProductTrait
 {
@@ -30,7 +29,8 @@ trait ProductTrait
             'attribute' => 'image',
             // 'filter'=>true,
             'value' => function ($model) {
-                return $model->renderGridImage('50x50');
+                /** @var $model Product */
+                return $model->renderGridImage();
             },
         ];
         $columns['name'] = [
@@ -38,7 +38,7 @@ trait ProductTrait
             'format' => 'html',
             'contentOptions' => ['class' => 'text-left'],
             'value' => function ($model) {
-
+                /** @var $model Product */
                 if ($model->name) {
                     $html = Html::a($model->name, $model->getUrl());
                     if ($model->views > 0) {
@@ -75,6 +75,7 @@ trait ProductTrait
             'min' => (int)Product::find()->aggregatePrice('MIN'),
             'contentOptions' => ['class' => 'text-center'],
             'value' => function ($model) {
+                /** @var $model Product */
                 $ss = '';
                 if ($model->appliedDiscount) {
                     $price = $model->discountPrice;
@@ -119,7 +120,6 @@ trait ProductTrait
         }, 3600);
 
 
-
         $get = Yii::$app->request->get('ProductSearch');
         foreach ($query as $m) {
 
@@ -131,7 +131,7 @@ trait ProductTrait
                     'ProductSearch[eav][' . $m->name . ']',
                     (isset($get['eav'][$m->name])) ? $get['eav'][$m->name] : null,
                     ArrayHelper::map($m->options, 'id', 'value'),
-                    ['class' => 'custom-select w-auto', 'prompt' => '--- ' . $m->title.' ---']
+                    ['class' => 'custom-select w-auto', 'prompt' => '--- ' . $m->title . ' ---']
                 ),
                 //'filter'=>true,
                 'contentOptions' => ['class' => 'text-center'],
@@ -239,7 +239,7 @@ trait ProductTrait
                 }
             }
         }
-      //  return $this->replaceMeta(Yii::$app->settings->get('shop', 'seo_products_description'));
+        //  return $this->replaceMeta(Yii::$app->settings->get('shop', 'seo_products_description'));
     }
 
     public function title()
@@ -256,7 +256,7 @@ trait ProductTrait
 
             }
         }
-       // return $this->name;
+        // return $this->name;
     }
 
 
