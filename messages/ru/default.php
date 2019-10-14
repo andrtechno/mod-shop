@@ -16,6 +16,7 @@ return [
     'OUTPUT_ON' => 'показать по',
     'BLOCK_MANUFACTURER_TITLE' => 'Производители',
     'MANUFACTURER' => 'Бренды',
+    'PRODUCTS_COUNTER' => '{count, plural, =0{тусто} =1{Один товар} one{# товар} few{# товара} many{# товаров} other{# товар}}',
     'NOT_AVAILABLE' => 'Сообщить о наличии',
     'SEARCH_RESULT' => 'По Вашему запросу "{query}" {count, plural, =0{найдено} =1{найден} other{найдено}} {count, plural, =0{# товаров} =1{# товар} one{# товаров} few{# товара} many{# товаров} other{# товаров}}',
 ];
