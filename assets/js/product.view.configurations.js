@@ -171,7 +171,7 @@ function find_duplicates(arr) {
 }
 
 /**
- * Remove from array ampty values and '---'
+ * Remove from array empty values and '---'
  * @param arr
  */
 function pconfPrepArray(arr) {

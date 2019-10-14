@@ -14,7 +14,7 @@ function notify(product_id) {
         open: function () {
             var that = this;
             $.ajax({
-                url: '/shop/notify',
+                url: common.url('/shop/notify'),
                 data: {product_id: product_id},
                 dataType: 'json',
                 type: 'POST',
@@ -39,7 +39,7 @@ function notify(product_id) {
             click: function () {
 
                 $.ajax({
-                    url: '/shop/notify',
+                    url: common.url('/shop/notify'),
                     data: $('#notify-form').serialize(),
                     dataType: 'json',
                     type: 'POST',
