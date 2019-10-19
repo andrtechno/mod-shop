@@ -21,8 +21,8 @@ class m180917_193704_shop_product_category_ref extends Migration
             'id' => $this->primaryKey()->unsigned()->unsigned(),
             'product' => $this->integer()->notNull()->unsigned(),
             'category' => $this->integer()->notNull()->unsigned(),
-            'is_main' => $this->boolean()->null(),
-            'switch' => $this->boolean()->defaultValue(1),
+            'is_main' => $this->boolean()->notNull()->defaultValue(0),
+            'switch' => $this->boolean()->notNull()->defaultValue(1),
         ], $this->tableOptions);
 
         $this->createIndex('product', ProductCategoryRef::tableName(), 'product');

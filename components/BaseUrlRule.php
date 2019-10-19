@@ -60,10 +60,11 @@ class BaseUrlRule extends UrlRule
                 $paramsList = array_chunk($parts, 2);
                 unset($paramsList[0]);
                 foreach ($paramsList as $k => $p) {
+
                     if (isset($p[0])) {
-                        $_GET[$p[0]] = $p[1];
+                        $_GET[$p[0]] = $p[0];
                         // $params[$p[0]] = strpos( $p[1],',') ? explode(',', $p[1]) : $p[1];
-                        $params[$p[0]] = $p[1];
+                        $params[$p[0]] = $p[0];
                     }
                 }
 

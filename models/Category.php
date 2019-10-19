@@ -29,6 +29,7 @@ use panix\engine\behaviors\UploadFileBehavior;
  * @property string $seo_product_description
  * @property string $full_path
  * @property integer $switch
+ * @property integer $countItems Relation of getCountItems()
  * @property string getMetaDescription()
  * @property string getMetaTitle()
  */
@@ -41,6 +42,9 @@ class Category extends ActiveRecord
 
     public $parent_id;
 
+    /**
+     * @inheritdoc
+     */
     public static function tableName()
     {
         return '{{%shop__category}}';
@@ -51,11 +55,17 @@ class Category extends ActiveRecord
         return new CategoryQuery(get_called_class());
     }
 
+    /**
+     * @return array
+     */
     public function getUrl()
     {
         return ['/shop/catalog/view', 'slug' => $this->full_path];
     }
 
+    /**
+     * @inheritdoc
+     */
     public function rules()
     {
         return [
@@ -88,6 +98,9 @@ class Category extends ActiveRecord
         }
     }
 
+    /**
+     * @inheritdoc
+     */
     public function behaviors()
     {
         $a['uploadFile'] = [
@@ -103,11 +116,14 @@ class Category extends ActiveRecord
         return ArrayHelper::merge($a, parent::behaviors());
     }
 
+    /**
+     * Relation ProductCategoryRef
+     * @return int|string
+     */
     public function getCountItems()
     {
         return $this->hasMany(ProductCategoryRef::class, ['category' => 'id'])->count();
     }
-
 
     public static function flatTree()
     {
@@ -163,7 +179,6 @@ class Category extends ActiveRecord
             //->orderBy('depth')
             ->all();
         if ($ancestors) {
-            //if (sizeof($ancestors)) {
             // Remove root category from path
             unset($ancestors[0]);
 
