@@ -20,7 +20,7 @@ class CategoriesWidget extends Widget
     {
 
         // $model = Category::findOne(1);
-        $model = Category::find()->dataFancytree(1);
+        $model = Category::find()->dataTree(1);
 
         return $this->render($this->skin, ['result' => $model]);
     }

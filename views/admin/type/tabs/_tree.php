@@ -24,7 +24,7 @@ echo \panix\ext\jstree\JsTree::widget([
     'id' => 'TypeCategoryTree',
     'name' => 'jstree',
     'allOpen' => true,
-    'data' => Category::find()->dataFancytree(1),
+    'data' => Category::find()->dataTree(1),
     'core' => [
         'animation' => 0,
         'strings' => ['Loading ...' => Yii::t('app', 'LOADING')],

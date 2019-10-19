@@ -29,7 +29,7 @@ use panix\mod\shop\models\Category;
             'id' => 'CategoryTree',
             'name' => 'jstree',
             'allOpen' => true,
-            'data'=>Category::find()->dataFancytree(),
+            'data'=>Category::find()->dataTree(),
             'core' => [
                 'force_text' => true,
                 'animation' => 0,
