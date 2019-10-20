@@ -81,7 +81,7 @@ class Category extends ActiveRecord
             [['name', 'slug', 'seo_product_title'], 'trim'],
             [['image'], 'default'],
             [['name', 'slug'], 'required'],
-            [['seo_product_title', 'seo_product_description','description'], 'default', 'value' => null],
+            [['seo_product_title', 'seo_product_description', 'description'], 'default', 'value' => null],
             [['name', 'seo_product_title', 'seo_product_description'], 'string', 'max' => 255],
             ['description', 'safe']
         ];
@@ -118,11 +118,11 @@ class Category extends ActiveRecord
 
     /**
      * Relation ProductCategoryRef
-     * @return int|string
+     * @return int
      */
     public function getCountItems()
     {
-        return $this->hasMany(ProductCategoryRef::class, ['category' => 'id'])->count();
+        return (int) $this->hasMany(ProductCategoryRef::class, ['category' => 'id'])->count();
     }
 
     public static function flatTree()
@@ -144,6 +144,37 @@ class Category extends ActiveRecord
 
         return $result;
     }
+
+
+    public function test($item)
+    {
+        $childCounter = 0;
+        $categories = [];
+        $children = $item->children()->all();
+        if ($children) {
+            foreach ($children as $child) {
+                /** @var static|\panix\engine\behaviors\nestedsets\NestedSetsBehavior $child * */
+                $categories[] = [
+                    'id' => $child->id,
+                    'name' => $child->name,
+                    'slug' => $child->slug,
+                    'url' => $child->getUrl(),
+                    'productsCount' => $child->countItems,
+                    //'child' => $this->test($child)
+                ];
+                $categories[]['child'][]=$this->test($child);
+                $childCounter += $child->countItems;
+            }
+            CMS::dump($categories);
+            die;
+        }
+
+        return [
+            'children' => $categories,
+            'counter' => $childCounter
+        ];
+    }
+
 
     /**
      * @inheritdoc
