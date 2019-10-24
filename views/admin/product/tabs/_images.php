@@ -112,7 +112,7 @@ echo panix\engine\grid\GridView::widget([
     'columns' => [
         [
             'class' => 'panix\engine\grid\sortable\Column',
-            'url' => ['/images/default/sortable'],
+            'url' => ['/admin/images/default/sortable'],
         ],
         [
             'attribute' => 'image',
