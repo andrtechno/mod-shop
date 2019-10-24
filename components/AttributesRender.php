@@ -155,8 +155,8 @@ class AttributesRender extends Widget
 
     public function getData(Product $model)
     {
-
-        $cacheId = 'product_attributes_' . strtotime($model->updated_at) . '_' . strtotime($model->created_at);
+        //todo added depandancy
+        $cacheId = "product_{$model->primaryKey}_attributes";
         $result = Yii::$app->cache->get($cacheId);
         if ($result === false) {
             foreach (Yii::$app->languageManager->languages as $lang => $l) {

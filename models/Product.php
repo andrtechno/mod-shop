@@ -41,6 +41,7 @@ use panix\engine\db\ActiveRecord;
  * @property integer $added_to_cart_count
  * @property integer $votes
  * @property integer $rating
+ * @property array $manufacturer
  * @property string $discount Discount
  * @property string $video Youtube video URL
  * @property integer $ordern

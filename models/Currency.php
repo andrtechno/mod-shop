@@ -29,6 +29,20 @@ class Currency extends ActiveRecord
         return '{{%shop__currency}}';
     }
 
+    public static function currenciesList()
+    {
+        return [
+            ['name' => 'Доллар', 'iso' => 'USD', 'symbol' => '&#36;'],
+            ['name' => 'Гривна', 'iso' => 'UAH', 'symbol' => '&#8372;'],
+            ['name' => 'Рубль', 'iso' => 'RUB', 'symbol' => '&x584;'],
+            ['name' => 'Евро', 'iso' => 'EUR', 'symbol' => '&euro;'],
+            ['name' => 'Фунт', 'iso' => 'GBP', 'symbol' => '&pound;'],
+            ['name' => 'Юань', 'iso' => 'CNY', 'symbol' => '&yen;'],
+            ['name' => 'Рубль (белорусский рубль)', 'iso' => 'BYN', 'symbol' => 'Br.'],
+            ['name' => 'Тенге', 'iso' => 'KZT', 'symbol' => '&#8376;']
+        ];
+    }
+
     /**
      * @inheritdoc
      */

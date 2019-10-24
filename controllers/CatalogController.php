@@ -42,8 +42,8 @@ class CatalogController extends FilterController
 
         $this->query->published();
         $this->query->applyAttributes($this->activeAttributes);
-        // Filter by manufacturer
 
+        // Filter by manufacturer
         if (Yii::$app->request->get('manufacturer')) {
             $manufacturers = explode(',', Yii::$app->request->get('manufacturer', ''));
             $this->query->applyManufacturers($manufacturers);
@@ -71,7 +71,6 @@ class CatalogController extends FilterController
 
         //echo $this->query->createCommand()->rawSql;die;
         $this->provider = new \panix\engine\data\ActiveDataProvider([
-
             'query' => $this->query,
             'sort' => Product::getSort(),
             'pagination' => [
@@ -116,7 +115,7 @@ class CatalogController extends FilterController
 
         $currentUrl[] = '/shop/catalog/view';
         $currentUrl['slug'] = $this->dataModel->full_path;
-        //  print_r($filterData);die;
+
         foreach ($filterData as $name => $filter) {
             if (isset($filter['name'])) { //attributes
                 $currentUrl[$filter['name']] = [];
@@ -175,6 +174,7 @@ class CatalogController extends FilterController
             return [
                 'currentFilters' => $filterData,
                 'full_url' => Url::to($this->currentUrl),
+                'currentUrl' => Yii::$app->request->getUrl(),
                 'items' => $this->renderPartial('listview', [
                     'provider' => $this->provider,
                     'itemView' => $this->itemView

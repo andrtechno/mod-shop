@@ -2,14 +2,14 @@
 
 namespace panix\mod\shop\controllers;
 
-use panix\engine\Html;
-use panix\mod\shop\bundles\ProductConfigureAsset;
 use Yii;
+use yii\helpers\Url;
+use yii\web\View;
+use panix\engine\Html;
 use panix\engine\controllers\WebController;
 use panix\mod\shop\models\Product;
 use panix\mod\shop\models\Category;
-use yii\helpers\Url;
-use yii\web\View;
+use panix\mod\shop\bundles\ProductConfigureAsset;
 
 class ProductController extends WebController
 {
@@ -32,13 +32,13 @@ class ProductController extends WebController
                 'url' => ['/shop']
             ];
             foreach ($ancestors as $c) {
+                /** @var $c Category */
                 $this->breadcrumbs[] = [
                     'label' => $c->name,
                     'url' => $c->getUrl()
                 ];
             }
-            // 
-            // Do not add root category to breadcrumbs
+
             if ($category->id != 1) {
                 $this->breadcrumbs[] = [
                     'label' => $category->name,
@@ -49,11 +49,11 @@ class ProductController extends WebController
             if ($this->dataModel->manufacturer) {
                 $this->breadcrumbs[] = [
                     'label' => $category->name . ' ' . $this->dataModel->manufacturer->name,
-                    'url' => [
+                    'url' => Url::to([
                         '/shop/category/view',
                         'slug' => $category->full_path,
                         'manufacturer' => $this->dataModel->manufacturer->id
-                    ]
+                    ])
                 ];
             } else {
                 $this->breadcrumbs[] = $this->dataModel->name;
@@ -64,7 +64,6 @@ class ProductController extends WebController
         $this->description = $this->dataModel->description();
 
         $this->view->title = $this->dataModel->title();
-
 
 
         $this->registerSessionViews($this->dataModel->id);
@@ -84,11 +83,45 @@ class ProductController extends WebController
 
         if ($this->dataModel->use_configurations || $this->dataModel->processVariants())
             ProductConfigureAsset::register($this->view);
-            //$this->view->registerJsFile($this->module->assetsUrl . '/js/product.view.configurations.js', ['position'=>View::POS_END]);
-
+        //$this->view->registerJsFile($this->module->assetsUrl . '/js/product.view.configurations.js', ['position'=>View::POS_END]);
 
 
         return $this->render('view', ['model' => $this->dataModel]);
+    }
+
+    /**
+     * @param string $slug
+     * @return string
+     */
+    public function actionComments($slug)
+    {
+        if (Yii::$app->request->isAjax) {
+
+        }
+        $model = Product::find()
+            ->where(['slug' => $slug])
+            ->published()
+            ->one();
+
+        return $this->renderAjax('tabs/_comments', ['model' => $model]);
+    }
+
+    /**
+     * @param $slug
+     * @return array|null|Product
+     */
+    protected function findModel($slug)
+    {
+        $model = Product::find()
+            ->where(['slug' => $slug])
+            ->published()
+            ->one();
+
+        if ($model !== null) {
+            return $model;
+        } else {
+            $this->error404('product not found');
+        }
     }
 
     protected function registerSessionViews($id = null)
@@ -107,32 +140,4 @@ class ProductController extends WebController
             }
         }
     }
-    public function actionComments($slug){
-        if(Yii::$app->request->isAjax){
-
-        }
-        $model = Product::find()
-            ->where(['slug' => $slug])
-            ->published()
-            ->one();
-        return $this->renderAjax('tabs/_comments',['model'=>$model]);
-    }
-    /**
-     * @param $slug
-     * @return array|null|\yii\db\ActiveRecord
-     */
-    protected function findModel($slug)
-    {
-        $model = Product::find()
-            ->where(['slug' => $slug])
-            ->published()
-            ->one();
-
-        if ($model !== null) {
-            return $model;
-        } else {
-            $this->error404('product not found');
-        }
-    }
-
 }

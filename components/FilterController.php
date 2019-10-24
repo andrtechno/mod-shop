@@ -2,6 +2,7 @@
 
 namespace panix\mod\shop\components;
 
+use panix\engine\Html;
 use Yii;
 use panix\mod\shop\models\Attribute;
 use panix\mod\shop\models\Manufacturer;
@@ -40,6 +41,7 @@ class FilterController extends WebController
     public $currentUrl;
     public $itemView = '_view_grid';
     public $per_page;
+
     public function beforeAction($action)
     {
 
@@ -61,11 +63,12 @@ class FilterController extends WebController
 
 
         if (Yii::$app->request->get('price')) {
-            $this->prices = explode(',', Yii::$app->request->get('price'));
+            $this->prices = explode(',',Yii::$app->request->get('price'));
             //foreach ($this->prices as $key=>$price) {
             // $this->prices[]=$price;
             //}
         }
+        //print_r(Yii::$app->request->get('price'));die;
         $this->view->registerJs("
         var penny = '" . Yii::$app->currency->active['penny'] . "';
         var separator_thousandth = '" . Yii::$app->currency->active['separator_thousandth'] . "';
@@ -109,10 +112,13 @@ class FilterController extends WebController
             return $this->_currentMinPrice;
 
 
-        if (isset($this->prices[0])) //if (Yii::$app->request->get('min_price'))
+        if (isset($this->prices[0])) { //if (Yii::$app->request->get('min_price'))
             $this->_currentMinPrice = $this->prices[0];
-        else
+
+        }else {
+
             $this->_currentMinPrice = Yii::$app->currency->convert($this->getMinPrice());
+        }
 
         return $this->_currentMinPrice;
     }
@@ -228,23 +234,27 @@ class FilterController extends WebController
             ];
         }
         if (isset(Yii::$app->controller->prices[0])) {
-            $menuItems['price']['items'][] = [
-                // 'name'=>'min_price',
-                'value' => Yii::$app->currency->number_format($this->getCurrentMinPrice()),
-                'label' => Yii::t('shop/default', 'FILTER_CURRENT_PRICE_MIN', ['value' => Yii::$app->currency->number_format($this->getCurrentMinPrice()), 'currency' => Yii::$app->currency->active['symbol']]),
-                'linkOptions' => ['class' => 'remove', 'data-price' => 'min_price'],
-                'url' => Yii::$app->urlManager->removeUrlParam('/' . Yii::$app->requestedRoute, 'price', Yii::$app->controller->prices[0])
-            ];
+            if ($this->getCurrentMinPrice() > 0) {
+                $menuItems['price']['items'][] = [
+                    // 'name'=>'min_price',
+                    'value' => Yii::$app->currency->number_format($this->getCurrentMinPrice()),
+                    'label' => Html::decode(Yii::t('shop/default', 'FILTER_CURRENT_PRICE_MIN', ['value' => Yii::$app->currency->number_format($this->getCurrentMinPrice()), 'currency' => Yii::$app->currency->active['symbol']])),
+                    'linkOptions' => ['class' => 'remove', 'data-price' => 'min_price'],
+                    'url' => Yii::$app->urlManager->removeUrlParam('/' . Yii::$app->requestedRoute, 'price', Yii::$app->controller->prices[0])
+                ];
+            }
         }
 
         if (isset(Yii::$app->controller->prices[1])) {
-            $menuItems['price']['items'][] = [
-                // 'name'=>'max_price',
-                'value' => Yii::$app->currency->number_format($this->getCurrentMaxPrice()),
-                'label' => Yii::t('shop/default', 'FILTER_CURRENT_PRICE_MAX', ['value' => Yii::$app->currency->number_format($this->getCurrentMaxPrice()), 'currency' => Yii::$app->currency->active['symbol']]),
-                'linkOptions' => array('class' => 'remove', 'data-price' => 'max_price'),
-                'url' => Yii::$app->urlManager->removeUrlParam('/' . Yii::$app->requestedRoute, 'price', Yii::$app->controller->prices[1])
-            ];
+            if ($this->getCurrentMaxPrice() > 0) {
+                $menuItems['price']['items'][] = [
+                    // 'name'=>'max_price',
+                    'value' => Yii::$app->currency->number_format($this->getCurrentMaxPrice()),
+                    'label' => Yii::t('shop/default', 'FILTER_CURRENT_PRICE_MAX', ['value' => Yii::$app->currency->number_format($this->getCurrentMaxPrice()), 'currency' => Yii::$app->currency->active['symbol']]),
+                    'linkOptions' => array('class' => 'remove', 'data-price' => 'max_price'),
+                    'url' => Yii::$app->urlManager->removeUrlParam('/' . Yii::$app->requestedRoute, 'price', Yii::$app->controller->prices[1])
+                ];
+            }
         }
 
 

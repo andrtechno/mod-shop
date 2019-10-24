@@ -75,7 +75,7 @@ function filter_ajax(){
             ajaxSelector.html(data.items).toggleClass('loading');
             form.attr('action',data.full_url);
             containerFilterCurrent.html(data.currentFiltersData).removeClass('loading');
-            history.pushState(null, $('title').text(), data.full_url);
+            history.pushState(null, $('title').text(), data.currentUrl);
         },
         beforeSend:function(){
             ajaxSelector.toggleClass('loading');
@@ -131,7 +131,7 @@ function formattedURL(objects) {
             }
         }
     });
-    console.log(uri);
+    console.log(uri,'formattedURL');
     return uri;
 }
 

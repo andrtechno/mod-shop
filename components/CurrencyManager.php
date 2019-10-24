@@ -2,6 +2,7 @@
 
 namespace panix\mod\shop\components;
 
+use panix\engine\Html;
 use Yii;
 use yii\base\Component;
 use panix\mod\shop\models\Currency;
@@ -66,14 +67,6 @@ class CurrencyManager extends Component
     }
 
     /**
-     * @return array
-     */
-    public function getSymbol($id)
-    {
-        return $this->_currencies[$id]['symbol'];
-    }
-
-    /**
      * Detect user active currency
      * @return Currency
      */
@@ -135,8 +128,10 @@ class CurrencyManager extends Component
 
     public function number_format($sum)
     {
+
         $format = number_format($sum, $this->_active['penny'], $this->_active['separator_thousandth'], $this->_active['separator_hundredth']);
-        return iconv("windows-1251", "UTF-8", $format);
+        //return iconv("windows-1251", "UTF-8", $format);
+        return $format;
     }
 
     /**

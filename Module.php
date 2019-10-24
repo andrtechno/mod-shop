@@ -45,9 +45,10 @@ class Module extends WebModule implements BootstrapInterface
            ];
             $rules[] = [
                 'class' => 'panix\mod\shop\components\CategoryUrlRule',
-                'route' => 'shop/catalog/view',
+                'route' => '/shop/catalog/view',
                 'index' => 'catalog',
                 'alias' => 'full_path',
+              //  'pattern' => ''
             ];
 
             /*$rules[] = [
@@ -204,9 +205,10 @@ class Module extends WebModule implements BootstrapInterface
         ];
     }
 
-    public function getWidgetsList(){
+    public function getWidgetsList()
+    {
         return [
-          ''
+            ''
         ];
     }
 

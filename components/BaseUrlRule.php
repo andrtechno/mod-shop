@@ -28,6 +28,9 @@ class BaseUrlRule extends UrlRule
             $parts = [];
             if (!empty($params)) {
                 foreach ($params as $key => $val) {
+                    //if(is_array($val)){
+                    //     $val = implode(',',$val);
+                    // }
                     $parts[] = $key . '/' . $val;
                 }
                 $url .= '/' . implode('/', $parts);
@@ -62,9 +65,16 @@ class BaseUrlRule extends UrlRule
                 foreach ($paramsList as $k => $p) {
 
                     if (isset($p[0])) {
-                        $_GET[$p[0]] = $p[0];
+
+                        //if(strpos($p[1],',')){
+                        //    $_GET[$p[0]] = $p[1];
+                        //    $params[$p[0]] =  $p[1];
+                       // }else{
+                            $_GET[$p[0]] = $p[1];
+                            $params[$p[0]] = $p[1];
+                       // }
                         // $params[$p[0]] = strpos( $p[1],',') ? explode(',', $p[1]) : $p[1];
-                        $params[$p[0]] = $p[0];
+
                     }
                 }
 
