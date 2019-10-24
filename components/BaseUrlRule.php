@@ -70,8 +70,8 @@ class BaseUrlRule extends UrlRule
                         //    $_GET[$p[0]] = $p[1];
                         //    $params[$p[0]] =  $p[1];
                        // }else{
-                            $_GET[$p[0]] = $p[1];
-                            $params[$p[0]] = $p[1];
+                            $_GET[$p[0]] = $p[0];
+                            $params[$p[0]] = $p[0];
                        // }
                         // $params[$p[0]] = strpos( $p[1],',') ? explode(',', $p[1]) : $p[1];
 
