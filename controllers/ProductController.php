@@ -61,7 +61,7 @@ class ProductController extends WebController
         }
 
 
-        $this->description = $this->dataModel->description();
+        $this->view->description = $this->dataModel->description();
 
         $this->view->title = $this->dataModel->title();
 
