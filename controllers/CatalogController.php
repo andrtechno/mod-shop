@@ -179,6 +179,7 @@ class CatalogController extends FilterController
                     'provider' => $this->provider,
                     'itemView' => $this->itemView
                 ]),
+                'i'=>$this->itemView,
                 'currentFiltersData' => $this->renderPartial('@shop/widgets/filtersnew/views/current', [
                     'dataModel' => $this->dataModel,
                     'active' => $filterData

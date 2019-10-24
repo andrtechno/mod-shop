@@ -2,7 +2,6 @@
 
 namespace panix\mod\shop\components;
 
-use panix\engine\Html;
 use Yii;
 use yii\base\Component;
 use panix\mod\shop\models\Currency;

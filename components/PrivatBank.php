@@ -7,8 +7,7 @@ use yii\httpclient\Client;
 class PrivatBank
 {
 
-
-    public function exchange()
+    public static function exchange()
     {
         $client = new Client();
         $response = $client->createRequest()
