@@ -4,11 +4,9 @@ namespace panix\mod\shop\models;
 
 use panix\mod\sitemap\Sitemap;
 use panix\mod\sitemap\behaviors\SitemapBehavior;
-use panix\mod\comments\models\Comments;
 use panix\mod\user\models\User;
 use Yii;
 use panix\engine\CMS;
-use panix\engine\behaviors\TranslateBehavior;
 use panix\mod\shop\models\query\ProductQuery;
 use panix\mod\shop\models\translate\ProductTranslate;
 use yii\caching\DbDependency;
@@ -154,7 +152,7 @@ class Product extends ActiveRecord
 
     public function getMainImage($size = false)
     {
-        /** @var $image \panix\mod\images\behaviors\ImageBehavior */
+        /** @var $image \panix\mod\images\behaviors\ImageBehavior|\panix\mod\images\models\Image */
         $image = $this->getImage();
         $result = [];
         if ($image) {
