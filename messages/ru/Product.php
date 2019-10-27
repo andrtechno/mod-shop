@@ -8,6 +8,7 @@ return [
     'UPDATED_AT' => 'Дата обновления',
     'SKU' => 'Артикул',
     'PRICE' => 'Цена',
+    'COMMENTS_COUNT'=>'Комментариев',
     'VIDEO' => 'Видео Youtube ссылка',
     'AUTO_DECREASE_QUANTITY' => 'Автоматически уменьшать количество',
     'QUANTITY' => 'Количество на складе',

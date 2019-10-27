@@ -93,6 +93,11 @@ trait ProductTrait
                 return $ss . Html::tag('span', $priceHtml, ['class' => 'text-success font-weight-bold']) . ' ' . $symbol;
             }
         ];
+        $columns['commentsCount'] = [
+            'header' => static::t('COMMENTS_COUNT'),
+            'attribute' => 'commentsCount',
+            'filter' => false,
+        ];
         $columns['created_at'] = [
             'attribute' => 'created_at',
             'class' => 'panix\engine\grid\columns\jui\DatepickerColumn',

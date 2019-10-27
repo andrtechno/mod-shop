@@ -47,18 +47,40 @@ class m180917_193531_shop_manufacturer extends Migration
         $this->createIndex('object_id', ManufacturerTranslate::tableName(), 'object_id');
         $this->createIndex('language_id', ManufacturerTranslate::tableName(), 'language_id');
 
-        $brands = ['Apple', 'Nokia', 'Samsung', 'LG', 'Philips'];
+        $brands = [
+            [
+                'name' => 'Apple',
+                'description' => 'Apple — американская корпорация, производитель персональных и планшетных компьютеров, аудиоплееров, телефонов, программного обеспечения. Один из пионеров в области персональных компьютеров и современных многозадачных операционных систем с графическим интерфейсом. Штаб-квартира — в Купертино, штат Калифорния.'
+            ],
+            [
+                'name' => 'Nokia',
+                'description' => 'Nokia Corporation — финская транснациональная компания телекоммуникационного оборудования для мобильных, фиксированных, широкополосных и IP-сетей. По состоянию на начало 2013 года, в компании работало немногим менее 100 тыс. сотрудников, в конце 2000-х число сотрудников доходило до 132 тыс. человек.'
+            ],
+            [
+                'name' => 'Samsung',
+                'description' => 'Samsung Group — южнокорейская группа компаний, один из крупнейших чеболей, основанный в 1938 году. На мировом рынке известен как производитель высокотехнологичных компонентов, включая полноцикловое производство интегральных микросхем, телекоммуникационного оборудования, бытовой техники, аудио- и видеоустройств.'
+            ],
+            [
+                'name' => 'LG',
+                'description' => 'LG Electronics Inc. — южнокорейская компания, один из крупнейших мировых производителей потребительской электроники и бытовой техники. Входит в состав конгломерата LG Group. Главный офис компании LG Electronics находится в Сеуле, Республика Корея, 120 представительств компании открыты в 95 странах мира.'
+            ],
+            [
+                'name' => 'Asus',
+                'description' => 'AsusTek Computer Inc. — расположенная на Тайване транснациональная компания, специализирующаяся на компьютерной электронике (как комплектующие, так и готовые продукты). Название торговой марки Asus происходит от слова Pegasus («Пегас»). Котировки ценных бумаг: NASDAQ: AKCPF.'
+            ],
+        ];
+        $id = 1;
         foreach ($brands as $key => $brand) {
-            $id = $key + 1;
             $this->batchInsert(Manufacturer::tableName(), ['cat_id', 'slug', 'switch', 'ordern'], [
-                [NULL, CMS::slug($brand), 1, $id]
+                [NULL, CMS::slug($brand['name']), 1, $id]
             ]);
 
             foreach (Yii::$app->languageManager->getLanguages(false) as $lang) {
                 $this->batchInsert(ManufacturerTranslate::tableName(), ['object_id', 'language_id', 'name', 'description'], [
-                    [$id, $lang['id'], $brand, '']
+                    [$id, $lang['id'], $brand['name'], $brand['description']]
                 ]);
             }
+            $id++;
         }
 
         $this->loadColumns('grid-manufacturer', Manufacturer::class, ['image', 'name', 'products']);
