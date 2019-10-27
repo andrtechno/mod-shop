@@ -96,7 +96,11 @@ trait ProductTrait
         $columns['commentsCount'] = [
             'header' => static::t('COMMENTS_COUNT'),
             'attribute' => 'commentsCount',
+            'format' => 'html',
             'filter' => false,
+            'value' => function ($model) {
+                return Html::a($model->commentsCount, ['/admin/comments/default/index', 'CommentsSearch[object_id]' => $model->primaryKey]);
+            }
         ];
         $columns['created_at'] = [
             'attribute' => 'created_at',
