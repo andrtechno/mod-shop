@@ -148,6 +148,7 @@ class ProductSearch extends Product
         $query->andFilterWhere(['like', 'manufacturer_id', $this->manufacturer_id]);
 
 
+
         return $dataProvider;
     }
 

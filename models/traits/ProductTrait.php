@@ -97,7 +97,7 @@ trait ProductTrait
             'header' => static::t('COMMENTS_COUNT'),
             'attribute' => 'commentsCount',
             'format' => 'html',
-            'filter' => false,
+            //'filter' => false,
             'value' => function ($model) {
                 return Html::a($model->commentsCount, ['/admin/comments/default/index', 'CommentsSearch[object_id]' => $model->primaryKey]);
             }
