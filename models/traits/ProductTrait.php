@@ -79,7 +79,7 @@ trait ProductTrait
                 $ss = '';
                 if ($model->appliedDiscount) {
                     $price = $model->discountPrice;
-                    $ss = '<del class="text-secondary font-italic">' . $model->originalPrice . '</del> / ';
+                    $ss = '<del class="text-secondary">' . $model->originalPrice . '</del> / ';
                 } else {
                     $price = $model->price;
                 }

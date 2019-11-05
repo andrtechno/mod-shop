@@ -42,6 +42,9 @@ use panix\engine\db\ActiveRecord;
  * @property array $manufacturer
  * @property string $discount Discount
  * @property string $video Youtube video URL
+ * @property boolean $appliedDiscount See [[\panix\mod\discounts\components\DiscountBehavior]] //Discount
+ * @property float $originalPrice See [[\panix\mod\discounts\components\DiscountBehavior]]
+ * @property float $discountPrice See [[\panix\mod\discounts\components\DiscountBehavior]]
  * @property integer $ordern
  */
 class Product extends ActiveRecord
