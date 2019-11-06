@@ -566,9 +566,8 @@ class ProductController extends AdminController
 
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
-            $ids = Yii::$app->request->post('ids');
+            $ids = Yii::$app->request->post('id');
             $models = Product::find()->where(['id' => $ids])->all();
-
             foreach ($models as $product) {
                 /** @var Product $product */
                 if ($product->views > 0) {
@@ -580,6 +579,7 @@ class ProductController extends AdminController
             return [
                 'message' => Product::t('SUCCESS_UPDATE_VIEWS')
             ];
+
         } else {
             throw new ForbiddenHttpException();
         }
