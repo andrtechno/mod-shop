@@ -24,6 +24,7 @@ use panix\engine\db\ActiveRecord;
  * @property integer $currency_id Currency
  * @property integer $use_configurations
  * @property string $slug
+ * @property string $name Product name
  * @property float $price Price
  * @property float $max_price Max price
  * @property float $price_purchase

@@ -153,7 +153,7 @@ function showCategoryAssignWindow(el_clicked) {
                     return;
                 }
 
-                if (confirm($(el_clicked).data('confirm')+'123')) {
+                if (confirm($(el_clicked).data('confirm'))) {
                     $.ajax(common.url('/admin/shop/product/assign-categories'), {
                         type: "post",
                         dataType: "json",
@@ -204,9 +204,10 @@ function showDuplicateProductsWindow(link_clicked) {
             click: function () {
 
 
-                if (confirm($(link_clicked).data('confirm')+'1234')) {
+                if (confirm($(link_clicked).data('confirm'))) {
                     $.ajax(common.url('/admin/shop/product/duplicate-products'), {
                         type: "post",
+                        dataType:'json',
                         data: {
                             token: common.token,
                             products: $('#grid-product').yiiGridView('getSelectedRows'),
@@ -214,9 +215,10 @@ function showDuplicateProductsWindow(link_clicked) {
                         },
                         success: function (data) {
                             $(dialog).dialog("close");
-                            common.notify("Изменения сохранены. <a href='" + data + "'>Просмотреть копии продуктов.</a>", 'success');
+
                             // $.fn.yiiGridView.update('product-grid');
                             grid.yiiGridView('applyFilter');
+                            common.notify(data.message, 'success');
                         },
                         error: function () {
                             common.notify("Ошибка", 'error');

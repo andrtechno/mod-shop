@@ -504,47 +504,68 @@ class ProductController extends AdminController
      */
     public function actionDuplicateProducts()
     {
-        //TODO: return ids to find products
-        $product_ids = Yii::$app->request->post('products', []);
-        parse_str(Yii::$app->request->post('duplicate'), $duplicates);
+        if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            //TODO: return ids to find products
+            $product_ids = Yii::$app->request->post('products', []);
+            parse_str(Yii::$app->request->post('duplicate'), $duplicates);
 
-        if (!isset($duplicates['copy']))
-            $duplicates['copy'] = [];
+            if (!isset($duplicates['copy']))
+                $duplicates['copy'] = [];
 
-        $duplicator = new \panix\mod\shop\components\ProductsDuplicator;
-        $ids = $duplicator->createCopy($product_ids, $duplicates['copy']);
-        //return $this->redirect('/admin/shop/product/?Product[id]=' . implode(',', $ids));
+            $duplicator = new \panix\mod\shop\components\ProductsDuplicator;
+            $ids = $duplicator->createCopy($product_ids, $duplicates['copy']);
+            //return $this->redirect('/admin/shop/product/?Product[id]=' . implode(',', $ids));
 
+
+            return [
+                'message' => 'Копия упешно создана ' . \panix\engine\Html::a('Просмотреть копии продуктов.', [
+                        '/admin/shop/product/default',
+                        'ProductSearch[id]' => implode(',', $ids)
+                    ])
+            ];
+        } else {
+            throw new ForbiddenHttpException();
+        }
     }
 
     /**
      * Assign categories to products
      *
-     * @return type
+     * @return array|boolean
+     * @throws ForbiddenHttpException
      */
     public function actionAssignCategories()
     {
-        $categories = Yii::$app->request->post('category_ids');
-        $products = Yii::$app->request->post('product_ids');
-
-        if (empty($categories) || empty($products))
-            return;
-
-        $products = Product::find()->where(['id' => $products])->all();
-
-        foreach ($products as $p)
-            $p->setCategories($categories, Yii::$app->request->post('main_category'));
         if (Yii::$app->request->isAjax) {
-            echo Json::encode([
-                'message' => 'Выбранным товарам категории изменены'
-            ]);
-            Yii::$app->end();
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $categories = Yii::$app->request->post('category_ids');
+            $products = Yii::$app->request->post('product_ids');
+
+            if (empty($categories) || empty($products))
+                return false;
+
+            $products = Product::find()->where(['id' => $products])->all();
+
+            foreach ($products as $p) {
+                /** @var Product $p */
+                $p->setCategories($categories, Yii::$app->request->post('main_category'));
+            }
+
+            return ['message' => 'Выбранным товарам категории изменены'];
+        } else {
+            throw new ForbiddenHttpException();
         }
     }
 
+    /**
+     * @return array
+     * @throws ForbiddenHttpException
+     */
     public function actionUpdateIsActive()
     {
         if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
             $ids = Yii::$app->request->post('ids');
             $switch = (int)Yii::$app->request->post('switch');
             $models = Product::find()->where(['id' => $ids])->all();
@@ -562,7 +583,10 @@ class ProductController extends AdminController
         }
     }
 
-
+    /**
+     * @return array
+     * @throws ForbiddenHttpException
+     */
     public function actionUpdateViews()
     {
 

@@ -24,10 +24,11 @@ class ProductSearch extends Product
     public function rules()
     {
         return [
-            [['id'], 'integer'],
+            //[['id'], 'integer'],
             [['price_min', 'price_max', 'supplier_id', 'manufacturer_id'], 'integer'],
             // [['image'],'boolean'],
-            [['name', 'slug', 'sku', 'price'], 'safe'],
+            [['slug', 'sku', 'price', 'id'], 'safe'],
+            [['name'], 'string'],
             [['created_at', 'updated_at'], 'date', 'format' => 'php:Y-m-d']
         ];
     }
@@ -45,10 +46,10 @@ class ProductSearch extends Product
      * Creates data provider instance with search query applied
      *
      * @param array $params
-     *
+     * @param array $configure
      * @return ActiveDataProvider
      */
-    public function search($params, $configure = array())
+    public function search($params, $configure = [])
     {
         $query = Product::find();
         //$query->joinWith('translations');
@@ -97,10 +98,6 @@ class ProductSearch extends Product
             return $dataProvider;
         }
 
-        $query->andFilterWhere([
-            'id' => $this->id,
-        ]);
-
 
         if (isset($params[$className]['eav'])) {
             $result = array();
@@ -130,6 +127,16 @@ class ProductSearch extends Product
         if (isset($configure['conf'])) {
             $query->andWhere(['IN', 'id', $configure['conf']]);
         }
+        if (strpos($this->id, ',')) {
+            $query->andFilterWhere(['in',
+                self::tableName() . '.id', explode(',', $this->id),
+            ]);
+        } else {
+            $query->andFilterWhere([
+                self::tableName() . '.id' => $this->id,
+            ]);
+            $query->andFilterWhere(['like', 'translations.name', $this->name]);
+        }
 
         /*$query->andFilterWhere([
             '>=',
@@ -142,13 +149,11 @@ class ProductSearch extends Product
         //$query->andFilterWhere(['like', "DATE(CONVERT_TZ('date_update', 'UTC', '".Yii::$app->timezone."'))", $this->date_update.' 23:59:59']);
         //  $query->andFilterWhere(['like', "DATE(CONVERT_TZ('date_create', 'UTC', '".Yii::$app->timezone."'))", $this->date_create.]);
 
-        $query->andFilterWhere(['like', 'translations.name', $this->name]);
+
         $query->andFilterWhere(['like', 'sku', $this->sku]);
         $query->andFilterWhere(['like', 'supplier_id', $this->supplier_id]);
         $query->andFilterWhere(['like', 'manufacturer_id', $this->manufacturer_id]);
-
-
-
+        //echo $query->createCommand()->rawSql;die;
         return $dataProvider;
     }
 
