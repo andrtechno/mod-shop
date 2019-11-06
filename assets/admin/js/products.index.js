@@ -24,7 +24,7 @@
  */
 function setProductsStatus(status_id, el)
 {
-    $.ajax('/admin/shop/product/update-is-active', {
+    $.ajax(common.url('/admin/shop/product/update-is-active'), {
         type: "post",
         dataType: "json",
         data: {
@@ -55,6 +55,43 @@ function setProductsStatus(status_id, el)
                     break;
             }
             alert(err);
+        }
+    });
+    return false;
+}
+
+
+function updateProductsViews(el)
+{
+    $.ajax(common.url('/admin/shop/product/update-views'), {
+        type: "post",
+        dataType: "json",
+        data: {
+            token: $(el).attr('data-token'),
+            ids: $('#grid-product').yiiGridView('getSelectedRows'),
+        },
+        success: function (data) {
+            common.notify(data.message, 'success');
+        },
+        error: function (XHR, textStatus, errorThrown) {
+            var err = '';
+            switch (textStatus) {
+                case 'timeout':
+                    err = 'The request timed out!';
+                    break;
+                case 'parsererror':
+                    err = 'Parser error!';
+                    break;
+                case 'error':
+                    if (XHR.status && !/^\s*$/.test(XHR.status))
+                        err = 'Error ' + XHR.status;
+                    else
+                        err = 'Error';
+                    if (XHR.responseText && !/^\s*$/.test(XHR.responseText))
+                        err = err + ': ' + XHR.responseText;
+                    break;
+            }
+            common.notify(err, 'error');
         }
     });
     return false;
@@ -123,7 +160,7 @@ function showCategoryAssignWindow(el_clicked) {
                         confirmRequest = confirm($(el_clicked).attr('data-question'));
                     }
                     if (confirmRequest) {
-                        $.ajax('/admin/shop/product/assign-categories', {
+                        $.ajax(common.url('/admin/shop/product/assign-categories'), {
                             type: "post",
                             dataType: "json",
                             data: {
@@ -162,7 +199,7 @@ function showDuplicateProductsWindow(link_clicked) {
     }
 
     var dialog = $("#duplicate_products_dialog");
-    dialog.load('/admin/shop/product/render-duplicate-products-window');
+    dialog.load(common.url('/admin/shop/product/render-duplicate-products-window'));
 
     var confirmRequest;
 
@@ -178,7 +215,7 @@ function showDuplicateProductsWindow(link_clicked) {
                         confirmRequest = confirm($(link_clicked).attr('data-question'));
                     }
                     if (confirmRequest) {
-                        $.ajax('/admin/shop/product/duplicate-products', {
+                        $.ajax(common.url('/admin/shop/product/duplicate-products'), {
                             type: "post",
                             data: {
                                 token: common.token,
@@ -222,7 +259,7 @@ function setProductsPrice(link_clicked) {
     }
 
     var dialog = $("#prices_products_dialog");
-    dialog.load('/admin/shop/product/render-products-price-window');
+    dialog.load(common.url('/admin/shop/product/render-products-price-window'));
 
     dialog.dialog({
         modal: true,
@@ -279,7 +316,7 @@ $(function () {
             // focus first button and bind enter to it
             $this.parent().find('.ui-dialog-buttonpane button:first').focus();
             $this.keypress(function (e) {
-                if (e.keyCode == $.ui.keyCode.ENTER) {
+                if (e.keyCode === $.ui.keyCode.ENTER) {
                     $this.parent().find('.ui-dialog-buttonpane button:first').click();
                     return false;
                 }

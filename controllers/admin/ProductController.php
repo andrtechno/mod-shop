@@ -2,10 +2,10 @@
 
 namespace panix\mod\shop\controllers\admin;
 
-use panix\mod\shop\bundles\admin\ProductIndex;
 use Yii;
 use yii\helpers\Html;
 use yii\helpers\Json;
+use panix\mod\shop\bundles\admin\ProductIndex;
 use panix\mod\shop\models\Product;
 use panix\mod\shop\models\search\ProductSearch;
 use panix\engine\controllers\AdminController;
@@ -14,6 +14,7 @@ use panix\mod\shop\models\Attribute;
 use panix\mod\shop\models\AttributeOption;
 use panix\mod\shop\models\ProductVariant;
 use yii\web\ForbiddenHttpException;
+use yii\web\Response;
 
 class ProductController extends AdminController
 {
@@ -83,12 +84,12 @@ class ProductController extends AdminController
             ];
         }
 
-            $this->buttons[] = [
-                'icon' => 'add',
-                'label' => Yii::t('shop/admin', 'CREATE_PRODUCT'),
-                'url' => ['create'],
-                'options' => ['class' => 'btn btn-success']
-            ];
+        $this->buttons[] = [
+            'icon' => 'add',
+            'label' => Yii::t('shop/admin', 'CREATE_PRODUCT'),
+            'url' => ['create'],
+            'options' => ['class' => 'btn btn-success']
+        ];
 
         $post = Yii::$app->request->post();
 
@@ -557,6 +558,33 @@ class ProductController extends AdminController
             'message' => Yii::t('app', 'SUCCESS_UPDATE')
         ]);
         Yii::$app->end();
+    }
+
+
+    public function actionUpdateViews()
+    {
+
+        if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $ids = Yii::$app->request->post('ids');
+            $models = Product::find()->where(['id' => $ids])->all();
+
+            foreach ($models as $product) {
+                /** @var Product $product */
+                if ($product->views > 0) {
+                    $product->views = 0;
+                    $product->save(false);
+                }
+            }
+
+            return [
+                'message' => Product::t('SUCCESS_UPDATE_VIEWS')
+            ];
+        } else {
+            throw new ForbiddenHttpException();
+        }
+
+
     }
 
 }

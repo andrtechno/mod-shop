@@ -26,25 +26,11 @@ if ($model->use_configurations) {
                 ])
             ])
         ],
-        'template' => '{label}
+        'template' => '<div class="col-sm-4 col-lg-2">{label}</div>
 <div class="input-group col-sm-8 col-lg-10">{input}
-
-
-  <span class="input-group-text">{label_unit}</span>
-  {unit}
-  
-<span class="input-group-text">{label_currency}</span>
-{currency}{hint}{error}
-<div class="input-group-append">
-    <a id="add-price" class="text-success btn btn-outline-success" href="#"><i class="icon-add"></i></a>
-  </div>
-  
-
-</div>',
-    ])->textInput([
-
-        'maxlength' => 10
-    ]);
+<span class="input-group-text">{label_unit}</span>
+{unit}<span class="input-group-text">{label_currency}</span>{currency}{hint}{error}</div>',
+    ])->textInput(['maxlength' => 10]);
 }
 
 

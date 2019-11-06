@@ -25,11 +25,7 @@ return [
     'ADD_OPTION' => 'Добавить опцию',
     'VARIANTS_PRICE_FIX' => 'Фиксированная',
     'VARIANTS_PRICE_PERCENT' => 'Процент',
-    'GRID_OPTION_COPY' => 'Копировать',
-    'GRID_OPTION_ACTIVE' => 'Активен',
-    'GRID_OPTION_DEACTIVE' => 'Не активен',
-    'GRID_OPTION_SETCATEGORY' => 'Назначить категории',
-    'GRID_OPTION_SETPRICE' => 'Установить единую цену',
+
     'PRODUCT_COUNT' => 'Товаров',
     'NO_FOUND_TYPE_PRODUCT' => 'Тип товара не найдет',
     'TYPE_CREATE'=>'Создание нового типа продукта',

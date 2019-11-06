@@ -32,7 +32,7 @@ use panix\engine\db\ActiveRecord;
  * @property integer $quantity
  * @property integer $availability
  * @property integer $auto_decrease_quantity
- * @property integer $views
+ * @property integer $views Views product on frontend
  * @property integer $created_at
  * @property integer $updated_at
  * @property boolean $switch

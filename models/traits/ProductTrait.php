@@ -162,7 +162,7 @@ trait ProductTrait
                 'class' => 'panix\engine\grid\columns\CheckboxColumn',
                 'customActions' => [
                     [
-                        'label' => Yii::t('shop/admin', 'GRID_OPTION_ACTIVE'),
+                        'label' => self::t('GRID_OPTION_ACTIVE'),
                         'url' => '#',
                         'icon' => 'eye',
                         'linkOptions' => [
@@ -171,7 +171,7 @@ trait ProductTrait
                         ],
                     ],
                     [
-                        'label' => Yii::t('shop/admin', 'GRID_OPTION_DEACTIVE'),
+                        'label' => self::t('GRID_OPTION_DEACTIVE'),
                         'url' => '#',
                         'icon' => 'eye-close',
                         'linkOptions' => [
@@ -180,7 +180,7 @@ trait ProductTrait
                         ],
                     ],
                     [
-                        'label' => Yii::t('shop/admin', 'GRID_OPTION_SETCATEGORY'),
+                        'label' => self::t('GRID_OPTION_SETCATEGORY'),
                         'url' => '#',
                         'icon' => 'folder-open',
                         'linkOptions' => [
@@ -189,7 +189,7 @@ trait ProductTrait
                         ],
                     ],
                     [
-                        'label' => Yii::t('shop/admin', 'GRID_OPTION_COPY'),
+                        'label' => self::t('GRID_OPTION_COPY'),
                         'url' => '#',
                         'icon' => 'copy',
                         'linkOptions' => [
@@ -198,12 +198,21 @@ trait ProductTrait
                         ],
                     ],
                     [
-                        'label' => Yii::t('shop/admin', 'GRID_OPTION_SETPRICE'),
+                        'label' => self::t('GRID_OPTION_SETPRICE'),
                         'url' => '#',
                         'icon' => 'currencies',
                         'linkOptions' => [
                             'onClick' => 'return setProductsPrice(this);',
                             'data-question' => self::t('CONFIRM_PRICE')
+                        ],
+                    ],
+                    [
+                        'label' => self::t('GRID_OPTION_UPDATE_VIEWS'),
+                        'url' => '#',
+                        'icon' => 'refresh',
+                        'linkOptions' => [
+                            'onClick' => 'return updateProductsViews(this);',
+                            'data-question' => self::t('CONFIRM_UPDATE_VIEWS')
                         ],
                     ]
                 ]
