@@ -544,20 +544,22 @@ class ProductController extends AdminController
 
     public function actionUpdateIsActive()
     {
-        $ids = Yii::$app->request->post('ids');
-        $switch = (int)Yii::$app->request->post('switch');
-        $models = Product::find()->where(['id' => $ids])->all();
-        foreach ($models as $product) {
-            if (in_array($switch, array(0, 1))) {
-                $product->switch = $switch;
-                $product->save();
+        if (Yii::$app->request->isAjax) {
+            $ids = Yii::$app->request->post('ids');
+            $switch = (int)Yii::$app->request->post('switch');
+            $models = Product::find()->where(['id' => $ids])->all();
+            foreach ($models as $product) {
+                /** @var Product $product */
+                if (in_array($switch, [0, 1])) {
+                    $product->switch = $switch;
+                    $product->save();
+                }
             }
-        }
 
-        echo Json::encode([
-            'message' => Yii::t('app', 'SUCCESS_UPDATE')
-        ]);
-        Yii::$app->end();
+            return ['message' => Yii::t('app', 'SUCCESS_UPDATE')];
+        } else {
+            throw new ForbiddenHttpException();
+        }
     }
 
 
@@ -576,15 +578,11 @@ class ProductController extends AdminController
                 }
             }
 
-            return [
-                'message' => Product::t('SUCCESS_UPDATE_VIEWS')
-            ];
+            return ['message' => Product::t('SUCCESS_UPDATE_VIEWS')];
 
         } else {
             throw new ForbiddenHttpException();
         }
-
-
     }
 
 }
