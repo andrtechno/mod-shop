@@ -8,18 +8,19 @@ echo Fancybox::widget(['target' => '.image a']);
 Pjax::begin([
     'id' => 'pjax-grid-product',
 ]);
+\panix\mod\shop\bundles\admin\ProductIndex::register($this);
 echo GridView::widget([
-    'id'=>'grid-product',
+    'id' => 'grid-product',
     'tableOptions' => ['class' => 'table table-striped'],
     'dataProvider' => $dataProvider,
     'filterModel' => $searchModel,
     'layoutOptions' => [
         'title' => $this->context->pageName,
-        'buttons'=>[
+        'buttons' => [
             [
-                'url'=>['create'],
-                'label'=>Yii::t('shop/admin', 'CREATE_PRODUCT'),
-                'icon'=>'add'
+                'url' => ['create'],
+                'label' => Yii::t('shop/admin', 'CREATE_PRODUCT'),
+                'icon' => 'add'
             ]
         ]
     ],

@@ -42,7 +42,6 @@ class ProductController extends AdminController
 
     public function actionIndex()
     {
-        ProductIndex::register($this->view);
 
         $searchModel = new ProductSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams());

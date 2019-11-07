@@ -69,28 +69,30 @@ trait ProductTrait
 
         $columns['price'] = [
             'attribute' => 'price',
-            'format' => 'html',
+            'format' => 'raw',
             'class' => 'panix\engine\grid\columns\jui\SliderColumn',
             'max' => (int)Product::find()->aggregatePrice('MAX'),
             'min' => (int)Product::find()->aggregatePrice('MIN'),
-            'contentOptions' => ['class' => 'text-center'],
+            'prefix' => '<sup>'.Yii::$app->currency->main['symbol'].'</sup>',
+            'contentOptions' => ['class' => 'text-center','style'=>'position:relative'],
             'value' => function ($model) {
                 /** @var $model Product */
                 $ss = '';
                 if ($model->appliedDiscount) {
                     $price = $model->discountPrice;
-                    $ss = '<del class="text-secondary">' . $model->originalPrice . '</del> / ';
+                    $ss = '<del class="text-secondary">' . Yii::$app->currency->number_format($model->originalPrice) . '</del> / ';
                 } else {
                     $price = $model->price;
                 }
                 if ($model->currency_id) {
-                    $priceHtml = Yii::$app->currency->number_format($price);
+                    $priceHtml = $price;
                     $symbol = Html::tag('sup', Yii::$app->currency->currencies[$model->currency_id]['symbol']);
                 } else {
-                    $priceHtml = Yii::$app->currency->number_format(Yii::$app->currency->convert($price, $model->currency_id));
+                    $priceHtml = Yii::$app->currency->convert($price, $model->currency_id);
                     $symbol = Html::tag('sup', Yii::$app->currency->main['symbol']);
                 }
-                return $ss . Html::tag('span', $priceHtml, ['class' => 'text-success font-weight-bold']) . ' ' . $symbol;
+                $ss .='<span class="badge badge-danger position-absolute" style="top:0;right:0;">123</span>';
+                return $ss . Html::tag('span', Yii::$app->currency->number_format($priceHtml), ['class' => 'text-success font-weight-bold']) . ' ' . $symbol;
             }
         ];
         $columns['commentsCount'] = [

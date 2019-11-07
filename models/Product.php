@@ -247,7 +247,7 @@ class Product extends ActiveRecord
             [['full_description', 'discount'], 'string'],
             ['use_configurations', 'boolean', 'on' => self::SCENARIO_INSERT],
             ['enable_comments', 'boolean'],
-            [['sku', 'full_description', 'unit'], 'default'], // установим ... как NULL, если они пустые
+            [['sku', 'full_description', 'unit', 'video'], 'default'], // установим ... как NULL, если они пустые
             [['name', 'slug', 'main_category_id', 'price', 'unit'], 'required'],
             ['price', 'double'],
             [['manufacturer_id', 'type_id', 'quantity', 'views', 'availability', 'added_to_cart_count', 'ordern', 'category_id', 'currency_id', 'unit', 'supplier_id'], 'integer'],
