@@ -16,30 +16,34 @@ use yii\web\Response;
  */
 class CategoryController extends AdminController
 {
-    /*
-      public function actions() {
-      return [
-      'moveNode' => [
-      'class' => 'panix\engine\behaviors\nestedsets\actions\MoveNodeAction',
-      'modelClass' => 'panix\mod\shop\models\Category',
-      ],
-      'deleteNode' => [
-      'class' => 'panix\engine\behaviors\nestedsets\actions\DeleteNodeAction',
-      'modelClass' => 'panix\mod\shop\models\Category',
-      ],
-      'updateNode' => [
-      'class' => 'panix\engine\behaviors\nestedsets\actions\UpdateNodeAction',
-      'modelClass' => 'panix\mod\shop\models\Category',
-      ],
-      'createNode' => [
-      'class' => 'panix\engine\behaviors\nestedsets\actions\CreateNodeAction',
-      'modelClass' => Category::className(),
-      ],
-      ];
-      }
-     */
+
     public $icon = 'folder-open';
 
+    public function actions()
+    {
+        return [
+            'rename-node' => [
+                'class' => 'panix\engine\behaviors\nestedsets\actions\RenameNodeAction',
+                'modelClass' => Category::class,
+                'successMessage' => Category::t('CATEGORY_TREE_RENAME'),
+                'errorMessage' => Category::t('ERROR_CATEGORY_TREE_RENAME')
+            ],
+            'move-node' => [
+                'class' => 'panix\engine\behaviors\nestedsets\actions\MoveNodeAction',
+                'modelClass' => Category::class,
+            ],
+            'switch-node' => [
+                'class' => 'panix\engine\behaviors\nestedsets\actions\SwitchNodeAction',
+                'modelClass' => Category::class,
+                'onMessage' => Category::t('CATEGORY_TREE_SWITCH_ON'),
+                'offMessage' => Category::t('CATEGORY_TREE_SWITCH_OFF')
+            ],
+            'delete-node' => [
+                'class' => 'panix\engine\behaviors\nestedsets\actions\DeleteNodeAction',
+                'modelClass' => Category::class,
+            ],
+        ];
+    }
 
     public function actionIndex()
     {
@@ -97,7 +101,7 @@ class CategoryController extends AdminController
     }
 
 
-    public function actionRenameNode()
+    public function actionRenameNode2()
     {
         /**
          * @var \panix\engine\behaviors\nestedsets\NestedSetsBehavior|Category $model
@@ -129,7 +133,7 @@ class CategoryController extends AdminController
         }
     }
 
-    public function actionCreateNode()
+    public function actionCreateNode2()
     {
         /**
          * @var \panix\engine\behaviors\nestedsets\NestedSetsBehavior|Category $model
@@ -155,7 +159,7 @@ class CategoryController extends AdminController
     /**
      * Drag-n-drop nodes
      */
-    public function actionMoveNode()
+    public function actionMoveNode2()
     {
         /**
          * @var \panix\engine\behaviors\nestedsets\NestedSetsBehavior|Category $node
@@ -165,7 +169,7 @@ class CategoryController extends AdminController
         $target = Category::findOne(Yii::$app->request->get('ref'));
 
 
-        $pos = (int) Yii::$app->request->get('position');
+        $pos = (int)Yii::$app->request->get('position');
 
         if ($pos == 1) {
 
@@ -173,21 +177,21 @@ class CategoryController extends AdminController
             if (isset($childs[$pos - 1]) && $childs[$pos - 1]['id'] != $node->id) {
                 // die('moveAfter');
                 $node->moveAfter($childs[$pos - 1]);
-           }
-        }elseif($pos == 2){
+            }
+        } elseif ($pos == 2) {
             $childs = $target->children()
                 //->orderBy(['lft'=>SORT_DESC])
                 ->all();
-           // echo count($childs);die;
-           // if (isset($childs[$pos - 1]) && $childs[$pos - 1]['id'] != $node->id) {
-                // die('moveAfter');
+            // echo count($childs);die;
+            // if (isset($childs[$pos - 1]) && $childs[$pos - 1]['id'] != $node->id) {
+            // die('moveAfter');
 
 
             if (isset($childs[$pos - 1]) && $childs[$pos - 1]['id'] != $node->id) {
                 $node->moveAfter($childs[$pos - 1]);
             }
 
-        } else{
+        } else {
             $node->moveAsFirst($target);
         }
 
@@ -204,7 +208,7 @@ class CategoryController extends AdminController
         return $this->redirect($node->getViewUrl());
     }
 
-    public function actionSwitchNode()
+    public function actionSwitchNode2()
     {
         /**
          * @var \panix\engine\behaviors\nestedsets\NestedSetsBehavior|Category $node
@@ -223,7 +227,7 @@ class CategoryController extends AdminController
     /**
      * @param $id
      */
-    public function actionDelete($id)
+    public function actionDelete2($id)
     {
         /**
          * @var \panix\engine\behaviors\nestedsets\NestedSetsBehavior|Category $model
@@ -273,7 +277,6 @@ class CategoryController extends AdminController
             $model3->name = 'Category 2-1';
             $model3->slug = CMS::slug($model3->name);
             $model3->appendTo($model2);
-
 
 
             $model2 = new Category;
