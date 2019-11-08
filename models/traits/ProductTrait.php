@@ -73,8 +73,8 @@ trait ProductTrait
             'class' => 'panix\engine\grid\columns\jui\SliderColumn',
             'max' => (int)Product::find()->aggregatePrice('MAX'),
             'min' => (int)Product::find()->aggregatePrice('MIN'),
-            'prefix' => '<sup>'.Yii::$app->currency->main['symbol'].'</sup>',
-            'contentOptions' => ['class' => 'text-center','style'=>'position:relative'],
+            'prefix' => '<sup>' . Yii::$app->currency->main['symbol'] . '</sup>',
+            'contentOptions' => ['class' => 'text-center', 'style' => 'position:relative'],
             'value' => function ($model) {
                 /** @var $model Product */
                 $ss = '';
@@ -91,8 +91,22 @@ trait ProductTrait
                     $priceHtml = Yii::$app->currency->convert($price, $model->currency_id);
                     $symbol = Html::tag('sup', Yii::$app->currency->main['symbol']);
                 }
-                $ss .='<span class="badge badge-danger position-absolute" style="top:0;right:0;">123</span>';
+                $ss .= '<span class="badge badge-danger position-absolute" style="top:0;right:0;">123</span>';
                 return $ss . Html::tag('span', Yii::$app->currency->number_format($priceHtml), ['class' => 'text-success font-weight-bold']) . ' ' . $symbol;
+            }
+        ];
+        $columns['categories'] = [
+            'header' => static::t('categories'),
+            'attribute' => 'categories',
+            'format' => 'html',
+            //'filter' => false,
+            'value' => function ($model) {
+                /** @var $model Product */
+                $test = [];
+                foreach ($model->categories as $category) {
+                    $test[] = Html::a($category->name, $category->getUrl());
+                }
+                return '<span class="badge badge-secondary">' . implode('</span> <span class="badge badge-secondary">', $test) . '</span>';
             }
         ];
         $columns['commentsCount'] = [

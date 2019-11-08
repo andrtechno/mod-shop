@@ -11,6 +11,7 @@
  */
 
 use panix\mod\shop\models\Category;
+use yii\web\View;
 
 echo \panix\ext\jstree\JsTree::widget([
     'id' => 'CategoryTree',
@@ -46,22 +47,23 @@ echo \panix\ext\jstree\JsTree::widget([
   } */
 
 if (isset($_POST['categories']) && !empty($_POST['categories'])) {
-    foreach ($_POST['categories'] as $id) {
+    foreach (Yii::$app->request->post('categories') as $id) {
 
-       $this->registerJs("$('#jsTree_CategoryTree').checkNode({$id});");
+       $this->registerJs("$('#jsTree_CategoryTree').checkNode({$id});", View::POS_END, 'check-'.$id);
     }
 } elseif ($model->isNewRecord && empty($_POST['categories']) && isset($presetCategories)) {
     foreach ($presetCategories as $id) {
         if ($model->type && $id === $model->type->main_category)
             continue;
-        $this->registerJs("$('#jsTree_CategoryTree').checkNode({$id});");
+        $this->registerJs("$('#jsTree_CategoryTree').checkNode({$id});", View::POS_END, 'check-'.$id);
     }
 } else {
     // Check tree nodes
+    echo count($model->categories);
     foreach ($model->categories as $c) {
         if ($c->id === $model->main_category_id)
             continue;
-
-        $this->registerJs("$('#jsTree_CategoryTree').checkNode({$c->id});");
+echo 'ss';
+        $this->registerJs("$('#jsTree_CategoryTree').checkNode({$c->id});", View::POS_END, 'check-'.$c->id);
     }
 }

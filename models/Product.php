@@ -10,6 +10,7 @@ use panix\engine\CMS;
 use panix\mod\shop\models\query\ProductQuery;
 use panix\mod\shop\models\translate\ProductTranslate;
 use yii\caching\DbDependency;
+use yii\caching\TagDependency;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -47,6 +48,7 @@ use panix\engine\db\ActiveRecord;
  * @property float $originalPrice See [[\panix\mod\discounts\components\DiscountBehavior]]
  * @property float $discountPrice See [[\panix\mod\discounts\components\DiscountBehavior]]
  * @property integer $ordern
+ * @property Category $categories
  */
 class Product extends ActiveRecord
 {
@@ -302,43 +304,45 @@ class Product extends ActiveRecord
 
     public function getManufacturer()
     {
-        return $this->hasOne(Manufacturer::class, ['id' => 'manufacturer_id'])->cache(3600);
+        return $this->hasOne(Manufacturer::class, ['id' => 'manufacturer_id'])
+            ->cache(3600 * 24, new TagDependency(['tags' => 'product-manufacturer-'.$this->manufacturer_id]));
     }
 
     public function getType()
     {
-        return $this->hasOne(ProductType::class, ['id' => 'type_id'])->cache(3600);
+        return $this->hasOne(ProductType::class, ['id' => 'type_id'])
+            ->cache(3600 * 24, new TagDependency(['tags' => 'product-type-'.$this->type_id]));
     }
 
     public function getType2()
     {
-        return $this->hasOne(ProductType::class, ['type_id' => 'id'])->cache(3600);
+        return $this->hasOne(ProductType::class, ['type_id' => 'id']);
     }
 
     public function getRelated()
     {
-        return $this->hasMany(RelatedProduct::class, ['related_id' => 'id'])->cache(3600);
+        return $this->hasMany(RelatedProduct::class, ['related_id' => 'id']);
     }
 
     public function getRelatedProductCount()
     {
-        return $this->hasMany(RelatedProduct::class, ['product_id' => 'id'])->cache(3600)->count();
+        return $this->hasMany(RelatedProduct::class, ['product_id' => 'id'])->count();
     }
 
     public function getRelatedProducts()
     {
         return $this->hasMany(Product::class, ['id' => 'product_id'])
-            ->viaTable(RelatedProduct::tableName(), ['related_id' => 'id'])->cache(3600);
+            ->viaTable(RelatedProduct::tableName(), ['related_id' => 'id']);
     }
 
     public function getCategorization()
     {
-        return $this->hasMany(ProductCategoryRef::class, ['product' => 'id'])->cache(3600);
+        return $this->hasMany(ProductCategoryRef::class, ['product' => 'id']);
     }
 
     public function getCategories()
     {
-        return $this->hasMany(Category::class, ['id' => 'category'])->via('categorization')->cache(3600);
+        return $this->hasMany(Category::class, ['id' => 'category'])->via('categorization');
     }
 
     public function getPrices()

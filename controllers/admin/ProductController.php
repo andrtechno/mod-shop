@@ -126,8 +126,8 @@ class ProductController extends AdminController
 
         if ($model->type)
             $title .= ' "' . Html::encode($model->type->name) . '"';
-
-
+        //print_r(Yii::$app->request->post('categories'));
+        //print_r($_POST['categories']);die;
         $this->breadcrumbs[] = [
             'label' => $this->module->info['label'],
             'url' => $this->module->info['url'],
@@ -152,43 +152,44 @@ class ProductController extends AdminController
             //   print_r($post['redirect']);
             $model->setRelatedProducts(Yii::$app->request->post('RelatedProductId', []));
 
-            $model->save();
+            if ($model->save()) {
+
+                $mainCategoryId = 1;
+                if (isset($post['Product']['main_category_id']))
+                    $mainCategoryId = $post['Product']['main_category_id'];
+
+                //$model->setCategories(Yii::$app->request->post('categories', []), $mainCategoryId);
+                $model->setCategories($_POST['categories'], $mainCategoryId);
+
+                $model->file = \yii\web\UploadedFile::getInstances($model, 'file');
 
 
-            $mainCategoryId = 1;
-            if (isset($_POST['Product']['main_category_id']))
-                $mainCategoryId = $_POST['Product']['main_category_id'];
-            $model->setCategories(Yii::$app->request->post('categories', []), $mainCategoryId);
-
-            $model->file = \yii\web\UploadedFile::getInstances($model, 'file');
-
-
-            if (Yii::$app->request->post('AttachmentsMainId')) {
-                $test = $model->getImages();
-                //print_r($test);
-                //sdie;
-            }
-
-
-            if ($model->file) {
-
-                foreach ($model->file as $file) {
-
-
-                    $uniqueName = \panix\engine\CMS::gen(10);
-                    // $file->saveAs(Yii::getAlias('@uploads').'/' . $uniqueName . '_' . $file->baseName . '.' . $file->extension);
-                    // $model->attachImage('uploads/' . $uniqueName . '_' . $file->baseName . '.' . $file->extension);
-
-                    $file->saveAs(Yii::getAlias('@uploads') . '/' . $uniqueName . '_' . $file->baseName . '.' . $file->extension);
-                    $model->attachImage(Yii::getAlias('@uploads') . '/' . $uniqueName . '_' . $file->baseName . '.' . $file->extension);
+                if (Yii::$app->request->post('AttachmentsMainId')) {
+                    $test = $model->getImages();
+                    //print_r($test);
+                    //sdie;
                 }
-            }
-            $model->processPrices(Yii::$app->request->post('ProductPrices', []));
-            $this->processAttributes($model);
-            // Process variants
-            $this->processVariants($model);
-            $this->processConfigurations($model);
 
+
+                if ($model->file) {
+
+                    foreach ($model->file as $file) {
+
+
+                        $uniqueName = \panix\engine\CMS::gen(10);
+                        // $file->saveAs(Yii::getAlias('@uploads').'/' . $uniqueName . '_' . $file->baseName . '.' . $file->extension);
+                        // $model->attachImage('uploads/' . $uniqueName . '_' . $file->baseName . '.' . $file->extension);
+
+                        $file->saveAs(Yii::getAlias('@uploads') . '/' . $uniqueName . '_' . $file->baseName . '.' . $file->extension);
+                        $model->attachImage(Yii::getAlias('@uploads') . '/' . $uniqueName . '_' . $file->baseName . '.' . $file->extension);
+                    }
+                }
+                $model->processPrices(Yii::$app->request->post('ProductPrices', []));
+                $this->processAttributes($model);
+                // Process variants
+                $this->processVariants($model);
+                $this->processConfigurations($model);
+            }
 
             /*if ($model->isNewRecord) {
                 Yii::$app->session->setFlash('success', Yii::t('app', 'SUCCESS_CREATE'));

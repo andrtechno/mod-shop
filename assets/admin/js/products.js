@@ -1,27 +1,33 @@
 
 // Process checked categories
-
 $("#product-form").submit(function () {
     var checked = $("#jsTree_CategoryTree li a.jstree-checked");
+    $('.append-categories').remove();
     checked.each(function (i, el) {
         var id = $(el).attr("id").replace('node_', '').replace('_anchor', '');
-        console.log(id);
-        $("#product-form").append('<input type="hidden" name="categories[]" value="' + id + '" />');
+        //console.log(id);
+        $("#product-form").prepend('<input class="append-categories" type="hidden" name="categories[]" value="' + id + '" />');
     });
+    //return false;
 });
+$('#jsTree_CategoryTree').bind('changed.jstree', function (e, data) {
 
+    console.log(data.changed.selected); // newly selected
+    console.log(data.changed.deselected); // newly deselected
+});
 
 //$('#ShopCategoryTree').delegate("a", "click", function (event) {
 //	$('#ShopCategoryTree').jstree('checkbox').check_node($(this));
 //	var id = $(this).parent("li").attr('id').replace('ShopCategoryTreeNode_', '');
 //});
 
-;
-(function ($) {
+
+;(function ($) {
     $.fn.checkNode = function (id) {
 
         $(this).bind('loaded.jstree', function () {
             $(this).jstree('check_node', 'node_' + id);
+            console.log('check_node');
         });
     };
 })(jQuery);
@@ -35,7 +41,7 @@ $('#product-use_configurations, #product-type_id').change(function () {
     if ($('#product-use_configurations').val() == '0')
         return;
 
-    $.getJSON('/admin/shop/product/load-configurable-options?type_id=' + type_id, function (data) {
+    $.getJSON(common.url('/admin/shop/product/load-configurable-options?type_id=' + type_id), function (data) {
         var items = [];
         if (data.status === 'success') {
             $.each(data.response, function (key, option) {
