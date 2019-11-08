@@ -7,6 +7,11 @@ treeSelector.bind('move_node.jstree', function (node, parent) {
             'id': parent.node.id.replace('node_', ''),
             'ref': parent.parent.replace('node_', ''),
             'position': parent.position
+        },
+        success: function (data) {
+            if (data.success) {
+                common.notify(data.message, 'success');
+            }
         }
     });
 });
@@ -22,20 +27,17 @@ treeSelector.bind('rename_node.jstree', function (node, text) {
                 text: text.text
             },
             success: function (data) {
-                if(data.success){
-                    common.notify(data.message,'success');
-                }else{
-                    common.notify(data.message,'error');
+                if (data.success) {
+                    common.notify(data.message, 'success');
+                } else {
+                    common.notify(data.message, 'error');
                 }
-
             }
         });
     }
 });
-//Need dev.
+
 treeSelector.bind('create_node.jstree', function (node, parent, position) {
-
-
     $.ajax({
         type: 'GET',
         url: "/admin/shop/category/create-node",
@@ -45,7 +47,7 @@ treeSelector.bind('create_node.jstree', function (node, parent, position) {
             parent_id: parent.parent.replace('node_', '')
         },
         success: function (data) {
-            common.notify(data.message,'success');
+            common.notify(data.message, 'success');
         }
     });
 });
@@ -53,9 +55,16 @@ treeSelector.bind('create_node.jstree', function (node, parent, position) {
 treeSelector.bind("delete_node.jstree", function (node, parent) {
     $.ajax({
         type: 'GET',
-        url: "/admin/shop/category/delete",
+        url: "/admin/shop/category/delete-node",
         data: {
             "id": parent.node.id.replace('node_', '')
+        },
+        success: function (data) {
+            if (data.success) {
+                common.notify(data.message, 'success');
+            } else {
+                common.notify(data.message, 'error');
+            }
         }
     });
 });
@@ -70,7 +79,7 @@ function categorySwitch(node) {
         },
         success: function (data) {
             var icon = (data.switch) ? 'icon-eye' : 'icon-eye-close';
-            common.notify(data.message,'success');
+            common.notify(data.message, 'success');
             treeSelector.jstree(true).set_icon(node, icon);
         }
     });

@@ -25,8 +25,8 @@ class CategoryController extends AdminController
             'rename-node' => [
                 'class' => 'panix\engine\behaviors\nestedsets\actions\RenameNodeAction',
                 'modelClass' => Category::class,
-                'successMessage' => Category::t('CATEGORY_TREE_RENAME'),
-                'errorMessage' => Category::t('ERROR_CATEGORY_TREE_RENAME')
+                'successMessage' => Category::t('NODE_RENAME_SUCCESS'),
+                'errorMessage' => Category::t('NODE_RENAME_ERROR')
             ],
             'move-node' => [
                 'class' => 'panix\engine\behaviors\nestedsets\actions\MoveNodeAction',
@@ -35,8 +35,8 @@ class CategoryController extends AdminController
             'switch-node' => [
                 'class' => 'panix\engine\behaviors\nestedsets\actions\SwitchNodeAction',
                 'modelClass' => Category::class,
-                'onMessage' => Category::t('CATEGORY_TREE_SWITCH_ON'),
-                'offMessage' => Category::t('CATEGORY_TREE_SWITCH_OFF')
+                'onMessage' => Category::t('NODE_SWITCH_ON'),
+                'offMessage' => Category::t('NODE_SWITCH_OFF')
             ],
             'delete-node' => [
                 'class' => 'panix\engine\behaviors\nestedsets\actions\DeleteNodeAction',
@@ -101,38 +101,6 @@ class CategoryController extends AdminController
     }
 
 
-    public function actionRenameNode2()
-    {
-        /**
-         * @var \panix\engine\behaviors\nestedsets\NestedSetsBehavior|Category $model
-         */
-        if (strpos(Yii::$app->request->get('id'), 'j1_') === false) {
-            $id = Yii::$app->request->get('id');
-        } else {
-            $id = str_replace('j1_', '', Yii::$app->request->get('id'));
-        }
-
-        $model = Category::findOne((int)$id);
-        if ($model) {
-            $model->name = Yii::$app->request->get('text');
-            $model->slug = CMS::slug($model->name);
-            if ($model->validate()) {
-                $model->saveNode(false);
-                $success = true;
-                $message = Yii::t('shop/Category', 'CATEGORY_TREE_RENAME');
-            } else {
-                $success = false;
-                $message = Yii::t('shop/Category', 'ERROR_CATEGORY_TREE_RENAME');
-            }
-            Yii::$app->response->format = Response::FORMAT_JSON;
-            return [
-                'message' => $message,
-                'success' => $success
-            ];
-
-        }
-    }
-
     public function actionCreateNode2()
     {
         /**
@@ -156,48 +124,6 @@ class CategoryController extends AdminController
         ];
     }
 
-    /**
-     * Drag-n-drop nodes
-     */
-    public function actionMoveNode2()
-    {
-        /**
-         * @var \panix\engine\behaviors\nestedsets\NestedSetsBehavior|Category $node
-         * @var \panix\engine\behaviors\nestedsets\NestedSetsBehavior|Category $target
-         */
-        $node = Category::findModel(Yii::$app->request->get('id'));
-        $target = Category::findOne(Yii::$app->request->get('ref'));
-
-
-        $pos = (int)Yii::$app->request->get('position');
-
-        if ($pos == 1) {
-
-            $childs = $target->children()->all();
-            if (isset($childs[$pos - 1]) && $childs[$pos - 1]['id'] != $node->id) {
-                // die('moveAfter');
-                $node->moveAfter($childs[$pos - 1]);
-            }
-        } elseif ($pos == 2) {
-            $childs = $target->children()
-                //->orderBy(['lft'=>SORT_DESC])
-                ->all();
-            // echo count($childs);die;
-            // if (isset($childs[$pos - 1]) && $childs[$pos - 1]['id'] != $node->id) {
-            // die('moveAfter');
-
-
-            if (isset($childs[$pos - 1]) && $childs[$pos - 1]['id'] != $node->id) {
-                $node->moveAfter($childs[$pos - 1]);
-            }
-
-        } else {
-            $node->moveAsFirst($target);
-        }
-
-        $node->rebuildFullPath();
-        $node->saveNode(false);
-    }
 
     /**
      * Redirect to category front.
@@ -206,42 +132,6 @@ class CategoryController extends AdminController
     {
         $node = Category::findModel(Yii::$app->request->get('id'));
         return $this->redirect($node->getViewUrl());
-    }
-
-    public function actionSwitchNode2()
-    {
-        /**
-         * @var \panix\engine\behaviors\nestedsets\NestedSetsBehavior|Category $node
-         */
-        $node = Category::findOne(Yii::$app->request->get('id'));
-        $node->switch = ($node->switch == 1) ? 0 : 1;
-        $node->saveNode();
-
-        Yii::$app->response->format = Response::FORMAT_JSON;
-        return [
-            'switch' => $node->switch,
-            'message' => Yii::t('shop/Category', ($node->switch) ? 'CATEGORY_TREE_SWITCH_OFF' : 'CATEGORY_TREE_SWITCH_ON')
-        ];
-    }
-
-    /**
-     * @param $id
-     */
-    public function actionDelete2($id)
-    {
-        /**
-         * @var \panix\engine\behaviors\nestedsets\NestedSetsBehavior|Category $model
-         * @var \panix\engine\behaviors\nestedsets\NestedSetsBehavior|Category $subCategory
-         */
-        $model = Category::findModel($id);
-
-        //Delete if not root node
-        if ($model && $model->id != 1) {
-            foreach (array_reverse($model->descendants()->all()) as $subCategory) {
-                $subCategory->deleteNode();
-            }
-            $model->deleteNode();
-        }
     }
 
     public function actionCreateRoot()
