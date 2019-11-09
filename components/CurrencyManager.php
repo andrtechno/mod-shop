@@ -5,6 +5,7 @@ namespace panix\mod\shop\components;
 use Yii;
 use yii\base\Component;
 use panix\mod\shop\models\Currency;
+use yii\caching\DbDependency;
 
 /**
  * Class to work with currencies
@@ -31,11 +32,6 @@ class CurrencyManager extends Component
      * @var Currency default currency
      */
     private $_default;
-
-    /**
-     * @var string
-     */
-    public $cacheKey = __CLASS__;
 
     /**
      * @var int Cache time
@@ -127,7 +123,6 @@ class CurrencyManager extends Component
 
     public function number_format($sum)
     {
-
         $format = number_format($sum, $this->_active['penny'], $this->_active['separator_thousandth'], $this->_active['separator_hundredth']);
         //return iconv("windows-1251", "UTF-8", $format);
         return $format;
@@ -148,16 +143,12 @@ class CurrencyManager extends Component
      */
     private function loadCurrencies()
     {
-        $currencies = Yii::$app->cache->get($this->cacheKey);
+        $tableName = Currency::tableName();
 
-        if (!$currencies) {
-            $currencies = Currency::find()
-                ->asArray()
-                ->all();
-            Yii::$app->cache->set($this->cacheKey, $currencies, $this->cacheTime);
-        }
-
-        return $currencies;
+        return Currency::find()
+            ->asArray()
+            ->cache($this->cacheTime, new DbDependency(['sql' => "SELECT MAX(updated_at) FROM {$tableName}"]))
+            ->all();
     }
 
 }

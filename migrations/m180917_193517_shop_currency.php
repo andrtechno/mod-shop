@@ -28,12 +28,15 @@ class m180917_193517_shop_currency extends Migration {
             'is_main' => $this->boolean()->defaultValue(0),
             'is_default' => $this->boolean()->defaultValue(0),
             'switch' => $this->boolean()->notNull()->defaultValue(null),
+            'created_at' => $this->integer(),
+            'updated_at' => $this->integer(),
             'ordern' => $this->integer()->unsigned(),
         ], $this->tableOptions);
 
         $this->createIndex('is_main', Currency::tableName(), 'is_main');
         $this->createIndex('is_default', Currency::tableName(), 'is_default');
         $this->createIndex('ordern', Currency::tableName(), 'ordern');
+        $this->createIndex('updated_at', Currency::tableName(), 'updated_at');
 
         $columns = ['name', 'iso', 'symbol', 'rate', 'penny', 'separator_hundredth', 'separator_thousandth', 'is_main', 'is_default', 'switch', 'ordern'];
         $this->batchInsert(Currency::tableName(), $columns, [

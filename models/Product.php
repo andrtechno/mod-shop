@@ -881,12 +881,12 @@ class Product extends ActiveRecord
                 } else {
                     $result = $pr->value;
                 }
-
             } else {
                 if ($product->currency_id) {
                     $result = Yii::$app->currency->convert($product->appliedDiscount ? $product->discountPrice : $product->price, $product->currency_id);
                 } else {
-                    $result = $product->appliedDiscount ? $product->discountPrice : $product->price;
+                    $result = Yii::$app->currency->convert($product->appliedDiscount ? $product->discountPrice : $product->price, $product->currency_id);
+                    //$result = ($product->appliedDiscount) ? $product->discountPrice : $product->price;
                 }
 
             }

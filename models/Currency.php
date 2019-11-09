@@ -51,9 +51,9 @@ class Currency extends ActiveRecord
         return [
             //array('separator_hundredth, separator_thousandth', 'type', 'type' => 'string'),
             [['separator_hundredth', 'separator_thousandth'], 'string', 'max' => 5],
-            [['name', 'rate', 'symbol', 'iso'], 'required'],
+            [['name', 'rate', 'symbol', 'iso', 'penny'], 'required'],
             [['name'], 'trim'],
-            [['is_main', 'is_default', 'penny'], 'boolean'],
+            [['is_main', 'is_default'], 'boolean'],
             [['name'], 'string', 'max' => 255],
             [['ordern'], 'integer'],
             [['rate'], 'number'],
