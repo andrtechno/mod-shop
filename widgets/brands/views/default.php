@@ -30,7 +30,7 @@ use panix\ext\owlcarousel\OwlCarouselWidget;
                     'nav' => false
                 ],
                 1024 => [
-                    'items' => 6,
+                    'items' => 5,
                     'nav' => true,
                     'dots' => false
                 ]
@@ -38,10 +38,15 @@ use panix\ext\owlcarousel\OwlCarouselWidget;
         ]
     ]);
     foreach ($model as $data) { ?>
-
         <div class="text-center">
-            <?= Html::a(Html::img($data->getImageUrl('image', '200x150'), ['alt' => $data->name, 'class' => 'd-inline-block img-fluid']), $data->getUrl(), ['class' => 'd-inline-block m-auto1']); ?>
-            <?= Html::a($data->name, $data->getUrl(), ['class' => 'h3']); ?>
+            <div class="d-flex align-items-center" style="height: 80px;">
+
+                <?= Html::a(Html::img($data->getImageUrl('image', '150x80'), [
+                    'alt' => $data->name,
+                    'class' => 'd-inline-block img-fluid'
+                ]), $data->getUrl(), ['class' => 'd-inline-block m-auto']); ?>
+            </div>
+            <div><?= Html::a($data->name, $data->getUrl(), ['class' => 'h3 d-block mt-3']); ?></div>
         </div>
 
     <?php }
