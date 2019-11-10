@@ -19,11 +19,16 @@ class ProductIndex extends AssetBundle
 {
 
     public $sourcePath = __DIR__ . '/../../assets/admin';
+
     public $js = [
         'js/products.index.js',
     ];
+
     public $depends = [
         'yii\web\JqueryAsset',
+        'yii\jui\JuiAsset',
+        'app\web\themes\dashboard\AdminAsset',
+        //'app\web\themes\dashboard\ThemeCssAsset'
 
     ];
 }

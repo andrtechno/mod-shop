@@ -44,7 +44,6 @@ class m180917_193213_shop_product extends Migration
             'availability' => $this->tinyInteger(1)->unsigned()->defaultValue(1),
             'auto_decrease_quantity' => $this->smallInteger(2)->unsigned()->defaultValue(0),
             'views' => $this->integer()->unsigned()->defaultValue(0),
-            'reviews' => $this->integer()->unsigned()->defaultValue(0),
             'added_to_cart_count' => $this->integer()->defaultValue(0),
             'votes' => $this->integer()->unsigned()->defaultValue(0),
             'rating' => $this->integer()->unsigned()->defaultValue(0),

@@ -43,18 +43,18 @@ $('#product-use_configurations, #product-type_id').change(function () {
 
     $.getJSON(common.url('/admin/shop/product/load-configurable-options?type_id=' + type_id), function (data) {
         var items = [];
-        if (data.status === 'success') {
+        if (data.success) {
             $.each(data.response, function (key, option) {
                 items.push('<li><label class="control-label"><input type="checkbox" class="check" name="Product[configurable_attributes][]" value="' + option.id + '" name=""> ' + option.title + '</label></li>');
             });
-            $('#availableAttributes').removeClass('hidden');
+            $('#availableAttributes').removeClass('d-none');
             $('<ul/>', {
                 'class': 'list-unstyled',
                 'style': 'margin-left:20px',
                 html: items.join('')
             }).appendTo(attrs_block);
         } else {
-            $('#availableAttributes').html('<div class="alert alert-danger">' + data.message + '</div>').removeClass('hidden');
+            $('#availableAttributes').html('<div class="alert alert-danger">' + data.message + '</div>').removeClass('d-none');
         }
     });
 });

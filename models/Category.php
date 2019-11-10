@@ -135,8 +135,8 @@ class Category extends ActiveRecord
             /**
              * @var self $c
              */
-            if ($c->depth > 1) {
-                $result[$c->id] = str_repeat('--', $c->depth - 1) . ' ' . $c->name;
+            if ($c->depth > 2) {
+                $result[$c->id] = str_repeat(html_entity_decode('&mdash;'), $c->depth - 2) . ' ' . $c->name;
             } else {
                 $result[$c->id] = ' ' . $c->name;
             }

@@ -33,6 +33,7 @@ use panix\engine\db\ActiveRecord;
  * @property boolean $sku Product article
  * @property integer $quantity
  * @property integer $availability
+ * @property integer $main_category_id
  * @property integer $auto_decrease_quantity
  * @property integer $views Views product on frontend
  * @property integer $created_at
@@ -151,6 +152,7 @@ class Product extends ActiveRecord
                     'asc' => ['translation.name' => SORT_ASC],
                     'desc' => ['translation.name' => SORT_DESC],
                 ],
+                'commentsCount',
             ],
         ]);
     }
@@ -372,7 +374,7 @@ class Product extends ActiveRecord
      */
     public function processPrices(array $prices)
     {
-        $dontDelete = array();
+        $dontDelete = [];
 
         foreach ($prices as $index => $price) {
             if ($price['value'] > 0) {
@@ -765,7 +767,7 @@ class Product extends ActiveRecord
             else
                 return null;
 
-            $attributeModel = Attribute::find()->where(['name' => $attribute])->cache(3600, $dependency)->one();
+            $attributeModel = Attribute::find()->where(['name' => $attribute])->cache(3600*24, $dependency)->one();
             return $attributeModel->renderValue($value);
         }
         return parent::__get($name);

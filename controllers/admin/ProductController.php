@@ -299,38 +299,51 @@ class ProductController extends AdminController
     /**
      * Load attributes relative to type and available for product configurations.
      * Used on creating new product.
+     *
+     * @return array
+     * @throws ForbiddenHttpException
      */
     public function actionLoadConfigurableOptions()
     {
-        // For configurations that  are available only dropdown and radio lists.
-        // $cr = new CDbCriteria;
-        //$cr->addInCondition('type', array(ShopAttribute::TYPE_DROPDOWN, ShopAttribute::TYPE_RADIO_LIST));
-        //$type = ProductType::model()->with(array('shopAttributes'))->findByPk($_GET['type_id'], $cr);
+        $data = [];
+        $data['success'] = false;
+        if (Yii::$app->request->isAjax) {
 
-        $type = ProductType::find($_GET['type_id'])
-            ->joinWith('shopAttributes')
-            ->where([Attribute::tableName() . '.type' => [Attribute::TYPE_DROPDOWN, Attribute::TYPE_RADIO_LIST]])
-            ->one();
 
+            Yii::$app->response->format = Response::FORMAT_JSON;
+
+            // For configurations that  are available only dropdown and radio lists.
+            // $cr = new CDbCriteria;
+            //$cr->addInCondition('type', array(ShopAttribute::TYPE_DROPDOWN, ShopAttribute::TYPE_RADIO_LIST));
+            //$type = ProductType::model()->with(array('shopAttributes'))->findByPk($_GET['type_id'], $cr);
+
+            $type = ProductType::find()
+                ->joinWith('shopAttributes')
+                ->where([
+                    'type_id' => Yii::$app->request->get('type_id'),
+                    Attribute::tableName() . '.type' => [Attribute::TYPE_DROPDOWN, Attribute::TYPE_RADIO_LIST]
+                ])
+                ->one();
+
+            //print_r($type);die;
 //echo($type->prepare(Yii::$app->db->queryBuilder)->createCommand()->rawSql);die;
-        $data = array();
-        if ($type->shopAttributes) {
-            $data = array('status' => 'success');
-            foreach ($type->shopAttributes as $attr) {
-                $data['response'][] = array(
-                    'id' => $attr->id,
-                    'title' => $attr->title,
-                );
+
+            if ($type->shopAttributes) {
+                $data['success'] = true;
+                foreach ($type->shopAttributes as $attr) {
+                    $data['response'][] = [
+                        'id' => $attr->id,
+                        'title' => $attr->title,
+                    ];
+                }
+            } else {
+                $data['message'] = 'Ошибка не найден не один атрибут';
             }
+            return $data;
         } else {
-            $data = array(
-                'status' => 'error',
-                'message' => 'Ошибка не найден не один атрибут'
-            );
+            throw new ForbiddenHttpException();
         }
 
-        echo json_encode($data);
-        die;
     }
 
     protected function processConfigurations(Product $model)

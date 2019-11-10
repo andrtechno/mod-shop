@@ -2,6 +2,7 @@
 
 namespace panix\mod\shop\models\traits;
 
+use panix\mod\shop\models\Category;
 use Yii;
 use panix\engine\Html;
 use panix\engine\CMS;
@@ -9,6 +10,10 @@ use panix\mod\shop\models\Attribute;
 use panix\mod\shop\models\Product;
 use yii\helpers\ArrayHelper;
 
+/**
+ * Trait ProductTrait
+ * @package panix\mod\shop\models\traits
+ */
 trait ProductTrait
 {
     public static function getAvailabilityItems()
@@ -91,29 +96,42 @@ trait ProductTrait
                     $priceHtml = Yii::$app->currency->convert($price, $model->currency_id);
                     $symbol = Html::tag('sup', Yii::$app->currency->main['symbol']);
                 }
-                $ss .= '<span class="badge badge-danger position-absolute" style="top:0;right:0;">123</span>';
+                //$ss .= '<span class="badge badge-danger position-absolute" style="top:0;right:0;">123</span>';
                 return $ss . Html::tag('span', Yii::$app->currency->number_format($priceHtml), ['class' => 'text-success font-weight-bold']) . ' ' . $symbol;
             }
         ];
         $columns['categories'] = [
-            'header' => static::t('categories'),
+            'header' => static::t('Категории'),
             'attribute' => 'categories',
             'format' => 'html',
-            //'filter' => false,
+            'contentOptions' => ['style' => 'max-width:180px'],
+            'filter' => Html::dropDownList('category_id', null, Category::flatTree(),
+                [
+                    'class' => 'form-control',
+                    'prompt' => html_entity_decode('&mdash; выберите категорию &mdash;')
+                ]
+            ),
             'value' => function ($model) {
                 /** @var $model Product */
-                $test = [];
+                $result = '';
                 foreach ($model->categories as $category) {
-                    $test[] = Html::a($category->name, $category->getUrl());
+                    $options = [];
+                    if ($category->id == $model->main_category_id) {
+                        $options['class'] = 'badge badge-secondary';
+                        $options['title'] = 'Main category';
+                    } else {
+                        $options['class'] = 'badge badge-light';
+                    }
+                    $result .= Html::a($category->name, $category->getUrl(), $options);
                 }
-                return '<span class="badge badge-secondary">' . implode('</span> <span class="badge badge-secondary">', $test) . '</span>';
+                return $result;
             }
         ];
         $columns['commentsCount'] = [
             'header' => static::t('COMMENTS_COUNT'),
             'attribute' => 'commentsCount',
             'format' => 'html',
-            //'filter' => false,
+            'filter' => true,
             'value' => function ($model) {
                 return Html::a($model->commentsCount, ['/admin/comments/default/index', 'CommentsSearch[object_id]' => $model->primaryKey]);
             }

@@ -17,6 +17,7 @@ class ProductSearch extends Product
     public $price_min;
     public $price_max;
     // public $image;
+    //public $commentsCount;
 
     /**
      * @inheritdoc
@@ -27,7 +28,7 @@ class ProductSearch extends Product
             //[['id'], 'integer'],
             [['price_min', 'price_max', 'supplier_id', 'manufacturer_id'], 'integer'],
             // [['image'],'boolean'],
-            [['slug', 'sku', 'price', 'id'], 'safe'],
+            [['slug', 'sku', 'price', 'id'], 'safe'], //commentsCount
             [['name'], 'string'],
             [['created_at', 'updated_at'], 'date', 'format' => 'php:Y-m-d']
         ];
@@ -54,7 +55,7 @@ class ProductSearch extends Product
         $query = Product::find();
         //$query->joinWith('translations');
         $query->sort();
-        $query->joinWith(['translations translations']);
+        $query->joinWith(['translations translations']); //, 'commentsCount'
 
         $className = substr(strrchr(__CLASS__, "\\"), 1);
 
@@ -153,6 +154,7 @@ class ProductSearch extends Product
         $query->andFilterWhere(['like', 'sku', $this->sku]);
         $query->andFilterWhere(['like', 'supplier_id', $this->supplier_id]);
         $query->andFilterWhere(['like', 'manufacturer_id', $this->manufacturer_id]);
+        //$query->andFilterWhere(['like', 'commentsCount', $this->commentsCount]);
         //echo $query->createCommand()->rawSql;die;
         return $dataProvider;
     }
