@@ -26,7 +26,7 @@ class SettingsController extends AdminController
             if ($model->validate()) {
                 $model->save();
             }
-            return Yii::$app->getResponse()->redirect(['/shop/settings']);
+            $this->refresh();
         }
         return $this->render('index', [
             'model' => $model

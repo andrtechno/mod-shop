@@ -82,7 +82,7 @@ class Module extends WebModule implements BootstrapInterface
     {
         return [
             'shop' => [
-                'label' => 'Магазин',
+                'label' => Yii::t('shop/default', 'MODULE_NAME'),
                 'icon' => $this->icon,
                 'items' => [
                     [
