@@ -41,6 +41,7 @@ class FiltersWidget extends \panix\engine\data\Widget
 
     public function init()
     {
+        die('old FiltersWidget');
         $view = $this->getView();
         $this->_maxprice = $view->context->maxprice;
         $this->_minprice = $view->context->minprice;

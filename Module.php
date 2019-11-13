@@ -154,41 +154,6 @@ class Module extends WebModule implements BootstrapInterface
 
     public function getAdminSidebar()
     {
-        /*return [
-            [
-                'label' => Yii::t('app', 'SETTINGS'),
-                "url" => ['/shop/settings'],
-                'icon' => 'settings'
-            ],
-            'integration' => [
-                'label' => 'Интеграция',
-                'icon' => $this->icon,
-                'items' => [
-                    [
-                        'label' => Yii::t('app', 'SETTINGS'),
-                        "url" => ['/shop/settings'],
-                        'icon' => 'settings'
-                    ],
-                ]
-            ],
-            'integration2' => [
-                'label' => 'Интеграция',
-                'icon' => $this->icon,
-                'items' => [
-                    [
-                        'label' => Yii::t('app', 'SETTINGS'),
-                        "url" => ['/shop/settings'],
-                        'icon' => 'settings'
-                    ],
-                    [
-                        'label' => Yii::t('app', 'SETTINGS'),
-                        "url" => ['/shop/settings'],
-                        'icon' => 'settings'
-                    ],
-                ]
-            ],
-        ];*/
-
         return (new BackendNav())->findMenu($this->id)['items'];
     }
 
@@ -197,7 +162,7 @@ class Module extends WebModule implements BootstrapInterface
     {
         return [
             'label' => Yii::t('shop/default', 'MODULE_NAME'),
-            'author' => 'andrew.panix@gmail.com',
+            'author' => $this->getAuthor(),
             'version' => '1.0',
             'icon' => $this->icon,
             'description' => Yii::t('shop/default', 'MODULE_DESC'),

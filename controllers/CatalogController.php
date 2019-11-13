@@ -12,7 +12,6 @@ use panix\mod\shop\models\Category;
 class CatalogController extends FilterController
 {
 
-
     public $provider;
     public $currentUrl;
 
@@ -179,7 +178,7 @@ class CatalogController extends FilterController
                     'provider' => $this->provider,
                     'itemView' => $this->itemView
                 ]),
-                'i'=>$this->itemView,
+                'i' => $this->itemView,
                 'currentFiltersData' => $this->renderPartial('@shop/widgets/filtersnew/views/current', [
                     'dataModel' => $this->dataModel,
                     'active' => $filterData
@@ -200,6 +199,7 @@ class CatalogController extends FilterController
 
 
         } else {
+
             return $this->render('view', [
                 'provider' => $this->provider,
                 'itemView' => $this->itemView

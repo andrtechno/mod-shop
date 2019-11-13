@@ -193,7 +193,7 @@ class FilterController extends WebController
             if (array_key_exists($key, $this->eavAttributes)) {
 
                 if (empty($_GET[$key]) && isset($_GET[$key])) {
-                    //	 throw new CHttpException(404, Yii::t('ShopModule.default', 'NOFIND_CATEGORY'));
+                    //	 throw new CHttpException(404, Yii::t('shop/default', 'NOFIND_CATEGORY'));
                 }
 
                 if ((boolean)$this->eavAttributes[$key]->select_many === true) {
