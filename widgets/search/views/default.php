@@ -7,7 +7,7 @@ use yii\helpers\Url;
 $id = $this->context->id;
 ?>
 
-<div id="search-box" class="m-auto w-100">
+<div class="search-box m-auto w-100">
     <?= Html::beginForm(Yii::$app->urlManager->createUrl(['/shop/search/index', 'q' => $value]), 'post', ['id' => 'search-form-'.$id]) ?>
     <div class="input-group">
 

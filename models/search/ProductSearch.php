@@ -55,7 +55,7 @@ class ProductSearch extends Product
         $query = Product::find();
         //$query->joinWith('translations');
         $query->sort();
-        $query->joinWith(['translations translations']); //, 'commentsCount'
+       // $query->joinWith(['translations translations']); //, 'commentsCount'
 
         $className = substr(strrchr(__CLASS__, "\\"), 1);
 

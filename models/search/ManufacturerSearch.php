@@ -18,7 +18,7 @@ class ManufacturerSearch extends Manufacturer {
     public function rules() {
         return [
             [['id'], 'integer'],
-            [['name', 'slug'], 'safe'],
+            [['name'], 'safe'],
         ];
     }
 
@@ -39,10 +39,9 @@ class ManufacturerSearch extends Manufacturer {
      */
     public function search($params) {
         $query = Manufacturer::find();
-        $query->joinWith('translations');
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-            'sort' => self::getSort()
+           // 'sort' => self::getSort()
         ]);
 
         $this->load($params);
