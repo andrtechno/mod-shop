@@ -12,6 +12,7 @@ namespace panix\mod\shop\migrations;
  */
 
 
+
 use Yii;
 use panix\engine\CMS;
 use panix\engine\db\Migration;
@@ -34,100 +35,6 @@ class m190316_061840_shop_insert extends Migration
 
     public function up()
     {
-
-
-        $attributesList = [
-            'Размер' => [
-                'type' => Attribute::TYPE_DROPDOWN,
-                'display_on_front' => true,
-                'use_in_filter' => true,
-                'use_in_variants' => true,
-                'use_in_compare' => true,
-                'select_many' => true,
-                'required' => true,
-                'options' => ['S', 'M', 'L']
-            ],
-            'Диагональ экрана' => [
-                'type' => Attribute::TYPE_DROPDOWN,
-                'display_on_front' => true,
-                'use_in_filter' => true,
-                'use_in_variants' => true,
-                'use_in_compare' => true,
-                'select_many' => true,
-                'required' => true,
-            ],
-            'Частота обновления экрана' => [
-                'type' => Attribute::TYPE_DROPDOWN,
-                'display_on_front' => true,
-                'use_in_filter' => true,
-                'use_in_variants' => true,
-                'use_in_compare' => true,
-                'select_many' => true,
-                'required' => true,
-                //'options' => ['15.6" (1366x768) WXGA HD', '15.6" (1920x1080) Full HD']
-            ],
-            'Объем оперативной памяти' => [
-                'type' => Attribute::TYPE_DROPDOWN,
-                'display_on_front' => true,
-                'use_in_filter' => true,
-                'use_in_variants' => true,
-                'use_in_compare' => true,
-                'select_many' => true,
-                'required' => true,
-                //'options' => ['15.6" (1366x768) WXGA HD', '15.6" (1920x1080) Full HD']
-            ],
-            'Операционная система' => [
-                'type' => Attribute::TYPE_DROPDOWN,
-                'display_on_front' => true,
-                'use_in_filter' => true,
-                'use_in_variants' => true,
-                'use_in_compare' => true,
-                'select_many' => true,
-                'required' => true,
-                //'options' => ['15.6" (1366x768) WXGA HD', '15.6" (1920x1080) Full HD']
-            ],
-            'Объём накопителя' => [
-                'type' => Attribute::TYPE_DROPDOWN,
-                'display_on_front' => true,
-                'use_in_filter' => true,
-                'use_in_variants' => true,
-                'use_in_compare' => true,
-                'select_many' => true,
-                'required' => true,
-                //'options' => ['15.6" (1366x768) WXGA HD', '15.6" (1920x1080) Full HD']
-            ],
-        ];
-        $i = 1;
-        foreach ($attributesList as $name => $data) {
-            $this->batchInsert(Attribute::tableName(), ['name', 'type', 'display_on_front', 'use_in_filter', 'use_in_variants', 'use_in_compare', 'select_many', 'required', 'created_at', 'updated_at'], [
-                [CMS::slug($name), $data['type'], $data['display_on_front'], $data['use_in_filter'], $data['use_in_variants'], $data['use_in_compare'], $data['select_many'], $data['required'], time(), time()]
-            ]);
-
-            foreach (Yii::$app->languageManager->getLanguages(false) as $lang) {
-                $this->batchInsert(AttributeTranslate::tableName(), ['object_id', 'language_id', 'title', 'abbreviation', 'hint'], [
-                    [$i, $lang['id'], $name, '', '']
-                ]);
-            }
-
-
-            /*if (isset($data['options'])) {
-                $o = 1;
-                foreach ($data['options'] as $option) {
-                    $this->batchInsert(AttributeOption::tableName(), ['attribute_id', 'ordern'], [
-                        [$i, $o]
-                    ]);
-                    foreach (Yii::$app->languageManager->getLanguages(false) as $lang) {
-                        $this->batchInsert(AttributeOptionTranslate::tableName(), ['object_id', 'language_id', 'value'], [
-                            [$o, $lang['id'], $option]
-                        ]);
-                    }
-                    $o++;
-                }
-            }*/
-
-            $i++;
-        }
-
         $typesList = [1 => 'Основной', 2 => 'Ноутбук'];
         foreach ($typesList as $id => $name) {
             $this->batchInsert(ProductType::tableName(), ['id', 'name'], [
@@ -135,9 +42,8 @@ class m190316_061840_shop_insert extends Migration
             ]);
         }
 
-
-        $i = 1;
-        foreach ($attributesList as $name => $data) {
+        /*$i = 1;
+        foreach ($products[1]['attributes'] as $name => $data) {
             $this->batchInsert(TypeAttribute::tableName(), ['type_id', 'attribute_id'], [
                 [1, $i]
             ]);
@@ -145,7 +51,7 @@ class m190316_061840_shop_insert extends Migration
                 [2, $i]
             ]);
             $i++;
-        }
+        }*/
 
 
         //Add Root Category
@@ -259,7 +165,7 @@ class m190316_061840_shop_insert extends Migration
             $model->setCategories([], $product['main_category']);
 
             if (isset($product['attributes'])) {
-                $attributes = [];
+
                 foreach ($product['attributes'] as $attribute_name => $attribute_value) {
 
                     $attribute = Attribute::find()
@@ -280,38 +186,28 @@ class m190316_061840_shop_insert extends Migration
                         $attribute->save(false);
                     }
                     if ($attribute) {
+                        /** @var \panix\mod\shop\components\EavBehavior $model  */
                         if (is_array($attribute_value) && isset($attribute_value['items'])) {
                             foreach ($attribute_value['items'] as $item) {
-                                $attributeOption = AttributeOption::find()
-                                    ->joinWith('translations as translate')
-                                    ->where(['translate.value' => $item])
-                                    ->one();
-                                if (!$attributeOption) {
-                                    $attributeOption = new AttributeOption;
-                                    $attributeOption->attribute_id = $attribute->id;
-                                    $attributeOption->value = $item;
-                                    $attributeOption->save(false);
-                                }
+                                $attributes = [];
+                                $attributeOption = $this->writeAttribute($attribute->id,$item);
+
                                 $attributes[CMS::slug($attribute_name)] = $attributeOption->id;
+                                $model->setEavAttributes($attributes, true);
                             }
+
                         } else {
-                            $attributeOption = AttributeOption::find()
-                                ->joinWith('translations as translate')
-                                ->where(['translate.value' => $attribute_value])
-                                ->one();
-                            if (!$attributeOption) {
-                                $attributeOption = new AttributeOption;
-                                $attributeOption->attribute_id = $attribute->id;
-                                $attributeOption->value = $attribute_value;
-                                $attributeOption->save(false);
-                            }
+                            $attributes = [];
+                            $attributeOption = $this->writeAttribute($attribute->id,$attribute_value);
+
                             $attributes[CMS::slug($attribute_name)] = $attributeOption->id;
+                            $model->setEavAttributes($attributes, true);
                         }
 
                     }
 
                 }
-                $model->setEavAttributes($attributes, true);
+
             }
         }
 
@@ -333,10 +229,23 @@ class m190316_061840_shop_insert extends Migration
         ]);*/
     }
 
-    public
-    function down()
+    public function down()
     {
 
     }
 
+    private function writeAttribute($attribute_id, $value)
+    {
+        $attributeOption = AttributeOption::find()
+            ->joinWith('translations as translate')
+            ->where(['translate.value' => $value])
+            ->one();
+        if (!$attributeOption) {
+            $attributeOption = new AttributeOption;
+            $attributeOption->attribute_id = $attribute_id;
+            $attributeOption->value = $value;
+            $attributeOption->save(false);
+        }
+        return $attributeOption;
+    }
 }

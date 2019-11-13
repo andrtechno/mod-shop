@@ -379,7 +379,7 @@ class EavBehavior extends \yii\base\Behavior
      * @param bool $save whether auto attributes.
      * @return ActiveRecord|\yii\base\Component
      */
-    public function deleteEavAttributes($attributes = array(), $save = FALSE)
+    public function deleteEavAttributes($attributes = [], $save = FALSE)
     {
 
 
@@ -409,6 +409,7 @@ class EavBehavior extends \yii\base\Behavior
     {
         foreach ($attributes as $attribute => $value) {
             $this->attributes->add($attribute, $value);
+
             $this->changedAttributes->add($attribute);
         }
         // Auto save if set.
@@ -474,10 +475,8 @@ class EavBehavior extends \yii\base\Behavior
      */
     public function getEavAttribute($attribute)
     {
-
         $values = $this->getEavAttributes([$attribute]);
-        //return $this->attributes->itemAt($attribute);
-        return $values;
+        return $values[$attribute];
     }
 
     /**

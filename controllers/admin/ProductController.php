@@ -2,6 +2,7 @@
 
 namespace panix\mod\shop\controllers\admin;
 
+use panix\mod\shop\components\EavBehavior;
 use Yii;
 use yii\helpers\Html;
 use yii\helpers\Json;
@@ -158,8 +159,8 @@ class ProductController extends AdminController
                 if (isset($post['Product']['main_category_id']))
                     $mainCategoryId = $post['Product']['main_category_id'];
 
-                //$model->setCategories(Yii::$app->request->post('categories', []), $mainCategoryId);
-                $model->setCategories($_POST['categories'], $mainCategoryId);
+                $model->setCategories(Yii::$app->request->post('categories', []), $mainCategoryId);
+                //$model->setCategories($_POST['categories'], $mainCategoryId);
 
                 $model->file = \yii\web\UploadedFile::getInstances($model, 'file');
 
@@ -371,12 +372,19 @@ class ProductController extends AdminController
         if (empty($attributes))
             return false;
 
+        /**
+         * @var EavBehavior|Product $deleteModel
+         * @var EavBehavior|Product $model
+         */
         $deleteModel = Product::findOne($model->id);
         $deleteModel->deleteEavAttributes([], true);
         // Delete empty values
         foreach ($attributes as $key => $val) {
-            if (is_string($val) && $val === '')
-                $attributes->remove($key);
+            if (is_string($val) && $val === ''){
+                unset($attributes[$key]);
+                // $attributes->remove($key);
+            }
+
         }
 
         return $model->setEavAttributes($attributes, true);

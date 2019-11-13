@@ -195,6 +195,8 @@ class Attribute extends ActiveRecord
     }
 
     /**
+     * @param null $value
+     * @param string $inputClass
      * @return string html field based on attribute type
      */
     public function renderField($value = null, $inputClass = '')
@@ -219,11 +221,21 @@ class Attribute extends ActiveRecord
                 break;
             case self::TYPE_RADIO_LIST:
                 $data = ArrayHelper::map($this->options, 'id', 'value');
-                return Html::radioList($name, $value, $data, ['separator' => '<br/>']);
+                return Html::radioList($name, $value[$this->name], $data, ['separator' => '<br/>']);
                 break;
             case self::TYPE_CHECKBOX_LIST:
                 $data = ArrayHelper::map($this->options, 'id', 'value');
-                return Html::checkboxList($name . '[]', $value, $data, ['separator' => '']);
+
+                return Html::checkboxList($name . '[]', $value, $data, [
+                    'separator' => '',
+                    'tag' => false,
+                    'item' => function ($index, $label, $name, $checked, $value) {
+                        return '<div class="custom-control custom-checkbox">
+' . Html::checkbox($name, $checked, ['value'=>$value,'class' => 'custom-control-input', 'id' => $this->getIdByName().$index]) . '
+' . Html::label($label, $this->getIdByName().$index, ['class' => 'custom-control-label']) . '
+</div>';
+                    }
+                ]);
                 break;
             case self::TYPE_YESNO:
                 $data = [
@@ -285,8 +297,8 @@ class Attribute extends ActiveRecord
      */
     public function getIdByName()
     {
-       // echo $this->formName();die;
-        $name = $this->formName().'-' . $this->name;
+        // echo $this->formName();die;
+        $name = $this->formName() . '-' . $this->name;
         //return Html::getInputId($this, $this->name);
         return mb_strtolower($name);
     }

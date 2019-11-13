@@ -29,12 +29,15 @@ $attributes = (isset($model->type->shopAttributes)) ? $model->type->shopAttribut
             foreach ($result as $group_name => $attributes) {
                 echo '<div class="col-sm-12 col-md-6 col-lg-6 col-xl-4"><h3 class="text-center mt-3">' . $group_name . '</h3>';
                 foreach ($attributes as $a) {
-                    /** @var Attribute $a */
+                    /** @var Attribute|\panix\mod\shop\components\EavBehavior $a */
                     // Repopulate data from POST if exists
-                    if (isset($_POST['Attribute'][$a->name]))
+                    if (isset($_POST['Attribute'][$a->name])){
+
                         $value = $_POST['Attribute'][$a->name];
-                    else
+                    }else{
+
                         $value = $model->getEavAttribute($a->name);
+                    }
 
                     //$a->required ? $required = ' <span class="required">*</span>' : $required = null;
 
@@ -58,8 +61,8 @@ $attributes = (isset($model->type->shopAttributes)) ? $model->type->shopAttribut
                         $error = Html::error($a, $a->name);
                     }
 
-                    echo Html::beginTag('div', array('class' => 'form-group row ' . ($a->required ? 'required' : '')));
-                    echo Html::label($a->title, $a->name, array('class' => 'col-sm-4 col-form-label'));
+                    echo Html::beginTag('div', ['class' => 'form-group row ' . ($a->required ? 'required' : '')]);
+                    echo Html::label($a->title, $a->name, ['class' => 'col-sm-4 col-form-label']);
                     echo '<div class="col-sm-8 rowInput eavInput">' . $a->renderField($value, $inputClass) . $error . $addOptionLink . '</div>';
                     echo Html::endTag('div');
 
