@@ -32,7 +32,7 @@ class m180857_193215_shop_sets extends Migration
         $this->createIndex('product_id', Sets::tableName(), 'product_id');
 
 
-        $this->createRole('test', 'tester desrc');
+
 
     }
 

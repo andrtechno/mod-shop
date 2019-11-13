@@ -184,6 +184,7 @@ class ProductController extends AdminController
                         $model->attachImage(Yii::getAlias('@uploads') . '/' . $uniqueName . '_' . $file->baseName . '.' . $file->extension);
                     }
                 }
+
                 $model->processPrices(Yii::$app->request->post('ProductPrices', []));
                 $this->processAttributes($model);
                 // Process variants
@@ -241,6 +242,7 @@ class ProductController extends AdminController
 
     public function actionAddOptionToAttribute()
     {
+        Yii::$app->response->format = Response::FORMAT_JSON;
         $attribute = Attribute::findOne($_GET['attr_id']);
 
         if (!$attribute)
@@ -251,11 +253,10 @@ class ProductController extends AdminController
         $attributeOption->value = $_GET['value'];
         $attributeOption->save(false);
 
-        echo Json::encode([
+        return [
             'message' => 'Опция успешно добавлена',
             'id' => $attributeOption->id
-        ]);
-        Yii::$app->end();
+        ];
     }
 
     public function actionRenderVariantTable()
@@ -289,7 +290,7 @@ class ProductController extends AdminController
                 $this->tab_errors['attributes'] = true;
                 $errors = true;
                 $model->addError($attr->name, Yii::t('yii', '{attribute} cannot be blank.', ['attribute' => $attr->title]));
-                $attr->addError($attr->name, Yii::t('yii', '{attribute} cannot be blank.', ['attribute' => $attr->title]));
+                //$attr->addError($attr->name, Yii::t('yii', '{attribute} cannot be blank.', ['attribute' => $attr->title]));
             }
         }
 
@@ -371,7 +372,7 @@ class ProductController extends AdminController
             return false;
 
         $deleteModel = Product::findOne($model->id);
-        $deleteModel->deleteEavAttributes(array(), true);
+        $deleteModel->deleteEavAttributes([], true);
         // Delete empty values
         foreach ($attributes as $key => $val) {
             if (is_string($val) && $val === '')

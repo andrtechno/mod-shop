@@ -43,8 +43,8 @@ class m180917_193421_shop_attribute extends Migration
             'object_id' => $this->integer()->unsigned(),
             'language_id' => $this->tinyInteger()->unsigned(),
             'title' => $this->string(255)->notNull(),
-            'abbreviation' => $this->string(25),
-            'hint' => $this->text()->notNull(),
+            'abbreviation' => $this->string(25)->null(),
+            'hint' => $this->text()->null(),
         ], $this->tableOptions);
 
 

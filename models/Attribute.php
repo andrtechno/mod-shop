@@ -285,8 +285,10 @@ class Attribute extends ActiveRecord
      */
     public function getIdByName()
     {
-        $name = 'Attribute[' . $this->name . ']';
-        return Html::getInputId($this, $this->name);
+       // echo $this->formName();die;
+        $name = $this->formName().'-' . $this->name;
+        //return Html::getInputId($this, $this->name);
+        return mb_strtolower($name);
     }
 
     /**

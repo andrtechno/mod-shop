@@ -172,7 +172,9 @@ class AttributeController extends AdminController
 
     /**
      * Delete attribute
+     *
      * @param array $id
+     * @return \yii\web\Response
      */
     public function actionDelete($id = array())
     {

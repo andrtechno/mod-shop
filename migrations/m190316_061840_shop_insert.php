@@ -12,12 +12,6 @@ namespace panix\mod\shop\migrations;
  */
 
 
-use panix\mod\shop\models\Category;
-use panix\mod\shop\models\Product;
-use panix\mod\shop\models\ProductCategoryRef;
-use panix\mod\shop\models\translate\CategoryTranslate;
-use panix\mod\shop\models\translate\ProductTranslate;
-use panix\mod\shop\models\TypeAttribute;
 use Yii;
 use panix\engine\CMS;
 use panix\engine\db\Migration;
@@ -26,7 +20,15 @@ use panix\mod\shop\models\translate\AttributeTranslate;
 use panix\mod\shop\models\AttributeOption;
 use panix\mod\shop\models\ProductType;
 use panix\mod\shop\models\translate\AttributeOptionTranslate;
+use panix\mod\shop\models\Category;
+use panix\mod\shop\models\Product;
+use panix\mod\shop\models\translate\CategoryTranslate;
+use panix\mod\shop\models\TypeAttribute;
 
+/**
+ * Class m190316_061840_shop_insert
+ * @package panix\mod\shop\migrations
+ */
 class m190316_061840_shop_insert extends Migration
 {
 
@@ -45,6 +47,55 @@ class m190316_061840_shop_insert extends Migration
                 'required' => true,
                 'options' => ['S', 'M', 'L']
             ],
+            'Диагональ экрана' => [
+                'type' => Attribute::TYPE_DROPDOWN,
+                'display_on_front' => true,
+                'use_in_filter' => true,
+                'use_in_variants' => true,
+                'use_in_compare' => true,
+                'select_many' => true,
+                'required' => true,
+            ],
+            'Частота обновления экрана' => [
+                'type' => Attribute::TYPE_DROPDOWN,
+                'display_on_front' => true,
+                'use_in_filter' => true,
+                'use_in_variants' => true,
+                'use_in_compare' => true,
+                'select_many' => true,
+                'required' => true,
+                //'options' => ['15.6" (1366x768) WXGA HD', '15.6" (1920x1080) Full HD']
+            ],
+            'Объем оперативной памяти' => [
+                'type' => Attribute::TYPE_DROPDOWN,
+                'display_on_front' => true,
+                'use_in_filter' => true,
+                'use_in_variants' => true,
+                'use_in_compare' => true,
+                'select_many' => true,
+                'required' => true,
+                //'options' => ['15.6" (1366x768) WXGA HD', '15.6" (1920x1080) Full HD']
+            ],
+            'Операционная система' => [
+                'type' => Attribute::TYPE_DROPDOWN,
+                'display_on_front' => true,
+                'use_in_filter' => true,
+                'use_in_variants' => true,
+                'use_in_compare' => true,
+                'select_many' => true,
+                'required' => true,
+                //'options' => ['15.6" (1366x768) WXGA HD', '15.6" (1920x1080) Full HD']
+            ],
+            'Объём накопителя' => [
+                'type' => Attribute::TYPE_DROPDOWN,
+                'display_on_front' => true,
+                'use_in_filter' => true,
+                'use_in_variants' => true,
+                'use_in_compare' => true,
+                'select_many' => true,
+                'required' => true,
+                //'options' => ['15.6" (1366x768) WXGA HD', '15.6" (1920x1080) Full HD']
+            ],
         ];
         $i = 1;
         foreach ($attributesList as $name => $data) {
@@ -59,7 +110,7 @@ class m190316_061840_shop_insert extends Migration
             }
 
 
-            if (isset($data['options'])) {
+            /*if (isset($data['options'])) {
                 $o = 1;
                 foreach ($data['options'] as $option) {
                     $this->batchInsert(AttributeOption::tableName(), ['attribute_id', 'ordern'], [
@@ -72,19 +123,26 @@ class m190316_061840_shop_insert extends Migration
                     }
                     $o++;
                 }
-            }
+            }*/
 
             $i++;
         }
 
+        $typesList = [1 => 'Основной', 2 => 'Ноутбук'];
+        foreach ($typesList as $id => $name) {
+            $this->batchInsert(ProductType::tableName(), ['id', 'name'], [
+                [$id, $name]
+            ]);
+        }
 
-        $this->batchInsert(ProductType::tableName(), ['name'], [
-            ['Основной']
-        ]);
+
         $i = 1;
         foreach ($attributesList as $name => $data) {
             $this->batchInsert(TypeAttribute::tableName(), ['type_id', 'attribute_id'], [
                 [1, $i]
+            ]);
+            $this->batchInsert(TypeAttribute::tableName(), ['type_id', 'attribute_id'], [
+                [2, $i]
             ]);
             $i++;
         }
@@ -103,87 +161,162 @@ class m190316_061840_shop_insert extends Migration
 
 
         $categories = [
-            'Обувь' => ['Женская', 'Мужская', 'Детская'],
-            'Смартфоны, ТВ и электроника' => [
-                'Телефоны',
-                'Телевизоры',
-                'Планшеты',
-                'AV-ресиверы',
-                'Акустика Hi-Fi'
-            ]
+            [
+                'id' => 2,
+                'name' => 'Обувь',
+                'children' => [
+                    ['id' => 4, 'name' => 'Женская'],
+                    ['id' => 5, 'name' => 'Мужская'],
+                    ['id' => 6, 'name' => 'Детская']
+                ]
+            ],
+            [
+                'id' => 3,
+                'name' => 'Смартфоны, ТВ и электроника',
+                'children' => [
+                    ['id' => 7, 'name' => 'Телефоны'],
+                    ['id' => 8, 'name' => 'Телевизоры'],
+                    ['id' => 9, 'name' => 'Планшеты'],
+                    ['id' => 10, 'name' => 'AV-ресиверы'],
+                    ['id' => 11, 'name' => 'Акустика Hi-Fi'],
+                    ['id' => 12, 'name' => 'Ноутбуки'],
+                ]
+            ],
         ];
 
-        foreach ($categories as $cat_name => $cat) {
+        foreach ($categories as $cat) {
             $parent_id = Category::findModel(1);
             $s = new Category();
-            $s->name = $cat_name;
+            if (isset($cat['id']))
+                $s->id = $cat['id'];
+            $s->name = $cat['name'];
             $s->slug = CMS::slug($s->name);
-            $catParent = $s->appendTo($parent_id);
-            if (is_array($cat)) {
-                foreach ($cat as $c) {
+            $s->appendTo($parent_id);
+            if (isset($cat['children'])) {
+                foreach ($cat['children'] as $child) {
                     $subCategory = new Category();
-                    $subCategory->name = $c;
+                    if (isset($child['id']))
+                        $subCategory->id = $child['id'];
+                    $subCategory->name = $child['name'];
                     $subCategory->slug = CMS::slug($subCategory->name);
                     $subCategory->appendTo($s);
                 }
             }
         }
 
-
         $products = [
             [
-                'name' => 'test',
-                'price' => '100.00',
-                'type_id' => 1,
-                'manufacturer_id' => 4,
-                'main_category' => 2
+                'id' => 1,
+                'name' => 'Ноутбук Lenovo IdeaPad 330-15AST',
+                'price' => '5999',
+                'type_id' => 2,
+                'manufacturer_id' => 6,
+                'main_category' => 12,
+                'attributes' => [
+                    'Диагональ экрана' => '15.6" (1366x768) WXGA HD',
+                    'Частота обновления экрана' => '60 Гц',
+                    'Объем оперативной памяти' => '4 ГБ',
+                    'Операционная система' => 'DOS',
+                    'Объём накопителя' => '500 ГБ'
+                ]
             ],
             [
-                'name' => 'test2',
-                'price' => '200.00',
-                'type_id' => 1,
-                'manufacturer_id' => 4,
-                'main_category' => 2
+                'id' => 2,
+                'name' => 'Ноутбук Lenovo IdeaPad 330-15ICH',
+                'price' => '17999',
+                'type_id' => 2,
+                'manufacturer_id' => 6,
+                'main_category' => 12,
+                'attributes' => [
+                    'Диагональ экрана' => '15.6" (1920x1080) Full HD',
+                    'Частота обновления экрана' => '60 Гц',
+                    'Объем оперативной памяти' => '8 ГБ',
+                    'Операционная система' => 'DOS',
+                    'Объём накопителя' => '1 ТБ',
+                    'Комплект поставки' => [
+                        'type' => Attribute::TYPE_CHECKBOX_LIST,
+                        'items' => [
+                            'Ноутбук',
+                            'Адаптер питания',
+                            'Документация'
+                        ]
+                    ]
+                ]
             ],
-            [
-                'name' => 'test3',
-                'price' => '200.00',
-                'type_id' => 1,
-                'manufacturer_id' => 2,
-                'main_category' => 2
-            ],
-            [
-                'name' => 'test4',
-                'price' => '240.00',
-                'type_id' => 1,
-                'manufacturer_id' => 3,
-                'main_category' => 2
-            ],
-            [
-                'name' => 'test5',
-                'price' => '600.00',
-                'type_id' => 1,
-                'manufacturer_id' => 4,
-                'main_category' => 2
-            ],
+
         ];
+
         foreach ($products as $product_key => $product) {
-            $id = $product_key + 1;
-            $this->batchInsert(Product::tableName(), ['price', 'slug', 'manufacturer_id', 'main_category_id', 'type_id', 'created_at', 'updated_at', 'ordern'], [
-                [$product['price'], CMS::slug($product['name']), $product['manufacturer_id'], $product['main_category'], $product['type_id'], time(), time(), $id]
-            ]);
-            foreach (Yii::$app->languageManager->getLanguages(false) as $lang) {
-                $this->batchInsert(ProductTranslate::tableName(), ['object_id', 'language_id', 'name'], [
-                    [$id, $lang['id'], $product['name']]
-                ]);
+            $model = new Product;
+            $model->id = $product['id'];
+            $model->type_id = $product['type_id'];
+            $model->name = $product['name'];
+            $model->slug = CMS::slug($model->name);
+            $model->price = $product['price'];
+            $model->manufacturer_id = $product['manufacturer_id'];
+            $model->main_category_id = $product['main_category'];
+            $model->save(false);
+            $model->setCategories([], $product['main_category']);
+
+            if (isset($product['attributes'])) {
+                $attributes = [];
+                foreach ($product['attributes'] as $attribute_name => $attribute_value) {
+
+                    $attribute = Attribute::find()
+                        ->joinWith('translations as translate')
+                        ->where(['translate.title' => $attribute_name])
+                        ->one();
+                    if (!$attribute) {
+                        $attribute = new Attribute;
+                        $attribute->title = $attribute_name;
+                        $attribute->name = CMS::slug($attribute->title);
+                        $attribute->type = (isset($attribute_value['type'])) ? $attribute_value['type'] : Attribute::TYPE_DROPDOWN;
+                        $attribute->display_on_front = (isset($attribute_value['display_on_front'])) ? $attribute_value['display_on_front'] : true;
+                        $attribute->use_in_filter = (isset($attribute_value['use_in_filter'])) ? $attribute_value['use_in_filter'] : true;
+                        $attribute->use_in_variants = (isset($attribute_value['use_in_variants'])) ? $attribute_value['use_in_variants'] : true;
+                        $attribute->use_in_compare = (isset($attribute_value['use_in_compare'])) ? $attribute_value['use_in_compare'] : true;
+                        $attribute->select_many = (isset($attribute_value['select_many'])) ? $attribute_value['select_many'] : true;
+                        $attribute->required = (isset($attribute_value['required'])) ? $attribute_value['required'] : false;
+                        $attribute->save(false);
+                    }
+                    if ($attribute) {
+                        if (is_array($attribute_value) && isset($attribute_value['items'])) {
+                            foreach ($attribute_value['items'] as $item) {
+                                $attributeOption = AttributeOption::find()
+                                    ->joinWith('translations as translate')
+                                    ->where(['translate.value' => $item])
+                                    ->one();
+                                if (!$attributeOption) {
+                                    $attributeOption = new AttributeOption;
+                                    $attributeOption->attribute_id = $attribute->id;
+                                    $attributeOption->value = $item;
+                                    $attributeOption->save(false);
+                                }
+                                $attributes[CMS::slug($attribute_name)] = $attributeOption->id;
+                            }
+                        } else {
+                            $attributeOption = AttributeOption::find()
+                                ->joinWith('translations as translate')
+                                ->where(['translate.value' => $attribute_value])
+                                ->one();
+                            if (!$attributeOption) {
+                                $attributeOption = new AttributeOption;
+                                $attributeOption->attribute_id = $attribute->id;
+                                $attributeOption->value = $attribute_value;
+                                $attributeOption->save(false);
+                            }
+                            $attributes[CMS::slug($attribute_name)] = $attributeOption->id;
+                        }
+
+                    }
+
+                }
+                $model->setEavAttributes($attributes, true);
             }
-            $this->batchInsert(ProductCategoryRef::tableName(), ['product', 'category', 'is_main'], [
-                [$id, $product['main_category'], 1]
-            ]);
-
-
         }
-        $this->batchInsert('{{%shop__product_attribute_eav}}', ['entity', 'attribute', 'value'], [
+
+
+        /*$this->batchInsert('{{%shop__product_attribute_eav}}', ['entity', 'attribute', 'value'], [
             [1, CMS::slug(array_keys($attributesList)[0]), 3]
         ]);
         $this->batchInsert('{{%shop__product_attribute_eav}}', ['entity', 'attribute', 'value'], [
@@ -197,10 +330,11 @@ class m190316_061840_shop_insert extends Migration
         ]);
         $this->batchInsert('{{%shop__product_attribute_eav}}', ['entity', 'attribute', 'value'], [
             [5, CMS::slug(array_keys($attributesList)[0]), 2]
-        ]);
+        ]);*/
     }
 
-    public function down()
+    public
+    function down()
     {
 
     }

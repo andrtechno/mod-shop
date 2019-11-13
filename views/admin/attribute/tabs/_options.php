@@ -33,6 +33,13 @@ use panix\mod\shop\models\AttributeOption;
     </tr>
 </table>
 <?php
+
+
+
+
+
+
+
 $columns = [];
 $columns[] = [
     'class' => 'panix\engine\grid\sortable\Column',
@@ -59,7 +66,7 @@ foreach ($model->options as $k => $o) {
 
 
         if ($otest) {
-            $data2['name' . $k] = Html::textInput('options[' . $o->id . '][]', Html::encode($otest->value), ['class' => 'form-control input-lang', 'style' => 'background-image:url(/uploads/language/' . $k . '.png);']);
+            $data2['name' . $k] = Html::textInput('options[' . $o->id . '][]', Html::decode($otest->value), ['class' => 'form-control input-lang', 'style' => 'background-image:url(/uploads/language/' . $k . '.png);']);
         }else{
             $data2['name' . $k] = Html::textInput('options[' . $o->id . '][]', '', ['class' => 'form-control input-lang', 'style' => 'background-image:url(/uploads/language/' . $k . '.png);']);
         }

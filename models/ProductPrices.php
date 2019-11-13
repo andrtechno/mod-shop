@@ -6,6 +6,16 @@ use Yii;
 use panix\mod\shop\models\query\ProductQuery;
 use yii\db\ActiveRecord;
 
+/**
+ * Class ProductPrices
+ *
+ * @property integer $id
+ * @property integer $from
+ * @property string $value
+ * @property integer $product_id
+ *
+ * @package panix\mod\shop\models
+ */
 class ProductPrices extends ActiveRecord
 {
 

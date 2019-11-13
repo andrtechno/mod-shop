@@ -25,7 +25,7 @@ class m180917_193505_shop_category extends Migration {
             'slug' => $this->string(255)->null()->defaultValue(null),
             'full_path' => $this->string(255)->null(),
             'image' => $this->string(50)->null(),
-            'switch' => $this->boolean()->defaultValue(1),
+            'switch' => $this->boolean()->defaultValue(1)->notNull(),
         ], $this->tableOptions);
 
 

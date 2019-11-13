@@ -12,7 +12,7 @@ $attributes = (isset($model->type->shopAttributes)) ? $model->type->shopAttribut
         if (empty($attributes)) {
             echo \panix\engine\bootstrap\Alert::widget([
                 'options' => ['class' => 'alert-info'],
-                'body' => Yii::t('shop/admin', 'Список свойств пустой')
+                'body' => Yii::t('shop/admin', 'EMPTY_ATTRIBUTES_LIST')
             ]);
 
         } else {
@@ -29,6 +29,7 @@ $attributes = (isset($model->type->shopAttributes)) ? $model->type->shopAttribut
             foreach ($result as $group_name => $attributes) {
                 echo '<div class="col-sm-12 col-md-6 col-lg-6 col-xl-4"><h3 class="text-center mt-3">' . $group_name . '</h3>';
                 foreach ($attributes as $a) {
+                    /** @var Attribute $a */
                     // Repopulate data from POST if exists
                     if (isset($_POST['Attribute'][$a->name]))
                         $value = $_POST['Attribute'][$a->name];
@@ -40,7 +41,8 @@ $attributes = (isset($model->type->shopAttributes)) ? $model->type->shopAttribut
                     if ($a->type == Attribute::TYPE_DROPDOWN) {
                         $addOptionLink = Html::a(Html::icon('add') . ' ' . Yii::t('shop/admin', 'ADD_OPTION'), '#', array(
                             'rel' => $a->id,
-                            'data-name' => $a->getIdByName(),
+                            'data-name' => $a->getIdByName(), //$a->getIdByName()
+                            //'data-name' => Html::getInputName($a, $a->name),
                             'onclick' => 'js: return addNewOption($(this));',
                             'class' => 'btn btn-success btn-sm mt-2 float-right',
                             'title' => Yii::t('shop/admin', 'ADD_OPTION')

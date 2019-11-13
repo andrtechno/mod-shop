@@ -2,7 +2,7 @@
 
 namespace panix\mod\shop\models;
 
-use panix\mod\sitemap\Sitemap;
+
 use panix\mod\sitemap\behaviors\SitemapBehavior;
 use panix\mod\user\models\User;
 use Yii;
@@ -11,6 +11,7 @@ use panix\mod\shop\models\query\ProductQuery;
 use panix\mod\shop\models\translate\ProductTranslate;
 use yii\caching\DbDependency;
 use yii\caching\TagDependency;
+use yii\db\Query;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -307,13 +308,13 @@ class Product extends ActiveRecord
     public function getManufacturer()
     {
         return $this->hasOne(Manufacturer::class, ['id' => 'manufacturer_id'])
-            ->cache(3600 * 24, new TagDependency(['tags' => 'product-manufacturer-'.$this->manufacturer_id]));
+            ->cache(3600 * 24, new TagDependency(['tags' => 'product-manufacturer-' . $this->manufacturer_id]));
     }
 
     public function getType()
     {
         return $this->hasOne(ProductType::class, ['id' => 'type_id'])
-            ->cache(3600 * 24, new TagDependency(['tags' => 'product-type-'.$this->type_id]));
+            ->cache(3600 * 24, new TagDependency(['tags' => 'product-type-' . $this->type_id]));
     }
 
     public function getType2()
@@ -356,6 +357,7 @@ class Product extends ActiveRecord
     {
         return $this->hasOne(Category::class, ['id' => 'category'])
             ->via('categorization', function ($query) {
+                /** @var Query $query */
                 $query->where(['is_main' => 1]);
             });
     }
@@ -416,7 +418,6 @@ class Product extends ActiveRecord
     {
         $dontDelete = [];
 
-
         if (!Category::find()->where(['id' => $main_category])->count())
             $main_category = 1;
 
@@ -439,7 +440,7 @@ class Product extends ActiveRecord
                 if ($this->scenario == 'duplicate') {
                     $record->switch = 1;
                 } else {
-                    $record->switch = $this->switch;
+                    $record->switch = ($this->switch) ? $this->switch : 1;
                 }
                 $record->save(false);
             }
@@ -499,9 +500,11 @@ class Product extends ActiveRecord
             // Нужно выбирать в админки самую последнию категории по уровню.
             $category = Category::findOne($this->main_category_id);
             $categories = [];
-            $tes = $category->ancestors()->excludeRoot()->all();
-            foreach ($tes as $cat) {
-                $categories[] = $cat->id;
+            if ($category) {
+                $tes = $category->ancestors()->excludeRoot()->all();
+                foreach ($tes as $cat) {
+                    $categories[] = $cat->id;
+                }
             }
             $this->setCategories($categories, $this->main_category_id);
         } else {
@@ -555,7 +558,7 @@ class Product extends ActiveRecord
         else {
             // Check if product is configuration
 
-            $query = (new \yii\db\Query())
+            $query = (new Query())
                 ->from('{{%shop__product_configurations}} t')
                 ->where(['in', 't.configurable_id', [$this->id]])
                 ->all();
@@ -599,7 +602,7 @@ class Product extends ActiveRecord
 
     public function updatePrices(Product $model)
     {
-        $query = (new \yii\db\Query())
+        $query = (new Query())
             ->select('MIN(t.price) as min_price, MAX(t.price) as max_price')
             ->from('{{%shop__product}} t')
             ->where(['in', 't.id', $model->getConfigurations(true)])
@@ -622,7 +625,7 @@ class Product extends ActiveRecord
             return $this->_configurations;
 
 
-        $query = (new \yii\db\Query())
+        $query = (new Query())
             ->select('t.configurable_id')
             ->from('{{%shop__product_configurations}} as t')
             ->where('t.product_id=:id', [':id' => $this->id])
@@ -715,7 +718,7 @@ class Product extends ActiveRecord
 
         if ($this->_configurable_attributes === null) {
 
-            $query = new \yii\db\Query;
+            $query = new Query;
             $query->select('attribute_id')
                 ->from('{{%shop__product_configurable_attributes}}')
                 ->where(['product_id' => $this->id])
@@ -767,7 +770,7 @@ class Product extends ActiveRecord
             else
                 return null;
 
-            $attributeModel = Attribute::find()->where(['name' => $attribute])->cache(3600*24, $dependency)->one();
+            $attributeModel = Attribute::find()->where(['name' => $attribute])->cache(3600 * 24, $dependency)->one();
             return $attributeModel->renderValue($value);
         }
         return parent::__get($name);
