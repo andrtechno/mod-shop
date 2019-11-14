@@ -2,6 +2,8 @@
 
 namespace panix\mod\shop\components;
 
+use Yii;
+use yii\web\HttpException;
 use yii\web\UrlRule;
 
 class BaseUrlRule extends UrlRule
@@ -31,9 +33,9 @@ class BaseUrlRule extends UrlRule
                     //if(is_array($val)){
                     //     $val = implode(',',$val);
                     // }
-                    if ($val) {
-                        $parts[] = $key . '/' . $val;
-                    }
+                    // if ($val) {
+                    $parts[] = $key . '/' . $val;
+                    //}
                 }
                 $url .= '/' . implode('/', $parts);
             }
@@ -55,32 +57,24 @@ class BaseUrlRule extends UrlRule
         if ($this->suffix)
             $pathInfo = strtr($pathInfo, [$this->suffix => '']);
 
-
         foreach ($this->getAllPaths() as $path) {
 
             if ($path[$this->alias] !== '' && strpos(str_replace($this->index . '/', '', $pathInfo), $path[$this->alias]) === 0) {
-                $_GET['slug'] = $path[$this->alias];
-
-                $parts = explode('/', $pathInfo);
-                $paramsList = array_chunk($parts, 2);
-                unset($paramsList[0]);
-                foreach ($paramsList as $k => $p) {
-
-                    if (isset($p[0])) {
-
-                        //if(strpos($p[1],',')){
-                        //    $_GET[$p[0]] = $p[1];
-                        //    $params[$p[0]] =  $p[1];
-                        // }else{
-                        $_GET[$p[0]] = $p[0];
-                        $params[$p[0]] = $p[0];
-                        // }
-                        // $params[$p[0]] = strpos( $p[1],',') ? explode(',', $p[1]) : $p[1];
-
-                    }
-                }
 
                 $params['slug'] = ltrim($path[$this->alias]);
+                $_GET['slug'] = $params['slug'];
+
+                $parts = explode('/', str_replace($this->index . '/' . $_GET['slug'] . '/', '', $pathInfo));
+                $paramsList = array_chunk($parts, 2);
+
+                foreach ($paramsList as $k => $p) {
+                    if (isset($p[1])) {
+                        $_GET[$p[0]] = $p[1];
+                        $params[$p[0]] = $p[1];
+                    } else {
+                        throw new HttpException(404, Yii::t('app/error', '404'));
+                    }
+                }
                 return [$this->route, $params];
             }
         }

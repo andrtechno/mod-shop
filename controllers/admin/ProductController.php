@@ -70,6 +70,7 @@ class ProductController extends AdminController
 
     public function actionUpdate($id = false)
     {
+        /** @var Product|\panix\mod\images\behaviors\ImageBehavior $model */
         $model = Product::findModel($id);
 
         $this->pageName = Yii::t('shop/default', 'MODULE_NAME');
@@ -168,19 +169,12 @@ class ProductController extends AdminController
                 if (Yii::$app->request->post('AttachmentsMainId')) {
                     $test = $model->getImages();
                     //print_r($test);
-                    //sdie;
                 }
 
 
                 if ($model->file) {
-
                     foreach ($model->file as $file) {
-
-
                         $uniqueName = \panix\engine\CMS::gen(10);
-                        // $file->saveAs(Yii::getAlias('@uploads').'/' . $uniqueName . '_' . $file->baseName . '.' . $file->extension);
-                        // $model->attachImage('uploads/' . $uniqueName . '_' . $file->baseName . '.' . $file->extension);
-
                         $file->saveAs(Yii::getAlias('@uploads') . '/' . $uniqueName . '_' . $file->baseName . '.' . $file->extension);
                         $model->attachImage(Yii::getAlias('@uploads') . '/' . $uniqueName . '_' . $file->baseName . '.' . $file->extension);
                     }
@@ -193,16 +187,6 @@ class ProductController extends AdminController
                 $this->processConfigurations($model);
             }
 
-            /*if ($model->isNewRecord) {
-                Yii::$app->session->setFlash('success', Yii::t('app', 'SUCCESS_CREATE'));
-                if (!Yii::$app->request->isAjax)
-                    return Yii::$app->getResponse()->redirect(['/admin/shop/product']);
-            } else {
-                Yii::$app->session->setFlash('success', Yii::t('app', 'SUCCESS_UPDATE'));
-                $redirect = (isset($post['redirect'])) ? $post['redirect'] : Yii::$app->request->url;
-                if (!Yii::$app->request->isAjax)
-                    return Yii::$app->getResponse()->redirect($redirect);
-            }*/
             $this->redirectPage($isNew, $post);
         } else {
 

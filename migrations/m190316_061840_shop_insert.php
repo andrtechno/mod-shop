@@ -12,7 +12,11 @@ namespace panix\mod\shop\migrations;
  */
 
 
-
+use panix\mod\shop\models\AttributeGroup;
+use panix\mod\shop\models\ProductAttributesEav;
+use panix\mod\shop\models\ProductCategoryRef;
+use panix\mod\shop\models\translate\AttributeGroupTranslate;
+use panix\mod\shop\models\translate\ProductTranslate;
 use Yii;
 use panix\engine\CMS;
 use panix\engine\db\Migration;
@@ -124,6 +128,12 @@ class m190316_061840_shop_insert extends Migration
                     'Объем оперативной памяти' => '4 ГБ',
                     'Операционная система' => 'DOS',
                     'Объём накопителя' => '500 ГБ'
+                ],
+                'images' => [
+                    'https://i1.foxtrot.com.ua/product/MediumImages/6404192_0.jpg',
+                    'https://i1.foxtrot.com.ua/product/MediumImages/6404192_1.jpg',
+                    'https://i1.foxtrot.com.ua/product/MediumImages/6404192_2.jpg',
+                    'https://i1.foxtrot.com.ua/product/MediumImages/6404192_4.jpg',
                 ]
             ],
             [
@@ -133,6 +143,12 @@ class m190316_061840_shop_insert extends Migration
                 'type_id' => 2,
                 'manufacturer_id' => 6,
                 'main_category' => 12,
+                'images' => [
+                    'https://i.citrus.ua/uploads/shop/c/2/c27e2c410abf6f7b4221980e5dc4e4d3.jpg',
+                    'https://i.citrus.ua/uploads/shop/2/2/224f8ae519e350c1d62ff57b4c7f8470.jpg',
+                    'https://i.citrus.ua/uploads/shop/9/5/95056e20cc0632bf9cbd99e2e75fea89.jpg',
+                    'https://i.citrus.ua/uploads/shop/9/e/9e4441f8560518753466b115d85c64b3.jpg',
+                ],
                 'attributes' => [
                     'Диагональ экрана' => '15.6" (1920x1080) Full HD',
                     'Частота обновления экрана' => '60 Гц',
@@ -149,10 +165,74 @@ class m190316_061840_shop_insert extends Migration
                     ]
                 ]
             ],
-
+            [
+                'id' => 3,
+                'name' => 'Ноутбук Lenovo Ideapad S340-15IWL Platinum Grey',
+                'price' => '9499',
+                'type_id' => 2,
+                'manufacturer_id' => 6,
+                'main_category' => 12,
+                'images' => [
+                    'https://i.citrus.ua/uploads/shop/7/9/79e1105ecd90d96b37e65f1cd72e88fd.jpg',
+                    'https://i.citrus.ua/uploads/shop/e/6/e6ed6b3552243283fb510a3967e3c547.jpg',
+                    'https://i.citrus.ua/uploads/shop/f/6/f6b03cf06d2b86b72337bb5f50914c2c.jpg',
+                    'https://i.citrus.ua/uploads/shop/e/c/ec5e66a1363235b95aac89bd6577f554.jpg',
+                ],
+                'attributes' => [
+                    'Диагональ экрана' => '15.6" (1920x1080) Full HD',
+                    'HDMI' => '1', //abbreviation
+                    'Количество ядер процессора' => '2',
+                    'Базовая частота процессора'=>'2,3 ГГц',
+                    'Тип оперативной памяти'=>'DDR4',
+                    'Объем оперативной памяти' => '4 Гб',
+                    'Операционная система' => 'Without OS',
+                    'Объём накопителя' => '1 ТБ',
+                    'Комплект поставки' => [
+                        'type' => Attribute::TYPE_CHECKBOX_LIST,
+                        'items' => [
+                            'Ноутбук',
+                            'Адаптер питания',
+                            'Документация'
+                        ]
+                    ]
+                ]
+            ],
+            [
+                'id' => 4,
+                'name' => 'Apple MacBook 12" 256Gb Space Gray (MNYF2) 2017',
+                'price' => '27499',
+                'type_id' => 2,
+                'manufacturer_id' => 1,
+                'main_category' => 12,
+                'images' => [
+                    'https://i.citrus.ua/uploads/shop/c/c/cc9baa280332c8033813803a79be2b32.jpg',
+                    'https://i.citrus.ua/uploads/shop/8/3/83656813626aa2d51fef71a1d0425c93.jpg',
+                    'https://i.citrus.ua/uploads/shop/f/1/f1a32cc47114d0a368accfe4d5ac17fb.jpg',
+                    'https://i.citrus.ua/uploads/shop/d/3/d3213e330652ed680735de55e8c51ca8.jpg',
+                ],
+                'attributes' => [
+                    'Диагональ экрана' => '12.6" (2304x1440) Retina',
+                    'Количество ядер процессора' => '2',
+                    'Базовая частота процессора'=>'1,2 ГГц',
+                    'Тип оперативной памяти'=>'LPDDR3',
+                    'Объем оперативной памяти' => '8 Гб',
+                    'Операционная система' => 'macOS High Sierra',
+                    'Объём накопителя' => '256 Гб',
+                    'Комплект поставки' => [
+                        'type' => Attribute::TYPE_CHECKBOX_LIST,
+                        'items' => [
+                            'MacBook',
+                            'Адаптер питания USB‑C мощностью 29 Вт',
+                            'Кабель USB‑C для зарядки (2 м)'
+                        ]
+                    ]
+                ]
+            ],
         ];
 
+
         foreach ($products as $product_key => $product) {
+            /** @var Product|\panix\mod\images\behaviors\ImageBehavior $model */
             $model = new Product;
             $model->id = $product['id'];
             $model->type_id = $product['type_id'];
@@ -163,6 +243,11 @@ class m190316_061840_shop_insert extends Migration
             $model->main_category_id = $product['main_category'];
             $model->save(false);
             $model->setCategories([], $product['main_category']);
+            if (isset($product['images'])) {
+                foreach ($product['images'] as $image) {
+                    $model->attachImage($image);
+                }
+            }
 
             if (isset($product['attributes'])) {
 
@@ -186,11 +271,11 @@ class m190316_061840_shop_insert extends Migration
                         $attribute->save(false);
                     }
                     if ($attribute) {
-                        /** @var \panix\mod\shop\components\EavBehavior $model  */
+                        /** @var \panix\mod\shop\components\EavBehavior $model */
                         if (is_array($attribute_value) && isset($attribute_value['items'])) {
                             foreach ($attribute_value['items'] as $item) {
                                 $attributes = [];
-                                $attributeOption = $this->writeAttribute($attribute->id,$item);
+                                $attributeOption = $this->writeAttribute($attribute->id, $item);
 
                                 $attributes[CMS::slug($attribute_name)] = $attributeOption->id;
                                 $model->setEavAttributes($attributes, true);
@@ -198,7 +283,7 @@ class m190316_061840_shop_insert extends Migration
 
                         } else {
                             $attributes = [];
-                            $attributeOption = $this->writeAttribute($attribute->id,$attribute_value);
+                            $attributeOption = $this->writeAttribute($attribute->id, $attribute_value);
 
                             $attributes[CMS::slug($attribute_name)] = $attributeOption->id;
                             $model->setEavAttributes($attributes, true);
@@ -231,6 +316,28 @@ class m190316_061840_shop_insert extends Migration
 
     public function down()
     {
+        /*$this->dropTable(Attribute::tableName());
+        $this->dropTable(AttributeOption::tableName());
+        $this->dropTable(AttributeOptionTranslate::tableName());
+        $this->dropTable(AttributeGroup::tableName());
+        $this->dropTable(AttributeGroupTranslate::tableName());*/
+        $this->truncateTable(Attribute::tableName());
+        $this->truncateTable(AttributeOption::tableName());
+        $this->truncateTable(AttributeOptionTranslate::tableName());
+
+        $this->truncateTable(AttributeGroup::tableName());
+        $this->truncateTable(AttributeGroupTranslate::tableName());
+
+
+        $this->truncateTable(Product::tableName());
+        $this->truncateTable(ProductTranslate::tableName());
+
+
+        $this->truncateTable(Category::tableName());
+        $this->truncateTable(CategoryTranslate::tableName());
+        $this->truncateTable(ProductType::tableName());
+        $this->truncateTable(ProductCategoryRef::tableName());
+        $this->truncateTable(ProductAttributesEav::tableName());
 
     }
 

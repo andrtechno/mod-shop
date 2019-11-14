@@ -48,7 +48,7 @@ class CatalogController extends FilterController
             $this->query->applyManufacturers($manufacturers);
         }
 
-
+//echo $this->query->createCommand()->rawSql;die;
         // Create clone of the current query to use later to get min and max prices.
         $this->currentQuery = clone $this->query;
         // Filter products by price range if we have min or max in request

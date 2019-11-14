@@ -61,7 +61,7 @@ class FiltersWidget extends Widget
         foreach ($this->attributes as $attribute) {
             $data[$attribute->name] = array(
                 'title' => $attribute->title,
-                'selectMany' => (boolean)$attribute->select_many,
+                'selectMany' => (boolean) $attribute->select_many,
                 'filters' => array()
             );
             foreach ($attribute->options as $option) {
@@ -74,6 +74,7 @@ class FiltersWidget extends Widget
                         'queryParam' => $option->id,
                     );
                 }
+
             }
             if($attribute->sort == SORT_ASC){
                 sort($data[$attribute->name]['filters']);
@@ -117,7 +118,7 @@ class FiltersWidget extends Widget
         }
         $newData[$attribute->name][] = $option->id;
 
-        //echo $q->createCommand()->getRawSql();die;
+       // echo $model->createCommand()->getRawSql();die;
         return $model->withEavAttributes($newData)->count();
 
     }
@@ -169,7 +170,7 @@ class FiltersWidget extends Widget
 
 
         echo Html::beginTag('div',['id'=>'filters']);
-        echo Html::beginForm($this->view->context->currentUrl, 'GET', array('id' => 'filter-form'));
+        echo Html::beginForm($this->view->context->currentUrl, 'GET', ['id' => 'filter-form']);
 
         echo Html::beginTag('div', ['id' => 'ajax_filter_current']);
         if (!empty($active)) {

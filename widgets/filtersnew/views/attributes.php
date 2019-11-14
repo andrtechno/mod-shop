@@ -32,6 +32,7 @@ foreach ($attributes as $attrData) {
 
                             echo Html::beginTag('li');
                             // Filter link was selected.
+
                             if (in_array($filter['queryParam'], $queryData)) {
                                 $checked = true;
                                 // Create link to clear current filter
@@ -41,6 +42,7 @@ foreach ($attributes as $attrData) {
                                 $checked = false;
                                 //echo Html::a($filter['title'], $url);
                             }
+                            //var_dump($checked);
                             echo Html::checkBox('filter[' . $filter['queryKey'] . '][]', $checked, ['value' => $filter['queryParam'], 'id' => 'filter_' . $filter['queryKey'] . '_' . $filter['queryParam']]);
                             echo Html::label($filter['title'], 'filter_' . $filter['queryKey'] . '_' . $filter['queryParam']);
                             echo $this->context->getCount($filter);
