@@ -4,6 +4,7 @@ use panix\engine\CMS;
 
 $sets = [];
 foreach ($model->kit as $set) {
+
     foreach ($set->products as $p) {
         $sets[$p->main_category_id][$set->id] = $p;
 
@@ -24,15 +25,18 @@ foreach ($model->kit as $set) {
                             <div class="col-sm-5">
                                 <div><strong>Ваш товар:</strong></div>
                                 <?= Html::a($model->name, $model->getUrl()); ?>
-                                <span class="badge badge-light">Код комплекта: <?= CMS::idToNumber($model->id, 5); ?>
-                                    -<?= CMS::idToNumber($group_id, 5); ?></span>
+                                <span class="badge badge-light">
+                                    Код комплекта: <span id="kit-code">
+                                        <?= CMS::idToNumber($model->id, 5); ?>-<?= CMS::idToNumber($group_id, 5); ?>
+                                    </span>
+                                </span>
                             </div>
                             <div class="col-sm-7">
                                 <div class="swiper-container swiper-container-v">
                                     <div class="swiper-wrapper">
 
                                         <?php foreach ($set as $set_id => $data) { ?>
-                                            <div class="swiper-slide" data-id="test<?=$set_id;?>">
+                                            <div class="swiper-slide" data-kit="<?= CMS::idToNumber($model->id, 5); ?>-<?= CMS::idToNumber($set_id, 5); ?>">
                                                 <div class="row">
                                                     <div class="col-sm-5">
                                                         <?php
@@ -199,7 +203,9 @@ $('.swiper-container-v').each(function( index,  element) {
     
     
     swiperV.on('paginationUpdate',function(swiper,paginationEl){
-        console.log(swiper,paginationEl);
+    var kitCode = $(swiper.slides[swiper.activeIndex]).data('kit');
+    $('#kit-code').html(kitCode);
+        console.log(swiper,kitCode);
     });
     
 });
