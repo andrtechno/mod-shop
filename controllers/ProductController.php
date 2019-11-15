@@ -120,7 +120,7 @@ class ProductController extends WebController
         if ($model !== null) {
             return $model;
         } else {
-            $this->error404('product not found');
+            $this->error404(Yii::t('shop/default', 'NOT_FOUND_PRODUCT'));
         }
     }
 
