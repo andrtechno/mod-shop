@@ -7,7 +7,7 @@ use panix\engine\db\ActiveRecord;
 use panix\mod\shop\models\query\ManufacturerQuery;
 
 /**
- * Class Manufacturer
+ * Class Sets
  * @property integer $id
  */
 class Sets extends ActiveRecord
@@ -18,11 +18,11 @@ class Sets extends ActiveRecord
     /**
      * @inheritdoc
      * @return ManufacturerQuery
-     */
+
     public static function find()
     {
         return new ManufacturerQuery(get_called_class());
-    }
+    } */
 
     /**
      * @inheritdoc
@@ -33,30 +33,18 @@ class Sets extends ActiveRecord
     }
 
 
-    //public function getProducts()
-    //{
-    //     return $this->hasMany(SetsProduct::class, ['set_id' => 'id']);
-    // }
-
     public function getProduction()
     {
-        return $this->hasMany(Product::class, ['id' => 'product']);
+        return $this->hasOne(Product::class, ['id' => 'product_id']);
     }
 
     public function getProducts()
     {
-        $q = $this->hasMany(SetsProduct::class, ['set_id' => 'id']);
-        // ->via('production');
+        return $this->hasMany(SetsProduct::class, ['set_id' => 'id']);
+            //->via('production');
 
-
-        return $q;
     }
 
-
-    public function getProduct()
-    {
-        return $this->hasOne(Product::class, ['product_relation_id' => 'id']);
-    }
 
     /**
      * @inheritdoc

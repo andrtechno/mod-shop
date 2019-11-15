@@ -4,10 +4,10 @@ namespace panix\mod\shop\models;
 
 use Yii;
 use panix\engine\db\ActiveRecord;
-use panix\mod\shop\models\query\ManufacturerQuery;
+use panix\mod\shop\models\query\SetsProductQuery;
 
 /**
- * Class Manufacturer
+ * Class SetsProduct
  * @property integer $id
  */
 class SetsProduct extends ActiveRecord
@@ -17,11 +17,11 @@ class SetsProduct extends ActiveRecord
 
     /**
      * @inheritdoc
-     * @return ManufacturerQuery
+     * @return SetsProductQuery
      */
     public static function find()
     {
-        return new ManufacturerQuery(get_called_class());
+        return new SetsProductQuery(get_called_class());
     }
 
     /**
@@ -51,9 +51,9 @@ class SetsProduct extends ActiveRecord
 
 
 
-    public function getProduct2()
+    public function getProduct()
     {
-        return $this->hasOne(Product::class, ['id' => 'product']);
+        return $this->hasOne(Product::class, ['id' => 'product_id']);
     }
 
     public function getProducts2()

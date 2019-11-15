@@ -27,8 +27,19 @@ use panix\engine\Html;
                             <div class="swiper-wrapper">
                                 <?php foreach ($set->products as $data) { ?>
                                     <div class="swiper-slide">
-                                        <?php //echo $data->discount; ?>
-                                        <?php echo $data->product2->name; ?>
+                                        <?php
+                                        echo Html::a(Html::img($data->product->getMainImage('340x265')->url, [
+                                            'alt' => $data->product->name,
+                                            'class' => 'img-fluid loading'
+                                        ]), $data->product->getUrl(), []);
+                                        //echo Html::link(Html::image(Yii::app()->createUrl('/site/attachment',array('id'=>33)), $data->name, array('class' => 'img-fluid')), $data->getUrl(), array());
+                                        ?>
+
+                                        <div class="product-info">
+                                            <?= Html::a(Html::encode($data->product->name), $data->product->getUrl(), ['class' => 'product-title']) ?>
+                                        </div>
+
+
                                     </div>
                                 <?php } ?>
                             </div>
@@ -44,7 +55,7 @@ use panix\engine\Html;
                         //echo $this->render('/category/_view_grid', [
                         //     'model' => $data
                         //]);
-                        echo Html::a(Yii::t('cart/default', 'BUY_SET'), 'javascript:cart.add_set(' . $set->id . ')', array('class' => 'btn btn-primary'));
+                        echo Html::a(Yii::t('cart/default', 'BUY_SET'), 'javascript:cart.add_set(' . $set->id . ')', ['class' => 'btn btn-primary']);
                         ?>
                     </div>
                 </div>

@@ -12,9 +12,12 @@ namespace panix\mod\shop\migrations;
  */
 
 
+use panix\mod\images\models\Image;
 use panix\mod\shop\models\AttributeGroup;
 use panix\mod\shop\models\ProductAttributesEav;
 use panix\mod\shop\models\ProductCategoryRef;
+use panix\mod\shop\models\Sets;
+use panix\mod\shop\models\SetsProduct;
 use panix\mod\shop\models\translate\AttributeGroupTranslate;
 use panix\mod\shop\models\translate\ProductTranslate;
 use Yii;
@@ -180,10 +183,18 @@ class m190316_061840_shop_insert extends Migration
                 ],
                 'attributes' => [
                     'Диагональ экрана' => '15.6" (1920x1080) Full HD',
-                    'HDMI' => '1', //abbreviation
+                    'HDMI' => [
+                        'type' => Attribute::TYPE_DROPDOWN,
+                        'abbreviation' => 'шт',
+                        'value' => '1'
+                    ],
                     'Количество ядер процессора' => '2',
-                    'Базовая частота процессора'=>'2,3 ГГц',
-                    'Тип оперативной памяти'=>'DDR4',
+                    'Базовая частота процессора' => [
+                        'type' => Attribute::TYPE_DROPDOWN,
+                        'abbreviation' => 'ГГц',
+                        'value' => '2,3'
+                    ],
+                    'Тип оперативной памяти' => 'DDR4',
                     'Объем оперативной памяти' => '4 Гб',
                     'Операционная система' => 'Without OS',
                     'Объём накопителя' => '1 ТБ',
@@ -204,6 +215,7 @@ class m190316_061840_shop_insert extends Migration
                 'type_id' => 2,
                 'manufacturer_id' => 1,
                 'main_category' => 12,
+                'discount' => '5%',
                 'images' => [
                     'https://i.citrus.ua/uploads/shop/c/c/cc9baa280332c8033813803a79be2b32.jpg',
                     'https://i.citrus.ua/uploads/shop/8/3/83656813626aa2d51fef71a1d0425c93.jpg',
@@ -213,8 +225,12 @@ class m190316_061840_shop_insert extends Migration
                 'attributes' => [
                     'Диагональ экрана' => '12.6" (2304x1440) Retina',
                     'Количество ядер процессора' => '2',
-                    'Базовая частота процессора'=>'1,2 ГГц',
-                    'Тип оперативной памяти'=>'LPDDR3',
+                    'Базовая частота процессора' => [
+                        'type' => Attribute::TYPE_DROPDOWN,
+                        'abbreviation' => 'ГГц',
+                        'value' => '1,2'
+                    ],
+                    'Тип оперативной памяти' => 'LPDDR3',
                     'Объем оперативной памяти' => '8 Гб',
                     'Операционная система' => 'macOS High Sierra',
                     'Объём накопителя' => '256 Гб',
@@ -225,6 +241,11 @@ class m190316_061840_shop_insert extends Migration
                             'Адаптер питания USB‑C мощностью 29 Вт',
                             'Кабель USB‑C для зарядки (2 м)'
                         ]
+                    ],
+                    'HDMI' => [
+                        'type' => Attribute::TYPE_DROPDOWN,
+                        'abbreviation' => 'шт',
+                        'value' => '2'
                     ]
                 ]
             ],
@@ -241,6 +262,8 @@ class m190316_061840_shop_insert extends Migration
             $model->price = $product['price'];
             $model->manufacturer_id = $product['manufacturer_id'];
             $model->main_category_id = $product['main_category'];
+            if (isset($product['discount']))
+                $model->discount = $product['discount'];
             $model->save(false);
             $model->setCategories([], $product['main_category']);
             if (isset($product['images'])) {
@@ -268,22 +291,29 @@ class m190316_061840_shop_insert extends Migration
                         $attribute->use_in_compare = (isset($attribute_value['use_in_compare'])) ? $attribute_value['use_in_compare'] : true;
                         $attribute->select_many = (isset($attribute_value['select_many'])) ? $attribute_value['select_many'] : true;
                         $attribute->required = (isset($attribute_value['required'])) ? $attribute_value['required'] : false;
+                        $attribute->abbreviation = (isset($attribute_value['abbreviation'])) ? $attribute_value['abbreviation'] : null;
                         $attribute->save(false);
                     }
                     if ($attribute) {
                         /** @var \panix\mod\shop\components\EavBehavior $model */
-                        if (is_array($attribute_value) && isset($attribute_value['items'])) {
-                            foreach ($attribute_value['items'] as $item) {
-                                $attributes = [];
-                                $attributeOption = $this->writeAttribute($attribute->id, $item);
+                        if (is_array($attribute_value)) {
+                            if (isset($attribute_value['items'])) {
+                                foreach ($attribute_value['items'] as $item) {
+                                    $attributes = [];
+                                    $attributeOption = $this->writeAttribute($attribute->id, $item);
 
+                                    $attributes[CMS::slug($attribute_name)] = $attributeOption->id;
+                                    $model->setEavAttributes($attributes, true);
+                                }
+                            } elseif ($attribute_value['value']) {
+                                $attributes = [];
+                                $attributeOption = $this->writeAttribute($attribute->id, (isset($attribute_value['value'])) ? $attribute_value['value'] : $attribute_value);
                                 $attributes[CMS::slug($attribute_name)] = $attributeOption->id;
                                 $model->setEavAttributes($attributes, true);
                             }
-
                         } else {
                             $attributes = [];
-                            $attributeOption = $this->writeAttribute($attribute->id, $attribute_value);
+                            $attributeOption = $this->writeAttribute($attribute->id, (isset($attribute_value['value'])) ? $attribute_value['value'] : $attribute_value);
 
                             $attributes[CMS::slug($attribute_name)] = $attributeOption->id;
                             $model->setEavAttributes($attributes, true);
@@ -295,8 +325,15 @@ class m190316_061840_shop_insert extends Migration
 
             }
         }
-
-
+        $this->batchInsert(Sets::tableName(), ['product_id', 'value', 'from'], [
+            [4, '100', '13']
+        ]);
+        $this->batchInsert(SetsProduct::tableName(), ['set_id','product_id'], [
+            [1,2]
+        ]);
+        $this->batchInsert(SetsProduct::tableName(), ['set_id','product_id'], [
+            [1,1]
+        ]);
         /*$this->batchInsert('{{%shop__product_attribute_eav}}', ['entity', 'attribute', 'value'], [
             [1, CMS::slug(array_keys($attributesList)[0]), 3]
         ]);
@@ -338,6 +375,8 @@ class m190316_061840_shop_insert extends Migration
         $this->truncateTable(ProductType::tableName());
         $this->truncateTable(ProductCategoryRef::tableName());
         $this->truncateTable(ProductAttributesEav::tableName());
+
+        $this->truncateTable(Image::tableName());
 
     }
 

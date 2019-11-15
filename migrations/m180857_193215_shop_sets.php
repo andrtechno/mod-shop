@@ -11,6 +11,7 @@ namespace panix\mod\shop\migrations;
 use panix\mod\rbac\migrations\MigrationTrait;
 use panix\mod\shop\models\Sets;
 use panix\engine\db\Migration;
+use panix\mod\shop\models\SetsProduct;
 
 class m180857_193215_shop_sets extends Migration
 {
@@ -28,10 +29,17 @@ class m180857_193215_shop_sets extends Migration
             'value' => $this->money(10, 2),
             'from' => $this->tinyInteger()->unsigned(),
         ], $this->tableOptions);
-
         $this->createIndex('product_id', Sets::tableName(), 'product_id');
 
 
+        $this->createTable(SetsProduct::tableName(), [
+            'id' => $this->primaryKey()->unsigned(),
+            'set_id' => $this->integer()->unsigned(),
+            'product_id' => $this->integer()->unsigned(),
+        ], $this->tableOptions);
+
+        $this->createIndex('set_id', SetsProduct::tableName(), 'set_id');
+        $this->createIndex('product_id', SetsProduct::tableName(), 'product_id');
 
 
     }
@@ -42,7 +50,7 @@ class m180857_193215_shop_sets extends Migration
     public function down()
     {
         $this->dropTable(Sets::tableName());
-        //$this->dropTable(SetsProduct::tableName());
+        $this->dropTable(SetsProduct::tableName());
     }
 
 }

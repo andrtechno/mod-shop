@@ -23,6 +23,7 @@ use panix\engine\db\ActiveRecord;
  * @property integer $ordern
  * @property boolean $required
  * @property boolean $use_in_compare
+ * @property string $abbreviation
  * @property boolean $use_in_filter Display attribute options as filter on front
  * @property boolean $use_in_variants Use attribute and its options to configure products
  * @property boolean $select_many Allow to filter products on front by more than one option value.
@@ -212,12 +213,12 @@ class Attribute extends ActiveRecord
                 break;
             case self::TYPE_DROPDOWN:
                 $data = ArrayHelper::map($this->options, 'id', 'value');
-                return Html::dropDownList($name, $value, $data, ['class' => 'form-control pull-left ' . $inputClass, 'prompt' => Yii::t('app', 'EMPTY_LIST')]);
+                return Html::dropDownList($name, $value, $data, ['class' => 'form-control ' . $inputClass, 'prompt' => Yii::t('app', 'EMPTY_LIST')]);
                 //return Yii::app()->controller->widget('ext.bootstrap.selectinput.SelectInput',array('data'=>$data,'value'=>$value,'htmlOptions'=>array('name'=>$name,'empty'=>Yii::t('app','EMPTY_LIST'))),true);
                 break;
             case self::TYPE_SELECT_MANY:
                 $data = ArrayHelper::map($this->options, 'id', 'value');
-                return Html::dropDownList($name . '[]', $value, $data, ['class' => 'form-control pull-left ' . $inputClass, 'multiple' => 'multiple', 'prompt' => Yii::t('app', 'EMPTY_LIST')]);
+                return Html::dropDownList($name . '[]', $value, $data, ['class' => 'form-control ' . $inputClass, 'multiple' => 'multiple', 'prompt' => Yii::t('app', 'EMPTY_LIST')]);
                 break;
             case self::TYPE_RADIO_LIST:
                 $data = ArrayHelper::map($this->options, 'id', 'value');

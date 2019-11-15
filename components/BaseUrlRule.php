@@ -33,9 +33,7 @@ class BaseUrlRule extends UrlRule
                     //if(is_array($val)){
                     //     $val = implode(',',$val);
                     // }
-                    // if ($val) {
                     $parts[] = $key . '/' . $val;
-                    //}
                 }
                 $url .= '/' . implode('/', $parts);
             }
@@ -58,14 +56,15 @@ class BaseUrlRule extends UrlRule
             $pathInfo = strtr($pathInfo, [$this->suffix => '']);
 
         foreach ($this->getAllPaths() as $path) {
-
-            if ($path[$this->alias] !== '' && strpos(str_replace($this->index . '/', '', $pathInfo), $path[$this->alias]) === 0) {
+            $pathInfo = str_replace($this->index . '/', '', $pathInfo);
+            if ($path[$this->alias] !== '' && strpos($pathInfo, $path[$this->alias]) === 0) {
 
                 $params['slug'] = ltrim($path[$this->alias]);
                 $_GET['slug'] = $params['slug'];
 
-                $parts = explode('/', str_replace($this->index . '/' . $_GET['slug'] . '/', '', $pathInfo));
+                $parts = explode('/', $pathInfo);
                 $paramsList = array_chunk($parts, 2);
+                unset($paramsList[0]);
 
                 foreach ($paramsList as $k => $p) {
                     if (isset($p[1])) {
