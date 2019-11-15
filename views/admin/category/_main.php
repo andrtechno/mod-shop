@@ -35,5 +35,12 @@ if (Yii::$app->request->get('parent_id')) {
 <?= $form->field($model, 'seo_product_description')->textarea(['options' => ['rows' => 6]])
     ->hint(Yii::t('shop/admin', 'META_CAT_TPL', [
         'currency' => Yii::$app->currency->active['symbol']
-    ])); ?>
+    ]));
+?>
+
+
+<?php
+foreach ($model->getInputCodes() as $data){ ?>
+    <p><code><?=$data['code']; ?></code> &mdash; <?=$data['message']; ?></p>
+<?php } ?>
 

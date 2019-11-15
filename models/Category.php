@@ -122,7 +122,7 @@ class Category extends ActiveRecord
      */
     public function getCountItems()
     {
-        return (int) $this->hasMany(ProductCategoryRef::class, ['category' => 'id'])->count();
+        return (int)$this->hasMany(ProductCategoryRef::class, ['category' => 'id'])->count();
     }
 
     public static function flatTree()
@@ -162,7 +162,7 @@ class Category extends ActiveRecord
                     'productsCount' => $child->countItems,
                     //'child' => $this->test($child)
                 ];
-                $categories[]['child'][]=$this->test($child);
+                $categories[]['child'][] = $this->test($child);
                 $childCounter += $child->countItems;
             }
             CMS::dump($categories);
@@ -229,10 +229,9 @@ class Category extends ActiveRecord
      */
     public function getMetaDescription()
     {
+        $value = $this->name;
         if ($this->seo_product_description) {
             $value = $this->seo_product_description;
-        } else {
-            $value = Yii::$app->settings->get('shop', 'seo_categories_description');
         }
         return $value;
     }
@@ -242,10 +241,9 @@ class Category extends ActiveRecord
      */
     public function getMetaTitle()
     {
+        $value = $this->name;
         if ($this->seo_product_title) {
             $value = $this->seo_product_title;
-        } else {
-            $value = Yii::$app->settings->get('shop', 'seo_categories_title');
         }
         return $value;
     }
@@ -260,4 +258,17 @@ class Category extends ActiveRecord
         return CMS::textReplace($text, $replace);
     }
 
+    public function getInputCodes()
+    {
+        return [
+            [
+                'code' => '{category_name}',
+                'message' => self::t('NAME')
+            ],
+            [
+                'code' => '{current_currency}',
+                'message' => self::t('CURRENT_CURRENCY', ['symbol' => Yii::$app->currency->active['symbol']])
+            ]
+        ];
+    }
 }

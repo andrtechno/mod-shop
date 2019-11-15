@@ -19,7 +19,7 @@ foreach ($model->kit as $set) {
         <div class="swiper-container swiper-container-h">
 
             <div class="swiper-wrapper">
-                <?php foreach ($sets as $group_id => $set) { ?>
+                <?php foreach ($sets as $group_id => $set) {  ?>
                     <div class="swiper-slide">
                         <div class="row">
                             <div class="col-sm-5">
@@ -27,7 +27,7 @@ foreach ($model->kit as $set) {
                                 <?= Html::a($model->name, $model->getUrl()); ?>
                                 <span class="badge badge-light">
                                     Код комплекта: <span id="kit-code">
-                                        <?= CMS::idToNumber($model->id, 5); ?>-<?= CMS::idToNumber($group_id, 5); ?>
+                                        <?= CMS::idToNumber($model->id, 5); ?>-<?= CMS::idToNumber(key($sets[$group_id]), 5); ?>
                                     </span>
                                 </span>
                             </div>

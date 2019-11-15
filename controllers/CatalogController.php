@@ -36,7 +36,7 @@ class CatalogController extends FilterController
 
         //  $this->query->with('manufacturerActive');
         $this->pageName = $this->dataModel->name;
-        $this->view->title = $this->pageName;
+        //$this->view->title = $this->pageName;
         $this->view->registerJs("var current_url = '" . Url::to($this->dataModel->getUrl()) . "';", yii\web\View::POS_HEAD, 'current_url');
 
         $this->query->published();
@@ -80,12 +80,11 @@ class CatalogController extends FilterController
         ]);
 
 
-        $c = Yii::$app->settings->get('shop');
-        if ($c->seo_categories) {
+
             $categoryParent = $this->dataModel->parent()->one();
-            $this->description = $this->dataModel->replaceMeta($this->dataModel->metaDescription, $categoryParent);
+            $this->view->description = $this->dataModel->replaceMeta($this->dataModel->metaDescription, $categoryParent);
             $this->view->title = $this->dataModel->replaceMeta($this->dataModel->metaTitle, $categoryParent);
-        }
+
 
         $this->breadcrumbs[] = [
             'label' => Yii::t('shop/default', 'CATALOG'),

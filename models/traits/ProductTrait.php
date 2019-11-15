@@ -296,19 +296,21 @@ trait ProductTrait
 
     public function title()
     {
+        $title = $this->name;
         /** @var $this Product */
         if ($this->mainCategory) {
             if (!empty($this->mainCategory->seo_product_title)) {
-                return $this->replaceMeta($this->mainCategory->seo_product_title);
+                $title = $this->replaceMeta($this->mainCategory->seo_product_title);
             } else {
                 $parent = $this->mainCategory->parent()->one();
                 if ($parent) {
-                    return $this->replaceMeta($parent->seo_product_title);
+                    if ($parent->seo_product_title)
+                        $title = $this->replaceMeta($parent->seo_product_title);
                 }
 
             }
         }
-        // return $this->name;
+        return $title;
     }
 
 

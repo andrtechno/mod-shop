@@ -13,5 +13,8 @@ return [
     'IMAGE' => 'Изображение',
     'SEO_PRODUCT_TITLE' => 'Шаблон Title для товара',
     'SEO_PRODUCT_DESCRIPTION' => 'Шаблон Description для товара',
-    'TAB_MAIN' => 'Основные'
+    'TAB_MAIN' => 'Основные',
+    'CURRENT_CURRENCY' => 'Текущая валюта ({symbol}).',
+    'PRODUCT_NAME' => 'Название товара',
+    'PRODUCT_PRICE' => 'Цена товара',
 ];
