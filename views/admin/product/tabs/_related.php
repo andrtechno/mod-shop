@@ -1,6 +1,6 @@
 <?php
 
-use yii\helpers\Html;
+use panix\engine\Html;
 use yii\widgets\Pjax;
 
 \panix\mod\shop\bundles\AdminAsset::register($this);
@@ -104,7 +104,7 @@ echo \panix\engine\grid\GridView::widget([
             'template' => '{add}',
             'buttons' => [
                 'add' => function ($url, $model) { //$model->id . '/' . Html::encode($model->name)
-                    return Html::a('<i class="icon-add"></i>', '#', [
+                    return Html::a(Html::icon('add'), '#', [
                         'title' => Yii::t('app', 'ADD'),
                         'class' => 'btn btn-sm btn-success',
                         'onClick' => 'return AddRelatedProduct(this);',

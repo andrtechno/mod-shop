@@ -18,6 +18,7 @@ class AdminAsset extends AssetBundle
     public $sourcePath = __DIR__.'/../assets/admin';
     public $js = [
         'js/relatedProductsTab.js',
+        'js/kitProductsTab.js',
         'js/products.js',
         // 'js/products.index.js',
     ];

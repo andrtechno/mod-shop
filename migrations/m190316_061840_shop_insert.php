@@ -17,7 +17,6 @@ use panix\mod\shop\models\AttributeGroup;
 use panix\mod\shop\models\ProductAttributesEav;
 use panix\mod\shop\models\ProductCategoryRef;
 use panix\mod\shop\models\Sets;
-use panix\mod\shop\models\SetsProduct;
 use panix\mod\shop\models\translate\AttributeGroupTranslate;
 use panix\mod\shop\models\translate\ProductTranslate;
 use Yii;
@@ -325,15 +324,16 @@ class m190316_061840_shop_insert extends Migration
 
             }
         }
-        $this->batchInsert(Sets::tableName(), ['product_id', 'value', 'from'], [
-            [4, '100', '13']
+        $this->batchInsert(Sets::tableName(), ['owner_id', 'product_id', 'price', 'from'], [
+            [4, 2,'', '']
         ]);
-        $this->batchInsert(SetsProduct::tableName(), ['set_id','product_id'], [
-            [1,2]
+        $this->batchInsert(Sets::tableName(), ['owner_id', 'product_id', 'price', 'from'], [
+            [4, 1,'', '']
         ]);
-        $this->batchInsert(SetsProduct::tableName(), ['set_id','product_id'], [
-            [1,1]
+        $this->batchInsert(Sets::tableName(), ['owner_id', 'product_id', 'price', 'from'], [
+            [4, 3,'', '']
         ]);
+
         /*$this->batchInsert('{{%shop__product_attribute_eav}}', ['entity', 'attribute', 'value'], [
             [1, CMS::slug(array_keys($attributesList)[0]), 3]
         ]);

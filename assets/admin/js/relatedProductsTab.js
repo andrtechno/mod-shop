@@ -7,7 +7,7 @@
 function AddRelatedProduct2(el) {
     //var product = $(el).parent().find("a.product-name");
     var product = $(el).parent().parent().parent().find("a.product-name");
-    var product_id = product.attr('data-id');
+    var product_id = product.data('id');
 console.log(product_id);
 
     return false;
@@ -19,7 +19,7 @@ function AddRelatedProduct(el) {
 
 
     var product = $(el).parent().parent().parent().find("a.product-name");
-    var product_id = product.attr('data-id');
+    var product_id = product.data('id');
     var product_name = product.text();
 
   //  var str = product.attr("href");

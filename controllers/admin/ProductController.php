@@ -153,6 +153,7 @@ class ProductController extends AdminController
         if ($model->load($post) && $model->validate() && $this->validateAttributes($model) && $this->validatePrices($model)) {
             //   print_r($post['redirect']);
             $model->setRelatedProducts(Yii::$app->request->post('RelatedProductId', []));
+            $model->setKitProducts(Yii::$app->request->post('kitProductId', []));
 
             if ($model->save()) {
 

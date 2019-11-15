@@ -37,6 +37,7 @@ return [
     'ADDED_TO_CART_COUNT' => 'Добавление в корзину',
     'FULL_DESCRIPTION' => 'Описание',
     'TAB_MAIN' => 'Основное',
+    'TAB_KIT' => 'Комплекты',
     'TAB_VARIANTS' => 'Варианты',
     'TAB_REL' => 'Связи товаров',
     'TAB_IMG' => 'Изображение',

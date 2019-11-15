@@ -51,6 +51,7 @@ use panix\engine\db\ActiveRecord;
  * @property float $discountPrice See [[\panix\mod\discounts\components\DiscountBehavior]]
  * @property integer $ordern
  * @property Category $categories
+ * @property Kit $kit
  */
 class Product extends ActiveRecord
 {
@@ -72,6 +73,7 @@ class Product extends ActiveRecord
      */
     private $_configurations;
     private $_related;
+    private $_kit;
     public $file;
 
 
@@ -299,9 +301,9 @@ class Product extends ActiveRecord
     /* public function getCategory2() {
       return $this->hasOne(Category::className(), ['id' => 'category_id']);
       } */
-    public function getSets()
+    public function getKit()
     {
-        return $this->hasMany(Sets::class, ['product_id' => 'id']);
+        return $this->hasMany(Kit::class, ['owner_id' => 'id']);
     }
 
 
@@ -336,6 +338,13 @@ class Product extends ActiveRecord
     {
         return $this->hasMany(Product::class, ['id' => 'product_id'])
             ->viaTable(RelatedProduct::tableName(), ['related_id' => 'id']);
+    }
+
+
+    public function getKitProducts()
+    {
+        return $this->hasMany(Product::class, ['id' => 'product_id'])
+            ->viaTable(Kit::tableName(), ['owner_id' => 'id']);
     }
 
     public function getCategorization()
@@ -490,7 +499,15 @@ class Product extends ActiveRecord
             RelatedProduct::deleteAll('related_id=:id', ['id' => $this->id]);
         }
     }
+    public function setKitProducts($ids = [])
+    {
+        $this->_kit = $ids;
+    }
+    private function clearKitProducts()
+    {
+        Kit::deleteAll(['owner_id' => $this->id]);
 
+    }
     public function afterSave($insert, $changedAttributes)
     {
 
@@ -538,7 +555,16 @@ class Product extends ActiveRecord
                 }
             }
         }
+        if ($this->_kit !== null) {
+            $this->clearKitProducts();
 
+            foreach ($this->_kit as $id) {
+                $kit = new Kit;
+                $kit->owner_id = $this->id;
+                $kit->product_id = (int)$id;
+                $kit->save();
+            }
+        }
         // Save configurable attributes
         if ($this->_configurable_attribute_changed === true) {
             // Clear
@@ -668,6 +694,9 @@ class Product extends ActiveRecord
     {
         $this->clearRelatedProducts();
         RelatedProduct::deleteAll(['related_id' => $this->id]);
+
+        $this->clearKitProducts();
+        Kit::deleteAll(['owner_id' => $this->id]);
 
         // Delete categorization
         ProductCategoryRef::deleteAll([
