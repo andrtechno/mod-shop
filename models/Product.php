@@ -50,6 +50,7 @@ use panix\engine\db\ActiveRecord;
  * @property float $originalPrice See [[\panix\mod\discounts\components\DiscountBehavior]]
  * @property float $discountPrice See [[\panix\mod\discounts\components\DiscountBehavior]]
  * @property integer $ordern
+ * @property boolean $isAvailable
  * @property Category $categories
  * @property Kit $kit
  */
@@ -90,20 +91,20 @@ class Product extends ActiveRecord
         $result = [];
         $new = 3;//days of new
         if ((time() - 86400 * $new) <= $this->created_at) {
-            $result[] = array(
+            $result[] = [
                 'class' => 'success new',
-                'value' => 'Новый',
+                'value' => 'Новинка',
                 'tooltip' => 'от ' . Yii::$app->formatter->asDate(date('Y-m-d', $this->created_at)) . ' до ' . Yii::$app->formatter->asDate(date('Y-m-d', $this->created_at + (86400 * $new)))
-            );
+            ];
         }
 
 
         if (isset($this->appliedDiscount)) {
-            $result[] = array(
+            $result[] = [
                 'class' => 'danger discount',
                 'value' => '-' . $this->discountSum,
                 'tooltip' => '-' . $this->discountSum . ' до ' . $this->discountEndDate
-            );
+            ];
         }
         return $result;
     }
