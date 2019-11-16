@@ -178,10 +178,13 @@ class Product extends ActiveRecord
         return (object)$result;
     }
 
-
-    public function renderGridImage()
+    /**
+     * @param string $size Default value 50x50.
+     * @return string
+     */
+    public function renderGridImage($size = '50x50')
     {
-        $small = $this->getMainImage("50x50");
+        $small = $this->getMainImage($size);
         $big = $this->getMainImage();
         return Html::a(Html::img($small->url, ['alt' => $small->title, 'class' => 'img-thumbnail']), $big->url, ['title' => $this->name, 'data-fancybox' => 'gallery']);
     }
@@ -500,15 +503,18 @@ class Product extends ActiveRecord
             RelatedProduct::deleteAll('related_id=:id', ['id' => $this->id]);
         }
     }
+
     public function setKitProducts($ids = [])
     {
         $this->_kit = $ids;
     }
+
     private function clearKitProducts()
     {
         Kit::deleteAll(['owner_id' => $this->id]);
 
     }
+
     public function afterSave($insert, $changedAttributes)
     {
 
