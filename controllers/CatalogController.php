@@ -169,7 +169,8 @@ class CatalogController extends FilterController
  //var_dump(Yii::$app->request->headers['filter-ajax']);die;
 
         if (Yii::$app->request->isAjax) {
-            if (isset(Yii::$app->request->headers['filter-ajax'])) {
+
+            if (Yii::$app->request->headers->has('filter-ajax')) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
 
                 return [
