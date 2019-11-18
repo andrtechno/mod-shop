@@ -77,7 +77,6 @@ class Product extends ActiveRecord
     private $_kit;
     public $file;
 
-
     const route = '/admin/shop/default';
     const MODULE_ID = 'shop';
 

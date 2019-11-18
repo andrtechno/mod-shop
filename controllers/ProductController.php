@@ -66,7 +66,7 @@ class ProductController extends WebController
         $this->view->title = $this->dataModel->title();
 
 
-        $this->registerSessionViews($this->dataModel->id);
+        $this->sessionViews($this->dataModel->id);
         $this->view->registerMetaTag(['property' => 'og:image', 'content' => Url::toRoute($this->dataModel->getMainImage()->url, true)]);
         $this->view->registerMetaTag(['property' => 'og:description', 'content' => (!empty($this->dataModel->short_description)) ? $this->dataModel->short_description : $this->dataModel->name]);
         $this->view->registerMetaTag(['property' => 'og:title', 'content' => Html::encode($this->dataModel->name)]);
@@ -124,18 +124,21 @@ class ProductController extends WebController
         }
     }
 
-    protected function registerSessionViews($id = null)
+    /**
+     * @param null $id
+     */
+    protected function sessionViews($id = null)
     {
-        //unset($_SESSION['views']);
-        $session = Yii::$app->session->get('views');
-        Yii::$app->session->setTimeout(86400 * 7);
-
-        if (empty($session)) {
-            Yii::$app->session['views'] = [];
+        $session = Yii::$app->session;
+        //$session->get('views');
+        //$session->setTimeout(86400 * 7);
+        $session->cookieParams = ['lifetime' => 60];
+        if (!isset($session['views'])) {
+            $session['views'] = [];
         }
 
-        if (isset($session)) {
-            if (!in_array($id, $_SESSION['views'])) {
+        if (isset($session['views'])) {
+            if (!in_array($id, $session['views'])) {
                 array_push($_SESSION['views'], $id);
             }
         }
