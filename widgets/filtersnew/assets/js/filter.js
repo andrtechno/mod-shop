@@ -61,7 +61,7 @@ var flagDeletePrices = false;
 var global_url;
 
 
-function filter_ajax(url){
+function filter_ajax(url) {
     var objects = getSerializeObjects();
     if (xhrFilters && xhrFilters.readyState !== 4) {
         xhrFilters.onreadystatechange = null;
@@ -69,22 +69,26 @@ function filter_ajax(url){
         ajaxSelector.removeClass('loading');
     }
 
-    if(url === undefined){
+    if (url === undefined) {
         url = formattedURL(objects);
     }
 
     xhrFilters = $.ajax({
         dataType: "json",
         url: url,
+        type: 'POST',
+        headers: {
+            "filter-ajax": true
+        },
         data: {},
         success: function (data) {
             ajaxSelector.html(data.items).toggleClass('loading');
-            form.attr('action',data.currentUrl);
+            form.attr('action', data.currentUrl);
             containerFilterCurrent.html(data.currentFiltersData).removeClass('loading');
             history.pushState(null, $('title').text(), data.currentUrl);
             console.log('success filter_ajax');
         },
-        beforeSend:function(){
+        beforeSend: function () {
             ajaxSelector.toggleClass('loading');
         }
     });
@@ -92,28 +96,28 @@ function filter_ajax(url){
 
 
 /*
-var xhrCurrentFilter;
-function currentFilters(url) {
-    var containerFilterCurrent = $('#ajax_filter_current');
-    if (xhrCurrentFilter && xhrCurrentFilter.readyState !== 4) {
-        xhrCurrentFilter.onreadystatechange = null;
-        xhrCurrentFilter.abort();
-    }
+ var xhrCurrentFilter;
+ function currentFilters(url) {
+ var containerFilterCurrent = $('#ajax_filter_current');
+ if (xhrCurrentFilter && xhrCurrentFilter.readyState !== 4) {
+ xhrCurrentFilter.onreadystatechange = null;
+ xhrCurrentFilter.abort();
+ }
 
-    xhrCurrentFilter = $.ajax({
-        type: 'GET',
-        url: url,
-        data:{render:'active-filters'},
-        beforeSend: function () {
-            containerFilterCurrent.addClass('loading');
-        },
-        success: function (data) {
-            containerFilterCurrent.html(data).removeClass('loading');
-            $('#filter-form').attr('action',data.full_url);
-        }
-    });
-}
-*/
+ xhrCurrentFilter = $.ajax({
+ type: 'GET',
+ url: url,
+ data:{render:'active-filters'},
+ beforeSend: function () {
+ containerFilterCurrent.addClass('loading');
+ },
+ success: function (data) {
+ containerFilterCurrent.html(data).removeClass('loading');
+ $('#filter-form').attr('action',data.full_url);
+ }
+ });
+ }
+ */
 function getSerializeObjects() {
     return $.extend(form.serializeObject(), sortForm.serializeObject())
 }
@@ -141,23 +145,22 @@ function formattedURL(objects) {
     });
 
 
-    console.log(uri,'formattedURL',objects);
+    console.log(uri, 'formattedURL', objects);
     return uri;
 }
 
 
-
 $(function () {
 
-    $(document).on('click','#sorter-block button', function(e){
-       // console.log($(this).val());
-        if($(this).val() !== ''){
+    $(document).on('click', '#sorter-block button', function (e) {
+        // console.log($(this).val());
+        if ($(this).val() !== '') {
 
         }
         e.preventDefault();
         return false;
     });
-    $(document).on('click','#filter-current a2', function(e){
+    $(document).on('click', '#filter-current a2', function (e) {
 
         console.log('click current filter close');
         e.preventDefault();
@@ -166,11 +169,11 @@ $(function () {
 
     $(document).on('change', '#filter-form input[type="checkbox"]', function (e) {
 
-        flagDeletePrices=true;
+        flagDeletePrices = true;
         var objects = getSerializeObjects();
         if (flagDeletePrices) {
             //delete objects.min_price;
-           // delete objects.max_price;
+            // delete objects.max_price;
         }
 
         //$.fn.yiiListView.update('shop-products', {url: formattedURL(objects)});
@@ -182,7 +185,7 @@ $(function () {
 
     //for price inputs
     $('#filter-form input[type="text"]').change(function (e) {
-        flagDeletePrices=false;
+        flagDeletePrices = false;
         var slider = $("#filter-price-slider");
         var min = slider.slider("option", "min");
         var max = slider.slider("option", "max");
@@ -234,12 +237,12 @@ $(function () {
     });
 
 
-/*
-    $('#sorting-form a').click(function (e) {
-        e.preventDefault();
-        $.fn.yiiListView.update('shop-products', {url: $(this).attr('href')});
-        history.pushState(null, $('title').text(), $(this).attr('href'));
-        console.log('click #sorting-form a');
-    });
-*/
+    /*
+     $('#sorting-form a').click(function (e) {
+     e.preventDefault();
+     $.fn.yiiListView.update('shop-products', {url: $(this).attr('href')});
+     history.pushState(null, $('title').text(), $(this).attr('href'));
+     console.log('click #sorting-form a');
+     });
+     */
 });

@@ -24,7 +24,7 @@ class WebAsset extends AssetBundle
     ];
 
     public $css = [
-        // 'css/ecommerce.css',
+         'css/shop.css',
     ];
 
     public $depends = [

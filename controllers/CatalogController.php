@@ -80,10 +80,9 @@ class CatalogController extends FilterController
         ]);
 
 
-
-            $categoryParent = $this->dataModel->parent()->one();
-            $this->view->description = $this->dataModel->replaceMeta($this->dataModel->metaDescription, $categoryParent);
-            $this->view->title = $this->dataModel->replaceMeta($this->dataModel->metaTitle, $categoryParent);
+        $categoryParent = $this->dataModel->parent()->one();
+        $this->view->description = $this->dataModel->replaceMeta($this->dataModel->metaDescription, $categoryParent);
+        $this->view->title = $this->dataModel->replaceMeta($this->dataModel->metaTitle, $categoryParent);
 
 
         $this->breadcrumbs[] = [
@@ -166,24 +165,33 @@ class CatalogController extends FilterController
         }
         $this->breadcrumbs[] = $name;
 
-        if (Yii::$app->request->isAjax) {
-            Yii::$app->response->format = Response::FORMAT_JSON;
 
-            return [
-                'currentFilters' => $filterData,
-                'full_url' => Url::to($this->currentUrl),
-                'currentUrl' => Yii::$app->request->getUrl(),
-                'items' => $this->renderPartial('listview', [
+ //var_dump(Yii::$app->request->headers['filter-ajax']);die;
+
+        if (Yii::$app->request->isAjax) {
+            if (isset(Yii::$app->request->headers['filter-ajax'])) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+
+                return [
+                    //'currentFilters' => $filterData,
+                    //'full_url' => Url::to($this->currentUrl),
+                    'currentUrl' => Yii::$app->request->getUrl(),
+                    'items' => $this->renderPartial('listview', [
+                        'provider' => $this->provider,
+                        'itemView' => $this->itemView
+                    ]),
+                    'i' => $this->itemView,
+                    'currentFiltersData' => $this->renderPartial('@app/widgets/filters/current', [ //'@shop/widgets/filtersnew/views/current', '@app/widgets/filters/current'
+                        'dataModel' => $this->dataModel,
+                        'active' => $filterData
+                    ])
+                ];
+            } else {
+                return $this->renderPartial('listview', [
                     'provider' => $this->provider,
                     'itemView' => $this->itemView
-                ]),
-                'i' => $this->itemView,
-                'currentFiltersData' => $this->renderPartial('@shop/widgets/filtersnew/views/current', [
-                    'dataModel' => $this->dataModel,
-                    'active' => $filterData
-                ])
-            ];
-
+                ]);
+            }
 
             /*return $this->renderPartial('@shop/widgets/filtersnew/views/current', [
                 'dataModel' => $model,
@@ -197,13 +205,12 @@ class CatalogController extends FilterController
             //  }
 
 
-        } else {
-
-            return $this->render('view', [
-                'provider' => $this->provider,
-                'itemView' => $this->itemView
-            ]);
         }
+
+        return $this->render('view', [
+            'provider' => $this->provider,
+            'itemView' => $this->itemView
+        ]);
     }
 
     protected function findModel($slug)
