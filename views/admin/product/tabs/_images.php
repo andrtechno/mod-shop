@@ -85,24 +85,21 @@ Modal::end();
 
 <?php
 
+
 $searchModel = new ImageSearch();
-$dataProvider = $searchModel->search(Yii::$app->request->getQueryParams(), ['model' => $model]);
+$dataProvider = $searchModel->search(Yii::$app->request->getQueryParams(), ['model' => $model,'object_id'=>$model->primaryKey]);
 
 
-/* Pjax::begin([
-  'timeout' => 50000,
-  'id' => 'pjax-' . strtolower((new \ReflectionClass($searchModel))->getShortName()),
-  //'id' => 'pjax-' . strtolower((new \ReflectionClass(new \panix\mod\images\models\Image))->getShortName()),
-  'linkSelector' => 'a:not(.linkTarget)'
-  //'id' => 'pjax-image-container',
+Pjax::begin([
+
+  'id' => 'pjax-image-container',
   //'enablePushState' => false,
   //  'linkSelector' => 'a:not(.linkTarget)'
-  ]); */
+  ]);
 echo panix\engine\grid\GridView::widget([
     'id' => 'grid-images',
     'tableOptions' => ['class' => 'table table-striped'],
     'dataProvider' => $dataProvider,
-    'rowOptions' => ['class' => 'sortable-column'],
     'enableLayout' => false,
     //'layout'=>'{items}',
     'rowOptions' => function ($model, $index, $widget, $grid) {
@@ -163,7 +160,7 @@ echo panix\engine\grid\GridView::widget([
     ],
     'filterModel' => $searchModel
 ]);
-//Pjax::end();
+Pjax::end();
 ?>
 
 

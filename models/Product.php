@@ -52,6 +52,7 @@ use panix\engine\db\ActiveRecord;
  * @property integer $ordern
  * @property boolean $isAvailable
  * @property Category $categories
+ * @property array $eavAttributes
  * @property Kit $kit
  */
 class Product extends ActiveRecord
@@ -497,9 +498,9 @@ class Product extends ActiveRecord
 
     private function clearRelatedProducts()
     {
-        RelatedProduct::deleteAll('product_id=:id', ['id' => $this->id]);
+        RelatedProduct::deleteAll(['product_id' => $this->id]);
         if (Yii::$app->settings->get('shop', 'product_related_bilateral')) {
-            RelatedProduct::deleteAll('related_id=:id', ['id' => $this->id]);
+            RelatedProduct::deleteAll(['related_id' => $this->id]);
         }
     }
 
@@ -539,6 +540,7 @@ class Product extends ActiveRecord
         }
 
 
+
         // Process related products
         if ($this->_related !== null) {
             $this->clearRelatedProducts();
@@ -561,6 +563,7 @@ class Product extends ActiveRecord
                 }
             }
         }
+
         if ($this->_kit !== null) {
             $this->clearKitProducts();
 

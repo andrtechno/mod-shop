@@ -1,3 +1,4 @@
+<?= Yii::t('shop/default', 'RELATED_PRODUCTS'); ?>
 <?php
 use panix\ext\owlcarousel\OwlCarouselWidget;
 

@@ -13,6 +13,7 @@ use panix\mod\shop\models\translate\ManufacturerTranslate;
  * Class Manufacturer
  * @property integer $id
  * @property string $name ManufacturerTranslate
+ * @property string $description
  */
 class Manufacturer extends ActiveRecord
 {
