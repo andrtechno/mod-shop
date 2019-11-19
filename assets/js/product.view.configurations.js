@@ -81,8 +81,25 @@ $(document).ready(function () {
  * Sum product price + variant prices + configurable prices.
  */
 function recalculateProductPrice(el_clicked) {
-    var result = parseFloat($('#product_price').val());
 
+    /*$.ajax({
+        url:common.url('/product/4/calculate-price'),
+        dataType:'json',
+        type:'POST',
+        success:function (data) {
+
+        }
+    });*/
+    var form = $('#form-add-cart-4');
+    var priceInput = form.find('input[name="product_price"]');
+    var formData = form.serialize();
+    $.getJSON(common.url('/product/4/calculate-price'),formData,function (data) {
+        console.log(data);
+    });
+    return;
+    var result = parseFloat(priceInput.val());
+//console.log(result);
+//return;
     // Update price
 
     if (typeof(productPrices) !== "undefined" && productPrices[$('#configurable_id').val()] !== undefined) {
@@ -90,7 +107,7 @@ function recalculateProductPrice(el_clicked) {
         console.log('use_configurations');
         if ($("#use_configurations").val() === '1') { // Pan, comment this.
 
-            result = result - $('#product_price').val();
+            result = result - priceInput.val();
         }
     }
 
@@ -114,7 +131,8 @@ function recalculateProductPrice(el_clicked) {
     // Apply current currency
 
    // result = result * parseFloat($('#currency_rate').val());
-    $('#product_price').html(price_format(result));
+    console.log('variantData',result);
+    //$('#productPrice').html(price_format(result));
 }
 
 /**

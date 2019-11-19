@@ -22,38 +22,38 @@ $model2 =  new Product;
 if (isset($_GET['ConfProduct']))
     $model->attributes = $_GET['ConfProduct'];
 
-$columns = array(
+$columns = [
  /*   array(
         'class' => 'CheckBoxColumn',
         'checked' => (!empty($product->configurations) && !isset($clearConfigurations) && !$product->isNewRecord) ? 'true' : 'false'
     ),*/
-    array(
+    [
         'attribute' => 'id',
         'format' => 'text',
         //'value' => '$data->id',
         'filter' => Html::textInput('ConfProduct[id]', $model2->id)
-    ),
-    array(
+    ],
+    [
         'attribute' => 'name',
         'format' => 'raw',
             'value' => function($model) {
-        return Html::a(Html::encode($model->name), array("update", "id"=>$model->id), array("target"=>"_blank"));
+        return Html::a(Html::encode($model->name), ["update", "id"=>$model->id], ["target"=>"_blank"]);
     },
 
         'filter' => Html::textInput('ConfProduct[name]', $model2->name)
-    ),
-    array(
+    ],
+    [
         'attribute' => 'sku',
         //'value' => '$data->sku',
         'filter' => Html::textInput('ConfProduct[sku]', $model2->sku)
-    ),
-    array(
+    ],
+    [
         'attribute' => 'price',
            'format' => 'raw',
         //'value' => '$data->price',
         'filter' => Html::textInput('ConfProduct[price]', $model2->price)
-    ),
-);
+    ],
+];
 
 // Process attributes
 $eavAttributes = array();

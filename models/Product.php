@@ -54,6 +54,8 @@ use panix\engine\db\ActiveRecord;
  * @property Category $categories
  * @property array $eavAttributes
  * @property Kit $kit
+ * @property ProductPrices[] $prices
+ * @property ProductVariant[] $variants
  */
 class Product extends ActiveRecord
 {
@@ -279,7 +281,7 @@ class Product extends ActiveRecord
 
     public function processVariants()
     {
-        $result = array();
+        $result = [];
         foreach ($this->variants as $v) {
             //print_r($v);die;
             $result[$v->productAttribute->id]['attribute'] = $v->productAttribute;

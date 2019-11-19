@@ -181,7 +181,7 @@ class ProductController extends AdminController
                     }
                 }
 
-                $model->processPrices(Yii::$app->request->post('ProductPrices', []));
+                $model->processPrices(Yii::$app->request->post('Product')['prices']);
                 $this->processAttributes($model);
                 // Process variants
                 $this->processVariants($model);

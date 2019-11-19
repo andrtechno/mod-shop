@@ -76,7 +76,7 @@ $enableActiveForm = true;
         ]
     ],
 ]);*/ ?>
-<?php echo $form->field($model, 'prices1')->widget(\panix\ext\multipleinput\MultipleInput::class, [
+<?php echo $form->field($model, 'prices')->widget(\panix\ext\multipleinput\MultipleInput::class, [
     //'model' => $model,
     //'attribute' => 'phone',
     //'max' => 5,
@@ -87,7 +87,7 @@ $enableActiveForm = true;
     'addButtonPosition' => \panix\ext\multipleinput\MultipleInput::POS_HEADER, // show add button in the header
     'columns' => [
         [
-            'name' => 'number',
+            'name' => 'value',
             'title' => 'Цена',
             'type' => \panix\ext\multipleinput\MultipleInputColumn::TYPE_TEXT_INPUT,
             'enableError' => true,
@@ -97,7 +97,7 @@ $enableActiveForm = true;
             ],
         ],
         [
-            'name' => 'count',
+            'name' => 'from',
             'enableError' => false,
             'title' => 'Количество',
             'headerOptions' => [

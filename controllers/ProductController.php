@@ -4,6 +4,9 @@ namespace panix\mod\shop\controllers;
 
 use Yii;
 use yii\helpers\Url;
+use yii\web\ForbiddenHttpException;
+use yii\web\NotFoundHttpException;
+use yii\web\Response;
 use yii\web\View;
 use panix\engine\Html;
 use panix\engine\controllers\WebController;
@@ -107,11 +110,13 @@ class ProductController extends WebController
     }
 
     /**
-     * @param $slug
+     * @param string $slug
      * @return array|null|Product
+     * @throws NotFoundHttpException
      */
     protected function findModel($slug)
     {
+
         $model = Product::find()
             ->where(['slug' => $slug])
             ->published()
@@ -122,6 +127,44 @@ class ProductController extends WebController
         } else {
             $this->error404(Yii::t('shop/default', 'NOT_FOUND_PRODUCT'));
         }
+    }
+
+    public function actionCalculatePrice($id)
+    {
+        $result = [];
+        $result_test = [];
+        $eav = Yii::$app->request->get('eav');
+        if ($id && Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $model = Product::findOne($id);
+            if ($model) {
+                foreach ($model->processVariants() as $variant) {
+                    foreach ($variant['options'] as $v) {
+                        $result_test[$v->id] = [
+                            'price_type' => (int)$v->price_type,
+                            'price' => $v->price
+                        ];
+
+
+                    }
+                }
+            }
+
+            $price = $model->getFrontPrice();
+            foreach ($eav as $k => $e) {
+                if (isset($result_test[$e]) && !empty($e)) {
+                    $result['price_type'] = $result_test[$e]['price_type'];
+                    if ($result_test[$e]['price_type']) {
+                        // Price type is percent
+                        $price += $price / 100 * $result_test[$e]['price'];
+                    } else {
+                        $price += $result_test[$e]['price'];
+                    }
+                }
+            }
+            $result['price'] = round($price,2);
+        }
+        return $result;
     }
 
     /**
