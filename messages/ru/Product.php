@@ -59,4 +59,7 @@ return [
     'UNIT_THING' => 'шт.',
     'UNIT_METER' => 'метр.',
     'UNIT_BOX' => 'ящик.',
+    'SELECT_SUPPLIER_ID'=>'&mdash; Указать поставщика &mdash;',
+    'SELECT_MANUFACTURER_ID'=>'&mdash; Указать производителя &mdash;',
+    'SELECT_MAIN_CATEGORY_ID'=>'&mdash; Указать категорию &mdash;',
 ];

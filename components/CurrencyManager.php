@@ -121,9 +121,20 @@ class CurrencyManager extends Component
         return $currency['rate'] * $sum;
     }
 
-    public function number_format($sum)
+    /**
+     * @param $sum
+     * @param bool|integer $thousandth
+     * @param bool|integer $hundredth
+     * @return string
+     */
+    public function number_format($sum, $thousandth = false, $hundredth = false)
     {
-        $format = number_format($sum, $this->_active['penny'], $this->_active['separator_thousandth'], $this->_active['separator_hundredth']);
+        if (!$thousandth)
+            $thousandth = $this->_active['separator_thousandth'];
+
+        if (!$hundredth)
+            $hundredth = $this->_active['separator_hundredth'];
+        $format = number_format($sum, $this->_active['penny'], $thousandth, $hundredth);
         //return iconv("windows-1251", "UTF-8", $format);
         return $format;
     }

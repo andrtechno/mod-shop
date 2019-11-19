@@ -4,6 +4,7 @@ use yii\helpers\ArrayHelper;
 use panix\mod\shop\models\Manufacturer;
 use panix\mod\shop\models\Category;
 use panix\ext\tinymce\TinyMce;
+use panix\mod\shop\models\Supplier;
 
 /**
  * @var panix\engine\bootstrap\ActiveForm $form
@@ -18,20 +19,25 @@ use panix\ext\tinymce\TinyMce;
 
 
 <?php
-echo $this->render('_prices',['model'=>$model,'form'=>$form]);
+echo $this->render('_prices', ['model' => $model, 'form' => $form]);
 ?>
 <?=
 
 $form->field($model, 'manufacturer_id')->dropDownList(ArrayHelper::map(Manufacturer::find()->all(), 'id', 'name'), [
-    'prompt' => 'Укажите производителя'
+    'prompt' => html_entity_decode($model::t('SELECT_MANUFACTURER_ID'))
 ]);
 ?>
+<?=
 
+$form->field($model, 'supplier_id')->dropDownList(ArrayHelper::map(Supplier::find()->all(), 'id', 'name'), [
+    'prompt' => html_entity_decode($model::t('SELECT_SUPPLIER_ID'))
+]);
+?>
 
 <?=
 
 $form->field($model, 'main_category_id')->dropDownList(Category::flatTree(), [
-    'prompt' => 'Укажите категорию'
+    'prompt' => html_entity_decode($model::t('SELECT_MAIN_CATEGORY_ID'))
 ]);
 ?>
 <?=
