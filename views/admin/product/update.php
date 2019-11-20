@@ -7,9 +7,10 @@ use yii\helpers\ArrayHelper;
 use panix\mod\shop\models\ProductType;
 
 ?>
+<?php if (!$model->isNewRecord) { ?>
     <div class="row">
         <div class="col-sm-4">
-            sadsda
+
         </div>
         <div class="col-sm-4">
 
@@ -20,6 +21,7 @@ use panix\mod\shop\models\ProductType;
             <span class="badge badge-secondary">Товар скрыт</span>
         </div>
     </div>
+<?php } ?>
     <div class="card">
         <div class="card-header">
             <h5><?= Html::encode($this->context->pageName) ?></h5>
@@ -49,7 +51,7 @@ use panix\mod\shop\models\ProductType;
                 panix\mod\shop\bundles\admin\ProductAsset::register($this);
 
                 if ($attributeError) {
-                    echo '<div class="alert alert-danger">'.Yii::t('shop/admin', 'SELECT_ATTRIBUTE_PRODUCT').'</div>';
+                    echo '<div class="alert alert-danger">' . Yii::t('shop/admin', 'SELECT_ATTRIBUTE_PRODUCT') . '</div>';
                 }
                 ?>
                 <div class="card-body">
@@ -185,7 +187,7 @@ use panix\mod\shop\models\ProductType;
             }
         } else {
             echo $this->theme->alert('test');
-            echo '<div class="alert alert-danger">'.Yii::t('shop/admin', 'SELECT_TYPE_PRODUCT').'</div>';
+            echo '<div class="alert alert-danger">' . Yii::t('shop/admin', 'SELECT_TYPE_PRODUCT') . '</div>';
         }
         ?>
 

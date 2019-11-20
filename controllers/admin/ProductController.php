@@ -15,6 +15,7 @@ use panix\mod\shop\models\Attribute;
 use panix\mod\shop\models\AttributeOption;
 use panix\mod\shop\models\ProductVariant;
 use yii\web\ForbiddenHttpException;
+use yii\web\HttpException;
 use yii\web\Response;
 
 class ProductController extends AdminController
@@ -39,6 +40,18 @@ class ProductController extends AdminController
                 'modelClass' => Product::class,
             ],
         ];
+    }
+
+    public function beforeAction($action)
+    {
+        if (in_array($action->id, ['create', 'update'])) {
+            $count = Product::find()->count();
+            if ($count >= 10) {
+                throw new HttpException(403, Yii::t('app', 'Достигнут лимит товаров в {count} шт.', ['count' => $count]));
+
+            }
+        }
+        return parent::beforeAction($action);
     }
 
     public function actionIndex()
@@ -84,13 +97,6 @@ class ProductController extends AdminController
                 'options' => ['class' => 'btn btn-info', 'target' => '_blank']
             ];
         }
-
-        $this->buttons[] = [
-            'icon' => 'add',
-            'label' => Yii::t('shop/admin', 'CREATE_PRODUCT'),
-            'url' => ['create'],
-            'options' => ['class' => 'btn btn-success']
-        ];
 
         $post = Yii::$app->request->post();
 
@@ -314,17 +320,18 @@ class ProductController extends AdminController
 
             //print_r($type);die;
 //echo($type->prepare(Yii::$app->db->queryBuilder)->createCommand()->rawSql);die;
-
-            if ($type->shopAttributes) {
-                $data['success'] = true;
-                foreach ($type->shopAttributes as $attr) {
-                    $data['response'][] = [
-                        'id' => $attr->id,
-                        'title' => $attr->title,
-                    ];
+            if ($type) {
+                if ($type->shopAttributes) {
+                    $data['success'] = true;
+                    foreach ($type->shopAttributes as $attr) {
+                        $data['response'][] = [
+                            'id' => $attr->id,
+                            'title' => $attr->title,
+                        ];
+                    }
+                } else {
+                    $data['message'] = 'Ошибка не найден не один атрибут';
                 }
-            } else {
-                $data['message'] = 'Ошибка не найден не один атрибут';
             }
             return $data;
         } else {
@@ -365,7 +372,7 @@ class ProductController extends AdminController
         $deleteModel->deleteEavAttributes([], true);
         // Delete empty values
         foreach ($attributes as $key => $val) {
-            if (is_string($val) && $val === ''){
+            if (is_string($val) && $val === '') {
                 unset($attributes[$key]);
                 // $attributes->remove($key);
             }
