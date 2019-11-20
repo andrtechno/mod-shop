@@ -43,11 +43,9 @@ use panix\mod\shop\models\ProductType;
                 $attributeError = false;
 
             if ($model->isNewRecord && !$model->type_id || $attributeError === true) {
-                // Display "choose type" form?>
 
 
-                <?php
-                echo Html::beginForm('', 'get');
+                echo Html::beginForm('', 'GET');
                 panix\mod\shop\bundles\admin\ProductAsset::register($this);
 
                 if ($attributeError) {
@@ -61,7 +59,7 @@ use panix\mod\shop\models\ProductType;
                             <?php echo Html::activeDropDownList($model, 'type_id', ArrayHelper::map($typesList, 'id', 'name'), ['class' => 'form-control']); ?>
                         </div>
                     </div>
-
+<?php if(false) { ?>
                     <div class="form-group row">
                         <div class="col-sm-4"><?= Html::activeLabel($model, 'use_configurations', ['class' => 'control-label']); ?></div>
                         <div class="col-sm-8">
@@ -70,22 +68,17 @@ use panix\mod\shop\models\ProductType;
                     </div>
 
                     <div id="availableAttributes" class="form-group d-none"></div>
-
+<?php } ?>
 
                 </div>
                 <div class="card-footer text-center">
-
                     <?= Html::submitButton(Yii::t('app', 'CREATE', 0), ['name' => false, 'class' => 'btn btn-success']); ?>
-
                 </div>
                 <?php
-                echo Html::endForm(); ?>
+                echo Html::endForm();
 
-                <?php
             } else {
-                ?>
 
-                <?php
 
                 $form = ActiveForm::begin([
                     'id' => strtolower(basename(get_class($model))) . '-form',

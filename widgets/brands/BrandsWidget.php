@@ -13,7 +13,10 @@ class BrandsWidget extends Widget
 
     public function run()
     {
-        $model = Manufacturer::find()->all();
+        $model = Manufacturer::find()
+            ->published()
+            ->isNotEmpty('image')
+            ->all();
         return $this->render($this->skin, ['model' => $model]);
     }
 
