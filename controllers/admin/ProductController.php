@@ -186,8 +186,10 @@ class ProductController extends AdminController
                         $model->attachImage(Yii::getAlias('@uploads') . '/' . $uniqueName . '_' . $file->baseName . '.' . $file->extension);
                     }
                 }
-
-                $model->processPrices(Yii::$app->request->post('Product')['prices']);
+                if (isset(Yii::$app->request->post('Product')['prices']) && !empty(Yii::$app->request->post('Product')['prices'])) {
+                    var_dump(Yii::$app->request->post('Product')['prices']);die;
+                    $model->processPrices(Yii::$app->request->post('Product')['prices']);
+                }
                 $this->processAttributes($model);
                 // Process variants
                 $this->processVariants($model);

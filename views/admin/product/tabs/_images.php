@@ -16,7 +16,7 @@ use panix\engine\bootstrap\Modal;
 <?php
 
 $script = <<< JS
-$('.attachment-delete').on('click', function(e) {
+$(document).on('click','.attachment-delete', function(e) {
     var id = $(this).attr('data-id');
     var model = $(this).attr('data-model');
     var object_id = $(this).attr('data-object_id');
@@ -26,11 +26,11 @@ $('.attachment-delete').on('click', function(e) {
        data: {id: id, model: model, object_id: object_id},
        dataType:'json',
        success: function(data) {
-            if(data.status == "success"){
+            if(data.status === "success"){
                 common.notify(data.message,"success");
                 $('tr[data-key="'+id+'"]').remove();
-        $('#grid-images').yiiGridView('applyFilter');
-        
+                //$('#grid-images').yiiGridView('applyFilter');
+        $.pjax.reload({container:'#pjax-image-container'});
                 common.removeLoader();
             }
        }
@@ -57,23 +57,23 @@ JS;
 $this->registerJs($script); //$position
 ?>
 <style>
-.modal .modal-dialog   {
-  width: 750px;
-  margin: auto;
-}
+    .modal .modal-dialog {
+        width: 750px;
+        margin: auto;
+    }
 
-    
+
 </style>
-    <?php
+<?php
 
 Modal::begin([
-    'options'=>[
-            'id'=>'cropper-modal',
-        'style'=>'width:100%'
+    'options' => [
+        'id' => 'cropper-modal',
+        'style' => 'width:100%'
     ],
     'title' => '<h2>Cropper</h2>',
     'toggleButton' => false,
-    'bodyOptions'=>['id'=>'cropper-body','style'=>'width:100%']
+    'bodyOptions' => ['id' => 'cropper-body', 'style' => 'width:100%']
 ]);
 
 echo 'Say hello...';
@@ -87,15 +87,15 @@ Modal::end();
 
 
 $searchModel = new ImageSearch();
-$dataProvider = $searchModel->search(Yii::$app->request->getQueryParams(), ['model' => $model,'object_id'=>$model->primaryKey]);
+$dataProvider = $searchModel->search(Yii::$app->request->getQueryParams(), ['model' => $model, 'object_id' => $model->primaryKey]);
 
 
 Pjax::begin([
 
-  'id' => 'pjax-image-container',
-  //'enablePushState' => false,
-  //  'linkSelector' => 'a:not(.linkTarget)'
-  ]);
+    'id' => 'pjax-image-container',
+    //'enablePushState' => false,
+    //  'linkSelector' => 'a:not(.linkTarget)'
+]);
 echo panix\engine\grid\GridView::widget([
     'id' => 'grid-images',
     'tableOptions' => ['class' => 'table table-striped'],
@@ -115,7 +115,7 @@ echo panix\engine\grid\GridView::widget([
             'attribute' => 'image',
             'format' => 'raw',
             'contentOptions' => ['class' => 'text-center image'],
-            'value' => function($model) {
+            'value' => function ($model) {
                 return Html::a(Html::img($model->getUrl('100x100'), ['class' => 'img-thumbnail']), $model->getUrl(), ['class' => 'fancybox']);
             },
         ],
@@ -123,13 +123,13 @@ echo panix\engine\grid\GridView::widget([
             'attribute' => 'is_main',
             'format' => 'raw',
             'contentOptions' => ['class' => 'text-center'],
-            'value' => function($model) {
+            'value' => function ($model) {
                 return Html::radio('AttachmentsMainId', $model->is_main, [
-                            'value' => $model->id,
-                            'class' => 'check',
-                            'data-toggle' => "tooltip",
-                            'title' => Yii::t('app', 'IS_MAIN'),
-                            'id' => 'main_image_' . $model->id
+                    'value' => $model->id,
+                    'class' => 'check',
+                    'data-toggle' => "tooltip",
+                    'title' => Yii::t('app', 'IS_MAIN'),
+                    'id' => 'main_image_' . $model->id
                 ]);
             },
         ],
@@ -137,7 +137,7 @@ echo panix\engine\grid\GridView::widget([
             'attribute' => 'alt_title',
             'format' => 'raw',
             'contentOptions' => ['class' => 'text-center'],
-            'value' => function($model) {
+            'value' => function ($model) {
                 return Html::textInput('attachment_image_titles[' . $model->id . ']', $model->alt_title, array('class' => 'form-control'));
             },
         ],
@@ -146,14 +146,19 @@ echo panix\engine\grid\GridView::widget([
             'template' => '{resize} {settings} {delete}',
             'filter' => false,
             'buttons' => [
-                'resize' => function ($url, $data, $key) {
-                    return Html::a(Html::icon('resize'), ['s'], array('class' => 'btn btn-sm btn-default attachment-zoom', 'data-fancybox' => 'gallery'));
-                },
-                'settings' => function ($url, $data, $key) {
-                    return Html::a(Html::icon('settings'), ['/admin/images/default/edit-crop', 'id' => $data->id], array('class' => 'btn btn-sm btn-default copper'));
-                },
+                /* 'resize' => function ($url, $data, $key) {
+                     return Html::a(Html::icon('resize'), ['s'], array('class' => 'btn btn-sm btn-default attachment-zoom', 'data-fancybox' => 'gallery'));
+                 },
+                 'settings' => function ($url, $data, $key) {
+                     return Html::a(Html::icon('settings'), ['/admin/images/default/edit-crop', 'id' => $data->id], array('class' => 'btn btn-sm btn-default copper'));
+                 },*/
                 'delete' => function ($url, $data, $key) use ($model) {
-                    return Html::a(Html::icon('delete'), ['/images/default/delete', 'id' => $data->id], array('class' => 'btn btn-sm btn-danger attachment-delete linkTarget', 'data-id' => $data->id, 'data-object_id' => $model->id, 'data-model' => get_class($model)));
+                    return Html::a(Html::icon('delete'), ['/admin/images/default/delete', 'id' => $data->id], [
+                        'class' => 'btn btn-sm btn-danger attachment-delete linkTarget',
+                        'data-id' => $data->id,
+                        'data-object_id' => $model->id,
+                        'data-model' => get_class($model)
+                    ]);
                 },
             ]
         ]

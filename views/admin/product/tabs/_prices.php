@@ -33,50 +33,9 @@ if ($model->use_configurations) {
     ])->textInput(['maxlength' => 10]);
 }
 
-
-
-
-$commonAttributeOptions = [
-    'enableAjaxValidation'   => true,
-    'enableClientValidation' => false,
-    'validateOnChange'       => false,
-    'validateOnSubmit'       => true,
-    'validateOnBlur'         => false,
-];
-$enableActiveForm = true;
 ?>
 
-<?php /*echo \panix\ext\multipleinput\MultipleInput::widget([
-    'model' => $model,
-    'attribute' => 'questions',
-    'attributeOptions' => $commonAttributeOptions,
-    'columns' => [
-        [
-            'name' => 'question',
-            'title' => 'question',
-            'type' => 'textarea',
-        ],
-        [
-            'name' => 'answers',
-            'title' => 'answers',
-            'type'  => \panix\ext\multipleinput\MultipleInput::class,
-            'options' => [
-                'attributeOptions' => $commonAttributeOptions,
-                'columns' => [
-                    [
-                        'name' => 'right',
-                        'title' => 'asddasdsa',
-                        'type' => \panix\ext\multipleinput\MultipleInputColumn::TYPE_CHECKBOX
-                    ],
-                    [
-                        'name' => 'answer'
-                    ]
-                ]
-            ]
-        ]
-    ],
-]);*/ ?>
-<?php echo $form->field($model, 'prices')->widget(\panix\ext\multipleinput\MultipleInput::class, [
+<?php echo $form->field($model, 'prices')->label(false)->widget(\panix\ext\multipleinput\MultipleInput::class, [
     //'model' => $model,
     //'attribute' => 'phone',
     //'max' => 5,
@@ -84,11 +43,12 @@ $enableActiveForm = true;
     'allowEmptyList' => false,
     'enableGuessTitle' => true,
     'sortable' => true,
+    'addButtonOptions'=>['class'=>'text-right btn btn-sm btn-success'],
     'addButtonPosition' => \panix\ext\multipleinput\MultipleInput::POS_HEADER, // show add button in the header
     'columns' => [
         [
             'name' => 'value',
-            'title' => 'Цена',
+            'title' => $model::t('PRICE'),
             'type' => \panix\ext\multipleinput\MultipleInputColumn::TYPE_TEXT_INPUT,
             'enableError' => true,
             // 'title' => 'phone',

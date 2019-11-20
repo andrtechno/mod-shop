@@ -27,12 +27,6 @@ $form->field($model, 'manufacturer_id')->dropDownList(ArrayHelper::map(Manufactu
     'prompt' => html_entity_decode($model::t('SELECT_MANUFACTURER_ID'))
 ]);
 ?>
-<?=
-
-$form->field($model, 'supplier_id')->dropDownList(ArrayHelper::map(Supplier::find()->all(), 'id', 'name'), [
-    'prompt' => html_entity_decode($model::t('SELECT_SUPPLIER_ID'))
-]);
-?>
 
 <?=
 

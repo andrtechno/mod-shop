@@ -129,6 +129,7 @@ use panix\mod\shop\models\ProductType;
                         'content' => $this->render('tabs/_kit', ['exclude' => $model->id, 'form' => $form, 'model' => $model]),
                         'headerOptions' => [],
                         'options' => ['class' => 'flex-sm-fill text-center nav-item'],
+                        'visible' => false,
                     ];
                     $tabs[] = [
                         'label' => $model::t('TAB_VARIANTS'),
@@ -164,6 +165,7 @@ use panix\mod\shop\models\ProductType;
                             'content' => $this->render('tabs/_configurations', ['product' => $model]),
                             'headerOptions' => [],
                             'itemOptions' => ['class' => 'flex-sm-fill text-center nav-item'],
+                            'visible' => false,
                         ];
                     }
 

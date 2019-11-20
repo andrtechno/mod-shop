@@ -9,7 +9,7 @@ use panix\mod\shop\models\Supplier;
 <?=
 
 $form->field($model, 'supplier_id')->dropDownList(ArrayHelper::map(Supplier::find()->all(), 'id', 'name'), [
-    'prompt' => 'Укажите поставщика'
+    'prompt' => html_entity_decode($model::t('SELECT_SUPPLIER_ID'))
 ]);
 ?>
 

@@ -94,5 +94,11 @@ class ProductQuery extends ActiveQuery
         return $this;
     }
 
-
+    public function new($start, $end)
+    {
+        $modelClass = $this->modelClass;
+        $tableName = $modelClass::tableName();
+        $this->between($start, $end,'created_at');
+        return $this;
+    }
 }
