@@ -36,5 +36,11 @@ class AttributeQuery extends ActiveQuery
         return $this;
     }
 
+    public function displayOnList()
+    {
+        $this->andWhere(['display_on_list' => 1]);
+        return $this;
+    }
+
 
 }

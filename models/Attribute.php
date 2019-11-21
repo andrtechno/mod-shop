@@ -20,10 +20,12 @@ use panix\engine\db\ActiveRecord;
  * @property string $title
  * @property integer $type
  * @property boolean $display_on_front
+ * @property boolean $display_on_list
  * @property integer $ordern
  * @property boolean $required
  * @property boolean $use_in_compare
  * @property string $abbreviation
+ * @property AttributeOption[] $options
  * @property boolean $use_in_filter Display attribute options as filter on front
  * @property boolean $use_in_variants Use attribute and its options to configure products
  * @property boolean $select_many Allow to filter products on front by more than one option value.
@@ -130,7 +132,7 @@ class Attribute extends ActiveRecord
                 'message' => self::t('ID_BUSY')
             ],
             [['name', 'title', 'abbreviation'], 'string', 'max' => 255],
-            [['required', 'use_in_compare', 'use_in_filter', 'select_many', 'display_on_front', 'use_in_variants'], 'boolean'],
+            [['required', 'use_in_compare', 'use_in_filter', 'select_many', 'display_on_front', 'display_on_list', 'use_in_variants'], 'boolean'],
             ['name', 'match',
                 'pattern' => '/^([a-z0-9-])+$/i',
                 'message' => Yii::t('app', 'PATTERN_URL')
@@ -331,6 +333,15 @@ class Attribute extends ActiveRecord
 
 
         return parent::afterDelete();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function beforeSave($insert)
+    {
+        $this->name = mb_strtolower($this->name);
+        return parent::beforeSave($insert);
     }
 
 }

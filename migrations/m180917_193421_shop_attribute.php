@@ -26,6 +26,7 @@ class m180917_193421_shop_attribute extends Migration
             'name' => $this->string(255)->notNull(),
             'type' => $this->string(10)->notNull(),
             'display_on_front' => $this->boolean()->defaultValue(1),
+            'display_on_list' => $this->boolean()->defaultValue(0),
             'use_in_filter' => $this->boolean()->defaultValue(0),
             'use_in_variants' => $this->boolean()->defaultValue(0),
             'use_in_compare' => $this->boolean()->defaultValue(0),
@@ -50,6 +51,7 @@ class m180917_193421_shop_attribute extends Migration
 
         $this->createIndex('name', Attribute::tableName(), 'name');
         $this->createIndex('use_in_filter', Attribute::tableName(), 'use_in_filter');
+        $this->createIndex('display_on_list', Attribute::tableName(), 'display_on_list');
         $this->createIndex('display_on_front', Attribute::tableName(), 'display_on_front');
         $this->createIndex('ordern', Attribute::tableName(), 'ordern');
         $this->createIndex('use_in_variants', Attribute::tableName(), 'use_in_variants');
