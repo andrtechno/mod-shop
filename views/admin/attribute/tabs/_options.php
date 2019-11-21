@@ -12,6 +12,7 @@ use panix\mod\shop\models\AttributeOption;
     table.optionsEditTable input[type="text"] {
         width: 200px;
     }
+
     tr.copyMe {
         display: none;
     }
@@ -23,7 +24,8 @@ use panix\mod\shop\models\AttributeOption;
         <td class="text-center">&mdash;</td>
         <?php foreach (Yii::$app->languageManager->languages as $k => $l) { ?>
             <td>
-                <input name="sample" type="text" class="value form-control input-lang" style="background-image:url(/uploads/language/<?= $k ?>.png" />
+                <input name="sample" type="text" class="value form-control input-lang"
+                       style="background-image:url(/uploads/language/<?= $k ?>.png"/>
             </td>
         <?php } ?>
         <td class="text-center">&mdash;</td>
@@ -33,11 +35,6 @@ use panix\mod\shop\models\AttributeOption;
     </tr>
 </table>
 <?php
-
-
-
-
-
 
 
 $columns = [];
@@ -67,11 +64,11 @@ foreach ($model->options as $k => $o) {
 
         if ($otest) {
             $data2['name' . $k] = Html::textInput('options[' . $o->id . '][]', Html::decode($otest->value), ['class' => 'form-control input-lang', 'style' => 'background-image:url(/uploads/language/' . $k . '.png);']);
-        }else{
+        } else {
             $data2['name' . $k] = Html::textInput('options[' . $o->id . '][]', '', ['class' => 'form-control input-lang', 'style' => 'background-image:url(/uploads/language/' . $k . '.png);']);
         }
         $data2['products'] = Html::a($o->productsCount, ['/admin/shop/product/index', 'ProductSearch[eav][' . $model->name . ']' => $o->id], ['target' => '_blank']);
-        $data[$o->id] = (array) $data2;
+        $data[$o->id] = (array)$data2;
     }
 }
 
@@ -82,7 +79,7 @@ foreach (Yii::$app->languageManager->languages as $k => $l) {
         'header' => $l->name,
         'attribute' => 'name' . $k,
         'format' => 'raw',
-            //  'value' => '$data->name'
+        //  'value' => '$data->name'
     ];
     $sortAttributes[] = 'name' . $k;
 }
@@ -97,32 +94,30 @@ $columns[] = [
     'attribute' => 'delete',
     'format' => 'html',
     'contentOptions' => ['class' => 'text-center'],
-    'filterOptions'=>['class' => 'text-center'],
-    'filter' => '<a id="add-option-attribute" class="btn btn-sm btn-success" title="Добавить опцию" href="#"><i class="icon-add"></i></a>'
+    'filterOptions' => ['class' => 'text-center'],
+    'filter' => Html::a(Html::icon('add'), '#', ['title' => 'Добавить опцию', 'class' => 'btn btn-sm btn-success', 'id' => 'add-option-attribute'])
 ];
 
 
 $data_array = new \yii\data\ArrayDataProvider([
     'allModels' => $data,
     'pagination' => false,
-        ]);
-
-
+]);
 
 
 Pjax::begin([
     'id' => 'pjax-container',
-        //'enablePushState' => false,
-        //  'linkSelector' => 'a:not(.linkTarget)'
+    //'enablePushState' => false,
+    //  'linkSelector' => 'a:not(.linkTarget)'
 ]);
 echo panix\engine\grid\GridView::widget([
     'tableOptions' => ['class' => 'table table-striped optionsEditTable'],
     'dataProvider' => $data_array,
     'rowOptions' => ['class' => 'sortable-column'],
-    'enableLayout'=>false,
-    'layout'=>'{items}',
+    'enableLayout' => false,
+    'layout' => '{items}',
     'columns' => $columns,
-    'filterModel'=>true
+    'filterModel' => true
 ]);
 Pjax::end();
 ?>

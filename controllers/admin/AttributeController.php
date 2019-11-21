@@ -91,7 +91,11 @@ class AttributeController extends AdminController
         if ($model->load($post) && $model->validate()) {
             $model->save();
             $this->saveOptions($model);
-            $this->redirectPage($isNew, $post);
+            if($isNew){
+                $this->redirect(['update','id'=>$model->id]);
+            }else{
+                $this->redirectPage($isNew, $post);
+            }
         }
 
         return $this->render('update', ['model' => $model]);
@@ -99,7 +103,7 @@ class AttributeController extends AdminController
 
     /**
      * Save attribute options
-     * @param Attribute $model
+     * @param Attribute $model $this->redirect(['update','id'=>$model->id]);
      */
     protected function saveOptions($model)
     {
