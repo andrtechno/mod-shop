@@ -335,13 +335,4 @@ class Attribute extends ActiveRecord
         return parent::afterDelete();
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function beforeSave($insert)
-    {
-        $this->name = mb_strtolower($this->name);
-        return parent::beforeSave($insert);
-    }
-
 }
