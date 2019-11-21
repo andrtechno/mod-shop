@@ -103,7 +103,7 @@ class AttributeController extends AdminController
 
     /**
      * Save attribute options
-     * @param Attribute $model $this->redirect(['update','id'=>$model->id]);
+     * @param Attribute $model
      */
     protected function saveOptions($model)
     {
@@ -207,7 +207,7 @@ class AttributeController extends AdminController
                 'url' => ['/admin/shop/attribute-group'],
                 'visible' => true
             ],
-            [
+            /*[
                 'label' => Yii::t('shop/admin', 'ATTRIBUTE_GROUP'),
                 //'url' => ['/admin/shop/attribute-group'],
                 'visible' => true,
@@ -224,7 +224,7 @@ class AttributeController extends AdminController
                     ],
                 ]
 
-            ],
+            ],*/
         ];
     }
 
