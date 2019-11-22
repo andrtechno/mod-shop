@@ -50,6 +50,7 @@ class BaseUrlRule extends UrlRule
         $params = [];
         $pathInfo = $request->getPathInfo();
 
+        $basePathInfo= $pathInfo;
         if (empty($pathInfo))
             return false;
 
@@ -63,16 +64,15 @@ class BaseUrlRule extends UrlRule
                 $params['slug'] = ltrim($path[$this->alias]);
                 $_GET['slug'] = $params['slug'];
 
-                $pathInfo = ltrim(substr($pathInfo, strlen($path[$this->alias])), '/');
+                $pathInfo = ltrim(substr($basePathInfo, strlen($this->index.'/'.$path[$this->alias])), '/');
 
                 $parts = explode('/', $pathInfo);
                 $paramsList = array_chunk($parts, 2);
+
                 foreach ($paramsList as $k => $p) {
-                    if (isset($p[1])) {
+                    if (isset($p[1]) && isset($p[0])) {
                         $_GET[$p[0]] = $p[1];
                         $params[$p[0]] = $p[1];
-                    } else {
-                        throw new HttpException(404, Yii::t('app/error', '404'));
                     }
                 }
 

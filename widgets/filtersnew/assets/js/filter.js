@@ -222,7 +222,7 @@ $(function () {
     });
 
 
-    $(document).on('click', '#sorting-form button', function (e) {
+    $(document).on('click', '#sorting-form button2', function (e) {
         filter_ajax();
         console.log('#sorting-form button');
         e.preventDefault();
@@ -236,12 +236,6 @@ $(function () {
         return false;
     });
 
-    $(document).on('submit', '#sorting-form', function (e) {
-        filter_ajax();
-        console.log('#sorting-form');
-        e.preventDefault();
-        return false;
-    });
 
 
     /*
