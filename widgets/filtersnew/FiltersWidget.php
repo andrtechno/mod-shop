@@ -153,10 +153,10 @@ class FiltersWidget extends Widget
             'sql' => $dependencyQuery->createCommand()->rawSql,
         ]);
 
-
+//echo $dependencyQuery->createCommand()->rawSql;
         $count = Attribute::getDb()->cache(function () use ($model) {
             return $model->count();
-        }, 3600 * 24, $dependency);
+        }, 3600, $dependency);
 
         return $count;
     }

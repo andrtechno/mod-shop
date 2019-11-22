@@ -201,7 +201,8 @@ trait ProductTrait
                         'icon' => 'eye',
                         'linkOptions' => [
                             'onClick' => 'return setProductsStatus(1, this);',
-                            'data-confirm' => self::t('CONFIRM_SHOW')
+                            'data-confirm' => self::t('CONFIRM_SHOW'),
+                            'data-pjax' => 0
                         ],
                     ],
                     [
@@ -210,25 +211,28 @@ trait ProductTrait
                         'icon' => 'eye-close',
                         'linkOptions' => [
                             'onClick' => 'return setProductsStatus(0, this);',
-                            'data-confirm' => self::t('CONFIRM_HIDE')
+                            'data-confirm' => self::t('CONFIRM_HIDE'),
+                            'data-pjax' => 0
                         ],
                     ],
-                    [
+                    /*[
                         'label' => self::t('GRID_OPTION_SETCATEGORY'),
                         'url' => '#',
                         'icon' => 'folder-open',
                         'linkOptions' => [
                             'onClick' => 'return showCategoryAssignWindow(this);',
-                            'data-confirm' => self::t('CONFIRM_CATEGORY')
+                            'data-confirm' => self::t('CONFIRM_CATEGORY'),
+                            'data-pjax' => 0
                         ],
-                    ],
+                    ],*/
                     [
                         'label' => self::t('GRID_OPTION_COPY'),
                         'url' => '#',
                         'icon' => 'copy',
                         'linkOptions' => [
                             'onClick' => 'return showDuplicateProductsWindow(this);',
-                            'data-confirm' => self::t('CONFIRM_COPY')
+                            'data-confirm' => self::t('CONFIRM_COPY'),
+                            'data-pjax' => 0
                         ],
                     ],
                     [
@@ -237,7 +241,8 @@ trait ProductTrait
                         'icon' => 'currencies',
                         'linkOptions' => [
                             'onClick' => 'return setProductsPrice(this);',
-                            'data-confirm' => self::t('CONFIRM_PRICE')
+                            'data-confirm' => self::t('CONFIRM_PRICE'),
+                            'data-pjax' => 0
                         ],
                     ],
                     [
@@ -246,7 +251,8 @@ trait ProductTrait
                         'icon' => 'refresh',
                         'linkOptions' => [
                             'onClick' => 'return updateProductsViews(this);',
-                            'data-confirm' => self::t('CONFIRM_UPDATE_VIEWS')
+                            'data-confirm' => self::t('CONFIRM_UPDATE_VIEWS'),
+                            'data-pjax' => 0
                         ],
                     ]
                 ]

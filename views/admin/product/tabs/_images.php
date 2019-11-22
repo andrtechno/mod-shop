@@ -157,6 +157,7 @@ echo panix\engine\grid\GridView::widget([
                         'class' => 'btn btn-sm btn-danger attachment-delete linkTarget',
                         'data-id' => $data->id,
                         'data-object_id' => $model->id,
+                        'data-pjax'=>'0',
                         'data-model' => get_class($model)
                     ]);
                 },

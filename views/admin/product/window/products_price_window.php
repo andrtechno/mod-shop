@@ -3,12 +3,7 @@
 use panix\engine\bootstrap\ActiveForm;
 use panix\engine\bootstrap\Alert;
 
-$form = ActiveForm::begin([
-    'id' => 'updateprice-form',
-    'options' => [
-        'class' => 'form-horizontal',
-    ]
-]);
+$form = ActiveForm::begin();
 
 echo Alert::widget([
     'options' => [
@@ -18,7 +13,5 @@ echo Alert::widget([
 ]);
 echo $form->field($model, 'price')->textInput([
     //  'placeholder' => $model->getAttributeLabel('price'),
-    'class' => 'form-control'
 ]);
 ActiveForm::end();
-?>

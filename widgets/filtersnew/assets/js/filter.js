@@ -17,7 +17,7 @@
 }(jQuery));
 
 $(function () {
-    var selector = $('.card .card-collapse');
+    var selector = $('#filters .card-collapse');
     selector.collapse({
         toggle: false
     });

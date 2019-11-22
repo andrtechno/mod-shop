@@ -492,7 +492,7 @@ class ProductController extends AdminController
     {
         $request = Yii::$app->request;
         if ($request->isAjax) {
-            $product_ids = $request->post('products', array());
+            $product_ids = $request->post('products', []);
             parse_str($request->post('data'), $price);
             $products = Product::findAll($product_ids);
             foreach ($products as $p) {

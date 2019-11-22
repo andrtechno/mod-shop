@@ -9,6 +9,7 @@ use panix\mod\shop\models\Product;
 use panix\mod\shop\models\RelatedProduct;
 use panix\mod\shop\models\ProductVariant;
 use panix\engine\CMS;
+use yii\helpers\BaseFileHelper;
 
 class ProductsDuplicator extends \yii\base\Component
 {
@@ -79,7 +80,8 @@ class ProductsDuplicator extends \yii\base\Component
         $product->name .= $this->getSuffix();
         $product->slug .= CMS::slug($this->getSuffix()) . '-' . time();
         $product->main_category_id = $model->mainCategory->id;
-
+        $product->views = 0;
+        $product->added_to_cart_count = 0;
         $product->scenario = 'duplicate';
         if ($product->validate()) {
             if ($product->save()) {
@@ -115,18 +117,31 @@ class ProductsDuplicator extends \yii\base\Component
         $dir = Yii::$app->getModule('images')->imagesStorePath;
         if (!empty($images)) {
             foreach ($images as $image) {
+
+                $absolutePath = Yii::getAlias('@uploads/store') . DIRECTORY_SEPARATOR . $image->filePath;
+                $pictureFileName = substr(md5(microtime(true) . $absolutePath), 4, 6)
+                    . '.' .
+                    pathinfo($absolutePath, PATHINFO_EXTENSION);
+                $pictureSubDir = Yii::$app->getModule('images')->getModelSubDir($copy);
+                $storePath = Yii::$app->getModule('images')->getStorePath($copy);
+                $newAbsolutePath = $storePath .
+                    DIRECTORY_SEPARATOR . $pictureSubDir .
+                    DIRECTORY_SEPARATOR . $pictureFileName;
+
+
                 $image_copy = new Image();
 
                 $image_copy->object_id = $copy->id;
                 $image_copy->alt_title = $image->alt_title;
                 $image_copy->is_main = $image->is_main;
-                $image_copy->filePath = $image->filePath;
+                $image_copy->filePath = $pictureSubDir . '/' . $pictureFileName;
                 $image_copy->modelName = $image->modelName;
                 $image_copy->urlAlias = $copy->getAlias();
 
                 if ($image_copy->validate()) {
                     if ($image_copy->save()) {
-                        copy(Yii::getAlias($dir) . DIRECTORY_SEPARATOR . $image->filePath, Yii::getAlias($dir) . DIRECTORY_SEPARATOR . $image_copy->filePath);
+                        BaseFileHelper::createDirectory($storePath . DIRECTORY_SEPARATOR . $pictureSubDir, 0775, true);
+                        copy($absolutePath, $newAbsolutePath);
                     }
                 } else {
                     print_r($image_copy->getErrors());

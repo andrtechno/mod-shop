@@ -167,7 +167,7 @@ class CatalogController extends FilterController
         $this->breadcrumbs[] = $name;
 
 
- //var_dump(Yii::$app->request->headers['filter-ajax']);die;
+        //var_dump(Yii::$app->request->headers['filter-ajax']);die;
 
         if (Yii::$app->request->isAjax) {
 
@@ -183,10 +183,10 @@ class CatalogController extends FilterController
                         'itemView' => $this->itemView
                     ]),
                     'i' => $this->itemView,
-                    'currentFiltersData' => $this->renderPartial('@app/widgets/filters/current', [ //'@shop/widgets/filtersnew/views/current', '@app/widgets/filters/current'
+                    'currentFiltersData' => ($filterData) ? $this->renderPartial('@app/widgets/filters/current', [ //'@shop/widgets/filtersnew/views/current', '@app/widgets/filters/current'
                         'dataModel' => $this->dataModel,
                         'active' => $filterData
-                    ])
+                    ]) : null
                 ];
             } else {
                 return $this->renderPartial('listview', [

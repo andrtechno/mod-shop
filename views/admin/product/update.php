@@ -188,6 +188,11 @@ use panix\mod\shop\models\ProductType;
 
 
     </div>
+
+
+
+
+
 <?php
 
 $this->registerJs('
