@@ -12,7 +12,7 @@ return [
     'VIDEO' => 'Видео Youtube ссылка',
     'AUTO_DECREASE_QUANTITY' => 'Автоматически уменьшать количество',
     'QUANTITY' => 'Количество на складе',
-    'AVAILABILITY' => 'Доступность',
+    'AVAILABILITY' => 'Наличие',
     'AVAILABILITY_1' => 'Есть на складе',
     'AVAILABILITY_2' => 'Нет на складе',
     'AVAILABILITY_3' => 'Под заказ',

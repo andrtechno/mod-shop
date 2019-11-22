@@ -17,6 +17,7 @@ class CatalogController extends FilterController
 
     public function actionView()
     {
+
         $this->dataModel = $this->findModel(Yii::$app->request->getQueryParam('slug'));
         $this->currentUrl = $this->dataModel->getUrl();
         $this->query = Product::find();

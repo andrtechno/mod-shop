@@ -7,7 +7,7 @@ use Yii;
 use yii\web\HttpException;
 use yii\web\UrlRule;
 
-class BaseUrlRule extends UrlRule
+class BaseUrlRule1 extends UrlRule
 {
 
     public $pattern = 'manufacturer/<slug:[0-9a-zA-Z\-]+>';
@@ -65,17 +65,24 @@ class BaseUrlRule extends UrlRule
 
                 $pathInfo = ltrim(substr($pathInfo, strlen($path[$this->alias])), '/');
 
+
+                CMS::dump($params);
                 $parts = explode('/', $pathInfo);
                 $paramsList = array_chunk($parts, 2);
+
+                CMS::dump($paramsList);die;
+
+                unset($paramsList[0]);
+
                 foreach ($paramsList as $k => $p) {
                     if (isset($p[1])) {
                         $_GET[$p[0]] = $p[1];
                         $params[$p[0]] = $p[1];
                     } else {
+
                         throw new HttpException(404, Yii::t('app/error', '404'));
                     }
                 }
-
                 return [$this->route, $params];
             }
         }

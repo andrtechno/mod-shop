@@ -32,7 +32,7 @@ class ProductController extends WebController
             //$ancestors = $category->ancestors()->excludeRoot()->addOrderBy('depth')->all();
             $this->breadcrumbs[] = [
                 'label' => Yii::t('shop/default', 'CATALOG'),
-                'url' => ['/shop']
+                'url' => ['/catalog']
             ];
             foreach ($ancestors as $c) {
                 /** @var $c Category */

@@ -236,6 +236,13 @@ $(function () {
         return false;
     });
 
+    $(document).on('submit', '#sorting-form', function (e) {
+        filter_ajax();
+        console.log('#sorting-form');
+        e.preventDefault();
+        return false;
+    });
+
 
     /*
      $('#sorting-form a').click(function (e) {

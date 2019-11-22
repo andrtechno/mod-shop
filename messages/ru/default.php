@@ -4,6 +4,7 @@ return [
     'MODULE_DESC' => 'Управление магазином',
     'CATALOG' => 'Каталог',
     'SPECIFICATION' => 'характеристики',
+    'FILTERS' => 'Фильтры',
     'RESET_FILTERS_BTN' => 'Сбросить фильтры',
     'FILTER_CURRENT' => 'Выбранные фильтры',
     'FILTER_BY_PRICE' => 'Цена',

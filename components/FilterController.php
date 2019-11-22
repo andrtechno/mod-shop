@@ -12,6 +12,13 @@ use panix\engine\controllers\WebController;
 use yii\base\Exception;
 use yii\helpers\Url;
 
+/**
+ * Class FilterController
+ *
+ * @property array $activeAttributes
+ *
+ * @package panix\mod\shop\components
+ */
 class FilterController extends WebController
 {
     /**

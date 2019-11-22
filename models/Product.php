@@ -53,6 +53,7 @@ use panix\engine\db\ActiveRecord;
  * @property boolean $isAvailable
  * @property Category $categories
  * @property array $eavAttributes
+ * @property \panix\mod\comments\models\Comments $commentsCount
  * @property Kit $kit
  * @property ProductPrices[] $prices
  * @property ProductVariant[] $variants
