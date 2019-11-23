@@ -776,20 +776,9 @@ class Product extends ActiveRecord
         return $this->_configurable_attributes;
     }
 
-    // public function getMainImageUrl() {
-    //  return $this->getImage()->getUrl('50x50');
-    // }
-
-    /*
-      // 'related' => array(self::HAS_MANY, 'RelatedProduct', 'product_id'),
-      'relatedProducts' => array(self::HAS_MANY, 'Product', array('related_id' => 'id'), 'through' => 'related'),
-      //'relatedProductCount' => array(self::STAT, 'RelatedProduct', 'product_id'),
-     *  */
-
-    //use EavTrait; // need for full support label of fields
-    //public function getEavAttributes() {
-    //     return $this->hasMany(mazurva\eav\models\EavAttribute::className(), ['categoryId' => 'id']);
-    // }
+    /**
+     * @inheritdoc
+     */
     public function __get($name)
     {
         if (substr($name, 0, 4) === 'eav_') {
@@ -803,7 +792,7 @@ class Product extends ActiveRecord
                 return null;
 
             $attribute = substr($name, 4);
-
+            /** @var \panix\mod\shop\components\EavBehavior $this */
             $eavData = $this->getEavAttributes();
 
             if (isset($eavData[$attribute]))
@@ -819,8 +808,6 @@ class Product extends ActiveRecord
 
     public function behaviors()
     {
-
-
         $a = [];
 
         $a['sitemap'] = [

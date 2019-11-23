@@ -484,7 +484,7 @@ class EavBehavior extends \yii\base\Behavior
      * @param array $attributes values or key for filter models.
      * @return ActiveRecord
      */
-    public function ___withEavAttributes($attributes = array())
+    public function ___withEavAttributes($attributes = [])
     {
         // If not set attributes, search models with anything attributes exists.
         if (empty($attributes)) {
@@ -548,8 +548,8 @@ class EavBehavior extends \yii\base\Behavior
 
     /**
      * @access protected
-     * @param  $attribute
-     * @param  $value
+     * @param string $attribute
+     * @param string $value
      * @return yii\db\Command
      */
     protected function getSaveEavAttributeCommand($attribute, $value)
@@ -559,7 +559,7 @@ class EavBehavior extends \yii\base\Behavior
             $this->attributeField => $attribute,
             $this->valueField => $value,
         ];
-        return $this->owner->db->createCommand()->insert($this->tableName, $data);
+        return Yii::$app->db->createCommand()->insert($this->tableName, $data);
         /* return $this->owner
           ->getCommandBuilder()
           ->createInsertCommand($this->tableName, $data); */
@@ -567,34 +567,25 @@ class EavBehavior extends \yii\base\Behavior
 
     /**
      * @access protected
-     * @param  $attributes
+     * @param array $attributes
      * @return yii\db\Query
      */
     protected function getLoadEavAttributesQuery($attributes)
     {
-        //  print_r($attributes);
-        // return [];
-        //      $criteria->addCondition("{$this->entityField} = {$this->getModelId()}");
-        // if (!empty($attributes)) {
-        //     $criteria->addInCondition($this->attributeField, $attributes);
-        // }
         $query = new Query;
-// compose the query
         $query->from($this->tableName)->where([$this->entityField => $this->getModelId()]);
         if (!empty($attributes)) {
             $query->andWhere(['IN', $this->attributeField, $attributes]);
         }
-
         return $query;
-
     }
 
     /**
      * @access protected
-     * @param  $attributes
+     * @param array $attributes
      * @return yii\db\Command
      */
-    protected function getDeleteCommand($attributes = array())
+    protected function getDeleteCommand(array $attributes = [])
     {
         $condition[$this->entityField] = $this->getModelId();
         if (!empty($attributes)) {

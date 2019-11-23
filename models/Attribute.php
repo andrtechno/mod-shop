@@ -17,6 +17,7 @@ use panix\engine\db\ActiveRecord;
  * The followings are the available columns in table 'Attribute':
  * @property integer $id
  * @property string $name
+ * @property string $hint
  * @property string $title
  * @property integer $type
  * @property boolean $display_on_front
