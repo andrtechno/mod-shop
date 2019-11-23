@@ -570,13 +570,14 @@ class EavBehavior extends \yii\base\Behavior
      * @param array $attributes
      * @return yii\db\Query
      */
-    protected function getLoadEavAttributesQuery($attributes)
+    public function getLoadEavAttributesQuery($attributes)
     {
         $query = new Query;
         $query->from($this->tableName)->where([$this->entityField => $this->getModelId()]);
         if (!empty($attributes)) {
             $query->andWhere(['IN', $this->attributeField, $attributes]);
         }
+        //echo $query->createCommand()->rawSql;die;
         return $query;
     }
 

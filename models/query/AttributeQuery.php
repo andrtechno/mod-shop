@@ -30,17 +30,41 @@ class AttributeQuery extends ActiveQuery
         return $this;
     }
 
+    /**
+     * Отобрадение атрибутов в товаре
+     * @return $this
+     */
     public function displayOnFront()
     {
         $this->andWhere(['display_on_front' => 1]);
         return $this;
     }
-
+    /**
+     * Отобрадение атрибутов в списке
+     * @return $this
+     */
     public function displayOnList()
     {
         $this->andWhere(['display_on_list' => 1]);
         return $this;
     }
-
+    /**
+     * Отобрадение атрибутов в сетке
+     * @return $this
+     */
+    public function displayOnGrid()
+    {
+        $this->andWhere(['display_on_grid' => 1]);
+        return $this;
+    }
+    /**
+     * Отобрадение атрибутов в корзине
+     * @return $this
+     */
+    public function displayOnCart()
+    {
+        $this->andWhere(['display_on_cart' => 1]);
+        return $this;
+    }
 
 }

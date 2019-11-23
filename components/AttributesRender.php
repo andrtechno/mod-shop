@@ -106,7 +106,7 @@ class AttributesRender extends Widget
         if (is_array($this->_models))
             return $this->_models;
 
-        $this->_models = array();
+        $this->_models = [];
         //$cr = new CDbCriteria;
         //$cr->addInCondition('t.name', array_keys($this->_attributes));
 
@@ -130,7 +130,7 @@ class AttributesRender extends Widget
         if (is_array($this->_models))
             return $this->_models;
 
-        $this->_models = array();
+        $this->_models = [];
         //$cr = new CDbCriteria;
         //$cr->addInCondition('t.name', array_keys($this->_attributes));
         /*$query = Attribute::find(['IN', 'name', array_keys($this->_attributes)])

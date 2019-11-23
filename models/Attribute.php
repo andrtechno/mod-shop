@@ -133,7 +133,17 @@ class Attribute extends ActiveRecord
                 'message' => self::t('ID_BUSY')
             ],
             [['name', 'title', 'abbreviation'], 'string', 'max' => 255],
-            [['required', 'use_in_compare', 'use_in_filter', 'select_many', 'display_on_front', 'display_on_list', 'use_in_variants'], 'boolean'],
+            [[
+                'required',
+                'use_in_compare',
+                'use_in_filter',
+                'select_many',
+                'display_on_front',
+                'display_on_list',
+                'display_on_grid',
+                'display_on_cart',
+                'use_in_variants'
+            ], 'boolean'],
             ['name', 'match',
                 'pattern' => '/^([a-z0-9-])+$/i',
                 'message' => Yii::t('app', 'PATTERN_URL')

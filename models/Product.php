@@ -800,12 +800,25 @@ class Product extends ActiveRecord
             else
                 return null;
 
-            $attributeModel = Attribute::find()->where(['name' => $attribute])->cache(3600 * 24, $dependency)->one();
+
+
+            $attributeModel = Attribute::getDb()->cache(function ($db) use ($attribute) {
+                $q=Attribute::find()->where(['name' => $attribute]);
+
+                $result  = $q->one();
+                return $result;
+            });
+
+
+            //$attributeModel = Attribute::find()->where(['name' => $attribute])->cache(3600 * 24, $dependency)->one();
             return $attributeModel->renderValue($value);
         }
         return parent::__get($name);
     }
 
+    public function getEavList(){
+
+    }
     public function behaviors()
     {
         $a = [];
