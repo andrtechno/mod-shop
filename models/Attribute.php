@@ -27,6 +27,7 @@ use panix\engine\db\ActiveRecord;
  * @property boolean $use_in_compare
  * @property string $abbreviation
  * @property AttributeOption[] $options
+ * @property TypeAttribute[] $types
  * @property boolean $use_in_filter Display attribute options as filter on front
  * @property boolean $use_in_variants Use attribute and its options to configure products
  * @property boolean $select_many Allow to filter products on front by more than one option value.
@@ -44,6 +45,15 @@ class Attribute extends ActiveRecord
     const TYPE_YESNO = 7;
     const MODULE_ID = 'shop';
     public $translationClass = AttributeTranslate::class;
+
+    public function beforeSave($insert)
+    {
+        if (!in_array($this->type, [self::TYPE_DROPDOWN, self::TYPE_RADIO_LIST, self::TYPE_CHECKBOX_LIST, self::TYPE_SELECT_MANY])) {
+            $this->use_in_filter = false;
+            $this->select_many = false;
+        }
+        return parent::beforeSave($insert);
+    }
 
     public static function find()
     {
@@ -98,10 +108,10 @@ class Attribute extends ActiveRecord
 
     public function getOptions()
     {
-        $table = self::tableName();
-        $dependency = new DbDependency();
-        $dependency->sql = "SELECT MAX(updated_at) FROM {$table}";
-        return $this->hasMany(AttributeOption::class, ['attribute_id' => 'id'])->cache(3600, $dependency);
+        // $table = self::tableName();
+        // $dependency = new DbDependency();
+        // $dependency->sql = "SELECT MAX(updated_at) FROM {$table}";
+        return $this->hasMany(AttributeOption::class, ['attribute_id' => 'id']);//->cache(3600, $dependency);
     }
 
     public function getGroups()
@@ -252,8 +262,8 @@ class Attribute extends ActiveRecord
                     'tag' => false,
                     'item' => function ($index, $label, $name, $checked, $value) {
                         return '<div class="custom-control custom-checkbox">
-' . Html::checkbox($name, $checked, ['value'=>$value,'class' => 'custom-control-input', 'id' => $this->getIdByName().$index]) . '
-' . Html::label($label, $this->getIdByName().$index, ['class' => 'custom-control-label']) . '
+' . Html::checkbox($name, $checked, ['value' => $value, 'class' => 'custom-control-input', 'id' => $this->getIdByName() . $index]) . '
+' . Html::label($label, $this->getIdByName() . $index, ['class' => 'custom-control-label']) . '
 </div>';
                     }
                 ]);
