@@ -2,11 +2,11 @@
 
 namespace panix\mod\shop\controllers\admin;
 
+use panix\engine\CMS;
 use panix\mod\shop\components\EavBehavior;
 use Yii;
 use yii\helpers\Html;
 use yii\helpers\Json;
-use panix\mod\shop\bundles\admin\ProductIndex;
 use panix\mod\shop\models\Product;
 use panix\mod\shop\models\search\ProductSearch;
 use panix\engine\controllers\AdminController;
@@ -173,21 +173,19 @@ class ProductController extends AdminController
                 $model->file = \yii\web\UploadedFile::getInstances($model, 'file');
 
 
-                if (Yii::$app->request->post('AttachmentsMainId')) {
-                    $test = $model->getImages();
+                //if (Yii::$app->request->post('AttachmentsMainId')) {
+                   // $test = $model->getImages();
                     //print_r($test);
-                }
+                //}
 
 
                 if ($model->file) {
                     foreach ($model->file as $file) {
-                        $uniqueName = \panix\engine\CMS::gen(10);
-                        $file->saveAs(Yii::getAlias('@uploads') . '/' . $uniqueName . '_' . $file->baseName . '.' . $file->extension);
-                        $model->attachImage(Yii::getAlias('@uploads') . '/' . $uniqueName . '_' . $file->baseName . '.' . $file->extension);
+                        $model->attachImage($file);
                     }
                 }
                 if (isset(Yii::$app->request->post('Product')['prices']) && !empty(Yii::$app->request->post('Product')['prices'])) {
-                    var_dump(Yii::$app->request->post('Product')['prices']);die;
+                    //var_dump(Yii::$app->request->post('Product')['prices']);die;
                     $model->processPrices(Yii::$app->request->post('Product')['prices']);
                 }
                 $this->processAttributes($model);
@@ -366,6 +364,7 @@ class ProductController extends AdminController
         if (empty($attributes))
             return false;
 
+
         /**
          * @var EavBehavior|Product $deleteModel
          * @var EavBehavior|Product $model
@@ -374,12 +373,19 @@ class ProductController extends AdminController
         $deleteModel->deleteEavAttributes([], true);
         // Delete empty values
         foreach ($attributes as $key => $val) {
-            if (is_string($val) && $val === '') {
-                unset($attributes[$key]);
-                // $attributes->remove($key);
-            }
-
+                if (is_string($val) && $val === '') {
+                    unset($attributes[$key]);
+                }
         }
+
+
+        /*foreach ($attributes as $key => $val) {
+            foreach ($val as $k=>$v){
+                if (is_string($v) && $v === '') {
+                    unset($attributes[$key][$k]);
+                }
+            }
+        }*/
 
         return $model->setEavAttributes($attributes, true);
     }
