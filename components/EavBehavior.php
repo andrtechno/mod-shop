@@ -373,12 +373,12 @@ class EavBehavior extends \yii\base\Behavior
                     $value = [$current, $value];
             }
 
-                $this->attributes[$attribute] = $value;
+            $this->attributes[$attribute] = $value;
 
 
         }
-     //    print_r($this->attributes);die;
-       // echo unserialize('s:3:"123";');
+        //    print_r($this->attributes);die;
+        // echo unserialize('s:3:"123";');
 
         // Save loaded attributes to cache.
         //$this->cache->set($this->getCacheKey(), $this->attributes->toArray());
