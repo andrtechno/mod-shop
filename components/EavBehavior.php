@@ -356,13 +356,9 @@ class EavBehavior extends \yii\base\Behavior
             $value = $row[$this->valueField];
 
             if(!is_int($value)){
-
                 $pattern = '/^(\")(.*)(\")$/i';
                 $replacement = '$2';
                 $value =preg_replace($pattern, $replacement, $value);
-
-              //  $value=str_replace('"',"",$value);
-
             }
 
             // Check if value exists.
