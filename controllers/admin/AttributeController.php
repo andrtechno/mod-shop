@@ -88,12 +88,13 @@ class AttributeController extends AdminController
         $post = Yii::$app->request->post();
 
         $isNew = $model->isNewRecord;
-        if ($model->load($post) && $model->validate()) {
+        if ($model->load($post) && $model->validate() && $model->validateOptions()) {
             $model->save();
             $this->saveOptions($model);
-            if($isNew){
-                $this->redirect(['update','id'=>$model->id]);
-            }else{
+
+            if ($isNew) {
+                $this->redirect(['update', 'id' => $model->id]);
+            } else {
                 $this->redirectPage($isNew, $post);
             }
         }
@@ -114,7 +115,7 @@ class AttributeController extends AdminController
 
 
             foreach ($_POST['options'] as $id => $val) {
-                if (isset($val[0]) && $val[0] != '') {
+                if (isset($val[0]) && $val[0] != '' && !empty($val[0])) {
                     $index = 0;
                     $attributeOption = AttributeOption::find()
                         ->where(['id' => $id, 'attribute_id' => $model->id])
