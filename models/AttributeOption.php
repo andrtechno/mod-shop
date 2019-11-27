@@ -45,7 +45,7 @@ class AttributeOption extends ActiveRecord
         ];
     }
 
-    public function transactions()
+    public function transactions2()
     {
         return [
             self::SCENARIO_DEFAULT => self::OP_INSERT | self::OP_UPDATE,
@@ -54,18 +54,19 @@ class AttributeOption extends ActiveRecord
 
     public function getProductsCount()
     {
-        $query = $this->hasMany(ProductAttributesEav::class, ['value' => 'id']);
+        //  echo $this->hasMany(ProductAttributesEav::class, ['value' => 'id'])->createCommand()->rawSql;die;
+        return $this->hasMany(ProductAttributesEav::class, ['value' => 'id'])->count();
 
 
-        $dependencyQuery = $query;
-        $dependencyQuery->select('COUNT(*)');
-        $dependency = new DbDependency([
-            'sql' => $dependencyQuery->createCommand()->rawSql,
-        ]);
+        //$dependencyQuery = $query;
+        //$dependencyQuery->select('COUNT(*)');
+        //$dependency = new DbDependency([
+        //    'sql' => $dependencyQuery->createCommand()->rawSql,
+        //]);
 
 
         //print_r($query->createCommand()->rawSql);die;
-        return $query->cache(3200, $dependency)->count();
+        //return $query; //->cache(3200, $dependency)
     }
 
 

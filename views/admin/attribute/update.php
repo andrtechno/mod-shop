@@ -1,6 +1,6 @@
 <?php
 
-use yii\helpers\Html;
+use panix\engine\Html;
 use panix\engine\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
 
@@ -34,12 +34,14 @@ $form = ActiveForm::begin([
                 'items' => [
                     [
                         'label' => 'Основные',
+                        'encode' => false,
                         'content' => $this->render('tabs/_main', ['form' => $form, 'model' => $model]),
                         'active' => true,
 
                     ],
                     [
-                        'label' => 'Опции',
+                        'label' => (isset($model->tab_errors['options'])) ? Html::icon('warning', ['class' => 'text-danger','title'=>$model->tab_errors['options']]) . ' Опции' : 'Опции',
+                        'encode' => false,
                         'content' => $this->render('tabs/_options', ['form' => $form, 'model' => $model]),
                         'headerOptions' => [],
 

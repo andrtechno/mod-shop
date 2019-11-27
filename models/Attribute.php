@@ -46,14 +46,6 @@ class Attribute extends ActiveRecord
     const MODULE_ID = 'shop';
     public $translationClass = AttributeTranslate::class;
 
-    public function beforeSave($insert)
-    {
-        if (!in_array($this->type, [self::TYPE_DROPDOWN, self::TYPE_RADIO_LIST, self::TYPE_CHECKBOX_LIST, self::TYPE_SELECT_MANY])) {
-            $this->use_in_filter = false;
-            $this->select_many = false;
-        }
-        return parent::beforeSave($insert);
-    }
 
     public static function find()
     {
@@ -219,6 +211,33 @@ class Attribute extends ActiveRecord
     }
 
     /**
+     * Validate duplicates values of options
+     * @return bool
+     */
+    public function validateOptions()
+    {
+        $post = Yii::$app->request->post();
+        if (isset($post['options'])) {
+            $opt = [];
+            foreach ($post['options'] as $k => $v) {
+                $opt[] = $v[0];
+            }
+            if ($this->hasDuplicates($opt)) {
+                //Yii::$app->controller->tab_errors['options'] = true;
+                $this->tab_errors['options'] = 'Ошибка: Duplicates options';
+                $this->addError('name', 'duplicate');
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private function hasDuplicates($array)
+    {
+        return count($array) !== count(array_unique($array));
+    }
+
+    /**
      * @param null $value
      * @param string $inputClass
      * @return string html field based on attribute type
@@ -226,7 +245,7 @@ class Attribute extends ActiveRecord
     public function renderField($value = null, $inputClass = '')
     {
 
-        $name = 'Attribute[' . $this->name . ']';
+        $name = 'Attribute[' . $this->name . ']';//@todo added $this->type[' . $this->type . ']
         switch ($this->type) {
             case self::TYPE_TEXT:
                 return Html::textInput($name, $value, ['class' => 'form-control ' . $inputClass]);
@@ -346,6 +365,21 @@ class Attribute extends ActiveRecord
         return $list[$type];
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function beforeSave($insert)
+    {
+        if (!in_array($this->type, [self::TYPE_DROPDOWN, self::TYPE_RADIO_LIST, self::TYPE_CHECKBOX_LIST, self::TYPE_SELECT_MANY])) {
+            $this->use_in_filter = false;
+            $this->select_many = false;
+        }
+        return parent::beforeSave($insert);
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function afterDelete()
     {
         // Delete options
@@ -357,7 +391,7 @@ class Attribute extends ActiveRecord
 
         // Delete attributes assigned to products
         $conn = $this->getDb();
-        $conn->createCommand()->delete('{{%shop__product_attribute_eav}}', "`attribute`='{$this->name}'")->execute();
+        $conn->createCommand()->delete(ProductAttributesEav::tableName(), "`attribute`='{$this->name}'")->execute();
 
 
         return parent::afterDelete();
