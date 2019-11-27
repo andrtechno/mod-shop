@@ -14,6 +14,7 @@ use panix\mod\shop\models\ProductType;
 use panix\mod\shop\models\Attribute;
 use panix\mod\shop\models\AttributeOption;
 use panix\mod\shop\models\ProductVariant;
+use yii\helpers\StringHelper;
 use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
 use yii\web\Response;
@@ -373,22 +374,33 @@ class ProductController extends AdminController
         $deleteModel = Product::findOne($model->id);
         $deleteModel->deleteEavAttributes([], true);
         // Delete empty values
-        foreach ($attributes as $key => $val) {
+        /*foreach ($attributes as $key => $val) {
             if (is_string($val) && $val === '') {
                 unset($attributes[$key]);
             }
-        }
-
-
-        /*foreach ($attributes as $key => $val) {
-            foreach ($val as $k=>$v){
-                if (is_string($v) && $v === '') {
-                    unset($attributes[$key][$k]);
-                }
-            }
         }*/
 
-        return $model->setEavAttributes($attributes, true);
+        $reAttributes=[];
+        foreach ($attributes as $key => $val) {
+
+            if (in_array($key, [Attribute::TYPE_TEXT, Attribute::TYPE_TEXTAREA, Attribute::TYPE_YESNO])) {
+                foreach ($val as $k=>$v){
+                    $reAttributes[$k]='"'.$v.'"';
+                    if (is_string($v) && $v === '') {
+                        unset($reAttributes[$k]);
+                    }
+                }
+            }else{
+                foreach ($val as $k=>$v){
+                    $reAttributes[$k]=$v;
+                    if (is_string($v) && $v === '') {
+                        unset($reAttributes[$k]);
+                    }
+                }
+            }
+        }
+
+        return $model->setEavAttributes($reAttributes, true);
     }
 
     /**
@@ -542,7 +554,7 @@ class ProductController extends AdminController
     {
         if (Yii::$app->request->isAjax) {
             $model = new Product;
-            return $this->renderPartial('window/products_price_window', ['model' => $model]);
+            return $this->renderAjax('window/products_price_window', ['model' => $model]);
         } else {
             throw new ForbiddenHttpException(Yii::t('app/error', '403'));
         }

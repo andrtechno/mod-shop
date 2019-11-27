@@ -8,6 +8,7 @@ use Yii;
 use yii\base\Exception;
 use yii\db\ActiveRecord;
 use yii\db\Query;
+use yii\helpers\StringHelper;
 
 class EavBehavior extends \yii\base\Behavior
 {
@@ -354,6 +355,16 @@ class EavBehavior extends \yii\base\Behavior
             $attribute = $this->stripPrefix($row[$this->attributeField]);
             $value = $row[$this->valueField];
 
+            if(!is_int($value)){
+
+                $pattern = '/^(\")(.*)(\")$/i';
+                $replacement = '$2';
+                $value =preg_replace($pattern, $replacement, $value);
+
+              //  $value=str_replace('"',"",$value);
+
+            }
+
             // Check if value exists.
             $attr = (isset($this->attributes[$attribute])) ? $this->attributes[$attribute] : NULL;
             if (!is_null($current = $attr) && $current != $value) {
@@ -365,9 +376,13 @@ class EavBehavior extends \yii\base\Behavior
                 } else
                     $value = [$current, $value];
             }
-            $this->attributes[$attribute] = $value;
-        }
 
+                $this->attributes[$attribute] = $value;
+
+
+        }
+     //    print_r($this->attributes);die;
+       // echo unserialize('s:3:"123";');
 
         // Save loaded attributes to cache.
         //$this->cache->set($this->getCacheKey(), $this->attributes->toArray());

@@ -17,6 +17,7 @@
 
 var grid = $('#grid-product');
 var pjax = $('#pjax-grid-product');
+var uiDialog = $('.ui-dialog');
 /**
  * Update selected comments status
  * @param status_id
@@ -122,10 +123,12 @@ function showCategoryAssignWindow(el_clicked) {
         $('body').append(div);
     }
 
-    $('body').scrollTop(30);
+    // $('body').scrollTop(30);
 
     var dialog = $("#set_categories_dialog");
-    dialog.load('/admin/shop/product/render-category-assign-window');
+    dialog.load('/admin/shop/product/render-category-assign-window', {}, function () {
+        uiDialog.position({my: 'center', at: 'center', of: window});
+    });
 
     dialog.dialog({
         //  position:'top',
@@ -136,20 +139,12 @@ function showCategoryAssignWindow(el_clicked) {
         close: function (event, ui) {
             //$(this).dialog("close");
             // dialog.closest('.ui-dialog-content').dialog('close');
-            $(this).dialog('destroy').remove();
+            uiDialog.dialog('close');
         },
         open: function () {
-            $('.ui-dialog').position({
-                my: 'center',
-                at: 'center',
-                of: window,
-                collision: 'fit'
-            });
-
             $('.ui-widget-overlay').bind('click', function () {
                 dialog.dialog('close');
             });
-
         },
         buttons: [{
             text: 'Назначить',
@@ -169,7 +164,7 @@ function showCategoryAssignWindow(el_clicked) {
                     return;
                 }
 
-                if (confirm($(el_clicked).data('confirm'))) {
+                //if (confirm($(el_clicked).data('confirm'))) {
                     $.ajax(common.url('/admin/shop/product/assign-categories'), {
                         type: "post",
                         dataType: "json",
@@ -189,7 +184,7 @@ function showCategoryAssignWindow(el_clicked) {
                             $('#alert-s').html('<div class="alert alert-danger">Ошибка</div>');
                         }
                     });
-                }
+                //}
             },
         }, {
             text: common.message.cancel,
@@ -199,6 +194,7 @@ function showCategoryAssignWindow(el_clicked) {
             }
         }]
     });
+    uiDialog.position({my: 'center', at: 'center', of: window});
 }
 
 function showDuplicateProductsWindow(link_clicked) {
@@ -209,14 +205,20 @@ function showDuplicateProductsWindow(link_clicked) {
     }
 
     var dialog = $("#duplicate_products_dialog");
-    dialog.load(common.url('/admin/shop/product/render-duplicate-products-window')); //render-duplicate-products-window
+    dialog.load(common.url('/admin/shop/product/render-duplicate-products-window'), {}, function () {
+        uiDialog.position({my: 'center', at: 'center', of: window});
+    });
 
     dialog.dialog({
         modal: true,
         resizable: false,
         close: function () {
-            //this.close();
-            dialog.dialog('destroy').remove();
+            uiDialog.dialog('destroy').remove();
+        },
+        open: function () {
+            $('.ui-widget-overlay').bind('click', function () {
+                dialog.dialog('close');
+            });
         },
         buttons: [{
             text: 'Копировать',
@@ -253,6 +255,7 @@ function showDuplicateProductsWindow(link_clicked) {
                 }
             }]
     });
+    uiDialog.position({my: 'center', at: 'center', of: window});
 }
 
 
@@ -260,33 +263,48 @@ function setProductsPrice(link_clicked) {
     if ($("#prices_products_dialog").length == 0) {
         var div = $('<div id="prices_products_dialog"/>');
         $(div).attr('title', 'Установить цену');
-        $('body').append(div);
+        $('body',document).append(div);
+    }else{
+        console.log('already dialog data');
+        return;
     }
 
     var dialog = $("#prices_products_dialog");
-    dialog.load(common.url('/admin/shop/product/render-products-price-window'));
+    dialog.load(common.url('/admin/shop/product/render-products-price-window'), {}, function () {
+        uiDialog.position({my: 'center', at: 'center', of: window});
+    });
 
     dialog.dialog({
         modal: true,
+        appendTo:grid,
         resizable: false,
         responsive: true,
         draggable: false,
+        close: function () {
+            uiDialog.dialog('close');
+            dialog.remove();
+        },
+        open: function () {
+            $('.ui-widget-overlay').bind('click', function () {
+                dialog.dialog('close');
+            });
+        },
         buttons: [{
             text: 'Установить',
             'class': 'btn btn-primary',
             click: function () {
 
-                $.ajax('/admin/shop/product/set-products', {
+                $.ajax(common.url('/admin/shop/product/set-products'), {
                     type: "post",
+                    dataType: 'json',
                     data: {
                         products: grid.yiiGridView('getSelectedRows'),
                         data: $("#prices_products_dialog form").serialize()
                     },
                     success: function (data) {
-                        $(dialog).dialog("close");
-                        grid.yiiGridView('applyFilter');
-                        //$.fn.yiiGridView.update('product-grid');
-
+                        dialog.dialog('destroy').remove();
+                        $.pjax.reload(pjax, {timeout: false});
+                        common.notify(data.message, 'success');
                     },
                     error: function () {
                         common.notify("Ошибка", 'error');
@@ -298,28 +316,28 @@ function setProductsPrice(link_clicked) {
             text: common.message.cancel,
             'class': 'btn btn-secondary',
             click: function () {
-                $(this).dialog("close");
+                uiDialog.dialog('destroy').remove();
             }
         }]
     });
+    uiDialog.position({my: 'center', at: 'center', of: window});
 
-    dialog.position({my: 'center', at: 'center', of: window, collision: 'fit'});
 }
 
 // Хак для отправки с диалогового окна формы через ENTER
 // Оправка происходит для первый кнопки.
-$(function () {
-    $.extend($.ui.dialog.prototype.options, {
-        create: function () {
-            var $this = $(this);
-            // focus first button and bind enter to it
-            $this.parent().find('.ui-dialog-buttonpane button:first').focus();
-            $this.keypress(function (e) {
-                if (e.keyCode === $.ui.keyCode.ENTER) {
-                    $this.parent().find('.ui-dialog-buttonpane button:first').click();
-                    return false;
-                }
-            });
-        }
-    });
-});
+/*$(function () {
+ $.extend($.ui.dialog.prototype.options, {
+ create: function () {
+ var $this = $(this);
+ // focus first button and bind enter to it
+ $this.parent().find('.ui-dialog-buttonpane button:first').focus();
+ $this.keypress(function (e) {
+ if (e.keyCode === $.ui.keyCode.ENTER) {
+ $this.parent().find('.ui-dialog-buttonpane button:first').click();
+ return false;
+ }
+ });
+ }
+ });
+ });*/

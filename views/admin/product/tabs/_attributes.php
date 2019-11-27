@@ -32,11 +32,11 @@ $attributes = (isset($model->type->shopAttributes)) ? $model->type->shopAttribut
                     /** @var Attribute|\panix\mod\shop\components\EavBehavior $a */
                     // Repopulate data from POST if exists
                     if (isset($_POST['Attribute'][$a->name])) {
-
                         $value = $_POST['Attribute'][$a->name];
                     } else {
 
-                        $value = $model->getEavAttribute($a->name);
+                            $value = $model->getEavAttribute($a->name);
+                        // die('zz');
                     }
 
                     //$a->required ? $required = ' <span class="required">*</span>' : $required = null;
