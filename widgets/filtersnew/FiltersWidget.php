@@ -2,6 +2,7 @@
 
 namespace panix\mod\shop\widgets\filtersnew;
 
+use panix\engine\CMS;
 use panix\mod\shop\models\Attribute;
 use yii\caching\DbDependency;
 use yii\helpers\Html;
@@ -58,30 +59,36 @@ class FiltersWidget extends Widget
     {
         $data = [];
 
+        //CMS::dump($this->attributes);die;
         foreach ($this->attributes as $attribute) {
-            $data[$attribute->name] = array(
+            $data[$attribute->name] = [
                 'title' => $attribute->title,
-                'selectMany' => (boolean) $attribute->select_many,
-                'filters' => array()
-            );
+                'selectMany' => (boolean)$attribute->select_many,
+                //'queryKey' => $attribute->name,
+                'filters' => []
+            ];
+            $totalCount = 0;
             foreach ($attribute->options as $option) {
                 $count = $this->countAttributeProducts($attribute, $option);
-                if ($count) {
-                    $data[$attribute->name]['filters'][] = array(
-                        'title' => $option->value,
-                        'count' => $count,
-                        'queryKey' => $attribute->name,
-                        'queryParam' => $option->id,
-                    );
-                }
-
+                // if ($count) {
+                $data[$attribute->name]['filters'][] = [
+                    'title' => $option->value,
+                    'count' => (int)$count,
+                    'abbreviation' => ($attribute->abbreviation) ? $attribute->abbreviation : null,
+                    'queryKey' => $attribute->name,
+                    'queryParam' => (int)$option->id,
+                ];
+                $totalCount += $count;
+                // }
             }
-            if($attribute->sort == SORT_ASC){
+            $data[$attribute->name]['totalCount'] = $totalCount;
+            if ($attribute->sort == SORT_ASC) {
                 sort($data[$attribute->name]['filters']);
-            }elseif($attribute->sort == SORT_DESC){
+            } elseif ($attribute->sort == SORT_DESC) {
                 rsort($data[$attribute->name]['filters']);
             }
         }
+        //CMS::dump($data);die;
         return $data;
     }
 
@@ -118,47 +125,51 @@ class FiltersWidget extends Widget
         }
         $newData[$attribute->name][] = $option->id;
 
-       // echo $model->createCommand()->getRawSql();die;
+        // echo $model->createCommand()->getRawSql();die;
         return $model->withEavAttributes($newData)->count();
 
     }
 
     public function countAttributeProducts($attribute, $option)
     {
-        $model = Product::find();
-        //$model->attachBehaviors($model->behaviors());
-
+        $model = Product::find()->published();
+        $model->attachBehaviors($model->behaviors());
+       // $model->getEavAttributes22222222($this->view->context->getEavAttributes());
         if ($this->model instanceof Category) {
+
             $model->applyCategories($this->model);
             //$model->andWhere([Product::tableName() . '.main_category_id' => $this->model->id]);
-        }elseif($this->model instanceof Manufacturer){
+        } elseif ($this->model instanceof Manufacturer) {
             $model->applyManufacturers($this->model->id);
         }
-
 
 
         if (Yii::$app->request->get('q') && Yii::$app->requestedRoute == 'shop/search/index') {
             $model->applySearch(Yii::$app->request->get('q'));
         }
 
-        $model->published();
+
         $newData = [];
         $newData[$attribute->name][] = $option->id;
-        $model->withEavAttributes($newData);
+
+        $res = $model->withEavAttributes($newData);
 
 
-        $dependencyQuery = $model;
-        $dependencyQuery->select('COUNT(*)');
-        $dependency = new DbDependency([
-            'sql' => $dependencyQuery->createCommand()->rawSql,
-        ]);
+   // print_r($newData);die;
+   // echo $res->createCommand()->rawSql;die;
 
-//echo $dependencyQuery->createCommand()->rawSql;
-        $count = Attribute::getDb()->cache(function () use ($model) {
-            return $model->count();
-        }, 3600, $dependency);
+        //$dependencyQuery = $model;
+        //$dependencyQuery->select('COUNT(*)');
+        //$dependency = new DbDependency([
+        //     'sql' => $dependencyQuery->createCommand()->rawSql,
+        //]);
 
-        return $count;
+
+        // $count = Attribute::getDb()->cache(function () use ($model) {
+        //     return $model->count();
+        // }, 1, $dependency);
+
+        return $res->count();
     }
 
     public function run()
@@ -169,12 +180,12 @@ class FiltersWidget extends Widget
         $active = $this->view->context->getActiveFilters();
 
 
-        echo Html::beginTag('div',['id'=>'filters']);
+        echo Html::beginTag('div', ['id' => 'filters']);
         echo Html::beginForm($this->view->context->currentUrl, 'GET', ['id' => 'filter-form']);
 
         echo Html::beginTag('div', ['id' => 'ajax_filter_current']);
         if (!empty($active)) {
-            echo $this->render('current', ['active' => $active,'dataModel'=>$this->model]);
+            echo $this->render('current', ['active' => $active, 'dataModel' => $this->model]);
         }
         echo Html::endTag('div');
         echo $this->render('price');
@@ -228,7 +239,7 @@ class FiltersWidget extends Widget
 
         $query = Product::find();
 
-        if ($this->model){
+        if ($this->model) {
             $query->applyCategories($this->model);
             //$query->andWhere([Product::tableName() . '.main_category_id' => $this->model->id]);
         }
