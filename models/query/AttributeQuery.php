@@ -14,20 +14,26 @@ class AttributeQuery extends ActiveQuery
 
     public function useInFilter()
     {
-        $this->andWhere(['use_in_filter' => 1]);
-        return $this;
+        return $this->andWhere([$this->modelClass::tableName().'.use_in_filter' => 1]);
     }
 
+    /**
+     *
+     * @return $this
+     */
     public function useInVariants()
     {
-        $this->andWhere(['use_in_variants' => 1]);
+        $this->andWhere([$this->modelClass::tableName().'.use_in_variants' => 1]);
         return $this;
     }
 
+    /**
+     *
+     * @return $this
+     */
     public function useInCompare()
     {
-        $this->andWhere(['use_in_compare' => 1]);
-        return $this;
+        return $this->andWhere([$this->modelClass::tableName().'.use_in_compare' => 1]);
     }
 
     /**
@@ -36,35 +42,34 @@ class AttributeQuery extends ActiveQuery
      */
     public function displayOnFront()
     {
-        $this->andWhere(['display_on_front' => 1]);
-        return $this;
+        return $this->andWhere([$this->modelClass::tableName().'.display_on_front' => 1]);
     }
+
     /**
      * Отобрадение атрибутов в списке
      * @return $this
      */
     public function displayOnList()
     {
-        $this->andWhere(['display_on_list' => 1]);
-        return $this;
+        return $this->andWhere([$this->modelClass::tableName().'.display_on_list' => 1]);
     }
+
     /**
      * Отобрадение атрибутов в сетке
      * @return $this
      */
     public function displayOnGrid()
     {
-        $this->andWhere(['display_on_grid' => 1]);
-        return $this;
+        return $this->andWhere([$this->modelClass::tableName().'.display_on_grid' => 1]);
     }
+
     /**
      * Отобрадение атрибутов в корзине
      * @return $this
      */
     public function displayOnCart()
     {
-        $this->andWhere(['display_on_cart' => 1]);
-        return $this;
+        return $this->andWhere([$this->modelClass::tableName().'.display_on_cart' => 1]);
     }
 
 }

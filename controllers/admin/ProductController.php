@@ -174,8 +174,8 @@ class ProductController extends AdminController
 
 
                 //if (Yii::$app->request->post('AttachmentsMainId')) {
-                   // $test = $model->getImages();
-                    //print_r($test);
+                // $test = $model->getImages();
+                //print_r($test);
                 //}
 
 
@@ -373,9 +373,9 @@ class ProductController extends AdminController
         $deleteModel->deleteEavAttributes([], true);
         // Delete empty values
         foreach ($attributes as $key => $val) {
-                if (is_string($val) && $val === '') {
-                    unset($attributes[$key]);
-                }
+            if (is_string($val) && $val === '') {
+                unset($attributes[$key]);
+            }
         }
 
 
@@ -526,6 +526,7 @@ class ProductController extends AdminController
      */
     public function actionDuplicateProducts()
     {
+        $result['success'] = false;
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             //TODO: return ids to find products
@@ -538,14 +539,9 @@ class ProductController extends AdminController
             $duplicator = new \panix\mod\shop\components\ProductsDuplicator;
             $ids = $duplicator->createCopy($product_ids, $duplicates['copy']);
             //return $this->redirect('/admin/shop/product/?Product[id]=' . implode(',', $ids));
-
-
-            return [
-                'message' => 'Копия упешно создана ' . \panix\engine\Html::a('Просмотреть копии продуктов.', [
-                        '/admin/shop/product/default',
-                        'ProductSearch[id]' => implode(',', $ids)
-                    ])
-            ];
+            $result['success'] = true;
+            $result['message'] = 'Копия упешно создана';
+            return $result;
         } else {
             throw new ForbiddenHttpException();
         }

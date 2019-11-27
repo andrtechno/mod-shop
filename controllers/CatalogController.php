@@ -14,11 +14,15 @@ class CatalogController extends FilterController
 
     public $provider;
     public $currentUrl;
-
+    public function beforeAction($action)
+    {
+        $this->dataModel = $this->findModel(Yii::$app->request->getQueryParam('slug'));
+        return parent::beforeAction($action);
+    }
     public function actionView()
     {
 
-        $this->dataModel = $this->findModel(Yii::$app->request->getQueryParam('slug'));
+
         $this->currentUrl = $this->dataModel->getUrl();
         $this->query = Product::find();
         $this->query->attachBehaviors((new Product)->behaviors());

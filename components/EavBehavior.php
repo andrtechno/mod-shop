@@ -3,13 +3,11 @@
 namespace panix\mod\shop\components;
 
 
+use panix\engine\CMS;
 use Yii;
 use yii\base\Exception;
 use yii\db\ActiveRecord;
-use panix\mod\shop\components\collections\CAttributeCollection;
-use panix\mod\shop\components\collections\CList;
 use yii\db\Query;
-use yii\db\QueryBuilder;
 
 class EavBehavior extends \yii\base\Behavior
 {
@@ -72,25 +70,24 @@ class EavBehavior extends \yii\base\Behavior
 
     /**
      * @access protected
-     * @var CAttributeCollection attributes store.
-     * @default new CAttributeCollection
+     * @var array attributes store.
+     * @default new array
      */
-    protected $attributes = NULL;
-    protected $attributes2;
+    protected $attributes = [];
 
     /**
      * @access protected
-     * @var CList changed attributes list.
-     * @default new CList
+     * @var array changed attributes list.
+     * @default new array
      */
-    protected $changedAttributes = NULL;
+    protected $changedAttributes = [];
 
     /**
      * @access protected
-     * @var CList safe attributes list.
-     * @default new CList
+     * @var array safe attributes list.
+     * @default new array
      */
-    protected $safeAttributes = NULL;
+    protected $safeAttributes = [];
 
     /**
      * @access public
@@ -182,7 +179,7 @@ class EavBehavior extends \yii\base\Behavior
      */
     public function setSafeAttributes($safeAttributes)
     {
-        $this->safeAttributes->copyFrom($safeAttributes);
+        $this->safeAttributes[]=$safeAttributes;
     }
 
     /**
@@ -193,7 +190,7 @@ class EavBehavior extends \yii\base\Behavior
     protected function getSafeAttributesArray()
     {
 
-        return $this->safeAttributes->count() == 0 ? $this->attributes->keys : $this->safeAttributes->toArray();
+        return count($this->safeAttributes) == 0 ? array_keys($this->attributes) : $this->safeAttributes;
     }
 
     /**
@@ -203,7 +200,7 @@ class EavBehavior extends \yii\base\Behavior
      */
     protected function hasSafeAttribute($attribute)
     {
-        if ($this->safeAttributes->count() > 0) {
+        if (count($this->safeAttributes) > 0) {
             return $this->safeAttributes->contains($attribute);
         }
         return TRUE;
@@ -216,15 +213,15 @@ class EavBehavior extends \yii\base\Behavior
     public function __construct($config = [])
     {
         // Prepare attributes collection.
-        $this->attributes = new CAttributeCollection;
-        $this->attributes2 = [];
+        //  $this->attributes = new CAttributeCollection;
+        $this->attributes = [];
 
         //$this->attributes->caseSensitive = true;
         // Prepare safe attributes list.
-        $this->safeAttributes = new CList;
+        $this->safeAttributes = [];
 
         // Prepare changed attributes list.
-        $this->changedAttributes = new CList;
+        $this->changedAttributes = [];
 
         parent::__construct($config);
     }
@@ -267,7 +264,7 @@ class EavBehavior extends \yii\base\Behavior
         // TODO afterSave не срабатывает если модель не была изменена
         // Save changed attributes.
         //  if ($this->changedAttributes->count > 0) {
-        $this->saveEavAttributes($this->changedAttributes->toArray());
+        $this->saveEavAttributes($this->changedAttributes);
         // }
         // Call parent method for convenience.
     }
@@ -288,10 +285,11 @@ class EavBehavior extends \yii\base\Behavior
      */
     public function afterFind()
     {
-
+        /** @var ActiveRecord $owner */
+        $owner = $this->owner;
         // Load attributes for model.
         if ($this->preload) {
-            if ($this->owner->getPrimaryKey()) {
+            if ($owner->getPrimaryKey()) {
                 $this->loadEavAttributes($this->getSafeAttributesArray());
             }
         }
@@ -306,9 +304,12 @@ class EavBehavior extends \yii\base\Behavior
         // Delete old attributes values from DB.
         $this->getDeleteCommand($attributes)->execute();
         // Process each attributes.
+
+
         foreach ($attributes as $attribute) {
             // Skip if null attributes.
-            if (!is_null($values = $this->attributes->itemAt($attribute))) {
+            $attr = (isset($this->attributes[$attribute])) ? $this->attributes[$attribute] : NULL;
+            if (!is_null($values = $attr)) {
                 // Create array of values for convenience.
                 if (!is_array($values)) {
                     $values = [$values];
@@ -318,12 +319,12 @@ class EavBehavior extends \yii\base\Behavior
                     $this->getSaveEavAttributeCommand($this->attributesPrefix . $attribute, $value)->execute();
                 }
                 // Remove from changed list.
-                $this->changedAttributes->remove($attribute);
+                unset($this->changedAttributes[$attribute]);
             }
         }
         // Save attributes to cache.
-        if ($this->attributes->count > 0) {
-            $this->cache->set($this->getCacheKey(), $this->attributes->toArray());
+        if (count($this->attributes) > 0) {
+            $this->cache->set($this->getCacheKey(), $this->attributes);
         } // Or delete cache is attributes not exists.
         else {
             $this->cache->delete($this->getCacheKey());
@@ -354,7 +355,8 @@ class EavBehavior extends \yii\base\Behavior
             $value = $row[$this->valueField];
 
             // Check if value exists.
-            if (!is_null($current = $this->attributes->itemAt($attribute)) && $current != $value) {
+            $attr = (isset($this->attributes[$attribute])) ? $this->attributes[$attribute] : NULL;
+            if (!is_null($current = $attr) && $current != $value) {
                 //$value = is_array($current) ? $current[] = $value : array($current, $value);
                 // Fix if entity has many values
                 if (is_array($current)) {
@@ -363,8 +365,7 @@ class EavBehavior extends \yii\base\Behavior
                 } else
                     $value = [$current, $value];
             }
-
-            $this->attributes->add($attribute, $value);
+            $this->attributes[$attribute] = $value;
         }
 
 
@@ -385,12 +386,13 @@ class EavBehavior extends \yii\base\Behavior
 
         // If not set attributes for deleting, delete all.
         if (empty($attributes)) {
-            $attributes = $this->attributes->keys;
+            $attributes = array_keys($this->attributes);
         }
+
         // Delete each attributes.
         foreach ($attributes as $attribute) {
-            $this->attributes->remove($attribute);
-            $this->changedAttributes->add($attribute);
+            unset($this->attributes[$attribute]);
+            $this->changedAttributes[] = $attribute;
         }
         // Auto save if set.
         if ($save) {
@@ -407,10 +409,10 @@ class EavBehavior extends \yii\base\Behavior
      */
     public function setEavAttributes($attributes, $save = FALSE)
     {
+        // CMS::dump($this->attributes);die;
         foreach ($attributes as $attribute => $value) {
-            $this->attributes->add($attribute, $value);
-
-            $this->changedAttributes->add($attribute);
+            $this->attributes[$attribute] = $value;
+            $this->changedAttributes[] = $attribute;
         }
         // Auto save if set.
         if ($save) {
@@ -445,22 +447,22 @@ class EavBehavior extends \yii\base\Behavior
         // Values array.
         $values = [];
         // Queue for load.
-        $loadQueue = new CList;
+        $loadQueue = [];
         foreach ($attributes as $attribute) {
             // Check is safe.
             if ($this->hasSafeAttribute($attribute)) {
-                $values[$attribute] = $this->attributes->itemAt($attribute);
+                $values[$attribute] = (isset($this->attributes[$attribute])) ? $this->attributes[$attribute] : NULL;
                 // If attribute not set and not load, prepare array for loaded.
                 if (!$this->preload && $values[$attribute] === NULL) {
-                    $loadQueue->add($attribute);
+                    $loadQueue[] = $attribute;
                 }
             }
         }
         // If array for loaded not empty, load attributes.
-        if (!$this->preload && $loadQueue->count() > 0) {
+        if (!$this->preload && count($loadQueue) > 0) {
             $this->loadEavAttributes($attributes);
             foreach ($loadQueue as $attribute) {
-                $values[$attribute] = $this->attributes->itemAt($attribute);
+                $values[$attribute] = (isset($this->attributes[$attribute])) ? $this->attributes[$attribute] : NULL;
             }
         }
         // Delete load queue.
@@ -484,7 +486,7 @@ class EavBehavior extends \yii\base\Behavior
      * @param array $attributes values or key for filter models.
      * @return ActiveRecord
      */
-    public function ___withEavAttributes($attributes = [])
+    public function ___withEavAttributes2($attributes = [])
     {
         // If not set attributes, search models with anything attributes exists.
         if (empty($attributes)) {
@@ -592,9 +594,8 @@ class EavBehavior extends \yii\base\Behavior
         if (!empty($attributes)) {
             $condition[$this->attributeField] = $attributes;
         }
-        return Yii::$app->db->createCommand()->delete($this->tableName,$condition);
+        return Yii::$app->db->createCommand()->delete($this->tableName, $condition);
     }
-
 
 
 }

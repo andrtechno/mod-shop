@@ -35,14 +35,14 @@ $this->registerJs("
 </div>
 <div class="form-group">
     <div class="custom-control custom-checkbox">
-        <?= Html::checkbox('copy[]', true, ['value' => 'related', 'id' => 'attributes', 'class' => 'custom-control-input']); ?>
+        <?= Html::checkbox('copy[]', true, ['value' => 'attributes', 'id' => 'attributes', 'class' => 'custom-control-input']); ?>
         <?= Html::label(Yii::t('shop/admin', 'Характеристики'), 'attributes', ['class' => 'custom-control-label']); ?>
     </div>
 </div>
 <div class="form-group">
     <div class="custom-control custom-checkbox">
-        <?= Html::checkbox('check_all', true, ['value' => 1, 'id' => 'attributes', 'class' => 'custom-control-input']); ?>
-        <?= Html::label(Yii::t('shop/admin', 'Отметить все'), 'attributes', ['onClick' => 'return checkAllDuplicateAttributes(this);', 'class' => 'custom-control-label']); ?>
+        <?= Html::checkbox('check_all', true, ['value' => 1, 'id' => 's123', 'class' => 'custom-control-input']); ?>
+        <?= Html::label(Yii::t('shop/admin', 'Отметить все'), 's123', ['onClick' => 'return checkAllDuplicateAttributes(this);', 'class' => 'custom-control-label']); ?>
     </div>
 </div>
 <?= Html::endForm(); ?>

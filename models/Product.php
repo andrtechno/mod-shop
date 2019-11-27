@@ -178,7 +178,7 @@ class Product extends ActiveRecord
             $result['title'] = $this->name;
         }
 
-        return (object)$result;
+        return (object) $result;
     }
 
     /**
@@ -316,14 +316,14 @@ class Product extends ActiveRecord
 
     public function getManufacturer()
     {
-        return $this->hasOne(Manufacturer::class, ['id' => 'manufacturer_id'])
-            ->cache(3600 * 24, new TagDependency(['tags' => 'product-manufacturer-' . $this->manufacturer_id]));
+        return $this->hasOne(Manufacturer::class, ['id' => 'manufacturer_id']);
+            //->cache(3600 * 24, new TagDependency(['tags' => 'product-manufacturer-' . $this->manufacturer_id]));
     }
 
     public function getType()
     {
-        return $this->hasOne(ProductType::class, ['id' => 'type_id'])
-            ->cache(3600 * 24, new TagDependency(['tags' => 'product-type-' . $this->type_id]));
+        return $this->hasOne(ProductType::class, ['id' => 'type_id']);
+            //->cache(3600 * 24, new TagDependency(['tags' => 'product-type-' . $this->type_id]));
     }
 
     public function getType2()

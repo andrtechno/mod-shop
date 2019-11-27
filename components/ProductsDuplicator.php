@@ -46,7 +46,7 @@ class ProductsDuplicator extends \yii\base\Component
     {
 
         $this->duplicate = $duplicate;
-        $new_ids = array();
+        $new_ids = [];
 
         foreach ($ids as $id) {
             $model = Product::findOne($id);

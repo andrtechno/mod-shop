@@ -2,7 +2,9 @@
 
 namespace panix\mod\shop\components;
 
+use panix\engine\CMS;
 use panix\engine\Html;
+use panix\mod\shop\models\ProductAttributesEav;
 use Yii;
 use panix\mod\shop\models\Attribute;
 use panix\mod\shop\models\Manufacturer;
@@ -11,6 +13,7 @@ use panix\mod\shop\models\TypeAttribute;
 use panix\engine\controllers\WebController;
 use yii\base\Exception;
 use yii\helpers\Url;
+use yii\web\HttpException;
 
 /**
  * Class FilterController
@@ -70,7 +73,7 @@ class FilterController extends WebController
 
 
         if (Yii::$app->request->get('price')) {
-            $this->prices = explode(',',Yii::$app->request->get('price'));
+            $this->prices = explode(',', Yii::$app->request->get('price'));
             //foreach ($this->prices as $key=>$price) {
             // $this->prices[]=$price;
             //}
@@ -122,7 +125,7 @@ class FilterController extends WebController
         if (isset($this->prices[0])) { //if (Yii::$app->request->get('min_price'))
             $this->_currentMinPrice = $this->prices[0];
 
-        }else {
+        } else {
 
             $this->_currentMinPrice = Yii::$app->currency->convert($this->getMinPrice());
         }
@@ -152,42 +155,42 @@ class FilterController extends WebController
             return $this->_eavAttributes;
 
         // Find category types
+        $queryCategoryTypes = Product::find()
+            ->applyCategories($this->dataModel)
+            ->published()
+            ->select('`cms_shop__product`.`type_id`')
+            ->groupBy('`cms_shop__product`.`type_id`')
+            ->distinct(true);
+//echo $queryCategoryTypes->createCommand()->rawSql;die;
+        $typesIds = $queryCategoryTypes->createCommand()->queryColumn();
 
-        $model = Product::find();
-        $query = $model
-            //->applyCategories($this->dataModel)
-            ->published();
-
-        unset($model);
-
-
-        $query->addSelect(['type_id']);
-        $query->addGroupBy(['type_id']);
-        $query->distinct(true);
-
-        //$typesIds = $query->createCommand()->queryColumn();
-        $typesIds = Attribute::getDb()->cache(function () use ($query) {
-            return $query->createCommand()->queryColumn();
-        }, 3600);
+        // print_r($typesIds);die;
+        /*$typesIds = Product::getDb()->cache(function () use ($queryCategoryTypes) {
+            return $queryCategoryTypes->createCommand()->queryColumn();
+        }, 3600);*/
 
         // Find attributes by type
-        $query = Attribute::getDb()->cache(function () use ($typesIds) {
-            return Attribute::find()
-                ->andWhere(['IN', TypeAttribute::tableName() . '.type_id', $typesIds])
-                ->useInFilter()
-                ->addOrderBy(['ordern' => SORT_DESC])
-                ->joinWith(['types', 'options'])
-                ->all();
-        }, 3600);
-        /*$query = Attribute::find(['IN', '`types`.type_id', $typesIds])
+        /* $query = Attribute::getDb()->cache(function () use ($typesIds) {
+             return Attribute::find()
+                 ->andWhere(['IN', TypeAttribute::tableName() . '.type_id', $typesIds])
+                 ->useInFilter()
+                 ->addOrderBy(['ordern' => SORT_DESC])
+                 ->joinWith(['types', 'options'])
+                 ->all();
+         }, 3600);*/
+        $query = Attribute::find()
+            //->where(['IN', '`types`.`type_id`', $typesIds])
             ->useInFilter()
-            ->orderBy(['ordern' => SORT_DESC])
-            ->joinWith(['types', 'options'])
-            ->all();*/
+            //->with()
+            ->andWhere(['IN', '`type`.`type_id`', $typesIds])
+            ->joinWith(['types type', 'options']);
 
+
+//echo $query->createCommand()->rawSql;die;
+        $result = $query->all();
 
         $this->_eavAttributes = [];
-        foreach ($query as $attr)
+        foreach ($result as $attr)
             $this->_eavAttributes[$attr->name] = $attr;
         return $this->_eavAttributes;
     }
@@ -208,6 +211,8 @@ class FilterController extends WebController
                 } else {
                     $data[$key] = [$_GET[$key]];
                 }
+            }else{
+              //  $this->error404(Yii::t('shop/default', 'NOFIND_CATEGORY1'));
             }
         }
         return $data;

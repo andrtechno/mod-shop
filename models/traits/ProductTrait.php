@@ -71,7 +71,9 @@ trait ProductTrait
 
             },
         ];
-
+        $columns['type_id']=[
+            'attribute' => 'type_id',
+        ];
         $columns['price'] = [
             'attribute' => 'price',
             'format' => 'raw',

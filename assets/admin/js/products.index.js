@@ -215,26 +215,28 @@ function showDuplicateProductsWindow(link_clicked) {
         modal: true,
         resizable: false,
         close: function () {
-            dialog.close();
+            //this.close();
+            //$(this).dialog('destroy').remove();
         },
         buttons: [{
             text: 'Копировать',
             'class': 'btn btn-primary',
             click: function () {
-
-
                 //if (confirm($(link_clicked).data('confirm'))) {
                 $.ajax(common.url('/admin/shop/product/duplicate-products'), {
                     type: "post",
                     dataType: 'json',
                     data: {
                         token: common.token,
-                        products: $('#grid-product').yiiGridView('getSelectedRows'),
+                        products: grid.yiiGridView('getSelectedRows'),
                         duplicate: $("#duplicate_products_dialog form").serialize()
                     },
                     success: function (data) {
-                        $(dialog).dialog("close");
-
+                      //  dialog.dialog("close");
+if(data.success){
+    dialog.dialog('destroy').remove();
+   // $.pjax.reload('#pjaxId', {timeout : false});
+}
                         // $.fn.yiiGridView.update('product-grid');
                         grid.yiiGridView('applyFilter');
                         common.notify(data.message, 'success');

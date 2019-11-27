@@ -4,6 +4,8 @@ use panix\engine\widgets\Pjax;
 use panix\ext\fancybox\Fancybox;
 use panix\mod\shop\bundles\admin\ProductIndex;
 
+
+
 echo Fancybox::widget(['target' => '.image a']);
 
 Pjax::begin([
@@ -30,4 +32,5 @@ echo GridView::widget([
     'rowOptions' => ['class' => 'sortable-column']
 ]);
 Pjax::end();
+
 
