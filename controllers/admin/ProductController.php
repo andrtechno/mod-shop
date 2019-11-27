@@ -51,6 +51,7 @@ class ProductController extends AdminController
 
             }
         }
+
         return parent::beforeAction($action);
     }
 
@@ -458,6 +459,39 @@ class ProductController extends AdminController
         }
     }
 
+
+
+    public function actionDuplicateProducts_TEST()
+    {
+        $result['success'] = false;
+        if (Yii::$app->request->isAjax) {
+
+            if(Yii::$app->request->isPost){
+                $this->enableCsrfValidation = false;
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                //TODO: return ids to find products
+                $product_ids = Yii::$app->request->post('products', []);
+                parse_str(Yii::$app->request->post('duplicate'), $duplicates);
+
+                if (!isset($duplicates['copy']))
+                    $duplicates['copy'] = [];
+
+                $duplicator = new \panix\mod\shop\components\ProductsDuplicator;
+                $ids = $duplicator->createCopy($product_ids, $duplicates['copy']);
+                //return $this->redirect('/admin/shop/product/?Product[id]=' . implode(',', $ids));
+                $result['success'] = true;
+                $result['message'] = 'Копия упешно создана';
+                return $result;
+            }else{
+                return $this->renderAjax('window/duplicate_products_window');
+            }
+
+
+        } else {
+            throw new ForbiddenHttpException(Yii::t('app/error', '403'));
+        }
+    }
+
     /**
      * Render popup windows
      *
@@ -467,55 +501,7 @@ class ProductController extends AdminController
     public function actionRenderDuplicateProductsWindow()
     {
         if (Yii::$app->request->isAjax) {
-            return $this->renderPartial('window/duplicate_products_window');
-        } else {
-            throw new ForbiddenHttpException(Yii::t('app/error', '403'));
-        }
-    }
-
-    /**
-     * Render popup windows
-     *
-     * @return string
-     * @throws ForbiddenHttpException
-     */
-    public function actionRenderProductsPriceWindow()
-    {
-        if (Yii::$app->request->isAjax) {
-            $model = new Product;
-            return $this->renderPartial('window/products_price_window', ['model' => $model]);
-        } else {
-            throw new ForbiddenHttpException(Yii::t('app/error', '403'));
-        }
-    }
-
-    /**
-     * Set price products
-     *
-     * @throws ForbiddenHttpException
-     */
-    public function actionSetProducts()
-    {
-        $request = Yii::$app->request;
-        if ($request->isAjax) {
-            $product_ids = $request->post('products', []);
-            parse_str($request->post('data'), $price);
-            $products = Product::findAll($product_ids);
-            foreach ($products as $p) {
-                if (isset($p)) {
-                    if (!$p->currency_id || !$p->use_configurations) { //запрещаем редактирование товаров с привязанной ценой и/или концигурациями
-                        $p->price = $price['Product']['price'];
-                        $p->save(false);
-                    }
-                }
-            }
-
-            if (Yii::$app->request->isAjax) {
-                echo Json::encode([
-                    'message' => 'Success'
-                ]);
-                Yii::$app->end();
-            }
+            return $this->renderAjax('window/duplicate_products_window');
         } else {
             throw new ForbiddenHttpException(Yii::t('app/error', '403'));
         }
@@ -546,6 +532,53 @@ class ProductController extends AdminController
             throw new ForbiddenHttpException();
         }
     }
+    /**
+     * Render popup windows
+     *
+     * @return string
+     * @throws ForbiddenHttpException
+     */
+    public function actionRenderProductsPriceWindow()
+    {
+        if (Yii::$app->request->isAjax) {
+            $model = new Product;
+            return $this->renderPartial('window/products_price_window', ['model' => $model]);
+        } else {
+            throw new ForbiddenHttpException(Yii::t('app/error', '403'));
+        }
+    }
+
+    /**
+     * Set price products
+     *
+     * @throws ForbiddenHttpException
+     */
+    public function actionSetProducts()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $request = Yii::$app->request;
+        if ($request->isAjax) {
+            $product_ids = $request->post('products', []);
+            parse_str($request->post('data'), $price);
+            $products = Product::findAll($product_ids);
+            foreach ($products as $p) {
+                if (isset($p)) {
+                    if (!$p->currency_id || !$p->use_configurations) { //запрещаем редактирование товаров с привязанной ценой и/или концигурациями
+                        $p->price = $price['Product']['price'];
+                        $p->save(false);
+                    }
+                }
+            }
+
+            $result['message'] = 'Success';
+            return $result;
+
+
+        } else {
+            throw new ForbiddenHttpException(Yii::t('app/error', '403'));
+        }
+    }
+
 
     /**
      * Assign categories to products

@@ -16,7 +16,7 @@
  */
 
 var grid = $('#grid-product');
-
+var pjax = $('#pjax-grid-product');
 /**
  * Update selected comments status
  * @param status_id
@@ -174,7 +174,7 @@ function showCategoryAssignWindow(el_clicked) {
                         type: "post",
                         dataType: "json",
                         data: {
-                            token: common.token,
+                            //token: common.token,
                             category_ids: ids,
                             main_category: $("#jsTree_CategoryAssignTreeDialog .jstree-clicked").parent().attr('id').replace('node_', '').replace('_anchor', ''),
                             product_ids: grid.yiiGridView('getSelectedRows')
@@ -209,14 +209,14 @@ function showDuplicateProductsWindow(link_clicked) {
     }
 
     var dialog = $("#duplicate_products_dialog");
-    dialog.load(common.url('/admin/shop/product/render-duplicate-products-window'));
+    dialog.load(common.url('/admin/shop/product/render-duplicate-products-window')); //render-duplicate-products-window
 
     dialog.dialog({
         modal: true,
         resizable: false,
         close: function () {
             //this.close();
-            //$(this).dialog('destroy').remove();
+            dialog.dialog('destroy').remove();
         },
         buttons: [{
             text: 'Копировать',
@@ -227,19 +227,16 @@ function showDuplicateProductsWindow(link_clicked) {
                     type: "post",
                     dataType: 'json',
                     data: {
-                        token: common.token,
+                        _csrf: yii.getCsrfToken(),
                         products: grid.yiiGridView('getSelectedRows'),
                         duplicate: $("#duplicate_products_dialog form").serialize()
                     },
                     success: function (data) {
-                      //  dialog.dialog("close");
-if(data.success){
-    dialog.dialog('destroy').remove();
-   // $.pjax.reload('#pjaxId', {timeout : false});
-}
-                        // $.fn.yiiGridView.update('product-grid');
-                        grid.yiiGridView('applyFilter');
-                        common.notify(data.message, 'success');
+                        if (data.success) {
+                            dialog.dialog('destroy').remove();
+                            $.pjax.reload(pjax, {timeout: false});
+                            common.notify(data.message, 'success');
+                        }
                     },
                     error: function () {
                         common.notify("Ошибка", 'error');
@@ -252,7 +249,7 @@ if(data.success){
                 text: common.message.cancel,
                 'class': 'btn btn-secondary',
                 click: function () {
-                    $(this).dialog("close");
+                    dialog.dialog('destroy').remove();
                 }
             }]
     });
@@ -282,7 +279,6 @@ function setProductsPrice(link_clicked) {
                 $.ajax('/admin/shop/product/set-products', {
                     type: "post",
                     data: {
-                        token: common.token,
                         products: grid.yiiGridView('getSelectedRows'),
                         data: $("#prices_products_dialog form").serialize()
                     },
