@@ -4,6 +4,12 @@ namespace panix\mod\shop\models;
 
 use panix\engine\db\ActiveRecord;
 
+/**
+ * Class ProductType
+ *
+ * @property string $name
+ * @package panix\mod\shop\models
+ */
 class ProductType extends ActiveRecord
 {
 
