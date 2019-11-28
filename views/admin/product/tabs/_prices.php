@@ -10,7 +10,7 @@ use panix\mod\shop\models\Currency;
 ?>
 
 <?php
-
+echo $form->field($model, 'price_purchase');
 if ($model->use_configurations) {
     echo $form->field($model, 'price')->hiddenInput()->label(false);
 } else {

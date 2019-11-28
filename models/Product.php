@@ -178,7 +178,7 @@ class Product extends ActiveRecord
             $result['title'] = $this->name;
         }
 
-        return (object) $result;
+        return (object)$result;
     }
 
     /**
@@ -248,7 +248,7 @@ class Product extends ActiveRecord
     {
         return [
             ['price', 'commaToDot'],
-            [['file'], 'file', 'maxFiles' => 10],
+            [['file'], 'file', 'maxFiles' => Yii::$app->params['plan'][Yii::$app->params['plan_id']]['product_upload_files']],
             [['name', 'slug', 'video'], 'string', 'max' => 255],
             ['video', 'url'],
             [['image'], 'image'],
@@ -261,9 +261,9 @@ class Product extends ActiveRecord
             [['full_description', 'discount'], 'string'],
             ['use_configurations', 'boolean', 'on' => self::SCENARIO_INSERT],
             ['enable_comments', 'boolean'],
-            [['sku', 'full_description', 'unit', 'video'], 'default'], // установим ... как NULL, если они пустые
+            [['sku', 'full_description', 'unit', 'video', 'price_purchase'], 'default'], // установим ... как NULL, если они пустые
             [['name', 'slug', 'main_category_id', 'price', 'unit'], 'required'],
-            ['price', 'double'],
+            [['price','price_purchase'], 'double'],
             [['manufacturer_id', 'type_id', 'quantity', 'views', 'availability', 'added_to_cart_count', 'ordern', 'category_id', 'currency_id', 'unit', 'supplier_id'], 'integer'],
             [['name', 'slug', 'full_description', 'use_configurations'], 'safe'],
             //  [['c1'], 'required'], // Attribute field
@@ -317,13 +317,13 @@ class Product extends ActiveRecord
     public function getManufacturer()
     {
         return $this->hasOne(Manufacturer::class, ['id' => 'manufacturer_id']);
-            //->cache(3600 * 24, new TagDependency(['tags' => 'product-manufacturer-' . $this->manufacturer_id]));
+        //->cache(3600 * 24, new TagDependency(['tags' => 'product-manufacturer-' . $this->manufacturer_id]));
     }
 
     public function getType()
     {
         return $this->hasOne(ProductType::class, ['id' => 'type_id']);
-            //->cache(3600 * 24, new TagDependency(['tags' => 'product-type-' . $this->type_id]));
+        //->cache(3600 * 24, new TagDependency(['tags' => 'product-type-' . $this->type_id]));
     }
 
     public function getType2()
@@ -541,7 +541,6 @@ class Product extends ActiveRecord
 
             $this->setCategories(Yii::$app->request->post('categories', []), $mainCategoryId);
         }
-
 
 
         // Process related products
@@ -801,11 +800,10 @@ class Product extends ActiveRecord
                 return null;
 
 
-
             $attributeModel = Attribute::getDb()->cache(function ($db) use ($attribute) {
-                $q=Attribute::find()->where(['name' => $attribute]);
+                $q = Attribute::find()->where(['name' => $attribute]);
 
-                $result  = $q->one();
+                $result = $q->one();
                 return $result;
             });
 
@@ -816,9 +814,11 @@ class Product extends ActiveRecord
         return parent::__get($name);
     }
 
-    public function getEavList(){
+    public function getEavList()
+    {
 
     }
+
     public function behaviors()
     {
         $a = [];

@@ -8,6 +8,7 @@ return [
     'UPDATED_AT' => 'Дата обновления',
     'SKU' => 'Артикул',
     'PRICE' => 'Цена',
+    'PRICE_PURCHASE' => 'Цена закупки',
     'COMMENTS_COUNT' => 'Комментариев',
     'VIDEO' => 'Видео Youtube ссылка',
     'AUTO_DECREASE_QUANTITY' => 'Автоматически уменьшать количество',
@@ -59,7 +60,7 @@ return [
     'UNIT_THING' => 'шт.',
     'UNIT_METER' => 'метр.',
     'UNIT_BOX' => 'ящик.',
-    'SELECT_SUPPLIER_ID'=>'&mdash; Указать поставщика &mdash;',
-    'SELECT_MANUFACTURER_ID'=>'&mdash; Указать производителя &mdash;',
-    'SELECT_MAIN_CATEGORY_ID'=>'&mdash; Указать категорию &mdash;',
+    'SELECT_SUPPLIER_ID' => '&mdash; Указать поставщика &mdash;',
+    'SELECT_MANUFACTURER_ID' => '&mdash; Указать производителя &mdash;',
+    'SELECT_MAIN_CATEGORY_ID' => '&mdash; Указать категорию &mdash;',
 ];

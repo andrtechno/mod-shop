@@ -91,10 +91,7 @@ $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams(), ['mod
 
 
 Pjax::begin([
-
-    'id' => 'pjax-image-container',
-    //'enablePushState' => false,
-    //  'linkSelector' => 'a:not(.linkTarget)'
+    'id' => 'pjax-grid-images',
 ]);
 echo panix\engine\grid\GridView::widget([
     'id' => 'grid-images',
