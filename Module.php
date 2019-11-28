@@ -87,12 +87,12 @@ class Module extends WebModule implements BootstrapInterface
                 'icon' => $this->icon,
                 'items' => [
                     [
-                        'label' => 'Товары',
+                        'label' => Yii::t('shop/admin', 'PRODUCTS'),
                         // 'url' => ['/admin/shop'], //bug with bootstrap 4.2.x
                         'icon' => $this->icon,
                         'items' => [
                             [
-                                'label' => Yii::t('shop/admin', 'LIST'),
+                                'label' => Yii::t('shop/admin', 'PRODUCT_LIST'),
                                 "url" => ['/admin/shop/product'],
                                 'icon' => 'list',
                             ],
