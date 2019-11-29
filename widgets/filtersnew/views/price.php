@@ -17,8 +17,6 @@ $getMin = Yii::$app->controller->getCurrentMinPrice();
 $min = (int)floor($getMin); //$cm->convert()
 $max = (int)ceil($getMax);
 
-var_dump($getDefaultMin);
-var_dump($getDefaultMax);
 if($getDefaultMin != $getDefaultMax){
 ?>
 
