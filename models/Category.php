@@ -35,7 +35,8 @@ class Category extends ActiveRecord
 {
 
     const MODULE_ID = 'shop';
-    const route = '/shop/admin/category';
+    const route = '/admin/shop/category';
+    const route_update = 'index';
     public $translationClass = CategoryTranslate::class;
     public $parent_id;
 
@@ -66,7 +67,7 @@ class Category extends ActiveRecord
     public function rules()
     {
         return [
-            [['image'], 'file', 'skipOnEmpty' => true, 'extensions' => ['png', 'jpg']],
+            [['image'], 'file', 'skipOnEmpty' => true, 'extensions' => ['png', 'jpg', 'jpeg']],
             ['slug', '\panix\engine\validators\UrlValidator', 'attributeCompare' => 'name'],
             ['slug', 'fullPathValidator'],
             ['slug', 'match',
@@ -75,7 +76,7 @@ class Category extends ActiveRecord
             ],
             [['name', 'slug'], 'trim'],
             [['name', 'slug'], 'required'],
-            [['description','image'], 'default'],
+            [['description', 'image'], 'default', 'value' => null],
             [['name'], 'string', 'max' => 255],
             ['description', 'safe']
         ];
@@ -106,8 +107,11 @@ class Category extends ActiveRecord
         $a['uploadFile'] = [
             'class' => UploadFileBehavior::class,
             'files' => [
-                'image' => '@uploads/categories'
-            ]
+                'image' => '@uploads/categories',
+            ],
+            //'options' => [
+            //    'watermark' => false
+            // ]
         ];
         $a['tree'] = [
             'class' => NestedSetsBehavior::class,

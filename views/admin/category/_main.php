@@ -27,4 +27,5 @@ if (Yii::$app->request->get('parent_id')) {
     'template' => '<div class="col-sm-4 col-lg-2">{label}</div>{beginWrapper}{input}{buttons}{error}{hint}{endWrapper}'
 ])->fileInput() ?>
 
+
 <?= $form->field($model, 'description')->widget(TinyMce::class, ['options' => ['rows' => 6]]); ?>

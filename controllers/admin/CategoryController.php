@@ -42,6 +42,11 @@ class CategoryController extends AdminController
                 'class' => 'panix\engine\behaviors\nestedsets\actions\DeleteNodeAction',
                 'modelClass' => Category::class,
             ],
+            'delete-file' => [
+                'class' => \panix\engine\actions\DeleteFileAction::class,
+                'modelClass' => Category::class,
+                'saveMethod' => 'saveNode'
+            ],
         ];
     }
 

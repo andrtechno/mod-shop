@@ -13,7 +13,7 @@ use panix\ext\tinymce\TinyMce;
     'parts' => [
         '{buttons}' => $model->getFileHtmlButton('image')
     ],
-    'template' => '{label}{beginWrapper}{input}{buttons}{error}{hint}{endWrapper}'
+    'template' => '<div class="col-sm-4 col-lg-2">{label}</div>{beginWrapper}{input}{buttons}{error}{hint}{endWrapper}'
 ])->fileInput() ?>
 
 <?php

@@ -27,7 +27,7 @@ class ManufacturerController extends AdminController
                 'class' => \panix\engine\actions\DeleteAction::class,
                 'modelClass' => Manufacturer::class,
             ],
-            'deleteFile' => [
+            'delete-file' => [
                 'class' => \panix\engine\actions\DeleteFileAction::class,
                 'modelClass' => Manufacturer::class,
             ],
