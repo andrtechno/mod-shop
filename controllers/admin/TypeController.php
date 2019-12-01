@@ -95,7 +95,7 @@ class TypeController extends AdminController
                 // Set type attributes
                 $model->useAttributes(Yii::$app->request->post('attributes', []));
 
-                $this->redirectPage($isNew, $post);
+                return $this->redirectPage($isNew, $post);
             }
         }
 

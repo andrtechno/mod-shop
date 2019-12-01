@@ -195,7 +195,7 @@ class ProductController extends AdminController
                 $this->processConfigurations($model);
             }
 
-            $this->redirectPage($isNew, $post);
+            return $this->redirectPage($isNew, $post);
         } else {
 
             // print_r($model->getErrors());

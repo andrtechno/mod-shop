@@ -72,7 +72,7 @@ class SupplierController extends AdminController
         $post = Yii::$app->request->post();
         if ($model->load($post) && $model->validate()) {
             $model->save();
-            $this->redirectPage($isNew, $post);
+            return $this->redirectPage($isNew, $post);
         }
 
         return $this->render('update', [

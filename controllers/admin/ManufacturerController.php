@@ -84,15 +84,14 @@ class ManufacturerController extends AdminController
             'url' => ['index']
         ];
 
-        $this->breadcrumbs[] = Yii::t('app', 'UPDATE');
-
 
         $isNew = $model->isNewRecord;
+        $this->breadcrumbs[] = Yii::t('app', ($isNew) ? 'CREATE' : 'UPDATE');
         $post = Yii::$app->request->post();
         if ($model->load($post)) {
             if ($model->validate()) {
                 $model->save();
-                $this->redirectPage($isNew, $post);
+                return $this->redirectPage($isNew, $post);
             }
 
         }
