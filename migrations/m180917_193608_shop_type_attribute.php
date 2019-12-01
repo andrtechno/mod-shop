@@ -20,7 +20,7 @@ class m180917_193608_shop_type_attribute extends Migration
         $this->createTable(TypeAttribute::tableName(), [
             'type_id' => $this->smallInteger()->notNull()->unsigned(),
             'attribute_id' => $this->integer()->notNull()->unsigned(),
-        ], $this->tableOptions);
+        ]);
 
 
         $this->addPrimaryKey('{{%pk_shop__type_attribute}}', TypeAttribute::tableName(), ['type_id', 'attribute_id']);

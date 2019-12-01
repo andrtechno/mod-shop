@@ -8,7 +8,6 @@ $this->registerJs('$.configureBoxes({useFilters: false, useCounters: false});');
 <div class="form-group row required">
     <div class="col-sm-4"><?= Html::activeLabel($model, 'name', ['class' => 'col-form-label']); ?></div>
     <div class="col-sm-8"><?= Html::activeTextInput($model, 'name', ['class' => 'form-control']); ?></div>
-
 </div>
 
 <div class="form-group row">

@@ -125,7 +125,7 @@ class AttributesRender extends Widget
         return $this->_models;
     }
 
-    public function getModelsLanguage($lang)
+    public function ___getModelsLanguage($lang)
     {
         if (is_array($this->_models))
             return $this->_models;

@@ -3,6 +3,7 @@
 namespace panix\mod\shop\models;
 
 use panix\engine\db\ActiveRecord;
+use yii\helpers\ArrayHelper;
 
 /**
  * Class ProductType
@@ -54,6 +55,7 @@ class ProductType extends ActiveRecord
             [['name'], 'trim'],
             [['name'], 'required'],
             [['name'], 'string', 'max' => 255],
+            [['product_description', 'product_title'], 'string'],
             [['name', 'categories_preset'], 'safe'],
         ];
     }

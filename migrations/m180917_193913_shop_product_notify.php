@@ -19,17 +19,12 @@ class m180917_193913_shop_product_notify extends Migration
      */
     public function up()
     {
-        $tableOptions = null;
-        if ($this->db->driverName === 'mysql') {
-            $tableOptions = 'CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE=InnoDB';
-        }
-        // create table order product notify
         $this->createTable(ProductNotifications::tableName(), [
             'id' => $this->primaryKey()->unsigned(),
             'user_id' => $this->integer()->unsigned()->null(),
             'product_id' => $this->integer()->unsigned()->notNull(),
             'email' => $this->string(100),
-        ], $tableOptions);
+        ]);
 
 
         // order product notify indexes

@@ -27,6 +27,11 @@ echo Html::beginForm('', 'post', array(
                         'options' => ['id' => 'options'],
                     ],
                     [
+                        'label' => $model::t('TAB_PRODUCT_SEO'),
+                        'content' => $this->render('tabs/_product_seo', ['model' => $model]),
+                        'options' => ['id' => 'product_seo'],
+                    ],
+                    [
                         'label' => $model::t('TAB_CATEGORIES'),
                         'content' => $this->render('tabs/_tree', ['model' => $model]),
                         'options' => ['id' => 'tree'],

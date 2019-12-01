@@ -21,7 +21,7 @@ class m180917_193433_shop_attribute_option extends Migration
             'id' => $this->primaryKey()->unsigned(),
             'attribute_id' => $this->integer()->null(),
             'ordern' => $this->integer()->unsigned(),
-        ], $this->tableOptions);
+        ]);
 
 
         $this->createTable(AttributeOptionTranslate::tableName(), [
@@ -29,7 +29,7 @@ class m180917_193433_shop_attribute_option extends Migration
             'object_id' => $this->integer()->unsigned(),
             'language_id' => $this->tinyInteger()->unsigned(),
             'value' => $this->string(255)->notNull(),
-        ], $this->tableOptions);
+        ]);
 
 
         $this->createIndex('attribute_id', AttributeOption::tableName(), 'attribute_id');

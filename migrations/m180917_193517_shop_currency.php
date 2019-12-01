@@ -31,7 +31,7 @@ class m180917_193517_shop_currency extends Migration {
             'created_at' => $this->integer(),
             'updated_at' => $this->integer(),
             'ordern' => $this->integer()->unsigned(),
-        ], $this->tableOptions);
+        ]);
 
         $this->createIndex('is_main', Currency::tableName(), 'is_main');
         $this->createIndex('is_default', Currency::tableName(), 'is_default');

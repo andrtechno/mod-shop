@@ -26,7 +26,7 @@ class m180857_193215_shop_kit extends Migration
             'product_id' => $this->integer()->unsigned(),
             'price' => $this->money(10, 2),
             'from' => $this->tinyInteger()->unsigned(),
-        ], $this->tableOptions);
+        ]);
         $this->createIndex('owner_id', Kit::tableName(), 'owner_id');
         $this->createIndex('product_id', Kit::tableName(), 'product_id');
 

@@ -36,7 +36,7 @@ class m180917_193421_shop_attribute extends Migration
             'updated_at' => $this->integer(),
             'sort' => $this->tinyInteger(1)->defaultValue(NULL),
             'ordern' => $this->integer(11)->unsigned(),
-        ], $this->tableOptions);
+        ]);
 
 
         $this->createTable(AttributeTranslate::tableName(), [
@@ -46,7 +46,7 @@ class m180917_193421_shop_attribute extends Migration
             'title' => $this->string(255)->notNull(),
             'abbreviation' => $this->string(25)->null(),
             'hint' => $this->text()->null(),
-        ], $this->tableOptions);
+        ]);
 
 
         $this->createIndex('name', Attribute::tableName(), 'name');

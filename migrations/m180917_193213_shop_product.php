@@ -55,7 +55,7 @@ class m180917_193213_shop_product extends Migration
             'updated_at' => $this->integer(),
             'switch' => $this->boolean()->defaultValue(1)->notNull(),
             'ordern' => $this->integer()->unsigned(),
-        ], $this->tableOptions);
+        ]);
 
         $this->createTable(ProductTranslate::tableName(), [
             'id' => $this->primaryKey()->unsigned(),
@@ -64,7 +64,7 @@ class m180917_193213_shop_product extends Migration
             'name' => $this->string(255)->notNull(),
             'short_description' => $this->text()->null(),
             'full_description' => $this->text()->null(),
-        ], $this->tableOptions);
+        ]);
 
 
         $this->createIndex('user_id', Product::tableName(), 'user_id');

@@ -25,7 +25,7 @@ class m190315_062942_shop_attribute_group extends Migration
             'name' => $this->string()->null()->defaultValue(null),
             'switch' => $this->boolean()->notNull()->defaultValue(null),
             'ordern' => $this->integer()->unsigned(),
-        ], $this->tableOptions);
+        ]);
 
 
         $this->createTable(AttributeGroupTranslate::tableName(), [
@@ -33,7 +33,7 @@ class m190315_062942_shop_attribute_group extends Migration
             'object_id' => $this->integer()->unsigned(),
             'language_id' => $this->tinyInteger()->unsigned(),
             'name' => $this->string(255)->notNull(),
-        ], $this->tableOptions);
+        ]);
 
 
         $this->createIndex('switch', AttributeGroup::tableName(), 'switch');

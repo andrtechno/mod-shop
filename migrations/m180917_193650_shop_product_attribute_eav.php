@@ -21,7 +21,7 @@ class m180917_193650_shop_product_attribute_eav extends Migration
             'entity' => $this->integer()->unsigned(),
             'attribute' => $this->string(255)->null(),
             'value' => $this->text(),
-        ], $this->tableOptions);
+        ]);
 
         $this->createIndex('entity', '{{%shop__product_attribute_eav}}', 'entity');
         $this->createIndex('attribute', '{{%shop__product_attribute_eav}}', 'attribute');

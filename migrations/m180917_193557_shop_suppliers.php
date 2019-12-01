@@ -23,7 +23,7 @@ class m180917_193557_shop_suppliers extends Migration
             'phone' => $this->string(255)->null()->defaultValue(null),
             'email' => $this->string(255)->null()->defaultValue(null),
             'address' => $this->text()->null()->defaultValue(null),
-        ], $this->tableOptions);
+        ]);
     }
 
     public function down()

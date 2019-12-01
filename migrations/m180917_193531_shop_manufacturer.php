@@ -27,7 +27,7 @@ class m180917_193531_shop_manufacturer extends Migration
             'slug' => $this->string(11)->notNull()->defaultValue(null),
             'switch' => $this->boolean()->defaultValue(1),
             'ordern' => $this->integer()->unsigned(),
-        ], $this->tableOptions);
+        ]);
 
 
         $this->createTable(ManufacturerTranslate::tableName(), [
@@ -36,7 +36,7 @@ class m180917_193531_shop_manufacturer extends Migration
             'language_id' => $this->tinyInteger()->unsigned(),
             'name' => $this->string(255)->notNull(),
             'description' => $this->text()->null()->defaultValue(null)
-        ], $this->tableOptions);
+        ]);
 
 
         $this->createIndex('switch', Manufacturer::tableName(), 'switch');

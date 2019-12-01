@@ -176,7 +176,7 @@ trait ProductTrait
                     'ProductSearch[eav][' . $m->name . ']',
                     (isset($get['eav'][$m->name])) ? $get['eav'][$m->name] : null,
                     ArrayHelper::map($m->options, 'id', 'value'),
-                    ['class' => 'custom-select w-auto', 'prompt' => '--- ' . $m->title . ' ---']
+                    ['class' => 'custom-select w-auto', 'prompt' => html_entity_decode('&mdash; ' . $m->title . ' &mdash;')]
                 ),
                 //'filter'=>true,
                 'contentOptions' => ['class' => 'text-center'],
@@ -265,6 +265,57 @@ trait ProductTrait
     }
 
 
+    public function getDataAttributes(){
+
+
+        /** @var \panix\mod\shop\components\EavBehavior $attributes */
+        $attributes = $this->getEavAttributes();
+        $data = [];
+        $groups = [];
+        $models = [];
+
+        // $query = Attribute::getDb()->cache(function () {
+        $query = Attribute::find()
+            ->where(['IN', 'name', array_keys($attributes)])
+            ->displayOnFront()
+            ->sort()
+            ->all();
+        // }, 3600);
+
+
+       foreach ($query as $m)
+           $models[$m->name] = $m;
+
+
+
+
+        foreach ($models as $model) {
+            /** @var Attribute $model */
+            $abbr = ($model->abbreviation) ? ' ' . $model->abbreviation : '';
+
+            $value = $model->renderValue($attributes[$model->name]) . $abbr;
+
+            if ($model->group && Yii::$app->settings->get('shop', 'group_attribute')) {
+                $groups[$model->group->name][] = [
+                    'id' => $model->id,
+                    'name' => $model->title,
+                    'hint' => $model->hint,
+                    'value' => $value
+                ];
+
+            }
+           // $data[$model->title] = $value;
+            $data[$model->name]['name'] = $model->title;
+            $data[$model->name]['value'] = $value;
+
+        }
+
+        return [
+            'data' => $data,
+            'groups' => $groups,
+        ];
+    }
+
     /**
      * Convert price to current currency
      *
@@ -287,8 +338,9 @@ trait ProductTrait
 
     public function description()
     {
+        $description = $this->name;
         /** @var $this Product */
-        if ($this->mainCategory) {
+        /*if ($this->mainCategory) {
             if (!empty($this->mainCategory->seo_product_description)) {
                 return $this->replaceMeta($this->mainCategory->seo_product_description);
             } else {
@@ -298,15 +350,20 @@ trait ProductTrait
                     return $this->replaceMeta($parent->seo_product_description);
                 }
             }
-        }
-        //  return $this->replaceMeta(Yii::$app->settings->get('shop', 'seo_products_description'));
-    }
+        }*/
+        if($this->type){
+            if($this->type->product_description){
+                $description = $this->replaceMeta($this->type->product_description);
+            }
 
+        }
+          return $description;
+    }
     public function title()
     {
         $title = $this->name;
         /** @var $this Product */
-        if ($this->mainCategory) {
+        /*if ($this->mainCategory) {
             if (!empty($this->mainCategory->seo_product_title)) {
                 $title = $this->replaceMeta($this->mainCategory->seo_product_title);
             } else {
@@ -317,7 +374,16 @@ trait ProductTrait
                 }
 
             }
+        }*/
+
+
+        if($this->type){
+            if($this->type->product_title){
+                $title = $this->replaceMeta($this->type->product_title);
+            }
+
         }
+
         return $title;
     }
 
@@ -326,19 +392,21 @@ trait ProductTrait
     {
         /** @var $this Product */
         $attrArray = [];
-        foreach ($this->getProductAttributes() as $k => $attr) {
-            $attrArray['{eav_' . $k . '_value}'] = $attr->value;
-            $attrArray['{eav_' . $k . '_name}'] = $attr->name;
+        foreach ($this->dataAttributes['data'] as $k => $attr) {
+            $attrArray['{eav_' . $k . '_value}'] = $attr['value'];
+            $attrArray['{eav_' . $k . '_name}'] = $attr['name'];
         }
-
         $replace = ArrayHelper::merge([
+            "{product_id}" => $this->id,
             "{product_name}" => $this->name,
-            "{product_price}" => $this->price,
+            "{product_price}" => $this->getFrontPrice(),
             "{product_sku}" => $this->sku,
-            "{product_brand}" => (isset($this->manufacturer)) ? $this->manufacturer->name : null,
-            "{category_name}" => (isset($this->mainCategory)) ? $this->mainCategory->name : null,
-            "{current_currency}" => Yii::$app->currency->active['symbol'],
+            "{product_manufacturer}" => (isset($this->manufacturer)) ? $this->manufacturer->name : null,
+            "{product_category}" => (isset($this->mainCategory)) ? $this->mainCategory->name : null,
+            "{currency.symbol}" => Yii::$app->currency->active['symbol'],
+            "{currency.iso}" => Yii::$app->currency->active['iso'],
         ], $attrArray);
+
         return CMS::textReplace($text, $replace);
     }
 

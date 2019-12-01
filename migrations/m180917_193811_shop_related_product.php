@@ -21,7 +21,7 @@ class m180917_193811_shop_related_product extends Migration
             'id' => $this->primaryKey()->unsigned(),
             'product_id' => $this->integer(11)->null()->unsigned(),
             'related_id' => $this->integer(11)->null()->unsigned(),
-        ], $this->tableOptions);
+        ]);
 
         $this->createIndex('product_id', RelatedProduct::tableName(), 'product_id');
         $this->createIndex('related_id', RelatedProduct::tableName(), 'related_id');

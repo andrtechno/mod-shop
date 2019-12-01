@@ -26,7 +26,7 @@ class m180917_193505_shop_category extends Migration {
             'full_path' => $this->string(255)->null(),
             'image' => $this->string(50)->null(),
             'switch' => $this->boolean()->defaultValue(1)->notNull(),
-        ], $this->tableOptions);
+        ]);
 
 
         $this->createTable(CategoryTranslate::tableName(), [
@@ -37,7 +37,7 @@ class m180917_193505_shop_category extends Migration {
             'description' => $this->text()->null()->defaultValue(null),
             'seo_product_title' => $this->string(255),
             'seo_product_description' => $this->text(),
-        ], $this->tableOptions);
+        ]);
 
         $this->createIndex('lft', Category::tableName(), 'lft');
         $this->createIndex('rgt', Category::tableName(), 'rgt');

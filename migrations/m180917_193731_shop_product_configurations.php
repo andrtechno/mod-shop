@@ -19,7 +19,7 @@ class m180917_193731_shop_product_configurations extends Migration
         $this->createTable('{{%shop__product_configurations}}', [
             'product_id' => $this->integer(11)->notNull()->unsigned(),
             'configurable_id' => $this->integer(11)->notNull()->unsigned(),
-        ], $this->tableOptions);
+        ]);
 
         $this->addCommentOnColumn('{{%shop__product_configurations}}', 'product_id', 'Saves relations beetwen product and configurations');
 
