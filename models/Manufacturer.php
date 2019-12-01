@@ -85,18 +85,9 @@ class Manufacturer extends ActiveRecord
         ]);
     }
 
-
     public function getUrl()
     {
         return ['/shop/manufacturer/view', 'slug' => $this->slug];
-    }
-
-    public function transactions222()
-    {
-        return [
-            self::SCENARIO_DEFAULT => self::OP_INSERT | self::OP_UPDATE,
-            // 'update'=>self::OP_UPDATE
-        ];
     }
 
     /**
@@ -131,7 +122,7 @@ class Manufacturer extends ActiveRecord
             ],
             ['slug', '\panix\engine\validators\UrlValidator', 'attributeCompare' => 'name'],
             [['description'], 'string'],
-            [['description', 'image'], 'default', 'value' => null],
+            [['description', 'image'], 'default'],
             [['name', 'slug'], 'string', 'max' => 255],
             [['ordern'], 'integer'],
             [['name', 'slug'], 'safe'],

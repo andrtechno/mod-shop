@@ -85,9 +85,8 @@ class CatalogController extends FilterController
         ]);
 
 
-        $categoryParent = $this->dataModel->parent()->one();
-        $this->view->description = $this->dataModel->replaceMeta($this->dataModel->metaDescription, $categoryParent);
-        $this->view->title = $this->dataModel->replaceMeta($this->dataModel->metaTitle, $categoryParent);
+
+        $this->view->title = $this->dataModel->title();
 
 
         $this->breadcrumbs[] = [

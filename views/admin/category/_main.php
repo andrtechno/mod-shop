@@ -24,13 +24,7 @@ if (Yii::$app->request->get('parent_id')) {
     'parts' => [
         '{buttons}' => $model->getFileHtmlButton('image')
     ],
-    'template' => '{label}{beginWrapper}{input}{buttons}{error}{hint}{endWrapper}'
+    'template' => '<div class="col-sm-4 col-lg-2">{label}</div>{beginWrapper}{input}{buttons}{error}{hint}{endWrapper}'
 ])->fileInput() ?>
 
 <?= $form->field($model, 'description')->widget(TinyMce::class, ['options' => ['rows' => 6]]); ?>
-
-<?php
-foreach ($model->getInputCodes() as $data){ ?>
-    <p><code><?=$data['code']; ?></code> &mdash; <?=$data['message']; ?></p>
-<?php } ?>
-

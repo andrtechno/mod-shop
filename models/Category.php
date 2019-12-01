@@ -25,8 +25,6 @@ use panix\engine\behaviors\UploadFileBehavior;
  * @property string $image
  * @property string $name
  * @property string $description
- * @property string $seo_product_title
- * @property string $seo_product_description
  * @property string $full_path
  * @property integer $switch
  * @property integer $countItems Relation of getCountItems()
@@ -39,7 +37,6 @@ class Category extends ActiveRecord
     const MODULE_ID = 'shop';
     const route = '/shop/admin/category';
     public $translationClass = CategoryTranslate::class;
-
     public $parent_id;
 
     /**
@@ -69,20 +66,17 @@ class Category extends ActiveRecord
     public function rules()
     {
         return [
-            [['image'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg'],
-            // ['slug', '\panix\engine\validators\UrlValidator', 'attributeCompare' => 'name'],
-
+            [['image'], 'file', 'skipOnEmpty' => true, 'extensions' => ['png', 'jpg']],
             ['slug', '\panix\engine\validators\UrlValidator', 'attributeCompare' => 'name'],
             ['slug', 'fullPathValidator'],
             ['slug', 'match',
                 'pattern' => '/^([a-z0-9-])+$/i',
                 'message' => Yii::t('app', 'PATTERN_URL')
             ],
-            [['name', 'slug', 'seo_product_title'], 'trim'],
-            [['image'], 'default'],
+            [['name', 'slug'], 'trim'],
             [['name', 'slug'], 'required'],
-            [['seo_product_title', 'seo_product_description', 'description'], 'default', 'value' => null],
-            [['name', 'seo_product_title', 'seo_product_description'], 'string', 'max' => 255],
+            [['description','image'], 'default'],
+            [['name'], 'string', 'max' => 255],
             ['description', 'safe']
         ];
     }
@@ -103,6 +97,12 @@ class Category extends ActiveRecord
      */
     public function behaviors()
     {
+        if (Yii::$app->getModule('seo'))
+            $a['seo'] = [
+                'class' => '\panix\mod\seo\components\SeoBehavior',
+                'url' => $this->getUrl()
+            ];
+
         $a['uploadFile'] = [
             'class' => UploadFileBehavior::class,
             'files' => [
@@ -227,24 +227,9 @@ class Category extends ActiveRecord
     /**
      * @return string
      */
-    public function getMetaDescription()
+    public function title()
     {
         $value = $this->name;
-        if ($this->seo_product_description) {
-            $value = $this->seo_product_description;
-        }
-        return $value;
-    }
-
-    /**
-     * @return string
-     */
-    public function getMetaTitle()
-    {
-        $value = $this->name;
-        if ($this->seo_product_title) {
-            $value = $this->seo_product_title;
-        }
         return $value;
     }
 
@@ -253,22 +238,9 @@ class Category extends ActiveRecord
         $replace = [
             "{category_name}" => $this->name,
             "{sub_category_name}" => ($parentCategory->name == 'root') ? '' : $parentCategory->name,
-            "{current_currency}" => Yii::$app->currency->active['symbol'],
+            "{currency.symbol}" => Yii::$app->currency->active['symbol'],
         ];
         return CMS::textReplace($text, $replace);
     }
 
-    public function getInputCodes()
-    {
-        return [
-            [
-                'code' => '{category_name}',
-                'message' => self::t('NAME')
-            ],
-            [
-                'code' => '{current_currency}',
-                'message' => self::t('CURRENT_CURRENCY', ['symbol' => Yii::$app->currency->active['symbol']])
-            ]
-        ];
-    }
 }
