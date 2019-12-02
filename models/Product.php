@@ -3,6 +3,7 @@
 namespace panix\mod\shop\models;
 
 
+use panix\mod\discounts\components\DiscountBehavior;
 use panix\mod\sitemap\behaviors\SitemapBehavior;
 use panix\mod\user\models\User;
 use Yii;
@@ -34,6 +35,7 @@ use panix\engine\db\ActiveRecord;
  * @property boolean $sku Product article
  * @property integer $quantity
  * @property integer $availability
+ * @property integer $label
  * @property integer $main_category_id
  * @property integer $auto_decrease_quantity
  * @property integer $views Views product on frontend
@@ -91,23 +93,52 @@ class Product extends ActiveRecord
 
     public function labels()
     {
+        /** @var DiscountBehavior|self $this */
+
+        $labelsList['new'] = [
+            'class' => 'success',
+            'value' => self::t('LABEL_NEW')
+        ];
+        $labelsList['top_sale'] = [
+            'class' => 'success',
+            'value' => self::t('LABEL_TOP_SALE')
+        ];
+        $labelsList['sale'] = [
+            'class' => 'primary',
+            'value' => self::t('LABEL_SALE')
+        ];
+        $labelsList['discount'] = [
+            'class' => 'danger',
+            'value' => self::t('LABEL_DISCOUNT')
+        ];
+
         $result = [];
-        $new = 3;//days of new
-        if ((time() - 86400 * $new) <= $this->created_at) {
-            $result[] = [
-                'class' => 'success new',
-                'value' => 'Новинка',
-                'tooltip' => 'от ' . Yii::$app->formatter->asDate(date('Y-m-d', $this->created_at)) . ' до ' . Yii::$app->formatter->asDate(date('Y-m-d', $this->created_at + (86400 * $new)))
-            ];
+        $new = Yii::$app->settings->get('shop', 'label_expire_new');
+        if ($this->label == 1) {
+            $result['new'] = $labelsList['new'];
+        } elseif ($this->label == 2) {
+            $result['sale'] = $labelsList['sale'];
+        } elseif ($this->label == 3) {
+            $result['discount'] = $labelsList['discount'];
+        } elseif ($this->label == 4) {
+
+        }
+        if ($new) {
+            if ((time() - 86400 * $new) <= $this->created_at) {
+                $result['new'] = [
+                    'class' => 'success',
+                    'value' => self::t('LABEL_NEW'),
+                   // 'title' => Yii::t('app', 'FROM_BY', Yii::$app->formatter->asDate(date('Y-m-d', $this->created_at))) . ' ' . Yii::t('app', 'TO_BY', Yii::$app->formatter->asDate(date('Y-m-d', $this->created_at + (86400 * $new))))
+                ];
+            }
         }
 
-
         if (isset($this->appliedDiscount)) {
-            $result[] = [
-                'class' => 'danger discount',
-                'value' => '-' . $this->discountSum,
-                'tooltip' => '-' . $this->discountSum . ' до ' . $this->discountEndDate
-            ];
+            $result['discount']['class'] = 'danger';
+            $result['discount']['value'] = '-' . $this->discountSum;
+            if($this->discountEndDate){
+                $result['discount']['title'] = '-' . $this->discountSum . ' до ' . $this->discountEndDate;
+            }
         }
         return $result;
     }
@@ -241,6 +272,15 @@ class Product extends ActiveRecord
         return "https://img.youtube.com/vi/" . CMS::parse_yturl($this->video) . "/{$img}.jpg";
     }
 
+    public static function labelsList()
+    {
+        return [
+            1 => self::t('LABEL_NEW'),
+            2 => self::t('LABEL_SALE'),
+            3 => self::t('LABEL_DISCOUNT')
+        ];
+    }
+
     /**
      * @inheritdoc
      */
@@ -261,10 +301,10 @@ class Product extends ActiveRecord
             [['full_description', 'discount'], 'string'],
             ['use_configurations', 'boolean', 'on' => self::SCENARIO_INSERT],
             ['enable_comments', 'boolean'],
-            [['sku', 'full_description', 'unit', 'video', 'price_purchase'], 'default'], // установим ... как NULL, если они пустые
+            [['sku', 'full_description', 'unit', 'video', 'price_purchase', 'label'], 'default'], // установим ... как NULL, если они пустые
             [['name', 'slug', 'main_category_id', 'price', 'unit'], 'required'],
-            [['price','price_purchase'], 'double'],
-            [['manufacturer_id', 'type_id', 'quantity', 'views', 'availability', 'added_to_cart_count', 'ordern', 'category_id', 'currency_id', 'unit', 'supplier_id'], 'integer'],
+            [['price', 'price_purchase'], 'double'],
+            [['manufacturer_id', 'type_id', 'quantity', 'views', 'availability', 'added_to_cart_count', 'ordern', 'category_id', 'currency_id', 'unit', 'supplier_id', 'label'], 'integer'],
             [['name', 'slug', 'full_description', 'use_configurations'], 'safe'],
             //  [['c1'], 'required'], // Attribute field
             // [['c1'], 'string', 'max' => 255], // Attribute field

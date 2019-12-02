@@ -1,5 +1,11 @@
 <?php
 return [
+    'SELECT_LABEL'=>'&mdash; Выбрать лейбл &mdash;',
+    'LABEL'=>'Лейбл товарв',
+    'LABEL_NEW' => 'Новинка',
+    'LABEL_SALE' => 'Распродажа',
+    'LABEL_DISCOUNT' => 'Скидка',
+    'LABEL_TOP_SALE' => 'Топ продаж',
     'NOT_AVAILABLE' => 'Нет в наличии',
     'NAME' => 'Название товара',
     'SLUG' => 'URL-адрес',

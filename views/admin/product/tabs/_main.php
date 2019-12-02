@@ -21,6 +21,11 @@ use panix\mod\shop\models\Supplier;
 <?php
 echo $this->render('_prices', ['model' => $model, 'form' => $form]);
 ?>
+<?php
+/*echo $form->field($model, 'label')->dropDownList($model::labelsList(), [
+    'prompt' => html_entity_decode($model::t('SELECT_LABEL'))
+]);*/
+?>
 <?=
 
 $form->field($model, 'manufacturer_id')->dropDownList(ArrayHelper::map(Manufacturer::find()->all(), 'id', 'name'), [

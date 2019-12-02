@@ -94,11 +94,10 @@ if($getDefaultMin != $getDefaultMax){
                 ?>
                 <div class="row">
                     <div class="col-6 text-left">
-                        от
-                        <span id="mn" class="price price-sm"><?= Yii::$app->currency->number_format($getMin); ?></span>
-                    </div>
+                        <?= Yii::t('app','FROM_BY','<span id="mn" class="price price-sm">'.Yii::$app->currency->number_format($getMin).'</span>'); ?>
+                                           </div>
                     <div class="col-6 text-right">
-                        до   <span id="mx" class="price price-sm"><?= Yii::$app->currency->number_format($getMax); ?></span>
+                        <?= Yii::t('app','TO_BY','<span id="mx" class="price price-sm">'.Yii::$app->currency->number_format($getMax).'</span>'); ?>
                         (<?= Yii::$app->currency->active['symbol'] ?>)</span>
                     </div>
                 </div>
