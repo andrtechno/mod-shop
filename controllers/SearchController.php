@@ -21,9 +21,7 @@ class SearchController extends FilterController
         $this->query = Product::find();
         $this->query->attachBehaviors((new Product)->behaviors());
         $this->query->sort();
-
         $this->query->published();
-
 
 
         // Filter by manufacturer
@@ -34,6 +32,7 @@ class SearchController extends FilterController
         $this->query->groupBy(Product::tableName() . '.`id`');
         $this->query->applySearch(Yii::$app->request->get('q'));
         $this->query->applyAttributes($this->activeAttributes);
+
 
         // Create clone of the current query to use later to get min and max prices.
         $this->currentQuery = clone $this->query;
@@ -52,6 +51,7 @@ class SearchController extends FilterController
                 'pageSize' => $this->per_page,
             ]
         ]);
+        $this->view->registerJs("var current_url = '" . Url::to(Yii::$app->request->getUrl()) . "';", yii\web\View::POS_HEAD, 'current_url');
 
         $this->pageName = Yii::t('shop/default', 'SEARCH_RESULT', [
             'query' => Html::encode(Yii::$app->request->get('q')),
@@ -61,26 +61,34 @@ class SearchController extends FilterController
         $filterData = $this->getActiveFilters();
 
         if (Yii::$app->request->isAjax) {
-            Yii::$app->response->format = Response::FORMAT_JSON;
+            if (Yii::$app->request->headers->has('filter-ajax')) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
 
-            return [
-                'currentFilters' => $filterData,
-                'full_url' => Url::to($this->currentUrl),
-                'items' => $this->renderPartial('@shop/views/catalog/listview', [
+                return [
+                    //'currentFilters' => $filterData,
+                    //'full_url' => Url::to($this->currentUrl),
+                    'currentUrl' => Yii::$app->request->getUrl(),
+                    'items' => $this->renderPartial('@shop/views/catalog/listview', [
+                        'provider' => $this->provider,
+                        'itemView' => $this->itemView
+                    ]),
+                    'i' => $this->itemView,
+                    'currentFiltersData' => ($filterData) ? $this->renderPartial('@app/widgets/filters/current', [ //'@shop/widgets/filtersnew/views/current', '@app/widgets/filters/current'
+                        'dataModel' => $this->dataModel,
+                        'active' => $filterData
+                    ]) : null
+                ];
+            } else {
+                return $this->renderPartial('@shop/views/catalog/listview', [
                     'provider' => $this->provider,
                     'itemView' => $this->itemView
-                ]),
-                'currentFiltersData' => $this->renderPartial('@shop/widgets/filtersnew/views/current', [
-                    'dataModel' => $this->dataModel,
-                    'active' => $filterData
-                ])
-            ];
-        } else {
-            return $this->render('index', [
-                'provider' => $this->provider,
-                'itemView' => $this->itemView
-            ]);
+                ]);
+            }
         }
+        return $this->render('@shop/views/catalog/view', [
+            'provider' => $this->provider,
+            'itemView' => $this->itemView
+        ]);
     }
 
     /**
@@ -97,39 +105,26 @@ class SearchController extends FilterController
         }
 
 
-        if (Yii::$app->request->isAjax && Yii::$app->request->get('q')) {
+        if (Yii::$app->request->isAjax && $q) {
             $res = [];
             $model = Product::find();
-            $model->applySearch(Yii::$app->request->get('q'));
-            //'fullurl'=>Html::a('FULL',Yii::$app->urlManager->createUrl(['/shop/catalog/search', 'q' => Yii::$app->request->post('q')])),
-            foreach ($model->all() as $m) {
+            $model->applySearch($q);
+            $model->limit(5);
+
+            $result = $model->all();
+
+            $res['count'] = count($result);
+            /** @var Product $m */
+                //$res['data'] = $this->renderAjax('@shop/widgets/search/views/_result', ['model' => $model->all(),'q'=>$q]);
+            foreach ($result as $m) {
                 /** @var Product $m */
                 $res[] = [
                     'url' => Url::to($m->getUrl()),
-                    'renderItem' => $this->renderPartial('@shop/widgets/search/views/_item', [
-                        'name' => $m->name,
-                        'price' => $m->getFrontPrice(),
-                        'url' => $m->getUrl(),
-                        'image' => $m->getMainImage('50x50')->url,
-                    ])
+                    'renderItem' => $this->renderPartial('@shop/widgets/search/views/_item', ['model'=>$m])
                 ];
             }
             Yii::$app->response->format = Response::FORMAT_JSON;
             return $res;
-        }
-        //if (!$q) {
-        //    return $this->render('search');
-        //} else {
-        //    return $this->doSearch($q, 'search');
-        //}
-    }
-
-    protected function findModel($slug)
-    {
-        if (($this->dataModel = Category::findOne(['full_path' => $slug])) !== null) {
-            return $this->dataModel;
-        } else {
-            $this->error404('category not found');
         }
     }
 

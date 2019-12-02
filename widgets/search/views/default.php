@@ -34,6 +34,9 @@ $id = $this->context->id;
                         },
                         error: function () {
                             response([]);
+                        },
+                        success:function(data){
+                        $("#search-autocomplete-result").html(data);
                         }
                     });
                 }'),
@@ -53,6 +56,7 @@ $id = $this->context->id;
 
         <div class="input-group-append"><?= Html::submitButton('Найти', ['class' => 'btn btn-secondary']); ?></div>
     </div>
+
     <small class="text-muted">Например: <strong>Apple X</strong></small>
     <?= Html::endForm() ?>
 </div>

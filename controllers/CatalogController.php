@@ -197,19 +197,6 @@ class CatalogController extends FilterController
                     'itemView' => $this->itemView
                 ]);
             }
-
-            /*return $this->renderPartial('@shop/widgets/filtersnew/views/current', [
-                'dataModel' => $model,
-                'active' => $filterData
-            ]);
-            //  } else {
-            return $this->renderPartial('listview', [
-                'provider' => $this->provider,
-                'itemView' => $this->itemView
-            ]);*/
-            //  }
-
-
         }
 
         return $this->render('view', [
