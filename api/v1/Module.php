@@ -15,8 +15,6 @@ class Module extends \yii\base\Module
 
     public function init()
     {
-
-        //VarDumper::dump(Yii::$app,10,true);die;
         parent::init();
     }
 }
