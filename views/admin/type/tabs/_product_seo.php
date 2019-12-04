@@ -6,6 +6,7 @@ $product = new \panix\mod\shop\models\Product();
 $templates = [
     'product_id' => $product->getAttributeLabel('id'),
     'product_name' => $product->getAttributeLabel('name'),
+    'product_type' => $product->getAttributeLabel('type_id'),
     'product_sku' => $product->getAttributeLabel('sku'),
     'product_price' => $product->getAttributeLabel('price'),
     'product_category' => $product->getAttributeLabel('main_category_id'),
@@ -15,6 +16,10 @@ $templates = [
 ];
 
 ?>
+<div class="form-group row">
+    <div class="col-sm-4"><?= Html::activeLabel($model, 'product_name', ['class' => 'col-form-label']); ?></div>
+    <div class="col-sm-8"><?= Html::activeTextInput($model, 'product_name', ['class' => 'form-control']); ?></div>
+</div>
 <div class="form-group row">
     <div class="col-sm-4"><?= Html::activeLabel($model, 'product_title', ['class' => 'col-form-label']); ?></div>
     <div class="col-sm-8"><?= Html::activeTextInput($model, 'product_title', ['class' => 'form-control']); ?></div>

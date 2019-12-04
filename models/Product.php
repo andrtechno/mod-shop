@@ -59,6 +59,7 @@ use panix\engine\db\ActiveRecord;
  * @property Kit $kit
  * @property ProductPrices[] $prices
  * @property ProductVariant[] $variants
+ * @property ProductType $type
  */
 class Product extends ActiveRecord
 {
@@ -128,7 +129,7 @@ class Product extends ActiveRecord
                 $result['new'] = [
                     'class' => 'success',
                     'value' => self::t('LABEL_NEW'),
-                   // 'title' => Yii::t('app', 'FROM_BY', Yii::$app->formatter->asDate(date('Y-m-d', $this->created_at))) . ' ' . Yii::t('app', 'TO_BY', Yii::$app->formatter->asDate(date('Y-m-d', $this->created_at + (86400 * $new))))
+                    // 'title' => Yii::t('app', 'FROM_BY', Yii::$app->formatter->asDate(date('Y-m-d', $this->created_at))) . ' ' . Yii::t('app', 'TO_BY', Yii::$app->formatter->asDate(date('Y-m-d', $this->created_at + (86400 * $new))))
                 ];
             }
         }
@@ -136,7 +137,7 @@ class Product extends ActiveRecord
         if (isset($this->appliedDiscount)) {
             $result['discount']['class'] = 'danger';
             $result['discount']['value'] = '-' . $this->discountSum;
-            if($this->discountEndDate){
+            if ($this->discountEndDate) {
                 $result['discount']['title'] = '-' . $this->discountSum . ' до ' . $this->discountEndDate;
             }
         }
@@ -286,29 +287,40 @@ class Product extends ActiveRecord
      */
     public function rules()
     {
-        return [
-            ['price', 'commaToDot'],
-            [['file'], 'file', 'maxFiles' => Yii::$app->params['plan'][Yii::$app->params['plan_id']]['product_upload_files']],
-            [['name', 'slug', 'video'], 'string', 'max' => 255],
-            ['video', 'url'],
-            [['image'], 'image'],
-            ['slug', '\panix\engine\validators\UrlValidator', 'attributeCompare' => 'name'],
-            ['slug', 'match',
+
+        $rules = [];
+
+        // $this->link('type',ProductType::findOne(Yii::$app->request->get('type_id')));
+
+
+        if ($this->isNewRecord && isset(Yii::$app->request->get('Product')['type_id'])) {
+
+            $rules[] = [['main_category_id', 'price', 'unit'], 'required'];
+        } else {
+            $rules[] = ['slug', '\panix\engine\validators\UrlValidator', 'attributeCompare' => 'name'];
+            $rules[] = ['slug', 'match',
                 'pattern' => '/^([a-z0-9-])+$/i',
                 'message' => Yii::t('app', 'PATTERN_URL')
-            ],
-            [['name', 'slug'], 'trim'],
-            [['full_description', 'discount'], 'string'],
-            ['use_configurations', 'boolean', 'on' => self::SCENARIO_INSERT],
-            ['enable_comments', 'boolean'],
-            [['sku', 'full_description', 'unit', 'video', 'price_purchase', 'label'], 'default'], // установим ... как NULL, если они пустые
-            [['name', 'slug', 'main_category_id', 'price', 'unit'], 'required'],
-            [['price', 'price_purchase'], 'double'],
-            [['manufacturer_id', 'type_id', 'quantity', 'views', 'availability', 'added_to_cart_count', 'ordern', 'category_id', 'currency_id', 'unit', 'supplier_id', 'label'], 'integer'],
-            [['name', 'slug', 'full_description', 'use_configurations'], 'safe'],
-            //  [['c1'], 'required'], // Attribute field
-            // [['c1'], 'string', 'max' => 255], // Attribute field
-        ];
+            ];
+            $rules[] = [['name', 'slug', 'main_category_id', 'price', 'unit'], 'required'];
+        }
+        $rules[] = [['slug'], 'unique'];
+        $rules[] = ['price', 'commaToDot'];
+        $rules[] = [['file'], 'file', 'maxFiles' => Yii::$app->params['plan'][Yii::$app->params['plan_id']]['product_upload_files']];
+        $rules[] = [['name', 'slug', 'video'], 'string', 'max' => 255];
+        $rules[] = ['video', 'url'];
+        $rules[] = [['image'], 'image'];
+
+        $rules[] = [['name', 'slug'], 'trim'];
+        $rules[] = [['full_description', 'discount'], 'string'];
+        $rules[] = ['use_configurations', 'boolean', 'on' => self::SCENARIO_INSERT];
+        $rules[] = ['enable_comments', 'boolean'];
+        $rules[] = [['sku', 'full_description', 'unit', 'video', 'price_purchase', 'label'], 'default']; // установим ... как NULL, если они пустые
+        $rules[] = [['price', 'price_purchase'], 'double'];
+        $rules[] = [['manufacturer_id', 'type_id', 'quantity', 'views', 'availability', 'added_to_cart_count', 'ordern', 'category_id', 'currency_id', 'unit', 'supplier_id', 'label'], 'integer'];
+        $rules[] = [['name', 'slug', 'full_description', 'use_configurations'], 'safe'];
+
+        return $rules;
     }
 
     public function getUnits()
@@ -363,7 +375,7 @@ class Product extends ActiveRecord
     public function getType()
     {
         return $this->hasOne(ProductType::class, ['id' => 'type_id']);
-        //->cache(3600 * 24, new TagDependency(['tags' => 'product-type-' . $this->type_id]));
+
     }
 
     public function getType2()
@@ -652,8 +664,8 @@ class Product extends ActiveRecord
                     $this->updatePrices($model);
             }
         }
-
-
+        $this->name = $this->replaceName();
+        $this->slug = CMS::slug($this->name);
         parent::afterSave($insert, $changedAttributes);
     }
 

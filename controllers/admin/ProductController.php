@@ -86,11 +86,11 @@ class ProductController extends AdminController
     {
         /** @var Product|\panix\mod\images\behaviors\ImageBehavior $model */
         $model = Product::findModel($id);
-
+        $isNew = $model->isNewRecord;
         $this->pageName = Yii::t('shop/default', 'MODULE_NAME');
 
 
-        if (!$model->isNewRecord && $model->switch) {
+        if (!$isNew && $model->switch) {
             $this->buttons[] = [
                 'icon' => 'eye',
                 'label' => Yii::t('shop/admin', 'VIEW_PRODUCT'),
@@ -108,7 +108,7 @@ class ProductController extends AdminController
 
 
         // On create new product first display "Choose type" form first.
-        if ($model->isNewRecord && isset($_GET['Product']['type_id'])) {
+        if ($isNew && isset($_GET['Product']['type_id'])) {
             // $type_id = $model->type_id;
 
             if (ProductType::find()->where(['id' => $model->type_id])->count() === 0)
@@ -128,7 +128,7 @@ class ProductController extends AdminController
         //$model->setScenario("admin");
 
 
-        $title = ($model->isNewRecord) ? Yii::t('shop/admin', 'CREATE_PRODUCT') :
+        $title = ($isNew) ? Yii::t('shop/admin', 'CREATE_PRODUCT') :
             Yii::t('shop/admin', 'UPDATE_PRODUCT');
 
         $this->pageName = $title;
@@ -150,17 +150,19 @@ class ProductController extends AdminController
 
 
         // Set configurable attributes on new record
-        if ($model->isNewRecord) {
-
+        if ($isNew) {
             if ($model->use_configurations && isset($_GET['Product']['configurable_attributes']))
                 $model->configurable_attributes = $_GET['Product']['configurable_attributes'];
         }
 
-        $isNew = $model->isNewRecord;
         if ($model->load($post) && $model->validate() && $this->validateAttributes($model) && $this->validatePrices($model)) {
             //   print_r($post['redirect']);
+
+
+
             $model->setRelatedProducts(Yii::$app->request->post('RelatedProductId', []));
             $model->setKitProducts(Yii::$app->request->post('kitProductId', []));
+
 
             if ($model->save()) {
 
@@ -174,26 +176,41 @@ class ProductController extends AdminController
                 $model->file = \yii\web\UploadedFile::getInstances($model, 'file');
 
 
-                //if (Yii::$app->request->post('AttachmentsMainId')) {
-                // $test = $model->getImages();
-                //print_r($test);
-                //}
-
-
                 if ($model->file) {
                     foreach ($model->file as $file) {
                         $model->attachImage($file);
                     }
                 }
                 if (isset(Yii::$app->request->post('Product')['prices']) && !empty(Yii::$app->request->post('Product')['prices'])) {
-                    //var_dump(Yii::$app->request->post('Product')['prices']);die;
                     $model->processPrices(Yii::$app->request->post('Product')['prices']);
                 }
                 $this->processAttributes($model);
                 // Process variants
                 $this->processVariants($model);
                 $this->processConfigurations($model);
+
+
+                if ($isNew && $model->type && $model->type->product_name) {
+                    // $model = Product::findOne($model->id);
+                    //  $model->name = $model->replaceMeta($model->type->product_name);
+                    //$model->slug = CMS::slug($model->name);
+                    //$model->save(false);
+
+
+                   // $find = Product::findOne($model->id);
+                  //  $type = ProductType::findOne(Yii::$app->request->get('Product')['type_id']);
+                   // $find->name = $find->replaceMeta($find->type->product_name);
+                    //$find->slug = CMS::slug($find->name);
+                   // if($find->validate()){
+                    //    $find->save();
+                    //}
+
+
+                }
+
+
             }
+
 
             return $this->redirectPage($isNew, $post);
         } else {
@@ -379,19 +396,19 @@ class ProductController extends AdminController
             }
         }*/
 
-        $reAttributes=[];
+        $reAttributes = [];
         foreach ($attributes as $key => $val) {
 
             if (in_array($key, [Attribute::TYPE_TEXT, Attribute::TYPE_TEXTAREA, Attribute::TYPE_YESNO])) {
-                foreach ($val as $k=>$v){
-                    $reAttributes[$k]='"'.$v.'"';
+                foreach ($val as $k => $v) {
+                    $reAttributes[$k] = '"' . $v . '"';
                     if (is_string($v) && $v === '') {
                         unset($reAttributes[$k]);
                     }
                 }
-            }else{
-                foreach ($val as $k=>$v){
-                    $reAttributes[$k]=$v;
+            } else {
+                foreach ($val as $k => $v) {
+                    $reAttributes[$k] = $v;
                     if (is_string($v) && $v === '') {
                         unset($reAttributes[$k]);
                     }
@@ -471,13 +488,12 @@ class ProductController extends AdminController
     }
 
 
-
     public function actionDuplicateProducts_TEST()
     {
         $result['success'] = false;
         if (Yii::$app->request->isAjax) {
 
-            if(Yii::$app->request->isPost){
+            if (Yii::$app->request->isPost) {
                 $this->enableCsrfValidation = false;
                 Yii::$app->response->format = Response::FORMAT_JSON;
                 //TODO: return ids to find products
@@ -493,7 +509,7 @@ class ProductController extends AdminController
                 $result['success'] = true;
                 $result['message'] = 'Копия упешно создана';
                 return $result;
-            }else{
+            } else {
                 return $this->renderAjax('window/duplicate_products_window');
             }
 
@@ -543,6 +559,7 @@ class ProductController extends AdminController
             throw new ForbiddenHttpException();
         }
     }
+
     /**
      * Render popup windows
      *

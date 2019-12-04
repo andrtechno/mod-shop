@@ -3,12 +3,11 @@
 namespace panix\mod\shop\components;
 
 
-use panix\engine\CMS;
+use panix\mod\shop\models\AttributeOption;
 use Yii;
 use yii\base\Exception;
 use yii\db\ActiveRecord;
 use yii\db\Query;
-use yii\helpers\StringHelper;
 
 class EavBehavior extends \yii\base\Behavior
 {
@@ -180,7 +179,7 @@ class EavBehavior extends \yii\base\Behavior
      */
     public function setSafeAttributes($safeAttributes)
     {
-        $this->safeAttributes[]=$safeAttributes;
+        $this->safeAttributes[] = $safeAttributes;
     }
 
     /**
@@ -341,24 +340,15 @@ class EavBehavior extends \yii\base\Behavior
      */
     public function loadEavAttributes($attributes)
     {
-        // If exists cache, return it.
-        //$data = $this->cache->get($this->getCacheKey());
-        //  if ($data !== FALSE) {
-        //      $this->attributes->mergeWith($data, FALSE);
-        //      return $this->owner;
-        //   }
-        // Query DB.
-
-
         $data = $this->getLoadEavAttributesQuery($attributes)->all();
         foreach ($data as $row) {
             $attribute = $this->stripPrefix($row[$this->attributeField]);
             $value = $row[$this->valueField];
 
-            if(!is_int($value)){
+            if (!is_int($value)) {
                 $pattern = '/^(\")(.*)(\")$/i';
                 $replacement = '$2';
-                $value =preg_replace($pattern, $replacement, $value);
+                $value = preg_replace($pattern, $replacement, $value);
             }
 
             // Check if value exists.
@@ -383,7 +373,10 @@ class EavBehavior extends \yii\base\Behavior
         // Save loaded attributes to cache.
         //$this->cache->set($this->getCacheKey(), $this->attributes->toArray());
         // Return model.
+
         return $this->owner;
+
+
     }
 
     /**
@@ -418,7 +411,7 @@ class EavBehavior extends \yii\base\Behavior
      * @param bool $save whether auto save attributes.
      * @return ActiveRecord
      */
-    public function setEavAttributes($attributes, $save = FALSE)
+    public function setEavAttributes($attributes, $save = false)
     {
         // CMS::dump($this->attributes);die;
         foreach ($attributes as $attribute => $value) {
@@ -460,9 +453,16 @@ class EavBehavior extends \yii\base\Behavior
         // Queue for load.
         $loadQueue = [];
         foreach ($attributes as $attribute) {
+
+
             // Check is safe.
             if ($this->hasSafeAttribute($attribute)) {
-                $values[$attribute] = (isset($this->attributes[$attribute])) ? $this->attributes[$attribute] : NULL;
+                if (isset($this->attributes[$attribute])) {
+                    $val = $this->attributes[$attribute];
+                } else {
+                    $val = NULL;
+                }
+                $values[$attribute] = $val;
                 // If attribute not set and not load, prepare array for loaded.
                 if (!$this->preload && $values[$attribute] === NULL) {
                     $loadQueue[] = $attribute;
@@ -471,15 +471,38 @@ class EavBehavior extends \yii\base\Behavior
         }
         // If array for loaded not empty, load attributes.
         if (!$this->preload && count($loadQueue) > 0) {
+
             $this->loadEavAttributes($attributes);
             foreach ($loadQueue as $attribute) {
                 $values[$attribute] = (isset($this->attributes[$attribute])) ? $this->attributes[$attribute] : NULL;
             }
         }
+
         // Delete load queue.
         unset($loadQueue);
         // Return values.
         return $values;
+    }
+
+    public function getEavAttributesValue($attributes = [])
+    {
+
+        // Get all attributes if not specified.
+        if (empty($attributes)) {
+            $attributes = $this->getSafeAttributesArray();
+        }
+
+        $test = AttributeOption::find()->where(['IN', 'id', $attributes]);
+
+        $result = [];
+        foreach ($test->all() as $test) {
+            if ($test->attr) {
+                $result[$test->attr->name]['value'] = $test->value;
+                $result[$test->attr->name]['name'] = $test->attr->title;
+            }
+        }
+
+        return $result;
     }
 
     /**
@@ -587,6 +610,18 @@ class EavBehavior extends \yii\base\Behavior
     {
         $query = new Query;
         $query->from($this->tableName)->where([$this->entityField => $this->getModelId()]);
+        if (!empty($attributes)) {
+            $query->andWhere(['IN', $this->attributeField, $attributes]);
+        }
+        //echo $query->createCommand()->rawSql;die;
+        return $query;
+    }
+
+    //@todo test
+    public function getLoadEavAttributesValueQuery($attributes)
+    {
+        $query = new Query;
+        $query->from($this->tableName);//->where([$this->entityField => $this->getModelId()]);
         if (!empty($attributes)) {
             $query->andWhere(['IN', $this->attributeField, $attributes]);
         }

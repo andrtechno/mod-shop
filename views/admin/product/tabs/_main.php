@@ -5,6 +5,7 @@ use panix\mod\shop\models\Manufacturer;
 use panix\mod\shop\models\Category;
 use panix\ext\tinymce\TinyMce;
 use panix\mod\shop\models\Supplier;
+use panix\mod\shop\models\Attribute;
 
 /**
  * @var panix\engine\bootstrap\ActiveForm $form
@@ -12,9 +13,10 @@ use panix\mod\shop\models\Supplier;
 ?>
 
 
-
-<?= $form->field($model, 'name')->textInput(['maxlength' => 255]) ?>
-<?= $form->field($model, 'slug')->textInput(['maxlength' => 255]) ?>
+<?php if (!$model->isNewRecord && !Yii::$app->request->get('type_id') && !$model->type && !$model->type->product_name) { ?>
+    <?= $form->field($model, 'name')->textInput(['maxlength' => 255]) ?>
+    <?= $form->field($model, 'slug')->textInput(['maxlength' => 255]) ?>
+<?php } ?>
 <?= $form->field($model, 'sku')->textInput(['maxlength' => 255]) ?>
 
 

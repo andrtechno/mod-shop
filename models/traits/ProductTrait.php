@@ -3,6 +3,8 @@
 namespace panix\mod\shop\models\traits;
 
 use panix\mod\shop\models\Category;
+use panix\mod\shop\models\Manufacturer;
+use panix\mod\shop\models\ProductType;
 use Yii;
 use panix\engine\Html;
 use panix\engine\CMS;
@@ -71,7 +73,7 @@ trait ProductTrait
 
             },
         ];
-        $columns['type_id']=[
+        $columns['type_id'] = [
             'attribute' => 'type_id',
         ];
         $columns['price'] = [
@@ -265,7 +267,8 @@ trait ProductTrait
     }
 
 
-    public function getDataAttributes(){
+    public function getDataAttributes()
+    {
 
 
         /** @var \panix\mod\shop\components\EavBehavior $attributes */
@@ -283,10 +286,8 @@ trait ProductTrait
         // }, 3600);
 
 
-       foreach ($query as $m)
-           $models[$m->name] = $m;
-
-
+        foreach ($query as $m)
+            $models[$m->name] = $m;
 
 
         foreach ($models as $model) {
@@ -304,7 +305,7 @@ trait ProductTrait
                 ];
 
             }
-           // $data[$model->title] = $value;
+            // $data[$model->title] = $value;
             $data[$model->name]['name'] = $model->title;
             $data[$model->name]['value'] = $value;
 
@@ -351,14 +352,15 @@ trait ProductTrait
                 }
             }
         }*/
-        if($this->type){
-            if($this->type->product_description){
+        if ($this->type) {
+            if ($this->type->product_description) {
                 $description = $this->replaceMeta($this->type->product_description);
             }
 
         }
-          return $description;
+        return $description;
     }
+
     public function title()
     {
         $title = $this->name;
@@ -377,8 +379,8 @@ trait ProductTrait
         }*/
 
 
-        if($this->type){
-            if($this->type->product_title){
+        if ($this->type) {
+            if ($this->type->product_title) {
                 $title = $this->replaceMeta($this->type->product_title);
             }
 
@@ -391,24 +393,90 @@ trait ProductTrait
     public function replaceMeta($text)
     {
         /** @var $this Product */
-        $attrArray = [];
-        foreach ($this->dataAttributes['data'] as $k => $attr) {
-            $attrArray['{eav_' . $k . '_value}'] = $attr['value'];
-            $attrArray['{eav_' . $k . '_name}'] = $attr['name'];
-        }
-        $replace = ArrayHelper::merge([
-            "{product_id}" => $this->id,
-            "{product_name}" => $this->name,
-            "{product_price}" => $this->getFrontPrice(),
-            "{product_sku}" => $this->sku,
-            "{product_manufacturer}" => (isset($this->manufacturer)) ? $this->manufacturer->name : null,
-            "{product_category}" => (isset($this->mainCategory)) ? $this->mainCategory->name : null,
-            "{currency.symbol}" => Yii::$app->currency->active['symbol'],
-            "{currency.iso}" => Yii::$app->currency->active['iso'],
-        ], $attrArray);
+        $codes = [];
 
-        return CMS::textReplace($text, $replace);
+        foreach ($this->dataAttributes['data'] as $k => $attr) {
+            $codes['{eav_' . $k . '_value}'] = $attr['value'];
+            $codes['{eav_' . $k . '_name}'] = $attr['name'];
+        }
+
+
+        $codes["{product_id}"] = $this->id;
+        $codes["{product_name}"] = $this->name;
+        $codes["{product_price}"] = $this->getFrontPrice();
+        $codes["{product_sku}"] = $this->sku;
+        $codes["{product_type}"] = ($this->type) ? $this->type->name : null;
+        $codes["{product_manufacturer}"] = (isset($this->manufacturer)) ? $this->manufacturer->name : null;
+        $codes["{product_category}"] = (isset($this->mainCategory)) ? $this->mainCategory->name : null;
+        $codes["{currency.symbol}"] = Yii::$app->currency->active['symbol'];
+        $codes["{currency.iso}"] = Yii::$app->currency->active['iso'];
+
+        return CMS::textReplace($text, $codes);
     }
 
+    public function replaceName()
+    {
+        /** @var $this Product */
+        $codes = [];
 
+        $attributes = Yii::$app->request->post('Attribute', []);
+        if (empty($attributes))
+            return false;
+
+
+        $reAttributes = [];
+        foreach ($attributes as $key => $val) {
+
+            if (in_array($key, [Attribute::TYPE_TEXT, Attribute::TYPE_TEXTAREA, Attribute::TYPE_YESNO])) {
+                foreach ($val as $k => $v) {
+                    $reAttributes[$k] = '"' . $v . '"';
+                    if (is_string($v) && $v === '') {
+                        unset($reAttributes[$k]);
+                    }
+                }
+            } else {
+                foreach ($val as $k => $v) {
+                    $reAttributes[$k] = $v;
+                    if (is_string($v) && $v === '') {
+                        unset($reAttributes[$k]);
+                    }
+                }
+            }
+        }
+
+        foreach ($this->getEavAttributesValue($reAttributes) as $k => $attr) {
+            $codes['{eav_' . $k . '_value}'] = $attr['value'];
+            $codes['{eav_' . $k . '_name}'] = $attr['name'];
+
+        }
+
+
+        $codes["{product_id}"] = $this->id;
+        $codes["{product_name}"] = $this->name;
+        $codes["{product_price}"] = $this->getFrontPrice();
+        $codes["{product_sku}"] = $this->sku;
+        if ($this->type) {
+            $type = $this->type;
+        } else {
+            $type = ProductType::findOne(Yii::$app->request->get('Product')['type_id']);
+        }
+        $codes["{product_type}"] = $type->name;
+        $codes['{product_manufacturer}'] = null;
+        if (isset($this->manufacturer)) {
+            $codes['{product_manufacturer}'] = $this->manufacturer->name;
+        } else {
+            if (isset(Yii::$app->request->post('Product')['manufacturer_id']) && Yii::$app->request->post('Product')['manufacturer_id']) {
+                $manufacturer = Manufacturer::findOne(Yii::$app->request->post('Product')['manufacturer_id']);
+                if ($manufacturer) {
+                    $codes['{product_manufacturer}'] = $manufacturer->name;
+                }
+            }
+        }
+
+        $codes["{product_category}"] = (isset($this->mainCategory)) ? $this->mainCategory->name : (Category::findOne((int)Yii::$app->request->post('Product')['main_category_id']))->name;
+        $codes["{currency.symbol}"] = Yii::$app->currency->active['symbol'];
+        $codes["{currency.iso}"] = Yii::$app->currency->active['iso'];
+
+        return CMS::textReplace($type->product_name, $codes);
+    }
 }

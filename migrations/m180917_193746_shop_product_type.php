@@ -22,6 +22,7 @@ class m180917_193746_shop_product_type extends Migration
             'name' => $this->string(255)->null(),
             'product_title' => $this->text()->null(),
             'product_description' => $this->text()->null(),
+            'product_name' => $this->text()->null(),
             'categories_preset' => $this->text()->null()->defaultValue(null),
             'main_category' => $this->integer(11)->null()->defaultValue(0),
         ]);

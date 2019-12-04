@@ -8,7 +8,12 @@ use yii\helpers\ArrayHelper;
 /**
  * Class ProductType
  *
+ * @property integer $id
+ * @property string $product_name
+ * @property string $product_title
+ * @property string $product_description
  * @property string $name
+ *
  * @package panix\mod\shop\models
  */
 class ProductType extends ActiveRecord
@@ -22,8 +27,8 @@ class ProductType extends ActiveRecord
             'attributes' => [
                 'age',
                 'name' => [
-                    'asc' => ['first_name' => SORT_ASC, 'last_name' => SORT_ASC],
-                    'desc' => ['first_name' => SORT_DESC, 'last_name' => SORT_DESC],
+                    'asc' => ['name' => SORT_ASC],
+                    'desc' => ['name' => SORT_DESC],
                 ],
             ],
         ]);
@@ -55,7 +60,7 @@ class ProductType extends ActiveRecord
             [['name'], 'trim'],
             [['name'], 'required'],
             [['name'], 'string', 'max' => 255],
-            [['product_description', 'product_title'], 'string'],
+            [['product_description', 'product_title', 'product_name'], 'string'],
             [['name', 'categories_preset'], 'safe'],
         ];
     }
@@ -117,9 +122,5 @@ class ProductType extends ActiveRecord
         return parent::afterDelete();
     }
 
-    public function __toString()
-    {
-        return $this->name;
-    }
 
 }
