@@ -10,10 +10,11 @@ use panix\mod\shop\models\Attribute;
 /**
  * @var panix\engine\bootstrap\ActiveForm $form
  */
+
 ?>
 
 
-<?php if (!$model->isNewRecord && !Yii::$app->request->get('type_id') && !$model->type && !$model->type->product_name) { ?>
+<?php if (!$model->auto) { ?>
     <?= $form->field($model, 'name')->textInput(['maxlength' => 255]) ?>
     <?= $form->field($model, 'slug')->textInput(['maxlength' => 255]) ?>
 <?php } ?>

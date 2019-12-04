@@ -156,10 +156,6 @@ class ProductController extends AdminController
         }
 
         if ($model->load($post) && $model->validate() && $this->validateAttributes($model) && $this->validatePrices($model)) {
-            //   print_r($post['redirect']);
-
-
-
             $model->setRelatedProducts(Yii::$app->request->post('RelatedProductId', []));
             $model->setKitProducts(Yii::$app->request->post('kitProductId', []));
 
@@ -188,27 +184,6 @@ class ProductController extends AdminController
                 // Process variants
                 $this->processVariants($model);
                 $this->processConfigurations($model);
-
-
-                if ($isNew && $model->type && $model->type->product_name) {
-                    // $model = Product::findOne($model->id);
-                    //  $model->name = $model->replaceMeta($model->type->product_name);
-                    //$model->slug = CMS::slug($model->name);
-                    //$model->save(false);
-
-
-                   // $find = Product::findOne($model->id);
-                  //  $type = ProductType::findOne(Yii::$app->request->get('Product')['type_id']);
-                   // $find->name = $find->replaceMeta($find->type->product_name);
-                    //$find->slug = CMS::slug($find->name);
-                   // if($find->validate()){
-                    //    $find->save();
-                    //}
-
-
-                }
-
-
             }
 
 

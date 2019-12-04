@@ -290,13 +290,16 @@ class Product extends ActiveRecord
 
         $rules = [];
 
-        // $this->link('type',ProductType::findOne(Yii::$app->request->get('type_id')));
 
-
+        $auto = false;
         if ($this->isNewRecord && isset(Yii::$app->request->get('Product')['type_id'])) {
+            $type = ProductType::findOne(Yii::$app->request->get('Product')['type_id']);
+            if ($type && $type->product_name)
+                $auto = true;
+        }
 
-            $rules[] = [['main_category_id', 'price', 'unit'], 'required'];
-        } else {
+
+        if (!$auto) {
             $rules[] = ['slug', '\panix\engine\validators\UrlValidator', 'attributeCompare' => 'name'];
             $rules[] = ['slug', 'match',
                 'pattern' => '/^([a-z0-9-])+$/i',
@@ -304,6 +307,7 @@ class Product extends ActiveRecord
             ];
             $rules[] = [['name', 'slug', 'main_category_id', 'price', 'unit'], 'required'];
         }
+        $rules[] = [['main_category_id', 'price', 'unit'], 'required'];
         $rules[] = [['slug'], 'unique'];
         $rules[] = ['price', 'commaToDot'];
         $rules[] = [['file'], 'file', 'maxFiles' => Yii::$app->params['plan'][Yii::$app->params['plan_id']]['product_upload_files']];
@@ -569,6 +573,16 @@ class Product extends ActiveRecord
         Kit::deleteAll(['owner_id' => $this->id]);
 
     }
+    public $auto = false;
+    public function init()
+    {
+        if ($this->isNewRecord && isset(Yii::$app->request->get('Product')['type_id'])) {
+            $type = ProductType::findOne(Yii::$app->request->get('Product')['type_id']);
+            if ($type && $type->product_name)
+                $this->auto = true;
+        }
+        parent::init();
+    }
 
     public function afterSave($insert, $changedAttributes)
     {
@@ -664,8 +678,11 @@ class Product extends ActiveRecord
                     $this->updatePrices($model);
             }
         }
-        $this->name = $this->replaceName();
-        $this->slug = CMS::slug($this->name);
+
+        if ($this->auto) {
+            $this->name = $this->replaceName();
+            $this->slug = CMS::slug($this->name);
+        }
         parent::afterSave($insert, $changedAttributes);
     }
 
