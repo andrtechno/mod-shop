@@ -305,7 +305,7 @@ class Product extends ActiveRecord
                 'pattern' => '/^([a-z0-9-])+$/i',
                 'message' => Yii::t('app', 'PATTERN_URL')
             ];
-            $rules[] = [['name', 'slug', 'main_category_id', 'price', 'unit'], 'required'];
+            $rules[] = [['name', 'slug'], 'required'];
         }
         $rules[] = [['main_category_id', 'price', 'unit'], 'required'];
         $rules[] = [['slug'], 'unique'];
@@ -321,7 +321,7 @@ class Product extends ActiveRecord
         $rules[] = ['enable_comments', 'boolean'];
         $rules[] = [['sku', 'full_description', 'unit', 'video', 'price_purchase', 'label'], 'default']; // установим ... как NULL, если они пустые
         $rules[] = [['price', 'price_purchase'], 'double'];
-        $rules[] = [['manufacturer_id', 'type_id', 'quantity', 'views', 'availability', 'added_to_cart_count', 'ordern', 'category_id', 'currency_id', 'unit', 'supplier_id', 'label'], 'integer'];
+        $rules[] = [['manufacturer_id', 'type_id', 'quantity', 'views', 'availability', 'added_to_cart_count', 'ordern', 'category_id', 'currency_id', 'supplier_id', 'label'], 'integer'];
         $rules[] = [['name', 'slug', 'full_description', 'use_configurations'], 'safe'];
 
         return $rules;

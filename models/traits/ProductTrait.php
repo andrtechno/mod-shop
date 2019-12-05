@@ -73,6 +73,9 @@ trait ProductTrait
 
             },
         ];
+        $columns['sku'] = [
+            'attribute' => 'sku',
+        ];
         $columns['type_id'] = [
             'attribute' => 'type_id',
         ];
