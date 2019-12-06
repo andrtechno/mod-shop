@@ -3,6 +3,7 @@
 namespace panix\mod\shop\models;
 
 
+use panix\mod\sitemap\behaviors\SitemapBehavior;
 use Yii;
 use yii\helpers\ArrayHelper;
 use panix\engine\behaviors\nestedsets\NestedSetsBehavior;
@@ -27,6 +28,8 @@ use panix\engine\behaviors\UploadFileBehavior;
  * @property string $description
  * @property string $full_path
  * @property integer $switch
+ * @property integer $created_at
+ * @property integer $updated_at
  * @property integer $countItems Relation of getCountItems()
  * @property string getMetaDescription()
  * @property string getMetaTitle()
@@ -113,6 +116,26 @@ class Category extends ActiveRecord
             //    'watermark' => false
             // ]
         ];
+        if (Yii::$app->getModule('sitemap')) {
+            $a['sitemap'] = [
+                'class' => SitemapBehavior::class,
+                //'batchSize' => 100,
+                'scope' => function ($model) {
+                    /** @var \yii\db\ActiveQuery $model */
+                    $model->select(['full_path', 'updated_at']);
+                    $model->andWhere(['switch' => 1]);
+                },
+                'dataClosure' => function ($model) {
+                    /** @var self $model */
+                    return [
+                        'loc' => $model->getUrl(),
+                        'lastmod' => $model->updated_at,
+                        'changefreq' => SitemapBehavior::CHANGEFREQ_DAILY,
+                        'priority' => 0.8
+                    ];
+                }
+            ];
+        }
         $a['tree'] = [
             'class' => NestedSetsBehavior::class,
             'hasManyRoots' => false

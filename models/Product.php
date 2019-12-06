@@ -573,7 +573,9 @@ class Product extends ActiveRecord
         Kit::deleteAll(['owner_id' => $this->id]);
 
     }
+
     public $auto = false;
+
     public function init()
     {
         if ($this->isNewRecord && isset(Yii::$app->request->get('Product')['type_id'])) {
@@ -891,26 +893,26 @@ class Product extends ActiveRecord
     public function behaviors()
     {
         $a = [];
-
-        $a['sitemap'] = [
-            'class' => SitemapBehavior::class,
-            //'batchSize' => 100,
-            'scope' => function ($model) {
-                /** @var \yii\db\ActiveQuery $model */
-                $model->select(['slug', 'updated_at']);
-                $model->andWhere(['switch' => 1]);
-            },
-            'dataClosure' => function ($model) {
-                /** @var self $model */
-                return [
-                    //'loc' => Url::to($model->slug, true),
-                    'loc' => Url::to($model->getUrl(), true),
-                    'lastmod' => $model->updated_at,
-                    'changefreq' => SitemapBehavior::CHANGEFREQ_DAILY,
-                    'priority' => 0.9
-                ];
-            }
-        ];
+        if (Yii::$app->getModule('sitemap')) {
+            $a['sitemap'] = [
+                'class' => SitemapBehavior::class,
+                //'batchSize' => 100,
+                'scope' => function ($model) {
+                    /** @var \yii\db\ActiveQuery $model */
+                    $model->select(['slug', 'updated_at']);
+                    $model->where(['switch' => 1]);
+                },
+                'dataClosure' => function ($model) {
+                    /** @var self $model */
+                    return [
+                        'loc' => $model->getUrl(),
+                        'lastmod' => $model->updated_at,
+                        'changefreq' => SitemapBehavior::CHANGEFREQ_DAILY,
+                        'priority' => 0.9
+                    ];
+                }
+            ];
+        }
         // if (Yii::$app->getModule('images'))
         $a['imagesBehavior'] = [
             'class' => '\panix\mod\images\behaviors\ImageBehavior',
