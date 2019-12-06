@@ -83,7 +83,7 @@ class CategoryUrlRule extends BaseUrlRule
 
     protected function getAllPaths()
     {
-        $allPaths = \Yii::$app->cache->get(__CLASS__);
+        $allPaths = \Yii::$app->cache->get('CategoryUrlRule');
         if ($allPaths === false) {
             $allPaths = (new \yii\db\Query())
                 ->select(['full_path'])
@@ -97,7 +97,7 @@ class CategoryUrlRule extends BaseUrlRule
                 return strlen($b['full_path']) - strlen($a['full_path']);
             });
 
-            \Yii::$app->cache->set(__CLASS__, $allPaths, $this->cacheDuration);
+            \Yii::$app->cache->set('CategoryUrlRule', $allPaths, $this->cacheDuration);
         }
 
         return $allPaths;

@@ -13,7 +13,7 @@ class ManufacturerUrlRule extends BaseUrlRule
 
     public function getAllPaths()
     {
-        $allPaths = \Yii::$app->cache->get(__CLASS__);
+        $allPaths = \Yii::$app->cache->get('ManufacturerUrlRule');
         if ($allPaths === false) {
             $allPaths = (new \yii\db\Query())
                 ->select([$this->alias])
@@ -25,7 +25,7 @@ class ManufacturerUrlRule extends BaseUrlRule
                 return strlen($b[$this->alias]) - strlen($a[$this->alias]);
             });
 
-            \Yii::$app->cache->set(__CLASS__, $allPaths, $this->cacheDuration);
+            \Yii::$app->cache->set('ManufacturerUrlRule', $allPaths, $this->cacheDuration);
         }
 
         return $allPaths;
