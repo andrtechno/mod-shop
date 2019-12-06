@@ -3,7 +3,7 @@ return [
     'MODULE_NAME' => 'Магазин',
     'MODULE_DESC' => 'Управление магазином',
     'CATALOG' => 'Каталог',
-    'SPECIFICATION' => 'характеристики',
+    'SPECIFICATION' => 'Характеристики',
     'FILTERS' => 'Фильтры',
     'RESET_FILTERS_BTN' => 'Сбросить фильтры',
     'FILTER_CURRENT' => 'Выбранные фильтры',
