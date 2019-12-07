@@ -133,10 +133,9 @@ class FiltersWidget extends Widget
     public function countAttributeProducts($attribute, $option)
     {
         $model = Product::find()->published();
-        $model->attachBehaviors($model->behaviors());
+        //$model->attachBehaviors($model->behaviors());
        // $model->getEavAttributes22222222($this->view->context->getEavAttributes());
         if ($this->model instanceof Category) {
-
             $model->applyCategories($this->model);
             //$model->andWhere([Product::tableName() . '.main_category_id' => $this->model->id]);
         } elseif ($this->model instanceof Manufacturer) {

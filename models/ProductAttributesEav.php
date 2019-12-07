@@ -6,7 +6,6 @@ use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "ProductAttributesEav".
- *
  */
 class ProductAttributesEav extends ActiveRecord
 {

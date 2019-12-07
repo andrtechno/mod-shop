@@ -120,6 +120,7 @@ class ProductController extends WebController
         $model = Product::find()
             ->where(['slug' => $slug])
             ->published()
+            //->cache()
             ->one();
 
         if ($model !== null) {

@@ -372,7 +372,7 @@ class Product extends ActiveRecord
 
     public function getManufacturer()
     {
-        return $this->hasOne(Manufacturer::class, ['id' => 'manufacturer_id']);
+        return $this->hasOne(Manufacturer::class, ['id' => 'manufacturer_id'])->cache(3600 * 24*30);
         //->cache(3600 * 24, new TagDependency(['tags' => 'product-manufacturer-' . $this->manufacturer_id]));
     }
 
@@ -692,39 +692,28 @@ class Product extends ActiveRecord
      * Update price and max_price for configurable product
      * @param Product $model
      */
-    public function updatePrices__(Product $model)
-    {
-        // Get min and max prices
-        $query = Yii::$app->db->createCommand()
-            ->select('MIN(t.price) as min_price, MAX(t.price) as max_price')
-            ->from('{{%shop__product}} t')
-            ->where(array('in', 't.id', $model->getConfigurations(true)))
-            ->queryRow();
-
-        // Update
-        Yii::$app->db->createCommand()->update('{{%shop__product}}', array(
-            'price' => $query['min_price'],
-            'max_price' => $query['max_price']
-        ), 'id=:id', array(':id' => $model->id));
-    }
-
     public function updatePrices(Product $model)
     {
         $query = (new Query())
+            ->select('MIN(price) as min_price, MAX(price) as max_price')
+            ->from(self::tableName())
+            ->where(['in', 'id', $model->getConfigurations(true)])
+            ->one();
+        /*$query = (new Query())
             ->select('MIN(t.price) as min_price, MAX(t.price) as max_price')
             ->from('{{%shop__product}} t')
             ->where(['in', 't.id', $model->getConfigurations(true)])
-            ->one();
-
+            ->one();*/
 
         // Update
-        Yii::$app->db->createCommand()->update('{{%shop__product}}', array(
+        Yii::$app->db->createCommand()->update(self::tableName(), [
             'price' => $query['min_price'],
             'max_price' => $query['max_price']
-        ), 'id=:id', array(':id' => $model->id))->execute();
+        ], 'id=:id', [':id' => $model->id])->execute();
     }
 
     /**
+     * @param boolean $reload
      * @return array of product ids
      */
     public function getConfigurations($reload = false)

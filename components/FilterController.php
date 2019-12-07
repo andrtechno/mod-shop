@@ -158,8 +158,8 @@ class FilterController extends WebController
         $queryCategoryTypes = Product::find()
             ->applyCategories($this->dataModel)
             ->published()
-            ->select('`cms_shop__product`.`type_id`')
-            ->groupBy('`cms_shop__product`.`type_id`')
+            ->select(Product::tableName().'.type_id')
+            ->groupBy(Product::tableName().'.type_id')
             ->distinct(true);
 //echo $queryCategoryTypes->createCommand()->rawSql;die;
         $typesIds = $queryCategoryTypes->createCommand()->queryColumn();
