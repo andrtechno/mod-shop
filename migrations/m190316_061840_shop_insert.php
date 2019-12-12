@@ -11,7 +11,16 @@ namespace panix\mod\shop\migrations;
  * Class m190316_061840_shop_insert
  */
 
-
+use Yii;
+use panix\engine\CMS;
+use panix\engine\db\Migration;
+use panix\mod\shop\models\Attribute;
+use panix\mod\shop\models\AttributeOption;
+use panix\mod\shop\models\ProductType;
+use panix\mod\shop\models\translate\AttributeOptionTranslate;
+use panix\mod\shop\models\Category;
+use panix\mod\shop\models\Product;
+use panix\mod\shop\models\translate\CategoryTranslate;
 use panix\mod\images\models\Image;
 use panix\mod\shop\models\AttributeGroup;
 use panix\mod\shop\models\ProductAttributesEav;
@@ -19,18 +28,6 @@ use panix\mod\shop\models\ProductCategoryRef;
 use panix\mod\shop\models\Sets;
 use panix\mod\shop\models\translate\AttributeGroupTranslate;
 use panix\mod\shop\models\translate\ProductTranslate;
-use Yii;
-use panix\engine\CMS;
-use panix\engine\db\Migration;
-use panix\mod\shop\models\Attribute;
-use panix\mod\shop\models\translate\AttributeTranslate;
-use panix\mod\shop\models\AttributeOption;
-use panix\mod\shop\models\ProductType;
-use panix\mod\shop\models\translate\AttributeOptionTranslate;
-use panix\mod\shop\models\Category;
-use panix\mod\shop\models\Product;
-use panix\mod\shop\models\translate\CategoryTranslate;
-use panix\mod\shop\models\TypeAttribute;
 
 /**
  * Class m190316_061840_shop_insert
@@ -325,13 +322,13 @@ class m190316_061840_shop_insert extends Migration
             }
         }
         $this->batchInsert(Sets::tableName(), ['owner_id', 'product_id', 'price', 'from'], [
-            [4, 2,'', '']
+            [4, 2, '', '']
         ]);
         $this->batchInsert(Sets::tableName(), ['owner_id', 'product_id', 'price', 'from'], [
-            [4, 1,'', '']
+            [4, 1, '', '']
         ]);
         $this->batchInsert(Sets::tableName(), ['owner_id', 'product_id', 'price', 'from'], [
-            [4, 3,'', '']
+            [4, 3, '', '']
         ]);
 
         /*$this->batchInsert('{{%shop__product_attribute_eav}}', ['entity', 'attribute', 'value'], [

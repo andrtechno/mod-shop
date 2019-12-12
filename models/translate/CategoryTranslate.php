@@ -17,7 +17,7 @@ use yii\db\ActiveRecord;
  */
 class CategoryTranslate extends ActiveRecord
 {
-    public static $translationAttributes = ['name', 'description', 'seo_product_title', 'seo_product_description'];
+    public static $translationAttributes = ['name', 'description'];
 
     /**
      * @inheritdoc
