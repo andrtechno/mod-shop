@@ -8,29 +8,27 @@ namespace panix\mod\shop\migrations;
  *
  * Class m180917_193650_shop_product_attribute_eav
  */
-use yii\db\Schema;
 use panix\engine\db\Migration;
+use panix\mod\shop\models\ProductAttributesEav;
 
 class m180917_193650_shop_product_attribute_eav extends Migration
 {
 
     public function up()
     {
-        // @todo сделать attribute тоже integer
-        $this->createTable('{{%shop__product_attribute_eav}}', [
+        $this->createTable(ProductAttributesEav::tableName(), [
             'entity' => $this->integer()->unsigned(),
             'attribute' => $this->string(255)->null(),
             'value' => $this->text(),
         ]);
 
-        $this->createIndex('entity', '{{%shop__product_attribute_eav}}', 'entity');
-        $this->createIndex('attribute', '{{%shop__product_attribute_eav}}', 'attribute');
-        $this->createIndex('value', '{{%shop__product_attribute_eav}}', 'value');
+        $this->createIndex('entity', ProductAttributesEav::tableName(), 'entity');
+        $this->createIndex('attribute', ProductAttributesEav::tableName(), 'attribute');
     }
 
     public function down()
     {
-        $this->dropTable('{{%shop__product_attribute_eav}}');
+        $this->dropTable(ProductAttributesEav::tableName());
     }
 
 }
