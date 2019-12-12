@@ -321,13 +321,13 @@ class m190316_061840_shop_insert extends Migration
 
             }
         }
-        $this->batchInsert(Sets::tableName(), ['owner_id', 'product_id', 'price', 'from'], [
+        $this->batchInsert(Kit::tableName(), ['owner_id', 'product_id', 'price', 'from'], [
             [4, 2, '', '']
         ]);
-        $this->batchInsert(Sets::tableName(), ['owner_id', 'product_id', 'price', 'from'], [
+        $this->batchInsert(Kit::tableName(), ['owner_id', 'product_id', 'price', 'from'], [
             [4, 1, '', '']
         ]);
-        $this->batchInsert(Sets::tableName(), ['owner_id', 'product_id', 'price', 'from'], [
+        $this->batchInsert(Kit::tableName(), ['owner_id', 'product_id', 'price', 'from'], [
             [4, 3, '', '']
         ]);
 
