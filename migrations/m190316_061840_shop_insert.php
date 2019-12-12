@@ -25,7 +25,7 @@ use panix\mod\images\models\Image;
 use panix\mod\shop\models\AttributeGroup;
 use panix\mod\shop\models\ProductAttributesEav;
 use panix\mod\shop\models\ProductCategoryRef;
-use panix\mod\shop\models\Sets;
+use panix\mod\shop\models\Kit;
 use panix\mod\shop\models\translate\AttributeGroupTranslate;
 use panix\mod\shop\models\translate\ProductTranslate;
 
