@@ -12,8 +12,6 @@ use yii\db\ActiveRecord;
  * @property int $language_id
  * @property string $name
  * @property string $description
- * @property string $seo_product_title
- * @property string $seo_product_description
  */
 class CategoryTranslate extends ActiveRecord
 {
