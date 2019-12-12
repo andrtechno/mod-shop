@@ -372,7 +372,7 @@ class Product extends ActiveRecord
 
     public function getManufacturer()
     {
-        return $this->hasOne(Manufacturer::class, ['id' => 'manufacturer_id'])->cache(3600 * 24*30);
+        return $this->hasOne(Manufacturer::class, ['id' => 'manufacturer_id'])->cache(3600 * 24 * 30);
         //->cache(3600 * 24, new TagDependency(['tags' => 'product-manufacturer-' . $this->manufacturer_id]));
     }
 
@@ -578,10 +578,12 @@ class Product extends ActiveRecord
 
     public function init()
     {
-        if ($this->isNewRecord && isset(Yii::$app->request->get('Product')['type_id'])) {
-            $type = ProductType::findOne(Yii::$app->request->get('Product')['type_id']);
-            if ($type && $type->product_name)
-                $this->auto = true;
+        if (Yii::$app->id != 'console') {
+            if ($this->isNewRecord && isset(Yii::$app->request->get('Product')['type_id'])) {
+                $type = ProductType::findOne(Yii::$app->request->get('Product')['type_id']);
+                if ($type && $type->product_name)
+                    $this->auto = true;
+            }
         }
         parent::init();
     }
