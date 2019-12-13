@@ -47,7 +47,7 @@ trait ProductTrait
             'value' => function ($model) {
                 /** @var $model Product */
                 if ($model->name) {
-                    $html = Html::a($model->name, $model->getUrl());
+                    $html = Html::a($model->name, $model->getUrl(), ['data-pjax' => 0]);
                     if ($model->views > 0) {
                         $html .= " <small>(" . Yii::t('app', 'VIEWS', ['n' => $model->views]) . ")</small>";
                     }
@@ -122,7 +122,7 @@ trait ProductTrait
                 /** @var $model Product */
                 $result = '';
                 foreach ($model->categories as $category) {
-                    $options = [];
+                    $options['data-pjax'] = 0;
                     if ($category->id == $model->main_category_id) {
                         $options['class'] = 'badge badge-secondary';
                         $options['title'] = 'Main category';
@@ -140,7 +140,8 @@ trait ProductTrait
             'format' => 'html',
             'filter' => true,
             'value' => function ($model) {
-                return Html::a($model->commentsCount, ['/admin/comments/default/index', 'CommentsSearch[object_id]' => $model->primaryKey]);
+                $options['data-pjax'] = 0;
+                return Html::a($model->commentsCount, ['/admin/comments/default/index', 'CommentsSearch[object_id]' => $model->primaryKey], $options);
             }
         ];
         $columns['created_at'] = [
