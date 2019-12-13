@@ -6,6 +6,9 @@ use panix\mod\images\models\ImageSearch;
 use panix\engine\widgets\Pjax;
 use panix\engine\bootstrap\Modal;
 
+/**
+ * @var $form \panix\engine\bootstrap\ActiveForm
+ */
 ?>
 <?= Fancybox::widget(['target' => 'a.fancybox']); ?>
 <?= $form->field($model, 'video')->textInput(['maxlength' => 255])->hint('Пример: https://www.youtube.com/watch?v=[ID]') ?>
@@ -115,6 +118,10 @@ echo panix\engine\grid\GridView::widget([
             'value' => function ($model) {
                 return Html::a(Html::img($model->getUrl('100x100'), ['class' => 'img-thumbnail']), $model->getUrl(), ['class' => 'fancybox']);
             },
+        ],
+        [
+            'attribute' => 'handler_hash',
+            'format' => 'raw',
         ],
         [
             'attribute' => 'is_main',

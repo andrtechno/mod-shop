@@ -4,6 +4,7 @@ namespace panix\mod\shop\models;
 
 
 use panix\mod\discounts\components\DiscountBehavior;
+use panix\mod\images\models\Image;
 use panix\mod\sitemap\behaviors\SitemapBehavior;
 use panix\mod\user\models\User;
 use Yii;
@@ -311,6 +312,7 @@ class Product extends ActiveRecord
         $rules[] = [['slug'], 'unique'];
         $rules[] = ['price', 'commaToDot'];
         $rules[] = [['file'], 'file', 'maxFiles' => Yii::$app->params['plan'][Yii::$app->params['plan_id']]['product_upload_files']];
+        $rules[] = [['file'], 'validateLimit'];
         $rules[] = [['name', 'slug', 'video'], 'string', 'max' => 255];
         $rules[] = ['video', 'url'];
         $rules[] = [['image'], 'image'];
@@ -325,6 +327,24 @@ class Product extends ActiveRecord
         $rules[] = [['name', 'slug', 'full_description', 'use_configurations'], 'safe'];
 
         return $rules;
+    }
+
+    public function validateLimit($attribute)
+    {
+        $planCount = Yii::$app->params['plan'][Yii::$app->params['plan_id']]['product_upload_files'];
+        $imageCount = Image::find()->where([
+            'object_id' => $this->primaryKey,
+            'handler_hash' => $this->getHash()
+        ])->count();
+
+        if (isset($_FILES[(new \ReflectionClass($this))->getShortName()])) {
+            $imageCount +=count($_FILES[(new \ReflectionClass($this))->getShortName()]['name']['file']);
+
+        }
+
+        if (($planCount < $imageCount)) {
+            $this->addError($attribute, 'Привышен лимит изображений, доступно всего 3');
+        }
     }
 
     public function getUnits()
@@ -907,6 +927,7 @@ class Product extends ActiveRecord
         // if (Yii::$app->getModule('images'))
         $a['imagesBehavior'] = [
             'class' => '\panix\mod\images\behaviors\ImageBehavior',
+            'path' => '@uploads/store/product'
         ];
         $a['slug'] = [
             'class' => '\yii\behaviors\SluggableBehavior',
