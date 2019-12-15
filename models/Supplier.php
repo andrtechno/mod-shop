@@ -5,6 +5,17 @@ namespace panix\mod\shop\models;
 use panix\engine\db\ActiveRecord;
 use panix\engine\Html;
 
+/**
+ * Class Supplier
+ *
+ * @property integer $id
+ * @property string $name
+ * @property string $address
+ * @property string $phone
+ * @property Product $productsCount Counter
+ *
+ * @package panix\mod\shop\models
+ */
 class Supplier extends ActiveRecord
 {
 

@@ -6,6 +6,7 @@ use \panix\engine\db\ActiveRecord;
 
 /**
  * Class Currency
+ * @property integer $id
  * @property boolean $is_main
  * @property string $name
  * @property float $rate

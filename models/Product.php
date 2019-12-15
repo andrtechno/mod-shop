@@ -26,6 +26,7 @@ use panix\engine\db\ActiveRecord;
  * @property integer $type_id Type
  * @property integer $supplier_id Supplier
  * @property integer $currency_id Currency
+ * @property Currency $currency
  * @property integer $use_configurations
  * @property string $slug
  * @property string $name Product name
@@ -46,7 +47,8 @@ use panix\engine\db\ActiveRecord;
  * @property integer $added_to_cart_count
  * @property integer $votes
  * @property integer $rating
- * @property array $manufacturer
+ * @property Manufacturer[] $manufacturer
+ * @property Supplier[] $supplier
  * @property string $discount Discount
  * @property string $video Youtube video URL
  * @property boolean $appliedDiscount See [[\panix\mod\discounts\components\DiscountBehavior]] //Discount
@@ -396,12 +398,22 @@ class Product extends ActiveRecord
         //->cache(3600 * 24, new TagDependency(['tags' => 'product-manufacturer-' . $this->manufacturer_id]));
     }
 
+    public function getSupplier()
+    {
+        return $this->hasOne(Supplier::class, ['id' => 'manufacturer_id'])->cache(3600 * 24 * 30);
+        //->cache(3600 * 24, new TagDependency(['tags' => 'product-manufacturer-' . $this->manufacturer_id]));
+    }
+
     public function getType()
     {
         return $this->hasOne(ProductType::class, ['id' => 'type_id']);
 
     }
+    public function getCurrency()
+    {
+        return $this->hasOne(Currency::class, ['id' => 'currency_id']);
 
+    }
     public function getType2()
     {
         return $this->hasOne(ProductType::class, ['type_id' => 'id']);
