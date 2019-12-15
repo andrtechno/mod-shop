@@ -19,19 +19,19 @@ class AttributeController extends AdminController
     {
         return [
             'sortableOptions' => [
-                'class' => \panix\engine\grid\sortable\Action::class,
+                'class' => 'panix\engine\grid\sortable\Action',
                 'modelClass' => AttributeOption::class,
             ],
             'sortable' => [
-                'class' => \panix\engine\grid\sortable\Action::class,
+                'class' => 'panix\engine\grid\sortable\Action',
                 'modelClass' => Attribute::class,
             ],
             'switch' => [
-                'class' => \panix\engine\actions\SwitchAction::class,
+                'class' => 'panix\engine\actions\SwitchAction',
                 'modelClass' => Attribute::class,
             ],
             'delete' => [
-                'class' => \panix\engine\actions\DeleteAction::class,
+                'class' => 'panix\engine\actions\DeleteAction',
                 'modelClass' => Attribute::class,
             ],
         ];

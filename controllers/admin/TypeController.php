@@ -9,10 +9,24 @@ use panix\mod\shop\models\ProductType;
 use panix\mod\shop\models\search\ProductTypeSearch;
 use panix\mod\shop\models\Attribute;
 
+/**
+ * Class TypeController
+ * @package panix\mod\shop\controllers\admin
+ */
 class TypeController extends AdminController
 {
 
     public $icon = 'icon-t';
+
+    public function actions()
+    {
+        return [
+            'delete' => [
+                'class' => 'panix\engine\actions\DeleteAction',
+                'modelClass' => ProductType::class,
+            ],
+        ];
+    }
 
     /**
      * Display types list
