@@ -4,8 +4,7 @@ use yii\widgets\Pjax;
 use panix\engine\grid\GridView;
 
 Pjax::begin([
-    'id' => 'pjax-container', 'enablePushState' => false,
-    'linkSelector' => 'a:not(.linkTarget)'
+    'id' => 'pjax-grid-producttype',
 ]);
 echo GridView::widget([
     'tableOptions' => ['class' => 'table table-striped'],
