@@ -11,7 +11,16 @@ class SupplierController extends AdminController
 {
 
     public $icon = 'supplier';
+    public function actions()
+    {
+        return [
+            'delete' => [
+                'class' => 'panix\engine\actions\DeleteAction',
+                'modelClass' => Supplier::class,
+            ],
 
+        ];
+    }
     /**
      * Display types list
      */

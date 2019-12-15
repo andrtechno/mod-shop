@@ -16,19 +16,19 @@ class ManufacturerController extends AdminController
     {
         return [
             'sortable' => [
-                'class' => \panix\engine\grid\sortable\Action::class,
+                'class' => 'panix\engine\grid\sortable\Action',
                 'modelClass' => Manufacturer::class,
             ],
             'switch' => [
-                'class' => \panix\engine\actions\SwitchAction::class,
+                'class' => 'panix\engine\actions\SwitchAction',
                 'modelClass' => Manufacturer::class,
             ],
             'delete' => [
-                'class' => \panix\engine\actions\DeleteAction::class,
+                'class' => 'panix\engine\actions\DeleteAction',
                 'modelClass' => Manufacturer::class,
             ],
             'delete-file' => [
-                'class' => \panix\engine\actions\DeleteFileAction::class,
+                'class' => 'panix\engine\actions\DeleteFileAction',
                 'modelClass' => Manufacturer::class,
             ],
         ];
