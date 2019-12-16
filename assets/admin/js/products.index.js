@@ -236,7 +236,7 @@ function showDuplicateProductsWindow(link_clicked) {
                     success: function (data) {
                         if (data.success) {
                             dialog.dialog('destroy').remove();
-
+    console.log('dup');
                             $.pjax.reload(pjax, {timeout: false});
                             common.notify(data.message, 'success');
                         }
