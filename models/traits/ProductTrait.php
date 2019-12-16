@@ -108,6 +108,9 @@ trait ProductTrait
                 return $ss . Html::tag('span', Yii::$app->currency->number_format($priceHtml), ['class' => 'text-success font-weight-bold']) . ' ' . $symbol;
             }
         ];
+        $columns['supplier'] = [
+            'attribute' => 'supplier.name',
+        ];
         $columns['categories'] = [
             'header' => static::t('Категории'),
             'attribute' => 'main_category_id',
