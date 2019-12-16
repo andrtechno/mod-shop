@@ -25,8 +25,7 @@ class ProductSearch extends Product
     public function rules()
     {
         return [
-            //[['id'], 'integer'],
-            [['price_min', 'price_max', 'supplier_id', 'manufacturer_id'], 'integer'],
+            [['price_min', 'price_max', 'supplier_id', 'manufacturer_id', 'main_category_id'], 'integer'],
             // [['image'],'boolean'],
             [['slug', 'sku', 'price', 'id'], 'safe'], //commentsCount
             [['name'], 'string'],
@@ -55,8 +54,8 @@ class ProductSearch extends Product
         $query = Product::find();
         //$query->joinWith('translations');
         $query->sort();
-       // $query->joinWith(['translations translations']); //, 'commentsCount'
 
+        $query->joinWith(['translations translate','categorization categories']); //, 'commentsCount'
         $className = substr(strrchr(__CLASS__, "\\"), 1);
 
 
@@ -136,7 +135,7 @@ class ProductSearch extends Product
             $query->andFilterWhere([
                 self::tableName() . '.id' => $this->id,
             ]);
-            $query->andFilterWhere(['like', 'translations.name', $this->name]);
+            $query->andFilterWhere(['like', 'translate.name', $this->name]);
         }
 
         /*$query->andFilterWhere([
@@ -154,8 +153,12 @@ class ProductSearch extends Product
         $query->andFilterWhere(['like', 'sku', $this->sku]);
         $query->andFilterWhere(['like', 'supplier_id', $this->supplier_id]);
         $query->andFilterWhere(['like', 'manufacturer_id', $this->manufacturer_id]);
+        if ($this->main_category_id)
+            $query->andFilterWhere(['like', 'categories.category', $this->main_category_id]);
+
+
         //$query->andFilterWhere(['like', 'commentsCount', $this->commentsCount]);
-        //echo $query->createCommand()->rawSql;die;
+        // echo $query->createCommand()->rawSql; die;
         return $dataProvider;
     }
 

@@ -5,6 +5,7 @@ namespace panix\mod\shop\models\traits;
 use panix\mod\shop\models\Category;
 use panix\mod\shop\models\Manufacturer;
 use panix\mod\shop\models\ProductType;
+use panix\mod\shop\models\search\ProductSearch;
 use Yii;
 use panix\engine\Html;
 use panix\engine\CMS;
@@ -109,10 +110,10 @@ trait ProductTrait
         ];
         $columns['categories'] = [
             'header' => static::t('Категории'),
-            'attribute' => 'categories',
+            'attribute' => 'main_category_id',
             'format' => 'html',
             'contentOptions' => ['style' => 'max-width:180px'],
-            'filter' => Html::dropDownList('category_id', null, Category::flatTree(),
+            'filter' => Html::dropDownList(Html::getInputName(new ProductSearch,'main_category_id'), (isset(Yii::$app->request->get('ProductSearch')['main_category_id'])) ? Yii::$app->request->get('ProductSearch')['main_category_id'] : null, Category::flatTree(),
                 [
                     'class' => 'form-control',
                     'prompt' => html_entity_decode('&mdash; выберите категорию &mdash;')
@@ -125,7 +126,7 @@ trait ProductTrait
                     $options['data-pjax'] = 0;
                     if ($category->id == $model->main_category_id) {
                         $options['class'] = 'badge badge-secondary';
-                        $options['title'] = 'Main category';
+                        $options['title'] = $category->name;
                     } else {
                         $options['class'] = 'badge badge-light';
                     }
