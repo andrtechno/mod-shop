@@ -394,13 +394,13 @@ class Product extends ActiveRecord
 
     public function getManufacturer()
     {
-        return $this->hasOne(Manufacturer::class, ['id' => 'manufacturer_id'])->cache(3600 * 24 * 30);
+        return $this->hasOne(Manufacturer::class, ['id' => 'manufacturer_id']);//->cache(3600 * 24);
         //->cache(3600 * 24, new TagDependency(['tags' => 'product-manufacturer-' . $this->manufacturer_id]));
     }
 
     public function getSupplier()
     {
-        return $this->hasOne(Supplier::class, ['id' => 'manufacturer_id'])->cache(3600 * 24 * 30);
+        return $this->hasOne(Supplier::class, ['id' => 'supplier_id']);//->cache(3600 * 24);
         //->cache(3600 * 24, new TagDependency(['tags' => 'product-manufacturer-' . $this->manufacturer_id]));
     }
 
