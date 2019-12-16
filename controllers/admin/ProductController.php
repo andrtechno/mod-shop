@@ -169,9 +169,9 @@ class ProductController extends AdminController
                 $model->setCategories(Yii::$app->request->post('categories', []), $mainCategoryId);
                 //$model->setCategories($_POST['categories'], $mainCategoryId);
 
+
+
                 $model->file = \yii\web\UploadedFile::getInstances($model, 'file');
-
-
                 if ($model->file) {
                     foreach ($model->file as $file) {
                         $model->attachImage($file);

@@ -6,7 +6,7 @@ use yii\helpers\Inflector;
 //var_dump($attributes);
 
 foreach ($attributes as $attrData) {
-    if ($attrData['totalCount'] > 1) {
+    if ($attrData['totalCount'] > 1 || count($attrData['filters']) > 1) {
 
         ?>
 

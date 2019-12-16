@@ -120,10 +120,6 @@ echo panix\engine\grid\GridView::widget([
             },
         ],
         [
-            'attribute' => 'handler_hash',
-            'format' => 'raw',
-        ],
-        [
             'attribute' => 'is_main',
             'format' => 'raw',
             'contentOptions' => ['class' => 'text-center'],

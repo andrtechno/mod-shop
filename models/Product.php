@@ -339,13 +339,17 @@ class Product extends ActiveRecord
             'handler_hash' => $this->getHash()
         ])->count();
 
-        if (isset($_FILES[(new \ReflectionClass($this))->getShortName()])) {
-            $imageCount +=count($_FILES[(new \ReflectionClass($this))->getShortName()]['name']['file']);
 
+        $files = $_FILES[(new \ReflectionClass($this))->getShortName()];
+
+        if (isset($files['name'])) {
+                if (!empty($files['name']['file'][0])) {
+                    $imageCount += count($files['name']['file']);
+                }
         }
 
-        if (($planCount < $imageCount)) {
-            $this->addError($attribute, 'Привышен лимит изображений, доступно всего 3');
+        if (($imageCount > $planCount)) {
+            $this->addError($attribute, Yii::t('app','Привышен лимит изображений, доступно всего {0}',$planCount));
         }
     }
 
@@ -409,11 +413,13 @@ class Product extends ActiveRecord
         return $this->hasOne(ProductType::class, ['id' => 'type_id']);
 
     }
+
     public function getCurrency()
     {
         return $this->hasOne(Currency::class, ['id' => 'currency_id']);
 
     }
+
     public function getType2()
     {
         return $this->hasOne(ProductType::class, ['type_id' => 'id']);
