@@ -116,6 +116,7 @@ class ProductsDuplicator extends \yii\base\Component
         $images = $original->getImages();
 
         if (!empty($images)) {
+            /** @var Image $image */
             foreach ($images as $image) {
 
 
@@ -134,7 +135,7 @@ class ProductsDuplicator extends \yii\base\Component
                 $image_copy->alt_title = $image->alt_title;
                 $image_copy->is_main = $image->is_main;
                 $image_copy->filePath = $pictureFileName;
-                $image_copy->path = '@uploads/store/product';
+                $image_copy->path = $image->path;
                 $image_copy->handler_class = '\\'.get_class($copy);
                 $image_copy->handler_hash = $copy->getHash();
                 $image_copy->urlAlias = $copy->getAlias();
