@@ -122,10 +122,10 @@ class ProductsDuplicator extends \yii\base\Component
 
                 $uniqueName = \panix\engine\CMS::gen(10);
 
-                $absolutePath = Yii::getAlias($image->path) . DIRECTORY_SEPARATOR.$original->primaryKey.DIRECTORY_SEPARATOR . $image->filePath;
-                $pictureFileName = $uniqueName. '.' . pathinfo($absolutePath, PATHINFO_EXTENSION);
+                $absolutePath = Yii::getAlias($image->path) . DIRECTORY_SEPARATOR . $original->primaryKey . DIRECTORY_SEPARATOR . $image->filePath;
+                $pictureFileName = $uniqueName . '.' . pathinfo($absolutePath, PATHINFO_EXTENSION);
 
-                $path = Yii::getAlias('@uploads/store/product') . DIRECTORY_SEPARATOR . $copy->primaryKey;
+                $path = Yii::getAlias($image->path) . DIRECTORY_SEPARATOR . $copy->primaryKey;
                 $newAbsolutePath = $path . DIRECTORY_SEPARATOR . $pictureFileName;
 
 
@@ -136,7 +136,7 @@ class ProductsDuplicator extends \yii\base\Component
                 $image_copy->is_main = $image->is_main;
                 $image_copy->filePath = $pictureFileName;
                 $image_copy->path = $image->path;
-                $image_copy->handler_class = '\\'.get_class($copy);
+                $image_copy->handler_class = '\\' . get_class($copy);
                 $image_copy->handler_hash = $copy->getHash();
                 $image_copy->urlAlias = $copy->getAlias();
 
