@@ -114,19 +114,18 @@ class ProductsDuplicator extends \yii\base\Component
     {
 
         $images = $original->getImages();
-        $dir = Yii::$app->getModule('images')->imagesStorePath;
+
         if (!empty($images)) {
             foreach ($images as $image) {
 
-                $absolutePath = Yii::getAlias('@uploads/store') . DIRECTORY_SEPARATOR . $image->filePath;
-                $pictureFileName = substr(md5(microtime(true) . $absolutePath), 4, 6)
-                    . '.' .
-                    pathinfo($absolutePath, PATHINFO_EXTENSION);
-                $pictureSubDir = Yii::$app->getModule('images')->getModelSubDir($copy);
-                $storePath = Yii::$app->getModule('images')->getStorePath($copy);
-                $newAbsolutePath = $storePath .
-                    DIRECTORY_SEPARATOR . $pictureSubDir .
-                    DIRECTORY_SEPARATOR . $pictureFileName;
+
+                $uniqueName = \panix\engine\CMS::gen(10);
+
+                $absolutePath = Yii::getAlias($image->path) . DIRECTORY_SEPARATOR.$original->primaryKey.DIRECTORY_SEPARATOR . $image->filePath;
+                $pictureFileName = $uniqueName. '.' . pathinfo($absolutePath, PATHINFO_EXTENSION);
+
+                $path = Yii::getAlias('@uploads/store/product') . DIRECTORY_SEPARATOR . $copy->primaryKey;
+                $newAbsolutePath = $path . DIRECTORY_SEPARATOR . $pictureFileName;
 
 
                 $image_copy = new Image();
@@ -134,13 +133,15 @@ class ProductsDuplicator extends \yii\base\Component
                 $image_copy->object_id = $copy->id;
                 $image_copy->alt_title = $image->alt_title;
                 $image_copy->is_main = $image->is_main;
-                $image_copy->filePath = $pictureSubDir . '/' . $pictureFileName;
-                $image_copy->modelName = $image->modelName;
+                $image_copy->filePath = $pictureFileName;
+                $image_copy->path = '@uploads/store/product';
+                $image_copy->handler_class = '\\'.get_class($copy);
+                $image_copy->handler_hash = $copy->getHash();
                 $image_copy->urlAlias = $copy->getAlias();
 
                 if ($image_copy->validate()) {
                     if ($image_copy->save()) {
-                        BaseFileHelper::createDirectory($storePath . DIRECTORY_SEPARATOR . $pictureSubDir, 0775, true);
+                        BaseFileHelper::createDirectory($path, 0775, true);
                         copy($absolutePath, $newAbsolutePath);
                     }
                 } else {
