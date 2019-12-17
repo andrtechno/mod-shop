@@ -98,7 +98,54 @@ class ProductQuery extends ActiveQuery
     {
         $modelClass = $this->modelClass;
         $tableName = $modelClass::tableName();
-        $this->between($start, $end,'created_at');
+        $this->between($start, $end, 'created_at');
+        return $this;
+    }
+
+
+    /**
+     * @param integer $current_id
+     * @param array $wheres
+     * @return $this
+     */
+    public function next($current_id, $wheres = [])
+    {
+        $modelClass = $this->modelClass;
+        $tableName = $modelClass::tableName();
+
+        $subQuery = (new \yii\db\Query())->select('MIN(`id`)')
+            ->from($tableName . ' next')
+            ->where(['>', 'next.id', $current_id]);
+
+        if ($wheres) {
+            $subQuery->andWhere($wheres);
+        }
+
+        $this->where(['=', 'id', $subQuery]);
+
+        return $this;
+    }
+
+    /**
+     * @param integer $current_id
+     * @param array $wheres
+     * @return $this
+     */
+    public function prev($current_id, $wheres = [])
+    {
+        $modelClass = $this->modelClass;
+        $tableName = $modelClass::tableName();
+
+        $subQuery = (new \yii\db\Query())->select('MAX(`id`)')
+            ->from($tableName . ' prev')
+            ->where(['<', 'prev.id', $current_id]);
+
+        if ($wheres) {
+            $subQuery->andWhere($wheres);
+        }
+
+        $this->where(['=', 'id', $subQuery]);
+
         return $this;
     }
 }
