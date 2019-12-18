@@ -166,13 +166,7 @@ class ProductController extends AdminController
                 if (isset($post['Product']['main_category_id']))
                     $mainCategoryId = $post['Product']['main_category_id'];
 
-
-                CMS::dump($_POST);die;
-                if(isset($_POST['categories']))
-                    $model->setCategories($_POST['categories'], $mainCategoryId);
-                //$model->setCategories($_POST['categories'], $mainCategoryId);
-
-
+                $model->setCategories(Yii::$app->request->post('categories', []), $mainCategoryId);
 
                 $model->file = \yii\web\UploadedFile::getInstances($model, 'file');
                 if ($model->file) {
