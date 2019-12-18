@@ -63,7 +63,6 @@ if (isset($_POST['categories']) && !empty($_POST['categories'])) {
     foreach ($model->categories as $c) {
         if ($c->id === $model->main_category_id)
             continue;
-echo 'ss';
         $this->registerJs("$('#jsTree_CategoryTree').checkNode({$c->id});", View::POS_END, 'check-'.$c->id);
     }
 }

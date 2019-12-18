@@ -166,6 +166,7 @@ class ProductController extends AdminController
                 if (isset($post['Product']['main_category_id']))
                     $mainCategoryId = $post['Product']['main_category_id'];
 
+
                 $model->setCategories(Yii::$app->request->post('categories', []), $mainCategoryId);
                 //$model->setCategories($_POST['categories'], $mainCategoryId);
 
