@@ -81,7 +81,6 @@ use panix\mod\shop\models\ProductType;
 
 
                 $form = ActiveForm::begin([
-                    'id' => strtolower(basename(get_class($model))) . '-form',
                     'options' => [
                         'enctype' => 'multipart/form-data'
                     ]

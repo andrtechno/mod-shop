@@ -15,12 +15,7 @@ echo \panix\engine\bootstrap\Alert::widget([
 ?>
 
 <?php
-$form = ActiveForm::begin([
-    'id' => basename(get_class($model)),
-    'options' => [
-        'class' => 'form-horizontal',
-    ]
-]);
+$form = ActiveForm::begin();
 ?>
     <div class="card">
         <div class="card-header">
