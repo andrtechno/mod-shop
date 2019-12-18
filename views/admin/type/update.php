@@ -4,10 +4,9 @@ use yii\helpers\Html;
 
 ?>
 <?php
-echo Html::beginForm('', 'post', array(
+echo Html::beginForm('', 'post', [
     'id' => 'ProductTypeForm',
-    'class' => 'form-horizontal'
-));
+]);
 ?>
     <div class="card">
         <div class="card-header">

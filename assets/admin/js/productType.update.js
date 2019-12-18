@@ -17,7 +17,7 @@ $("#box1View").delegate('option', 'dblclick', function () {
 $("#ProductTypeForm").submit(function () {
 
     $("#box2View option").prop('selected', true);
-    var checked = $("#jsTree_TypeCategoryTree li a.jstree-checked");
+    var checked = $("#TypeCategoryTree li a.jstree-checked");
     checked.each(function (i, el) {
         var id = $(el).attr("id").replace('node_', '').replace('_anchor', '');
         $("#ProductTypeForm").append('<input type="hidden" name="categories[]" value="' + id + '" />');
