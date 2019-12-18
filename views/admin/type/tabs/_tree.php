@@ -10,7 +10,7 @@ use panix\mod\shop\models\Category;
 </div>
 <div class="form-group row">
     <div class="col-sm-4">
-        <label class="col-form-label" for="search-type-category"><?php echo Yii::t('app', 'Поиск:') ?></label></div>
+        <label class="col-form-label" for="search-type-category"><?= Yii::t('app', 'Поиск:') ?></label></div>
     <div class="col-sm-8">
         <input class="form-control" id="search-type-category" type="text"
                onkeyup='$("#TypeCategoryTree").jstree("search", $(this).val());'/>
@@ -23,20 +23,14 @@ use panix\mod\shop\models\Category;
 echo \panix\ext\jstree\JsTree::widget([
     'id' => 'TypeCategoryTree',
     'allOpen' => true,
-    'data' => Category::find()->dataTree(1),
+    'data' => Category::find()->dataTree(1, null, ['switch' => 1]),
     'core' => [
         'animation' => 0,
         'strings' => ['Loading ...' => Yii::t('app', 'LOADING')],
         'check_callback' => true,
         "themes" => ["variant" => "large", "stripes" => true, 'responsive' => true],
     ],
-    'plugins' => [
-        'search',
-        'checkbox',
-      //  'state',
-      // 'wholerow',
-       // 'types'
-    ],
+    'plugins' => ['search', 'checkbox'],
     'checkbox' => [
         'three_state' => false,
         'tie_selection' => false,
@@ -54,7 +48,6 @@ foreach ($categories as $id) {
     $this->registerJs("$('#TypeCategoryTree').checkNode({$id});");
     //$this->registerJs("$('#jsTree_TypeCategoryTree').jstree('check_node','node_{$id}');");
 }
-
 
 
 ?>
