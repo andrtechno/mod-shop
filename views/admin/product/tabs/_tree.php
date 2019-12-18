@@ -15,7 +15,6 @@ use yii\web\View;
 
 echo \panix\ext\jstree\JsTree::widget([
     'id' => 'CategoryTree',
-  //  'name' => 'jstree',
     'allOpen' => true,
     'data' => Category::find()->dataTree(1, null, ['switch' => 1]),
     'core' => [

@@ -9,7 +9,6 @@ use panix\mod\shop\models\Category;
 
     echo \panix\ext\jstree\JsTree::widget([
         'id' => 'CategoryAssignTreeDialog',
-        'name' => 'jstree',
         'allOpen' => true,
         'data' => Category::find()->dataTree(1),
         'core' => [
