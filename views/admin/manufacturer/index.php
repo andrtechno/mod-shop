@@ -5,7 +5,7 @@ use panix\engine\grid\GridView;
 
 echo \panix\ext\fancybox\Fancybox::widget(['target' => '.image a']);
 
-Pjax::begin(['id' => 'pjax-' . strtolower(basename($dataProvider->query->modelClass))]);
+Pjax::begin(['dataProvider'=>$dataProvider]);
 echo GridView::widget([
     'tableOptions' => ['class' => 'table table-striped'],
     'dataProvider' => $dataProvider,

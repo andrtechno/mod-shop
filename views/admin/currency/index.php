@@ -10,7 +10,7 @@ use panix\engine\grid\GridView;
 <?php // echo $this->render('_search', ['model' => $searchModel]);   ?>
 
 
-<?php Pjax::begin(); ?>
+<?php Pjax::begin(['dataProvider'=>$dataProvider]); ?>
 <?=
 
 GridView::widget([

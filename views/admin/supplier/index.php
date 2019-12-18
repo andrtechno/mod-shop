@@ -3,7 +3,7 @@
 use panix\engine\widgets\Pjax;
 use panix\engine\grid\GridView;
 
-Pjax::begin(['id' => 'pjax-' . strtolower(basename($dataProvider->query->modelClass))]);
+Pjax::begin(['dataProvider'=>$dataProvider]);
 echo GridView::widget([
     'tableOptions' => ['class' => 'table table-striped'],
     'dataProvider' => $dataProvider,

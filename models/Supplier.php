@@ -35,7 +35,12 @@ class Supplier extends ActiveRecord
             ],
             'phone' => [
                 'attribute' => 'phone',
+                'format' => 'raw',
                 'contentOptions' => ['class' => 'text-center'],
+                'value' => function ($model) {
+                    /** @var $model self */
+                    return Html::tel($model->phone);
+                }
             ],
             'email' => [
                 'format' => 'email',
