@@ -48,12 +48,11 @@ trait ProductTrait
             'value' => function ($model) {
                 /** @var $model Product */
                 if ($model->name) {
-                    $html = Html::a($model->name, $model->getUrl(), ['data-pjax' => 0]);
+                    $html = Html::a($model->name, $model->getUrl(), ['data-pjax' => 0, 'target' => '_blank']);
                     if ($model->views > 0) {
                         $html .= " <small>(" . Yii::t('app', 'VIEWS', ['n' => $model->views]) . ")</small>";
                     }
                     if (true) {
-
                         $labels = [];
                         foreach ($model->labels() as $label) {
                             $labels[] = Html::tag('span', $label['value'], [
@@ -62,12 +61,8 @@ trait ProductTrait
                                 'title' => $label['tooltip']
                             ]);
                         }
-
-
                         $html .= '<br/>' . implode('', $labels);
                     }
-
-
                     return $html;
                 }
                 return null;
@@ -116,7 +111,7 @@ trait ProductTrait
             'attribute' => 'main_category_id',
             'format' => 'html',
             'contentOptions' => ['style' => 'max-width:180px'],
-            'filter' => Html::dropDownList(Html::getInputName(new ProductSearch,'main_category_id'), (isset(Yii::$app->request->get('ProductSearch')['main_category_id'])) ? Yii::$app->request->get('ProductSearch')['main_category_id'] : null, Category::flatTree(),
+            'filter' => Html::dropDownList(Html::getInputName(new ProductSearch, 'main_category_id'), (isset(Yii::$app->request->get('ProductSearch')['main_category_id'])) ? Yii::$app->request->get('ProductSearch')['main_category_id'] : null, Category::flatTree(),
                 [
                     'class' => 'form-control',
                     'prompt' => html_entity_decode('&mdash; выберите категорию &mdash;')
