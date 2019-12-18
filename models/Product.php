@@ -528,6 +528,7 @@ class Product extends ActiveRecord
     {
         $dontDelete = [];
 
+
         if (!Category::find()->where(['id' => $main_category])->count())
             $main_category = 1;
 
@@ -543,7 +544,7 @@ class Product extends ActiveRecord
             ])->count();
 
 
-            if ($count == 0) {
+            if (!$count) {
                 $record = new ProductCategoryRef;
                 $record->category = (int)$c;
                 $record->product = $this->id;
@@ -580,6 +581,7 @@ class Product extends ActiveRecord
             // ->andWhere(['not in','category',$dontDelete]);
             //  foreach($query as $q){
             // }
+
         } else {
 
             // Delete all relations 

@@ -15,7 +15,7 @@ use panix\mod\shop\models\Category;
         <div class="form-group mt-3">
             <div class="col-12">
                 <input class="form-control" placeholder="Поиск..." type="text"
-                       onkeyup='$("#jsTree_CategoryTree").jstree(true).search($(this).val())'/>
+                       onkeyup='$("#CategoryTree").jstree(true).search($(this).val())'/>
             </div>
         </div>
         <div class="col-12">
@@ -46,7 +46,7 @@ use panix\mod\shop\models\Category;
             'plugins' => ['dnd', 'contextmenu', 'search'], //, 'wholerow', 'state'
             'contextmenu' => [
                 'items' => new yii\web\JsExpression('function($node) {
-                var tree = $("#jsTree_CategoryTree").jstree(true);
+                var tree = $("#CategoryTree").jstree(true);
                 return {
                     "Switch": {
                         "icon":"icon-eye",

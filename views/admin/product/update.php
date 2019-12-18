@@ -59,16 +59,16 @@ use panix\mod\shop\models\ProductType;
                             <?php echo Html::activeDropDownList($model, 'type_id', ArrayHelper::map($typesList, 'id', 'name'), ['class' => 'form-control']); ?>
                         </div>
                     </div>
-<?php if(false) { ?>
-                    <div class="form-group row">
-                        <div class="col-sm-4"><?= Html::activeLabel($model, 'use_configurations', ['class' => 'control-label']); ?></div>
-                        <div class="col-sm-8">
-                            <?php echo Html::activeDropDownList($model, 'use_configurations', [0 => Yii::t('app', 'NO'), 1 => Yii::t('app', 'YES')], ['class' => 'form-control']); ?>
+                    <?php if (false) { ?>
+                        <div class="form-group row">
+                            <div class="col-sm-4"><?= Html::activeLabel($model, 'use_configurations', ['class' => 'control-label']); ?></div>
+                            <div class="col-sm-8">
+                                <?php echo Html::activeDropDownList($model, 'use_configurations', [0 => Yii::t('app', 'NO'), 1 => Yii::t('app', 'YES')], ['class' => 'form-control']); ?>
+                            </div>
                         </div>
-                    </div>
 
-                    <div id="availableAttributes" class="form-group d-none"></div>
-<?php } ?>
+                        <div id="availableAttributes" class="form-group d-none"></div>
+                    <?php } ?>
 
                 </div>
                 <div class="card-footer text-center">
@@ -81,6 +81,7 @@ use panix\mod\shop\models\ProductType;
 
 
                 $form = ActiveForm::begin([
+                    'id' => 'product-form',
                     'options' => [
                         'enctype' => 'multipart/form-data'
                     ]
@@ -187,9 +188,6 @@ use panix\mod\shop\models\ProductType;
 
 
     </div>
-
-
-
 
 
 <?php

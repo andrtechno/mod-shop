@@ -1,7 +1,7 @@
 
 // Process checked categories
 $("#product-form").submit(function () {
-    var checked = $("#jsTree_CategoryTree li a.jstree-checked");
+    var checked = $("#CategoryTree li a.jstree-checked");
     $('.append-categories').remove();
     checked.each(function (i, el) {
         var id = $(el).attr("id").replace('node_', '').replace('_anchor', '');
@@ -10,7 +10,7 @@ $("#product-form").submit(function () {
     });
     //return false;
 });
-$('#jsTree_CategoryTree').bind('changed.jstree', function (e, data) {
+$('#CategoryTree').bind('changed.jstree', function (e, data) {
 
     console.log(data.changed.selected); // newly selected
     console.log(data.changed.deselected); // newly deselected
