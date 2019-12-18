@@ -43,7 +43,7 @@ trait ProductTrait
         ];
         $columns['name'] = [
             'attribute' => 'name',
-            'format' => 'html',
+            'format' => 'raw',
             'contentOptions' => ['class' => 'text-left'],
             'value' => function ($model) {
                 /** @var $model Product */
