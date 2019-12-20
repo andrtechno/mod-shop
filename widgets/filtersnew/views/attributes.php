@@ -3,11 +3,13 @@
 use yii\helpers\Html;
 use yii\helpers\Inflector;
 
-//var_dump($attributes);
+/**
+ * @var $attributes array
+ */
 
 foreach ($attributes as $attrData) {
 
-    if ($attrData['totalCount'] > 1) {
+    if (count($attrData['filters']) > 1 && $attrData['totalCount'] > 1) {
 
         ?>
 

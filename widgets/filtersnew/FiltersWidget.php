@@ -70,17 +70,18 @@ class FiltersWidget extends Widget
             $totalCount = 0;
             foreach ($attribute->options as $option) {
                 $count = $this->countAttributeProducts($attribute, $option);
-                // if ($count) {
-                $data[$attribute->name]['filters'][] = [
-                    'title' => $option->value,
-                    'count' => (int)$count,
-                    'abbreviation' => ($attribute->abbreviation) ? $attribute->abbreviation : null,
-                    'queryKey' => $attribute->name,
-                    'queryParam' => (int)$option->id,
-                ];
-                $totalCount += $count;
-                // }
+                if ($count > 1) {
+                    $data[$attribute->name]['filters'][] = [
+                        'title' => $option->value,
+                        'count' => (int)$count,
+                        'abbreviation' => ($attribute->abbreviation) ? $attribute->abbreviation : null,
+                        'queryKey' => $attribute->name,
+                        'queryParam' => (int)$option->id,
+                    ];
+                    $totalCount += $count;
+                }
             }
+
             $data[$attribute->name]['totalCount'] = $totalCount;
             if ($attribute->sort == SORT_ASC) {
                 sort($data[$attribute->name]['filters']);
@@ -88,7 +89,6 @@ class FiltersWidget extends Widget
                 rsort($data[$attribute->name]['filters']);
             }
         }
-        //CMS::dump($data);die;
         return $data;
     }
 
@@ -134,7 +134,7 @@ class FiltersWidget extends Widget
     {
         $model = Product::find()->published();
         //$model->attachBehaviors($model->behaviors());
-       // $model->getEavAttributes22222222($this->view->context->getEavAttributes());
+        // $model->getEavAttributes22222222($this->view->context->getEavAttributes());
         if ($this->model instanceof Category) {
             $model->applyCategories($this->model);
             //$model->andWhere([Product::tableName() . '.main_category_id' => $this->model->id]);
@@ -154,8 +154,8 @@ class FiltersWidget extends Widget
         $res = $model->withEavAttributes($newData);
 
 
-   // print_r($newData);die;
-   // echo $res->createCommand()->rawSql;die;
+        // print_r($newData);die;
+        // echo $res->createCommand()->rawSql;die;
 
         //$dependencyQuery = $model;
         //$dependencyQuery->select('COUNT(*)');
@@ -271,11 +271,11 @@ class FiltersWidget extends Widget
 
         //$manufacturers =$queryMan->all();
         //echo $q->createCommand()->rawSql;die;
-        $data = array(
+        $data = [
             'title' => Yii::t('shop/default', 'FILTER_BY_MANUFACTURER'),
             'selectMany' => true,
-            'filters' => array()
-        );
+            'filters' => []
+        ];
 
         if ($manufacturers) {
 
@@ -310,12 +310,12 @@ class FiltersWidget extends Widget
                         return $query->count();
                     }, 3600 * 24, $dependency);
 
-                    $data['filters'][] = array(
+                    $data['filters'][] = [
                         'title' => $m->name,
-                        'count' => $count,
+                        'count' => (int)$count,
                         'queryKey' => 'manufacturer',
                         'queryParam' => $m->id,
-                    );
+                    ];
                     //$this->_manufacturer[$m->id] = array(
                     //    'label' => $m->name,
                     //);
