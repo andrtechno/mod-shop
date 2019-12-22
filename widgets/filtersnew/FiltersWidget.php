@@ -64,22 +64,24 @@ class FiltersWidget extends Widget
             $data[$attribute->name] = [
                 'title' => $attribute->title,
                 'selectMany' => (boolean)$attribute->select_many,
+                'type' => (int)$attribute->type,
                 //'queryKey' => $attribute->name,
                 'filters' => []
             ];
             $totalCount = 0;
             foreach ($attribute->options as $option) {
                 $count = $this->countAttributeProducts($attribute, $option);
-                if ($count > 1) {
-                    $data[$attribute->name]['filters'][] = [
-                        'title' => $option->value,
-                        'count' => (int)$count,
-                        'abbreviation' => ($attribute->abbreviation) ? $attribute->abbreviation : null,
-                        'queryKey' => $attribute->name,
-                        'queryParam' => (int)$option->id,
-                    ];
-                    $totalCount += $count;
-                }
+                // if ($count > 1) {
+                $data[$attribute->name]['filters'][] = [
+                    'title' => $option->value,
+                    'count' => (int)$count,
+                    'data' => unserialize($option->data),
+                    'abbreviation' => ($attribute->abbreviation) ? $attribute->abbreviation : null,
+                    'queryKey' => $attribute->name,
+                    'queryParam' => (int)$option->id,
+                ];
+                $totalCount += $count;
+                // }
             }
 
             $data[$attribute->name]['totalCount'] = $totalCount;
@@ -342,4 +344,42 @@ class FiltersWidget extends Widget
         return Html::tag($this->tagCount, $result, $this->tagCountOptions);
     }
 
+    public function generateGradientCss($data)
+    {
+        $css = '';
+        if ($data) {
+            $css .= "background: {$data[0]['color']};";
+            if (count($data) > 1) {
+
+                $res_data = [];
+                foreach ($data as $k => $color) {
+                    $res_data[] = $color['color'];
+                }
+                $res = implode(', ', $res_data);
+
+                if (count($data) == 2) {
+                    $value = "45deg, {$data[0]['color']} 50%, {$data[1]['color']} 50%";
+                    $css .= "background: -moz-linear-gradient({$value});";
+                    $css .= "background: -webkit-linear-gradient({$value});";
+                    $css .= "background: linear-gradient({$value});";
+                } elseif (count($data) == 3) {
+                    $value = "45deg, {$data[0]['color']} 0%, {$data[0]['color']} 33%, {$data[1]['color']} 33%, {$data[1]['color']} 66%, {$data[2]['color']} 66%, {$data[2]['color']} 100%";
+                    $css .= "background: -moz-linear-gradient({$value});";
+                    $css .= "background: -webkit-linear-gradient({$value});";
+                    $css .= "background: linear-gradient({$value});";
+                } elseif (count($data) == 4) {
+                    $value = "45deg, {$data[0]['color']} 0%, {$data[0]['color']} 25%, {$data[1]['color']} 25%, {$data[1]['color']} 50%, {$data[2]['color']} 50%, {$data[2]['color']} 75%, {$data[3]['color']} 75%, {$data[3]['color']} 100%";
+                    $css .= "background: -moz-linear-gradient({$value});";
+                    $css .= "background: -webkit-linear-gradient({$value});";
+                    $css .= "background: linear-gradient({$value});";
+                } elseif (count($data) >= 4) {
+                    $css .= "background: -moz-radial-gradient(farthest-corner at 0% 100%, {$res});";
+                    $css .= "background: -webkit-radial-gradient(farthest-corner at 0% 100%, {$res});";
+                    $css .= "background: radial-gradient(farthest-corner at 0% 100%, {$res});";
+                }
+                $css .= "filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='{$data[0]['color']}', endColorstr='{$data[1]['color']}',GradientType=1 );";
+            }
+        }
+        return $css;
+    }
 }

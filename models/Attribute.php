@@ -2,6 +2,7 @@
 
 namespace panix\mod\shop\models;
 
+use panix\engine\CMS;
 use Yii;
 use yii\caching\DbDependency;
 use yii\helpers\ArrayHelper;
@@ -43,6 +44,10 @@ class Attribute extends ActiveRecord
     const TYPE_RADIO_LIST = 5;
     const TYPE_CHECKBOX_LIST = 6;
     const TYPE_YESNO = 7;
+
+    const TYPE_SLIDER = 8;//todo new Under construction
+    const TYPE_COLOR = 9;//todo new Under construction
+
     const MODULE_ID = 'shop';
     public $translationClass = AttributeTranslate::class;
 
@@ -183,6 +188,8 @@ class Attribute extends ActiveRecord
             self::TYPE_RADIO_LIST => 'Radio List (Filter)',
             self::TYPE_CHECKBOX_LIST => 'Checkbox List (Filter)',
             self::TYPE_YESNO => 'Yes/No',
+            //self::TYPE_SLIDER => 'Слайдер',
+            //self::TYPE_COLOR => 'Цвет',
         ];
     }
 
@@ -217,11 +224,19 @@ class Attribute extends ActiveRecord
     public function validateOptions()
     {
         $post = Yii::$app->request->post();
+
         if (isset($post['options'])) {
             $opt = [];
             foreach ($post['options'] as $k => $v) {
-                $opt[] = $v[0];
+
+                if(is_string($v)){
+                    $opt[] = $v['name'][0];
+                }else{
+                    $opt[] = $v[0];
+                }
+                CMS::dump($v);die;
             }
+            print_r($opt);die;
             if ($this->hasDuplicates($opt)) {
                 //Yii::$app->controller->tab_errors['options'] = true;
                 $this->tab_errors['options'] = 'Ошибка: Duplicates options';
@@ -294,6 +309,16 @@ class Attribute extends ActiveRecord
                 ];
                 return Html::dropDownList($name, $value, $data);
                 break;
+            case self::TYPE_COLOR:
+
+                $data = ArrayHelper::map($this->options, 'id', 'value');
+                return Html::dropDownList($name . '[]', $value, $data, [
+                    'class' => 'form-control ' . $inputClass,
+                    'prompt' => html_entity_decode(Yii::t('app', 'EMPTY_LIST'))
+                ]);
+                break;
+
+
         }
     }
 
@@ -370,7 +395,7 @@ class Attribute extends ActiveRecord
      */
     public function beforeSave($insert)
     {
-        if (!in_array($this->type, [self::TYPE_DROPDOWN, self::TYPE_RADIO_LIST, self::TYPE_CHECKBOX_LIST, self::TYPE_SELECT_MANY])) {
+        if (!in_array($this->type, [self::TYPE_DROPDOWN, self::TYPE_RADIO_LIST, self::TYPE_CHECKBOX_LIST, self::TYPE_SELECT_MANY, self::TYPE_COLOR])) {
             $this->use_in_filter = false;
             $this->select_many = false;
         }

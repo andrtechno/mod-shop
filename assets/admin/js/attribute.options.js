@@ -1,45 +1,56 @@
 $(function () {
-
+    var tr = $(".optionsEditTable tbody tr");
     // Add new row
-    $("#add-option-attribute").click(function () {
+    $(document).on('click','#add-option-attribute',function () {
+
         var option_name = Math.random();
         var row = $(".copyMe").clone().removeClass('copyMe');
 
-        if ($(".optionsEditTable tbody tr").length == 1) {
-            $(".optionsEditTable tbody tr").addClass('hidden');
+        if (tr.length === 1) {
+            tr.addClass('d-none');
         }
 
-
-        row.prependTo(".optionsEditTable tbody");
+        console.log('clicked',row);
+        row.prependTo(".optionsEditTable > tbody");
         row.find(".value").each(function (i, el) {
             $(el).attr('name', 'options[' + option_name + '][]');
         });
-
-
+        $.ajax({
+            type:'GET',
+            url:'/admin/shop/attribute/test',
+            success:function (data) {
+                console.log(row.find('td:nth-child(3)'));
+                //row.find('td:nth-child(3)').html(data);
+            }
+        });
 
         return false;
     });
+
+
+
+
 
     // Delete row
     $(".optionsEditTable").delegate(".delete-option-attribute", "click", function () {
         $(this).parent().parent().remove();
 
-        if ($(".optionsEditTable tbody tr").length == 1) {
-            $(".optionsEditTable tbody tr").removeClass('hidden');
+        if (tr.length === 1) {
+            tr.removeClass('d-none');
         }
         return false;
     });
 
     // On change type toggle options tab
     $("#attribute-type").change(function () {
-        toggleOptionsTab($(this));
+        //toggleOptionsTab($(this));
     });
     $("#attribute-type").change();
 
 
     $("form#Attribute").submit(function () {
         var el = $("#attribute-type");
-        if ($(el).val() != 3 && $(el).val() != 4 && $(el).val() != 5 && $(el).val() != 6) {
+        if ($(el).val() !== 3 && $(el).val() !== 4 && $(el).val() !== 5 && $(el).val() !== 6) {
             $(".optionsEditTable").remove();
         }
         return true;
@@ -49,10 +60,10 @@ $(function () {
      * Show/hide options tab on type change
      * @param el
      */
-    function toggleOptionsTab(el) {
+    function toggleOptionsTab22(el) {
         var optionsTab = $("#attributes-tabs li")[1];
         // Show options tab when type is dropdown or select
-        if ($(el).val() == 3 || $(el).val() == 4 || $(el).val() == 5 || $(el).val() == 6) {
+        if ($(el).val() === 3 || $(el).val() === 4 || $(el).val() === 5 || $(el).val() === 6 || $(el).val() === 9) {
             $(optionsTab).show();
             $(".field-attribute-use_in_filter").show();
             $(".field-attribute-select_many").show();

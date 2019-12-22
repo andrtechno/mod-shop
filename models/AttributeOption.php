@@ -18,6 +18,7 @@ use panix\engine\db\ActiveRecord;
  * @property integer $id
  * @property integer $attribute_id
  * @property string $value
+ * @property string $data
  * @property integer $position
  */
 class AttributeOption extends ActiveRecord

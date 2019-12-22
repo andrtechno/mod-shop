@@ -4,9 +4,7 @@ use panix\engine\widgets\Pjax;
 use panix\engine\grid\GridView;
 
 Pjax::begin([
-    'id' => 'pjax-' . strtolower(basename($dataProvider->query->modelClass)),
-    //'enablePushState' => false,
-   // 'linkSelector' => 'a:not(.linkTarget)'
+    'dataProvider' => $dataProvider,
 ]);
 echo GridView::widget([
     'id'=>'grid-attribute',

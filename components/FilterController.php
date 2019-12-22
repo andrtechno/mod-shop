@@ -308,11 +308,11 @@ class FilterController extends WebController
                     $menuItems['manufacturer']['items'][] = [
                         'value' => $manufacturer->id,
                         'label' => $manufacturer->name,
-                        'linkOptions' => array(
+                        'linkOptions' => [
                             'class' => 'remove',
                             'data-name' => 'manufacturer',
                             'data-target' => '#filter_manufacturer_' . $manufacturer->id
-                        ),
+                        ],
                         'url' => Yii::$app->urlManager->removeUrlParam('/' . Yii::$app->requestedRoute, 'manufacturer', $manufacturer->id)
                     ];
                 }
@@ -328,7 +328,7 @@ class FilterController extends WebController
                     $menuItems[$attributeName] = [
                         'name' => $attribute->name,
                         'label' => $attribute->title . ':',
-                        'itemOptions' => array('id' => 'current-filter-' . $attribute->name)
+                        'itemOptions' => ['id' => 'current-filter-' . $attribute->name]
                     ];
                     foreach ($attribute->options as $option) {
                         if (isset($activeAttributes[$attribute->name]) && in_array($option->id, $activeAttributes[$attribute->name])) {

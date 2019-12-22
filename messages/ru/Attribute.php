@@ -26,5 +26,7 @@ return [
     'FORM_TITLE_PARAMS' => 'Параметры',
     'ABBREVIATION' => 'Аббревиатура',
     'GROUP_ID' => 'Группа',
+    'TAB_OPTIONS' => 'Опции',
+    'TAB_COLOR' => 'Цвет',
     'INFO' => 'Чтобы атрибут отображался в товарах его необходимо добавить к необходимому {productType}'
 ];

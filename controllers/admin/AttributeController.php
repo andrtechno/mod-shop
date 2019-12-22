@@ -2,6 +2,10 @@
 
 namespace panix\mod\shop\controllers\admin;
 
+use panix\engine\CMS;
+use panix\ext\colorpicker\ColorPicker;
+use panix\ext\colorpicker\ColorPickerAsset;
+use panix\ext\multipleinput\MultipleInput;
 use panix\mod\shop\models\translate\AttributeOptionTranslate;
 use Yii;
 use panix\engine\controllers\AdminController;
@@ -9,6 +13,7 @@ use panix\mod\shop\models\Attribute;
 use panix\mod\shop\models\search\AttributeSearch;
 use panix\mod\shop\models\AttributeOption;
 use panix\mod\shop\models\Product;
+use yii\web\Response;
 
 class AttributeController extends AdminController
 {
@@ -57,10 +62,10 @@ class AttributeController extends AdminController
         ];
         $this->breadcrumbs[] = $this->pageName;
 
-        return $this->render('index', array(
+        return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-        ));
+        ]);
     }
 
     /**
@@ -88,18 +93,26 @@ class AttributeController extends AdminController
         $post = Yii::$app->request->post();
 
         $isNew = $model->isNewRecord;
-        if ($model->load($post) && $model->validate() && $model->validateOptions()) {
+        if (isset(Yii::$app->request->get('Attribute')['type']))
+            $model->type = Yii::$app->request->get('Attribute')['type'];
+        if ($model->load($post) && $model->validate()) { // && $model->validateOptions()
             $model->save();
             $this->saveOptions($model);
 
-            if ($isNew) {
-                $this->redirect(['update', 'id' => $model->id]);
-            } else {
-                $this->redirectPage($isNew, $post);
-            }
+           // if ($isNew) {
+           //     $this->redirect(['update', 'id' => $model->id]);
+            //} else {
+                return $this->redirectPage($isNew, $post);
+            //}
         }
 
         return $this->render('update', ['model' => $model]);
+    }
+
+    public function actionTest()
+    {
+        Yii::$app->response->format = Response::FORMAT_RAW;
+        return $this->renderAjax('tabs/__multi_input');
     }
 
     /**
@@ -109,10 +122,88 @@ class AttributeController extends AdminController
     protected function saveOptions($model)
     {
         $dontDelete = [];
+        $post = Yii::$app->request->post('options');
+        //CMS::dump($post);die;
+        if ($post) {
+            foreach ($post as $id => $data) {
+
+
+                if (isset($data[0]) && $data[0] != '' && !empty($data[0])) {
+                    $index = 0;
+                    $attributeOption = AttributeOption::find()
+                        ->where(['id' => $id, 'attribute_id' => $model->id])
+                        ->one();
+
+                    if (!$attributeOption) {
+                        $attributeOption = new AttributeOption;
+                        $attributeOption->attribute_id = $model->id;
+
+
+                    }
+                    if (isset($data['data']) && is_array($data['data'])) {
+                        foreach ($data['data'] as $k => $d) {
+                            if (!empty($d['color'])) {
+                                unset($data['data']['color'][$k]);
+                            }
+                        }
+                        $attributeOption->data = serialize($data['data']);
+                    } else {
+                        $attributeOption->data = NULL;
+                    }
+                    $attributeOption->save(false);
+
+
+                    foreach (Yii::$app->languageManager->languages as $lang) {
+                        /*$attributeLangOption = AttributeOption::find()
+                            ->translate($lang->id)
+                            ->where([AttributeOption::tableName() . '.id' => $attributeOption->id])
+                            ->one();*/
+
+
+                        $attributeLangOption = AttributeOptionTranslate::find()
+                            ->where(['object_id' => $attributeOption->id, 'language_id' => $lang->id])
+                            ->one();
+
+                        if (!$attributeLangOption) {
+                            $attributeLangOption = new AttributeOptionTranslate;
+                            $attributeLangOption->object_id = $attributeOption->id;
+                            $attributeLangOption->language_id = $lang->id;
+
+                        }
+
+
+                        $attributeLangOption->value = $data[$index];
+                        $attributeLangOption->save(false);
+
+                        ++$index;
+                    }
+                    array_push($dontDelete, $attributeOption->id);
+                }
+            }
+        }
+
+        if (count($dontDelete)) {
+            $optionsToDelete = AttributeOption::find()->where([
+                'AND', 'attribute_id=' . $model->id,
+                ['NOT IN', 'id', $dontDelete]
+            ])->all();
+        } else {
+            // Clear all attribute options
+            $optionsToDelete = AttributeOption::find()->where(['attribute_id' => $model->id])->all();
+        }
+
+
+        if (!empty($optionsToDelete)) {
+            foreach ($optionsToDelete as $o) {
+                $o->delete();
+            }
+        }
+    }
+
+    protected function saveOptions2($model)
+    {
+        $dontDelete = [];
         if (!empty($_POST['options'])) {
-
-//echo \yii\helpers\VarDumper::dumpAsString($_POST['options'],10,true);die;
-
 
             foreach ($_POST['options'] as $id => $val) {
                 if (isset($val[0]) && $val[0] != '' && !empty($val[0])) {
@@ -181,7 +272,7 @@ class AttributeController extends AdminController
      * @param array $id
      * @return \yii\web\Response
      */
-    public function actionDelete($id = array())
+    public function actionDelete($id = [])
     {
         if (Yii::$app->request->isPost) {
             $model = Attribute::find()->where(['id' => $id])->all();
