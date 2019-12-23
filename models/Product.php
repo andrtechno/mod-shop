@@ -642,8 +642,8 @@ class Product extends ActiveRecord
             $this->setCategories($categories, $this->main_category_id);
         } else {
             $mainCategoryId = 1;
-            if ($this->main_category_id)
-                $mainCategoryId = $this->main_category_id;
+            if (isset(Yii::$app->request->post('Product')['main_category_id']))
+                $mainCategoryId = Yii::$app->request->post('Product')['main_category_id'];
 
             $this->setCategories(Yii::$app->request->post('categories', []), $mainCategoryId);
         }
