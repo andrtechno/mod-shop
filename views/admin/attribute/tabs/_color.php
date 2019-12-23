@@ -22,7 +22,18 @@ $this->registerCss('
         display: none;
     }
 ');
-
+/*
+$post = Yii::$app->request->post('options');
+$res = [];
+foreach ($model->optionsArray as $o){
+    $res[$o->id]=$o->id;
+}
+\panix\engine\CMS::dump($res);
+echo '<br><br>';
+\panix\engine\CMS::dump($post);
+die;
+*/
+//print_r(array_diff(array_keys($post),array_keys($model->options)));
 ?>
 
 <table>

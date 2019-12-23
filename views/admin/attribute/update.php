@@ -32,7 +32,7 @@ if ($model->isNewRecord && !$model->type) {
             <div class="form-group row">
                 <div class="col-sm-4"><?= Html::activeLabel($model, 'type', ['class' => 'control-label']); ?></div>
                 <div class="col-sm-8">
-                    <?php echo Html::activeDropDownList($model, 'type', [1 => 'Стандартный', 8 => 'Слайдер', 9 => 'Цвет'], ['class' => 'form-control']); ?>
+                    <?= Html::activeDropDownList($model, 'type', [1 => 'Стандартный', /*8 => 'Слайдер',*/ 9 => 'Цвет'], ['class' => 'form-control']); ?>
                 </div>
             </div>
 
@@ -72,7 +72,7 @@ if ($model->isNewRecord && !$model->type) {
 
             if ($model->type == $model::TYPE_COLOR) {
                 $tabs[] = [
-                    'label' => $model::t('TAB_COLOR'),
+                    'label' => (isset($model->tab_errors['color'])) ? Html::icon('warning', ['class' => 'text-danger', 'title' => $model->tab_errors['color']]) . ' '.$model::t('TAB_COLOR') : $model::t('TAB_COLOR'),
                     'encode' => false,
                     'options'=>['id'=>'tab-color'],
                     'content' => $this->render('tabs/_color', ['form' => $form, 'model' => $model]),

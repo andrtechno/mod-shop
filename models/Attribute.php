@@ -111,6 +111,15 @@ class Attribute extends ActiveRecord
         return $this->hasMany(AttributeOption::class, ['attribute_id' => 'id']);//->cache(3600, $dependency);
     }
 
+
+    public function getOptionsArray()
+    {
+        // $table = self::tableName();
+        // $dependency = new DbDependency();
+        // $dependency->sql = "SELECT MAX(updated_at) FROM {$table}";
+        return $this->hasMany(AttributeOption::class, ['attribute_id' => 'id'])->asArray();//->cache(3600, $dependency);
+    }
+
     public function getGroups()
     {
         return $this->hasMany(AttributeGroup::class, ['id' => 'group_id']);
@@ -228,19 +237,13 @@ class Attribute extends ActiveRecord
         if (isset($post['options'])) {
             $opt = [];
             foreach ($post['options'] as $k => $v) {
-
-                if(is_string($v)){
-                    $opt[] = $v['name'][0];
-                }else{
-                    $opt[] = $v[0];
-                }
-                CMS::dump($v);die;
+                $opt[] = $v[0];
             }
-            print_r($opt);die;
+
             if ($this->hasDuplicates($opt)) {
                 //Yii::$app->controller->tab_errors['options'] = true;
-                $this->tab_errors['options'] = 'Ошибка: Duplicates options';
-                $this->addError('name', 'duplicate');
+                $this->tab_errors[($this->type == self::TYPE_COLOR) ? 'color' : 'options'] = self::t('ERROR_DUPLICATE_OPTIONS');
+                $this->addError('name', self::t('ERROR_DUPLICATE_OPTIONS'));
                 return false;
             }
         }

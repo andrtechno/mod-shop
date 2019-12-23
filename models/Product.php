@@ -642,7 +642,9 @@ class Product extends ActiveRecord
                 foreach ($tes as $cat) {
                     $categories[] = $cat->id;
                 }
+
             }
+
             $this->setCategories($categories, $this->main_category_id);
         } else {
             $mainCategoryId = 1;

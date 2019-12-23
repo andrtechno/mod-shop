@@ -95,7 +95,7 @@ class AttributeController extends AdminController
         $isNew = $model->isNewRecord;
         if (isset(Yii::$app->request->get('Attribute')['type']))
             $model->type = Yii::$app->request->get('Attribute')['type'];
-        if ($model->load($post) && $model->validate()) { // && $model->validateOptions()
+        if ($model->load($post) && $model->validate() && $model->validateOptions()) { // && $model->validateOptions()
             $model->save();
             $this->saveOptions($model);
 
