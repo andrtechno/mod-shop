@@ -343,13 +343,13 @@ class Product extends ActiveRecord
         $files = $_FILES[(new \ReflectionClass($this))->getShortName()];
 
         if (isset($files['name'])) {
-                if (!empty($files['name']['file'][0])) {
-                    $imageCount += count($files['name']['file']);
-                }
+            if (!empty($files['name']['file'][0])) {
+                $imageCount += count($files['name']['file']);
+            }
         }
 
         if (($imageCount > $planCount)) {
-            $this->addError($attribute, Yii::t('app','Привышен лимит изображений, доступно всего {0}',$planCount));
+            $this->addError($attribute, Yii::t('app', 'Привышен лимит изображений, доступно всего {0}', $planCount));
         }
     }
 
@@ -625,11 +625,14 @@ class Product extends ActiveRecord
     public function afterSave($insert, $changedAttributes)
     {
 
+        $mainCategoryId = 1;
+        if (isset(Yii::$app->request->post('Product')['main_category_id']))
+            $mainCategoryId = Yii::$app->request->post('Product')['main_category_id'];
 
         if (true) { //Yii::$app->settings->get('shop', 'auto_add_subcategories')
             // Авто добавление в предков категории
             // Нужно выбирать в админки самую последнию категории по уровню.
-            $category = Category::findOne($this->main_category_id);
+            $category = Category::findOne($mainCategoryId);
             $categories = [];
             if ($category) {
                 $tes = $category->ancestors()->excludeRoot()->all();
@@ -638,15 +641,13 @@ class Product extends ActiveRecord
                 }
 
             }
-
-            $this->setCategories($categories, $this->main_category_id);
+            $categories = ArrayHelper::merge($categories,Yii::$app->request->post('categories', []));
         } else {
-            $mainCategoryId = 1;
-            if (isset(Yii::$app->request->post('Product')['main_category_id']))
-                $mainCategoryId = Yii::$app->request->post('Product')['main_category_id'];
 
-            $this->setCategories(Yii::$app->request->post('categories', []), $mainCategoryId);
+            $categories = Yii::$app->request->post('categories', []);
         }
+
+        $this->setCategories($categories, $mainCategoryId);
 
 
         // Process related products
