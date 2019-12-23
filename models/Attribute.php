@@ -240,8 +240,7 @@ class Attribute extends ActiveRecord
                 $opt[] = $v[0];
             }
 
-            if ($this->hasDuplicates($opt)) {
-                //Yii::$app->controller->tab_errors['options'] = true;
+            if (CMS::hasDuplicates($opt)) {
                 $this->tab_errors[($this->type == self::TYPE_COLOR) ? 'color' : 'options'] = self::t('ERROR_DUPLICATE_OPTIONS');
                 $this->addError('name', self::t('ERROR_DUPLICATE_OPTIONS'));
                 return false;
@@ -250,10 +249,7 @@ class Attribute extends ActiveRecord
         return true;
     }
 
-    private function hasDuplicates($array)
-    {
-        return count($array) !== count(array_unique($array));
-    }
+
 
     /**
      * @param null $value
