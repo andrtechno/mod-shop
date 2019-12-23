@@ -526,7 +526,7 @@ class Product extends ActiveRecord
      */
     public function setCategories(array $categories, $main_category)
     {
-        $dontDelete = [];
+        $notDelete = [];
 
 
         if (!Category::find()->where(['id' => $main_category])->count())
@@ -536,17 +536,17 @@ class Product extends ActiveRecord
             array_push($categories, $main_category);
 
 
-        foreach ($categories as $c) {
+        foreach ($categories as $category) {
 
             $count = ProductCategoryRef::find()->where([
-                'category' => $c,
+                'category' => (int)$category,
                 'product' => $this->id,
             ])->count();
 
 
             if (!$count) {
                 $record = new ProductCategoryRef;
-                $record->category = (int)$c;
+                $record->category = (int)$category;
                 $record->product = $this->id;
                 if ($this->scenario == 'duplicate') {
                     $record->switch = 1;
@@ -556,7 +556,7 @@ class Product extends ActiveRecord
                 $record->save(false);
             }
 
-            $dontDelete[] = $c;
+            $notDelete[] = (int)$category;
         }
 
         // Clear main category
@@ -572,20 +572,14 @@ class Product extends ActiveRecord
         ], 'product=:p AND category=:c', [':p' => $this->id, ':c' => $main_category]);
 
         // Delete not used relations
-        if (sizeof($dontDelete) > 0) {
-            // $cr = new CDbCriteria;
-            // $cr->addNotInCondition('category', $dontDelete);
-            //    $query = ShopProductCategoryRef::deleteAll(['product=:id','category NOT IN (:cats)'],[':id'=>$this->id,':cats'=>implode(',',$dontDelete)]);
+        if (count($notDelete) > 0) {
+
             ProductCategoryRef::deleteAll(
-                ['AND', 'product=:id', ['NOT IN', 'category', $dontDelete]], [':id' => $this->id]);
-            // ->andWhere(['not in','category',$dontDelete]);
-            //  foreach($query as $q){
-            // }
+                ['AND', 'product=:id', ['NOT IN', 'category', $notDelete]], [':id' => $this->id]);
 
         } else {
-
-            // Delete all relations 
-            ProductCategoryRef::deleteAll('product=:id', [':id' => $this->id]);
+            // Delete all relations
+            ProductCategoryRef::deleteAll(['product' => $this->id]);
         }
 
     }

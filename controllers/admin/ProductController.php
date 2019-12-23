@@ -162,11 +162,11 @@ class ProductController extends AdminController
 
             if ($model->save()) {
 
-                $mainCategoryId = 1;
-                if (isset($post['Product']['main_category_id']))
-                    $mainCategoryId = $post['Product']['main_category_id'];
+              //  $mainCategoryId = 1;
+              //  if (isset($post['Product']['main_category_id']))
+              //      $mainCategoryId = $post['Product']['main_category_id'];
 
-                $model->setCategories(Yii::$app->request->post('categories', []), $mainCategoryId);
+              //  $model->setCategories(Yii::$app->request->post('categories', []), $mainCategoryId);
 
                 $model->file = \yii\web\UploadedFile::getInstances($model, 'file');
                 if ($model->file) {
