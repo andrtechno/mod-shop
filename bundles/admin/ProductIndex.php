@@ -8,7 +8,6 @@
 
 namespace panix\mod\shop\bundles\admin;
 
-
 use panix\engine\web\AssetBundle;
 
 /**

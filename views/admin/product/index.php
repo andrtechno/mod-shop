@@ -4,11 +4,9 @@ use panix\engine\widgets\Pjax;
 use panix\ext\fancybox\Fancybox;
 use panix\mod\shop\bundles\admin\ProductIndex;
 
-
-
 echo Fancybox::widget(['target' => '.image a']);
 
-Pjax::begin(['dataProvider'=>$dataProvider]);
+Pjax::begin(['dataProvider' => $dataProvider]);
 ProductIndex::register($this);
 echo GridView::widget([
     'id' => 'grid-product',
@@ -26,7 +24,7 @@ echo GridView::widget([
         ]
     ],
     'showFooter' => true,
-    //   'footerRowOptions' => ['class' => 'text-center'],
+    //'footerRowOptions' => ['class' => 'text-center'],
     'rowOptions' => ['class' => 'sortable-column']
 ]);
 Pjax::end();

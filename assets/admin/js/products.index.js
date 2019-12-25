@@ -159,31 +159,31 @@ function showCategoryAssignWindow(el_clicked) {
 
                 });
 
-                if ($("#jsTree_CategoryAssignTreeDialog .jstree-clicked").parent().length === 0) {
+                if (checked.parent().length === 0) {
                     $('#alert-s').html('<div class="alert alert-warning">На выбрана \'главная\' категория. Кликните на название категории, чтобы сделать ее главной.</div>');
                     return;
                 }
 
                 //if (confirm($(el_clicked).data('confirm'))) {
-                    $.ajax(common.url('/admin/shop/product/assign-categories'), {
-                        type: "post",
-                        dataType: "json",
-                        data: {
-                            //token: common.token,
-                            category_ids: ids,
-                            main_category: $("#jsTree_CategoryAssignTreeDialog .jstree-clicked").parent().attr('id').replace('node_', '').replace('_anchor', ''),
-                            product_ids: grid.yiiGridView('getSelectedRows')
-                        },
-                        success: function (data) {
-                            $(dialog).dialog("close");
-                            common.notify(data.message, 'success');
-                            grid.yiiGridView('applyFilter');
+                $.ajax(common.url('/admin/shop/product/assign-categories'), {
+                    type: "post",
+                    dataType: "json",
+                    data: {
+                        //token: common.token,
+                        category_ids: ids,
+                        main_category: checked.parent().attr('id').replace('node_', '').replace('_anchor', ''),
+                        product_ids: grid.yiiGridView('getSelectedRows')
+                    },
+                    success: function (data) {
+                        $(dialog).dialog("close");
+                        common.notify(data.message, 'success');
+                        grid.yiiGridView('applyFilter');
 
-                        },
-                        error: function () {
-                            $('#alert-s').html('<div class="alert alert-danger">Ошибка</div>');
-                        }
-                    });
+                    },
+                    error: function () {
+                        $('#alert-s').html('<div class="alert alert-danger">Ошибка</div>');
+                    }
+                });
                 //}
             },
         }, {
@@ -224,7 +224,7 @@ function showDuplicateProductsWindow(link_clicked) {
             text: 'Копировать',
             'class': 'btn btn-primary',
             click: function () {
-                //if (confirm($(link_clicked).data('confirm'))) {
+                console.log(grid.yiiGridView('getSelectedRows'));
                 $.ajax(common.url('/admin/shop/product/duplicate-products'), {
                     type: "post",
                     dataType: 'json',
@@ -236,7 +236,7 @@ function showDuplicateProductsWindow(link_clicked) {
                     success: function (data) {
                         if (data.success) {
                             dialog.dialog('destroy').remove();
-    console.log('dup');
+                            console.log('dup');
                             $.pjax.reload(pjax, {timeout: false});
                             common.notify(data.message, 'success');
                         }
@@ -245,7 +245,6 @@ function showDuplicateProductsWindow(link_clicked) {
                         common.notify("Ошибка", 'error');
                     }
                 });
-                //  }
             }
         },
             {
@@ -264,8 +263,8 @@ function setProductsPrice(link_clicked) {
     if ($("#prices_products_dialog").length == 0) {
         var div = $('<div id="prices_products_dialog"/>');
         $(div).attr('title', 'Установить цену');
-        $('body',document).append(div);
-    }else{
+        $('body', document).append(div);
+    } else {
         console.log('already dialog data');
         return;
     }
@@ -277,7 +276,7 @@ function setProductsPrice(link_clicked) {
 
     dialog.dialog({
         modal: true,
-        appendTo:grid,
+        appendTo: grid,
         resizable: false,
         responsive: true,
         draggable: false,
