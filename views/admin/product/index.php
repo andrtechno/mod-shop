@@ -5,9 +5,9 @@ use panix\ext\fancybox\Fancybox;
 use panix\mod\shop\bundles\admin\ProductIndex;
 
 echo Fancybox::widget(['target' => '.image a']);
-
-Pjax::begin(['dataProvider' => $dataProvider]);
 ProductIndex::register($this);
+Pjax::begin(['dataProvider' => $dataProvider]);
+
 echo GridView::widget([
     'id' => 'grid-product',
     'tableOptions' => ['class' => 'table table-striped'],
