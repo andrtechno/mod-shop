@@ -10,7 +10,7 @@ use panix\mod\shop\models\Category;
     echo \panix\ext\jstree\JsTree::widget([
         'id' => 'CategoryAssignTreeDialog',
         'allOpen' => true,
-        'data' => Category::find()->dataTree(1),
+        'data' => Category::find()->dataTree(1, null, ['switch' => 1]),
         'core' => [
             'strings' => [
                 'Loading ...' => Yii::t('app', 'LOADING')

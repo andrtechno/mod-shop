@@ -27,7 +27,7 @@ function setProductsStatus(status_id, el) {
         type: "post",
         dataType: "json",
         data: {
-            token: $(el).attr('data-token'),
+            _csrf: yii.getCsrfToken(),
             ids: grid.yiiGridView('getSelectedRows'),
             'switch': status_id
         },
@@ -58,7 +58,6 @@ function setProductsStatus(status_id, el) {
     });
     return false;
 }
-
 
 function updateProductsViews(el) {
     if (grid.yiiGridView('getSelectedRows').length > 0) {
@@ -115,213 +114,234 @@ function showCategoryAssignWindow2(el_clicked) {
  * @param el_clicked
  */
 function showCategoryAssignWindow(el_clicked) {
+    var selection = grid.yiiGridView('getSelectedRows');
+    if (selection > 0) {
+        var dialogSelector = "#set_categories_dialog";
+        if ($(dialogSelector).length === 0) {
+            var div = $('<div id="set_categories_dialog"/>');
+            $(div).css('max-height', $(window).height() - 110 + 'px');
+            $(div).attr('title', 'Назначить категории');
+            $('body').append(div);
+        }
 
-    if ($("#set_categories_dialog").length == 0) {
-        var div = $('<div id="set_categories_dialog"/>');
-        $(div).css('max-height', $(window).height() - 110 + 'px');
-        $(div).attr('title', 'Назначить категории');
-        $('body').append(div);
-    }
+        $(dialogSelector).load('/admin/shop/product/render-category-assign-window', {}, function () {
+            uiDialog.position({my: 'center', at: 'center', of: window});
+        });
 
-    // $('body').scrollTop(30);
-
-    var dialog = $("#set_categories_dialog");
-    dialog.load('/admin/shop/product/render-category-assign-window', {}, function () {
-        uiDialog.position({my: 'center', at: 'center', of: window});
-    });
-
-    dialog.dialog({
-        //  position:'top',
-        modal: true,
-        resizable: false,
-        responsive: true,
-        width: 'auto',
-        close: function (event, ui) {
-            //$(this).dialog("close");
-            // dialog.closest('.ui-dialog-content').dialog('close');
-            uiDialog.dialog('close');
-        },
-        open: function () {
-            $('.ui-widget-overlay').bind('click', function () {
-                dialog.dialog('close');
-            });
-        },
-        buttons: [{
-            text: 'Назначить',
-            'class': 'btn btn-primary',
-            click: function () {
-                var checked = $("#jsTree_CategoryAssignTreeDialog .jstree-checked");
-                var ids = [];
-
-                checked.each(function (key, el) {
-                    var id = $(el).attr('id').replace('node_', '').replace('_anchor', '');
-                    ids.push(id);
-
-                });
-
-                if (checked.parent().length === 0) {
-                    $('#alert-s').html('<div class="alert alert-warning">На выбрана \'главная\' категория. Кликните на название категории, чтобы сделать ее главной.</div>');
-                    return;
-                }
-
-                //if (confirm($(el_clicked).data('confirm'))) {
-                $.ajax(common.url('/admin/shop/product/assign-categories'), {
-                    type: "post",
-                    dataType: "json",
-                    data: {
-                        //token: common.token,
-                        category_ids: ids,
-                        main_category: checked.parent().attr('id').replace('node_', '').replace('_anchor', ''),
-                        product_ids: grid.yiiGridView('getSelectedRows')
-                    },
-                    success: function (data) {
-                        $(dialog).dialog("close");
-                        common.notify(data.message, 'success');
-                        grid.yiiGridView('applyFilter');
-
-                    },
-                    error: function () {
-                        $('#alert-s').html('<div class="alert alert-danger">Ошибка</div>');
-                    }
-                });
-                //}
+        $(dialogSelector).dialog({
+            dialogClass: 'assign-categories-modal',
+            modal: true,
+            resizable: false,
+            responsive: true,
+            width: 'auto',
+            close: function () {
+                $(this).remove();
+                $('.assign-categories-modal').remove();
             },
-        }, {
-            text: common.message.cancel,
-            'class': 'btn btn-secondary',
-            click: function () {
-                $(this).dialog("close");
-            }
-        }]
-    });
-    uiDialog.position({my: 'center', at: 'center', of: window});
-}
+            open: function () {
+                $('.ui-widget-overlay').bind('click', function () {
+                    uiDialog.remove();
+                });
+            },
+            buttons: [{
+                text: 'Назначить',
+                'class': 'btn2 btn-primary2',
+                click: function () {
+                    var checked = $("#CategoryAssignTreeDialog .jstree-checked");
+                    var ids = [];
 
-function showDuplicateProductsWindow(link_clicked) {
-    if ($("#duplicate_products_dialog").length == 0) {
-        var div = $('<div id="duplicate_products_dialog"/>');
-        $(div).attr('title', 'Копировать');
-        $('body').append(div);
-    }
+                    checked.each(function (key, el) {
+                        var id = $(el).attr('id').replace('node_', '').replace('_anchor', '');
+                        ids.push(id);
 
-    var dialog = $("#duplicate_products_dialog");
-    dialog.load(common.url('/admin/shop/product/render-duplicate-products-window'), {}, function () {
-        uiDialog.position({my: 'center', at: 'center', of: window});
-    });
+                    });
 
-    dialog.dialog({
-        modal: true,
-        resizable: false,
-        close: function () {
-            uiDialog.dialog('destroy').remove();
-        },
-        open: function () {
-            $('.ui-widget-overlay').bind('click', function () {
-                dialog.dialog('close');
-            });
-        },
-        buttons: [{
-            text: 'Копировать',
-            'class': 'btn btn-primary',
-            click: function () {
-                console.log(grid.yiiGridView('getSelectedRows'));
-                $.ajax(common.url('/admin/shop/product/duplicate-products'), {
-                    type: "post",
-                    dataType: 'json',
-                    data: {
-                        _csrf: yii.getCsrfToken(),
-                        products: grid.yiiGridView('getSelectedRows'),
-                        duplicate: $("#duplicate_products_dialog form").serialize()
-                    },
-                    success: function (data) {
-                        if (data.success) {
+                    if (checked.parent().length === 0) {
+                        //$('#alert-s').html('<div class="alert alert-warning">На выбрана \'главная\' категория. Кликните на название категории, чтобы сделать ее главной.</div>');
+                        //return;
+                    }
+
+                    //if (confirm($(el_clicked).data('confirm'))) {
+                    $.ajax(common.url('/admin/shop/product/assign-categories'), {
+                        type: "POST",
+                        dataType: "json",
+                        data: {
+                            _csrf: yii.getCsrfToken(),
+                            category_ids: ids,
+                            main_category: checked.parent().attr('id').replace('node_', '').replace('_anchor', ''),
+                            product_ids: selection
+                        },
+                        success: function (data) {
                             dialog.dialog('destroy').remove();
-                            console.log('dup');
                             $.pjax.reload(pjax, {timeout: false});
                             common.notify(data.message, 'success');
+                        },
+                        error: function () {
+                            $('#alert-s').html('<div class="alert alert-danger">Ошибка</div>');
                         }
-                    },
-                    error: function () {
-                        common.notify("Ошибка", 'error');
-                    }
-                });
-            }
-        },
-            {
+                    });
+                    //}
+                },
+            }, {
                 text: common.message.cancel,
-                'class': 'btn btn-secondary',
+                'class': 'btn2 btn-secondary2',
                 click: function () {
-                    dialog.dialog('destroy').remove();
+                    $(this).dialog("close");
                 }
             }]
-    });
-    uiDialog.position({my: 'center', at: 'center', of: window});
+        });
+        uiDialog.position({my: 'center', at: 'center', of: window});
+    } else {
+        common.notify('Не выбрано не одного элемента!', 'warning');
+    }
+}
+
+function showDuplicateProductsWindow() {
+    var selection = grid.yiiGridView('getSelectedRows');
+    if (selection > 0) {
+        var dialogSelector = "#duplicate_products_dialog";
+
+        if ($(dialogSelector).length === 0) {
+            var div = $('<div id="duplicate_products_dialog"/>');
+            $(div).attr('title', 'Копировать');
+            $('body').append(div);
+        }
+
+        $(dialogSelector).load(common.url('/admin/shop/product/render-duplicate-products-window'), {}, function () {
+            uiDialog.position({my: 'center', at: 'center', of: window});
+        });
+
+        $(dialogSelector).dialog({
+            modal: true,
+            resizable: false,
+            dialogClass: 'duplicate-modal',
+            close: function () {
+                $(this).remove();
+                $('.duplicate-modal').remove();
+            },
+            open: function () {
+                $('.ui-widget-overlay').bind('click', function () {
+                    uiDialog.remove();
+                });
+            },
+            buttons: [{
+                text: 'Копировать',
+                'class': 'btn btn-primary',
+                click: function () {
+                    console.log(grid.yiiGridView('getSelectedRows'));
+                    $.ajax(common.url('/admin/shop/product/duplicate-products'), {
+                        type: "post",
+                        dataType: 'json',
+                        data: {
+                            _csrf: yii.getCsrfToken(),
+                            products: selection,
+                            duplicate: $("#duplicate_products_dialog form").serialize()
+                        },
+                        success: function (data) {
+                            if (data.success) {
+                                $(dialogSelector).dialog('close');
+                                console.log('dup');
+                                common.notify(data.message, 'success');
+                                $.pjax.reload(pjax, {timeout: false});
+
+                            } else {
+                                common.notify(data.message, 'error');
+                            }
+                        },
+                        error: function () {
+                            common.notify("Ошибка", 'error');
+                        }
+                    });
+                }
+            },
+                {
+                    text: common.message.cancel,
+                    'class': 'btn btn-secondary',
+                    click: function () {
+                        $(this).dialog("close");
+                    }
+                }]
+        });
+        uiDialog.position({my: 'center', at: 'center', of: window});
+    } else {
+        common.notify('Не выбрано не одного элемента!', 'warning');
+    }
 }
 
 
-function setProductsPrice(link_clicked) {
-    if ($("#prices_products_dialog").length == 0) {
-        var div = $('<div id="prices_products_dialog"/>');
-        $(div).attr('title', 'Установить цену');
-        $('body', document).append(div);
-    } else {
-        console.log('already dialog data');
-        return;
-    }
+function setProductsPrice() {
+    var selection = grid.yiiGridView('getSelectedRows');
+    if (selection > 0) {
+        var dialogSelector = "#prices_products_dialog";
+        if ($(dialogSelector).length === 0) {
+            var div = $('<div id="prices_products_dialog"/>');
+            $(div).attr('title', 'Установить цену');
+            $('body', document).append(div);
+        } else {
+            console.log('already dialog data');
+            return;
+        }
 
-    var dialog = $("#prices_products_dialog");
-    dialog.load(common.url('/admin/shop/product/render-products-price-window'), {}, function () {
-        uiDialog.position({my: 'center', at: 'center', of: window});
-    });
+        $(dialogSelector).load(common.url('/admin/shop/product/render-products-price-window'), {}, function () {
+            uiDialog.position({my: 'center', at: 'center', of: window});
+        });
 
-    dialog.dialog({
-        modal: true,
-        appendTo: grid,
-        resizable: false,
-        responsive: true,
-        draggable: false,
-        close: function () {
-            uiDialog.dialog('close');
-            dialog.remove();
-        },
-        open: function () {
-            $('.ui-widget-overlay').bind('click', function () {
-                dialog.dialog('close');
-            });
-        },
-        buttons: [{
-            text: 'Установить',
-            'class': 'btn btn-primary',
-            click: function () {
-
-                $.ajax(common.url('/admin/shop/product/set-products'), {
-                    type: "post",
-                    dataType: 'json',
-                    data: {
-                        products: grid.yiiGridView('getSelectedRows'),
-                        data: $("#prices_products_dialog form").serialize()
-                    },
-                    success: function (data) {
-                        dialog.dialog('destroy').remove();
-                        $.pjax.reload(pjax, {timeout: false});
-                        common.notify(data.message, 'success');
-                    },
-                    error: function () {
-                        common.notify("Ошибка", 'error');
-                    }
+        $(dialogSelector).dialog({
+            modal: true,
+            dialogClass: 'set-prices-modal',
+            //appendTo: grid,
+            resizable: false,
+            responsive: true,
+            draggable: false,
+            close: function () {
+                $(this).remove();
+                $('.set-prices-modal').remove();
+            },
+            open: function () {
+                $('.ui-widget-overlay').bind('click', function () {
+                    uiDialog.remove();
                 });
+            },
+            buttons: [{
+                text: 'Установить',
+                //'class': 'btn btn-primary',
+                click: function () {
 
-            }
-        }, {
-            text: common.message.cancel,
-            'class': 'btn btn-secondary',
-            click: function () {
-                uiDialog.dialog('destroy').remove();
-            }
-        }]
-    });
-    uiDialog.position({my: 'center', at: 'center', of: window});
+                    $.ajax(common.url('/admin/shop/product/set-products'), {
+                        type: "POST",
+                        dataType: 'json',
+                        data: {
+                            products: selection,
+                            data: $("#prices_products_dialog form").serialize()
+                        },
+                        success: function (data) {
+                            if (data.success) {
+                                $(dialogSelector).dialog('close');
+                                $.pjax.reload(pjax, {timeout: false});
+                                common.notify(data.message, 'success');
+                            } else {
+                                common.notify(data.message, 'error');
+                            }
 
+                        },
+                        error: function () {
+                            common.notify("Ошибка", 'error');
+                        }
+                    });
+
+                }
+            }, {
+                text: common.message.cancel,
+                //'class': 'btn btn-secondary',
+                click: function () {
+                    $(dialogSelector).dialog("close");
+                }
+            }]
+        });
+        uiDialog.position({my: 'center', at: 'center', of: window});
+    } else {
+        common.notify('Не выбрано не одного элемента!', 'warning');
+    }
 }
 
 // Хак для отправки с диалогового окна формы через ENTER

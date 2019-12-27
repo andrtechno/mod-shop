@@ -512,8 +512,8 @@ class ProductController extends AdminController
     public function actionDuplicateProducts()
     {
         $result['success'] = false;
+
         if (Yii::$app->request->isAjax) {
-            Yii::$app->response->format = Response::FORMAT_JSON;
             //TODO: return ids to find products
             $product_ids = Yii::$app->request->post('products', []);
             parse_str(Yii::$app->request->post('duplicate'), $duplicates);
@@ -523,10 +523,15 @@ class ProductController extends AdminController
 
             $duplicator = new \panix\mod\shop\components\ProductsDuplicator;
             $ids = $duplicator->createCopy($product_ids, $duplicates['copy']);
+            if($ids){
+                $result['success'] = true;
+                $result['message'] = 'Копия упешно создана';
+            }else{
+                $result['message'] = 'Ошибка копирование.';
+            }
             //return $this->redirect('/admin/shop/product/?Product[id]=' . implode(',', $ids));
-            $result['success'] = true;
-            $result['message'] = 'Копия упешно создана';
-            return $result;
+
+            return $this->asJson($result);
         } else {
             throw new ForbiddenHttpException();
         }
@@ -555,7 +560,7 @@ class ProductController extends AdminController
      */
     public function actionSetProducts()
     {
-        Yii::$app->response->format = Response::FORMAT_JSON;
+        $result['success'] = false;
         $request = Yii::$app->request;
         if ($request->isAjax) {
             $product_ids = $request->post('products', []);
@@ -569,10 +574,9 @@ class ProductController extends AdminController
                     }
                 }
             }
-
+            $result['success'] = true;
             $result['message'] = 'Success';
-            return $result;
-
+            return $this->asJson($result);
 
         } else {
             throw new ForbiddenHttpException(Yii::t('app/error', '403'));
@@ -583,13 +587,13 @@ class ProductController extends AdminController
     /**
      * Assign categories to products
      *
-     * @return array|boolean
+     * @return Response|boolean
      * @throws ForbiddenHttpException
      */
     public function actionAssignCategories()
     {
+        //$this->enableCsrfValidation=false;
         if (Yii::$app->request->isAjax) {
-            Yii::$app->response->format = Response::FORMAT_JSON;
             $categories = Yii::$app->request->post('category_ids');
             $products = Yii::$app->request->post('product_ids');
 
@@ -602,21 +606,19 @@ class ProductController extends AdminController
                 /** @var Product $p */
                 $p->setCategories($categories, Yii::$app->request->post('main_category'));
             }
-
-            return ['message' => 'Выбранным товарам категории изменены'];
+            return $this->asJson(['message' => 'Выбранным товарам категории изменены']);
         } else {
             throw new ForbiddenHttpException();
         }
     }
 
     /**
-     * @return array
+     * @return Response
      * @throws ForbiddenHttpException
      */
     public function actionUpdateIsActive()
     {
         if (Yii::$app->request->isAjax) {
-            Yii::$app->response->format = Response::FORMAT_JSON;
             $ids = Yii::$app->request->post('ids');
             $switch = (int)Yii::$app->request->post('switch');
             $models = Product::find()->where(['id' => $ids])->all();
@@ -627,8 +629,7 @@ class ProductController extends AdminController
                     $product->save();
                 }
             }
-
-            return ['message' => Yii::t('app', 'SUCCESS_UPDATE')];
+            return $this->asJson(['message' => Yii::t('app', 'SUCCESS_UPDATE')]);
         } else {
             throw new ForbiddenHttpException();
         }
