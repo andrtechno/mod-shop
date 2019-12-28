@@ -4,7 +4,9 @@ namespace panix\mod\shop\controllers\admin;
 
 use panix\engine\CMS;
 use panix\mod\shop\components\EavBehavior;
+use panix\mod\shop\models\Category;
 use Yii;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Json;
 use panix\mod\shop\models\Product;
@@ -162,11 +164,30 @@ class ProductController extends AdminController
 
             if ($model->save()) {
 
-              //  $mainCategoryId = 1;
-              //  if (isset($post['Product']['main_category_id']))
-              //      $mainCategoryId = $post['Product']['main_category_id'];
+                $mainCategoryId = 1;
+                if (isset(Yii::$app->request->post('Product')['main_category_id']))
+                    $mainCategoryId = Yii::$app->request->post('Product')['main_category_id'];
 
-              //  $model->setCategories(Yii::$app->request->post('categories', []), $mainCategoryId);
+                if (true) { //Yii::$app->settings->get('shop', 'auto_add_subcategories')
+                    // Авто добавление в предков категории
+                    // Нужно выбирать в админки самую последнию категории по уровню.
+                    $category = Category::findOne($mainCategoryId);
+                    $categories = [];
+                    if ($category) {
+                        $tes = $category->ancestors()->excludeRoot()->all();
+                        foreach ($tes as $cat) {
+                            $categories[] = $cat->id;
+                        }
+
+                    }
+                    $categories = ArrayHelper::merge($categories,Yii::$app->request->post('categories', []));
+                } else {
+
+                    $categories = Yii::$app->request->post('categories', []);
+                }
+
+                $model->setCategories($categories, $mainCategoryId);
+
 
                 $model->file = \yii\web\UploadedFile::getInstances($model, 'file');
                 if ($model->file) {
