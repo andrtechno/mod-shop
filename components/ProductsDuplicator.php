@@ -91,7 +91,14 @@ class ProductsDuplicator extends \yii\base\Component
                     if (method_exists($this, $method_name))
                         $this->$method_name($model, $product);
                 }
-                $product->setCategories([], $model->mainCategory->id);
+
+                $categories = [];
+                if ($model->categories) {
+                    foreach ($model->categories as $category) {
+                        $categories[] = $category->primaryKey;
+                    }
+                }
+                $product->setCategories($categories, $model->mainCategory->id);
                 return $product;
             } else {
                 die(__FUNCTION__ . ': Error save');
@@ -143,7 +150,8 @@ class ProductsDuplicator extends \yii\base\Component
                 if ($image_copy->validate()) {
                     if ($image_copy->save()) {
                         BaseFileHelper::createDirectory($path, 0775, true);
-                        copy($absolutePath, $newAbsolutePath);
+                        if (file_exists($absolutePath))
+                            copy($absolutePath, $newAbsolutePath);
                     }
                 } else {
                     print_r($image_copy->getErrors());

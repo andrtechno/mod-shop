@@ -16,7 +16,7 @@
  */
 
 var grid = $('#grid-product');
-var pjax = $('#pjax-grid-product');
+var pjax = '#pjax-grid-product';
 var uiDialog = $('.ui-dialog');
 /**
  * Update selected comments status
@@ -210,7 +210,7 @@ function showDuplicateProductsWindow() {
         $(dialogSelector).load(common.url('/admin/shop/product/render-duplicate-products-window'), {}, function () {
             uiDialog.position({my: 'center', at: 'center', of: window});
         });
-
+        var test;
         $(dialogSelector).dialog({
             modal: true,
             resizable: false,
@@ -228,7 +228,7 @@ function showDuplicateProductsWindow() {
                 text: 'Копировать',
                 'class': 'btn btn-primary',
                 click: function () {
-                    console.log(grid.yiiGridView('getSelectedRows'));
+                    console.log('getSelectedRows',grid.yiiGridView('getSelectedRows'));
                     $.ajax(common.url('/admin/shop/product/duplicate-products'), {
                         type: "post",
                         dataType: 'json',
@@ -238,12 +238,12 @@ function showDuplicateProductsWindow() {
                             duplicate: $("#duplicate_products_dialog form").serialize()
                         },
                         success: function (data) {
+
                             if (data.success) {
-                                $(dialogSelector).dialog('close');
-                                console.log('dup');
+                                //uiDialog.remove();
+                                uiDialog.dialog('close');
                                 common.notify(data.message, 'success');
                                 $.pjax.reload(pjax, {timeout: false});
-
                             } else {
                                 common.notify(data.message, 'error');
                             }
