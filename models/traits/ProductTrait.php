@@ -55,11 +55,12 @@ trait ProductTrait
                     if (true) {
                         $labels = [];
                         foreach ($model->labels() as $label) {
-                            $labels[] = Html::tag('span', $label['value'], [
-                                'class' => 'badge badge-' . $label['class'],
-                                'data-toggle' => 'tooltip',
-                                'title' => $label['tooltip']
-                            ]);
+                            $labelOptions = [];
+                            $labelOptions['class'] = 'badge badge-' . $label['class'];
+                            if(isset($label['tooltip']))
+                                $labelOptions['title'] = $label['tooltip'];
+                            $labelOptions['data-toggle'] = 'tooltip';
+                            $labels[] = Html::tag('span', $label['value'], $labelOptions);
                         }
                         $html .= '<br/>' . implode('', $labels);
                     }

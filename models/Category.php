@@ -71,7 +71,7 @@ class Category extends ActiveRecord
     {
         return [
             [['image'], 'file', 'skipOnEmpty' => true, 'extensions' => ['png', 'jpg', 'jpeg']],
-            ['slug', '\panix\engine\validators\UrlValidator', 'attributeCompare' => 'name'],
+            ['slug', '\panix\mod\shop\components\CategoryUrlValidator', 'attributeCompare' => 'name'],
             ['slug', 'fullPathValidator'],
             ['slug', 'match',
                 'pattern' => '/^([a-z0-9-])+$/i',

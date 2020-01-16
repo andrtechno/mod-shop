@@ -1,7 +1,7 @@
 <?php
 
 use yii\helpers\Html;
-use yii\widgets\Pjax;
+use panix\engine\widgets\Pjax;
 use panix\engine\grid\GridView;
 
 ?>
