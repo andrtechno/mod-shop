@@ -21,7 +21,7 @@ echo \panix\ext\jstree\JsTree::widget([
         'force_text' => true,
         'animation' => 0,
         'strings' => [
-            'Loading ...' => Yii::t('app', 'LOADING')
+            'Loading ...' => Yii::t('app/default', 'LOADING')
         ],
         "themes" => [
             "stripes" => true,

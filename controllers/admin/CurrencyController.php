@@ -90,7 +90,7 @@ class CurrencyController extends AdminController
             'url' => ['index']
         ];
 
-        $this->breadcrumbs[] = Yii::t('app', 'UPDATE');
+        $this->breadcrumbs[] = Yii::t('app/default', 'UPDATE');
 
         $isNew = $model->isNewRecord;
         $post = Yii::$app->request->post();

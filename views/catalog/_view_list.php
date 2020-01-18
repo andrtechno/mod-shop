@@ -45,9 +45,9 @@ use panix\engine\Html;
                                             <li class="add-cart-button btn-group">
                                                 <?php
                                                 if ($model->isAvailable) {
-                                                    echo Html::a(Yii::t('app', 'BUY'), 'javascript:cart.add("#form-add-cart-' . $model->id . '")', array('class' => 'btn btn-primary icon'));
+                                                    echo Html::a(Yii::t('app/default', 'BUY'), 'javascript:cart.add("#form-add-cart-' . $model->id . '")', array('class' => 'btn btn-primary icon'));
                                                 } else {
-                                                    echo Html::a(Yii::t('app', 'NOT_AVAILABLE'), 'javascript:cart.notifier(' . $model->id . ');', array('class' => 'btn btn-danger'));
+                                                    echo Html::a(Yii::t('app/default', 'NOT_AVAILABLE'), 'javascript:cart.notifier(' . $model->id . ');', array('class' => 'btn btn-danger'));
                                                 }
                                                 ?>
                                             </li>

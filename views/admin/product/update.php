@@ -63,7 +63,7 @@ use panix\mod\shop\models\ProductType;
                         <div class="form-group row">
                             <div class="col-sm-4"><?= Html::activeLabel($model, 'use_configurations', ['class' => 'control-label']); ?></div>
                             <div class="col-sm-8">
-                                <?php echo Html::activeDropDownList($model, 'use_configurations', [0 => Yii::t('app', 'NO'), 1 => Yii::t('app', 'YES')], ['class' => 'form-control']); ?>
+                                <?php echo Html::activeDropDownList($model, 'use_configurations', [0 => Yii::t('app/default', 'NO'), 1 => Yii::t('app/default', 'YES')], ['class' => 'form-control']); ?>
                             </div>
                         </div>
 
@@ -72,7 +72,7 @@ use panix\mod\shop\models\ProductType;
 
                 </div>
                 <div class="card-footer text-center">
-                    <?= Html::submitButton(Yii::t('app', 'CREATE', 0), ['name' => false, 'class' => 'btn btn-success']); ?>
+                    <?= Html::submitButton(Yii::t('app/default', 'CREATE', 0), ['name' => false, 'class' => 'btn btn-success']); ?>
                 </div>
                 <?php
                 echo Html::endForm();

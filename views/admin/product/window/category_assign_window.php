@@ -13,7 +13,7 @@ use panix\mod\shop\models\Category;
         'data' => Category::find()->dataTree(1, null, ['switch' => 1]),
         'core' => [
             'strings' => [
-                'Loading ...' => Yii::t('app', 'LOADING')
+                'Loading ...' => Yii::t('app/default', 'LOADING')
             ],
             'check_callback' => true,
             "themes" => [

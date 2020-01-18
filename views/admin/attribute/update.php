@@ -39,7 +39,7 @@ if ($model->isNewRecord && !$model->type) {
 
         </div>
         <div class="card-footer text-center">
-            <?= Html::submitButton(Yii::t('app', 'CREATE', 0), ['name' => false, 'class' => 'btn btn-success']); ?>
+            <?= Html::submitButton(Yii::t('app/default', 'CREATE', 0), ['name' => false, 'class' => 'btn btn-success']); ?>
         </div>
     </div>
     <?php

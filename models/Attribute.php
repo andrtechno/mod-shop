@@ -70,7 +70,7 @@ class Attribute extends ActiveRecord
             ],
             'group_id' => [
                 'attribute' => 'group_id',
-                'filterInputOptions' => ['class' => 'custom-select d-inline', 'id' => null, 'prompt' => Yii::t('app', 'ALL')],
+                'filterInputOptions' => ['class' => 'custom-select d-inline', 'id' => null, 'prompt' => Yii::t('app/default', 'ALL')],
                 'filter' => ArrayHelper::map(AttributeGroup::find()->all(), 'id', 'name'),
                 'value' => 'group.name',
                 'contentOptions' => ['class' => 'text-center'],
@@ -162,7 +162,7 @@ class Attribute extends ActiveRecord
             ], 'boolean'],
             ['name', 'match',
                 'pattern' => '/^([a-z0-9-])+$/i',
-                'message' => Yii::t('app', 'PATTERN_URL')
+                'message' => Yii::t('app/default', 'PATTERN_URL')
             ],
             [['sort'], 'default', 'value' => null],
             [['hint', 'abbreviation'], 'string'],
@@ -271,16 +271,16 @@ class Attribute extends ActiveRecord
                 $data = ArrayHelper::map($this->options, 'id', 'value');
                 return Html::dropDownList($name, $value, $data, [
                     'class' => 'form-control ' . $inputClass,
-                    'prompt' => html_entity_decode(Yii::t('app', 'EMPTY_LIST'))
+                    'prompt' => html_entity_decode(Yii::t('app/default', 'EMPTY_LIST'))
                 ]);
-                //return Yii::app()->controller->widget('ext.bootstrap.selectinput.SelectInput',array('data'=>$data,'value'=>$value,'htmlOptions'=>array('name'=>$name,'empty'=>Yii::t('app','EMPTY_LIST'))),true);
+                //return Yii::app()->controller->widget('ext.bootstrap.selectinput.SelectInput',array('data'=>$data,'value'=>$value,'htmlOptions'=>array('name'=>$name,'empty'=>Yii::t('app/default','EMPTY_LIST'))),true);
                 break;
             case self::TYPE_SELECT_MANY:
                 $data = ArrayHelper::map($this->options, 'id', 'value');
                 return Html::dropDownList($name . '[]', $value, $data, [
                     'class' => 'form-control ' . $inputClass,
                     'multiple' => 'multiple',
-                    'prompt' => html_entity_decode(Yii::t('app', 'EMPTY_LIST'))
+                    'prompt' => html_entity_decode(Yii::t('app/default', 'EMPTY_LIST'))
                 ]);
                 break;
             case self::TYPE_RADIO_LIST:
@@ -303,8 +303,8 @@ class Attribute extends ActiveRecord
                 break;
             case self::TYPE_YESNO:
                 $data = [
-                    1 => Yii::t('app', 'YES'),
-                    2 => Yii::t('app', 'NO')
+                    1 => Yii::t('app/default', 'YES'),
+                    2 => Yii::t('app/default', 'NO')
                 ];
                 return Html::dropDownList($name, $value, $data);
                 break;
@@ -313,7 +313,7 @@ class Attribute extends ActiveRecord
                 $data = ArrayHelper::map($this->options, 'id', 'value');
                 return Html::dropDownList($name . '[]', $value, $data, [
                     'class' => 'form-control ' . $inputClass,
-                    'prompt' => html_entity_decode(Yii::t('app', 'EMPTY_LIST'))
+                    'prompt' => html_entity_decode(Yii::t('app/default', 'EMPTY_LIST'))
                 ]);
                 break;
 
@@ -356,8 +356,8 @@ class Attribute extends ActiveRecord
                 break;
             case self::TYPE_YESNO:
                 $data = [
-                    1 => Yii::t('app', 'YES'),
-                    2 => Yii::t('app', 'NO')
+                    1 => Yii::t('app/default', 'YES'),
+                    2 => Yii::t('app/default', 'NO')
                 ];
                 if (isset($data[$value]))
                     return $data[$value];

@@ -183,7 +183,7 @@ echo \yii\helpers\Inflector::sentence($words);
         }
         if (Yii::$app->hasModule('comments')) {
         $tabs[] = [
-            'label' => Yii::t('app', 'REVIEWS', ['n' => $model->commentsCount]),
+            'label' => Yii::t('app/default', 'REVIEWS', ['n' => $model->commentsCount]),
             'content' => $this->render('tabs/_comments', ['model' => $model]),
             'options' => ['id' => 'comments'],
         ];

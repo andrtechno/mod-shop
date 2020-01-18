@@ -50,7 +50,7 @@ trait ProductTrait
                 if ($model->name) {
                     $html = Html::a($model->name, $model->getUrl(), ['data-pjax' => 0, 'target' => '_blank']);
                     if ($model->views > 0) {
-                        $html .= " <small>(" . Yii::t('app', 'VIEWS', ['n' => $model->views]) . ")</small>";
+                        $html .= " <small>(" . Yii::t('app/default', 'VIEWS', ['n' => $model->views]) . ")</small>";
                     }
                     if (true) {
                         $labels = [];

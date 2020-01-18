@@ -47,7 +47,7 @@ class TypeController extends AdminController
 
         $this->buttons = [
             [
-                'label' => Yii::t('app', 'CREATE'),
+                'label' => Yii::t('app/default', 'CREATE'),
                 'url' => ['/admin/shop/type/create'],
                 'options' => ['class' => 'btn btn-success']
             ]

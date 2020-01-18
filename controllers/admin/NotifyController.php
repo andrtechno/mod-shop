@@ -50,7 +50,7 @@ class NotifyController extends AdminController
 
     public function actionDelivery()
     {
-        $this->pageName = Yii::t('app', 'Сегодняшние товары');
+        $this->pageName = Yii::t('app/default', 'Сегодняшние товары');
 
 
         $searchModel = new ProductNotificationsSearch();
@@ -120,7 +120,7 @@ class NotifyController extends AdminController
             echo 'Mailer Error: ' . $mailer->ErrorInfo;
         } else {
             echo 'Message has been sent';
-            $this->setFlashMessage(Yii::t('app', 'Письма успешно отправлены'));
+            $this->setFlashMessage(Yii::t('app/default', 'Письма успешно отправлены'));
             $this->redirect(array('delivery'));
         }
         //$mailer->ClearAddresses();

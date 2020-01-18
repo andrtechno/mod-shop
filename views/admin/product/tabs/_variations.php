@@ -23,7 +23,7 @@ use yii\helpers\ArrayHelper;
                 }
                 ?>
                 <div class="input-group-prepend">
-                    <a href="#" id="addAttribute" class="btn btn-success"><?= Yii::t('app', 'CREATE', 0) ?></a>
+                    <a href="#" id="addAttribute" class="btn btn-success"><?= Yii::t('app/default', 'CREATE', 0) ?></a>
                 </div>
             </div>
         </div>

@@ -86,7 +86,7 @@ class ManufacturerController extends AdminController
 
 
         $isNew = $model->isNewRecord;
-        $this->breadcrumbs[] = Yii::t('app', ($isNew) ? 'CREATE' : 'UPDATE');
+        $this->breadcrumbs[] = Yii::t('app/default', ($isNew) ? 'CREATE' : 'UPDATE');
         $post = Yii::$app->request->post();
         if ($model->load($post)) {
             if ($model->validate()) {

@@ -29,7 +29,7 @@ if (count($model->processVariants())) { ?>
             echo Html::dropDownList('eav[' . $variant['attribute']->id . ']', null, $dropDownData, [
                 'id' => 'eav-' . $variant['attribute']->id,
                 'class' => 'variantData custom-select w-auto',
-                'prompt' => html_entity_decode(Yii::t('app', 'EMPTY_LIST'))
+                'prompt' => html_entity_decode(Yii::t('app/default', 'EMPTY_LIST'))
             ]);
             echo '</div></div>';
         }

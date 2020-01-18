@@ -118,7 +118,7 @@ class Manufacturer extends ActiveRecord
             [['name', 'slug'], 'trim'],
             ['slug', 'match',
                 'pattern' => '/^([a-z0-9-])+$/i',
-                'message' => Yii::t('app', 'PATTERN_URL')
+                'message' => Yii::t('app/default', 'PATTERN_URL')
             ],
             ['slug', '\panix\engine\validators\UrlValidator', 'attributeCompare' => 'name'],
             [['description'], 'string'],

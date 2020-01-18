@@ -4,7 +4,7 @@ use yii\widgets\Pjax;
 use panix\engine\grid\GridView;
 ?>
 
-<?= Html::a(Yii::t('app', 'SEND'), ['/admin/shop/notify/delivery-send'], ['class' => 'btn btn-success btn-sm']) ?>
+<?= Html::a(Yii::t('app/default', 'SEND'), ['/admin/shop/notify/delivery-send'], ['class' => 'btn btn-success btn-sm']) ?>
         
         
         

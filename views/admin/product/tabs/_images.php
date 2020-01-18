@@ -128,7 +128,7 @@ echo panix\engine\grid\GridView::widget([
                     'value' => $model->id,
                     'class' => 'check',
                     'data-toggle' => "tooltip",
-                    'title' => Yii::t('app', 'IS_MAIN'),
+                    'title' => Yii::t('app/default', 'IS_MAIN'),
                     'id' => 'main_image_' . $model->id
                 ]);
             },

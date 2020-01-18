@@ -151,7 +151,7 @@ class EavBehavior extends \yii\base\Behavior
             $this->modelTableFk = $this->owner->getTableSchema()->primaryKey[0];
 
             if (!is_string($this->modelTableFk)) {
-                throw new \yii\base\UnknownPropertyException(Yii::t('app', 'Table "{table}" does not have a primary key defined.', array('{table}' => $this->owner->getTableSchema())));
+                throw new \yii\base\UnknownPropertyException(Yii::t('app/default', 'Table "{table}" does not have a primary key defined.', array('{table}' => $this->owner->getTableSchema())));
             }
         }
         return $this->modelTableFk;

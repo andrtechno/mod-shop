@@ -20,8 +20,8 @@ $form->field($model, 'supplier_id')->dropDownList(ArrayHelper::map(Supplier::fin
 <?=
 
 $form->field($model, 'auto_decrease_quantity')->dropDownList([
-    0 => Yii::t('app', 'NO'),
-    1 => Yii::t('app', 'YES')
+    0 => Yii::t('app/default', 'NO'),
+    1 => Yii::t('app/default', 'YES')
 ], [
     //'prompt' => 'Укажите производителя'
 ])->hint($model::t('HINT_AUTO_DECREASE_QUANTITY'));

@@ -132,7 +132,7 @@ class Product extends ActiveRecord
                 $result['new'] = [
                     'class' => 'success',
                     'value' => self::t('LABEL_NEW'),
-                    // 'title' => Yii::t('app', 'FROM_BY', Yii::$app->formatter->asDate(date('Y-m-d', $this->created_at))) . ' ' . Yii::t('app', 'TO_BY', Yii::$app->formatter->asDate(date('Y-m-d', $this->created_at + (86400 * $new))))
+                    // 'title' => Yii::t('app/default', 'FROM_BY', Yii::$app->formatter->asDate(date('Y-m-d', $this->created_at))) . ' ' . Yii::t('app/default', 'TO_BY', Yii::$app->formatter->asDate(date('Y-m-d', $this->created_at + (86400 * $new))))
                 ];
             }
         }
@@ -306,7 +306,7 @@ class Product extends ActiveRecord
             $rules[] = ['slug', '\panix\engine\validators\UrlValidator', 'attributeCompare' => 'name'];
             $rules[] = ['slug', 'match',
                 'pattern' => '/^([a-z0-9-])+$/i',
-                'message' => Yii::t('app', 'PATTERN_URL')
+                'message' => Yii::t('app/default', 'PATTERN_URL')
             ];
             $rules[] = [['name', 'slug'], 'required'];
         }
@@ -349,7 +349,7 @@ class Product extends ActiveRecord
         }
 
         if (($imageCount > $planCount)) {
-            $this->addError($attribute, Yii::t('app', 'Привышен лимит изображений, доступно всего {0}', $planCount));
+            $this->addError($attribute, Yii::t('app/default', 'Привышен лимит изображений, доступно всего {0}', $planCount));
         }
     }
 

@@ -50,7 +50,7 @@ class ProductController extends AdminController
         if (in_array($action->id, ['create', 'update'])) {
             $count = Product::find()->count();
             if ($count >= Yii::$app->params['plan'][Yii::$app->params['plan_id']]['product_limit']) {
-                throw new HttpException(403, Yii::t('app', 'Достигнут лимит товаров {count} шт.', ['count' => $count]));
+                throw new HttpException(403, Yii::t('app/default', 'Достигнут лимит товаров {count} шт.', ['count' => $count]));
             }
         }
 
@@ -650,7 +650,7 @@ class ProductController extends AdminController
                     $product->save();
                 }
             }
-            return $this->asJson(['message' => Yii::t('app', 'SUCCESS_UPDATE')]);
+            return $this->asJson(['message' => Yii::t('app/default', 'SUCCESS_UPDATE')]);
         } else {
             throw new ForbiddenHttpException();
         }

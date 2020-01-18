@@ -165,7 +165,7 @@ $columns[] = [
     'contentOptions' => ['class' => 'text-center'],
 ];
 $columns[] = [
-    'header' => Yii::t('app', 'OPTIONS'),
+    'header' => Yii::t('app/default', 'OPTIONS'),
     'attribute' => 'delete',
     'format' => 'html',
     'contentOptions' => ['class' => 'text-center'],

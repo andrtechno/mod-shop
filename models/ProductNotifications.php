@@ -86,12 +86,12 @@ class ProductNotifications extends ActiveRecord
     {
         return array(
             'id' => 'ID',
-            'product_id' => Yii::t('app', 'Продукт'),
-            'product' => Yii::t('app', 'Продукт'),
-            'image' => Yii::t('app', 'Изображение'),
-            'name' => Yii::t('app', 'Название'),
-            'email' => Yii::t('app', 'Email'),
-            'totalEmails' => Yii::t('app', 'Количество подписчиков')
+            'product_id' => Yii::t('app/default', 'Продукт'),
+            'product' => Yii::t('app/default', 'Продукт'),
+            'image' => Yii::t('app/default', 'Изображение'),
+            'name' => Yii::t('app/default', 'Название'),
+            'email' => Yii::t('app/default', 'Email'),
+            'totalEmails' => Yii::t('app/default', 'Количество подписчиков')
         );
     }
 

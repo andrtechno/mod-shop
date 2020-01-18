@@ -55,7 +55,7 @@ GridView::widget([
                         $icon = "play";
 
                     return Html::a('dsadas', $url, [
-                        'title' => Yii::t('app', 'Toogle Active'),
+                        'title' => Yii::t('app/default', 'Toogle Active'),
                         'data-pjax' => '1',
                         'data-toggle-active' => $model->id
                     ]);

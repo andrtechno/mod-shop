@@ -10,7 +10,7 @@ use panix\mod\shop\models\Category;
 </div>
 <div class="form-group row">
     <div class="col-sm-4">
-        <label class="col-form-label" for="search-type-category"><?= Yii::t('app', 'Поиск:') ?></label></div>
+        <label class="col-form-label" for="search-type-category"><?= Yii::t('app/default', 'Поиск:') ?></label></div>
     <div class="col-sm-8">
         <input class="form-control" id="search-type-category" type="text"
                onkeyup='$("#TypeCategoryTree").jstree("search", $(this).val());'/>
@@ -26,7 +26,7 @@ echo \panix\ext\jstree\JsTree::widget([
     'data' => Category::find()->dataTree(1, null, ['switch' => 1]),
     'core' => [
         'animation' => 0,
-        'strings' => ['Loading ...' => Yii::t('app', 'LOADING')],
+        'strings' => ['Loading ...' => Yii::t('app/default', 'LOADING')],
         'check_callback' => true,
         "themes" => ["variant" => "large", "stripes" => true, 'responsive' => true],
     ],

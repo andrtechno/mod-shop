@@ -30,7 +30,7 @@ use yii\widgets\Pjax;
                 ?>
             </td>
             <td class="text-center">
-                <a class="btn btn-danger" href="#" onclick="$(this).parents('tr').remove();"><?= Yii::t('app', 'DELETE') ?></a>
+                <a class="btn btn-danger" href="#" onclick="$(this).parents('tr').remove();"><?= Yii::t('app/default', 'DELETE') ?></a>
             </td>
         </tr>
     <?php } ?>
@@ -105,7 +105,7 @@ echo \panix\engine\grid\GridView::widget([
             'buttons' => [
                 'add' => function ($url, $model) { //$model->id . '/' . Html::encode($model->name)
                     return Html::a(Html::icon('add'), '#', [
-                        'title' => Yii::t('app', 'ADD'),
+                        'title' => Yii::t('app/default', 'ADD'),
                         'class' => 'btn btn-sm btn-success',
                         'onClick' => 'return AddRelatedProduct(this);',
                         'data-pjax' => false

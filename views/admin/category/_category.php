@@ -33,7 +33,7 @@ use panix\mod\shop\models\Category;
                 'force_text' => true,
                 'animation' => 0,
                 'strings' => [
-                    'Loading ...' => Yii::t('app', 'LOADING')
+                    'Loading ...' => Yii::t('app/default', 'LOADING')
                 ],
                 "themes" => [
                     "stripes" => true,
@@ -49,7 +49,7 @@ use panix\mod\shop\models\Category;
                 return {
                     "Switch": {
                         "icon":"icon-eye",
-                        "label": "' . Yii::t('app', 'Скрыть показать') . '",
+                        "label": "' . Yii::t('app/default', 'Скрыть показать') . '",
                         "action": function (obj) {
                             $node = tree.get_node($node);
                             categorySwitch($node);
@@ -57,7 +57,7 @@ use panix\mod\shop\models\Category;
                     }, 
                     "Add": {
                         "icon":"icon-add",
-                        "label": "' . Yii::t('app', 'CREATE') . '",
+                        "label": "' . Yii::t('app/default', 'CREATE') . '",
                         "action": function (obj) {
                             $node = tree.get_node($node);
                             console.log($node);
@@ -66,7 +66,7 @@ use panix\mod\shop\models\Category;
                     }, 
                     "Edit": {
                         "icon":"icon-edit",
-                        "label": "' . Yii::t('app', 'UPDATE') . '",
+                        "label": "' . Yii::t('app/default', 'UPDATE') . '",
                         "action": function (obj) {
                             $node = tree.get_node($node);
                             window.location = common.language_path+"/admin/shop/category/index?id="+$node.id.replace("node_", "");
@@ -74,7 +74,7 @@ use panix\mod\shop\models\Category;
                     },  
                     "Rename": {
                         "icon":"icon-rename",
-                        "label": "' . Yii::t('app', 'RENAME') . '",
+                        "label": "' . Yii::t('app/default', 'RENAME') . '",
                         "action": function (obj) {
                             console.log($node);
                             tree.edit($node);
@@ -82,9 +82,9 @@ use panix\mod\shop\models\Category;
                     },                         
                     "Remove": {
                         "icon":"icon-trashcan",
-                        "label": "' . Yii::t('app', 'DELETE') . '",
+                        "label": "' . Yii::t('app/default', 'DELETE') . '",
                         "action": function (obj) {
-                            if (confirm("' . Yii::t('app', 'DELETE_CONFIRM') . '\nТак же будут удалены все товары.")) {
+                            if (confirm("' . Yii::t('app/default', 'DELETE_CONFIRM') . '\nТак же будут удалены все товары.")) {
                                 tree.delete_node($node);
                             }
                         }
