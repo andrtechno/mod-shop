@@ -18,6 +18,7 @@ return [
     'OUTPUT_ON' => 'показать по',
     'BLOCK_MANUFACTURER_TITLE' => 'Производители',
     'MANUFACTURER' => 'Бренды',
+    'VIEWS_PRODUCTS' => 'Просмотренные товары',
     'RELATED_PRODUCTS' => 'Связанные товары',
     'PRODUCTS_COUNTER' => '{0, plural, one{товар} few{товара} other{товаров}}',
     'PRODUCTS_COUNTER2' => '{count, plural, =0{тусто} =1{Один товар} one{# товар} few{# товара} many{# товаров} other{# товар}}',

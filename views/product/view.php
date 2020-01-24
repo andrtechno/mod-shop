@@ -17,39 +17,6 @@ $(document).ready(function() {
 
 ", yii\web\View::POS_END);
 
-panix\engine\widgets\owlcarousel\Carousel::widget([
-    'target' => '.owl-carousel',
-    'options' => [
-        'loop' => false,
-        'margin' => 10,
-        'nav' => true,
-        'dots' => true,
-        //  'dotsContainer'=> '.dotsCont',
-        'items' => 5,
-        'URLhashListener' => false,
-        'stagePadding' => 0,
-        'dotData' => true,
-        'responsive' => [
-            0 => [
-                'items' => 1,
-                'nav' => false,
-                'dots' => false
-            ],
-            768 => [
-                'items' => 3
-            ],
-            960 => [
-                'items' => 5
-            ],
-            1200 => [
-                'items' => 6
-            ],
-            1920 => [
-                'items' => 7
-            ],
-        ]
-    ]
-]);
 echo \yii\helpers\Inflector::titleize('CamelCase');
 
 echo \yii\helpers\Inflector::ordinalize(15);
@@ -78,21 +45,17 @@ echo \yii\helpers\Inflector::sentence($words);
     <div class="col-sm-6 col-xs-12">
         <div class="btn-group">
             <?php
-            //if ($prev = $model->getNextOrPrev('prev')) {
-                //  echo Html::a('prev ' . $prev->name, $prev->getUrl(), ['class' => 'btn btn-default']);
-            //}
-            //if ($next = $model->getNextOrPrev('next')) {
-                //  echo Html::a($next->name . ' next', $next->getUrl(), ['class' => 'btn btn-default']);
-           //}
 
-
-            if ($prev = $model->objectPrev) {
-                echo Html::a('prev ' . $prev->name, $prev->getUrl(), ['class' => 'btn btn-default']);
+            /**
+             * @var $prev \panix\mod\shop\models\Product
+             * @var $next \panix\mod\shop\models\Product
+             */
+            if ($prev = $model->getPrev(['switch'=>1, 'main_category_id' => $model->main_category_id])->one()) {
+                echo Html::a(Html::icon('arrow-left'), $prev->getUrl(), ['title' => $prev->name]);
             }
-            if ($next = $model->objectNext) {
-                echo Html::a($next->name . ' next', $next->getUrl(), ['class' => 'btn btn-default']);
+            if ($next = $model->getNext(['switch'=>1, 'main_category_id' => $model->main_category_id])->one()) {
+                echo Html::a(Html::icon('arrow-right'), $next->getUrl(), ['title' => $next->name]);
             }
-
             ?>
         </div>
         <h1><?= $model->name ?></h1>
@@ -176,7 +139,7 @@ echo \yii\helpers\Inflector::sentence($words);
         }
         if ($model->eavAttributes) {
             $tabs[] = [
-                'label' => 'Характеристики',
+                'label' =>Yii::t('shop/default', 'SPECIFICATION'),
                 'content' => $this->render('tabs/_attributes', ['model' => $model]),
                 'options' => ['id' => 'attributes'],
             ];

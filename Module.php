@@ -75,9 +75,27 @@ class Module extends WebModule implements BootstrapInterface
         if (!(Yii::$app instanceof \yii\console\Application)) {
             parent::init();
         }
-
-
     }
+
+    /**
+     * @param bool|int $current_id
+     * @return array|\panix\mod\shop\models\Product[]
+     */
+    public function getViewProducts($current_id = false)
+    {
+        $list = [];
+        $session = Yii::$app->session->get('views');
+        if (!empty($session)) {
+            $ids = array_unique($session);
+            if ($current_id) {
+                $key = array_search($current_id, $ids);
+                unset($ids[$key]);
+            }
+            $list = Product::find()->where(['id' => $ids])->all();
+        }
+        return $list;
+    }
+
 
     public function getAdminMenu()
     {
