@@ -31,6 +31,7 @@ $form->field($model, 'group_id')->dropDownList(ArrayHelper::map(AttributeGroup::
 <?= $form->field($model, 'display_on_list')->dropDownList([1 => Yii::t('app/default', 'YES'), 0 => Yii::t('app/default', 'NO')]); ?>
 <?= $form->field($model, 'display_on_grid')->dropDownList([1 => Yii::t('app/default', 'YES'), 0 => Yii::t('app/default', 'NO')]); ?>
 <?= $form->field($model, 'display_on_cart')->dropDownList([1 => Yii::t('app/default', 'YES'), 0 => Yii::t('app/default', 'NO')]); ?>
+<?= $form->field($model, 'display_on_pdf')->dropDownList([1 => Yii::t('app/default', 'YES'), 0 => Yii::t('app/default', 'NO')]); ?>
 <?= $form->field($model, 'use_in_filter')->dropDownList([1 => Yii::t('app/default', 'YES'), 0 => Yii::t('app/default', 'NO')]); ?>
 <?= $form->field($model, 'use_in_variants')->dropDownList([1 => Yii::t('app/default', 'YES'), 0 => Yii::t('app/default', 'NO')]); ?>
 <?= $form->field($model, 'select_many')->dropDownList([1 => Yii::t('app/default', 'YES'), 0 => Yii::t('app/default', 'NO')]); ?>

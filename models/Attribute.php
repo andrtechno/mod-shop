@@ -158,6 +158,7 @@ class Attribute extends ActiveRecord
                 'display_on_list',
                 'display_on_grid',
                 'display_on_cart',
+                'display_on_pdf',
                 'use_in_variants'
             ], 'boolean'],
             ['name', 'match',
@@ -248,7 +249,6 @@ class Attribute extends ActiveRecord
         }
         return true;
     }
-
 
 
     /**

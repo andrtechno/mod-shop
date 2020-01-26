@@ -1,6 +1,7 @@
 <?php
 
 namespace panix\mod\shop\migrations;
+
 /**
  * Generation migrate by PIXELION CMS
  * @author PIXELION CMS development team <dev@pixelion.com.ua>
@@ -27,6 +28,9 @@ class m180917_193421_shop_attribute extends Migration
             'type' => $this->string(10)->notNull(),
             'display_on_front' => $this->boolean()->defaultValue(1),
             'display_on_list' => $this->boolean()->defaultValue(0),
+            'display_on_cart' => $this->boolean()->defaultValue(0),
+            'display_on_grid' => $this->boolean()->defaultValue(0),
+            'display_on_pdf' => $this->boolean()->defaultValue(0),
             'use_in_filter' => $this->boolean()->defaultValue(0),
             'use_in_variants' => $this->boolean()->defaultValue(0),
             'use_in_compare' => $this->boolean()->defaultValue(0),
@@ -53,13 +57,15 @@ class m180917_193421_shop_attribute extends Migration
         $this->createIndex('use_in_filter', Attribute::tableName(), 'use_in_filter');
         $this->createIndex('display_on_list', Attribute::tableName(), 'display_on_list');
         $this->createIndex('display_on_front', Attribute::tableName(), 'display_on_front');
+        $this->createIndex('display_on_cart', Attribute::tableName(), 'display_on_cart');
+        $this->createIndex('display_on_grid', Attribute::tableName(), 'display_on_grid');
+        $this->createIndex('display_on_pdf', Attribute::tableName(), 'display_on_pdf');
         $this->createIndex('ordern', Attribute::tableName(), 'ordern');
         $this->createIndex('use_in_variants', Attribute::tableName(), 'use_in_variants');
         $this->createIndex('use_in_compare', Attribute::tableName(), 'use_in_compare');
 
         $this->createIndex('object_id', AttributeTranslate::tableName(), 'object_id');
         $this->createIndex('language_id', AttributeTranslate::tableName(), 'language_id');
-
 
 
     }
