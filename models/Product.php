@@ -968,12 +968,11 @@ class Product extends ActiveRecord
 
     public function getPriceByQuantity($q = 1)
     {
-        if ($q >= 1) {
-            return ProductPrices::find()
-                ->where(['product_id' => $this->id, 'from' => $q])
-                ->orderBy(['from' => SORT_DESC])
-                ->one();
-        }
+        return ProductPrices::find()
+            ->where(['product_id' => $this->id])
+            ->andWhere(['<=', 'from', $q])
+            ->orderBy(['from' => SORT_DESC])
+            ->one();
     }
 
     /**
@@ -996,12 +995,15 @@ class Product extends ActiveRecord
             $result = $configuration->price;
         } else {
 
-            if ($quantity > 1 && ($pr = $product->getPriceByQuantity($quantity))) {
-                if ($product->currency_id) {
-                    $result = Yii::$app->currency->convert($pr->value, $product->currency_id);
-                } else {
-                    $result = $pr->value;
-                }
+            // if ($quantity > 1 && ($pr = $product->getPriceByQuantity($quantity))) {
+            if ($product->prices && $quantity > 1) {
+                $pr = $product->getPriceByQuantity($quantity);
+                $result = $pr->value;
+                // if ($product->currency_id) {
+                //$result = Yii::$app->currency->convert($pr->value, $product->currency_id);
+                //} else {
+                //     $result = $pr->value;
+                //}
             } else {
                 if ($product->currency_id) {
                     $result = Yii::$app->currency->convert($product->appliedDiscount ? $product->discountPrice : $product->price, $product->currency_id);

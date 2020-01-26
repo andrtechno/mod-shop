@@ -43,13 +43,15 @@ $(function () {
 
     // On change type toggle options tab
     $("#attribute-type").change(function () {
-        //toggleOptionsTab($(this));
+        toggleOptionsTab($(this));
     });
     $("#attribute-type").change();
 
 
     $("form#Attribute").submit(function () {
         var el = $("#attribute-type");
+        var array = [3, 4, 5,6];
+        //if(array.indexOf(parseInt($(el).val())) != -1){
         if ($(el).val() !== 3 && $(el).val() !== 4 && $(el).val() !== 5 && $(el).val() !== 6) {
             $(".optionsEditTable").remove();
         }
@@ -60,10 +62,12 @@ $(function () {
      * Show/hide options tab on type change
      * @param el
      */
-    function toggleOptionsTab22(el) {
+    function toggleOptionsTab(el) {
+        var array = [3, 4, 5,6,9];
         var optionsTab = $("#attributes-tabs li")[1];
+        console.log($(el).val());
         // Show options tab when type is dropdown or select
-        if ($(el).val() === 3 || $(el).val() === 4 || $(el).val() === 5 || $(el).val() === 6 || $(el).val() === 9) {
+        if(array.indexOf(parseInt($(el).val())) != -1){
             $(optionsTab).show();
             $(".field-attribute-use_in_filter").show();
             $(".field-attribute-select_many").show();
