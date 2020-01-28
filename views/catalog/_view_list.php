@@ -27,7 +27,7 @@ use panix\engine\Html;
 
                                 <?php
                                 if (Yii::$app->hasModule('discounts')) {
-                                    if ($model->appliedDiscount) {
+                                    if ($model->hasDiscount) {
                                         ?>
                                         <span class="price-before-discount"><?= Yii::$app->currency->number_format(Yii::$app->currency->convert($model->originalPrice)) ?> <sup><?= Yii::$app->currency->active['symbol'] ?></sup></span>
                                         <?php
@@ -82,7 +82,7 @@ use panix\engine\Html;
 
 
                     <?php
-                    if ($model->appliedDiscount) {
+                    if ($model->hasDiscount) {
                         ?>
                         <div class="product-label-tag sale"><span>- <?= $model->discountSum ?></span></div>
 

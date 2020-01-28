@@ -70,7 +70,7 @@ echo \yii\helpers\Inflector::sentence($words);
         <?php
         echo $this->render('_configurations', ['model' => $model]);
         ?>
-        <?php if ($model->appliedDiscount) { ?>
+        <?php if ($model->hasDiscount) { ?>
             <span class="price price-strike">
                 <span><?= Yii::$app->currency->number_format(Yii::$app->currency->convert($model->discountPrice)) ?></span>
                 <sup><?= Yii::$app->currency->active['symbol'] ?></sup>

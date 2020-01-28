@@ -51,7 +51,7 @@ use panix\engine\db\ActiveRecord;
  * @property Supplier[] $supplier
  * @property string $discount Discount
  * @property string $video Youtube video URL
- * @property boolean $appliedDiscount See [[\panix\mod\discounts\components\DiscountBehavior]] //Discount
+ * @property boolean $hasDiscount See [[\panix\mod\discounts\components\DiscountBehavior]] //Discount
  * @property float $originalPrice See [[\panix\mod\discounts\components\DiscountBehavior]]
  * @property float $discountPrice See [[\panix\mod\discounts\components\DiscountBehavior]]
  * @property integer $ordern
@@ -137,7 +137,7 @@ class Product extends ActiveRecord
             }
         }
 
-        if (isset($this->appliedDiscount)) {
+        if (isset($this->hasDiscount)) {
             $result['discount']['class'] = 'danger';
             $result['discount']['value'] = '-' . $this->discountSum;
             if ($this->discountEndDate) {
@@ -756,7 +756,7 @@ class Product extends ActiveRecord
     public function getFrontPrice()
     {
         $currency = Yii::$app->currency;
-        if ($this->appliedDiscount) {
+        if ($this->hasDiscount) {
             $price = $currency->convert($this->discountPrice, $this->currency_id);
         } else {
             $price = $currency->convert($this->price, $this->currency_id);
@@ -1006,10 +1006,10 @@ class Product extends ActiveRecord
                 //}
             } else {
                 if ($product->currency_id) {
-                    $result = Yii::$app->currency->convert($product->appliedDiscount ? $product->discountPrice : $product->price, $product->currency_id);
+                    $result = Yii::$app->currency->convert($product->hasDiscount ? $product->discountPrice : $product->price, $product->currency_id);
                 } else {
-                    $result = Yii::$app->currency->convert($product->appliedDiscount ? $product->discountPrice : $product->price, $product->currency_id);
-                    //$result = ($product->appliedDiscount) ? $product->discountPrice : $product->price;
+                    $result = Yii::$app->currency->convert($product->hasDiscount ? $product->discountPrice : $product->price, $product->currency_id);
+                    //$result = ($product->hasDiscount) ? $product->discountPrice : $product->price;
                 }
 
             }

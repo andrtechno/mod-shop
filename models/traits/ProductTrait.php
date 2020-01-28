@@ -87,7 +87,7 @@ trait ProductTrait
             'value' => function ($model) {
                 /** @var $model Product */
                 $ss = '';
-                if ($model->appliedDiscount) {
+                if ($model->hasDiscount) {
                     $price = $model->discountPrice;
                     $ss = '<del class="text-secondary">' . Yii::$app->currency->number_format($model->originalPrice) . '</del> / ';
                 } else {

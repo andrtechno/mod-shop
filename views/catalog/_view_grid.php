@@ -28,10 +28,7 @@ use yii\helpers\HtmlPurifier;
                 </span>
             </div>
 
-            <?php
-            // var_dump($model->appliedDiscount);
-            ?>
-            <?php if ($model->appliedDiscount) { ?>
+            <?php if ($model->hasDiscount) { ?>
                 <div>
                     <span class="price price-strike">
                         discount

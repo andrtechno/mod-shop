@@ -41,7 +41,7 @@ use panix\engine\Html;
             <span class="label label-warning">Хит</span>
             <?php
             if (Yii::$app->hasModule('discounts')) {
-                if ($model->appliedDiscount) {
+                if ($model->hasDiscount) {
                     ?>
                     <span class="label label-success">скидка <?= $model->discountSum ?></span>
                     <?php
@@ -63,7 +63,7 @@ use panix\engine\Html;
 
     <?php
     if (Yii::$app->hasModule('discounts')) {
-        if ($model->appliedDiscount) {
+        if ($model->hasDiscount) {
             ?>
             <div>
                 <span class="price price-xs price-through">
