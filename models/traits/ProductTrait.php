@@ -106,8 +106,20 @@ trait ProductTrait
             }
         ];
         $columns['supplier_id'] = [
-            'attribute' => 'supplier.name',
+            'attribute' => 'supplier_id',
             'filter' => ArrayHelper::map(Supplier::find()->all(), 'id', 'name'),
+            'filterInputOptions' => ['class' => 'form-control', 'prompt' => html_entity_decode('&mdash; выберите поставщика &mdash;')],
+            'value' => function ($model) {
+                return $model->supplier->name;
+            }
+        ];
+        $columns['manufacturer_id'] = [
+            'attribute' => 'manufacturer_id',
+            'filter' => ArrayHelper::map(Manufacturer::find()->all(), 'id', 'name'),
+            'filterInputOptions' => ['class' => 'form-control', 'prompt' => html_entity_decode('&mdash; выберите производителя &mdash;')],
+            'value' => function ($model) {
+                return $model->manufacturer->name;
+            }
         ];
         $columns['categories'] = [
             'header' => static::t('Категории'),

@@ -289,7 +289,7 @@ class ProductController extends AdminController
 
         $errors = false;
         foreach ($attributes as $attr) {
-            if ($attr->required && empty($_POST['Attribute'][$attr->name])) {
+            if ($attr->required && empty($_POST['Attribute'][$attr->type][$attr->name])) {
                 $this->tab_errors['attributes'] = true;
                 $errors = true;
                 $model->addError($attr->name, Yii::t('yii', '{attribute} cannot be blank.', ['attribute' => $attr->title]));
