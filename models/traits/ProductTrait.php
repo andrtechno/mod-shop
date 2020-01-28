@@ -2,16 +2,17 @@
 
 namespace panix\mod\shop\models\traits;
 
+use Yii;
+use yii\helpers\ArrayHelper;
 use panix\mod\shop\models\Category;
 use panix\mod\shop\models\Manufacturer;
 use panix\mod\shop\models\ProductType;
 use panix\mod\shop\models\search\ProductSearch;
-use Yii;
+use panix\mod\shop\models\Supplier;
 use panix\engine\Html;
 use panix\engine\CMS;
 use panix\mod\shop\models\Attribute;
 use panix\mod\shop\models\Product;
-use yii\helpers\ArrayHelper;
 
 /**
  * Trait ProductTrait
@@ -57,7 +58,7 @@ trait ProductTrait
                         foreach ($model->labels() as $label) {
                             $labelOptions = [];
                             $labelOptions['class'] = 'badge badge-' . $label['class'];
-                            if(isset($label['tooltip']))
+                            if (isset($label['tooltip']))
                                 $labelOptions['title'] = $label['tooltip'];
                             $labelOptions['data-toggle'] = 'tooltip';
                             $labels[] = Html::tag('span', $label['value'], $labelOptions);
@@ -104,8 +105,9 @@ trait ProductTrait
                 return $ss . Html::tag('span', Yii::$app->currency->number_format($priceHtml), ['class' => 'text-success font-weight-bold']) . ' ' . $symbol;
             }
         ];
-        $columns['supplier'] = [
+        $columns['supplier_id'] = [
             'attribute' => 'supplier.name',
+            'filter' => ArrayHelper::map(Supplier::find()->all(), 'id', 'name'),
         ];
         $columns['categories'] = [
             'header' => static::t('Категории'),
