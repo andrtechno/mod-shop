@@ -2,7 +2,6 @@
 
 namespace panix\mod\shop\components;
 
-
 use panix\mod\shop\models\AttributeOption;
 use Yii;
 use yii\base\Exception;
