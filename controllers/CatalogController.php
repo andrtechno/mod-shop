@@ -22,10 +22,11 @@ class CatalogController extends FilterController
     public function actionView()
     {
 
-
+        /** @var Product $productModel */
+        $productModel = Yii::$app->getModule('shop')->model('Product');
         $this->currentUrl = $this->dataModel->getUrl();
-        $this->query = Product::find();
-        $this->query->attachBehaviors((new Product)->behaviors());
+        $this->query = $productModel::find();
+        $this->query->attachBehaviors((new $productModel)->behaviors());
         $this->query->sort();
 
 

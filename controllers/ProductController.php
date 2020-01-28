@@ -98,10 +98,9 @@ class ProductController extends WebController
      */
     public function actionComments($slug)
     {
-        if (Yii::$app->request->isAjax) {
-
-        }
-        $model = Product::find()
+        /** @var Product $productModel */
+        $productModel = Yii::$app->getModule('shop')->model('Product');
+        $model = $productModel::find()
             ->where(['slug' => $slug])
             ->published()
             ->one();
@@ -116,7 +115,8 @@ class ProductController extends WebController
      */
     protected function findModel($slug)
     {
-
+        /** @var Product $productModel */
+        $productModel = Yii::$app->getModule('shop')->model('Product');
         $model = Product::find()
             ->where(['slug' => $slug])
             ->published()

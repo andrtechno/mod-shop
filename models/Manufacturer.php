@@ -15,6 +15,8 @@ use panix\mod\shop\models\translate\ManufacturerTranslate;
  * @property string $slug
  * @property string $name ManufacturerTranslate
  * @property string $description
+ * @property Product[] $productsCount
+ *
  */
 class Manufacturer extends ActiveRecord
 {

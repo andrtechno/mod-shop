@@ -27,7 +27,7 @@ foreach ($model as $item) {
             <div class="col-sm-3">
                 <h3><?= mb_strtoupper($key, 'utf-8'); ?></h3>
                 <?php foreach ($items as $value) { ?>
-                    <div class=""><?= Html::a($value->name, $value->getUrl()); ?></div>
+                    <div class=""><?= Html::a($value->name, $value->getUrl()); ?> <?= $value->productsCount; ?></div>
                 <?php } ?>
             </div>
         <?php } ?>

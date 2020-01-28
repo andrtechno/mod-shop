@@ -32,7 +32,12 @@
     "autoload": {
         "psr-4": {
             "panix\\mod\\shop\\": ""
-        }
+        },
+        "autoload": {
+            "classmap": [
+                ""
+            ]
+        },
     },
     "extra": {
         "bootstrap": "panix\\mod\\shop\\Bootstrap"
