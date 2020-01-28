@@ -1,45 +1,47 @@
 {
-    "name": "panix/mod-shop",
-    "description": "Module shop",
-    "keywords": ["pixelion-cms", "module", "shop"],
-    "homepage": "https://github.com/andrtechno/mod-shop",
-    "type": "yii2-extension",
-    "license": "MIT",
-    "minimum-stability": "stable",
-    "prefer-stable": true,
-    "authors": [
-        {
-            "name": "PIXELION CMS",
-            "email": "dev@pixelion.com.ua",
-            "homepage": "https://pixelion.com.ua"
-        }
-    ],
-    "require": {
-        "panix/mod-images": "dev-master",
-        "panix/mod-discounts": "dev-master",
-        "panix/mod-cart": "dev-master",
-        "panix/mod-sitemap": "dev-master",
-        "panix/mod-wishlist": "dev-master",
-        "panix/mod-exchange1c": "dev-master",
-        "panix/mod-yandexmarket": "dev-master",
-        "panix/mod-comments": "dev-master",
-        "panix/mod-csv": "dev-master",
-        "panix/wgt-jstree": "dev-master",
-        "panix/wgt-fancybox": "dev-master",
-        "panix/wgt-scroll-pager": "dev-master",
-        "panix/wgt-telinput": "dev-master"
-    },
-    "autoload": {
-        "psr-4": {
-            "panix\\mod\\shop\\": ""
-        },
-        "autoload": {
-            "classmap": [
-                ""
-            ]
-        },
-    },
-    "extra": {
-        "bootstrap": "panix\\mod\\shop\\Bootstrap"
+  "name": "panix/mod-shop",
+  "description": "Module shop",
+  "keywords": [
+    "pixelion-cms",
+    "module",
+    "shop"
+  ],
+  "homepage": "https://github.com/andrtechno/mod-shop",
+  "type": "yii2-extension",
+  "license": "MIT",
+  "minimum-stability": "stable",
+  "prefer-stable": true,
+  "authors": [
+    {
+      "name": "PIXELION CMS",
+      "email": "dev@pixelion.com.ua",
+      "homepage": "https://pixelion.com.ua"
     }
+  ],
+  "require": {
+    "panix/mod-images": "dev-master",
+    "panix/mod-discounts": "dev-master",
+    "panix/mod-cart": "dev-master",
+    "panix/mod-sitemap": "dev-master",
+    "panix/mod-wishlist": "dev-master",
+    "panix/mod-exchange1c": "dev-master",
+    "panix/mod-yandexmarket": "dev-master",
+    "panix/mod-comments": "dev-master",
+    "panix/mod-csv": "dev-master",
+    "panix/wgt-jstree": "dev-master",
+    "panix/wgt-fancybox": "dev-master",
+    "panix/wgt-scroll-pager": "dev-master",
+    "panix/wgt-telinput": "dev-master"
+  },
+  "autoload": {
+    "psr-4": {
+      "panix\\mod\\shop\\": ""
+    },
+    "classmap": [
+      ""
+    ]
+  },
+  "extra": {
+    "bootstrap": "panix\\mod\\shop\\Bootstrap"
+  }
 }
