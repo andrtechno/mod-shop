@@ -12,7 +12,7 @@ use panix\mod\shop\components\collections\CList;
 use yii\db\Query;
 use yii\db\QueryBuilder;
 
-class EavBehavior extends \yii\base\Behavior
+class EavBehavior1 extends \yii\base\Behavior
 {
 
     /**
