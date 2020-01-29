@@ -2,12 +2,10 @@
 
 namespace panix\mod\shop;
 
-use panix\mod\admin\widgets\sidebar\BackendNav;
-use panix\mod\shop\models\Category;
-use panix\mod\shop\models\Manufacturer;
 use Yii;
 use panix\engine\WebModule;
 use yii\base\BootstrapInterface;
+use panix\mod\admin\widgets\sidebar\BackendNav;
 
 class Module extends WebModule implements BootstrapInterface
 {
@@ -19,8 +17,6 @@ class Module extends WebModule implements BootstrapInterface
      */
     public function bootstrap($app)
     {
-
-
         $rules['catalog'] = 'shop/default/index';
         $rules['search/ajax'] = 'shop/search/ajax';
         $rules['shop/notify'] = 'shop/notify/index';
@@ -43,13 +39,13 @@ class Module extends WebModule implements BootstrapInterface
                 'class' => 'panix\mod\shop\components\ManufacturerUrlRule',
                 'route' => 'shop/manufacturer/view',
                 'index' => 'manufacturer',
-           ];
+            ];
             $rules[] = [
                 'class' => 'panix\mod\shop\components\CategoryUrlRule',
                 'route' => '/shop/catalog/view',
                 'index' => 'catalog',
                 'alias' => 'full_path',
-              //  'pattern' => ''
+                //  'pattern' => ''
             ];
 
             /*$rules[] = [
@@ -83,6 +79,8 @@ class Module extends WebModule implements BootstrapInterface
      */
     public function getViewProducts($current_id = false)
     {
+        /** @var \panix\mod\shop\models\Product $productModel */
+        $productModel = Yii::$app->getModule('shop')->model('Product');
         $list = [];
         $session = Yii::$app->session->get('views');
         if (!empty($session)) {
@@ -91,7 +89,7 @@ class Module extends WebModule implements BootstrapInterface
                 $key = array_search($current_id, $ids);
                 unset($ids[$key]);
             }
-            $list = Product::find()->where(['id' => $ids])->all();
+            $list = $productModel::find()->where(['id' => $ids])->all();
         }
         return $list;
     }
@@ -176,6 +174,14 @@ class Module extends WebModule implements BootstrapInterface
         return (new BackendNav())->findMenu($this->id)['items'];
     }
 
+    public function getDefaultModelClasses()
+    {
+        return [
+            'Product' => '\panix\mod\shop\models\Product',
+            'Manufacturer' => '\panix\mod\shop\models\Manufacturer',
+            'Category' => '\panix\mod\shop\models\Category',
+        ];
+    }
 
     public function getInfo()
     {
