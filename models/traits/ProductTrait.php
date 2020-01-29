@@ -110,7 +110,7 @@ trait ProductTrait
             'filter' => ArrayHelper::map(Supplier::find()->all(), 'id', 'name'),
             'filterInputOptions' => ['class' => 'form-control', 'prompt' => html_entity_decode('&mdash; выберите поставщика &mdash;')],
             'value' => function ($model) {
-                return $model->supplier->name;
+                return ($model->supplier) ? $model->supplier->name : NULL;
             }
         ];
         $columns['manufacturer_id'] = [
@@ -118,7 +118,7 @@ trait ProductTrait
             'filter' => ArrayHelper::map(Manufacturer::find()->all(), 'id', 'name'),
             'filterInputOptions' => ['class' => 'form-control', 'prompt' => html_entity_decode('&mdash; выберите производителя &mdash;')],
             'value' => function ($model) {
-                return $model->manufacturer->name;
+                return ($model->manufacturer) ? $model->manufacturer->name : NULL;
             }
         ];
         $columns['categories'] = [

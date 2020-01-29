@@ -117,7 +117,7 @@ class ProductController extends WebController
     {
         /** @var Product $productModel */
         $productModel = Yii::$app->getModule('shop')->model('Product');
-        $model = Product::find()
+        $model = $productModel::find()
             ->where(['slug' => $slug])
             ->published()
             //->cache()
