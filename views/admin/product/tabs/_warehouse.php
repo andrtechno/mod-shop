@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\ArrayHelper;
+use yii\caching\DbDependency;
 use panix\mod\shop\models\Supplier;
 
 /** @var $form panix\engine\bootstrap\ActiveForm */
@@ -8,7 +9,7 @@ use panix\mod\shop\models\Supplier;
 
 <?=
 
-$form->field($model, 'supplier_id')->dropDownList(ArrayHelper::map(Supplier::find()->all(), 'id', 'name'), [
+$form->field($model, 'supplier_id')->dropDownList(ArrayHelper::map(Supplier::find()->cache(3200, new DbDependency(['sql' => 'SELECT MAX(`updated_at`) FROM ' . Supplier::tableName()]))->all(), 'id', 'name'), [
     'prompt' => html_entity_decode($model::t('SELECT_SUPPLIER_ID'))
 ]);
 ?>
