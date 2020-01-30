@@ -27,6 +27,8 @@ class m180917_193531_shop_manufacturer extends Migration
             'slug' => $this->string(11)->notNull()->defaultValue(null),
             'switch' => $this->boolean()->defaultValue(1),
             'ordern' => $this->integer()->unsigned(),
+            'created_at' => $this->integer(),
+            'updated_at' => $this->integer(),
         ]);
 
 
