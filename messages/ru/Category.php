@@ -8,6 +8,7 @@ return [
     'NODE_CREATE' => 'Категория успешно добавлена',
     'NODE_RENAME_SUCCESS' => 'Категория успешно переименована',
     'NODE_RENAME_ERROR' => 'Не удалось переименовать категорию',
+    'NODE_DELETE_SUCCESS' => 'Категория успешно удалена',
     'UPDATE_TITLE' => 'Редактирование {name}',
     'CREATE_TITLE' => 'Добавление',
     'IMAGE' => 'Изображение',

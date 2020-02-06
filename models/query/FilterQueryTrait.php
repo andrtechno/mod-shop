@@ -50,8 +50,8 @@ trait FilterQueryTrait
         $tableName = Product::tableName();
         $tableNameCur = Currency::tableName();
         if ($value) {
-            $this->andWhere("CASE WHEN ({$tableName}.`currency_id` != NULL) THEN
-            ({$tableName}.`price` * (SELECT rate FROM {$tableNameCur} WHERE {$tableNameCur}.`id`={$tableName}.`currency_id`)) {$operator} {$value}
+            $this->andWhere("CASE WHEN {$tableName}.`currency_id` IS NOT NULL THEN
+            {$tableName}.`price` {$operator} ({$value} / (SELECT rate FROM {$tableNameCur} WHERE {$tableNameCur}.`id`={$tableName}.`currency_id`))
         ELSE
         	{$tableName}.`price` {$operator} {$value}
         END");

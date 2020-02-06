@@ -30,8 +30,16 @@ class FilterController extends WebController
      */
     public $allowedPageLimit;
 
-    public $query, $currentQuery, $prices;
+    /**
+     * @var \panix\mod\shop\models\query\ProductQuery
+     */
+    public $query;
 
+    /**
+     * @var \panix\mod\shop\models\query\ProductQuery
+     */
+    public $currentQuery;
+    public $prices;
     private $_eavAttributes;
     /**
      * @var string min price in the query
