@@ -14,11 +14,13 @@ class CatalogController extends FilterController
 
     public $provider;
     public $currentUrl;
+
     public function beforeAction($action)
     {
         $this->dataModel = $this->findModel(Yii::$app->request->getQueryParam('slug'));
         return parent::beforeAction($action);
     }
+
     public function actionView()
     {
 
@@ -86,7 +88,6 @@ class CatalogController extends FilterController
         ]);
 
 
-
         $this->view->title = $this->dataModel->title();
 
 
@@ -134,30 +135,26 @@ class CatalogController extends FilterController
 
         $this->currentUrl = Url::to($currentUrl);
 
-        unset($filterData['price']);
+        /*unset($filterData['price']);
         if ($filterData) {
             $name = '';
             foreach ($filterData as $filterKey => $filterItems) {
                 if ($filterKey == 'manufacturer') {
-                    $manufacturerNames = array();
+                    $manufacturerNames = [];
                     foreach ($filterItems['items'] as $mKey => $mItems) {
                         $manufacturerNames[] = $mItems['label'];
                     }
-                    $sep = (count($manufacturerNames) > 2) ? ', ' : ' и ';
+                    $sep = (count($manufacturerNames) > 2) ? ', ' : ' ' . Yii::t('shop/default', 'AND') . ' ';
                     $name .= ' ' . implode($sep, $manufacturerNames);
                     $this->pageName .= ' ' . implode($sep, $manufacturerNames);
                 } else {
-                    $attributesNames[$filterKey] = array();
+                    $attributesNames[$filterKey] = [];
                     foreach ($filterItems['items'] as $mKey => $mItems) {
                         $attributesNames[$filterKey][] = $mItems['label'];
                     }
-                    if (isset($filterData['manufacturer'])) {
-                        $prefix = '; ';
-                    } else {
-                        $prefix = ' ';
-                    }
+                    $prefix = isset($filterData['manufacturer']) ? '; ' : ', ';
 
-                    $sep = (count($attributesNames[$filterKey]) > 2) ? ', ' : ' и ';
+                    $sep = (count($attributesNames[$filterKey]) > 2) ? ', ' : ' ' . Yii::t('shop/default', 'AND') . ' ';
                     $name .= $prefix . $filterItems['label'] . ' ' . implode($sep, $attributesNames[$filterKey]);
                     $this->pageName .= $prefix . $filterItems['label'] . ' ' . implode($sep, $attributesNames[$filterKey]);
                     $this->view->title = $this->pageName;
@@ -167,8 +164,16 @@ class CatalogController extends FilterController
                 'label' => $this->dataModel->name,
                 'url' => $this->dataModel->getUrl()
             ];
+        }*/
+        if(Yii::$app->settings->get('app','smart_bc') || Yii::$app->settings->get('app','smart_title')){
+            $smartData = $this->smartNames();
+            $this->breadcrumbs[] = $smartData;
+            if(Yii::$app->settings->get('app','smart_title')){
+                $this->pageName .= $$smartData;
+                $this->view->title = $this->pageName;
+            }
         }
-        $this->breadcrumbs[] = $name;
+
 
 
         //var_dump(Yii::$app->request->headers['filter-ajax']);die;

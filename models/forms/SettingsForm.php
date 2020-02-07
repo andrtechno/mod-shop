@@ -14,21 +14,20 @@ class SettingsForm extends SettingsModel
     public $product_related_bilateral;
     public $group_attribute;
     public $label_expire_new;
+    public $smart_bc;
+    public $smart_title;
 
     public function rules()
     {
         return [
             [['per_page'], "required"],
-            [['product_related_bilateral', 'group_attribute'], 'boolean'],
-            //[['seo_categories_title'], 'string', 'max' => 255],
-            //[['seo_categories_description'], 'string'],
+            [['product_related_bilateral', 'group_attribute', 'smart_bc', 'smart_title'], 'boolean'],
             [['label_expire_new'], 'integer'],
         ];
     }
 
     /**
-     * Настройки по умолчанию
-     * @return array
+     * @inheritdoc
      */
     public static function defaultSettings()
     {
@@ -37,7 +36,9 @@ class SettingsForm extends SettingsModel
             'seo_categories' => false,
             'product_related_bilateral' => false,
             'group_attribute' => false,
-            'label_expire_new' => 7
+            'label_expire_new' => 7,
+            'smart_bc' => true,
+            'smart_title' => true,
         ];
     }
 

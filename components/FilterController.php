@@ -166,8 +166,8 @@ class FilterController extends WebController
         $queryCategoryTypes = Product::find()
             ->applyCategories($this->dataModel)
             ->published()
-            ->select(Product::tableName().'.type_id')
-            ->groupBy(Product::tableName().'.type_id')
+            ->select(Product::tableName() . '.type_id')
+            ->groupBy(Product::tableName() . '.type_id')
             ->distinct(true);
 //echo $queryCategoryTypes->createCommand()->rawSql;die;
         $typesIds = $queryCategoryTypes->createCommand()->queryColumn();
@@ -219,8 +219,8 @@ class FilterController extends WebController
                 } else {
                     $data[$key] = [$_GET[$key]];
                 }
-            }else{
-              //  $this->error404(Yii::t('shop/default', 'NOFIND_CATEGORY1'));
+            } else {
+                //  $this->error404(Yii::t('shop/default', 'NOFIND_CATEGORY1'));
             }
         }
         return $data;
@@ -395,4 +395,33 @@ class FilterController extends WebController
             $this->query->applyPrice($maxPrice, '<=');
     }
 
+    public function smartNames()
+    {
+        $filterData = $this->getActiveFilters();
+        unset($filterData['price']);
+        $name = '';
+        foreach ($filterData as $filterKey => $filterItems) {
+            if ($filterKey == 'manufacturer') {
+                $manufacturerNames = [];
+                foreach ($filterItems['items'] as $mKey => $mItems) {
+                    $manufacturerNames[] = $mItems['label'];
+                }
+                $sep = (count($manufacturerNames) > 2) ? ', ' : ' ' . Yii::t('shop/default', 'AND') . ' ';
+                $name .= ' ' . implode($sep, $manufacturerNames);
+                //$this->pageName .= ' ' . implode($sep, $manufacturerNames);
+            } else {
+                $attributesNames[$filterKey] = [];
+                foreach ($filterItems['items'] as $mKey => $mItems) {
+                    $attributesNames[$filterKey][] = $mItems['label'];
+                }
+                $prefix = isset($filterData['manufacturer']) ? '; ' : ', ';
+
+                $sep = (count($attributesNames[$filterKey]) > 2) ? ', ' : ' ' . Yii::t('shop/default', 'AND') . ' ';
+                $name .= $prefix . $filterItems['label'] . ' ' . implode($sep, $attributesNames[$filterKey]);
+                //$this->pageName .= $prefix . $filterItems['label'] . ' ' . implode($sep, $attributesNames[$filterKey]);
+                //$this->view->title = $this->pageName;
+            }
+        }
+        return $name;
+    }
 }
