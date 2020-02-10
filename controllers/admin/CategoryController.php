@@ -67,7 +67,7 @@ class CategoryController extends AdminController
         $this->buttons = [
             [
                 'label' => Yii::t('shop/admin', 'CREATE_CATEGORY'),
-                'url' => ['/admin/shop/category/create'],
+                'url' => ['/admin/shop/category'],
                 'options' => ['class' => 'btn btn-success']
             ]
         ];

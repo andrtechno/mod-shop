@@ -399,7 +399,9 @@ class FilterController extends WebController
     {
         $filterData = $this->getActiveFilters();
         unset($filterData['price']);
+        $result = [];
         $name = '';
+        $breadcrumbs = '';
         foreach ($filterData as $filterKey => $filterItems) {
             if ($filterKey == 'manufacturer') {
                 $manufacturerNames = [];
@@ -408,20 +410,57 @@ class FilterController extends WebController
                 }
                 $sep = (count($manufacturerNames) > 2) ? ', ' : ' ' . Yii::t('shop/default', 'AND') . ' ';
                 $name .= ' ' . implode($sep, $manufacturerNames);
-                //$this->pageName .= ' ' . implode($sep, $manufacturerNames);
             } else {
                 $attributesNames[$filterKey] = [];
+
                 foreach ($filterItems['items'] as $mKey => $mItems) {
                     $attributesNames[$filterKey][] = $mItems['label'];
+                    //$attributesNames[$filterKey]['url'][]=$mItems['value'];
                 }
                 $prefix = isset($filterData['manufacturer']) ? '; ' : ', ';
 
                 $sep = (count($attributesNames[$filterKey]) > 2) ? ', ' : ' ' . Yii::t('shop/default', 'AND') . ' ';
-                $name .= $prefix . $filterItems['label'] . ' ' . implode($sep, $attributesNames[$filterKey]);
-                //$this->pageName .= $prefix . $filterItems['label'] . ' ' . implode($sep, $attributesNames[$filterKey]);
-                //$this->view->title = $this->pageName;
+                $breadcrumbs .= ' '.$filterItems['label'] . ' ' . implode($sep, $attributesNames[$filterKey]);
+                $name .= $prefix . ' ' . $breadcrumbs;
+
             }
         }
-        return $name;
+        $result['breadcrumbs'] = $breadcrumbs;
+        $result['title'] = $name;
+        return $result;
+    }
+	
+	
+	
+    public function _render(){
+        if (Yii::$app->request->isAjax) {
+            if (Yii::$app->request->headers->has('filter-ajax')) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+
+                return [
+                    //'currentFilters' => $filterData,
+                    //'full_url' => Url::to($this->currentUrl),
+                    'currentUrl' => Yii::$app->request->getUrl(),
+                    'items' => $this->renderPartial('@shop/views/catalog/listview', [
+                        'provider' => $this->provider,
+                        'itemView' => $this->itemView
+                    ]),
+                    'i' => $this->itemView,
+                    'currentFiltersData' => ($this->getActiveFilters()) ? $this->renderPartial('@app/widgets/filters/current', [ //'@shop/widgets/filtersnew/views/current', '@app/widgets/filters/current'
+                        'dataModel' => $this->dataModel,
+                        'active' => $this->getActiveFilters()
+                    ]) : null
+                ];
+            } else {
+                return $this->renderPartial('@shop/views/catalog/listview', [
+                    'provider' => $this->provider,
+                    'itemView' => $this->itemView
+                ]);
+            }
+        }
+        return $this->render('@shop/views/catalog/view', [
+            'provider' => $this->provider,
+            'itemView' => $this->itemView
+        ]);
     }
 }

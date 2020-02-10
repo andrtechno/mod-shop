@@ -18,8 +18,10 @@ class SearchController extends FilterController
 
     public function actionIndex()
     {
-        $this->query = Product::find();
-        $this->query->attachBehaviors((new Product)->behaviors());
+        /** @var Product $productModel */
+        $productModel = Yii::$app->getModule('shop')->model('Product');
+        $this->query = $productModel::find();
+        $this->query->attachBehaviors((new $productModel)->behaviors());
         $this->query->sort();
         $this->query->published();
 
@@ -58,6 +60,7 @@ class SearchController extends FilterController
             'count' => $this->provider->totalCount,
         ]);
         $this->view->title = $this->pageName;
+		$this->breadcrumbs[] = Yii::t('shop/default', 'SEARCH');
         $filterData = $this->getActiveFilters();
 
         if (Yii::$app->request->isAjax) {

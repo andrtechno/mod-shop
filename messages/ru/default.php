@@ -13,6 +13,7 @@ return [
     'FILTER_CURRENT_PRICE_MIN' => 'от {value} {currency}',
     'FILTER_CURRENT_PRICE_MAX' => 'до {value} {currency}',
     'SORT' => 'Сортировать',
+    'SEARCH' => 'Поиск',
     'SORT_BY_PRICE_ASC' => 'от дешовых к дорогом',
     'SORT_BY_PRICE_DESC' => 'от дорогих к дешевым',
     'SORT_BY_DATE_DESC' => 'по дате добавления',

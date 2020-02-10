@@ -165,13 +165,21 @@ class CatalogController extends FilterController
                 'url' => $this->dataModel->getUrl()
             ];
         }*/
-        if(Yii::$app->settings->get('app','smart_bc') || Yii::$app->settings->get('app','smart_title')){
+        if(Yii::$app->settings->get('shop','smart_bc')){
             $smartData = $this->smartNames();
-            $this->breadcrumbs[] = $smartData;
-            if(Yii::$app->settings->get('app','smart_title')){
-                $this->pageName .= $$smartData;
-                $this->view->title = $this->pageName;
-            }
+            $this->breadcrumbs[] = [
+                'label' => $this->dataModel->name,
+                'url' => $this->dataModel->getUrl()
+            ];
+            //CMS::dump($smartData);die;
+            $this->breadcrumbs[] = $smartData['breadcrumbs'];
+        }else{
+            $this->breadcrumbs[] = $this->dataModel->name;
+        }
+        if(Yii::$app->settings->get('shop','smart_title')){
+            $smartData = $this->smartNames();
+            $this->pageName .= $smartData['title'];
+            $this->view->title = $this->pageName;
         }
 
 
