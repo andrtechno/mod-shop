@@ -36,17 +36,32 @@ class ProductQuery extends ActiveQuery
         if (!is_array($manufacturers))
             $manufacturers = [$manufacturers];
 
-
         if (empty($manufacturers))
             return $this;
 
         sort($manufacturers);
 
-
         $this->andWhere(['manufacturer_id' => $manufacturers]);
         return $this;
     }
 
+    /**
+     * @param $suppliers array|int
+     * @return $this
+     */
+    public function applySuppliers($suppliers)
+    {
+        if (!is_array($suppliers))
+            $suppliers = [$suppliers];
+
+        if (empty($suppliers))
+            return $this;
+
+        sort($suppliers);
+
+        $this->andWhere(['supplier_id' => $suppliers]);
+        return $this;
+    }
 
     /**
      * @param $categories array|int|object

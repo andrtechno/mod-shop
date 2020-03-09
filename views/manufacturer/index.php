@@ -4,19 +4,21 @@ use panix\engine\Html;
 ?>
 
 <?php
-$array = $model;
-asort($model);
 $memory = NULL;
 $sorting = [];
 
 foreach ($model as $item) {
     $letter = mb_substr($item->name, 0, 1, 'utf-8');
+
     if ($letter != $memory) {
         $memory = $letter;
     }
+	if (is_numeric($letter)) {
+        $memory = '0-9';
+    }
     $sorting[$memory][] = $item;
 }
-
+ksort($sorting);
 ?>
 <div class="container">
     <div class="heading-gradient">

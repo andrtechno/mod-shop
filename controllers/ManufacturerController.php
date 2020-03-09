@@ -19,6 +19,7 @@ class ManufacturerController extends FilterController
         $model = Manufacturer::find()->published()->all();
         $this->currentUrl = '/';
         $this->pageName = Yii::t('shop/default','MANUFACTURER');
+        $this->breadcrumbs[] = $this->pageName;
         return $this->render('index', ['model' => $model]);
     }
 
@@ -32,8 +33,10 @@ class ManufacturerController extends FilterController
 
         $this->findModel($slug);
        // $this->currentUrl = Url::to($this->dataModel->getUrl());
-        $this->query = Product::find();
-        $this->query->attachBehaviors((new Product)->behaviors());
+        /** @var Product $productModel */
+        $productModel = Yii::$app->getModule('shop')->model('Product');
+        $this->query = $productModel::find();
+        $this->query->attachBehaviors((new $productModel)->behaviors());
         $this->query->published();
         $this->query->applyManufacturers($this->dataModel->id);
         $this->query->applyAttributes($this->activeAttributes);

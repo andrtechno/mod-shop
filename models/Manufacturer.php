@@ -67,7 +67,6 @@ class Manufacturer extends ActiveRecord
             'DEFAULT_COLUMNS' => [
                 [
                     'class' => \panix\engine\grid\sortable\Column::class,
-                    'url' => ['/admin/shop/default/sortable']
                 ],
                 ['class' => 'panix\engine\grid\columns\CheckboxColumn'],
             ],

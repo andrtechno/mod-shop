@@ -10,7 +10,6 @@ echo GridView::widget([
     'tableOptions' => ['class' => 'table table-striped'],
     'dataProvider' => $dataProvider,
     'filterModel' => $searchModel,
-    'rowOptions' => ['class' => 'sortable-column'],
     'showFooter' => true,
     'layoutOptions' => ['title' => $this->context->pageName]
 ]);

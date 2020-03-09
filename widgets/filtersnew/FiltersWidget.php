@@ -154,7 +154,8 @@ class FiltersWidget extends Widget
         $newData[$attribute->name][] = $option->id;
 
         $res = $model->withEavAttributes($newData);
-
+        $res->groupBy=false;
+        $res->cache(86400);
 
         // print_r($newData);die;
         // echo $res->createCommand()->rawSql;die;
@@ -267,8 +268,11 @@ class FiltersWidget extends Widget
 
 
         $manufacturers = Manufacturer::getDb()->cache(function ($db) use ($queryMan) {
-            return $queryMan->all();
-        }, 3600);
+            return $queryMan
+                ->joinWith('translations as translate')
+                ->orderBy(['translate.name'=>SORT_ASC])
+                ->all();
+        }, 86400);
 
 
         //$manufacturers =$queryMan->all();
@@ -302,7 +306,7 @@ class FiltersWidget extends Widget
                     }
 
 
-                    $dependencyQuery = $query;
+                    /*$dependencyQuery = $query;
                     $dependencyQuery->select('COUNT(*)');
                     $dependency = new DbDependency([
                         'sql' => $dependencyQuery->createCommand()->rawSql,
@@ -310,7 +314,11 @@ class FiltersWidget extends Widget
 
                     $count = Product::getDb()->cache(function () use ($query) {
                         return $query->count();
-                    }, 3600 * 24, $dependency);
+                    }, 3600 * 24, $dependency);*/
+					
+					
+					$query->orderBy=false;
+                    $count = $query->cache(86400)->count();
 
                     $data['filters'][] = [
                         'title' => $m->name,

@@ -18,13 +18,9 @@ GridView::widget([
     'dataProvider' => $dataProvider,
     'filterModel' => $searchModel,
     'layoutOptions' => ['title' => $this->context->pageName],
-    'rowOptions' => function ($model, $key, $index, $grid) {
-        return ['class' => 'sortable-column'];
-    },
     'columns' => [
         [
             'class' => 'panix\engine\grid\sortable\Column',
-            'url' => ['/shop/attribute-group/sortable']
         ],
         'name',
         ['class' => 'panix\engine\grid\columns\ActionColumn',

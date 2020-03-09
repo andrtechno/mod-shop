@@ -320,11 +320,11 @@ class Product extends ActiveRecord
         $rules[] = [['image'], 'image'];
 
         $rules[] = [['name', 'slug'], 'trim'];
-        $rules[] = [['full_description', 'discount'], 'string'];
+        $rules[] = [['full_description'], 'string'];
         $rules[] = ['use_configurations', 'boolean', 'on' => self::SCENARIO_INSERT];
         $rules[] = ['enable_comments', 'boolean'];
 		$rules[] = [['unit'], 'default', 'value' => 1];
-        $rules[] = [['sku', 'full_description', 'video', 'price_purchase', 'label'], 'default']; // установим ... как NULL, если они пустые
+        $rules[] = [['sku', 'full_description', 'video', 'price_purchase', 'label', 'discount'], 'default']; // установим ... как NULL, если они пустые
         $rules[] = [['price', 'price_purchase'], 'double'];
         $rules[] = [['manufacturer_id', 'type_id', 'quantity', 'views', 'availability', 'added_to_cart_count', 'ordern', 'category_id', 'currency_id', 'supplier_id', 'label'], 'integer'];
         $rules[] = [['name', 'slug', 'full_description', 'use_configurations'], 'safe'];
@@ -814,6 +814,12 @@ class Product extends ActiveRecord
           $comapreProduct = new CompareProducts;
           $comapreProduct->remove($this->id);
           } */
+		  
+
+        if (Yii::$app->hasModule('wishlist')) {
+            Yii::$app->db->createCommand()->delete(\panix\mod\wishlist\models\WishListProducts::tableName(), ['product_id' => $this->id])->execute();
+        }
+		  
         parent::afterDelete();
     }
 

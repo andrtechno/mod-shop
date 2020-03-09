@@ -14,7 +14,6 @@ echo GridView::widget([
     'layoutOptions' => ['title' => $this->context->pageName],
     'showFooter' => true,
     //   'footerRowOptions' => ['class' => 'text-center'],
-    'rowOptions' => ['class' => 'sortable-column']
 ]);
 Pjax::end();
 

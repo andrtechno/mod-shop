@@ -2,18 +2,14 @@
 
 namespace panix\mod\shop\components;
 
-use panix\engine\CMS;
-use panix\engine\Html;
-use panix\mod\shop\models\ProductAttributesEav;
 use Yii;
+use yii\helpers\Url;
+use yii\web\Response;
+use panix\engine\Html;
 use panix\mod\shop\models\Attribute;
 use panix\mod\shop\models\Manufacturer;
 use panix\mod\shop\models\Product;
-use panix\mod\shop\models\TypeAttribute;
 use panix\engine\controllers\WebController;
-use yii\base\Exception;
-use yii\helpers\Url;
-use yii\web\HttpException;
 
 /**
  * Class FilterController
@@ -189,7 +185,7 @@ class FilterController extends WebController
         $query = Attribute::find()
             //->where(['IN', '`types`.`type_id`', $typesIds])
             ->useInFilter()
-            //->with()
+            ->sort()
             ->andWhere(['IN', '`type`.`type_id`', $typesIds])
             ->joinWith(['types type', 'options']);
 

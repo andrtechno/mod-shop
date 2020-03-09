@@ -151,8 +151,8 @@ class ProductSearch extends Product
 
 
         $query->andFilterWhere(['like', 'sku', $this->sku]);
-        $query->andFilterWhere(['like', 'supplier_id', $this->supplier_id]);
-        $query->andFilterWhere(['like', 'manufacturer_id', $this->manufacturer_id]);
+        $query->andFilterWhere(['supplier_id' => $this->supplier_id]);
+        $query->andFilterWhere(['manufacturer_id' => $this->manufacturer_id]);
         if ($this->main_category_id)
             $query->andFilterWhere(['like', 'categories.category', $this->main_category_id]);
 

@@ -27,10 +27,12 @@ class CategoryUrlValidator extends UrlValidator
 
 
             $data = $model::findOne($model->primaryKey);
-            $parent = $data->parent()->one();
-            if ($parent) {
-                $parent_slug = $parent->full_path;
-            }
+			if($data){
+				$parent = $data->parent()->one();
+				if ($parent) {
+					$parent_slug = $parent->full_path;
+				}
+			}
 
         }
 

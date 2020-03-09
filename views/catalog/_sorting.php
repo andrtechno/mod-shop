@@ -33,7 +33,7 @@ $this->registerJs("
             $sorter[Yii::$app->urlManager->addUrlParam('/' . Yii::$app->requestedRoute, array('sort' => '-created_at'))] = Yii::t('shop/default', 'SORT_BY_DATE_DESC');
             $active = Yii::$app->urlManager->addUrlParam('/' . Yii::$app->requestedRoute, array('sort' => Yii::$app->request->get('sort')));
 
-            echo Html::dropDownList('sorter', $active, $sorter, ['onChange' => 'window.location = $(this).val()', 'class' => 'custom-select', 'style' => 'width:auto;']);
+            echo Html::dropDownList('sort', $active, $sorter, ['onChange' => 'window.location = $(this).val()', 'class' => 'custom-select', 'style' => 'width:auto;']);
             ?>
 
 

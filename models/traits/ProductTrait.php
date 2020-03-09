@@ -204,7 +204,10 @@ trait ProductTrait
         ];
         $columns['supplier_id'] = [
             'attribute' => 'supplier_id',
-            'filter' => ArrayHelper::map(Supplier::find()->cache(3200, new DbDependency(['sql' => 'SELECT MAX(`updated_at`) FROM ' . Supplier::tableName()]))->all(), 'id', 'name'),
+            'filter' => ArrayHelper::map(Supplier::find()
+                ->cache(3200, new DbDependency(['sql' => 'SELECT MAX(`updated_at`) FROM ' . Supplier::tableName()]))
+                ->addOrderBy(['name'=>SORT_ASC])
+                ->all(), 'id', 'name'),
             'filterInputOptions' => ['class' => 'form-control', 'prompt' => html_entity_decode('&mdash; выберите поставщика &mdash;')],
             'value' => function ($model) {
                 return ($model->supplier) ? $model->supplier->name : NULL;
@@ -212,7 +215,11 @@ trait ProductTrait
         ];
         $columns['manufacturer_id'] = [
             'attribute' => 'manufacturer_id',
-            'filter' => ArrayHelper::map(Manufacturer::find()->cache(3200, new DbDependency(['sql' => 'SELECT MAX(`updated_at`) FROM ' . Manufacturer::tableName()]))->all(), 'id', 'name'),
+            'filter' => ArrayHelper::map(Manufacturer::find()
+                ->joinWith('translations as translate')
+                ->addOrderBy(['translate.name'=>SORT_ASC])
+                ->cache(3200, new DbDependency(['sql' => 'SELECT MAX(`updated_at`) FROM ' . Manufacturer::tableName()]))
+                ->all(), 'id', 'name'),
             'filterInputOptions' => ['class' => 'form-control', 'prompt' => html_entity_decode('&mdash; выберите производителя &mdash;')],
             'value' => function ($model) {
                 return ($model->manufacturer) ? $model->manufacturer->name : NULL;
@@ -309,7 +316,6 @@ trait ProductTrait
         $columns['DEFAULT_COLUMNS'] = [
             [
                 'class' => \panix\engine\grid\sortable\Column::class,
-                'url' => ['/shop/product/sortable']
             ],
             [
                 'class' => 'panix\engine\grid\columns\CheckboxColumn',

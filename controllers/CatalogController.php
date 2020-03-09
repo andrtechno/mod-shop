@@ -17,13 +17,13 @@ class CatalogController extends FilterController
 
     public function beforeAction($action)
     {
-        $this->dataModel = $this->findModel(Yii::$app->request->getQueryParam('slug'));
+
         return parent::beforeAction($action);
     }
 
     public function actionView()
     {
-
+        $this->dataModel = $this->findModel(Yii::$app->request->getQueryParam('slug'));
         /** @var Product $productModel */
         $productModel = Yii::$app->getModule('shop')->model('Product');
         $this->currentUrl = $this->dataModel->getUrl();
@@ -184,47 +184,72 @@ class CatalogController extends FilterController
 
 
 
-        //var_dump(Yii::$app->request->headers['filter-ajax']);die;
+        return $this->_render();
+    }
+    public function actionNew()
+    {
+        //$criteria = new CDbCriteria;
+        //$criteria->compare('t.switch', 1);
+        //$criteria->addBetweenCondition('t.date_create', date('Y-m-d H:i:s', strtotime('-3 day')), date('Y-m-d H:i:s'));
+        // $criteria->addBetweenCondition('t.date_create', date('Y-m-d H:i:s'), date('Y-m-d H:i:s', strtotime('+3 day')));
+        $this->pageName = Yii::t('shop/default','NEW');
+        $this->breadcrumbs[] = $this->pageName;
+        /** @var Product $productModel */
+        $productModel = Yii::$app->getModule('shop')->model('Product');
 
-        if (Yii::$app->request->isAjax) {
-
-            if (Yii::$app->request->headers->has('filter-ajax')) {
-                Yii::$app->response->format = Response::FORMAT_JSON;
-
-                return [
-                    //'currentFilters' => $filterData,
-                    //'full_url' => Url::to($this->currentUrl),
-                    'currentUrl' => Yii::$app->request->getUrl(),
-                    'items' => $this->renderPartial('listview', [
-                        'provider' => $this->provider,
-                        'itemView' => $this->itemView
-                    ]),
-                    'i' => $this->itemView,
-                    'currentFiltersData' => ($filterData) ? $this->renderPartial('@app/widgets/filters/current', [ //'@shop/widgets/filtersnew/views/current', '@app/widgets/filters/current'
-                        'dataModel' => $this->dataModel,
-                        'active' => $filterData
-                    ]) : null
-                ];
-            } else {
-                return $this->renderPartial('listview', [
-                    'provider' => $this->provider,
-                    'itemView' => $this->itemView
-                ]);
-            }
+        $this->query = $productModel::find()->published();
+        if ($this->config->label_expire_new) {
+            $this->query->int2between(time(), time() - (86400 * $this->config->label_expire_new));
+        } else {
+            $this->query->int2between(-1, -1);
         }
-
-        return $this->render('view', [
-            'provider' => $this->provider,
-            'itemView' => $this->itemView
+        $this->currentQuery = clone $this->query;
+        $this->provider = new ActiveDataProvider([
+            'query' => $this->query,
+            'pagination' => [
+                'pageSize' => $this->per_page,
+            ],
         ]);
+
+        return $this->_render();
     }
 
+    public function actionDiscount()
+    {
+        /** @var Product $productModel */
+        $productModel = Yii::$app->getModule('shop')->model('Product');
+
+        $this->pageName = Yii::t('shop/default','DISCOUNT');
+        $this->breadcrumbs[] = $this->pageName;
+
+        $this->query = $productModel::find()
+            ->published()
+            ->isNotEmpty('discount');
+
+        $this->currentQuery = clone $this->query;
+
+        $this->provider = new ActiveDataProvider([
+            'query' => $this->query,
+            'pagination' => [
+                'pageSize' => $this->per_page,
+            ],
+        ]);
+
+
+        // 'criteria' => array(
+        //     'condition' => 'is_sale = 1 OR is_discount=1 && switch=1',
+        // ),
+
+
+        return $this->_render();
+
+    }
     protected function findModel($slug)
     {
         if (($this->dataModel = Category::findOne(['full_path' => $slug])) !== null) {
             return $this->dataModel;
         } else {
-            $this->error404('category not found');
+            $this->error404(Yii::t('shop/default', 'NOT_FOUND_CATEGORY'));
         }
     }
 
