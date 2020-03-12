@@ -51,8 +51,7 @@ class ProductSearch extends Product
      */
     public function search($params, $configure = [])
     {
-        $query = Product::find();
-        //$query->joinWith('translations');
+        $query = Product::find()->translate();
         $query->sort();
 
         $query->joinWith(['translations translate','categorization categories']); //, 'commentsCount'
@@ -154,7 +153,7 @@ class ProductSearch extends Product
         $query->andFilterWhere(['supplier_id' => $this->supplier_id]);
         $query->andFilterWhere(['manufacturer_id' => $this->manufacturer_id]);
         if ($this->main_category_id)
-            $query->andFilterWhere(['like', 'categories.category', $this->main_category_id]);
+            $query->andFilterWhere(['categories.category'=>$this->main_category_id]);
 
 
         //$query->andFilterWhere(['like', 'commentsCount', $this->commentsCount]);

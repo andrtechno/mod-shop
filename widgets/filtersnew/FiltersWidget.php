@@ -37,16 +37,22 @@ class FiltersWidget extends Widget
     public $model;
 
     /**
-     * @var string min price in the query
+     * @var string min/max price in the query
      */
-    // private $_currentMinPrice, $_currentMaxPrice = null;
-    public $_maxprice, $_minprice;
+    protected $_currentPriceMin, $_currentPriceMax = null;
+    public $priceMin, $priceMax;
+    protected $prices = [];
 
     public function init()
     {
         $view = $this->getView();
-        $this->_maxprice = $view->context->maxprice;
-        $this->_minprice = $view->context->minprice;
+        $this->priceMax = Yii::$app->controller->getMaxPrice();
+        $this->priceMin = Yii::$app->controller->getMinPrice();
+
+
+        if (Yii::$app->request->get('price')) {
+            $this->prices = explode(',', Yii::$app->request->get('price'));
+        }
 
         FilterAsset::register($view);
     }
@@ -269,8 +275,8 @@ class FiltersWidget extends Widget
 
         $manufacturers = Manufacturer::getDb()->cache(function ($db) use ($queryMan) {
             return $queryMan
-                ->joinWith('translations as translate')
-                ->orderBy(['translate.name'=>SORT_ASC])
+                //->joinWith('translations as translate')
+                //->orderBy(['translate.name'=>SORT_ASC])
                 ->all();
         }, 86400);
 
@@ -326,9 +332,7 @@ class FiltersWidget extends Widget
                         'queryKey' => 'manufacturer',
                         'queryParam' => $m->id,
                     ];
-                    //$this->_manufacturer[$m->id] = array(
-                    //    'label' => $m->name,
-                    //);
+					sort($data['filters']);
                 } else {
                     die('err manufacturer');
                 }
@@ -389,5 +393,32 @@ class FiltersWidget extends Widget
             }
         }
         return $css;
+    }
+	
+
+    /**
+     * @return mixed
+     */
+    public function getCurrentMinPrice()
+    {
+        if ($this->_currentPriceMin !== null)
+            return $this->_currentPriceMin;
+
+        $this->_currentPriceMin = (isset($this->prices[0])) ? $this->prices[0] : Yii::$app->currency->convert($this->priceMin);
+
+        return $this->_currentPriceMin;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCurrentMaxPrice()
+    {
+        if ($this->_currentPriceMax !== null)
+            return $this->_currentPriceMax;
+
+        $this->_currentPriceMax = (isset($this->prices[1])) ? $this->prices[1] : Yii::$app->currency->convert($this->priceMax);
+
+        return $this->_currentPriceMax;
     }
 }

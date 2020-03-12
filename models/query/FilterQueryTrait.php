@@ -12,7 +12,7 @@ trait FilterQueryTrait
     {
         $tableName = Product::tableName();
         $tableNameCur = Currency::tableName();
-        $this->addSelect([$tableName . '.*', "{$function}(CASE WHEN ({$tableName}.`currency_id`)
+        $this->select(['*', "{$function}(CASE WHEN ({$tableName}.`currency_id`)
                     THEN
                         ({$tableName}.`price` * (SELECT rate FROM {$tableNameCur} WHERE {$tableNameCur}.`id`={$tableName}.`currency_id`))
                     ELSE
@@ -65,7 +65,7 @@ trait FilterQueryTrait
         $tableName = Product::tableName();
         $tableNameCur = Currency::tableName();
 
-        $this->addSelect([$tableName . '.*', "(CASE WHEN ({$tableName}.`currency_id`)
+        $this->select([$tableName . '.*', "(CASE WHEN ({$tableName}.`currency_id`)
                     THEN
                         ({$tableName}.`price` * (SELECT rate FROM {$tableNameCur} WHERE {$tableNameCur}.`id`={$tableName}.`currency_id`))
                     ELSE

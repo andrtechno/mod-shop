@@ -50,15 +50,16 @@ class CatalogController extends FilterController
         $this->query->published();
         $this->query->applyAttributes($this->activeAttributes);
 
+
+
+//echo $this->query->createCommand()->rawSql;die;
+        // Create clone of the current query to use later to get min and max prices.
+        $this->currentQuery = clone $this->query;
         // Filter by manufacturer
         if (Yii::$app->request->get('manufacturer')) {
             $manufacturers = explode(',', Yii::$app->request->get('manufacturer', ''));
             $this->query->applyManufacturers($manufacturers);
         }
-
-//echo $this->query->createCommand()->rawSql;die;
-        // Create clone of the current query to use later to get min and max prices.
-        $this->currentQuery = clone $this->query;
         // Filter products by price range if we have min or max in request
         $this->applyPricesFilter();
 

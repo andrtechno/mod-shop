@@ -33,6 +33,10 @@ trait ProductTrait
 
     public function getGridColumns()
     {
+		
+		$price_max = Product::find()->aggregatePrice('MAX')->asArray()->one();
+        $price_min = Product::find()->aggregatePrice('MIN')->asArray()->one();
+		
         $columns = [];
         $columns['image'] = [
             'class' => 'panix\engine\grid\columns\ImageColumn',
@@ -109,8 +113,8 @@ trait ProductTrait
             'attribute' => 'price',
             'format' => 'raw',
             'class' => 'panix\engine\grid\columns\jui\SliderColumn',
-            'max' => (int)Product::find()->aggregatePrice('MAX'),
-            'min' => (int)Product::find()->aggregatePrice('MIN'),
+            'max' => (int)$price_max['aggregation_price'],
+            'min' => (int)$price_min['aggregation_price'],
             'prefix' => '<sup>' . Yii::$app->currency->main['symbol'] . '</sup>',
             'contentOptions' => ['class' => 'text-center', 'style' => 'position:relative'],
             'value' => function ($model) {
