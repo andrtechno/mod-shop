@@ -790,13 +790,8 @@ class Product extends ActiveRecord
         ]);
 
 
-        //  $this->removeImages();
-        $image = $this->getImages();
+		$this->removeImages();
 
-        if ($image) {
-            //get path to resized image
-            $this->removeImages();
-        }
         // Clear configurable attributes
         Yii::$app->db->createCommand()->delete('{{%shop__product_configurable_attributes}}', ['product_id' => $this->id])->execute();
         // Delete configurations
