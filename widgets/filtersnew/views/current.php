@@ -5,7 +5,9 @@ use yii\widgets\Menu;
 /**
  * @var $dataModel \panix\mod\shop\models\Category
  * @var $active \panix\mod\shop\controllers\CatalogController Method getActiveFilters()
+ * @var $url array Route refresh filters
  */
+ 
 ?>
 <div class="card" id="filter-current">
     <div class="card-header">
@@ -19,9 +21,9 @@ use yii\widgets\Menu;
         ]);
         ?>
     </div>
-    <?php if ($dataModel) { ?>
+
         <div class="card-footer text-center">
-            <?php echo Html::a(Yii::t('shop/default', 'RESET_FILTERS_BTN'), $dataModel->getUrl(), ['class' => 'btn btn-sm btn-primary']); ?>
+            <?php echo Html::a(Yii::t('shop/default', 'RESET_FILTERS_BTN'), $url, ['class' => 'btn btn-sm btn-primary']); ?>
         </div>
-    <?php } ?>
+
 </div>

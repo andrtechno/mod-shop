@@ -39,7 +39,8 @@ class Supplier extends ActiveRecord
                 'contentOptions' => ['class' => 'text-center'],
                 'value' => function ($model) {
                     /** @var $model self */
-                    return Html::tel($model->phone);
+					if($model->phone)
+						return Html::tel($model->phone);
                 }
             ],
             'email' => [

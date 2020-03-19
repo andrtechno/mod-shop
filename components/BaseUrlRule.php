@@ -34,7 +34,8 @@ class BaseUrlRule extends UrlRule
                     //if(is_array($val)){
                     //     $val = implode(',',$val);
                     // }
-                    $parts[] = $key . '/' . $val;
+					if($val)
+						$parts[] = $key . '/' . $val;
                 }
                 $url .= '/' . implode('/', $parts);
             }

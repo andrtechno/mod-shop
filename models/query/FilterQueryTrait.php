@@ -23,16 +23,7 @@ trait FilterQueryTrait
         $this->distinct(false);
         $this->limit(1);
         //echo $this->createCommand()->rawSql;die;
-
-        //$result = \Yii::$app->db->cache(function ($db) {
-        $result = $this->asArray()->one();
-        // }, 3600);
-
-
-        if ($result) {
-            return $result['aggregation_price'];
-        }
-        return null;
+        return $this;
     }
 
     /**
@@ -45,7 +36,7 @@ trait FilterQueryTrait
     public function applyPrice($value, $operator = '=')
     {
         if (!in_array($operator, ['=', '>=', '<='])) {
-            throw new Exception('error operator in '.__FUNCTION__);
+            throw new Exception('error operator in ' . __FUNCTION__);
         }
         $tableName = Product::tableName();
         $tableNameCur = Currency::tableName();

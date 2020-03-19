@@ -193,7 +193,8 @@ class FiltersWidget extends Widget
 
         echo Html::beginTag('div', ['id' => 'ajax_filter_current']);
         if (!empty($active)) {
-            echo $this->render('current', ['active' => $active, 'dataModel' => $this->model]);
+			$url = ($this->model) ? $this->model->getUrl() : ['/' . Yii::$app->requestedRoute];
+            echo $this->render('current', ['active' => $active, 'dataModel' => $this->model, 'url'=>$url]);
         }
         echo Html::endTag('div');
         echo $this->render('price');

@@ -36,7 +36,7 @@ class SupplierSearch extends Supplier {
      * @return ActiveDataProvider
      */
     public function search($params) {
-        $query = Supplier::find();
+        $query = Supplier::find()->orderBy(['name'=>SORT_ASC]);
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);

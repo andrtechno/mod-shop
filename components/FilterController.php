@@ -397,30 +397,34 @@ class FilterController extends WebController
         unset($filterData['price']);
         $result = [];
         $name = '';
-        $breadcrumbs = '';
+        $breadcrumbs = false;
+
         foreach ($filterData as $filterKey => $filterItems) {
             if ($filterKey == 'manufacturer') {
                 $manufacturerNames = [];
-                foreach ($filterItems['items'] as $mKey => $mItems) {
-                    $manufacturerNames[] = $mItems['label'];
+                if (isset($filterItems['items'])) {
+                    foreach ($filterItems['items'] as $mKey => $mItems) {
+                        $manufacturerNames[] = $mItems['label'];
+                    }
+                    $sep = (count($manufacturerNames) > 2) ? ', ' : ' ' . Yii::t('shop/default', 'AND') . ' ';
+                    $name .= ' ' . implode($sep, $manufacturerNames);
                 }
-                $sep = (count($manufacturerNames) > 2) ? ', ' : ' ' . Yii::t('shop/default', 'AND') . ' ';
-                $name .= ' ' . implode($sep, $manufacturerNames);
             } else {
                 $attributesNames[$filterKey] = [];
+                if (isset($filterItems['items'])) {
+                    foreach ($filterItems['items'] as $mKey => $mItems) {
+                        $attributesNames[$filterKey][] = $mItems['label'];
+                        //$attributesNames[$filterKey]['url'][]=$mItems['value'];
+                    }
+                    $prefix = isset($filterData['manufacturer']) ? '; ' : ', ';
 
-                foreach ($filterItems['items'] as $mKey => $mItems) {
-                    $attributesNames[$filterKey][] = $mItems['label'];
-                    //$attributesNames[$filterKey]['url'][]=$mItems['value'];
+                    $sep = (count($attributesNames[$filterKey]) > 2) ? ', ' : ' ' . Yii::t('shop/default', 'AND') . ' ';
+                    $breadcrumbs .= ' ' . $filterItems['label'] . ' ' . implode($sep, $attributesNames[$filterKey]);
+                    $name .= $prefix . ' ' . $breadcrumbs;
                 }
-                $prefix = isset($filterData['manufacturer']) ? '; ' : ', ';
-
-                $sep = (count($attributesNames[$filterKey]) > 2) ? ', ' : ' ' . Yii::t('shop/default', 'AND') . ' ';
-                $breadcrumbs .= ' '.$filterItems['label'] . ' ' . implode($sep, $attributesNames[$filterKey]);
-                $name .= $prefix . ' ' . $breadcrumbs;
-
             }
         }
+
         $result['breadcrumbs'] = $breadcrumbs;
         $result['title'] = $name;
         return $result;
