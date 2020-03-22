@@ -10,12 +10,16 @@ use yii\helpers\Html;
             <?= Yii::t('shop/default', 'FILTER_BY_MANUFACTURER') ?>
         </a>
         <div class="card-collapse collapse in" id="collapse-<?= md5('manufacturer') ?>">
+            <?php if (count($manufacturers['filters']) >= 20) { ?>
+                <input type="text" name="search-filter"
+                       onkeyup="filterSearchInput(this,'filter-manufacturer')" class="form-control">
+            <?php } ?>
             <div class="card-body overflow">
-                <ul class="filter-list">
+                <ul class="filter-list" id="filter-manufacturer">
                     <?php
                     foreach ($manufacturers['filters'] as $filter) {
-                        $url = Yii::$app->urlManager->addUrlParam('/' . Yii::$app->requestedRoute, array($filter['queryKey'] => $filter['queryParam']), $manufacturers['selectMany']);
-                        $queryData = explode(',', Yii::$app->request->getQueryParam($filter['queryKey']));
+                        $url = Yii::$app->urlManager->addUrlParam('/' . Yii::$app->requestedRoute, array($filter['key'] => $filter['queryParam']), $manufacturers['selectMany']);
+                        $queryData = explode(',', Yii::$app->request->getQueryParam($filter['key']));
 
                         echo Html::beginTag('li');
 
@@ -24,14 +28,14 @@ use yii\helpers\Html;
                         if (in_array($filter['queryParam'], $queryData)) {
                             // Create link to clear current filter
                             $checked = true;
-                            $url = Yii::$app->urlManager->removeUrlParam('/' . Yii::$app->requestedRoute, $filter['queryKey'], $filter['queryParam']);
+                            $url = Yii::$app->urlManager->removeUrlParam('/' . Yii::$app->requestedRoute, $filter['key'], $filter['queryParam']);
                             //echo Html::a($filter['title'], $url, array('class' => 'active'));
                         } else {
                             $checked = false;
                             //echo Html::a($filter['title'], $url);
                         }
-                        echo Html::checkBox('filter[' . $filter['queryKey'] . '][]', $checked, array('value' => $filter['queryParam'], 'id' => 'filter_' . $filter['queryKey'] . '_' . $filter['queryParam']));
-                        echo Html::label($filter['title'], 'filter_' . $filter['queryKey'] . '_' . $filter['queryParam']);
+                        echo Html::checkBox('filter[' . $filter['key'] . '][]', $checked, array('value' => $filter['queryParam'], 'id' => 'filter_' . $filter['key'] . '_' . $filter['queryParam']));
+                        echo Html::label($filter['title'], 'filter_' . $filter['key'] . '_' . $filter['queryParam']);
 
 
                         echo $this->context->getCount($filter);

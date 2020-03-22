@@ -43,8 +43,9 @@ class Module extends WebModule implements BootstrapInterface
             ];
             $rules[] = [
                 'class' => 'panix\mod\shop\components\CategoryUrlRule',
-                'route' => '/shop/catalog/view',
+                'route' => 'shop/catalog/view',
                 'index' => 'catalog',
+                'pattern'=>'catalog/<slug:[0-9a-zA-Z_\-]+>',
                 'alias' => 'full_path',
                 //  'pattern' => ''
             ];

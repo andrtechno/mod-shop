@@ -71,10 +71,11 @@ class FiltersWidget extends Widget
                 'title' => $attribute->title,
                 'selectMany' => (boolean)$attribute->select_many,
                 'type' => (int)$attribute->type,
-                //'queryKey' => $attribute->name,
+                'key' => $attribute->name,
                 'filters' => []
             ];
             $totalCount = 0;
+            $filtersCount = 0;
             foreach ($attribute->options as $option) {
                 $count = $this->countAttributeProducts($attribute, $option);
                 // if ($count > 1) {
@@ -83,14 +84,18 @@ class FiltersWidget extends Widget
                     'count' => (int)$count,
                     'data' => unserialize($option->data),
                     'abbreviation' => ($attribute->abbreviation) ? $attribute->abbreviation : null,
-                    'queryKey' => $attribute->name,
+                    //  'queryKey' => $attribute->name,
                     'queryParam' => (int)$option->id,
                 ];
+                if ($count > 0)
+                    $filtersCount++;
+
                 $totalCount += $count;
                 // }
             }
 
             $data[$attribute->name]['totalCount'] = $totalCount;
+            $data[$attribute->name]['filtersCount'] = $filtersCount;
             if ($attribute->sort == SORT_ASC) {
                 sort($data[$attribute->name]['filters']);
             } elseif ($attribute->sort == SORT_DESC) {
@@ -160,7 +165,7 @@ class FiltersWidget extends Widget
         $newData[$attribute->name][] = $option->id;
 
         $res = $model->withEavAttributes($newData);
-        $res->groupBy=false;
+        $res->groupBy = false;
         $res->cache(86400);
 
         // print_r($newData);die;
@@ -193,8 +198,8 @@ class FiltersWidget extends Widget
 
         echo Html::beginTag('div', ['id' => 'ajax_filter_current']);
         if (!empty($active)) {
-			$url = ($this->model) ? $this->model->getUrl() : ['/' . Yii::$app->requestedRoute];
-            echo $this->render('current', ['active' => $active, 'dataModel' => $this->model, 'url'=>$url]);
+            $url = ($this->model) ? $this->model->getUrl() : ['/' . Yii::$app->requestedRoute];
+            echo $this->render('current', ['active' => $active, 'dataModel' => $this->model, 'url' => $url]);
         }
         echo Html::endTag('div');
         echo $this->render('price');
@@ -322,18 +327,18 @@ class FiltersWidget extends Widget
                     $count = Product::getDb()->cache(function () use ($query) {
                         return $query->count();
                     }, 3600 * 24, $dependency);*/
-					
-					
-					$query->orderBy=false;
+
+
+                    $query->orderBy = false;
                     $count = $query->cache(86400)->count();
 
                     $data['filters'][] = [
                         'title' => $m->name,
                         'count' => (int)$count,
-                        'queryKey' => 'manufacturer',
+                        'key' => 'manufacturer',
                         'queryParam' => $m->id,
                     ];
-					sort($data['filters']);
+                    sort($data['filters']);
                 } else {
                     die('err manufacturer');
                 }
@@ -395,7 +400,7 @@ class FiltersWidget extends Widget
         }
         return $css;
     }
-	
+
 
     /**
      * @return mixed

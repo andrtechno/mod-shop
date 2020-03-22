@@ -2,6 +2,7 @@
 
 namespace panix\mod\shop\components;
 
+use panix\engine\CMS;
 use yii\web\UrlRule;
 use panix\mod\shop\models\Category;
 
@@ -101,6 +102,58 @@ class CategoryUrlRule extends BaseUrlRule
         }
 
         return $allPaths;
+    }
+
+
+    public function parseRequest($manager, $request)
+    {
+
+        $params = [];
+        $pathInfo = $request->getPathInfo();
+
+        $basePathInfo= $pathInfo;
+        if (empty($pathInfo))
+            return false;
+
+        if ($this->suffix)
+            $pathInfo = strtr($pathInfo, [$this->suffix => '']);
+
+        if ($this->host !== null) {
+            $pathInfo = strtolower($request->getHostInfo()) . ($pathInfo === '' ? '' : '/' . $pathInfo);
+        }
+
+
+
+
+
+        foreach ($this->getAllPaths() as $path) {
+           $pathInfo = str_replace($this->index . '/', '', $pathInfo);
+           // $pathInfo = preg_replace($this->pattern, '', $pathInfo);
+           // //$preg = preg_match($this->pattern, $pathInfo, $match);
+            //CMS::dump($path);
+            //print_r($pathInfo);die;
+            if ($path[$this->alias] !== '' && strpos($pathInfo, $path[$this->alias]) === 0) {
+
+                $params['slug'] = ltrim($path[$this->alias]);
+                $_GET['slug'] = $params['slug'];
+
+                $pathInfo = ltrim(substr($basePathInfo, strlen($this->index.'/'.$path[$this->alias])), '/');
+
+                $parts = explode('/', $pathInfo);
+                $paramsList = array_chunk($parts, 2);
+
+                foreach ($paramsList as $k => $p) {
+                    if (isset($p[1]) && isset($p[0])) {
+                        $_GET[$p[0]] = $p[1];
+                        $params[$p[0]] = $p[1];
+                    }
+                }
+
+                return [$this->route, $params];
+            }
+        }
+
+        return false;
     }
 
 }

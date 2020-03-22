@@ -23,6 +23,7 @@ class CatalogController extends FilterController
 
     public function actionView()
     {
+
         $this->dataModel = $this->findModel(Yii::$app->request->getQueryParam('slug'));
         /** @var Product $productModel */
         $productModel = Yii::$app->getModule('shop')->model('Product');

@@ -184,7 +184,7 @@ $(function () {
     });
 
     //for price inputs
-    $('#filter-form input[type="text"]').change(function (e) {
+    $('#filter-form #max_price,#filter-form #min_price').change(function (e) {
         flagDeletePrices = false;
         var slider = $("#filter-price-slider");
         var min = slider.slider("option", "min");
@@ -210,9 +210,9 @@ $(function () {
         slider.slider("values", [valueMin, valueMax]);
 
 
-        $.fn.yiiListView.update('shop-products', {url: formattedURL(getSerializeObjects())});
-
-        currentFilters(formattedURL(getSerializeObjects()));
+       // $.fn.yiiListView.update('shop-products', {url: formattedURL(getSerializeObjects())});
+        filter_ajax();
+        //currentFilters(formattedURL(getSerializeObjects()));
         //reload path by url
         //window.location.pathname = uri;
 
@@ -237,7 +237,6 @@ $(function () {
     });
 
 
-
     /*
      $('#sorting-form a').click(function (e) {
      e.preventDefault();
@@ -247,3 +246,24 @@ $(function () {
      });
      */
 });
+
+
+function filterSearchInput(that, listId) {
+    // Declare variables
+    var value, ul, li, a, i, txtValue;
+
+    value = $(that).val().toUpperCase();
+    ul = document.getElementById(listId);
+    li = ul.getElementsByTagName('li');
+
+    // Loop through all list items, and hide those who don't match the search query
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        txtValue = a.textContent || a.innerText;
+        if (txtValue.toUpperCase().indexOf(value) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+        }
+    }
+}
