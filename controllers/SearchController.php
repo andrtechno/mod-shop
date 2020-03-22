@@ -61,37 +61,9 @@ class SearchController extends FilterController
         ]);
         $this->view->title = $this->pageName;
 		$this->breadcrumbs[] = Yii::t('shop/default', 'SEARCH');
-        $filterData = $this->getActiveFilters();
+      //  $filterData = $this->getActiveFilters();
 
-        if (Yii::$app->request->isAjax) {
-            if (Yii::$app->request->headers->has('filter-ajax')) {
-                Yii::$app->response->format = Response::FORMAT_JSON;
-
-                return [
-                    //'currentFilters' => $filterData,
-                    //'full_url' => Url::to($this->currentUrl),
-                    'currentUrl' => Yii::$app->request->getUrl(),
-                    'items' => $this->renderPartial('@shop/views/catalog/listview', [
-                        'provider' => $this->provider,
-                        'itemView' => $this->itemView
-                    ]),
-                    'i' => $this->itemView,
-                    'currentFiltersData' => ($filterData) ? $this->renderPartial('@app/widgets/filters/current', [ //'@shop/widgets/filtersnew/views/current', '@app/widgets/filters/current'
-                        'dataModel' => $this->dataModel,
-                        'active' => $filterData
-                    ]) : null
-                ];
-            } else {
-                return $this->renderPartial('@shop/views/catalog/listview', [
-                    'provider' => $this->provider,
-                    'itemView' => $this->itemView
-                ]);
-            }
-        }
-        return $this->render('@shop/views/catalog/view', [
-            'provider' => $this->provider,
-            'itemView' => $this->itemView
-        ]);
+        return $this->_render();
     }
 
     /**

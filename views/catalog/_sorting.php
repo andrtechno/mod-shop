@@ -28,10 +28,10 @@ $this->registerJs("
 
             <?php
             $sorter[Yii::$app->urlManager->removeUrlParam('/' . Yii::$app->requestedRoute, 'sort')] = Yii::t('shop/default', 'SORT');
-            $sorter[Yii::$app->urlManager->addUrlParam('/' . Yii::$app->requestedRoute, array('sort' => 'price'))] = Yii::t('shop/default', 'SORT_BY_PRICE_ASC');
-            $sorter[Yii::$app->urlManager->addUrlParam('/' . Yii::$app->requestedRoute, array('sort' => '-price'))] = Yii::t('shop/default', 'SORT_BY_PRICE_DESC');
-            $sorter[Yii::$app->urlManager->addUrlParam('/' . Yii::$app->requestedRoute, array('sort' => '-created_at'))] = Yii::t('shop/default', 'SORT_BY_DATE_DESC');
-            $active = Yii::$app->urlManager->addUrlParam('/' . Yii::$app->requestedRoute, array('sort' => Yii::$app->request->get('sort')));
+            $sorter[Yii::$app->urlManager->addUrlParam('/' . Yii::$app->requestedRoute, ['sort' => 'price'])] = Yii::t('shop/default', 'SORT_BY_PRICE_ASC');
+            $sorter[Yii::$app->urlManager->addUrlParam('/' . Yii::$app->requestedRoute, ['sort' => '-price'])] = Yii::t('shop/default', 'SORT_BY_PRICE_DESC');
+            $sorter[Yii::$app->urlManager->addUrlParam('/' . Yii::$app->requestedRoute, ['sort' => '-created_at'])] = Yii::t('shop/default', 'SORT_BY_DATE_DESC');
+            $active = Yii::$app->urlManager->addUrlParam('/' . Yii::$app->requestedRoute, ['sort' => Yii::$app->request->get('sort')]);
 
             echo Html::dropDownList('sort', $active, $sorter, ['onChange' => 'window.location = $(this).val()', 'class' => 'custom-select', 'style' => 'width:auto;']);
             ?>
@@ -45,8 +45,8 @@ $this->registerJs("
             $limits = array(Yii::$app->urlManager->removeUrlParam('/' . Yii::$app->requestedRoute, 'per-page') => $this->context->allowedPageLimit[0]);
             array_shift($this->context->allowedPageLimit);
             foreach ($this->context->allowedPageLimit as $l) {
-                $active = Yii::$app->urlManager->addUrlParam('/' . Yii::$app->requestedRoute, array('per-page' => Yii::$app->request->get('per-page')));
-                $limits[Yii::$app->urlManager->addUrlParam('/' . Yii::$app->requestedRoute, array('per-page' => $l))] = $l;
+                $active = Yii::$app->urlManager->addUrlParam('/' . Yii::$app->requestedRoute, ['per-page' => Yii::$app->request->get('per-page')]);
+                $limits[Yii::$app->urlManager->addUrlParam('/' . Yii::$app->requestedRoute, ['per-page' => $l])] = $l;
             }
             ?>
             <span class=""><?= Yii::t('shop/default', 'OUTPUT_ON'); ?> </span>
@@ -67,9 +67,6 @@ $this->registerJs("
                 <a class="btn btn-outline-secondary <?php if ($itemView === '_view_list') echo 'active'; ?>"
                    href="<?= Yii::$app->urlManager->addUrlParam('/' . Yii::$app->requestedRoute, ['view' => 'list']) ?>"><i
                             class="icon-menu"></i></a>
-                <a class="btn btn-outline-secondary <?php if ($itemView === '_view_table') echo 'active'; ?>"
-                   href="<?= Yii::$app->urlManager->addUrlParam('/' . Yii::$app->requestedRoute, ['view' => 'table']) ?>"><i
-                            class="icon-table"></i></a>
             </div>
         </div>
     </div>

@@ -2,7 +2,10 @@
 
 namespace panix\mod\shop\controllers;
 
+use panix\engine\CMS;
+use panix\mod\shop\models\Attribute;
 use Yii;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
@@ -64,9 +67,39 @@ class ProductController extends WebController
         }
 
 
-        $this->view->description = $this->dataModel->description();
+        if ($this->dataModel->type_id) {
+            $codes = [];
+            if (!empty($this->dataModel->type->product_description)) {
 
-        $this->view->title = $this->dataModel->title();
+                if (preg_match_all('/{eav.([0-9a-zA-Z_\-]+)\.(name|value)}/', $this->dataModel->type->product_description, $matchDesc)) {
+                    foreach (array_unique($matchDesc[1]) as $m) {
+                        $name="eav_{$m}";
+                        $codes["{eav.{$m}.value}"] = $this->dataModel->{$name}['value'];
+                        $codes["{eav.{$m}.name}"] = $this->dataModel->{$name}['name'];
+                    }
+                }
+                $this->view->description = $this->dataModel->replaceMeta($this->dataModel->type->product_description, $codes);
+            }
+
+            if (!empty($this->dataModel->type->product_title)) {
+                if (preg_match_all('/{eav.([0-9a-zA-Z_\-]+)\.(name|value)}/', $this->dataModel->type->product_title, $matchTitle)) {
+                    foreach (array_unique($matchTitle[1]) as $m) {
+                        $name="eav_{$m}";
+                        if (!isset($codes["{eav.{$m}.value}"]))
+                            $codes["{eav.{$m}.value}"] = $this->dataModel->{$name}['value'];
+                        if (!isset($codes["{eav.{$m}.name}"]))
+                            $codes["{eav.{$m}.name}"] = $this->dataModel->{$name}['name'];
+                    }
+                }
+                $this->view->title = $this->dataModel->replaceMeta($this->dataModel->type->product_title, $codes);
+            }
+
+        }
+
+
+        //$this->view->description = $this->dataModel->description($codes);
+
+        // $this->view->title = $this->dataModel->title($codes);
 
 
         $this->sessionViews($this->dataModel->id);
@@ -163,7 +196,7 @@ class ProductController extends WebController
                     }
                 }
             }
-            $result['price'] = round($price,2);
+            $result['price'] = round($price, 2);
         }
         return $result;
     }

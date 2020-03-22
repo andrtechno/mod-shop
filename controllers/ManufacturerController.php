@@ -13,7 +13,8 @@ use panix\mod\shop\components\FilterController;
 class ManufacturerController extends FilterController
 {
 
-
+    public $provider;
+    public $currentUrl;
     public function actionIndex()
     {
         $model = Manufacturer::find()->published()->all();
@@ -36,7 +37,7 @@ class ManufacturerController extends FilterController
         /** @var Product $productModel */
         $productModel = Yii::$app->getModule('shop')->model('Product');
         $this->query = $productModel::find();
-        $this->query->attachBehaviors((new $productModel)->behaviors());
+        //$this->query->attachBehaviors((new $productModel)->behaviors());
         $this->query->published();
         $this->query->applyManufacturers($this->dataModel->id);
         $this->query->applyAttributes($this->activeAttributes);
@@ -47,7 +48,14 @@ class ManufacturerController extends FilterController
         $this->pageName = $this->dataModel->name;
         $this->view->title = $this->dataModel->name;
         $this->view->registerJs("var current_url = '" . Url::to($this->dataModel->getUrl()) . "';", yii\web\View::POS_HEAD, 'current_url');
-        $provider = new \panix\engine\data\ActiveDataProvider([
+
+
+
+        if (Yii::$app->request->get('sort') == 'price' || Yii::$app->request->get('sort') == '-price') {
+            $this->query->aggregatePriceSelect((Yii::$app->request->get('sort') == 'price') ? SORT_ASC : SORT_DESC);
+        }
+
+        $this->provider = new \panix\engine\data\ActiveDataProvider([
             'query' => $this->query,
             'id' => null,
             'pagination' => [
@@ -84,28 +92,7 @@ class ManufacturerController extends FilterController
 
         $this->currentUrl = Url::to($currentUrl);
 
-        if (Yii::$app->request->isAjax) {
-
-            Yii::$app->response->format = Response::FORMAT_JSON;
-            return [
-                'currentFilters' => $filterData,
-                'full_url' => Url::to($this->currentUrl),
-                'items' => $this->renderPartial('@shop/views/catalog/listview', [
-                    'provider' => $provider,
-                    'itemView' => $this->itemView
-                ]),
-                'currentFiltersData' => $this->renderPartial('@shop/widgets/filtersnew/views/current', [
-                    'dataModel' => $this->dataModel,
-                    'active' => $filterData
-                ])
-            ];
-
-        }else{
-            return $this->render('view', [
-                'provider' => $provider,
-                'model' => $this->dataModel
-            ]);
-        }
+        return $this->_render();
 
     }
 

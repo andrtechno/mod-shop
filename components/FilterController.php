@@ -2,6 +2,7 @@
 
 namespace panix\mod\shop\components;
 
+use panix\mod\shop\models\Category;
 use Yii;
 use yii\helpers\Url;
 use yii\web\Response;
@@ -101,7 +102,10 @@ class FilterController extends WebController
             return $this->_minPrice;
 
         // if ($this->currentQuery) {
-        $this->_minPrice = $this->currentQuery->aggregatePrice('MIN');
+        $result = $this->currentQuery->aggregatePrice('MIN')->asArray()->one();
+        if (isset($result['aggregation_price'])) {
+            return $result['aggregation_price'];
+        }
         // }
 
         return $this->_minPrice;
@@ -112,7 +116,10 @@ class FilterController extends WebController
      */
     public function getMaxPrice()
     {
-        $this->_maxPrice = $this->currentQuery->aggregatePrice('MAX');
+        $result = $this->currentQuery->aggregatePrice('MAX')->asArray()->one();
+        if (isset($result['aggregation_price'])) {
+            return $result['aggregation_price'];
+        }
         return $this->_maxPrice;
     }
 
@@ -159,12 +166,17 @@ class FilterController extends WebController
             return $this->_eavAttributes;
 
         // Find category types
-        $queryCategoryTypes = Product::find()
-            ->applyCategories($this->dataModel)
-            ->published()
-            ->select(Product::tableName() . '.type_id')
-            ->groupBy(Product::tableName() . '.type_id')
-            ->distinct(true);
+        $queryCategoryTypes = Product::find();
+        if ($this->dataModel instanceof Category) {
+            $queryCategoryTypes->applyCategories($this->dataModel);
+        } elseif ($this->dataModel instanceof Manufacturer) {
+            $queryCategoryTypes->applyManufacturers($this->dataModel->id);
+        }
+
+            $queryCategoryTypes->published();
+            $queryCategoryTypes->select(Product::tableName() . '.type_id');
+            $queryCategoryTypes->groupBy(Product::tableName() . '.type_id');
+            $queryCategoryTypes->distinct(true);
 //echo $queryCategoryTypes->createCommand()->rawSql;die;
         $typesIds = $queryCategoryTypes->createCommand()->queryColumn();
 
@@ -436,7 +448,7 @@ class FilterController extends WebController
         if (Yii::$app->request->isAjax) {
             if (Yii::$app->request->headers->has('filter-ajax')) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
-
+                $url = ($this->dataModel) ? $this->dataModel->getUrl() : ['/' . Yii::$app->requestedRoute];
                 return [
                     //'currentFilters' => $filterData,
                     //'full_url' => Url::to($this->currentUrl),
@@ -448,7 +460,8 @@ class FilterController extends WebController
                     'i' => $this->itemView,
                     'currentFiltersData' => ($this->getActiveFilters()) ? $this->renderPartial('@app/widgets/filters/current', [ //'@shop/widgets/filtersnew/views/current', '@app/widgets/filters/current'
                         'dataModel' => $this->dataModel,
-                        'active' => $this->getActiveFilters()
+                        'active' => $this->getActiveFilters(),
+                        'url'=>$url
                     ]) : null
                 ];
             } else {

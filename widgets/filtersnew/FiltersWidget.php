@@ -65,7 +65,7 @@ class FiltersWidget extends Widget
     {
         $data = [];
 
-        //CMS::dump($this->attributes);die;
+
         foreach ($this->attributes as $attribute) {
             $data[$attribute->name] = [
                 'title' => $attribute->title,

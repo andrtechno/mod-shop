@@ -22,7 +22,7 @@ class Module extends WebModule implements BootstrapInterface
         $rules['shop/notify'] = 'shop/notify/index';
         $rules['shop/ajax/currency/<id:\d+>'] = 'shop/ajax/currency';
         $rules['manufacturer'] = 'shop/manufacturer/index';
-        //$rules['manufacturer/<slug:[0-9a-zA-Z\-]+>'] =  'shop/manufacturer/view';
+        //$rules['manufacturer/<slug:[0-9a-zA-Z_\-]+>'] =  'shop/manufacturer/view';
         $rules['product/<slug:[0-9a-zA-Z\-]+>'] = 'shop/product/view';
         $rules['product/<id:\d+>/<action:[0-9a-zA-Z_\-]+>'] = 'shop/product/<action>';
 
@@ -39,6 +39,7 @@ class Module extends WebModule implements BootstrapInterface
                 'class' => 'panix\mod\shop\components\ManufacturerUrlRule',
                 'route' => 'shop/manufacturer/view',
                 'index' => 'manufacturer',
+                'pattern'=>'manufacturer/<slug:[0-9a-zA-Z_\-]+>'
             ];
             $rules[] = [
                 'class' => 'panix\mod\shop\components\CategoryUrlRule',
@@ -55,7 +56,7 @@ class Module extends WebModule implements BootstrapInterface
 
         $app->urlManager->addRules(
             $rules,
-            true
+            false
         );
         $app->setComponents([
             'currency' => ['class' => 'panix\mod\shop\components\CurrencyManager'],

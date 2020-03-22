@@ -11,7 +11,7 @@ use panix\mod\shop\models\Category;
  */
 class CategoryUrlRule extends BaseUrlRule
 {
-
+   // public $pattern = '';
     /*public $route = 'shop/category/view';
     public $pattern = '';
     public $cacheDuration = 0;

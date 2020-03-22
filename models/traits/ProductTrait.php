@@ -404,7 +404,7 @@ trait ProductTrait
 
         // $query = Attribute::getDb()->cache(function () {
         $query = Attribute::find()
-            ->where(['IN', 'name', array_keys($attributes)])
+            ->where(['name'=>array_keys($attributes)])
             ->displayOnFront()
             ->sort()
             ->all();
@@ -421,7 +421,7 @@ trait ProductTrait
 
             $value = $model->renderValue($attributes[$model->name]) . $abbr;
 
-            if ($model->group && Yii::$app->settings->get('shop', 'group_attribute')) {
+            if ($model->group_id && Yii::$app->settings->get('shop', 'group_attribute')) {
                 $groups[$model->group->name][] = [
                     'id' => $model->id,
                     'name' => $model->title,
@@ -462,7 +462,7 @@ trait ProductTrait
     }
 
 
-    public function description()
+    public function description($codes=[])
     {
         $description = $this->name;
         /** @var $this Product */
@@ -477,16 +477,16 @@ trait ProductTrait
                 }
             }
         }*/
-        if ($this->type) {
-            if ($this->type->product_description) {
-                $description = $this->replaceMeta($this->type->product_description);
+        if ($this->type_id) {
+            if (!empty($this->type->product_description)) {
+                $description = $this->replaceMeta($this->type->product_description,$codes);
             }
 
         }
         return $description;
     }
 
-    public function title()
+    public function title($codes=[])
     {
         $title = $this->name;
         /** @var $this Product */
@@ -504,9 +504,9 @@ trait ProductTrait
         }*/
 
 
-        if ($this->type) {
-            if ($this->type->product_title) {
-                $title = $this->replaceMeta($this->type->product_title);
+        if ($this->type_id) {
+            if (!empty($this->type->product_title)) {
+                $title = $this->replaceMeta($this->type->product_title,$codes);
             }
 
         }
@@ -515,17 +515,10 @@ trait ProductTrait
     }
 
 
-    public function replaceMeta($text)
+    public function replaceMeta($text,$codesList)
     {
         /** @var $this Product */
         $codes = [];
-
-        foreach ($this->dataAttributes['data'] as $k => $attr) {
-            $codes['{eav_' . $k . '_value}'] = $attr['value'];
-            $codes['{eav_' . $k . '_name}'] = $attr['name'];
-        }
-
-
         $codes["{product_id}"] = $this->id;
         $codes["{product_name}"] = $this->name;
         $codes["{product_price}"] = $this->getFrontPrice();
@@ -535,7 +528,7 @@ trait ProductTrait
         $codes["{product_category}"] = (isset($this->mainCategory)) ? $this->mainCategory->name : null;
         $codes["{currency.symbol}"] = Yii::$app->currency->active['symbol'];
         $codes["{currency.iso}"] = Yii::$app->currency->active['iso'];
-
+        $codes=ArrayHelper::merge($codes,$codesList);
         return CMS::textReplace($text, $codes);
     }
 

@@ -399,14 +399,14 @@ class Product extends ActiveRecord
 
     public function getManufacturer()
     {
-        return $this->hasOne(Manufacturer::class, ['id' => 'manufacturer_id'])
-            ->cache(3200, new DbDependency(['sql' => 'SELECT MAX(`updated_at`) FROM ' . Manufacturer::tableName()]));
+        return $this->hasOne(Manufacturer::class, ['id' => 'manufacturer_id']);
+            //->cache(3200, new DbDependency(['sql' => 'SELECT MAX(`updated_at`) FROM ' . Manufacturer::tableName()]));
     }
 
     public function getSupplier()
     {
-        return $this->hasOne(Supplier::class, ['id' => 'supplier_id'])
-            ->cache(3200, new DbDependency(['sql' => 'SELECT MAX(`updated_at`) FROM ' . Supplier::tableName()]));
+        return $this->hasOne(Supplier::class, ['id' => 'supplier_id']);
+           // ->cache(3200, new DbDependency(['sql' => 'SELECT MAX(`updated_at`) FROM ' . Supplier::tableName()]));
     }
 
     public function getType()
@@ -885,7 +885,7 @@ class Product extends ActiveRecord
 
 
             //$attributeModel = Attribute::find()->where(['name' => $attribute])->cache(3600 * 24, $dependency)->one();
-            return $attributeModel->renderValue($value);
+            return ['name'=>$attributeModel->title,'value'=>$attributeModel->renderValue($value)];
         }
         return parent::__get($name);
     }

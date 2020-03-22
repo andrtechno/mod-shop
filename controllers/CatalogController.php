@@ -28,7 +28,7 @@ class CatalogController extends FilterController
         $productModel = Yii::$app->getModule('shop')->model('Product');
         $this->currentUrl = $this->dataModel->getUrl();
         $this->query = $productModel::find();
-        $this->query->attachBehaviors((new $productModel)->behaviors());
+        //$this->query->attachBehaviors((new $productModel)->behaviors());
         $this->query->sort();
 
 

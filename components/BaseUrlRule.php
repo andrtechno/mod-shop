@@ -58,6 +58,7 @@ class BaseUrlRule extends UrlRule
         if ($this->suffix)
             $pathInfo = strtr($pathInfo, [$this->suffix => '']);
 
+        print_r($this->getAllPaths());die;
         foreach ($this->getAllPaths() as $path) {
             $pathInfo = str_replace($this->index . '/', '', $pathInfo);
             if ($path[$this->alias] !== '' && strpos($pathInfo, $path[$this->alias]) === 0) {

@@ -18,7 +18,7 @@ $attributes = (isset($model->type->shopAttributes)) ? $model->type->shopAttribut
         } else {
 
             foreach ($attributes as $a) {
-                if ($a->group) {
+                if ($a->group_id) {
                     $result[$a->group->name][] = $a;
                 } else {
                     $result['Без группы'][] = $a;
