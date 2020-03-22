@@ -12,7 +12,7 @@ use yii\helpers\Html;
         <div class="card-collapse collapse in" id="collapse-<?= md5('manufacturer') ?>">
             <?php if (count($manufacturers['filters']) >= 20) { ?>
                 <input type="text" name="search-filter"
-                       onkeyup="filterSearchInput(this,'filter-manufacturer')" class="form-control">
+                       onkeyup="filterSearchInput(this,'filter-manufacturer')" class="form-control" placeholder="<?=Yii::t('shop/default','SEARCH');?>">
             <?php } ?>
             <div class="card-body overflow">
                 <ul class="filter-list" id="filter-manufacturer">

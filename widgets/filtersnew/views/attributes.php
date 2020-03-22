@@ -23,7 +23,7 @@ foreach ($attributes as $attrData) {
                 <?= $attrData['type']; ?>
                 <?php if ($attrData['filtersCount'] >= 20 && !in_array($attrData['type'],[\panix\mod\shop\models\Attribute::TYPE_COLOR])) { ?>
                     <input type="text" name="search-filter"
-                           onkeyup="filterSearchInput(this,'filter-'<?= $attrData['key']; ?>)" class="form-control">
+                           onkeyup="filterSearchInput(this,'filter-'<?= $attrData['key']; ?>)" class="form-control" placeholder="<?=Yii::t('shop/default','SEARCH');?>">
                 <?php } ?>
                 <div class="card-body overflow">
                     <ul class="filter-list" id="filter-<?= $attrData['key']; ?>">

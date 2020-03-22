@@ -98,7 +98,7 @@ class CategoryUrlRule extends BaseUrlRule
                 return strlen($b['full_path']) - strlen($a['full_path']);
             });
 
-            \Yii::$app->cache->set('CategoryUrlRule', $allPaths, $this->cacheDuration);
+            \Yii::$app->cache->set('CategoryUrlRule', $allPaths,3600);
         }
 
         return $allPaths;
@@ -118,9 +118,9 @@ class CategoryUrlRule extends BaseUrlRule
         if ($this->suffix)
             $pathInfo = strtr($pathInfo, [$this->suffix => '']);
 
-        if ($this->host !== null) {
-            $pathInfo = strtolower($request->getHostInfo()) . ($pathInfo === '' ? '' : '/' . $pathInfo);
-        }
+        //if ($this->host !== null) {
+        //    $pathInfo = strtolower($request->getHostInfo()) . ($pathInfo === '' ? '' : '/' . $pathInfo);
+        //}
 
 
 
