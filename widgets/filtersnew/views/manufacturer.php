@@ -18,7 +18,7 @@ use yii\helpers\Html;
                 <ul class="filter-list" id="filter-manufacturer">
                     <?php
                     foreach ($manufacturers['filters'] as $filter) {
-                        $url = Yii::$app->urlManager->addUrlParam('/' . Yii::$app->requestedRoute, array($filter['key'] => $filter['queryParam']), $manufacturers['selectMany']);
+                        $url = Yii::$app->urlManager->addUrlParam('/' . Yii::$app->requestedRoute, [$filter['key'] => $filter['queryParam']], $manufacturers['selectMany']);
                         $queryData = explode(',', Yii::$app->request->getQueryParam($filter['key']));
 
                         echo Html::beginTag('li');
@@ -34,11 +34,13 @@ use yii\helpers\Html;
                             $checked = false;
                             //echo Html::a($filter['title'], $url);
                         }
-                        echo Html::checkBox('filter[' . $filter['key'] . '][]', $checked, array('value' => $filter['queryParam'], 'id' => 'filter_' . $filter['key'] . '_' . $filter['queryParam']));
-                        echo Html::label($filter['title'], 'filter_' . $filter['key'] . '_' . $filter['queryParam']);
+                        echo '<div class="custom-control custom-checkbox">';
+                        echo Html::checkBox('filter[' . $filter['key'] . '][]', $checked, ['class' => 'custom-control-input', 'value' => $filter['queryParam'], 'id' => 'filter_' . $filter['key'] . '_' . $filter['queryParam']]);
+                        echo Html::label($filter['title'], 'filter_' . $filter['key'] . '_' . $filter['queryParam'],['class' => 'custom-control-label']);
 
 
                         echo $this->context->getCount($filter);
+                        echo '</div>';
                         echo Html::endTag('li');
                     }
                     ?>

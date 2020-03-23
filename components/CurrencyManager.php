@@ -113,12 +113,22 @@ class CurrencyManager extends Component
      */
     public function convert($sum, $id = null)
     {
-        if ($id !== null && isset($this->_currencies[$id]))
+        $result = $sum;
+        if ($id !== null && isset($this->_currencies[$id])) {
             $currency = $this->_currencies[$id];
-        else
+            if ($id != $this->_active['id'] && $id != $this->_main['id']) {
+                $result = $sum * $currency['rate'];
+            } elseif ($id != $this->_active['id']) {
+                $result = $sum / $this->_active['rate'];
+            }
+        } else {
             $currency = $this->_active;
+            if ($id != $currency['id']) {
+                $result = $sum / $currency['rate'];
+            }
+        }
 
-        return $currency['rate'] * $sum;
+        return $result;
     }
 
     /**
@@ -139,8 +149,13 @@ class CurrencyManager extends Component
         if (!$decimals)
             $decimals = $this->_active['penny'];
 
-        $format = number_format($sum, $decimals, $thousandth, $hundredth);
 
+        if ((int)$sum == $sum) {
+            $format = $sum;
+        } else {
+            $format = number_format($sum, 2, '.', $thousandth);
+            // $format = number_format($sum, 2, '.', ',');
+        }
         return $format;
     }
 
