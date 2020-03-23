@@ -9,7 +9,7 @@ use panix\mod\shop\models\Category;
  * Class CategoryUrlRule
  * @package panix\mod\shop\components
  */
-class CategoryUrlRule extends BaseUrlRule
+class CategoryUrlRuleBACKUP extends BaseUrlRule
 {
    // public $pattern = '';
     /*public $route = 'shop/category/view';
