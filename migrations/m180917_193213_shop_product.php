@@ -31,6 +31,7 @@ class m180917_193213_shop_product extends Migration
             'type_id' => $this->smallInteger()->unsigned(),
             'supplier_id' => $this->integer()->unsigned(),
             'currency_id' => $this->smallInteger()->unsigned(),
+
             'use_configurations' => $this->boolean()->defaultValue(0),
             'slug' => $this->string(255)->notNull(),
             'price' => $this->money(10, 2),

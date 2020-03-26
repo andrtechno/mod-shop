@@ -700,6 +700,7 @@ class Product extends ActiveRecord
             $this->name = $this->replaceName();
             $this->slug = CMS::slug($this->name);
         }
+
         parent::afterSave($insert, $changedAttributes);
     }
 

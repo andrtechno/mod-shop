@@ -21,19 +21,18 @@ use panix\engine\bootstrap\Modal;
 $script = <<< JS
 $(document).on('click','.attachment-delete', function(e) {
     var id = $(this).attr('data-id');
-    var model = $(this).attr('data-model');
-    var object_id = $(this).attr('data-object_id');
+    console.log('test');
+    //return false;
     $.ajax({
        url: $(this).attr('href'),
        type:'POST',
-       data: {id: id, model: model, object_id: object_id},
+       data: {id: id},
        dataType:'json',
        success: function(data) {
-            if(data.status === "success"){
+            if(data.success){
                 common.notify(data.message,"success");
                 $('tr[data-key="'+id+'"]').remove();
-                //$('#grid-images').yiiGridView('applyFilter');
-        $.pjax.reload({container:'#pjax-image-container'});
+                //$.pjax.reload({container:'#pjax-grid-image'});
                 common.removeLoader();
             }
        }
@@ -94,10 +93,10 @@ $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams(), ['mod
 
 
 Pjax::begin([
-    'id' => 'pjax-grid-images',
+    'dataProvider' => $dataProvider,
 ]);
 echo panix\engine\grid\GridView::widget([
-    'id' => 'grid-images',
+    //'id' => 'grid-images',
     'tableOptions' => ['class' => 'table table-striped'],
     'dataProvider' => $dataProvider,
     'enableLayout' => false,
@@ -154,11 +153,11 @@ echo panix\engine\grid\GridView::widget([
                  },*/
                 'delete' => function ($url, $data, $key) use ($model) {
                     return Html::a(Html::icon('delete'), ['/admin/images/default/delete', 'id' => $data->id], [
-                        'class' => 'btn btn-sm btn-danger attachment-delete linkTarget',
+                        'class' => 'btn btn-sm btn-danger attachment-delete',
                         'data-id' => $data->id,
-                        'data-object_id' => $model->id,
+                        //'data-object_id' => $model->id,
                         'data-pjax'=>'0',
-                        'data-model' => get_class($model)
+                        //'data-model' => get_class($model)
                     ]);
                 },
             ]
