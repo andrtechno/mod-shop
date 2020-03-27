@@ -162,6 +162,29 @@ class ProductController extends AdminController
             $model->setKitProducts(Yii::$app->request->post('kitProductId', []));
 
 
+            $model->file = \yii\web\UploadedFile::getInstances($model, 'file');
+            $data=[];
+            if ($model->file) {
+
+                foreach ($model->file as $file) {
+                    $image= $model->attachImage($file);
+                    $data[]=[
+                        'filePath'=>$image->filePath,
+                        'is_main'=>$image->is_main
+                    ];
+                }
+
+                $model->images_data = json_encode($data);
+            }else{
+                foreach ($model->images as $image){
+                    $data[]=[
+                        'filePath'=>$image->filePath,
+                        'is_main'=>$image->is_main
+                    ];
+                }
+                $model->images_data = json_encode($data);
+            }
+
             if ($model->save()) {
 
                 $mainCategoryId = 1;
@@ -188,12 +211,6 @@ class ProductController extends AdminController
 
                 $model->setCategories($categories, $mainCategoryId);
 
-                $model->file = \yii\web\UploadedFile::getInstances($model, 'file');
-                if ($model->file) {
-                    foreach ($model->file as $file) {
-                        $model->attachImage($file);
-                    }
-                }
 
 
                 if (isset(Yii::$app->request->post('Product')['prices']) && !empty(Yii::$app->request->post('Product')['prices'])) {

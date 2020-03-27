@@ -15,47 +15,58 @@ foreach ($model->kit as $set) {
 
 <?php if ($sets) { ?>
     <div class="container">
-        <h3>Вместе дешевле</h3>
+        <div class="h3">Вместе дешевле</div>
         <div class="swiper-container swiper-container-h">
 
             <div class="swiper-wrapper">
-                <?php foreach ($sets as $group_id => $set) {  ?>
+                <?php foreach ($sets as $group_id => $set) { ?>
                     <div class="swiper-slide">
                         <div class="row">
                             <div class="col-sm-5">
-                                <div><strong>Ваш товар:</strong></div>
-                                <?= Html::a($model->name, $model->getUrl()); ?>
-                                <span class="badge badge-light">
+                                <div style="height: 50px"><strong>Ваш товар:</strong></div>
+                                <div>
+                                    <?= Html::img($model->getMainImage('300x200')->url, ['alt' => $model->name]); ?></div>
+                                <div class="h6 mt-4"><?= $model->name; ?></div>
+                                <div>
+                                <span class="badge badge-light text-dark">
                                     Код комплекта: <span id="kit-code">
-                                        <?= CMS::idToNumber($model->id, 5); ?>-<?= CMS::idToNumber(key($sets[$group_id]), 5); ?>
+                                        <?= CMS::idToNumber($model->id, 5); ?>
+                                        -<?= CMS::idToNumber(key($sets[$group_id]), 5); ?>
                                     </span>
                                 </span>
+                                </div>
                             </div>
                             <div class="col-sm-7">
                                 <div class="swiper-container swiper-container-v">
                                     <div class="swiper-wrapper">
 
                                         <?php foreach ($set as $set_id => $data) { ?>
-                                            <div class="swiper-slide" data-kit="<?= CMS::idToNumber($model->id, 5); ?>-<?= CMS::idToNumber($set_id, 5); ?>">
-                                                <div class="row">
-                                                    <div class="col-sm-5">
-                                                        <?php
-                                                        echo Html::a(Html::img($data->getMainImage('340x265')->url, [
-                                                            'alt' => $data->name,
-                                                            'class' => 'img-fluid loading'
-                                                        ]), $data->getUrl(), []);
-                                                        //echo Html::link(Html::image(Yii::app()->createUrl('/site/attachment',array('id'=>33)), $data->name, array('class' => 'img-fluid')), $data->getUrl(), array());
-                                                        ?>
 
-                                                        <div>
-                                                            <?= Html::a(Html::encode($data->name), $data->getUrl(), ['class' => 'h5']) ?>
+                                            <div class="swiper-slide"
+                                                 data-kit="<?= CMS::idToNumber($model->id, 5); ?>-<?= CMS::idToNumber($set_id, 5); ?>">
+                                                <div class="mt-4">
+                                                    <div class="row">
+                                                        <div class="col-sm-6">
+                                                            <?php
+                                                            echo Html::a(Html::img($data->getMainImage('300x200')->url, [
+                                                                'alt' => $data->name,
+                                                                'class' => 'img-fluid loading'
+                                                            ]), $data->getUrl(), []);
+                                                            //echo Html::link(Html::image(Yii::app()->createUrl('/site/attachment',array('id'=>33)), $data->name, array('class' => 'img-fluid')), $data->getUrl(), array());
+                                                            ?>
+
+                                                            <div class=" mt-4">
+                                                                <?= Html::a(Html::encode($data->name), $data->getUrl(), ['class' => 'h6']) ?>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-6 d-flex align-items-center">
+                                                            <div>
+                                                                <div><?= $data->price; ?></div>
+                                                                <div><?= Html::a(Yii::t('cart/default', 'BUY_SET'), 'javascript:cart.add_set(' . $set_id . ')', ['class' => 'btn btn-primary']); ?></div>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                    <div class="col-sm-2">
-                                                        <?= Html::a(Yii::t('cart/default', 'BUY_SET'), 'javascript:cart.add_set(' . $set_id . ')', ['class' => 'btn btn-primary']); ?>
-                                                    </div>
                                                 </div>
-
 
                                             </div>
                                         <?php } ?>
@@ -82,12 +93,12 @@ foreach ($model->kit as $set) {
     $this->registerCss('
     .swiper-container {
       width: 100%;
-      height: 300px;
+      height: 350px;
     }
     .swiper-slide {
       text-align: center;
       /* Center slide text vertically */
-      display: -webkit-box;
+      /*display: -webkit-box;
       display: -ms-flexbox;
       display: -webkit-flex;
       display: flex;
@@ -98,7 +109,7 @@ foreach ($model->kit as $set) {
       -webkit-box-align: center;
       -ms-flex-align: center;
       -webkit-align-items: center;
-      align-items: center;
+      align-items: center;*/
     }
     .swiper-container-v {
       background: #eee;

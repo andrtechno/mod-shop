@@ -77,7 +77,7 @@ echo \yii\helpers\Inflector::sentence($words);
             </span>
         <?php } ?>
         <?php
-        echo Html::a(Html::icon('shopcart') . Yii::t('cart/default', 'BUY'), 'javascript:cart.add(' . $model->id . ')', array('class' => 'btn btn-primary'));
+        echo Html::a(Html::icon('shopcart') . Yii::t('cart/default', 'BUY'), 'javascript:cart.add(' . $model->id . ')', ['class' => 'btn btn-primary']);
         ?>
         <?php
         echo yii\jui\Spinner::widget([

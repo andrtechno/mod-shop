@@ -11,7 +11,7 @@ use panix\engine\grid\GridView;
 //\yii\helpers\VarDumper::dump($model,10,true);
 //echo $model->getRelatedProductCount(); 
 ?>
-
+zzzz
 <table class="table table-striped" id="kitProductsTable">
     <?php
     //print_r($model->relatedProducts2);
@@ -22,13 +22,16 @@ use panix\engine\grid\GridView;
 
     foreach ($model->kitProducts as $data) { ?>
         <tr>
-            <input type="hidden" value="<?php echo $data->id ?>" name="kitProductId[]">
+            <input type="hidden" value="<?= $data->id ?>" name="kitProductId[]">
             <td class="image text-center kitProductLine<?= $data->id ?>"><?= $data->renderGridImage('50x50'); ?></td>
             <td>
-                <?= Html::a($data->name, ['/admin/shop/products/update', 'id' => $data->id], [
+                <?= Html::a($data->name, ['/admin/shop/product/update', 'id' => $data->id], [
                     'target' => '_blank'
                 ]);
                 ?>
+            </td>
+            <td class="text-center">
+                <?= Html::textInput('kit[price]',$data->price,['class'=>'form-control']); ?>
             </td>
             <td class="text-center">
                 <a class="btn btn-sm btn-danger" href="#" onclick="$(this).parents('tr').remove();"><?= Yii::t('app/default', 'DELETE') ?></a>
