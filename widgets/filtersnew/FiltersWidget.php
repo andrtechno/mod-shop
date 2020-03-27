@@ -165,11 +165,12 @@ class FiltersWidget extends Widget
         $newData[$attribute->name][] = $option->id;
 
         $res = $model->withEavAttributes($newData);
-        $res->groupBy = false;
+       // $res->groupBy = false;
+        //$res->distinct(false);
         $res->cache(86400);
 
         // print_r($newData);die;
-        // echo $res->createCommand()->rawSql;die;
+       // echo $res->createCommand()->rawSql;die;
 
         //$dependencyQuery = $model;
         //$dependencyQuery->select('COUNT(*)');

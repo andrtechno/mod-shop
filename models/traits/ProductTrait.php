@@ -36,7 +36,7 @@ trait ProductTrait
 		
 		$price_max = Product::find()->aggregatePrice('MAX')->asArray()->one();
         $price_min = Product::find()->aggregatePrice('MIN')->asArray()->one();
-		
+
         $columns = [];
         $columns['image'] = [
             'class' => 'panix\engine\grid\columns\ImageColumn',
