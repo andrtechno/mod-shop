@@ -5,8 +5,43 @@ use panix\mod\shop\models\Attribute;
 
 //$chosen = array(); // Array of ids to enable chosen
 $attributes = (isset($model->type->shopAttributes)) ? $model->type->shopAttributes : [];
+
+
+echo \panix\engine\barcode\BarcodeGenerator::widget([
+        'elementId'=> 'showBarcode',
+    'value'=> '4797111018719',
+    'type'=>'ean8'
+]);
 ?>
+
 <div>
+    <div class="form-group row">
+        <div class="col-sm-4 col-lg-2"><?= Html::activeLabel($model,'length',['class'=>'col-form-label']); ?></div>
+        <div class="col-sm-8 col-lg-10">
+            <div class="row">
+                <div class="col-sm-4">
+                    <?= Html::activeLabel($model,'length',['class'=>'col-form-label']); ?>
+                    <?= Html::activeTextInput($model,'length',['class'=>'form-control']); ?>
+                </div>
+                <div class="col-sm-4">
+                    <?= Html::activeLabel($model,'width',['class'=>'col-form-label']); ?>
+                    <?= Html::activeTextInput($model,'width',['class'=>'form-control']); ?></div>
+                <div class="col-sm-4">
+                    <?= Html::activeLabel($model,'height',['class'=>'col-form-label']); ?>
+                    <?= Html::activeTextInput($model,'height',['class'=>'form-control']); ?>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-sm-4 col-lg-2"><?= Html::activeLabel($model,'weight',['class'=>'col-form-label']); ?></div>
+        <div class="col-sm-8 col-lg-10">
+            <div class="row">
+                <div class="col-sm-4"><?= Html::activeTextInput($model,'weight',['class'=>'form-control']); ?></div>
+                <div class="col-sm-4">123</div>
+            </div>
+        </div>
+    </div>
     <div class="row ml-0z mr-0z">
         <?php
         if (empty($attributes)) {
