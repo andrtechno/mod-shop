@@ -45,6 +45,7 @@ class CatalogController extends FilterController
 
         //  $this->query->with('manufacturerActive');
         $this->pageName = $this->dataModel->name;
+        $this->view->setModel($this->dataModel);
         //$this->view->title = $this->pageName;
         $this->view->registerJs("var current_url = '" . Url::to($this->dataModel->getUrl()) . "';", yii\web\View::POS_HEAD, 'current_url');
 

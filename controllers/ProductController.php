@@ -25,6 +25,7 @@ class ProductController extends WebController
 
         $this->dataModel = $this->findModel($slug);
         $this->dataModel->updateCounters(['views' => 1]);
+        $this->view->setModel($this->dataModel);
         $category = $this->dataModel->mainCategory;
         if ($category) {
 

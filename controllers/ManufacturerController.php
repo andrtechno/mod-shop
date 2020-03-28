@@ -46,7 +46,12 @@ class ManufacturerController extends FilterController
 
         $this->applyPricesFilter();
         $this->pageName = $this->dataModel->name;
+        $this->view->setModel($this->dataModel);
         $this->view->title = $this->dataModel->name;
+
+
+
+
         $this->view->registerJs("var current_url = '" . Url::to($this->dataModel->getUrl()) . "';", yii\web\View::POS_HEAD, 'current_url');
 
 
