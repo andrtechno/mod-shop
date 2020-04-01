@@ -14,7 +14,7 @@ use yii\helpers\Html;
                 <input type="text" name="search-filter"
                        onkeyup="filterSearchInput(this,'filter-manufacturer')" class="form-control" placeholder="<?=Yii::t('shop/default','SEARCH');?>">
             <?php } ?>
-            <div class="card-body overflow">
+            <div class="card-body">
                 <ul class="filter-list" id="filter-manufacturer">
                     <?php
                     foreach ($manufacturers['filters'] as $filter) {

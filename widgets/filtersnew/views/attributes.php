@@ -25,7 +25,7 @@ foreach ($attributes as $attrData) {
                     <input type="text" name="search-filter"
                            onkeyup="filterSearchInput(this,'filter-<?= $attrData['key']; ?>')" class="form-control" placeholder="<?=Yii::t('shop/default','SEARCH');?>">
                 <?php } ?>
-                <div class="card-body overflow">
+                <div class="card-body">
                     <ul class="filter-list" id="filter-<?= $attrData['key']; ?>">
                         <?php
                         foreach ($attrData['filters'] as $filter) {
