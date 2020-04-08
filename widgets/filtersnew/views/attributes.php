@@ -51,13 +51,22 @@ foreach ($attributes as $attrData) {
                                     $checked = false;
                                     //echo Html::a($filter['title'], $url);
                                 }
-                                //var_dump($checked);
-                                echo '<div class="custom-control custom-checkbox">';
-                                echo Html::checkBox('filter[' . $attrData['key'] . '][]', $checked, ['class' => 'custom-control-input', 'value' => $filter['queryParam'], 'id' => 'filter_' . $attrData['key'] . '_' . $filter['queryParam']]);
-                                echo Html::label($filter['title'], 'filter_' . $attrData['key'] . '_' . $filter['queryParam'], ['class' => 'custom-control-label']);
-                                echo $this->context->getCount($filter);
-                                echo '</div>';
 
+                                if ($attrData['type'] == \panix\mod\shop\models\Attribute::TYPE_COLOR) {
+                                    $css = $this->context->generateGradientCss($filter['data']);
+
+                                    $checkedHtml = ($checked) ? '<span class="filter-color-checked"></span>' : '<span></span>';
+                                    echo Html::label(Html::checkBox('filter[' . $attrData['key'] . '][]', $checked, ['class' => '', 'value' => $filter['queryParam'], 'id' => 'filter_' . $attrData['key'] . '_' . $filter['queryParam']]) . $checkedHtml, 'filter_' . $attrData['key'] . '_' . $filter['queryParam'], ['class' => 'filter-color', 'title' => $filter['title'] . ' (' . strip_tags($this->context->getCount($filter)) . ')', 'style' => $css]);
+
+
+                                } else {
+                                    //var_dump($checked);
+                                    echo '<div class="custom-control custom-checkbox">';
+                                    echo Html::checkBox('filter[' . $attrData['key'] . '][]', $checked, ['class' => 'custom-control-input', 'value' => $filter['queryParam'], 'id' => 'filter_' . $attrData['key'] . '_' . $filter['queryParam']]);
+                                    echo Html::label($filter['title'], 'filter_' . $attrData['key'] . '_' . $filter['queryParam'], ['class' => 'custom-control-label']);
+                                    echo $this->context->getCount($filter);
+                                    echo '</div>';
+                                }
                                 echo Html::endTag('li');
                             }
                         }

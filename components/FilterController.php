@@ -445,6 +445,7 @@ class FilterController extends WebController
 	
 	
     public function _render(){
+        $activeFilters = $this->getActiveFilters();
         if (Yii::$app->request->isAjax) {
             if (Yii::$app->request->headers->has('filter-ajax')) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
@@ -458,9 +459,9 @@ class FilterController extends WebController
                         'itemView' => $this->itemView
                     ]),
                     'i' => $this->itemView,
-                    'currentFiltersData' => ($this->getActiveFilters()) ? $this->renderPartial('@app/widgets/filtersnew/current', [ //'@shop/widgets/filtersnew/views/current', '@app/widgets/filters/current'
+                    'currentFiltersData' => ($activeFilters) ? $this->renderPartial('@shop/widgets/filtersnew/views/current', [ //'@shop/widgets/filtersnew/views/current', '@app/widgets/filters/current'
                         'dataModel' => $this->dataModel,
-                        'active' => $this->getActiveFilters(),
+                        'active' => $activeFilters,
                         'url'=>$url
                     ]) : null
                 ];

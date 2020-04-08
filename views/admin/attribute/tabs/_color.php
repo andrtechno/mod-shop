@@ -123,6 +123,11 @@ foreach ($model->options as $k => $o) {
                 [
                     'name' => 'color',
                     'type' => \panix\ext\colorpicker\ColorPicker::class,
+
+                    'options'=>[
+                        'mode'=>'picker',
+                       // 'selector'=>'.field-options-4-data-0-color'
+                    ],
                     'enableError' => false,
                 ],
 
@@ -193,4 +198,9 @@ echo panix\engine\grid\GridView::widget([
     'filterModel' => true
 ]);
 Pjax::end();
+
+
+//echo \panix\ext\colorpicker\ColorPicker::widget(['name'=>'dssad','mode'=>'selector2','value'=>'#ccc']);
 ?>
+
+
