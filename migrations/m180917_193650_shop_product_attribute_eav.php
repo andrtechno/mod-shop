@@ -10,6 +10,7 @@ namespace panix\mod\shop\migrations;
  */
 use panix\engine\db\Migration;
 use panix\mod\shop\models\ProductAttributesEav;
+use panix\mod\shop\models\Attribute;
 
 class m180917_193650_shop_product_attribute_eav extends Migration
 {

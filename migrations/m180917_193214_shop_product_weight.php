@@ -44,12 +44,12 @@ class m180917_193214_shop_product_weight extends Migration
         ];
         $id=1;
         foreach ($list as $key => $data) {
-            $this->batchInsert('{{%shop_product_length}}', ['value'], [
+            $this->batchInsert('{{%shop_product_weight}}', ['value'], [
                 [$data['value']]
             ]);
 
             foreach (Yii::$app->languageManager->getLanguages(false) as $lang) {
-                $this->batchInsert('{{%shop_product_length_translate}}', ['object_id', 'language_id', 'title', 'unit'], [
+                $this->batchInsert('{{%shop_product_weight_translate}}', ['object_id', 'language_id', 'title', 'unit'], [
                     [$id, $lang['id'], $data['name'], $data['unit']]
                 ]);
             }
