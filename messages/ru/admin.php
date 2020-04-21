@@ -15,7 +15,7 @@ return [
     'NOTIFIER' => 'Уведомление',
     'CATEGORIES' => 'Категории',
     'TYPE_PRODUCTS' => 'Тип товаров',
-    'ATTRIBUTES' => 'Атрибуры',
+    'ATTRIBUTES' => 'Атрибуты',
     'PRODUCTS' => 'Продукция',
     'PRODUCT_LIST' => 'Список товаров',
     'MANUFACTURER' => 'Производители',
