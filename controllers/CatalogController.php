@@ -63,7 +63,7 @@ class CatalogController extends FilterController
             $this->query->applyManufacturers($manufacturers);
         }
         // Filter products by price range if we have min or max in request
-        $this->applyPricesFilter();
+        //$this->applyPricesFilter();
 
         // $this->maxprice = (int)$this->currentQuery->max('price');
         // $this->minprice = (int)$this->currentQuery->min('price');
@@ -128,7 +128,7 @@ class CatalogController extends FilterController
                 if (isset($filter['items'])) {
                     $params = [];
                     foreach ($filter['items'] as $item) {
-                        $params[] = $item['value'];
+						$params[] = ($filter['name'] == 'price') ? $item['value_url']: $item['value'];
                     }
                     $currentUrl[$filter['name']] = implode(',', $params);
                 }

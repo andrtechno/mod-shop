@@ -44,7 +44,7 @@ class ManufacturerController extends FilterController
 
         $this->currentQuery = clone $this->query;
 
-        $this->applyPricesFilter();
+        //$this->applyPricesFilter();
         $this->pageName = $this->dataModel->name;
         $this->view->setModel($this->dataModel);
         $this->view->title = $this->dataModel->name;

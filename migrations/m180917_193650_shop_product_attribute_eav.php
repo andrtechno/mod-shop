@@ -25,6 +25,7 @@ class m180917_193650_shop_product_attribute_eav extends Migration
 
         $this->createIndex('entity', ProductAttributesEav::tableName(), 'entity');
         $this->createIndex('attribute', ProductAttributesEav::tableName(), 'attribute');
+
 		
         if ($this->db->driverName != "sqlite") {
             $this->addForeignKey('{{%fk_product_attribute_eav}}', ProductAttributesEav::tableName(), 'attribute', Attribute::tableName(), 'name', "CASCADE", "CASCADE");

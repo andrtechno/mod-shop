@@ -265,6 +265,7 @@ class FilterController extends WebController
             if ($this->getCurrentMinPrice() > 0) {
                 $menuItems['price']['items'][] = [
                     // 'name'=>'min_price',
+					'value_url' => number_format($this->getCurrentMinPrice(),0,'',''),
                     'value' => Yii::$app->currency->number_format($this->getCurrentMinPrice()),
                     'label' => Html::decode(Yii::t('shop/default', 'FILTER_CURRENT_PRICE_MIN', ['value' => Yii::$app->currency->number_format($this->getCurrentMinPrice()), 'currency' => Yii::$app->currency->active['symbol']])),
                     'linkOptions' => ['class' => 'remove', 'data-price' => 'min_price'],
@@ -277,6 +278,7 @@ class FilterController extends WebController
             if ($this->getCurrentMaxPrice() > 0) {
                 $menuItems['price']['items'][] = [
                     // 'name'=>'max_price',
+					'value_url' => number_format($this->getCurrentMaxPrice(),0,'',''),
                     'value' => Yii::$app->currency->number_format($this->getCurrentMaxPrice()),
                     'label' => Yii::t('shop/default', 'FILTER_CURRENT_PRICE_MAX', ['value' => Yii::$app->currency->number_format($this->getCurrentMaxPrice()), 'currency' => Yii::$app->currency->active['symbol']]),
                     'linkOptions' => array('class' => 'remove', 'data-price' => 'max_price'),
@@ -368,6 +370,7 @@ class FilterController extends WebController
         return $menuItems;
     }
 
+/*todo: no used*/
     public function applyPricesFilter()
     {
         $minPrice = (isset($this->prices[0])) ? $this->prices[0] : 0;
