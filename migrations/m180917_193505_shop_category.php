@@ -25,19 +25,13 @@ class m180917_193505_shop_category extends Migration {
             'slug' => $this->string(255)->null()->defaultValue(null),
             'full_path' => $this->string(255)->null(),
             'image' => $this->string(50)->null(),
+            'name' => $this->string(255)->notNull(),
+            'description' => $this->text()->null()->defaultValue(null),
             'created_at' => $this->integer(),
             'updated_at' => $this->integer(),
             'switch' => $this->boolean()->defaultValue(1)->notNull(),
         ]);
 
-
-        $this->createTable(CategoryTranslate::tableName(), [
-            'id' => $this->primaryKey()->unsigned(),
-            'object_id' => $this->integer()->unsigned(),
-            'language_id' => $this->tinyInteger()->unsigned(),
-            'name' => $this->string(255)->notNull(),
-            'description' => $this->text()->null()->defaultValue(null)
-        ]);
 
         $this->createIndex('lft', Category::tableName(), 'lft');
         $this->createIndex('rgt', Category::tableName(), 'rgt');
@@ -45,15 +39,11 @@ class m180917_193505_shop_category extends Migration {
         $this->createIndex('full_path', Category::tableName(), 'full_path');
         $this->createIndex('switch', Category::tableName(), 'switch');
 
-        $this->createIndex('object_id', CategoryTranslate::tableName(), 'object_id');
-        $this->createIndex('language_id', CategoryTranslate::tableName(), 'language_id');
-
     }
 
     public function down()
     {
         $this->dropTable(Category::tableName());
-        $this->dropTable(CategoryTranslate::tableName());
     }
 
 }

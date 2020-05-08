@@ -38,7 +38,7 @@ class ManufacturerSearch extends Manufacturer {
      * @return ActiveDataProvider
      */
     public function search($params) {
-        $query = Manufacturer::find()->translate();
+        $query = Manufacturer::find();
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
            // 'sort' => self::getSort()
@@ -53,7 +53,7 @@ class ManufacturerSearch extends Manufacturer {
         }
 
         $query->andFilterWhere(['id' => $this->id]);
-        $query->andFilterWhere(['like', 'translate.name', $this->name]);
+        $query->andFilterWhere(['like', 'name', $this->name]);
 
         return $dataProvider;
     }

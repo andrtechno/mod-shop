@@ -16,7 +16,7 @@ use yii\helpers\Url;
 class CategoryQuery extends ActiveQuery
 {
 
-    use DefaultQueryTrait, TranslateQueryTrait;
+    use DefaultQueryTrait;
 
     public function behaviors()
     {

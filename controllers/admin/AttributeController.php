@@ -2,17 +2,11 @@
 
 namespace panix\mod\shop\controllers\admin;
 
-use panix\engine\CMS;
-use panix\ext\colorpicker\ColorPicker;
-use panix\ext\colorpicker\ColorPickerAsset;
-use panix\ext\multipleinput\MultipleInput;
-use panix\mod\shop\models\translate\AttributeOptionTranslate;
 use Yii;
 use panix\engine\controllers\AdminController;
 use panix\mod\shop\models\Attribute;
 use panix\mod\shop\models\search\AttributeSearch;
 use panix\mod\shop\models\AttributeOption;
-use panix\mod\shop\models\Product;
 use yii\web\Response;
 
 class AttributeController extends AdminController
@@ -150,33 +144,16 @@ class AttributeController extends AdminController
                     } else {
                         $attributeOption->data = NULL;
                     }
+                    $attributeOption->value = $data[$index];
+                    $attributeOption->value_ua = $data[$index];
                     $attributeOption->save(false);
 
 
-                    foreach (Yii::$app->languageManager->languages as $lang) {
-                        /*$attributeLangOption = AttributeOption::find()
-                            ->translate($lang->id)
-                            ->where([AttributeOption::tableName() . '.id' => $attributeOption->id])
-                            ->one();*/
+                    //foreach (Yii::$app->languageManager->languages as $lang) {
 
-
-                        $attributeLangOption = AttributeOptionTranslate::find()
-                            ->where(['object_id' => $attributeOption->id, 'language_id' => $lang->id])
-                            ->one();
-
-                        if (!$attributeLangOption) {
-                            $attributeLangOption = new AttributeOptionTranslate;
-                            $attributeLangOption->object_id = $attributeOption->id;
-                            $attributeLangOption->language_id = $lang->id;
-
-                        }
-
-
-                        $attributeLangOption->value = $data[$index];
-                        $attributeLangOption->save(false);
 
                         ++$index;
-                    }
+                   // }
                     array_push($dontDelete, $attributeOption->id);
                 }
             }
@@ -220,11 +197,6 @@ class AttributeController extends AdminController
 
 
                     foreach (Yii::$app->languageManager->languages as $lang) {
-                        /*$attributeLangOption = AttributeOption::find()
-                            ->translate($lang->id)
-                            ->where([AttributeOption::tableName() . '.id' => $attributeOption->id])
-                            ->one();*/
-
 
                         $attributeLangOption = AttributeOptionTranslate::find()
                             ->where(['object_id' => $attributeOption->id, 'language_id' => $lang->id])

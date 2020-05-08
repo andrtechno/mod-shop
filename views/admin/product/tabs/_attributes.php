@@ -10,16 +10,17 @@ $attributes = (isset($model->type->shopAttributes)) ? $model->type->shopAttribut
 echo \panix\engine\barcode\BarcodeGenerator::widget([
         'elementId'=> 'showBarcode',
     'value'=> '4797111018719',
-    'type'=>'ean8'
+    'type'=>'ean13'
 ]);
 ?>
 
 <div>
     <div class="form-group row">
-        <div class="col-sm-4 col-lg-2"><?= Html::activeLabel($model,'length',['class'=>'col-form-label']); ?></div>
+        <div class="col-sm-4 col-lg-2"></div>
         <div class="col-sm-8 col-lg-10">
             <div class="row">
                 <div class="col-sm-4">
+
                     <?= Html::activeLabel($model,'length',['class'=>'col-form-label']); ?>
                     <?= Html::activeTextInput($model,'length',['class'=>'form-control']); ?>
                 </div>

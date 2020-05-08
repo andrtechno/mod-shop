@@ -12,7 +12,6 @@ class AttributeGroup extends ActiveRecord
 {
 
     const MODULE_ID = 'shop';
-    public $translationClass = AttributeGroupTranslate::class;
 
     public static function find2()
     {

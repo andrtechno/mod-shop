@@ -26,29 +26,19 @@ class m180917_193531_shop_manufacturer extends Migration
             'image' => $this->string()->null()->defaultValue(null),
             'slug' => $this->string(255)->notNull()->defaultValue(null),
             'switch' => $this->boolean()->defaultValue(1),
-            //'productsCount' => $this->integer(11)->defaultValue(0),
+            'name' => $this->string(255)->notNull(),
+            'description' => $this->text()->null()->defaultValue(null),
             'ordern' => $this->integer()->unsigned(),
             'created_at' => $this->integer(),
             'updated_at' => $this->integer(),
         ]);
 
 
-        $this->createTable(ManufacturerTranslate::tableName(), [
-            'id' => $this->primaryKey()->unsigned(),
-            'object_id' => $this->integer()->unsigned(),
-            'language_id' => $this->tinyInteger()->unsigned(),
-            'name' => $this->string(255)->notNull(),
-            'description' => $this->text()->null()->defaultValue(null)
-        ]);
-
 
         $this->createIndex('switch', Manufacturer::tableName(), 'switch');
         $this->createIndex('ordern', Manufacturer::tableName(), 'ordern');
         $this->createIndex('slug', Manufacturer::tableName(), 'slug');
         $this->createIndex('cat_id', Manufacturer::tableName(), 'cat_id');
-
-        $this->createIndex('object_id', ManufacturerTranslate::tableName(), 'object_id');
-        $this->createIndex('language_id', ManufacturerTranslate::tableName(), 'language_id');
 
         $brands = [
             [
@@ -94,15 +84,9 @@ class m180917_193531_shop_manufacturer extends Migration
         ];
         $id = 1;
         foreach ($brands as $key => $brand) {
-            $this->batchInsert(Manufacturer::tableName(), ['cat_id', 'slug', 'image', 'switch', 'ordern'], [
-                [NULL, CMS::slug($brand['name']), $brand['image'], 1, $id]
+            $this->batchInsert(Manufacturer::tableName(), ['cat_id', 'slug', 'image', 'switch', 'ordern', 'name', 'description'], [
+                [NULL, CMS::slug($brand['name']), $brand['image'], 1, $id, $brand['name'], $brand['description']]
             ]);
-
-            foreach (Yii::$app->languageManager->getLanguages(false) as $lang) {
-                $this->batchInsert(ManufacturerTranslate::tableName(), ['object_id', 'language_id', 'name', 'description'], [
-                    [$id, $lang['id'], $brand['name'], $brand['description']]
-                ]);
-            }
             $id++;
         }
 
@@ -113,6 +97,5 @@ class m180917_193531_shop_manufacturer extends Migration
     public function down()
     {
         $this->dropTable(Manufacturer::tableName());
-        $this->dropTable(ManufacturerTranslate::tableName());
     }
 }

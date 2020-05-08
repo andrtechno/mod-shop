@@ -3,12 +3,9 @@
 namespace panix\mod\shop\controllers\admin;
 
 use panix\engine\CMS;
-use panix\mod\shop\models\translate\CategoryTranslate;
 use Yii;
 use panix\engine\controllers\AdminController;
 use panix\mod\shop\models\Category;
-use yii\filters\VerbFilter;
-use yii\helpers\Inflector;
 use yii\web\Response;
 
 /**
@@ -143,8 +140,6 @@ class CategoryController extends AdminController
     {
 
         Yii::$app->db->createCommand()->truncateTable(Category::tableName())->execute();
-        Yii::$app->db->createCommand()->truncateTable(CategoryTranslate::tableName())->execute();
-
 
         $model = new Category;
         $model->name = 'Каталог продукции';

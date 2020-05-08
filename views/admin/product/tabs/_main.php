@@ -18,7 +18,7 @@ use panix\ext\tinymce\TinyMce;
     <?= $form->field($model, 'slug')->textInput(['maxlength' => 255]) ?>
 <?php } ?>
 <?= $form->field($model, 'sku')->textInput(['maxlength' => 255]) ?>
-
+<?= $form->field($model,'length'); ?>
 
 <?php
 echo $this->render('_prices', ['model' => $model, 'form' => $form]);

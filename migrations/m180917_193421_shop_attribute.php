@@ -36,21 +36,19 @@ class m180917_193421_shop_attribute extends Migration
             'use_in_compare' => $this->boolean()->defaultValue(0),
             'select_many' => $this->boolean()->defaultValue(0),
             'required' => $this->boolean()->defaultValue(0),
+
+            'title' => $this->string(255)->notNull(),
+            'title_ua' => $this->string(255)->notNull(),
+            'abbreviation' => $this->string(25)->null(),
+            'abbreviation_ua' => $this->string(25)->null(),
+            'hint' => $this->text()->null(),
+            'hint_ua' => $this->text()->null(),
+
             'created_at' => $this->integer(),
             'updated_at' => $this->integer(),
             'sort' => $this->tinyInteger(1)->defaultValue(NULL),
             'switch' => $this->boolean()->defaultValue(1)->notNull(),
             'ordern' => $this->integer(11)->unsigned(),
-        ]);
-
-
-        $this->createTable(AttributeTranslate::tableName(), [
-            'id' => $this->primaryKey()->unsigned(),
-            'object_id' => $this->integer()->unsigned(),
-            'language_id' => $this->tinyInteger()->unsigned(),
-            'title' => $this->string(255)->notNull(),
-            'abbreviation' => $this->string(25)->null(),
-            'hint' => $this->text()->null(),
         ]);
 
 
@@ -65,8 +63,6 @@ class m180917_193421_shop_attribute extends Migration
         $this->createIndex('use_in_variants', Attribute::tableName(), 'use_in_variants');
         $this->createIndex('use_in_compare', Attribute::tableName(), 'use_in_compare');
 
-        $this->createIndex('object_id', AttributeTranslate::tableName(), 'object_id');
-        $this->createIndex('language_id', AttributeTranslate::tableName(), 'language_id');
 
 
     }
@@ -74,7 +70,6 @@ class m180917_193421_shop_attribute extends Migration
     public function down()
     {
         $this->dropTable(Attribute::tableName());
-        $this->dropTable(AttributeTranslate::tableName());
     }
 
 }

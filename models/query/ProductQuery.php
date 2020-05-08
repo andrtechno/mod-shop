@@ -13,7 +13,7 @@ use panix\mod\shop\models\ProductCategoryRef;
 class ProductQuery extends ActiveQuery
 {
 
-    use DefaultQueryTrait, EavQueryTrait, TranslateQueryTrait, FilterQueryTrait;
+    use DefaultQueryTrait, EavQueryTrait, FilterQueryTrait;
 
     /**
      * Product by category
@@ -102,9 +102,8 @@ class ProductQuery extends ActiveQuery
     public function applySearch($q = null)
     {
         if ($q) {
-            $this->joinWith(['translations as translate']);
             $this->andWhere(['LIKE', Product::tableName() . '.sku', $q]);
-            $this->orWhere(['LIKE', 'translate.name', $q]);
+            $this->orWhere(['LIKE', 'name', $q]);
         }
         return $this;
     }

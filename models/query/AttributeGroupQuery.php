@@ -8,6 +8,6 @@ use panix\engine\traits\query\DefaultQueryTrait;
 
 class AttributeGroupQuery extends ActiveQuery
 {
-    use DefaultQueryTrait, TranslateQueryTrait;
+    use DefaultQueryTrait;
 
 }

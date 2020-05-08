@@ -49,7 +49,7 @@ class Attribute extends ActiveRecord
     const TYPE_COLOR = 9;//todo new Under construction
 
     const MODULE_ID = 'shop';
-    public $translationClass = AttributeTranslate::class;
+   // public $translationClass = AttributeTranslate::class;
 
 
     public static function find()

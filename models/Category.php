@@ -40,7 +40,7 @@ class Category extends ActiveRecord
     const MODULE_ID = 'shop';
     const route = '/admin/shop/category';
     const route_update = 'index';
-    public $translationClass = CategoryTranslate::class;
+
     public $parent_id;
 
     /**

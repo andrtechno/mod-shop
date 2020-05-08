@@ -93,7 +93,7 @@ class m190316_061840_shop_insert extends Migration
             ],
         ];
 
-        foreach ($categories as $cat) {
+        /*foreach ($categories as $cat) {
             $parent_id = Category::findModel(1);
             $s = new Category();
             if (isset($cat['id']))
@@ -111,7 +111,7 @@ class m190316_061840_shop_insert extends Migration
                     $subCategory->appendTo($s);
                 }
             }
-        }
+        }*/
 
         $products = [
             [

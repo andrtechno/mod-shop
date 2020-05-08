@@ -23,7 +23,6 @@ class Manufacturer extends ActiveRecord
 
     const MODULE_ID = 'shop';
     const route = '/admin/shop/manufacturer';
-    public $translationClass = ManufacturerTranslate::class;
 
     /**
      * @inheritdoc

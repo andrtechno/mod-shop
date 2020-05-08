@@ -118,17 +118,10 @@ class ForsageProductsImport
             if ($attributeModel) {
 
                 if ($params['isFilter']) {
-                    //$cr = new CDbCriteria;
-                    //$cr->with = 'option_translate';
-                    //$cr->compare('option_translate.value', $attributeValue);
-                    //$cr->compare('value', $attributeValue);
-                    //$cr->compare('t.attribute_id', $attributeModel->id);
 
 
                     $option = AttributeOption::find();
-                    $option->joinWith('translations');
-                    $option->where(['attribute_id'=>$attributeModel->id]);
-                    $option->andWhere([AttributeOptionTranslate::tableName().'.value'=>$attributeValue]);
+                    $option->where(['attribute_id'=>$attributeModel->id,'value'=>$attributeValue]);
                     $opt = $option->one();
                     if (!$opt)
                         $opt = $this->addOptionToAttribute($attributeModel->id, $attributeValue);

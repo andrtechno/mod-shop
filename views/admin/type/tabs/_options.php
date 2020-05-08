@@ -56,7 +56,7 @@ $this->registerJs('$.configureBoxes({useFilters: false, useCounters: false});');
 
 
     </div>
-    <div class="clear"></div>
+    <div class="clearfix"></div>
 </div>
 
 

@@ -33,6 +33,12 @@ class m180917_193213_shop_product extends Migration
             'currency_id' => $this->smallInteger()->unsigned(),
             'weight_class_id' => $this->integer(),
             'length_class_id' => $this->integer(),
+            'name' => $this->string(255)->notNull(),
+            'name_ua' => $this->string(255)->notNull(),
+            'short_description' => $this->text()->null(),
+            'short_description_ua' => $this->text()->null(),
+            'full_description' => $this->text()->null(),
+            'full_description_ua' => $this->text()->null(),
             'use_configurations' => $this->boolean()->defaultValue(0),
             'slug' => $this->string(255)->notNull(),
             'price' => $this->money(10, 2),
@@ -63,15 +69,6 @@ class m180917_193213_shop_product extends Migration
             'ordern' => $this->integer()->unsigned(),
         ]);
 
-        $this->createTable(ProductTranslate::tableName(), [
-            'id' => $this->primaryKey()->unsigned(),
-            'object_id' => $this->integer()->unsigned(),
-            'language_id' => $this->tinyInteger()->unsigned(),
-            'name' => $this->string(255)->notNull(),
-            'short_description' => $this->text()->null(),
-            'full_description' => $this->text()->null(),
-        ]);
-
 
         $this->createIndex('user_id', Product::tableName(), 'user_id');
         $this->createIndex('manufacturer_id', Product::tableName(), 'manufacturer_id');
@@ -87,10 +84,6 @@ class m180917_193213_shop_product extends Migration
         $this->createIndex('views', Product::tableName(), 'views');
         $this->createIndex('ordern', Product::tableName(), 'ordern');
         $this->createIndex('main_category_id', Product::tableName(), 'main_category_id');
-
-
-        $this->createIndex('object_id', ProductTranslate::tableName(), 'object_id');
-        $this->createIndex('language_id', ProductTranslate::tableName(), 'language_id');
         $this->loadSettings();
         $this->loadColumns('grid-product', Product::class, ['image', 'name', 'price', 'created_at']);
     }
@@ -101,7 +94,6 @@ class m180917_193213_shop_product extends Migration
     public function down()
     {
         $this->dropTable(Product::tableName());
-        $this->dropTable(ProductTranslate::tableName());
     }
 
 }

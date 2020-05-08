@@ -9,6 +9,6 @@ use panix\engine\traits\query\DefaultQueryTrait;
 class AttributeOptionsQuery extends ActiveQuery
 {
 
-    use DefaultQueryTrait, TranslateQueryTrait;
+    use DefaultQueryTrait;
 
 }

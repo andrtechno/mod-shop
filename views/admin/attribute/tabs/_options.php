@@ -22,12 +22,16 @@ use panix\mod\shop\models\AttributeOption;
 <table>
     <tr class="copyMe">
         <td class="text-center">&mdash;</td>
-        <?php foreach (Yii::$app->languageManager->languages as $k => $l) { ?>
-            <td>
-                <input name="sample" type="text" class="value form-control input-lang"
-                       style="background-image:url(/uploads/language/<?= $k ?>.png"/>
-            </td>
-        <?php } ?>
+
+        <td>
+            <input name="sample" type="text" class="value form-control input-lang"
+                   style="background-image:url(/uploads/language/ru.png"/>
+        </td>
+        <td>
+            <input name="sample" type="text" class="value form-control input-lang"
+                   style="background-image:url(/uploads/language/ua.png"/>
+        </td>
+
         <td class="text-center">&mdash;</td>
         <td class="text-center">
             <a href="#" class="delete-option-attribute btn btn-sm btn-default"><i class="icon-delete"></i></a>
@@ -48,12 +52,8 @@ $test = [];
 foreach ($model->options as $k => $o) {
     //echo print_r($o->translations);
     $data2['delete'] = '<a href="#" class="delete-option-attribute btn btn-sm btn-outline-danger"><i class="icon-delete"></i></a>';
-    foreach (Yii::$app->languageManager->languages as $k => $l) {
+    //foreach (Yii::$app->languageManager->languages as $k => $l) {
 
-        $otest = AttributeOptionTranslate::find()->where([
-            'object_id' => $o->id,
-            'language_id' => $l->id])
-            ->one();
 
 
         /*$otest = AttributeOption::find()
@@ -62,27 +62,30 @@ foreach ($model->options as $k => $o) {
             ->one();*/
 
 
-        if ($otest) {
-            $data2['name' . $k] = Html::textInput('options[' . $o->id . '][]', Html::decode($otest->value), ['class' => 'form-control input-lang', 'style' => 'background-image:url(/uploads/language/' . $k . '.png);']);
-        } else {
-            $data2['name' . $k] = Html::textInput('options[' . $o->id . '][]', '', ['class' => 'form-control input-lang', 'style' => 'background-image:url(/uploads/language/' . $k . '.png);']);
-        }
+
+    $data2['name'] = Html::textInput('options[' . $o->id . '][]', $o->value, ['class' => 'form-control input-lang', 'style' => 'background-image:url(/uploads/language/ru.png);']);
+    $data2['name_ua'] = Html::textInput('options[' . $o->id . '][]', $o->value_ua, ['class' => 'form-control input-lang', 'style' => 'background-image:url(/uploads/language/ua.png);']);
+
         $data2['products'] = Html::a($o->productsCount, ['/admin/shop/product/index', 'ProductSearch[eav][' . $model->name . ']' => $o->id], ['target' => '_blank']);
         $data[$o->id] = (array)$data2;
-    }
+   // }
 }
 
 
-foreach (Yii::$app->languageManager->languages as $k => $l) {
 
-    $columns[] = [
-        'header' => $l->name,
-        'attribute' => 'name' . $k,
-        'format' => 'raw',
-        //  'value' => '$data->name'
-    ];
-    $sortAttributes[] = 'name' . $k;
-}
+
+$columns[] = [
+    'header' => 'ru',
+    'attribute' => 'name',
+    'format' => 'raw',
+];
+$columns[] = [
+    'header' => 'ua',
+    'attribute' => 'name_ua',
+    'format' => 'raw',
+];
+    $sortAttributes[] = 'name';
+
 $columns[] = [
     'header' => Yii::t('shop/admin', 'PRODUCT_COUNT'),
     'attribute' => 'products',

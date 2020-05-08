@@ -69,7 +69,7 @@ class Product extends ActiveRecord
 
     use traits\ProductTrait;
 
-    public $translationClass = ProductTranslate::class;
+    //public $translationClass = ProductTranslate::class;
 
     const SCENARIO_INSERT = 'insert';
 
@@ -206,6 +206,7 @@ class Product extends ActiveRecord
         $image = $this->getImage();
         $result = [];
         if ($image) {
+
             $result['url'] = $image->getUrl($size);
             $result['title'] = ($image->alt_title) ? $image->alt_title : $this->name;
         } else {
@@ -224,6 +225,7 @@ class Product extends ActiveRecord
     {
         $small = $this->getMainImage($size);
         $big = $this->getMainImage();
+
         return Html::a(Html::img($small->url, ['alt' => $small->title, 'class' => 'img-thumbnail']), $big->url, ['title' => $this->name, 'data-fancybox' => 'gallery']);
     }
 
@@ -320,14 +322,14 @@ class Product extends ActiveRecord
         $rules[] = [['image'], 'image'];
 
         $rules[] = [['name', 'slug'], 'trim'];
-        $rules[] = [['full_description'], 'string'];
+        $rules[] = [['full_description','length','width','height','weight'], 'string'];
         $rules[] = ['use_configurations', 'boolean', 'on' => self::SCENARIO_INSERT];
         $rules[] = ['enable_comments', 'boolean'];
 		$rules[] = [['unit'], 'default', 'value' => 1];
         $rules[] = [['sku', 'full_description', 'video', 'price_purchase', 'label', 'discount'], 'default']; // установим ... как NULL, если они пустые
         $rules[] = [['price', 'price_purchase'], 'double'];
         $rules[] = [['manufacturer_id', 'type_id', 'quantity', 'views', 'availability', 'added_to_cart_count', 'ordern', 'category_id', 'currency_id', 'supplier_id', 'label'], 'integer'];
-        $rules[] = [['name', 'slug', 'full_description', 'use_configurations'], 'safe'];
+        $rules[] = [['name', 'slug', 'full_description', 'use_configurations','length','width','height','weight'], 'safe'];
 
         return $rules;
     }
