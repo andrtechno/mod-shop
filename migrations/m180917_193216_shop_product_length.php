@@ -9,6 +9,7 @@ namespace panix\mod\shop\migrations;
  * Class m180917_193216_shop_product_length
  */
 
+use panix\mod\shop\models\Length;
 use Yii;
 use panix\engine\db\Migration;
 
@@ -20,21 +21,12 @@ class m180917_193216_shop_product_length extends Migration
      */
     public function up()
     {
-        $this->createTable('{{%shop_product_length}}', [
+        $this->createTable(Length::tableName(), [
             'id' => $this->primaryKey()->unsigned(),
             'value' => $this->decimal(15, 4),
-        ]);
-        $this->createTable('{{%shop_product_length_translate}}', [
-            'id' => $this->primaryKey()->unsigned(),
-            'object_id' => $this->integer()->unsigned(),
-            'language_id' => $this->tinyInteger()->unsigned(),
             'title' => $this->string(32)->notNull(),
             'unit' => $this->string(4)->notNull(),
         ]);
-
-        $this->createIndex('object_id', '{{%shop_product_length_translate}}', 'object_id');
-        $this->createIndex('language_id', '{{%shop_product_length_translate}}', 'language_id');
-
 
         $list = [
             ['name' => 'Centimeter', 'unit' => 'cm', 'value' => 1],
@@ -43,15 +35,9 @@ class m180917_193216_shop_product_length extends Migration
         ];
         $id=1;
         foreach ($list as $key => $data) {
-            $this->batchInsert('{{%shop_product_length}}', ['value'], [
-                [$data['value']]
+            $this->batchInsert(Length::tableName(), ['value', 'title', 'unit'], [
+                [$data['value'], $data['name'], $data['unit']]
             ]);
-
-            foreach (Yii::$app->languageManager->getLanguages(false) as $lang) {
-                $this->batchInsert('{{%shop_product_length_translate}}', ['object_id', 'language_id', 'title', 'unit'], [
-                    [$id, $lang['id'], $data['name'], $data['unit']]
-                ]);
-            }
             $id++;
         }
 
@@ -63,8 +49,7 @@ class m180917_193216_shop_product_length extends Migration
      */
     public function down()
     {
-        $this->dropTable('{{%shop_product_length}}');
-        $this->dropTable('{{%shop_product_length_translate}}');
+        $this->dropTable(Length::tableName());
     }
 
 }

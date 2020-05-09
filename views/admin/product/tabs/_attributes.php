@@ -25,10 +25,19 @@ echo \panix\engine\barcode\BarcodeGenerator::widget([
                 </div>
                 <div class="col-sm-4">
                     <?= Html::activeLabel($model,'width',['class'=>'col-form-label']); ?>
-                    <?= Html::activeTextInput($model,'width',['class'=>'form-control']); ?></div>
+                    <?= Html::activeTextInput($model,'width',['class'=>'form-control']); ?>
+                </div>
                 <div class="col-sm-4">
-                    <?= Html::activeLabel($model,'height',['class'=>'col-form-label']); ?>
-                    <?= Html::activeTextInput($model,'height',['class'=>'form-control']); ?>
+
+                    <div class="input-group">
+                        <?= Html::activeLabel($model,'height',['class'=>'col-form-label']); ?>
+                        <?= Html::activeTextInput($model,'height',['class'=>'form-control']); ?>
+                        <div class="input-group-append">
+                            <?= Html::activeDropDownList($model,'weight_class_id',['class'=>'custom-select'],['class'=>'custom-select']); ?>
+                        </div>
+                    </div>
+
+
                 </div>
             </div>
         </div>
