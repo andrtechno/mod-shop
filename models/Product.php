@@ -2,21 +2,16 @@
 
 namespace panix\mod\shop\models;
 
-
-use panix\mod\discounts\components\DiscountBehavior;
 use panix\mod\images\models\Image;
 use panix\mod\sitemap\behaviors\SitemapBehavior;
 use panix\mod\user\models\User;
 use Yii;
 use panix\engine\CMS;
 use panix\mod\shop\models\query\ProductQuery;
-use panix\mod\shop\models\translate\ProductTranslate;
 use yii\caching\DbDependency;
-use yii\caching\TagDependency;
 use yii\db\Query;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
-use yii\helpers\Url;
 use panix\engine\db\ActiveRecord;
 
 /**
@@ -97,7 +92,7 @@ class Product extends ActiveRecord
 
     public function labels()
     {
-        /** @var DiscountBehavior|self $this */
+        /** @var \panix\mod\discounts\components\DiscountBehavior|self $this */
 
         $labelsList['new'] = [
             'class' => 'success',
@@ -157,7 +152,7 @@ class Product extends ActiveRecord
         $html = '';
         $html .= Html::beginForm(['/cart/add'], 'post', ['id' => 'form-add-cart-' . $this->id]);
         $html .= Html::hiddenInput('product_id', $this->id);
-        $html .= Html::hiddenInput('product_price', $this->price);
+        //$html .= Html::hiddenInput('product_price', $this->price);
         $html .= Html::hiddenInput('use_configurations', $this->use_configurations);
         $html .= Html::hiddenInput('configurable_id', 0);
         return $html;
@@ -322,14 +317,14 @@ class Product extends ActiveRecord
         $rules[] = [['image'], 'image'];
 
         $rules[] = [['name', 'slug'], 'trim'];
-        $rules[] = [['full_description','length','width','height','weight'], 'string'];
+        $rules[] = [['full_description', 'length', 'width', 'height', 'weight'], 'string'];
         $rules[] = ['use_configurations', 'boolean', 'on' => self::SCENARIO_INSERT];
         $rules[] = ['enable_comments', 'boolean'];
-		$rules[] = [['unit'], 'default', 'value' => 1];
-        $rules[] = [['sku', 'full_description', 'video', 'price_purchase', 'label', 'discount'], 'default']; // установим ... как NULL, если они пустые
+        $rules[] = [['unit'], 'default', 'value' => 1];
+        $rules[] = [['sku', 'full_description', 'video', 'price_purchase', 'label', 'discount', 'markup'], 'default']; // установим ... как NULL, если они пустые
         $rules[] = [['price', 'price_purchase'], 'double'];
         $rules[] = [['manufacturer_id', 'type_id', 'quantity', 'views', 'availability', 'added_to_cart_count', 'ordern', 'category_id', 'currency_id', 'supplier_id', 'label'], 'integer'];
-        $rules[] = [['name', 'slug', 'full_description', 'use_configurations','length','width','height','weight'], 'safe'];
+        $rules[] = [['name', 'slug', 'full_description', 'use_configurations', 'length', 'width', 'height', 'weight'], 'safe'];
 
         return $rules;
     }
@@ -402,13 +397,13 @@ class Product extends ActiveRecord
     public function getManufacturer()
     {
         return $this->hasOne(Manufacturer::class, ['id' => 'manufacturer_id']);
-            //->cache(3200, new DbDependency(['sql' => 'SELECT MAX(`updated_at`) FROM ' . Manufacturer::tableName()]));
+        //->cache(3200, new DbDependency(['sql' => 'SELECT MAX(`updated_at`) FROM ' . Manufacturer::tableName()]));
     }
 
     public function getSupplier()
     {
         return $this->hasOne(Supplier::class, ['id' => 'supplier_id']);
-           // ->cache(3200, new DbDependency(['sql' => 'SELECT MAX(`updated_at`) FROM ' . Supplier::tableName()]));
+        // ->cache(3200, new DbDependency(['sql' => 'SELECT MAX(`updated_at`) FROM ' . Supplier::tableName()]));
     }
 
     public function getType()
@@ -760,6 +755,13 @@ class Product extends ActiveRecord
     public function getFrontPrice()
     {
         $currency = Yii::$app->currency;
+        //if ($this->hasMarkup) {
+
+           // $this->price = $this->markupPrice;
+           // if ($this->hasDiscount) {
+               // $this->discountPrice = '123';
+            //}
+       // }
         if ($this->hasDiscount) {
             $price = $currency->convert($this->discountPrice, $this->currency_id);
         } else {
@@ -810,12 +812,12 @@ class Product extends ActiveRecord
           $comapreProduct = new CompareProducts;
           $comapreProduct->remove($this->id);
           } */
-		  
+
 
         if (Yii::$app->hasModule('wishlist')) {
             Yii::$app->db->createCommand()->delete(\panix\mod\wishlist\models\WishListProducts::tableName(), ['product_id' => $this->id])->execute();
         }
-		  
+
         parent::afterDelete();
     }
 
@@ -886,7 +888,7 @@ class Product extends ActiveRecord
 
 
             //$attributeModel = Attribute::find()->where(['name' => $attribute])->cache(3600 * 24, $dependency)->one();
-            return ['name'=>$attributeModel->title,'value'=>$attributeModel->renderValue($value)];
+            return ['name' => $attributeModel->title, 'value' => $attributeModel->renderValue($value)];
         }
         return parent::__get($name);
     }
@@ -946,10 +948,16 @@ class Product extends ActiveRecord
                 'owner_title' => 'name', // Attribute name to present comment owner in admin panel
             ];
         }
+        if (Yii::$app->getModule('markup') && Yii::$app->id !== 'console')
+            $a['markup'] = [
+                'class' => '\panix\mod\markup\components\MarkupBehavior'
+            ];
+
         if (Yii::$app->getModule('discounts') && Yii::$app->id !== 'console')
             $a['discounts'] = [
                 'class' => '\panix\mod\discounts\components\DiscountBehavior'
             ];
+
 
         return ArrayHelper::merge($a, parent::behaviors());
     }
