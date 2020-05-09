@@ -8,7 +8,7 @@ use panix\mod\shop\models\ProductType;
 
 ?>
 <?php if (!$model->isNewRecord) { ?>
-    <div class="row">
+    <div class="row d-none">
         <div class="col-sm-4">
 
         </div>
@@ -17,7 +17,6 @@ use panix\mod\shop\models\ProductType;
             <span class="badge badge-secondary"><?= $model->views; ?> просмотров</span>
         </div>
         <div class="col-sm-4">
-            <?php var_dump($model->switch); ?>
             <span class="badge badge-secondary">Товар скрыт</span>
         </div>
     </div>
@@ -181,7 +180,6 @@ use panix\mod\shop\models\ProductType;
                 ActiveForm::end();
             }
         } else {
-            echo $this->theme->alert('test');
             echo '<div class="alert alert-danger">' . Yii::t('shop/admin', 'SELECT_TYPE_PRODUCT') . '</div>';
         }
         ?>
