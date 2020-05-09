@@ -323,7 +323,7 @@ class Product extends ActiveRecord
         $rules[] = [['unit'], 'default', 'value' => 1];
         $rules[] = [['sku', 'full_description', 'video', 'price_purchase', 'label', 'discount', 'markup'], 'default']; // установим ... как NULL, если они пустые
         $rules[] = [['price', 'price_purchase'], 'double'];
-        $rules[] = [['manufacturer_id', 'type_id', 'quantity', 'views', 'availability', 'added_to_cart_count', 'ordern', 'category_id', 'currency_id', 'supplier_id', 'label'], 'integer'];
+        $rules[] = [['manufacturer_id', 'type_id', 'quantity', 'views', 'availability', 'added_to_cart_count', 'ordern', 'category_id', 'currency_id', 'supplier_id', 'label', 'weight_class_id', 'length_class_id'], 'integer'];
         $rules[] = [['name', 'slug', 'full_description', 'use_configurations', 'length', 'width', 'height', 'weight'], 'safe'];
 
         return $rules;
@@ -757,11 +757,11 @@ class Product extends ActiveRecord
         $currency = Yii::$app->currency;
         //if ($this->hasMarkup) {
 
-           // $this->price = $this->markupPrice;
-           // if ($this->hasDiscount) {
-               // $this->discountPrice = '123';
-            //}
-       // }
+        // $this->price = $this->markupPrice;
+        // if ($this->hasDiscount) {
+        // $this->discountPrice = '123';
+        //}
+        // }
         if ($this->hasDiscount) {
             $price = $currency->convert($this->discountPrice, $this->currency_id);
         } else {
