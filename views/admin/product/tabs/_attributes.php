@@ -20,7 +20,6 @@ echo \panix\engine\barcode\BarcodeGenerator::widget([
         <div class="col-sm-8 col-lg-10">
             <div class="row">
                 <div class="col-sm-4">
-
                     <?= Html::activeLabel($model,'length',['class'=>'col-form-label']); ?>
                     <?= Html::activeTextInput($model,'length',['class'=>'form-control']); ?>
                 </div>
