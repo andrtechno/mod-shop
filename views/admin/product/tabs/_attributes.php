@@ -2,8 +2,9 @@
 
 use panix\engine\Html;
 use panix\mod\shop\models\Attribute;
+use panix\mod\shop\models\Length;
 
-//$chosen = array(); // Array of ids to enable chosen
+
 $attributes = (isset($model->type->shopAttributes)) ? $model->type->shopAttributes : [];
 
 
@@ -33,7 +34,7 @@ echo \panix\engine\barcode\BarcodeGenerator::widget([
                         <?= Html::activeLabel($model,'height',['class'=>'col-form-label']); ?>
                         <?= Html::activeTextInput($model,'height',['class'=>'form-control']); ?>
                         <div class="input-group-append">
-                            <?= Html::activeDropDownList($model,'weight_class_id',['class'=>'custom-select'],['class'=>'custom-select']); ?>
+                            <?= Html::activeDropDownList($model,'weight_class_id',\yii\helpers\ArrayHelper::map(Length::find()->all(), 'id', 'title'),['class'=>'custom-select']); ?>
                         </div>
                     </div>
 
