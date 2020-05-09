@@ -189,41 +189,38 @@ use panix\mod\shop\models\ProductType;
 
 
 <?php
-
+/*
 $this->registerJs('
 $(document).ready(function () {
-        $("body").on("beforeSubmit111", "form#product-form", function () {
-            var form = $(this);
-            // return false if form still have some validation errors
-            if (form.find(".has-error").length) 
-            {
-                return false;
-            }
-            // submit form
+    $("body").on("beforeSubmit111", "form#product-form", function () {
+        var form = $(this);
+        // return false if form still have some validation errors
+        if (form.find(".has-error").length) {
+            return false;
+        }
+        // submit form
             
-               var $input = $("#product-file");
-    var fd = new FormData;
+        var $input = $("#product-file");
+        var fd = new FormData;
     
-      fd.append(\'img\', $input.prop(\'files\')[0]);
+        fd.append(\'img\', $input.prop(\'files\')[0]);
             $.ajax({
-            url    : form.attr("action"),
-            type   : "post",
-             processData: false,
-        contentType: false,
-            data   : fd, //form.serialize(),
-            success: function (response) 
-            {
-                var getupdatedata = $(response).find("#filter_id_test");
-                // $.pjax.reload("#note_update_id"); for pjax update
-                $("#yiiikap").html(getupdatedata);
-                //console.log(getupdatedata);
-            },
-            error  : function () 
-            {
-                console.log(\'internal server error\');
-            }
+                url: form.attr("action"),
+                type: "post",
+                processData: false,
+                contentType: false,
+                data: fd, //form.serialize(),
+                success: function (response) {
+                    var getupdatedata = $(response).find("#filter_id_test");
+                    // $.pjax.reload("#note_update_id"); for pjax update
+                    $("#yiiikap").html(getupdatedata);
+                    //console.log(getupdatedata);
+                },
+                error  : function () {
+                    console.log(\'internal server error\');
+                }
             });
             return false;
          });
     });
-');
+');*/
