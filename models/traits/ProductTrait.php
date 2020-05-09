@@ -118,92 +118,38 @@ trait ProductTrait
             'prefix' => '<sup>' . Yii::$app->currency->main['symbol'] . '</sup>',
             'contentOptions' => ['class' => 'text-center', 'style' => 'position:relative'],
             'value' => function ($model) {
+                /** @var static $model */
                 $prices = [];
-                $newprice = [];
-                /** @var $model Product */
-                $discount = '';
+                $prices[Yii::$app->currency->main['id']]['symbol'] = Yii::$app->currency->main['symbol'];
                 if ($model->hasDiscount) {
-                    $price = $model->discountPrice;
-                    $priceCurrency = $model->discountPrice * Yii::$app->currency->currencies[$model->currency_id]['rate'];
-                    $discount = '<del class="text-secondary">' . Yii::$app->currency->number_format($model->originalPrice) . '</del> / ';
-                    if ($model->currency_id) {
-                        $newprice[$model->currency_id]['price'] = $model->discountPrice;
-                        $newprice[$model->currency_id]['discount_price'] = $model->price;
-
-
-                        $newprice[$model->currency_id][Yii::$app->currency->main['iso']]['price'] = $model->discountPrice * Yii::$app->currency->currencies[$model->currency_id]['rate'];
-                        $newprice[$model->currency_id][Yii::$app->currency->main['iso']]['discount_price'] = $model->price * Yii::$app->currency->currencies[$model->currency_id]['rate'];
-                        $newprice[$model->currency_id][Yii::$app->currency->main['iso']]['symbol'] = Yii::$app->currency->main['symbol'];
-                    } else {
-                        // $newprice[$model->currency_id]['price'] = $model->price;
-                    }
-
+                    $prices[Yii::$app->currency->main['id']]['value'] = $model->discountPrice;
+                    $prices[Yii::$app->currency->main['id']]['original_value'] = $model->price;
                 } else {
-                    if ($model->currency_id) {
-                        $newprice[$model->currency_id]['price'] = $model->price;
-                        $newprice[$model->currency_id][Yii::$app->currency->main['iso']]['price'] = $model->price * Yii::$app->currency->currencies[$model->currency_id]['rate'];
-                        $newprice[$model->currency_id][Yii::$app->currency->main['iso']]['symbol'] = Yii::$app->currency->main['symbol'];
-                    } else {
-                        $newprice[0]['price'] = $model->price;
-                    }
-
-                    $price = $model->price;
-                    //  $priceCurrency = $model->price*Yii::$app->currency->currencies[$model->currency_id]['rate'];
+                    $prices[Yii::$app->currency->main['id']]['value'] = $model->price;
                 }
-                if ($model->currency_id) {
-                    $newprice[$model->currency_id]['symbol'] = Yii::$app->currency->currencies[$model->currency_id]['symbol'];
+                if ($model->currency_id && Yii::$app->currency->main['id'] != $model->currency_id) {
+                    if ($model->hasDiscount) {
 
-                    // $newprice[$model->currency_id]['price']=$price;
-
-                    // $symbol = Html::tag('span', Yii::$app->currency->currencies[$model->currency_id]['symbol']);
-                    // $symbol2 = Html::tag('span', Yii::$app->currency->currencies[1]['symbol']);
-                    //  $prices[] = Html::tag('span', Yii::$app->currency->number_format($price), ['class' => 'text-success font-weight-bold']).' '.$symbol;
-                    //  $prices[] = Html::tag('span', Yii::$app->currency->number_format($priceCurrency), ['class' => 'text-success font-weight-bold']).' '.$symbol2;
-                    //  $priceHtml = implode('<br/>',$prices);
-
-                } else {
-                    $newprice[0]['symbol'] = Yii::$app->currency->main['symbol'];
-                    $symbol = Html::tag('sup', Yii::$app->currency->main['symbol']);
-                    $priceHtml = Html::tag('span', Yii::$app->currency->number_format(Yii::$app->currency->convert($price, $model->currency_id)), ['class' => 'text-success font-weight-bold']) . ' ' . $symbol;
-
-                }
-
-
-               // CMS::dump($newprice);//die;
-                $html='';
-                $data=[];
-                foreach ($newprice as $currency=>$price_data){
-                    $price='';
-                    if(isset($price_data['discount_price'])){
-                        $price.='<del class="text-secondary">'.Yii::$app->currency->number_format($price_data['discount_price']).'</del> / ';
-                    }
-                    $price.=Html::tag('span', Yii::$app->currency->number_format($price_data['price']), ['class' => 'text-success font-weight-bold']).' '.$price_data['symbol'];
-
-                    $data[]=$price;
-
-                    $pricesub='';
-                    if(isset($price_data[Yii::$app->currency->main['iso']])){
-                        $subPrice = $price_data[Yii::$app->currency->main['iso']];
-
-                        if(isset($subPrice['discount_price'])){
-                          //  $pricesub.='<del class="text-secondary">'.Yii::$app->currency->number_format($subPrice['discount_price']).'</del> / ';
-                        }
-
-                        //foreach ($price_data[Yii::$app->currency->main['iso']] as $price1){
-                        $pricesub.=Html::tag('span', Yii::$app->currency->number_format($subPrice['price']), ['class' => 'text-success font-weight-bold']).' '.$price_data[Yii::$app->currency->main['iso']]['symbol'];
-                        //}
-
-                        $data[] = $pricesub;
-                       // if(isset($price_data[Yii::$app->currency->main['iso']]['old_price'])){
-                       //     $data[]=Html::tag('span', Yii::$app->currency->number_format($price_data['old_price']), ['class' => 'text-success font-weight-bold']).' '.$price_data['symbol'];
-                       // }
+                        $prices[Yii::$app->currency->main['id']]['value'] = $model->discountPrice * Yii::$app->currency->currencies[$model->currency_id]['rate'];
+                        $prices[Yii::$app->currency->main['id']]['original_value'] = $model->price * Yii::$app->currency->currencies[$model->currency_id]['rate'];
+                    }else{
+                        $prices[Yii::$app->currency->main['id']]['value'] = $model->price * Yii::$app->currency->currencies[$model->currency_id]['rate'];
                     }
 
                 }
 
 
-                //$ss .= '<span class="badge badge-danger position-absolute" style="top:0;right:0;">123</span>';
-                return implode('<br>',$data);
+                $data = [];
+                foreach ($prices as $currency => $price_data) {
+                    $price = '';
+                    if (isset($price_data['original_value'])) {
+                        $price .= '<del class="text-secondary">' . Yii::$app->currency->number_format($price_data['original_value']) . '</del> / ';
+                    }
+                    $price .= Html::tag('span', Yii::$app->currency->number_format($price_data['value']), ['class' => 'text-success font-weight-bold']) . ' ' . $price_data['symbol'];
+                    //$price .= Html::tag('span', $price_data['value'], ['class' => 'text-success font-weight-bold']) . ' ' . $price_data['symbol'];
+                    $data[] = $price;
+                }
+                return implode('<br>', $data);
             }
         ];
         $columns['supplier_id'] = [
