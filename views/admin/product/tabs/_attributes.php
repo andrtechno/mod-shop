@@ -3,6 +3,7 @@
 use panix\engine\Html;
 use panix\mod\shop\models\Attribute;
 use panix\mod\shop\models\Length;
+use panix\mod\shop\models\Weight;
 use yii\helpers\ArrayHelper;
 
 $attributes = (isset($model->type->shopAttributes)) ? $model->type->shopAttributes : [];
@@ -33,7 +34,7 @@ echo \panix\engine\barcode\BarcodeGenerator::widget([
                     <div class="input-group">
                         <?= Html::activeTextInput($model,'height',['class'=>'form-control']); ?>
                         <div class="input-group-append">
-                            <?= Html::activeDropDownList($model,'weight_class_id',ArrayHelper::map(Length::find()->all(), 'id', 'title'),['class'=>'custom-select']); ?>
+                            <?= Html::activeDropDownList($model,'length_class_id',ArrayHelper::map(Length::find()->all(), 'id', 'title'),['class'=>'custom-select']); ?>
                         </div>
                     </div>
                 </div>
@@ -43,9 +44,13 @@ echo \panix\engine\barcode\BarcodeGenerator::widget([
     <div class="form-group row">
         <div class="col-sm-4 col-lg-2"><?= Html::activeLabel($model,'weight',['class'=>'col-form-label']); ?></div>
         <div class="col-sm-8 col-lg-10">
-            <div class="row">
-                <div class="col-sm-4"><?= Html::activeTextInput($model,'weight',['class'=>'form-control']); ?></div>
-                <div class="col-sm-4">123</div>
+
+            <div class="input-group">
+                <?= Html::activeTextInput($model,'weight',['class'=>'form-control']); ?>
+                <div class="input-group-append">
+                    <?= Html::activeDropDownList($model,'weight_class_id',ArrayHelper::map(Weight::find()->all(), 'id', 'title'),['class'=>'custom-select']); ?>
+                </div>
+            </div>
             </div>
         </div>
     </div>
