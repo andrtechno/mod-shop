@@ -2,6 +2,7 @@
 
 namespace panix\mod\shop\controllers\admin;
 
+use panix\engine\behaviors\nestedsets\NestedSetsBehavior;
 use panix\engine\CMS;
 use Yii;
 use panix\engine\controllers\AdminController;
@@ -138,8 +139,12 @@ class CategoryController extends AdminController
 
     public function actionCreateRoot()
     {
-
-        Yii::$app->db->createCommand()->truncateTable(Category::tableName())->execute();
+        /**
+         * @var Category|NestedSetsBehavior $model
+         * @var Category|NestedSetsBehavior $model2
+         * @var Category|NestedSetsBehavior $model3
+         **/
+        Category::getDb()->createCommand()->truncateTable(Category::tableName())->execute();
 
         $model = new Category;
         $model->name = 'Каталог продукции';
@@ -173,7 +178,7 @@ class CategoryController extends AdminController
             $model2->name = 'Category 3';
             $model2->slug = CMS::slug($model2->name);
             $model2->appendTo($model);
-
+            return $this->redirect(['index']);
         } else {
             print_r($model->getErrors());
             die;
