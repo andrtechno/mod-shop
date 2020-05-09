@@ -3,7 +3,7 @@
 use panix\engine\Html;
 use panix\mod\shop\models\Attribute;
 use panix\mod\shop\models\Length;
-
+use yii\helpers\ArrayHelper;
 
 $attributes = (isset($model->type->shopAttributes)) ? $model->type->shopAttributes : [];
 
@@ -29,16 +29,13 @@ echo \panix\engine\barcode\BarcodeGenerator::widget([
                     <?= Html::activeTextInput($model,'width',['class'=>'form-control']); ?>
                 </div>
                 <div class="col-sm-4">
-
+                    <?= Html::activeLabel($model,'height',['class'=>'col-form-label']); ?>
                     <div class="input-group">
-                        <?= Html::activeLabel($model,'height',['class'=>'col-form-label']); ?>
                         <?= Html::activeTextInput($model,'height',['class'=>'form-control']); ?>
                         <div class="input-group-append">
-                            <?= Html::activeDropDownList($model,'weight_class_id',\yii\helpers\ArrayHelper::map(Length::find()->all(), 'id', 'title'),['class'=>'custom-select']); ?>
+                            <?= Html::activeDropDownList($model,'weight_class_id',ArrayHelper::map(Length::find()->all(), 'id', 'title'),['class'=>'custom-select']); ?>
                         </div>
                     </div>
-
-
                 </div>
             </div>
         </div>
