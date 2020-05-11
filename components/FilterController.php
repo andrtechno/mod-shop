@@ -132,14 +132,7 @@ class FilterController extends WebController
         if ($this->_currentMinPrice !== null)
             return $this->_currentMinPrice;
 
-
-        if (isset($this->prices[0])) { //if (Yii::$app->request->get('min_price'))
-            $this->_currentMinPrice = $this->prices[0];
-
-        } else {
-
-            $this->_currentMinPrice = Yii::$app->currency->convert($this->getMinPrice());
-        }
+        $this->_currentMinPrice = (isset($this->prices[0])) ? $this->prices[0] : Yii::$app->currency->convert($this->getMinPrice());
 
         return $this->_currentMinPrice;
     }
@@ -147,15 +140,16 @@ class FilterController extends WebController
     /**
      * @return mixed
      */
+
+    /**
+     * @return string
+     */
     public function getCurrentMaxPrice()
     {
         if ($this->_currentMaxPrice !== null)
             return $this->_currentMaxPrice;
 
-        if (isset($this->prices[1])) //if (Yii::$app->request->get('max_price'))
-            $this->_currentMaxPrice = $this->prices[1];//Yii::$app->request->get('max_price');
-        else
-            $this->_currentMaxPrice = Yii::$app->currency->convert($this->getMaxPrice());
+        $this->_currentMaxPrice = (isset($this->prices[1])) ? $this->prices[1] : Yii::$app->currency->convert($this->getMaxPrice());
 
         return $this->_currentMaxPrice;
     }
@@ -173,10 +167,10 @@ class FilterController extends WebController
             $queryCategoryTypes->applyManufacturers($this->dataModel->id);
         }
 
-            $queryCategoryTypes->published();
-            $queryCategoryTypes->select(Product::tableName() . '.type_id');
-            $queryCategoryTypes->groupBy(Product::tableName() . '.type_id');
-            $queryCategoryTypes->distinct(true);
+        $queryCategoryTypes->published();
+        $queryCategoryTypes->select(Product::tableName() . '.type_id');
+        $queryCategoryTypes->groupBy(Product::tableName() . '.type_id');
+        $queryCategoryTypes->distinct(true);
 //echo $queryCategoryTypes->createCommand()->rawSql;die;
         $typesIds = $queryCategoryTypes->createCommand()->queryColumn();
 
@@ -265,7 +259,7 @@ class FilterController extends WebController
             if ($this->getCurrentMinPrice() > 0) {
                 $menuItems['price']['items'][] = [
                     // 'name'=>'min_price',
-					'value_url' => number_format($this->getCurrentMinPrice(),0,'',''),
+                    'value_url' => number_format($this->getCurrentMinPrice(), 0, '', ''),
                     'value' => Yii::$app->currency->number_format($this->getCurrentMinPrice()),
                     'label' => Html::decode(Yii::t('shop/default', 'FILTER_CURRENT_PRICE_MIN', ['value' => Yii::$app->currency->number_format($this->getCurrentMinPrice()), 'currency' => Yii::$app->currency->active['symbol']])),
                     'linkOptions' => ['class' => 'remove', 'data-price' => 'min_price'],
@@ -278,7 +272,7 @@ class FilterController extends WebController
             if ($this->getCurrentMaxPrice() > 0) {
                 $menuItems['price']['items'][] = [
                     // 'name'=>'max_price',
-					'value_url' => number_format($this->getCurrentMaxPrice(),0,'',''),
+                    'value_url' => number_format($this->getCurrentMaxPrice(), 0, '', ''),
                     'value' => Yii::$app->currency->number_format($this->getCurrentMaxPrice()),
                     'label' => Yii::t('shop/default', 'FILTER_CURRENT_PRICE_MAX', ['value' => Yii::$app->currency->number_format($this->getCurrentMaxPrice()), 'currency' => Yii::$app->currency->active['symbol']]),
                     'linkOptions' => array('class' => 'remove', 'data-price' => 'max_price'),
@@ -370,7 +364,7 @@ class FilterController extends WebController
         return $menuItems;
     }
 
-/*todo: no used*/
+    /*todo: no used*/
     public function applyPricesFilter()
     {
         $minPrice = (isset($this->prices[0])) ? $this->prices[0] : 0;
@@ -444,10 +438,10 @@ class FilterController extends WebController
         $result['title'] = $name;
         return $result;
     }
-	
-	
-	
-    public function _render(){
+
+
+    public function _render()
+    {
         $activeFilters = $this->getActiveFilters();
         if (Yii::$app->request->isAjax) {
             if (Yii::$app->request->headers->has('filter-ajax')) {
@@ -465,7 +459,7 @@ class FilterController extends WebController
                     'currentFiltersData' => ($activeFilters) ? $this->renderPartial('@shop/widgets/filtersnew/views/current', [ //'@shop/widgets/filtersnew/views/current', '@app/widgets/filters/current'
                         'dataModel' => $this->dataModel,
                         'active' => $activeFilters,
-                        'url'=>$url
+                        'url' => $url
                     ]) : null
                 ];
             } else {
@@ -477,7 +471,8 @@ class FilterController extends WebController
         }
         return $this->render('@shop/views/catalog/view', [
             'provider' => $this->provider,
-            'itemView' => $this->itemView
+            'itemView' => $this->itemView,
+
         ]);
     }
 }

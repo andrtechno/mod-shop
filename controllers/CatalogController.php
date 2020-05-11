@@ -65,10 +65,6 @@ class CatalogController extends FilterController
         // Filter products by price range if we have min or max in request
         //$this->applyPricesFilter();
 
-        // $this->maxprice = (int)$this->currentQuery->max('price');
-        // $this->minprice = (int)$this->currentQuery->min('price');
-        //$this->maxprice = $this->getMaxPrice();
-        //$this->minprice = $this->getMinPrice();
 
 
         //$this->query->addOrderBy(['price'=>SORT_DESC]);

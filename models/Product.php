@@ -659,13 +659,13 @@ class Product extends ActiveRecord
         // Save configurable attributes
         if ($this->_configurable_attribute_changed === true) {
             // Clear
-            Yii::$app->db->createCommand()->delete('{{%shop__product_configurable_attributes}}', 'product_id = :id', array(':id' => $this->id));
+            self::getDb()->createCommand()->delete('{{%shop__product_configurable_attributes}}', 'product_id = :id', array(':id' => $this->id));
 
             foreach ($this->_configurable_attributes as $attr_id) {
-                Yii::$app->db->createCommand()->insert('{{%shop__product_configurable_attributes}}', array(
+                self::getDb()->createCommand()->insert('{{%shop__product_configurable_attributes}}', [
                     'product_id' => $this->id,
                     'attribute_id' => $attr_id
-                ));
+                ]);
             }
         }
 
@@ -696,6 +696,20 @@ class Product extends ActiveRecord
         if ($this->auto) {
             $this->name = $this->replaceName();
             $this->slug = CMS::slug($this->name);
+        }
+
+
+        //Prices history
+        if (isset($changedAttributes['price_purchase'])) {
+            if ($this->attributes['price_purchase'] <> $changedAttributes['price_purchase']) {
+                self::getDb()->createCommand()->insert('{{%shop__product_price_history}}', [
+                    'product_id' => $this->id,
+                    'currency_id' => $this->currency_id,
+                    'price' => $this->price,
+                    'price_purchase' => $this->price_purchase,
+                    'created_at' => time()
+                ])->execute();
+            }
         }
 
         parent::afterSave($insert, $changedAttributes);

@@ -32,11 +32,25 @@ class m180917_193517_shop_currency extends Migration {
             'updated_at' => $this->integer(),
             'ordern' => $this->integer()->unsigned(),
         ]);
-
         $this->createIndex('is_main', Currency::tableName(), 'is_main');
         $this->createIndex('is_default', Currency::tableName(), 'is_default');
         $this->createIndex('ordern', Currency::tableName(), 'ordern');
         $this->createIndex('updated_at', Currency::tableName(), 'updated_at');
+
+        $this->createTable('{{%shop__currency_history}}', [
+            'id' => $this->primaryKey()->unsigned(),
+            'currency_id' => $this->integer()->null(),
+            'rate' => $this->money(10,2)->notNull()->defaultValue(null),
+            'rate_old' => $this->money(10,2),
+            'created_at' => $this->integer(),
+            'updated_at' => $this->integer(),
+        ]);
+
+
+
+        $this->createIndex('currency_id', '{{%shop__currency_history}}', 'currency_id');
+        $this->createIndex('created_at', '{{%shop__currency_history}}', 'created_at');
+        $this->createIndex('updated_at', '{{%shop__currency_history}}', 'updated_at');
 
         $columns = ['name', 'iso', 'symbol', 'rate', 'penny', 'separator_hundredth', 'separator_thousandth', 'is_main', 'is_default', 'switch', 'ordern'];
         $this->batchInsert(Currency::tableName(), $columns, [

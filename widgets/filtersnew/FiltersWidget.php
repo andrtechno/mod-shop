@@ -46,9 +46,9 @@ class FiltersWidget extends Widget
     public function init()
     {
         $view = $this->getView();
+
         $this->priceMax = Yii::$app->controller->getMaxPrice();
         $this->priceMin = Yii::$app->controller->getMinPrice();
-
 
         if (Yii::$app->request->get('price')) {
             $this->prices = explode(',', Yii::$app->request->get('price'));
@@ -165,12 +165,12 @@ class FiltersWidget extends Widget
         $newData[$attribute->name][] = $option->id;
 
         $res = $model->withEavAttributes($newData);
-       // $res->groupBy = false;
+        // $res->groupBy = false;
         //$res->distinct(false);
         $res->cache(86400);
 
         // print_r($newData);die;
-       // echo $res->createCommand()->rawSql;die;
+        // echo $res->createCommand()->rawSql;die;
 
         //$dependencyQuery = $model;
         //$dependencyQuery->select('COUNT(*)');
@@ -203,7 +203,7 @@ class FiltersWidget extends Widget
             echo $this->render('current', ['active' => $active, 'dataModel' => $this->model, 'url' => $url]);
         }
         echo Html::endTag('div');
-        echo $this->render('price');
+        echo $this->render('price', ['priceMin' => $this->priceMin, 'priceMax' => $this->priceMax]);
         echo $this->render('attributes', ['attributes' => $this->getCategoryAttributes()]);
         echo $this->render('manufacturer', ['manufacturers' => $manufacturers]);
         echo Html::endForm();

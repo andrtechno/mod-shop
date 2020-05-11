@@ -3,15 +3,14 @@ use yii\helpers\Html;
 use panix\mod\shop\models\Product;
 
 $cm = Yii::$app->currency;
-$minPrice = Yii::$app->controller->getMinPrice();
-$maxPrice = Yii::$app->controller->getMaxPrice();
+
 
 
 //if (($minPrice && $maxPrice) && ($minPrice !== $maxPrice)) {
-$getDefaultMin = floor($minPrice);
-$getDefaultMax = ceil($maxPrice);
-$getMax = Yii::$app->controller->getCurrentMaxPrice();
-$getMin = Yii::$app->controller->getCurrentMinPrice();
+$getDefaultMin = floor($priceMin);
+$getDefaultMax = ceil($priceMax);
+$getMax = $this->context->getCurrentMaxPrice();
+$getMin = $this->context->getCurrentMinPrice();
 
 
 $min = (int)floor($getMin); //$cm->convert()
@@ -39,18 +38,6 @@ if($getDefaultMin != $getDefaultMax){
                     <div class="col-6">
                         <?php
                         echo Html::textInput('filter[price][]', (isset(Yii::$app->controller->prices[1])) ? $getMax : null, ['id' => 'max_price', 'class' => '']);
-                        ?>
-                    </div>
-
-
-                    <div class="col-6">
-                        <?php
-                        //echo Html::textInput('min_price', (isset($_GET['min_price'])) ? $getMin : null, ['id' => 'min_price', 'class' => '']);
-                        ?>
-                    </div>
-                    <div class="col-6">
-                        <?php
-                        //echo Html::textInput('max_price', (isset($_GET['max_price'])) ? $getMax : null, ['id' => 'max_price', 'class' => '']);
                         ?>
                     </div>
                 </div>
