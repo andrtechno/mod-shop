@@ -25,6 +25,8 @@ use panix\engine\db\ActiveRecord;
  * @property integer $use_configurations
  * @property string $slug
  * @property string $name Product name
+ * @property string $short_description Product short_description
+ * @property string $full_description Product full_description
  * @property float $price Price
  * @property float $max_price Max price
  * @property float $price_purchase
@@ -948,6 +950,10 @@ class Product extends ActiveRecord
         $a['eav'] = [
             'class' => '\panix\mod\shop\components\EavBehavior',
             'tableName' => '{{%shop__product_attribute_eav}}'
+        ];
+        $a['translate'] = [
+            'class' => '\panix\mod\shop\components\TranslateBehavior',
+            'translationAttributes' => ['name','short_description','full_description']
         ];
         if (Yii::$app->getModule('seo'))
             $a['seo'] = [

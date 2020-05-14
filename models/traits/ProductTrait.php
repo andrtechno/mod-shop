@@ -229,7 +229,7 @@ trait ProductTrait
             ->all();*/
 
 
-        $db = Attribute::getDb();
+        /*$db = Attribute::getDb();
         $query = $db->cache(function () {
             return Attribute::find()
                 ->displayOnFront()
@@ -256,7 +256,7 @@ trait ProductTrait
                 'filterOptions' => ['class' => 'text-center'],
 
             ];
-        }
+        }*/
 
 
         $columns['DEFAULT_CONTROL'] = [

@@ -46,7 +46,7 @@ GridView::widget([
             }
         ],
         ['class' => 'panix\engine\grid\columns\ActionColumn',
-            'template' => '{update}{delete}',
+            'template' => '{update}{switch}{delete}',
             'buttons' => [
                 "active" => function ($url, $model) {
                     if ($model->switch == 1)

@@ -15,6 +15,7 @@ class AttributeGroupController extends AdminController {
                 'class' => \panix\engine\grid\sortable\Action::class,
                 'modelClass' => AttributeGroup::class,
             ],
+
         ];
     }
 

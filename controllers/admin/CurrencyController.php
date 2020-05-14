@@ -20,6 +20,10 @@ class CurrencyController extends AdminController
                 'class' => \panix\engine\grid\sortable\Action::class,
                 'modelClass' => Currency::class,
             ],
+            'switch' => [
+                'class' => 'panix\engine\actions\SwitchAction',
+                'modelClass' => Currency::class,
+            ],
         ];
     }
 
