@@ -22,16 +22,12 @@ use panix\mod\shop\models\AttributeOption;
 <table>
     <tr class="copyMe">
         <td class="text-center">&mdash;</td>
-
+        <?php foreach (Yii::$app->languageManager->languages as $k => $l) { ?>
         <td>
             <input name="sample" type="text" class="value form-control input-lang"
-                   style="background-image:url(/uploads/language/ru.png"/>
+                   style="background-image:url(/uploads/language/<?= $k;?>.png"/>
         </td>
-        <td>
-            <input name="sample" type="text" class="value form-control input-lang"
-                   style="background-image:url(/uploads/language/ua.png"/>
-        </td>
-
+        <?php } ?>
         <td class="text-center">&mdash;</td>
         <td class="text-center">
             <a href="#" class="delete-option-attribute btn btn-sm btn-default"><i class="icon-delete"></i></a>
@@ -60,7 +56,10 @@ foreach ($model->options as $k => $o) {
             ->where([AttributeOption::tableName().'.id' => $o->id])
             ->translate($l->id)
             ->one();*/
+foreach (Yii::$app->languageManager->languages as $k => $l) {
 
+
+}
 
 
     $data2['name'] = Html::textInput('options[' . $o->id . '][]', $o->value, ['class' => 'form-control input-lang', 'style' => 'background-image:url(/uploads/language/ru.png);']);

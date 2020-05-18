@@ -2,6 +2,7 @@
 
 namespace panix\mod\shop\components;
 
+use panix\engine\CMS;
 use Yii;
 use yii\base\Widget;
 use panix\engine\Html;
@@ -109,8 +110,6 @@ class AttributesRender extends Widget
             return $this->_models;
 
         $this->_models = [];
-        //$cr = new CDbCriteria;
-        //$cr->addInCondition('t.name', array_keys($this->_attributes));
 
         // $query = Attribute::getDb()->cache(function () {
         $query = Attribute::find()
@@ -119,7 +118,6 @@ class AttributesRender extends Widget
             ->sort()
             ->all();
         // }, 3600);
-
 
         foreach ($query as $m)
             $this->_models[$m->name] = $m;

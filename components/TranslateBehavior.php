@@ -67,13 +67,10 @@ class TranslateBehavior extends Behavior
         $owner = $this->owner;
         if ($owner->isNewRecord) {
             foreach (Yii::$app->languageManager->languages as $language) {
-                // if (Yii::$app->languageManager->default->code == $language->code) {
                 foreach ($this->translationAttributes as $attr) {
                     $owner->{$attr . '_' . $language->code} = $owner->{$attr};
-                    die('zzzz');
                     //  $owner->setAttribute($attr . '_' . $language->code, $owner->{$attr});
                 }
-                // }
 
             }
             $owner->save(false);
@@ -106,14 +103,11 @@ class TranslateBehavior extends Behavior
     {
 
         $owner = $this->owner;
-       // if (!$owner->isNewRecord) {
-            $attribute = $owner->getAttribute($name . '_' . Yii::$app->language);
-            if (!$attribute) {
-                $attribute = $owner->getAttribute($name . '_' . $this->manager->default->code);
-            }
-       // } else {
-       //     return $name . '_' . Yii::$app->language;
-       // }
+        $attribute = $owner->getAttribute($name . '_' . Yii::$app->language);
+
+        if (!$attribute) {
+            $attribute = $owner->getAttribute($name . '_' . $this->manager->default->code);
+        }
         return $attribute;
     }
 

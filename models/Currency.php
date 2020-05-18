@@ -3,6 +3,7 @@
 namespace panix\mod\shop\models;
 
 use \panix\engine\db\ActiveRecord;
+use panix\mod\shop\models\query\CurrencyQuery;
 
 /**
  * Class Currency
@@ -28,6 +29,11 @@ class Currency extends ActiveRecord
     public static function tableName()
     {
         return '{{%shop__currency}}';
+    }
+
+    public static function find()
+    {
+        return new CurrencyQuery(get_called_class());
     }
 
     public static function currenciesList()

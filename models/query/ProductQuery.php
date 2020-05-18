@@ -2,6 +2,7 @@
 
 namespace panix\mod\shop\models\query;
 
+use Yii;
 use yii\db\ActiveQuery;
 use panix\engine\traits\query\DefaultQueryTrait;
 use panix\engine\traits\query\TranslateQueryTrait;
@@ -101,9 +102,10 @@ class ProductQuery extends ActiveQuery
      */
     public function applySearch($q = null)
     {
+        $language = Yii::$app->language;
         if ($q) {
-            $this->andWhere(['LIKE', Product::tableName() . '.sku', $q]);
-            $this->orWhere(['LIKE', 'name', $q]);
+            $this->andWhere(['LIKE', 'sku', $q]);
+            $this->orWhere(['LIKE', 'name_'.$language, $q]);
         }
         return $this;
     }

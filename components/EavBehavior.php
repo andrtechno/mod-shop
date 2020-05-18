@@ -2,6 +2,8 @@
 
 namespace panix\mod\shop\components;
 
+use panix\engine\CMS;
+use panix\mod\shop\models\Attribute;
 use panix\mod\shop\models\AttributeOption;
 use Yii;
 use yii\base\Exception;
@@ -483,6 +485,58 @@ class EavBehavior extends \yii\base\Behavior
         return $values;
     }
 
+    /**
+     * @return array of used attribute models
+     */
+    public function getModels()
+    {
+       // if (is_array($this->_models))
+      //      return $this->_models;
+
+        $_models = [];
+
+
+        // $query = Attribute::getDb()->cache(function () {
+        $query = Attribute::find()
+            ->where(['IN', 'name', array_keys($this->attributes)])
+            ->displayOnFront()
+            ->sort()
+            ->all();
+        // }, 3600);
+
+        foreach ($query as $m)
+            $_models[$m->name] = $m;
+
+        return $_models;
+    }
+    public function getEavData(){
+        $data = [];
+        $groups = [];
+        foreach ($this->getModels() as $model) {
+            /** @var Attribute $model */
+            $abbr = ($model->abbreviation) ? ' ' . $model->abbreviation : '';
+
+            $value = $model->renderValue($this->attributes[$model->name]) . $abbr;
+
+            if (Yii::$app->settings->get('shop', 'group_attribute')) {
+                if ($model->group_id) {
+                    $groups[$model->group->name][] = [
+                        'id' => $model->id,
+                        'name' => $model->title,
+                        'hint' => $model->hint,
+                        'value' => $value
+                    ];
+                }
+            }
+            $data[$model->title] = $value;
+        }
+
+        return [
+            'data' => $data,
+          //  'model' => $this->model,
+            'groups' => $groups,
+        ];
+    }
     public function getEavAttributesValue($attributes = [])
     {
 
@@ -494,6 +548,7 @@ class EavBehavior extends \yii\base\Behavior
         $test = AttributeOption::find()->where(['IN', 'id', $attributes]);
 
         $result = [];
+
         foreach ($test->all() as $test) {
             if ($test->attr) {
                 $result[$test->attr->name]['value'] = $test->value;

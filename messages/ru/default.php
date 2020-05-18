@@ -28,5 +28,5 @@ return [
     'PRODUCTS_COUNTER' => '{0, plural, =0{нет товара} =1{один товар} one{# товар} few{# товара} many{# товаров} other{# товар}}',
     'NOT_AVAILABLE' => 'Сообщить о наличии',
     'NOT_FOUND_PRODUCT' => 'Товар не найден',
-    'SEARCH_RESULT' => 'По Вашему запросу "{query}" {count, plural, =0{найдено} =1{найден} other{найдено}} {count, plural, =0{# товаров} =1{# товар} one{# товаров} few{# товара} many{# товаров} other{# товаров}}',
+    'SEARCH_RESULT' => 'По Вашему запросу "{query}" {count, plural, =0{нат товаров} =1{найден # товар} other{найдено # товаров}}',
 ];

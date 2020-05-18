@@ -3,6 +3,7 @@ use panix\engine\grid\GridView;
 use panix\engine\widgets\Pjax;
 use panix\ext\fancybox\Fancybox;
 use panix\mod\shop\bundles\admin\ProductIndex;
+use panix\engine\CMS;
 
 echo Fancybox::widget(['target' => '.image a']);
 /*
@@ -25,6 +26,9 @@ $test = $query1->all();
 
 $testLang = new \panix\mod\shop\models\Product();
 $testLang->name = 'ads';
+$testLang->slug = CMS::gen(10);
+$testLang->type_id = 1;
+$testLang->price = 100;
 $testLang->short_description = ' short description ';
 $testLang->full_description = 'full description';
 $testLang->save(false);

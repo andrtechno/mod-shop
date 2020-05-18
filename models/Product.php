@@ -709,7 +709,8 @@ class Product extends ActiveRecord
                     'currency_id' => $this->currency_id,
                     'price' => $this->price,
                     'price_purchase' => $this->price_purchase,
-                    'created_at' => time()
+                    'created_at' => time(),
+                    'type'=> ($changedAttributes['price_purchase'] < $this->attributes['price_purchase'])?1:0
                 ])->execute();
             }
         }
@@ -1036,12 +1037,12 @@ class Product extends ActiveRecord
                 //     $result = $pr->value;
                 //}
             } else {
-                if ($product->currency_id) {
-                    $result = Yii::$app->currency->convert($product->hasDiscount ? $product->discountPrice : $product->price, $product->currency_id);
-                } else {
+               // if ($product->currency_id) {
+               //     $result = Yii::$app->currency->convert($product->hasDiscount ? $product->discountPrice : $product->price, $product->currency_id);
+               // } else {
                     $result = Yii::$app->currency->convert($product->hasDiscount ? $product->discountPrice : $product->price, $product->currency_id);
                     //$result = ($product->hasDiscount) ? $product->discountPrice : $product->price;
-                }
+               // }
 
             }
         }

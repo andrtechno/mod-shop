@@ -2,6 +2,7 @@
 
 namespace panix\mod\shop\controllers\admin;
 
+use panix\engine\CMS;
 use Yii;
 use panix\engine\controllers\AdminController;
 use panix\mod\shop\models\Attribute;
@@ -89,15 +90,18 @@ class AttributeController extends AdminController
         $isNew = $model->isNewRecord;
         if (isset(Yii::$app->request->get('Attribute')['type']))
             $model->type = Yii::$app->request->get('Attribute')['type'];
-        if ($model->load($post) && $model->validate() && $model->validateOptions()) { // && $model->validateOptions()
-            $model->save();
-            $this->saveOptions($model);
 
-           // if ($isNew) {
-           //     $this->redirect(['update', 'id' => $model->id]);
-            //} else {
-                return $this->redirectPage($isNew, $post);
-            //}
+
+        if ($model->load($post)) {
+
+            if ($model->validate()) {
+                $model->save();
+                if($model->validateOptions())
+                    $this->saveOptions($model);
+
+            }
+
+            return $this->redirectPage($isNew, $post);
         }
 
         return $this->render('update', ['model' => $model]);
@@ -117,7 +121,8 @@ class AttributeController extends AdminController
     {
         $dontDelete = [];
         $post = Yii::$app->request->post('options');
-        //CMS::dump($post);die;
+        //CMS::dump($post);
+        //die;
         if ($post) {
             foreach ($post as $id => $data) {
 
@@ -131,8 +136,6 @@ class AttributeController extends AdminController
                     if (!$attributeOption) {
                         $attributeOption = new AttributeOption;
                         $attributeOption->attribute_id = $model->id;
-
-
                     }
                     if (isset($data['data']) && is_array($data['data'])) {
                         foreach ($data['data'] as $k => $d) {
@@ -152,8 +155,8 @@ class AttributeController extends AdminController
                     //foreach (Yii::$app->languageManager->languages as $lang) {
 
 
-                        ++$index;
-                   // }
+                    ++$index;
+                    // }
                     array_push($dontDelete, $attributeOption->id);
                 }
             }

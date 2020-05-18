@@ -60,10 +60,10 @@ class SearchController extends FilterController
             'count' => $this->provider->totalCount,
         ]);
         $this->view->title = $this->pageName;
-		$this->breadcrumbs[] = Yii::t('shop/default', 'SEARCH');
-      //  $filterData = $this->getActiveFilters();
+        $this->breadcrumbs[] = Yii::t('shop/default', 'SEARCH');
+        //  $filterData = $this->getActiveFilters();
 
-        return $this->_render();
+        return $this->_render('@shop/views/search/index');
     }
 
     /**
@@ -90,12 +90,12 @@ class SearchController extends FilterController
 
             $res['count'] = count($result);
             /** @var Product $m */
-                //$res['data'] = $this->renderAjax('@shop/widgets/search/views/_result', ['model' => $model->all(),'q'=>$q]);
+            //$res['data'] = $this->renderAjax('@shop/widgets/search/views/_result', ['model' => $model->all(),'q'=>$q]);
             foreach ($result as $m) {
                 /** @var Product $m */
                 $res[] = [
                     'url' => Url::to($m->getUrl()),
-                    'renderItem' => $this->renderPartial('@shop/widgets/search/views/_item', ['model'=>$m])
+                    'renderItem' => $this->renderPartial('@shop/widgets/search/views/_item', ['model' => $m])
                 ];
             }
             Yii::$app->response->format = Response::FORMAT_JSON;

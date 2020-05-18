@@ -130,7 +130,7 @@ class m180917_193517_shop_currency extends Migration
             ['Singapore Dollar', 'SGD', '', 1, 0, ' ', ' ', 0, 0, 0, time(), 13],
             ['Thai Baht', 'THB', '฿', 1, 0, ' ', ' ', 0, 0, 0, time(), 12],
             ['Tajikistani Somoni', 'TJS', '', 1, 0, ' ', ' ', 0, 0, 0, time(), 11],
-            ['Turkish Lira', 'TRY', 'грн.', 1, 0, ' ', ' ', 0, 0, 0, time(), 10],
+            ['Turkish Lira', 'TRY', 'TRY', 1, 0, ' ', ' ', 0, 0, 0, time(), 10],
             ['Trinidad and Tobago Dollar', 'TTD', '', 1, 0, ' ', ' ', 0, 0, 0, time(), 9],
             ['New Taiwan Dollar', 'TWD', '', 1, 0, ' ', ' ', 0, 0, 0, time(), 8],
             ['Tanzanian Shilling', 'TZS', '', 1, 0, ' ', ' ', 0, 0, 0, time(), 7],

@@ -88,7 +88,7 @@ class Attribute extends ActiveRecord
         ];
     }
 
-    public function transactions()
+    public function transactions2()
     {
         return [
             self::SCENARIO_DEFAULT => self::OP_INSERT | self::OP_UPDATE,
@@ -176,10 +176,14 @@ class Attribute extends ActiveRecord
     {
         return ArrayHelper::merge([
             'slug' => [
-                'class' => \yii\behaviors\SluggableBehavior::class,
+                'class' => '\yii\behaviors\SluggableBehavior',
                 'attribute' => 'title',
                 'slugAttribute' => 'name',
             ],
+            'translate' => [
+                'class' => '\panix\mod\shop\components\TranslateBehavior',
+                'translationAttributes' => ['title','abbreviation','hint']
+            ]
         ], parent::behaviors());
     }
 
@@ -415,8 +419,7 @@ class Attribute extends ActiveRecord
         TypeAttribute::deleteAll(['attribute_id' => $this->id]);
 
         // Delete attributes assigned to products
-        $conn = $this->getDb();
-        $conn->createCommand()->delete(ProductAttributesEav::tableName(), "`attribute`='{$this->name}'")->execute();
+        self::getDb()->createCommand()->delete(ProductAttributesEav::tableName(), "`attribute`='{$this->name}'")->execute();
 
 
         return parent::afterDelete();

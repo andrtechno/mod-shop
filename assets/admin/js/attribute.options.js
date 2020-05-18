@@ -6,23 +6,23 @@ $(function () {
         var option_name = Math.random();
         var row = $(".copyMe").clone().removeClass('copyMe');
 
-        if (tr.length === 1) {
-            tr.addClass('d-none');
-        }
+        //if (tr.length === 1) {
+        //    tr.addClass('d-none');
+        //}
 
         console.log('clicked',row);
         row.prependTo(".optionsEditTable > tbody");
         row.find(".value").each(function (i, el) {
             $(el).attr('name', 'options[' + option_name + '][]');
         });
-        $.ajax({
+        /*$.ajax({
             type:'GET',
             url:'/admin/shop/attribute/test',
             success:function (data) {
                 console.log(row.find('td:nth-child(3)'));
                 //row.find('td:nth-child(3)').html(data);
             }
-        });
+        });*/
 
         return false;
     });

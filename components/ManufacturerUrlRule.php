@@ -3,6 +3,7 @@
 namespace panix\mod\shop\components;
 
 use panix\mod\shop\models\Manufacturer;
+use yii\web\NotFoundHttpException;
 use yii\web\UrlRule;
 
 /**

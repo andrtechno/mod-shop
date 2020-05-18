@@ -32,9 +32,11 @@ class m180917_193313_shop_product_prices extends Migration
             'id' => $this->primaryKey()->unsigned(),
             'product_id' => $this->integer()->null(),
             'currency_id' => $this->integer()->null(),
+            'discount' => $this->string(10)->null(),
             'price' => $this->money(10,2),
             'price_purchase' => $this->money(10,2),
             'created_at' => $this->integer(),
+            'type' => $this->tinyInteger(1)->null()->defaultValue(0)->comment('1=up, 0=down'),
         ]);
 
         $this->createIndex('product_id', '{{%shop__product_price_history}}', 'product_id');

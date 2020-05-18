@@ -2,6 +2,9 @@
 
 namespace panix\mod\shop\components;
 
+use Yii;
+use yii\web\HttpException;
+use yii\web\NotFoundHttpException;
 use yii\web\UrlRule;
 
 /**
@@ -66,11 +69,15 @@ class SearchUrlRule extends UrlRule
 
         unset($parts[0]);
 
-        $ss = array_chunk($parts, 2);
+        $partsList = array_chunk($parts, 2);
 
-        foreach ($ss as $k => $p) {
-            $_GET[$p[0]] = $p[1];
-            $params[$p[0]] = $p[1];
+        foreach ($partsList as $k => $p) {
+            if (isset($p[1])) {
+                $_GET[$p[0]] = $p[1];
+                $params[$p[0]] = $p[1];
+            } else {
+                throw new NotFoundHttpException(Yii::t('app/error', 404));
+            }
         }
 
 

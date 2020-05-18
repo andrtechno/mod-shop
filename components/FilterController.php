@@ -132,7 +132,7 @@ class FilterController extends WebController
         if ($this->_currentMinPrice !== null)
             return $this->_currentMinPrice;
 
-        $this->_currentMinPrice = (isset($this->prices[0])) ? $this->prices[0] : Yii::$app->currency->convert($this->getMinPrice());
+        $this->_currentMinPrice = (isset($this->prices[0])) ? trim($this->prices[0]) : Yii::$app->currency->convert($this->getMinPrice());
 
         return $this->_currentMinPrice;
     }
@@ -149,7 +149,7 @@ class FilterController extends WebController
         if ($this->_currentMaxPrice !== null)
             return $this->_currentMaxPrice;
 
-        $this->_currentMaxPrice = (isset($this->prices[1])) ? $this->prices[1] : Yii::$app->currency->convert($this->getMaxPrice());
+        $this->_currentMaxPrice = (isset($this->prices[1])) ? trim($this->prices[1]) : Yii::$app->currency->convert($this->getMaxPrice());
 
         return $this->_currentMaxPrice;
     }
@@ -440,7 +440,7 @@ class FilterController extends WebController
     }
 
 
-    public function _render()
+    public function _render($view = '@shop/views/catalog/view')
     {
         $activeFilters = $this->getActiveFilters();
         if (Yii::$app->request->isAjax) {
@@ -469,7 +469,7 @@ class FilterController extends WebController
                 ]);
             }
         }
-        return $this->render('@shop/views/catalog/view', [
+        return $this->render($view, [
             'provider' => $this->provider,
             'itemView' => $this->itemView,
 

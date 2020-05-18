@@ -132,8 +132,8 @@ class CurrencyManager extends Component
     }
 
     /**
-     * @param $sum
-     * @param integer $decimals
+     * @param float|int|string $sum
+     * @param int $decimals
      * @param bool|string $thousandth
      * @param bool|string $hundredth
      * @return string
@@ -150,11 +150,10 @@ class CurrencyManager extends Component
             $decimals = $this->_active['penny'];
 
 
-        if ((int)$sum == $sum) {
-            $format = $sum;
+        if (preg_match('/^(\d+\.00|\d+)$/', $sum, $match)) {
+            $format = number_format($sum, 0, $hundredth, $thousandth);
         } else {
-            $format = number_format($sum, 2, '.', $thousandth);
-            // $format = number_format($sum, 2, '.', ',');
+            $format = number_format($sum, $decimals, $hundredth, $thousandth);
         }
         return $format;
     }
@@ -176,9 +175,9 @@ class CurrencyManager extends Component
     {
         $tableName = Currency::tableName();
 
-        return Currency::find()
+        return Currency::find()->published()
             ->asArray()
-            ->cache($this->cacheTime, new DbDependency(['sql' => "SELECT MAX(updated_at) FROM {$tableName}"]))
+            //->cache($this->cacheTime, new DbDependency(['sql' => "SELECT MAX(updated_at) FROM {$tableName}"]))
             ->all();
     }
 
