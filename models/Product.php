@@ -910,11 +910,6 @@ class Product extends ActiveRecord
         return parent::__get($name);
     }
 
-    public function getEavList()
-    {
-
-    }
-
     public function behaviors()
     {
         $a = [];

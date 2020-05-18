@@ -29,6 +29,7 @@ $testLang->name = 'ads';
 $testLang->slug = CMS::gen(10);
 $testLang->type_id = 1;
 $testLang->price = 100;
+$testLang->price_purchase=100;
 $testLang->short_description = ' short description ';
 $testLang->full_description = 'full description';
 $testLang->save(false);
