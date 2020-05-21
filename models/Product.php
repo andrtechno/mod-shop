@@ -66,8 +66,6 @@ class Product extends ActiveRecord
 
     use traits\ProductTrait;
 
-    //public $translationClass = ProductTranslate::class;
-
     const SCENARIO_INSERT = 'insert';
 
     /**
@@ -203,11 +201,10 @@ class Product extends ActiveRecord
         $image = $this->getImage();
         $result = [];
         if ($image) {
-
             $result['url'] = $image->getUrl($size);
             $result['title'] = ($image->alt_title) ? $image->alt_title : $this->name;
         } else {
-            $result['url'] = CMS::placeholderUrl(['size' => $size]);
+            $result['url'] = CMS::placeholderUrl(['size' => $size, 'bg' => 'fff']);
             $result['title'] = $this->name;
         }
 
@@ -710,7 +707,7 @@ class Product extends ActiveRecord
                     'price' => $this->price,
                     'price_purchase' => $this->price_purchase,
                     'created_at' => time(),
-                    'type'=> ($changedAttributes['price_purchase'] < $this->attributes['price_purchase'])?1:0
+                    'type' => ($changedAttributes['price_purchase'] < $this->attributes['price_purchase']) ? 1 : 0
                 ])->execute();
             }
         }
@@ -949,7 +946,7 @@ class Product extends ActiveRecord
         ];
         $a['translate'] = [
             'class' => '\panix\mod\shop\components\TranslateBehavior',
-            'translationAttributes' => ['name','short_description','full_description']
+            'translationAttributes' => ['name', 'short_description', 'full_description']
         ];
         if (Yii::$app->getModule('seo'))
             $a['seo'] = [
@@ -1032,12 +1029,12 @@ class Product extends ActiveRecord
                 //     $result = $pr->value;
                 //}
             } else {
-               // if ($product->currency_id) {
-               //     $result = Yii::$app->currency->convert($product->hasDiscount ? $product->discountPrice : $product->price, $product->currency_id);
-               // } else {
-                    $result = Yii::$app->currency->convert($product->hasDiscount ? $product->discountPrice : $product->price, $product->currency_id);
-                    //$result = ($product->hasDiscount) ? $product->discountPrice : $product->price;
-               // }
+                // if ($product->currency_id) {
+                //     $result = Yii::$app->currency->convert($product->hasDiscount ? $product->discountPrice : $product->price, $product->currency_id);
+                // } else {
+                $result = Yii::$app->currency->convert($product->hasDiscount ? $product->discountPrice : $product->price, $product->currency_id);
+                //$result = ($product->hasDiscount) ? $product->discountPrice : $product->price;
+                // }
 
             }
         }

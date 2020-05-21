@@ -57,6 +57,7 @@ class m180917_193213_shop_product extends Migration
             'auto_decrease_quantity' => $this->smallInteger(2)->unsigned()->defaultValue(0),
             'views' => $this->integer()->unsigned()->defaultValue(0),
             'added_to_cart_count' => $this->integer()->defaultValue(0),
+            'added_to_cart_date' => $this->integer()->null(),
             'votes' => $this->integer()->unsigned()->defaultValue(0),
             'rating' => $this->integer()->unsigned()->defaultValue(0),
             'discount' => $this->string(5)->comment('Скидка'),

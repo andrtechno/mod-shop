@@ -10,22 +10,26 @@ use panix\mod\shop\models\Currency;
 /**
  * CurrencySearch represents the model behind the search form about `panix\shop\models\Currency`.
  */
-class CurrencySearch extends Currency {
+class CurrencySearch extends Currency
+{
 
     /**
      * @inheritdoc
      */
-    public function rules() {
+    public function rules()
+    {
         return [
             [['id'], 'integer'],
-            [['name','slug','is_default'], 'safe'],
+            [['name', 'slug', 'is_default', 'is_main'], 'safe'],
+            [['is_default', 'is_main'], 'boolean'],
         ];
     }
 
     /**
      * @inheritdoc
      */
-    public function scenarios() {
+    public function scenarios()
+    {
         // bypass scenarios() implementation in the parent class
         return Model::scenarios();
     }
@@ -37,14 +41,15 @@ class CurrencySearch extends Currency {
      *
      * @return ActiveDataProvider
      */
-    public function search($params) {
+    public function search($params)
+    {
         $query = Currency::find();
 
         $dataProvider = new ActiveDataProvider([
-                    'query' => $query,
-                    'sort'=> ['defaultOrder' => ['ordern'=>SORT_DESC]],
+            'query' => $query,
+            'sort' => ['defaultOrder' => ['ordern' => SORT_DESC]],
 
-                ]);
+        ]);
 
         $this->load($params);
 
@@ -60,6 +65,7 @@ class CurrencySearch extends Currency {
 
         $query->andFilterWhere(['like', 'name', $this->name]);
         $query->andFilterWhere(['like', 'is_default', $this->is_default]);
+        $query->andFilterWhere(['like', 'is_main', $this->is_main]);
 
         return $dataProvider;
     }

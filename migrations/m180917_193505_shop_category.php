@@ -25,11 +25,13 @@ class m180917_193505_shop_category extends Migration {
             'slug' => $this->string(255)->null()->defaultValue(null),
             'full_path' => $this->string(255)->null(),
             'image' => $this->string(50)->null(),
-            'name' => $this->string(255)->notNull(),
-            'description' => $this->text()->null()->defaultValue(null),
+            'name_ru' => $this->string(255)->null(),
+            'name_uk' => $this->string(255)->null(),
+            'description_ru' => $this->text()->null(),
+            'description_uk' => $this->text()->null(),
             'created_at' => $this->integer(),
             'updated_at' => $this->integer(),
-            'switch' => $this->boolean()->defaultValue(1)->notNull(),
+            'switch' => $this->boolean()->defaultValue(1),
         ]);
 
 

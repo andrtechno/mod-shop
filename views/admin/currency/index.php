@@ -26,7 +26,14 @@ GridView::widget([
             'class' => 'panix\engine\grid\sortable\Column',
             'url' => ['/admin/shop/currency/sortable']
         ],
-        'name',
+        [
+            'attribute' => 'name',
+            'contentOptions' => ['class' => 'text-left'],
+            'format'=>'html',
+            'value' => function ($model) {
+                return '<strong>'.$model->iso.'</strong> &mdash; '.$model->name;
+            }
+        ],
         [
             'class' => 'panix\engine\grid\columns\BooleanColumn',
             'attribute' => 'is_default',

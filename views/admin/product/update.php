@@ -6,6 +6,9 @@ use panix\engine\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
 use panix\mod\shop\models\ProductType;
 
+/**
+ * @var \yii\web\View $this
+ */
 ?>
 <?php if (!$model->isNewRecord) { ?>
     <div class="row d-none">
