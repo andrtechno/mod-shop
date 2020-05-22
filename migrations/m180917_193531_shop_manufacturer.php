@@ -23,11 +23,13 @@ class m180917_193531_shop_manufacturer extends Migration
         $this->createTable(Manufacturer::tableName(), [
             'id' => $this->primaryKey()->unsigned(),
             'cat_id' => $this->integer()->null(),
-            'image' => $this->string()->null()->defaultValue(null),
-            'slug' => $this->string(255)->notNull()->defaultValue(null),
+            'image' => $this->string()->null(),
+            'slug' => $this->string(255)->null(),
             'switch' => $this->boolean()->defaultValue(1),
-            'name' => $this->string(255)->notNull(),
-            'description' => $this->text()->null()->defaultValue(null),
+            'name_ru' => $this->string(255)->null(),
+            'name_uk' => $this->string(255)->null(),
+            'description_ru' => $this->text()->null(),
+            'description_uk' => $this->text()->null(),
             'ordern' => $this->integer()->unsigned(),
             'created_at' => $this->integer(),
             'updated_at' => $this->integer(),
@@ -84,8 +86,8 @@ class m180917_193531_shop_manufacturer extends Migration
         ];
         $id = 1;
         foreach ($brands as $key => $brand) {
-            $this->batchInsert(Manufacturer::tableName(), ['cat_id', 'slug', 'image', 'switch', 'ordern', 'name', 'description'], [
-                [NULL, CMS::slug($brand['name']), $brand['image'], 1, $id, $brand['name'], $brand['description']]
+            $this->batchInsert(Manufacturer::tableName(), ['cat_id', 'slug', 'image', 'switch', 'ordern', 'name_ru', 'name_uk', 'description_ru', 'description_uk'], [
+                [NULL, CMS::slug($brand['name']), $brand['image'], 1, $id, $brand['name'], $brand['name'], $brand['description'], $brand['description']]
             ]);
             $id++;
         }

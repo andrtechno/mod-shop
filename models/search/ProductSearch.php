@@ -156,8 +156,7 @@ class ProductSearch extends Product
             $query->andFilterWhere(['categories.category'=>$this->main_category_id]);
 
 
-        //$query->andFilterWhere(['like', 'commentsCount', $this->commentsCount]);
-        // echo $query->createCommand()->rawSql; die;
+        //echo $query->createCommand()->rawSql; die;
         return $dataProvider;
     }
 

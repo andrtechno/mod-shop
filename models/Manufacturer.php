@@ -151,7 +151,10 @@ class Manufacturer extends ActiveRecord
                 'watermark' => false
             ]
         ];
-
+        $a['translate'] = [
+            'class' => '\panix\mod\shop\components\TranslateBehavior',
+            'translationAttributes' => ['name', 'description']
+        ];
         return ArrayHelper::merge($a, parent::behaviors());
     }
 
