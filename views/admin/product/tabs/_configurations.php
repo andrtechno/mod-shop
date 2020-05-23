@@ -4,8 +4,9 @@ use panix\mod\shop\models\Product;
 use panix\mod\shop\models\Attribute;
 use yii\helpers\ArrayHelper;
 use panix\mod\shop\models\search\ProductSearch;
-use yii\grid\GridView;
+use panix\engine\grid\GridView;
 use panix\engine\data\ActiveDataProvider;
+
 /**
  * Confirutable products tab
  *
@@ -15,18 +16,20 @@ use panix\engine\data\ActiveDataProvider;
  */
 
 \panix\mod\shop\bundles\admin\ConfigurationsAsset::register($this);
+
+
 // For grid view we use new products instance
-$model =  Product::find(); 
-$model2 =  new Product; 
+$model = Product::find();
+$model2 = new Product;
 
 if (isset($_GET['ConfProduct']))
     $model->attributes = $_GET['ConfProduct'];
 
 $columns = [
- /*   array(
-        'class' => 'CheckBoxColumn',
-        'checked' => (!empty($product->configurations) && !isset($clearConfigurations) && !$product->isNewRecord) ? 'true' : 'false'
-    ),*/
+    [
+        'class' => 'panix\engine\grid\columns\CheckboxColumn',
+        //'checked' => (!empty($product->configurations) && !isset($clearConfigurations) && !$product->isNewRecord) ? 'true' : 'false'
+    ],
     [
         'attribute' => 'id',
         'format' => 'text',
@@ -36,9 +39,9 @@ $columns = [
     [
         'attribute' => 'name',
         'format' => 'raw',
-            'value' => function($model) {
-        return Html::a(Html::encode($model->name), ["update", "id"=>$model->id], ["target"=>"_blank"]);
-    },
+        'value' => function ($model) {
+            return Html::a(Html::encode($model->name), ["update", "id" => $model->id], ["target" => "_blank"]);
+        },
 
         'filter' => Html::textInput('ConfProduct[name]', $model2->name)
     ],
@@ -49,17 +52,17 @@ $columns = [
     ],
     [
         'attribute' => 'price',
-           'format' => 'raw',
+        'format' => 'raw',
         //'value' => '$data->price',
         'filter' => Html::textInput('ConfProduct[price]', $model2->price)
     ],
 ];
 
 // Process attributes
-$eavAttributes = array();
+$eavAttributes = [];
 $attributeModels = Attribute::find();
 //$attributeModels->setTableAlias('Attribute');
-$attributeModels = $attributeModels->where(['id'=>$product->configurable_attributes])->all();
+$attributeModels = $attributeModels->where([Attribute::tableName() . '.id' => $product->configurable_attributes])->all();
 
 foreach ($attributeModels as $attribute) {
     $selected = null;
@@ -67,18 +70,18 @@ foreach ($attributeModels as $attribute) {
     if (isset($_GET['eav'][$attribute->name]) && !empty($_GET['eav'][$attribute->name])) {
         $eavAttributes[$attribute->name] = $_GET['eav'][$attribute->name];
         $selected = $_GET['eav'][$attribute->name];
-    }
-    else
+    } else
         array_push($eavAttributes, $attribute->name);
 
-    $columns[] = array(
-        'attribute' => 'eav_' . $attribute->name,
+
+    $columns[] = [
+        'attribute' => 'eav_1'.$attribute->name,
         'header' => $attribute->title,
-        'contentOptions' => array('class' => 'eav'),
-        'filter' => Html::dropDownList('eav[' . $attribute->name . ']', $selected, ArrayHelper::map($attribute->options, 'id', 'value'), array(
-            'empty' => '---',
-        ))
-    );
+        'contentOptions' => ['class' => 'eav'],
+         'filter' => Html::dropDownList('eav[' . $attribute->name . ']', $selected, ArrayHelper::map($attribute->options, 'id', 'value'), [
+            'prompt' => '---',
+         ])
+    ];
 }
 
 if (!empty($eavAttributes))
@@ -88,43 +91,43 @@ if (!empty($eavAttributes))
 // On edit display only saved configurations
 //$cr = new CDbCriteria;
 $exclude[] = $product->id;
-            foreach ($exclude as $id) {
-                //$model->andWhere(['!=', '{{%shop_product}}.id', $id]);
-            }
+foreach ($exclude as $id) {
+    //$model->andWhere(['!=', '{{%shop_product}}.id', $id]);
+}
 
 
 //$model->use_configurations = false;
-//$searchModel = new ProductSearch();
-//$searchModel->exclude[] = $product->id;
-//$searchModel->use_configurations = false;
+$searchModel = new ProductSearch();
+$searchModel->exclude[] = $product->id;
+$searchModel->use_configurations = false;
 
 $configure = [];
 
-if (!empty($product->configurations) && !isset($clearConfigurations) && !$product->isNewRecord){
-  // $configure['conf']=$product->configurations;
-      $model->andWhere(['IN','id',$product->configurations]);
-   //$dataProvider->andWhere(['IN','id',$product->configurations]);//addInCondition('t.id', $product->configurations);
+if (!empty($product->configurations) && !isset($clearConfigurations) && !$product->isNewRecord) {
+    // $configure['conf']=$product->configurations;
+    $model->andWhere(['IN', 'id', $product->configurations]);
+    //$dataProvider->andWhere(['IN','id',$product->configurations]);//addInCondition('t.id', $product->configurations);
 }
 //$dataProvider = $searchModel->search(Yii::$app->request->getQueryParams(),$configure);
 
 
-        $dataProvider = new ActiveDataProvider([
-            'query' => $model,
+$dataProvider = new ActiveDataProvider([
+    'query' => $model,
 
-        ]);
-        
+]);
 
 
 echo GridView::widget([
-        'id' => 'ConfigurationsProductGrid',
+    //'id' => 'ConfigurationsProductGrid',
     'tableOptions' => ['class' => 'table table-striped'],
     'dataProvider' => $dataProvider,
-    //'filterModel' => $searchModel,
+    'filterModel' => $searchModel,
 
-    'columns'=>$columns,
+    'columns' => $columns,
     'showFooter' => true,
+    'enableColumns' => false
     //   'footerRowOptions' => ['class' => 'text-center'],
-  //  'rowOptions' => ['class' => 'sortable-column']
+    //  'rowOptions' => ['class' => 'sortable-column']
 ]);
 /*
 $this->widget('ext.adminList.GridView', array(
@@ -145,8 +148,6 @@ $this->widget('ext.adminList.GridView', array(
     'filter' => $model,
     'columns' => $columns,
 ));*/
-?>
 
-<script type="text/javascript">
-    initConfigurationsTable();
-</script>
+$this->registerJs('initConfigurationsTable();');
+?>

@@ -74,7 +74,7 @@ echo \panix\engine\barcode\BarcodeGenerator::widget([
         }
 
         foreach ($result as $group_name => $attributes) {
-            echo '<div class="col-sm-12 col-md-6 col-lg-6 col-xl-4"><h3 class="text-center mt-3">' . $group_name . '</h3>';
+            echo '<div class="col-sm-12 col-md-6 col-lg-6 col-xl-4"><h5 class="text-center mt-3">' . $group_name . '</h5>';
             foreach ($attributes as $a) {
                 /** @var Attribute|\panix\mod\shop\components\EavBehavior $a */
                 // Repopulate data from POST if exists

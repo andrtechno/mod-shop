@@ -61,7 +61,7 @@ use panix\mod\shop\models\ProductType;
                             <?php echo Html::activeDropDownList($model, 'type_id', ArrayHelper::map($typesList, 'id', 'name'), ['class' => 'form-control']); ?>
                         </div>
                     </div>
-                    <?php if (false) { ?>
+                    <?php if (true) { ?>
                         <div class="form-group row">
                             <div class="col-sm-4"><?= Html::activeLabel($model, 'use_configurations', ['class' => 'control-label']); ?></div>
                             <div class="col-sm-8">
@@ -160,7 +160,7 @@ use panix\mod\shop\models\ProductType;
                             'content' => $this->render('tabs/_configurations', ['product' => $model]),
                             'headerOptions' => [],
                             'itemOptions' => ['class' => 'flex-sm-fill text-center nav-item'],
-                            'visible' => false,
+                            'visible' => true,
                         ];
                     }
 

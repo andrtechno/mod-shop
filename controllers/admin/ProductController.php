@@ -322,10 +322,6 @@ class ProductController extends AdminController
         $data = [];
         $data['success'] = false;
         if (Yii::$app->request->isAjax) {
-
-
-            Yii::$app->response->format = Response::FORMAT_JSON;
-
             // For configurations that  are available only dropdown and radio lists.
             // $cr = new CDbCriteria;
             //$cr->addInCondition('type', array(ShopAttribute::TYPE_DROPDOWN, ShopAttribute::TYPE_RADIO_LIST));
@@ -339,8 +335,7 @@ class ProductController extends AdminController
                 ])
                 ->one();
 
-            //print_r($type);die;
-//echo($type->prepare(Yii::$app->db->queryBuilder)->createCommand()->rawSql);die;
+
             if ($type) {
                 if ($type->shopAttributes) {
                     $data['success'] = true;
@@ -354,7 +349,7 @@ class ProductController extends AdminController
                     $data['message'] = 'Ошибка не найден не один атрибут';
                 }
             }
-            return $data;
+            return $this->asJson($data);
         } else {
             throw new ForbiddenHttpException();
         }

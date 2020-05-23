@@ -407,13 +407,16 @@ class FilterController extends WebController
         $result = [];
         $name = '';
         $breadcrumbs = false;
-
         foreach ($filterData as $filterKey => $filterItems) {
             if ($filterKey == 'manufacturer') {
                 $manufacturerNames = [];
+
                 if (isset($filterItems['items'])) {
+                    $i=0;
                     foreach ($filterItems['items'] as $mKey => $mItems) {
                         $manufacturerNames[] = $mItems['label'];
+                        if($i == 3) break;
+                        $i++;
                     }
                     $sep = (count($manufacturerNames) > 2) ? ', ' : ' ' . Yii::t('shop/default', 'AND') . ' ';
                     $name .= ' ' . implode($sep, $manufacturerNames);
@@ -421,8 +424,11 @@ class FilterController extends WebController
             } else {
                 $attributesNames[$filterKey] = [];
                 if (isset($filterItems['items'])) {
+                    $i=0;
                     foreach ($filterItems['items'] as $mKey => $mItems) {
                         $attributesNames[$filterKey][] = $mItems['label'];
+                        if($i == 3) break;
+                        $i++;
                         //$attributesNames[$filterKey]['url'][]=$mItems['value'];
                     }
                     $prefix = isset($filterData['manufacturer']) ? '; ' : ', ';
