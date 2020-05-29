@@ -188,11 +188,13 @@ trait ProductTrait
             'value' => function ($model) {
                 /** @var $model Product */
                 $result = '';
+
                 foreach ($model->categories as $category) {
-                    $options['data-pjax'] = 0;
+                    $options=[];
+                    $options['data-pjax'] = '0';
+                    $options['title'] = $category->name;
                     if ($category->id == $model->main_category_id) {
                         $options['class'] = 'badge badge-secondary';
-                        $options['title'] = $category->name;
                     } else {
                         $options['class'] = 'badge badge-light';
                     }

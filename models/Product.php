@@ -309,8 +309,8 @@ class Product extends ActiveRecord
         $rules[] = [['main_category_id', 'price', 'unit'], 'required'];
         $rules[] = [['slug'], 'unique'];
         $rules[] = ['price', 'commaToDot'];
-        $rules[] = [['file'], 'file', 'maxFiles' => Yii::$app->params['plan'][Yii::$app->params['plan_id']]['product_upload_files']];
-        $rules[] = [['file'], 'validateLimit'];
+        //$rules[] = [['file'], 'file', 'maxFiles' => Yii::$app->params['plan'][Yii::$app->params['plan_id']]['product_upload_files']];
+        //$rules[] = [['file'], 'validateLimit'];
         $rules[] = [['name', 'slug', 'video'], 'string', 'max' => 255];
         $rules[] = ['video', 'url'];
         $rules[] = [['image'], 'image'];
@@ -559,13 +559,13 @@ class Product extends ActiveRecord
         // Clear main category
         ProductCategoryRef::updateAll([
             'is_main' => 0,
-            'switch' => $this->switch
+            'switch' => ($this->switch) ? $this->switch : 1
         ], 'product=:p', [':p' => $this->id]);
 
         // Set main category
         ProductCategoryRef::updateAll([
             'is_main' => 1,
-            'switch' => $this->switch,
+            'switch' => ($this->switch) ? $this->switch : 1,
         ], 'product=:p AND category=:c', [':p' => $this->id, ':c' => $main_category]);
 
         // Delete not used relations

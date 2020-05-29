@@ -36,6 +36,32 @@ $testLang->save(false);
 */
 
 
+/*
+$arrContextOptions=array(
+    "ssl"=>array(
+        "verify_peer"=>false,
+        "verify_peer_name"=>false,
+    ),
+);
+
+$response = file_get_contents("https://maps.co.weber.ut.us/arcgis/rest/services/SDE_composite_locator/GeocodeServer/findAddressCandidates?Street=&SingleLine=3042+N+1050+W&outFields=*&outSR=102100&searchExtent=&f=json", false, stream_context_create($arrContextOptions));
+*/
+$arrContextOptions=[
+    "ssl"=>[
+        "verify_peer"=>false,
+        "verify_peer_name"=>false,
+    ],
+];
+for ($i = 1; $i <= 10; $i++) {
+
+    file_put_contents(Yii::getAlias('@uploads').DIRECTORY_SEPARATOR.'pic'.$i.'.jpg', file_get_contents('https://i.citrus.ua/uploads/shop/c/2/c27e2c410abf6f7b4221980e5dc4e4d3.jpg', false, stream_context_create($arrContextOptions)));
+   // echo Yii::getAlias('@app/web/uploads');die;
+   // copy('https://i.citrus.ua/uploads/shop/c/2/c27e2c410abf6f7b4221980e5dc4e4d3.jpg', Yii::getAlias('@app/web/uploads').DIRECTORY_SEPARATOR.'pic'.$i.'.jpg');
+}
+
+
+
+
 Pjax::begin(['dataProvider' => $dataProvider]);
 ProductIndex::register($this);
 echo GridView::widget([
