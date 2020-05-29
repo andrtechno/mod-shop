@@ -108,58 +108,69 @@ class Module extends WebModule implements BootstrapInterface
                         'label' => Yii::t('shop/admin', 'PRODUCTS'),
                         // 'url' => ['/admin/shop'], //bug with bootstrap 4.2.x
                         'icon' => $this->icon,
+                        'visible' => Yii::$app->user->can('/shop/admin/product/index') || Yii::$app->user->can('/shop/admin/product/*'),
                         'items' => [
                             [
                                 'label' => Yii::t('shop/admin', 'PRODUCT_LIST'),
                                 "url" => ['/admin/shop/product'],
                                 'icon' => 'list',
+                                'visible' => Yii::$app->user->can('/shop/admin/product/index') || Yii::$app->user->can('/shop/admin/product/*')
                             ],
                             [
                                 'label' => Yii::t('shop/admin', 'CREATE_PRODUCT'),
                                 "url" => ['/admin/shop/product/create'],
                                 'icon' => 'add',
+                                'visible' => Yii::$app->user->can('/shop/admin/product/index') || Yii::$app->user->can('/shop/admin/product/create') || Yii::$app->user->can('/shop/admin/product/*')
                             ]
                         ]
                     ],
                     [
                         'label' => Yii::t('shop/admin', 'CATEGORIES'),
                         "url" => ['/admin/shop/category'],
-                        'icon' => 'folder-open'
+                        'icon' => 'folder-open',
+                        'visible' => Yii::$app->user->can('/shop/admin/category/index') || Yii::$app->user->can('/shop/admin/category/*')
                     ],
                     [
                         'label' => Yii::t('shop/admin', 'ATTRIBUTES'),
                         "url" => ['/admin/shop/attribute'],
-                        'icon' => 'sliders'
+                        'icon' => 'sliders',
+                        'visible' => Yii::$app->user->can('/shop/admin/attribute/index') || Yii::$app->user->can('/shop/admin/attribute/*')
                     ],
                     [
                         'label' => Yii::t('shop/admin', 'TYPE_PRODUCTS'),
                         "url" => ['/admin/shop/type'],
-                        'icon' => 't'
+                        'icon' => 't',
+                        'visible' => Yii::$app->user->can('/shop/admin/type/index') || Yii::$app->user->can('/shop/admin/type/*')
                     ],
                     [
                         'label' => Yii::t('shop/admin', 'NOTIFIER'),
                         "url" => ['/admin/shop/notify'],
-                        'icon' => 'envelope'
+                        'icon' => 'envelope',
+                        'visible' => Yii::$app->user->can('/shop/admin/notify/index') || Yii::$app->user->can('/shop/admin/notify/*')
                     ],
                     [
                         'label' => Yii::t('shop/admin', 'CURRENCY'),
                         "url" => ['/admin/shop/currency'],
-                        'icon' => 'currencies'
+                        'icon' => 'currencies',
+                        'visible' => Yii::$app->user->can('/shop/admin/currency/index') || Yii::$app->user->can('/shop/admin/currency/*')
                     ],
                     [
                         'label' => Yii::t('shop/admin', 'MANUFACTURER'),
                         "url" => ['/admin/shop/manufacturer'],
-                        'icon' => 'apple'
+                        'icon' => 'apple',
+                        'visible' => Yii::$app->user->can('/shop/admin/manufacturer/index') || Yii::$app->user->can('/shop/admin/manufacturer/*')
                     ],
                     [
                         'label' => Yii::t('shop/admin', 'SUPPLIER'),
                         "url" => ['/admin/shop/supplier'],
-                        'icon' => 'supplier'
+                        'icon' => 'supplier',
+                        'visible' => Yii::$app->user->can('/shop/admin/supplier/index') || Yii::$app->user->can('/shop/admin/supplier/*')
                     ],
                     [
                         'label' => Yii::t('app/default', 'SETTINGS'),
                         "url" => ['/admin/shop/settings'],
-                        'icon' => 'settings'
+                        'icon' => 'settings',
+                        'visible' => Yii::$app->user->can('/shop/admin/settings/index') || Yii::$app->user->can('/shop/admin/settings/*')
                     ],
                     'integration' => [
                         'label' => 'Интеграция',
