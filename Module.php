@@ -120,7 +120,7 @@ class Module extends WebModule implements BootstrapInterface
                                 'label' => Yii::t('shop/admin', 'CREATE_PRODUCT'),
                                 "url" => ['/admin/shop/product/create'],
                                 'icon' => 'add',
-                                'visible' => Yii::$app->user->can('/shop/admin/product/index') || Yii::$app->user->can('/shop/admin/product/create') || Yii::$app->user->can('/shop/admin/product/*')
+                                'visible' => Yii::$app->user->can('/shop/admin/product/create') || Yii::$app->user->can('/shop/admin/product/*')
                             ]
                         ]
                     ],
