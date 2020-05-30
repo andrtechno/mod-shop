@@ -41,15 +41,16 @@ class AttributeController extends AdminController
     {
         $searchModel = new AttributeSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams());
-        $this->buttons = [
-            [
-                'icon' => 'add',
-                'label' => Yii::t('shop/admin', 'CREATE_ATTRIBUTE'),
-                'url' => ['create'],
-                'options' => ['class' => 'btn btn-success']
-            ]
-        ];
-
+        if (Yii::$app->user->can("/{$this->module->id}/{$this->id}/*") || Yii::$app->user->can("/{$this->module->id}/{$this->id}/create")) {
+            $this->buttons = [
+                [
+                    'icon' => 'add',
+                    'label' => Yii::t('shop/admin', 'CREATE_ATTRIBUTE'),
+                    'url' => ['create'],
+                    'options' => ['class' => 'btn btn-success']
+                ]
+            ];
+        }
         $this->pageName = Yii::t('shop/admin', 'ATTRIBUTES');
         $this->breadcrumbs[] = [
             'label' => Yii::t('shop/default', 'MODULE_NAME'),
@@ -96,7 +97,7 @@ class AttributeController extends AdminController
 
             if ($model->validate()) {
                 $model->save();
-                if($model->validateOptions())
+                if ($model->validateOptions())
                     $this->saveOptions($model);
 
             }

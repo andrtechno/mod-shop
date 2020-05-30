@@ -7,9 +7,11 @@ use panix\mod\shop\models\AttributeGroup;
 use panix\mod\shop\models\search\AttributeGroupSearch;
 use panix\engine\controllers\AdminController;
 
-class AttributeGroupController extends AdminController {
+class AttributeGroupController extends AdminController
+{
 
-    public function actions() {
+    public function actions()
+    {
         return [
             'sortable' => [
                 'class' => \panix\engine\grid\sortable\Action::class,
@@ -20,18 +22,19 @@ class AttributeGroupController extends AdminController {
     }
 
 
-
-    public function actionIndex() {
+    public function actionIndex()
+    {
         $this->pageName = Yii::t('shop/admin', 'ATTRIBUTE_GROUP');
-        $this->buttons = [
-            [
-                'icon' => 'add',
-                'label' => Yii::t('shop/AttributeGroup', 'CREATE_GROUP'),
-                'url' => ['create'],
-                'options' => ['class' => 'btn btn-success']
-            ]
-        ];
-
+        if (Yii::$app->user->can("/{$this->module->id}/{$this->id}/*") || Yii::$app->user->can("/{$this->module->id}/{$this->id}/create")) {
+            $this->buttons = [
+                [
+                    'icon' => 'add',
+                    'label' => Yii::t('shop/AttributeGroup', 'CREATE_GROUP'),
+                    'url' => ['create'],
+                    'options' => ['class' => 'btn btn-success']
+                ]
+            ];
+        }
         $this->breadcrumbs[] = [
             'label' => Yii::t('shop/default', 'MODULE_NAME'),
             'url' => ['/admin/shop']
@@ -46,12 +49,13 @@ class AttributeGroupController extends AdminController {
         $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams());
 
         return $this->render('index', [
-                    'dataProvider' => $dataProvider,
-                    'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+            'searchModel' => $searchModel,
         ]);
     }
 
-    public function actionUpdate($id = false) {
+    public function actionUpdate($id = false)
+    {
 
         $model = AttributeGroup::findModel($id);
 
@@ -92,7 +96,8 @@ class AttributeGroupController extends AdminController {
         ]);
     }
 
-    protected function findModel($id) {
+    protected function findModel($id)
+    {
         $model = new AttributeGroup;
         if (($model = $model::findOne($id)) !== null) {
             return $model;

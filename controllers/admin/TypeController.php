@@ -44,14 +44,15 @@ class TypeController extends AdminController
         // $this->topButtons = array(array('label' => Yii::t('shop/admin', 'Создать тип'),
         //         'url' => $this->createUrl('create'), 'htmlOptions' => array('class' => 'btn btn-success')));
 
-
-        $this->buttons = [
-            [
-                'label' => Yii::t('app/default', 'CREATE'),
-                'url' => ['/admin/shop/type/create'],
-                'options' => ['class' => 'btn btn-success']
-            ]
-        ];
+        if (Yii::$app->user->can("/{$this->module->id}/{$this->id}/*") ||  Yii::$app->user->can("/{$this->module->id}/{$this->id}/create")) {
+            $this->buttons = [
+                [
+                    'label' => Yii::t('app/default', 'CREATE'),
+                    'url' => ['/admin/shop/type/create'],
+                    'options' => ['class' => 'btn btn-success']
+                ]
+            ];
+        }
         $searchModel = new ProductTypeSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams());
 

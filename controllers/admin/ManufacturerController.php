@@ -37,14 +37,16 @@ class ManufacturerController extends AdminController
     public function actionIndex()
     {
         $this->pageName = Yii::t('shop/admin', 'MANUFACTURER');
-        $this->buttons = [
-            [
-                'icon' => 'add',
-                'label' => Yii::t('shop/admin', 'CREATE_MANUFACTURER'),
-                'url' => ['create'],
-                'options' => ['class' => 'btn btn-success']
-            ]
-        ];
+        if (Yii::$app->user->can("/{$this->module->id}/{$this->id}/*") || Yii::$app->user->can("/{$this->module->id}/{$this->id}/create")) {
+            $this->buttons = [
+                [
+                    'icon' => 'add',
+                    'label' => Yii::t('shop/admin', 'CREATE_MANUFACTURER'),
+                    'url' => ['create'],
+                    'options' => ['class' => 'btn btn-success']
+                ]
+            ];
+        }
         $this->breadcrumbs[] = [
             'label' => $this->module->info['label'],
             'url' => $this->module->info['url'],
@@ -67,14 +69,16 @@ class ManufacturerController extends AdminController
 
 
         $this->pageName = Yii::t('shop/admin', 'MANUFACTURER');
-        $this->buttons = [
-            [
-                'icon' => 'add',
-                'label' => Yii::t('shop/admin', 'CREATE_MANUFACTURER'),
-                'url' => ['create'],
-                'options' => ['class' => 'btn btn-success']
-            ]
-        ];
+        if (Yii::$app->user->can("/{$this->module->id}/{$this->id}/*") || Yii::$app->user->can("/{$this->module->id}/{$this->id}/create")) {
+            $this->buttons = [
+                [
+                    'icon' => 'add',
+                    'label' => Yii::t('shop/admin', 'CREATE_MANUFACTURER'),
+                    'url' => ['create'],
+                    'options' => ['class' => 'btn btn-success']
+                ]
+            ];
+        }
         $this->breadcrumbs[] = [
             'label' => Yii::t('shop/default', 'MODULE_NAME'),
             'url' => ['/shop']

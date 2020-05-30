@@ -62,13 +62,15 @@ class CategoryController extends AdminController
         }
 
         $this->pageName = Yii::t('shop/admin', 'CATEGORIES');
-        $this->buttons = [
-            [
-                'label' => Yii::t('shop/admin', 'CREATE_CATEGORY'),
-                'url' => ['/admin/shop/category'],
-                'options' => ['class' => 'btn btn-success']
-            ]
-        ];
+        if (Yii::$app->user->can("/{$this->module->id}/{$this->id}/*") || Yii::$app->user->can("/{$this->module->id}/{$this->id}/create")) {
+            $this->buttons = [
+                [
+                    'label' => Yii::t('shop/admin', 'CREATE_CATEGORY'),
+                    'url' => ['/admin/shop/category'],
+                    'options' => ['class' => 'btn btn-success']
+                ]
+            ];
+        }
         $this->breadcrumbs[] = [
             'label' => $this->module->info['label'],
             'url' => $this->module->info['url'],

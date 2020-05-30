@@ -64,14 +64,16 @@ class ProductController extends AdminController
         $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams());
 
         $this->pageName = Yii::t('shop/admin', 'PRODUCTS');
-        $this->buttons = [
-            [
-                'icon' => 'add',
-                'label' => Yii::t('shop/admin', 'CREATE_PRODUCT'),
-                'url' => ['create'],
-                'options' => ['class' => 'btn btn-success']
-            ]
-        ];
+        if (Yii::$app->user->can("/{$this->module->id}/{$this->id}/*") ||  Yii::$app->user->can("/{$this->module->id}/{$this->id}/create")) {
+            $this->buttons = [
+                [
+                    'icon' => 'add',
+                    'label' => Yii::t('shop/admin', 'CREATE_PRODUCT'),
+                    'url' => ['create'],
+                    'options' => ['class' => 'btn btn-success']
+                ]
+            ];
+        }
         $this->breadcrumbs[] = [
             'label' => $this->module->info['label'],
             'url' => $this->module->info['url'],
@@ -91,16 +93,16 @@ class ProductController extends AdminController
         $isNew = $model->isNewRecord;
         $this->pageName = Yii::t('shop/default', 'MODULE_NAME');
 
-
-        if (!$isNew && $model->switch) {
-            $this->buttons[] = [
-                'icon' => 'eye',
-                'label' => Yii::t('shop/admin', 'VIEW_PRODUCT'),
-                'url' => $model->getUrl(),
-                'options' => ['class' => 'btn btn-info', 'target' => '_blank']
-            ];
+        if (Yii::$app->user->can("/{$this->module->id}/{$this->id}/*") ||  Yii::$app->user->can("/{$this->module->id}/{$this->id}/create")) {
+            if (!$isNew && $model->switch) {
+                $this->buttons[] = [
+                    'icon' => 'eye',
+                    'label' => Yii::t('shop/admin', 'VIEW_PRODUCT'),
+                    'url' => $model->getUrl(),
+                    'options' => ['class' => 'btn btn-info', 'target' => '_blank']
+                ];
+            }
         }
-
         $post = Yii::$app->request->post();
 
 

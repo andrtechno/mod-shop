@@ -34,14 +34,16 @@ class SupplierController extends AdminController
             'url' => $this->module->info['url'],
         ];
         $this->breadcrumbs[] = $this->pageName;
-        $this->buttons = [
-            [
-                'icon' => 'add',
-                'label' => Yii::t('shop/admin', 'CREATE_SUPPLIER'),
-                'url' => ['create'],
-                'options' => ['class' => 'btn btn-success']
-            ]
-        ];
+        if (Yii::$app->user->can("/{$this->module->id}/{$this->id}/*") ||  Yii::$app->user->can("/{$this->module->id}/{$this->id}/create")) {
+            $this->buttons = [
+                [
+                    'icon' => 'add',
+                    'label' => Yii::t('shop/admin', 'CREATE_SUPPLIER'),
+                    'url' => ['create'],
+                    'options' => ['class' => 'btn btn-success']
+                ]
+            ];
+        }
         $searchModel = new SupplierSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams());
 
@@ -57,14 +59,16 @@ class SupplierController extends AdminController
         $model = Supplier::findModel($id);
 
         $this->pageName = Yii::t('shop/admin', 'SUPPLIER');
-        $this->buttons = [
-            [
-                'icon' => 'add',
-                'label' => Yii::t('shop/admin', 'CREATE_SUPPLIER'),
-                'url' => ['create'],
-                'options' => ['class' => 'btn btn-success']
-            ]
-        ];
+        if (Yii::$app->user->can("/{$this->module->id}/{$this->id}/*") ||  Yii::$app->user->can("/{$this->module->id}/{$this->id}/create")) {
+            $this->buttons = [
+                [
+                    'icon' => 'add',
+                    'label' => Yii::t('shop/admin', 'CREATE_SUPPLIER'),
+                    'url' => ['create'],
+                    'options' => ['class' => 'btn btn-success']
+                ]
+            ];
+        }
         $this->breadcrumbs[] = [
             'label' => Yii::t('shop/default', 'MODULE_NAME'),
             'url' => ['/admin/shop']
