@@ -106,4 +106,8 @@ class AttributeGroupController extends AdminController
         }
     }
 
+    public function actionCreate()
+    {
+        return $this->actionUpdate(false);
+    }
 }

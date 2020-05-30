@@ -105,5 +105,8 @@ class ManufacturerController extends AdminController
         ]);
     }
 
-
+    public function actionCreate()
+    {
+        return $this->actionUpdate(false);
+    }
 }

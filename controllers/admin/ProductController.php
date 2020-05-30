@@ -689,4 +689,8 @@ class ProductController extends AdminController
         }
     }
 
+    public function actionCreate()
+    {
+        return $this->actionUpdate(false);
+    }
 }

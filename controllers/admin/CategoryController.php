@@ -188,4 +188,9 @@ class CategoryController extends AdminController
 
         ///return $this->redirect('index');
     }
+
+    public function actionCreate()
+    {
+        return $this->actionUpdate(false);
+    }
 }
