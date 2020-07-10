@@ -701,7 +701,7 @@ class Product extends ActiveRecord
         //Prices history
         if (isset($changedAttributes['price_purchase'])) {
             if ($this->attributes['price_purchase'] <> $changedAttributes['price_purchase']) {
-                self::getDb()->createCommand()->insert('{{%shop__product_price_history}}', [
+                static::getDb()->createCommand()->insert('{{%shop__product_price_history}}', [
                     'product_id' => $this->id,
                     'currency_id' => $this->currency_id,
                     'price' => $this->price,
@@ -733,7 +733,7 @@ class Product extends ActiveRecord
             ->one();*/
 
         // Update
-        Yii::$app->db->createCommand()->update(self::tableName(), [
+        static::getDb()->createCommand()->update(self::tableName(), [
             'price' => $query['min_price'],
             'max_price' => $query['max_price']
         ], 'id=:id', [':id' => $model->id])->execute();
