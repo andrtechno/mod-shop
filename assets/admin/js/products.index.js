@@ -59,40 +59,6 @@ function setProductsStatus(status_id, el) {
     return false;
 }
 
-function updateProductsViews(el) {
-    if (grid.yiiGridView('getSelectedRows').length > 0) {
-        $.ajax(common.url('/admin/shop/product/update-views'), {
-            type: "post",
-            dataType: "json",
-            data: {id: grid.yiiGridView('getSelectedRows')},
-            success: function (data) {
-                common.notify(data.message, 'success');
-                //grid.yiiGridView('applyFilter');
-            },
-            error: function (XHR, textStatus, errorThrown) {
-                var err = '';
-                switch (textStatus) {
-                    case 'timeout':
-                        err = 'The request timed out!';
-                        break;
-                    case 'parsererror':
-                        err = 'Parser error!';
-                        break;
-                    case 'error':
-                        if (XHR.status && !/^\s*$/.test(XHR.status))
-                            err = 'Error ' + XHR.status;
-                        else
-                            err = 'Error';
-                        if (XHR.responseText && !/^\s*$/.test(XHR.responseText))
-                            err = err + ': ' + XHR.responseText;
-                        break;
-                }
-                common.notify(err, 'error');
-            }
-        });
-    }
-    return false;
-}
 function showCategoryAssignWindow2(el_clicked) {
     var modalContainer = $('#exampleModal');
     var modalBody = modalContainer.find('.modal-body');
@@ -115,7 +81,7 @@ function showCategoryAssignWindow2(el_clicked) {
  */
 function showCategoryAssignWindow(el_clicked) {
     var selection = grid.yiiGridView('getSelectedRows');
-    if (selection > 0) {
+    if (selection.length > 0) {
         var dialogSelector = "#set_categories_dialog";
         if ($(dialogSelector).length === 0) {
             var div = $('<div id="set_categories_dialog"/>');
@@ -183,7 +149,7 @@ function showCategoryAssignWindow(el_clicked) {
                     //}
                 },
             }, {
-                text: common.message.cancel,
+                text: 'Отмена',
                 'class': 'btn2 btn-secondary2',
                 click: function () {
                     $(this).dialog("close");
@@ -198,7 +164,7 @@ function showCategoryAssignWindow(el_clicked) {
 
 function showDuplicateProductsWindow() {
     var selection = grid.yiiGridView('getSelectedRows');
-    if (selection > 0) {
+    if (selection.length > 0) {
         var dialogSelector = "#duplicate_products_dialog";
 
         if ($(dialogSelector).length === 0) {
@@ -255,7 +221,7 @@ function showDuplicateProductsWindow() {
                 }
             },
                 {
-                    text: common.message.cancel,
+                    text: 'Отмена',
                     'class': 'btn btn-secondary',
                     click: function () {
                         $(this).dialog("close");
@@ -271,7 +237,8 @@ function showDuplicateProductsWindow() {
 
 function setProductsPrice() {
     var selection = grid.yiiGridView('getSelectedRows');
-    if (selection > 0) {
+    console.log(selection);
+    if (selection.length > 0) {
         var dialogSelector = "#prices_products_dialog";
         if ($(dialogSelector).length === 0) {
             var div = $('<div id="prices_products_dialog"/>');
@@ -316,8 +283,11 @@ function setProductsPrice() {
                         },
                         success: function (data) {
                             if (data.success) {
-                                $(dialogSelector).dialog('close');
-                                $.pjax.reload(pjax, {timeout: false});
+                                //$(dialogSelector).dialog('close');
+                                $.pjax.reload('#pjax-grid-product', {timeout: false});
+                                //$(dialogSelector).dialog('close').remove();
+                                //$(dialogSelector).dialog('destroy').remove();
+                                //grid.yiiGridView('applyFilter');
                                 common.notify(data.message, 'success');
                             } else {
                                 common.notify(data.message, 'error');
@@ -331,7 +301,7 @@ function setProductsPrice() {
 
                 }
             }, {
-                text: common.message.cancel,
+                text: 'Отмена',
                 //'class': 'btn btn-secondary',
                 click: function () {
                     $(dialogSelector).dialog("close");

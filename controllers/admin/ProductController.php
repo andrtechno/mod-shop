@@ -47,6 +47,9 @@ class ProductController extends AdminController
 
     public function beforeAction($action)
     {
+        if (in_array($action->id, ['render-products-price-window', 'set-products'])) {
+            $this->enableCsrfValidation = false;
+        }
         if (in_array($action->id, ['create', 'update'])) {
             $count = Product::find()->count();
             if ($count >= Yii::$app->params['plan'][Yii::$app->params['plan_id']]['product_limit']) {
@@ -575,7 +578,7 @@ class ProductController extends AdminController
     {
         if (Yii::$app->request->isAjax) {
             $model = new Product;
-            return $this->renderAjax('window/products_price_window', ['model' => $model]);
+            return $this->render('window/products_price_window', ['model' => $model]);
         } else {
             throw new ForbiddenHttpException(Yii::t('app/error', '403'));
         }
@@ -599,13 +602,12 @@ class ProductController extends AdminController
                     if (!$p->currency_id || !$p->use_configurations) { //запрещаем редактирование товаров с привязанной ценой и/или концигурациями
                         $p->price = $price['Product']['price'];
                         $p->save(false);
+                        $result['success'] = true;
+                        $result['message'] = 'Цена успешно изменена';
                     }
                 }
             }
-            $result['success'] = true;
-            $result['message'] = 'Success';
             return $this->asJson($result);
-
         } else {
             throw new ForbiddenHttpException(Yii::t('app/error', '403'));
         }
