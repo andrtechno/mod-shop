@@ -76,7 +76,7 @@ foreach ($attributeModels as $attribute) {
 
 
     $columns[] = [
-        'attribute' => 'eav_1'.$attribute->name,
+        'attribute' => 'eav_'.$attribute->name,
         'header' => $attribute->title,
         'contentOptions' => ['class' => 'eav'],
          'filter' => Html::dropDownList('eav[' . $attribute->name . ']', $selected, ArrayHelper::map($attribute->options, 'id', 'value'), [
@@ -123,7 +123,7 @@ echo GridView::widget([
     'tableOptions' => ['class' => 'table table-striped'],
     'dataProvider' => $dataProvider,
     'filterModel' => $searchModel,
-
+    'enableLayout'=>false,
     'columns' => $columns,
     'showFooter' => true,
     'enableColumns' => false
