@@ -11,7 +11,7 @@ use panix\engine\grid\GridView;
 //\yii\helpers\VarDumper::dump($model,10,true);
 //echo $model->getRelatedProductCount(); 
 ?>
-zzzz
+
 <table class="table table-striped" id="kitProductsTable">
     <?php
     //print_r($model->relatedProducts2);

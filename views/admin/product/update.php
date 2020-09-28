@@ -93,53 +93,49 @@ use panix\mod\shop\models\ProductType;
                     <?php
 
                     $tabs = [];
-
-
                     $tabs[] = [
                         'label' => $model::t('TAB_MAIN'),
                         'content' => $this->render('tabs/_main', ['form' => $form, 'model' => $model]),
                         'active' => true,
                         'options' => ['class' => 'flex-sm-fill text-center nav-item'],
                     ];
-                     $tabs[] = [
-                        'label' => $model::t('TAB_WAREHOUSE'),
-                        'content' => $this->render('tabs/_warehouse', ['form' => $form, 'model' => $model]),
-                        'headerOptions' => [],
-                        'options' => ['class' => 'flex-sm-fill text-center nav-item'],
-                    ];
-                    $tabs[] = [
-                        'label' => $model::t('TAB_IMG'),
-                        'content' => $this->render('tabs/_images', ['form' => $form, 'model' => $model]),
-                        'headerOptions' => [],
-                        'options' => ['class' => 'flex-sm-fill text-center nav-item'],
-                    ];
+                   $tabs[] = [
+                       'label' => $model::t('TAB_WAREHOUSE'),
+                       'content' => $this->render('tabs/_warehouse', ['form' => $form, 'model' => $model]),
+                       'headerOptions' => [],
+                       'options' => ['class' => 'flex-sm-fill text-center nav-item'],
+                   ];
+                   $tabs[] = [
+                       'label' => $model::t('TAB_IMG'),
+                       'content' => $this->render('tabs/_images', ['form' => $form, 'model' => $model]),
+                       'headerOptions' => [],
+                       'options' => ['class' => 'flex-sm-fill text-center nav-item'],
+                   ];
                     $tabs[] = [
                         'label' => $model::t('TAB_REL'),
                         'content' => $this->render('tabs/_related', ['exclude' => $model->id, 'form' => $form, 'model' => $model]),
                         'headerOptions' => [],
                         'options' => ['class' => 'flex-sm-fill text-center nav-item'],
                     ];
-                     $tabs[] = [
-                         'label' => $model::t('TAB_KIT'),
-                         'content' => $this->render('tabs/_kit', ['exclude' => $model->id, 'form' => $form, 'model' => $model]),
-                         'headerOptions' => [],
-                         'options' => ['class' => 'flex-sm-fill text-center nav-item'],
-                         //'visible' => false,
-                     ];
                     $tabs[] = [
-                         'label' => $model::t('TAB_VARIANTS'),
-                         'content' => $this->render('tabs/_variations', ['model' => $model]),
-                         'headerOptions' => [],
-                         'options' => ['class' => 'flex-sm-fill text-center nav-item'],
-                     ];
+                        'label' => $model::t('TAB_KIT'),
+                        'content' => $this->render('tabs/_kit', ['exclude' => $model->id, 'form' => $form, 'model' => $model]),
+                        'headerOptions' => [],
+                        'options' => ['class' => 'flex-sm-fill text-center nav-item'],
+                        //'visible' => false,
+                    ];
+                    $tabs[] = [
+                        'label' => $model::t('TAB_VARIANTS'),
+                        'content' => $this->render('tabs/_variations', ['model' => $model]),
+                        'headerOptions' => [],
+                        'options' => ['class' => 'flex-sm-fill text-center nav-item'],
+                    ];
 
-                     $tabs[] = [
+                    $tabs[] = [
                         'label' => Yii::t('seo/default', 'TAB_SEO'),
                         'content' => $this->render('@seo/views/admin/default/_module_seo', ['model' => $model]),
                         'options' => ['class' => 'flex-sm-fill text-center nav-item'],
                     ];
-
-
                     $tabs[] = [
                         'label' => $model::t('TAB_CATEGORIES'),
                         'content' => $this->render('tabs/_tree', ['exclude' => $model->id, 'form' => $form, 'model' => $model]),
@@ -192,4 +188,4 @@ use panix\mod\shop\models\ProductType;
 
 
 <?php
-echo $this->render('_prices_history',['model'=>$model]);
+echo $this->render('_prices_history', ['model' => $model]);
