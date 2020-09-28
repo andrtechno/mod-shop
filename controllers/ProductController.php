@@ -221,4 +221,34 @@ class ProductController extends WebController
             }
         }
     }
+	
+    public function getConfigurableData() {
+        $attributeModels = Attribute::findAll(['id'=>$this->dataModel->configurable_attributes]);
+        $models = Product::findAll(['id'=>$this->dataModel->configurations]);
+
+        $data = array();
+        $prices = array();
+        foreach ($attributeModels as $attr) {
+            foreach ($models as $m) {
+                $prices[$m->id] = $m->price;
+                if (!isset($data[$attr->name]))
+                    $data[$attr->name] = ['---' => '0'];
+
+                $method = 'eav_' . $attr->name;
+                $value = $m->$method;
+
+                if (!isset($data[$attr->name][$value]))
+                    $data[$attr->name][$value] = '';
+
+                $data[$attr->name][$value] .= $m->id . '/';
+            }
+        }
+
+        return [
+            'attributes' => $attributeModels,
+            'prices' => $prices,
+            'data' => $data,
+        ];
+    }
+
 }

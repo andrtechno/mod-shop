@@ -12,7 +12,7 @@ use panix\mod\shop\models\Currency;
 <?php
 echo $form->field($model, 'price_purchase')->hint('Данная цена не где не отображается, она нужна только для статистики');
 if ($model->use_configurations) {
-    echo $form->field($model, 'price')->hiddenInput()->label(false);
+    //echo $form->field($model, 'price')->hiddenInput()->label(false);
 } else {
     echo $form->field($model, 'price', [
         'parts' => [

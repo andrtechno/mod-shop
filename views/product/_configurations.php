@@ -29,6 +29,7 @@ if (count($model->processVariants())) { ?>
             echo Html::dropDownList('eav[' . $variant['attribute']->id . ']', null, $dropDownData, [
                 'id' => 'eav-' . $variant['attribute']->id,
                 'class' => 'variantData custom-select w-auto',
+                'data-product_id'=>$model->id,
                 'prompt' => html_entity_decode(Yii::t('app/default', 'EMPTY_LIST'))
             ]);
             echo '</div></div>';
@@ -43,17 +44,12 @@ if (count($model->processVariants())) { ?>
         // Display product configurations
         if ($model->use_configurations) {
             // Get data
-            $confData = $this->getConfigurableData();
+            $confData = $this->context->getConfigurableData();
 
             // Register configuration script
 
             $this->registerJs(strtr('var productPrices = {prices};', ['{prices}' => Json::encode($confData['prices'])]), \yii\web\View::POS_END);
 
-            /* Yii::app()->clientScript->registerScript('productPrices', strtr('
-                             var productPrices = {prices};
-                         ', array(
-                 '{prices}' => CJavaScript::encode($confData['prices'])
-                     )), CClientScript::POS_END);*/
 //echo CVarDumper::dump($confData,10,true);
             foreach ($confData['attributes'] as $attr) {
                 // $attr->name .= $confData['prices'];
@@ -63,6 +59,7 @@ if (count($model->processVariants())) { ?>
                     echo ' <div class="col-sm-9">';
                     echo Html::dropDownList('configurations[' . $attr->name . ']', null, array_flip($confData['data'][$attr->name]), [
                         'id' => 'conf-' . $attr->name,
+                        'data-product_id'=>$model->id,
                         'class' => 'eavData custom-select w-auto'
                     ]);
                     echo '</div></div>';

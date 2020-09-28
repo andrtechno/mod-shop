@@ -81,31 +81,28 @@ $(document).ready(function () {
  * Sum product price + variant prices + configurable prices.
  */
 function recalculateProductPrice(el_clicked) {
-
-    /*$.ajax({
-        url:common.url('/product/4/calculate-price'),
-        dataType:'json',
-        type:'POST',
-        success:function (data) {
-
-        }
-    });*/
-    var form = $('#form-add-cart-4');
+    var id = $(el_clicked).data('product_id');
+    var form = $('#form-add-cart-'+$(el_clicked).data('product_id'));
     var priceInput = form.find('input[name="product_price"]');
     var formData = form.serialize();
-    $.getJSON(common.url('/product/4/calculate-price'),formData,function (data) {
-        console.log(data);
-    });
-    return;
+    var data = getFormData(form);
     var result = parseFloat(priceInput.val());
-//console.log(result);
-//return;
+
+    $.getJSON(common.url('/product/'+id+'/calculate-price'),formData,function (response) {
+        console.log(response);
+        result = response.price;
+        $('#productPrice').html(price_format(result));
+    });
+
+
+console.log('price: '+result);
+return;
     // Update price
 
-    if (typeof(productPrices) !== "undefined" && productPrices[$('#configurable_id').val()] !== undefined) {
-        result = result + parseFloat(productPrices[$('#configurable_id').val()]);
+    if (typeof(productPrices) !== "undefined" && productPrices[$('#configurable_id-'+id).val()] !== undefined) {
+        result = result + parseFloat(productPrices[$('#configurable_id-'+id).val()]);
         console.log('use_configurations');
-        if ($("#use_configurations").val() === '1') { // Pan, comment this.
+        if ($("#use_configurations-"+id).val() === '1') { // Pan, comment this.
 
             result = result - priceInput.val();
         }
@@ -132,7 +129,7 @@ function recalculateProductPrice(el_clicked) {
 
    // result = result * parseFloat($('#currency_rate').val());
     console.log('variantData',result);
-    //$('#productPrice').html(price_format(result));
+    $('#productPrice').html(price_format(result));
 }
 
 /**
@@ -150,7 +147,16 @@ jQuery.fn.nextAllData = function (startFrom) {
     });
     return result;
 };
+function getFormData($form){
+    var unindexed_array = $form.serializeArray();
+    var indexed_array = {};
 
+    $.map(unindexed_array, function(n, i){
+        indexed_array[n['name']] = n['value'];
+    });
+
+    return indexed_array;
+}
 /**
  * Check if array contains value
  * @param obj

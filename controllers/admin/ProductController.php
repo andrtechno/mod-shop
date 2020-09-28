@@ -161,7 +161,9 @@ class ProductController extends AdminController
             if ($model->use_configurations && isset($_GET['Product']['configurable_attributes']))
                 $model->configurable_attributes = $_GET['Product']['configurable_attributes'];
         }
-
+        if ($model->use_configurations){
+            $model->setScenario('configurable');
+        }
         if ($model->load($post) && $model->validate() && $this->validateAttributes($model) && $this->validatePrices($model)) {
             $model->setRelatedProducts(Yii::$app->request->post('RelatedProductId', []));
             $model->setKitProducts(Yii::$app->request->post('kitProductId', []));

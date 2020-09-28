@@ -151,10 +151,10 @@ class Product extends ActiveRecord
     {
         $html = '';
         $html .= Html::beginForm(['/cart/add'], 'post', ['id' => 'form-add-cart-' . $this->id]);
-        $html .= Html::hiddenInput('product_id', $this->id);
+        $html .= Html::hiddenInput('product_id', $this->id,['id'=>'product_id-'.$this->id]);
         //$html .= Html::hiddenInput('product_price', $this->price);
-        $html .= Html::hiddenInput('use_configurations', $this->use_configurations);
-        $html .= Html::hiddenInput('configurable_id', 0);
+        $html .= Html::hiddenInput('use_configurations', $this->use_configurations,['id'=>'use_configurations-'.$this->id]);
+        $html .= Html::hiddenInput('configurable_id', 0,['id'=>'configurable_id-'.$this->id]);
         return $html;
     }
 
@@ -249,6 +249,7 @@ class Product extends ActiveRecord
         $scenarios = parent::scenarios();
         $scenarios[self::SCENARIO_INSERT] = ['use_configurations'];
         $scenarios['duplicate'] = [];
+        $scenarios['configurable'] = ['name','sku','slug','main_category_id'];
         return $scenarios;
     }
 
@@ -306,7 +307,9 @@ class Product extends ActiveRecord
             ];
             $rules[] = [['name', 'slug'], 'required'];
         }
-        $rules[] = [['main_category_id', 'price', 'unit'], 'required'];
+        $rules[] = [['main_category_id', 'price', 'unit'], 'required','on'=>'default'];
+
+
         $rules[] = [['slug'], 'unique'];
         $rules[] = ['price', 'commaToDot'];
         //$rules[] = [['file'], 'file', 'maxFiles' => Yii::$app->params['plan'][Yii::$app->params['plan_id']]['product_upload_files']];
