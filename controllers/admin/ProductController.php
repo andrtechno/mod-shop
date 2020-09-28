@@ -365,10 +365,10 @@ class ProductController extends AdminController
 
     protected function processConfigurations(Product $model)
     {
-        $productPks = Yii::$app->request->post('ConfigurationsProductGrid_c0', array());
+        $productPks = Yii::$app->request->post('ConfigurationsProduct', []);
 
         // Clear relations
-        Yii::$app->db->createCommand()->delete('{{%shop__product_configurations}}', 'product_id=:id', [':id' => $model->id])->execute();
+        Yii::$app->db->createCommand()->delete('{{%shop__product_configurations}}', ['product_id'=>$model->id])->execute();
 
         if (!sizeof($productPks))
             return;

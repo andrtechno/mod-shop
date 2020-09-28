@@ -29,13 +29,14 @@ $columns = [
     [
         'class' => 'panix\engine\grid\columns\CheckboxColumn',
         'enableMenu' => false,
+        'name' => 'ConfigurationsProduct'
         //'checked' => (!empty($product->configurations) && !isset($clearConfigurations) && !$product->isNewRecord) ? 'true' : 'false'
     ],
     [
         'attribute' => 'id',
         'format' => 'text',
         //'value' => '$data->id',
-        'filter' => Html::textInput('ConfProduct[id]', $model2->id, ['class' => 'form-control'])
+        'filter' => Html::textInput('ConfProduct[id]', $model2->id)
     ],
     [
         'attribute' => 'name',
@@ -44,18 +45,18 @@ $columns = [
             return Html::a(Html::encode($model->name), ["update", "id" => $model->id], ["target" => "_blank"]);
         },
 
-        'filter' => Html::textInput('ConfProduct[name]', $model2->name, ['class' => 'form-control'])
+        'filter' => Html::textInput('ConfProduct[name]', $model2->name)
     ],
     [
         'attribute' => 'sku',
         //'value' => '$data->sku',
-        'filter' => Html::textInput('ConfProduct[sku]', $model2->sku, ['class' => 'form-control'])
+        'filter' => Html::textInput('ConfProduct[sku]', $model2->sku)
     ],
     [
         'attribute' => 'price',
         'format' => 'raw',
         //'value' => '$data->price',
-        'filter' => Html::textInput('ConfProduct[price]', $model2->price, ['class' => 'form-control'])
+        'filter' => Html::textInput('ConfProduct[price]', $model2->price)
     ],
 ];
 
@@ -81,7 +82,6 @@ foreach ($attributeModels as $attribute) {
         'contentOptions' => ['class' => 'eav'],
         'filter' => Html::dropDownList('eav[' . $attribute->name . ']', $selected, ArrayHelper::map($attribute->options, 'id', 'value'), [
             'prompt' => '---',
-            'class' => 'custom-select w-auto'
         ])
     ];
 }

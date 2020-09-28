@@ -33,9 +33,8 @@ if ($model->use_configurations) {
     ])->textInput(['maxlength' => 10]);
 }
 
-?>
 
-<?php echo $form->field($model, 'prices')->label(false)->widget(\panix\ext\multipleinput\MultipleInput::class, [
+echo $form->field($model, 'prices')->label(false)->widget(\panix\ext\multipleinput\MultipleInput::class, [
     //'model' => $model,
     //'attribute' => 'phone',
     //'max' => 5,
