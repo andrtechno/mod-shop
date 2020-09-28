@@ -1,6 +1,7 @@
 <?php
 return [
     'SELECT_LABEL' => '&mdash; Выбрать лейбл &mdash;',
+    'SELECT_ATTRIBUTE' => '&mdash; Выбрать &mdash;',
     'LABEL' => 'Лейбл товарв',
     'LABEL_NEW' => 'Новинка',
     'LABEL_SALE' => 'Распродажа',

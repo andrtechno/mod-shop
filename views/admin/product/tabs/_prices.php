@@ -31,7 +31,7 @@ if ($model->use_configurations) {
 <span class="input-group-text">{label_unit}</span>
 {unit}<span class="input-group-text">{label_currency}</span>{currency}{hint}{error}</div>',
     ])->textInput(['maxlength' => 10]);
-}
+
 
 
 echo $form->field($model, 'prices')->label(false)->widget(\panix\ext\multipleinput\MultipleInput::class, [
@@ -65,3 +65,4 @@ echo $form->field($model, 'prices')->label(false)->widget(\panix\ext\multipleinp
         ],
     ]
 ]);
+}

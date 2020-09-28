@@ -81,7 +81,7 @@ foreach ($attributeModels as $attribute) {
         'header' => $attribute->title,
         'contentOptions' => ['class' => 'eav'],
         'filter' => Html::dropDownList('eav[' . $attribute->name . ']', $selected, ArrayHelper::map($attribute->options, 'id', 'value'), [
-            'prompt' => '---',
+            'prompt' => html_entity_decode(Yii::t('shop/Product','SELECT_ATTRIBUTE')),
         ])
     ];
 }
