@@ -28,14 +28,14 @@ if (isset($_GET['ConfProduct']))
 $columns = [
     [
         'class' => 'panix\engine\grid\columns\CheckboxColumn',
-        'enableMenu'=>false,
+        'enableMenu' => false,
         //'checked' => (!empty($product->configurations) && !isset($clearConfigurations) && !$product->isNewRecord) ? 'true' : 'false'
     ],
     [
         'attribute' => 'id',
         'format' => 'text',
         //'value' => '$data->id',
-        'filter' => Html::textInput('ConfProduct[id]', $model2->id)
+        'filter' => Html::textInput('ConfProduct[id]', $model2->id, ['class' => 'form-control'])
     ],
     [
         'attribute' => 'name',
@@ -44,18 +44,18 @@ $columns = [
             return Html::a(Html::encode($model->name), ["update", "id" => $model->id], ["target" => "_blank"]);
         },
 
-        'filter' => Html::textInput('ConfProduct[name]', $model2->name)
+        'filter' => Html::textInput('ConfProduct[name]', $model2->name, ['class' => 'form-control'])
     ],
     [
         'attribute' => 'sku',
         //'value' => '$data->sku',
-        'filter' => Html::textInput('ConfProduct[sku]', $model2->sku)
+        'filter' => Html::textInput('ConfProduct[sku]', $model2->sku, ['class' => 'form-control'])
     ],
     [
         'attribute' => 'price',
         'format' => 'raw',
         //'value' => '$data->price',
-        'filter' => Html::textInput('ConfProduct[price]', $model2->price)
+        'filter' => Html::textInput('ConfProduct[price]', $model2->price, ['class' => 'form-control'])
     ],
 ];
 
@@ -76,12 +76,13 @@ foreach ($attributeModels as $attribute) {
 
 
     $columns[] = [
-        'attribute' => 'eav_'.$attribute->name,
+        'attribute' => 'eav_' . $attribute->name,
         'header' => $attribute->title,
         'contentOptions' => ['class' => 'eav'],
-         'filter' => Html::dropDownList('eav[' . $attribute->name . ']', $selected, ArrayHelper::map($attribute->options, 'id', 'value'), [
+        'filter' => Html::dropDownList('eav[' . $attribute->name . ']', $selected, ArrayHelper::map($attribute->options, 'id', 'value'), [
             'prompt' => '---',
-         ])
+            'class' => 'custom-select w-auto'
+        ])
     ];
 }
 
@@ -123,7 +124,7 @@ echo GridView::widget([
     'tableOptions' => ['class' => 'table table-striped'],
     'dataProvider' => $dataProvider,
     'filterModel' => $searchModel,
-    'enableLayout'=>false,
+    'enableLayout' => false,
     'columns' => $columns,
     'showFooter' => true,
     'enableColumns' => false
