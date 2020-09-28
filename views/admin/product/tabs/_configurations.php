@@ -36,7 +36,7 @@ $columns = [
         'attribute' => 'id',
         'format' => 'text',
         //'value' => '$data->id',
-        'filter' => Html::textInput('ConfProduct[id]', $model2->id)
+        'filter' => Html::textInput('ConfProduct[id]', $model2->id, ['class' => 'form-control'])
     ],
     [
         'attribute' => 'name',
@@ -45,18 +45,18 @@ $columns = [
             return Html::a(Html::encode($model->name), ["update", "id" => $model->id], ["target" => "_blank"]);
         },
 
-        'filter' => Html::textInput('ConfProduct[name]', $model2->name)
+        'filter' => Html::textInput('ConfProduct[name]', $model2->name, ['class' => 'form-control'])
     ],
     [
         'attribute' => 'sku',
         //'value' => '$data->sku',
-        'filter' => Html::textInput('ConfProduct[sku]', $model2->sku)
+        'filter' => Html::textInput('ConfProduct[sku]', $model2->sku, ['class' => 'form-control'])
     ],
     [
         'attribute' => 'price',
         'format' => 'raw',
         //'value' => '$data->price',
-        'filter' => Html::textInput('ConfProduct[price]', $model2->price)
+        'filter' => Html::textInput('ConfProduct[price]', $model2->price, ['class' => 'form-control'])
     ],
 ];
 
@@ -81,7 +81,8 @@ foreach ($attributeModels as $attribute) {
         'header' => $attribute->title,
         'contentOptions' => ['class' => 'eav'],
         'filter' => Html::dropDownList('eav[' . $attribute->name . ']', $selected, ArrayHelper::map($attribute->options, 'id', 'value'), [
-            'prompt' => html_entity_decode(Yii::t('shop/Product','SELECT_ATTRIBUTE')),
+            'prompt' => html_entity_decode($model2::t('SELECT_ATTRIBUTE')),
+            'class' => 'custom-select w-auto'
         ])
     ];
 }
@@ -126,7 +127,7 @@ echo GridView::widget([
     'filterModel' => $searchModel,
     'enableLayout' => false,
     'columns' => $columns,
-    'showFooter' => true,
+    'showFooter' => false,
     'enableColumns' => false
     //   'footerRowOptions' => ['class' => 'text-center'],
     //  'rowOptions' => ['class' => 'sortable-column']
