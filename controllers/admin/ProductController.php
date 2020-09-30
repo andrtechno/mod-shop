@@ -77,11 +77,11 @@ class ProductController extends AdminController
                 ]
             ];
         }
-        $this->breadcrumbs[] = [
+        $this->view->params['breadcrumbs'][] = [
             'label' => $this->module->info['label'],
             'url' => $this->module->info['url'],
         ];
-        $this->breadcrumbs[] = $this->pageName;
+        $this->view->params['breadcrumbs'][] = $this->pageName;
 
         return $this->render('index', [
             'dataProvider' => $dataProvider,
@@ -144,16 +144,16 @@ class ProductController extends AdminController
             $title .= ' "' . Html::encode($model->type->name) . '"';
         //print_r(Yii::$app->request->post('categories'));
         //print_r($_POST['categories']);die;
-        $this->breadcrumbs[] = [
+        $this->view->params['breadcrumbs'][] = [
             'label' => $this->module->info['label'],
             'url' => $this->module->info['url'],
         ];
 
-        $this->breadcrumbs[] = [
+        $this->view->params['breadcrumbs'][] = [
             'label' => Yii::t('shop/admin', 'PRODUCTS'),
             'url' => ['index']
         ];
-        $this->breadcrumbs[] = $title;
+        $this->view->params['breadcrumbs'][] = $title;
 
 
         // Set configurable attributes on new record

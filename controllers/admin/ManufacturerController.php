@@ -47,11 +47,11 @@ class ManufacturerController extends AdminController
                 ]
             ];
         }
-        $this->breadcrumbs[] = [
+        $this->view->params['breadcrumbs'][] = [
             'label' => $this->module->info['label'],
             'url' => $this->module->info['url'],
         ];
-        $this->breadcrumbs[] = $this->pageName;
+        $this->view->params['breadcrumbs'][] = $this->pageName;
 
         $searchModel = new ManufacturerSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams());
@@ -79,18 +79,18 @@ class ManufacturerController extends AdminController
                 ]
             ];
         }
-        $this->breadcrumbs[] = [
+        $this->view->params['breadcrumbs'][] = [
             'label' => Yii::t('shop/default', 'MODULE_NAME'),
             'url' => ['/shop']
         ];
-        $this->breadcrumbs[] = [
+        $this->view->params['breadcrumbs'][] = [
             'label' => $this->pageName,
             'url' => ['index']
         ];
 
 
         $isNew = $model->isNewRecord;
-        $this->breadcrumbs[] = Yii::t('app/default', ($isNew) ? 'CREATE' : 'UPDATE');
+        $this->view->params['breadcrumbs'][] = Yii::t('app/default', ($isNew) ? 'CREATE' : 'UPDATE');
         $post = Yii::$app->request->post();
         if ($model->load($post)) {
             if ($model->validate()) {

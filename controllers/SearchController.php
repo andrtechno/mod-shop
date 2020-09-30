@@ -60,7 +60,7 @@ class SearchController extends FilterController
             'count' => $this->provider->totalCount,
         ]);
         $this->view->title = $this->pageName;
-        $this->breadcrumbs[] = Yii::t('shop/default', 'SEARCH');
+        $this->view->params['breadcrumbs'][] = Yii::t('shop/default', 'SEARCH');
         //  $filterData = $this->getActiveFilters();
 
         return $this->_render('@shop/views/search/index');

@@ -90,7 +90,7 @@ class CatalogController extends FilterController
         $this->view->title = $this->dataModel->title();
 
 
-        $this->breadcrumbs[] = [
+        $this->view->params['breadcrumbs'][] = [
             'label' => Yii::t('shop/default', 'CATALOG'),
             'url' => ['/catalog']
         ];
@@ -102,7 +102,7 @@ class CatalogController extends FilterController
 
         if ($ancestors) {
             foreach ($ancestors as $category) {
-                $this->breadcrumbs[] = [
+                $this->view->params['breadcrumbs'][] = [
                     'label' => $category->name,
                     'url' => $category->getUrl()
                 ];
@@ -159,21 +159,21 @@ class CatalogController extends FilterController
                     $this->view->title = $this->pageName;
                 }
             }
-            $this->breadcrumbs[] = [
+            $this->view->params['breadcrumbs'][] = [
                 'label' => $this->dataModel->name,
                 'url' => $this->dataModel->getUrl()
             ];
         }*/
         if(Yii::$app->settings->get('shop','smart_bc')){
             $smartData = $this->smartNames();
-            $this->breadcrumbs[] = [
+            $this->view->params['breadcrumbs'][] = [
                 'label' => $this->dataModel->name,
                 'url' => $this->dataModel->getUrl()
             ];
             //CMS::dump($smartData);die;
-            $this->breadcrumbs[] = $smartData['breadcrumbs'];
+            $this->view->params['breadcrumbs'][] = $smartData['breadcrumbs'];
         }else{
-            $this->breadcrumbs[] = $this->dataModel->name;
+            $this->view->params['breadcrumbs'][] = $this->dataModel->name;
         }
         if(Yii::$app->settings->get('shop','smart_title')){
             $smartData = $this->smartNames();
@@ -192,7 +192,7 @@ class CatalogController extends FilterController
         //$criteria->addBetweenCondition('t.date_create', date('Y-m-d H:i:s', strtotime('-3 day')), date('Y-m-d H:i:s'));
         // $criteria->addBetweenCondition('t.date_create', date('Y-m-d H:i:s'), date('Y-m-d H:i:s', strtotime('+3 day')));
         $this->pageName = Yii::t('shop/default','NEW');
-        $this->breadcrumbs[] = $this->pageName;
+        $this->view->params['breadcrumbs'][] = $this->pageName;
         /** @var Product $productModel */
         $productModel = Yii::$app->getModule('shop')->model('Product');
 
@@ -219,7 +219,7 @@ class CatalogController extends FilterController
         $productModel = Yii::$app->getModule('shop')->model('Product');
 
         $this->pageName = Yii::t('shop/default','DISCOUNT');
-        $this->breadcrumbs[] = $this->pageName;
+        $this->view->params['breadcrumbs'][] = $this->pageName;
 
         $this->query = $productModel::find()
             ->published()

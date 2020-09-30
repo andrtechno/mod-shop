@@ -34,27 +34,27 @@ class ProductController extends WebController
             }, 3600);
 
             //$ancestors = $category->ancestors()->excludeRoot()->addOrderBy('depth')->all();
-            $this->breadcrumbs[] = [
+            $this->view->params['breadcrumbs'][] = [
                 'label' => Yii::t('shop/default', 'CATALOG'),
                 'url' => ['/catalog']
             ];
             foreach ($ancestors as $c) {
                 /** @var $c Category */
-                $this->breadcrumbs[] = [
+                $this->view->params['breadcrumbs'][] = [
                     'label' => $c->name,
                     'url' => $c->getUrl()
                 ];
             }
 
             if ($category->id != 1) {
-                $this->breadcrumbs[] = [
+                $this->view->params['breadcrumbs'][] = [
                     'label' => $category->name,
                     'url' => $category->getUrl()
                 ];
             }
 
             if ($this->dataModel->manufacturer) {
-                $this->breadcrumbs[] = [
+                $this->view->params['breadcrumbs'][] = [
                     'label' => $category->name . ' ' . $this->dataModel->manufacturer->name,
                     'url' => Url::to([
                         '/shop/category/view',
@@ -63,7 +63,7 @@ class ProductController extends WebController
                     ])
                 ];
             } else {
-                $this->breadcrumbs[] = $this->dataModel->name;
+                $this->view->params['breadcrumbs'][] = $this->dataModel->name;
             }
         }
 

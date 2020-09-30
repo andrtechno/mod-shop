@@ -36,11 +36,11 @@ class TypeController extends AdminController
 
 
         $this->pageName = Yii::t('shop/admin', 'TYPE_PRODUCTS');
-        $this->breadcrumbs[] = [
+        $this->view->params['breadcrumbs'][] = [
             'label' => $this->module->info['label'],
             'url' => $this->module->info['url'],
         ];
-        $this->breadcrumbs[] = $this->pageName;
+        $this->view->params['breadcrumbs'][] = $this->pageName;
         // $this->topButtons = array(array('label' => Yii::t('shop/admin', 'Создать тип'),
         //         'url' => $this->createUrl('create'), 'htmlOptions' => array('class' => 'btn btn-success')));
 
@@ -78,15 +78,15 @@ class TypeController extends AdminController
             Yii::t('shop/admin', 'TYPE_UPDATE');
 
 
-        $this->breadcrumbs[] = [
+        $this->view->params['breadcrumbs'][] = [
             'label' => $this->module->info['label'],
             'url' => $this->module->info['url'],
         ];
-        $this->breadcrumbs[] = [
+        $this->view->params['breadcrumbs'][] = [
             'label' => Yii::t('shop/admin', 'TYPE_PRODUCTS'),
             'url' => ['/admin/shop/type'],
         ];
-        $this->breadcrumbs[] = $this->pageName;
+        $this->view->params['breadcrumbs'][] = $this->pageName;
 
         \panix\mod\shop\bundles\admin\ProductTypeAsset::register($this->view);
 

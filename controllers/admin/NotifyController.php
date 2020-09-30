@@ -27,11 +27,11 @@ class NotifyController extends AdminController
     {
         $this->pageName = Yii::t('shop/admin', 'NOTIFIER');
 
-        $this->breadcrumbs[] = [
+        $this->view->params['breadcrumbs'][] = [
             'label' => Yii::t('shop/default', 'MODULE_NAME'),
             'url' => ['/admin/shop'],
         ];
-        $this->breadcrumbs[] = $this->pageName;
+        $this->view->params['breadcrumbs'][] = $this->pageName;
         $this->buttons = [
             [
                 'label' => 'Отправить новые товары всем подписчикам',

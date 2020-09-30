@@ -20,7 +20,7 @@ class ManufacturerController extends FilterController
         $model = Manufacturer::find()->published()->all();
         $this->currentUrl = '/';
         $this->pageName = Yii::t('shop/default','MANUFACTURER');
-        $this->breadcrumbs[] = $this->pageName;
+        $this->view->params['breadcrumbs'][] = $this->pageName;
         return $this->render('index', ['model' => $model]);
     }
 
@@ -69,11 +69,11 @@ class ManufacturerController extends FilterController
         ]);
 
 
-        $this->breadcrumbs[] = [
+        $this->view->params['breadcrumbs'][] = [
             'label' => Yii::t('shop/default', 'MANUFACTURER'),
             'url' => ['/manufacturer']
         ];
-        $this->breadcrumbs[] = $this->pageName;
+        $this->view->params['breadcrumbs'][] = $this->pageName;
         $filterData = $this->getActiveFilters();
 
 
