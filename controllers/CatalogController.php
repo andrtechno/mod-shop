@@ -171,7 +171,8 @@ class CatalogController extends FilterController
                 'url' => $this->dataModel->getUrl()
             ];
             //CMS::dump($smartData);die;
-            $this->view->params['breadcrumbs'][] = $smartData['breadcrumbs'];
+            if($smartData['breadcrumbs'])
+                $this->view->params['breadcrumbs'][] = $smartData['breadcrumbs'];
         }else{
             $this->view->params['breadcrumbs'][] = $this->dataModel->name;
         }

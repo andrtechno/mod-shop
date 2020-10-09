@@ -35,6 +35,13 @@ class FiltersWidget extends Widget
      * @var \panix\mod\shop\models\query\CategoryQuery
      */
     public $model;
+    public $priceView = 'price';
+    public $manufacturerView = 'manufacturer';
+    public $attributeView = 'attributes';
+    public $currentView = 'current';
+
+
+
 
     /**
      * @var string min/max price in the query
@@ -200,12 +207,12 @@ class FiltersWidget extends Widget
         echo Html::beginTag('div', ['id' => 'ajax_filter_current']);
         if (!empty($active)) {
             $url = ($this->model) ? $this->model->getUrl() : ['/' . Yii::$app->requestedRoute];
-            echo $this->render('current', ['active' => $active, 'dataModel' => $this->model, 'url' => $url]);
+            echo $this->render($this->currentView, ['active' => $active, 'dataModel' => $this->model, 'url' => $url]);
         }
         echo Html::endTag('div');
-        echo $this->render('price', ['priceMin' => $this->priceMin, 'priceMax' => $this->priceMax]);
-        echo $this->render('attributes', ['attributes' => $this->getCategoryAttributes()]);
-        echo $this->render('manufacturer', ['manufacturers' => $manufacturers]);
+        echo $this->render($this->priceView, ['priceMin' => $this->priceMin, 'priceMax' => $this->priceMax]);
+        echo $this->render($this->attributeView, ['attributes' => $this->getCategoryAttributes()]);
+        echo $this->render($this->manufacturerView, ['manufacturers' => $manufacturers]);
         echo Html::endForm();
         echo Html::endTag('div');
         $this->view->registerJs("

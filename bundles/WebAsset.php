@@ -23,9 +23,6 @@ class WebAsset extends AssetBundle
         'js/switchCurrency.js',
     ];
 
-    public $css = [
-         'css/shop.css',
-    ];
 
     public $depends = [
         'panix\mod\cart\CartAsset',
