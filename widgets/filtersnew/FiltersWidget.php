@@ -224,15 +224,17 @@ class FiltersWidget extends Widget
                 var panels = $.cookie();
             
                 for (var panel in panels) {
-                    //console.log(panel);
                     if (panel) {
                         var panelSelector = $('#' + panel);
                         if (panelSelector) {
+                            var header = panelSelector.parent().find('.card-header');
                             if (panelSelector.hasClass('card-collapse')) {
                                 if ($.cookie(panel) === '1') {
                                     panelSelector.collapse('show');
+                                    header.addClass('collapsed').attr('aria-expanded',true);
                                 } else {
                                     panelSelector.collapse('hide');
+                                    header.removeClass('collapsed').attr('aria-expanded',false);
                                 }
                             }
                         }
@@ -241,12 +243,17 @@ class FiltersWidget extends Widget
             
                 selector.on('show.bs.collapse', function () {
                     var active = $(this).attr('id');
+                    $(this).parent().find('.card-header').addClass('collapsed');
+
+                    
                     $.cookie(active, '1');
             
                 });
             
                 selector.on('hide.bs.collapse', function () {
                     var active = $(this).attr('id');
+                    $(this).parent().find('.card-header').removeClass('collapsed');
+
                     $.cookie(active, null);
                 });
             });
