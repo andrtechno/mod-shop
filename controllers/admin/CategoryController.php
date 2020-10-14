@@ -54,7 +54,7 @@ class CategoryController extends AdminController
          * @var \panix\engine\behaviors\nestedsets\NestedSetsBehavior|Category $model
          */
         $model = Category::findModel(Yii::$app->request->get('id'));
-
+        $isNew = $model->isNewRecord;
         if ($model->getIsNewRecord()) {
             $this->pageName = Yii::t('shop/Category', 'CREATE_TITLE');
         } else {
@@ -87,8 +87,6 @@ class CategoryController extends AdminController
         if ($model->load($post) && $model->validate()) {
 
             if ($model->getIsNewRecord()) {
-
-
                 $model->appendTo($model->parent_id);
                 Yii::$app->session->setFlash('success', Yii::t('app/default', 'SUCCESS_UPDATE'));
                 return $this->redirect(['/admin/shop/category/index']);
@@ -97,11 +95,15 @@ class CategoryController extends AdminController
                 Yii::$app->session->setFlash('success', Yii::t('app/default', 'SUCCESS_UPDATE'));
                 return $this->redirect(['/admin/shop/category/index', 'id' => $model->id]);
             }
+
+
+           // return $this->redirectPage($isNew, $post);
         }
 
 
         return $this->render('index', [
             'model' => $model,
+          //  'redirect'=>['/admin/shop/category/index']
         ]);
     }
 

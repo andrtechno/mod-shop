@@ -35,16 +35,17 @@ class BaseUrlRule extends UrlRule
                         $parts[] = $key . '/' . $val;
                     }
                 }
-                $url .= '/' . implode('/', $parts);
+                if (!empty($url))
+                    $url .= '/' . implode('/', $parts);
             }
             return $this->index . '/' . $url . $this->suffix;
+            // return $url . $this->suffix;
         }
         return false;
     }
 
 
-    public
-    function parseRequest($manager, $request)
+    public function parseRequest($manager, $request)
     {
 
         $params = [];
@@ -57,30 +58,34 @@ class BaseUrlRule extends UrlRule
         if ($this->suffix)
             $pathInfo = strtr($pathInfo, [$this->suffix => '']);
 
+        if (method_exists($this, 'getAllPaths')) {
+            foreach ($this->getAllPaths() as $path) {
+                $pathInfo = str_replace($this->index . '/', '', $pathInfo);
+                //$pathInfo = $pathInfo;
+                if ($path[$this->alias] !== '' && strpos($pathInfo, $path[$this->alias]) === 0) {
 
-        foreach ($this->getAllPaths() as $path) {
-            $pathInfo = str_replace($this->index . '/', '', $pathInfo);
-            if ($path[$this->alias] !== '' && strpos($pathInfo, $path[$this->alias]) === 0) {
+                    $params['slug'] = ltrim($path[$this->alias]);
+                    $_GET['slug'] = $params['slug'];
 
-                $params['slug'] = ltrim($path[$this->alias]);
-                $_GET['slug'] = $params['slug'];
+                    $pathInfo = ltrim(substr($basePathInfo, strlen($this->index . '/' . $path[$this->alias])), '/');
+                    //$pathInfo = ltrim(substr($basePathInfo, strlen($path[$this->alias])), '/');
 
-                $pathInfo = ltrim(substr($basePathInfo, strlen($this->index . '/' . $path[$this->alias])), '/');
+                    $parts = explode('/', $pathInfo);
+                    $paramsList = array_chunk($parts, 2);
 
-                $parts = explode('/', $pathInfo);
-                $paramsList = array_chunk($parts, 2);
-
-                foreach ($paramsList as $k => $p) {
-                    if (isset($p[1]) && isset($p[0])) {
-                        $_GET[$p[0]] = $p[1];
-                        $params[$p[0]] = $p[1];
+                    foreach ($paramsList as $k => $p) {
+                        if (isset($p[1]) && isset($p[0])) {
+                            $_GET[$p[0]] = $p[1];
+                            $params[$p[0]] = $p[1];
+                        }
                     }
+
+                    return [$this->route, $params];
                 }
-
-                return [$this->route, $params];
             }
+        } else {
+            return [$this->route, $params];
         }
-
         return false;
     }
 

@@ -2,6 +2,7 @@
 
 namespace panix\mod\shop\controllers;
 
+use panix\engine\data\ActiveDataProvider;
 use Yii;
 use yii\helpers\Url;
 use yii\web\Response;
@@ -188,6 +189,7 @@ class CatalogController extends FilterController
     }
     public function actionNew()
     {
+        $config = Yii::$app->settings->get('shop');
         //$criteria = new CDbCriteria;
         //$criteria->compare('t.switch', 1);
         //$criteria->addBetweenCondition('t.date_create', date('Y-m-d H:i:s', strtotime('-3 day')), date('Y-m-d H:i:s'));
@@ -198,8 +200,8 @@ class CatalogController extends FilterController
         $productModel = Yii::$app->getModule('shop')->model('Product');
 
         $this->query = $productModel::find()->published();
-        if ($this->config->label_expire_new) {
-            $this->query->int2between(time(), time() - (86400 * $this->config->label_expire_new));
+        if ($config->label_expire_new) {
+            $this->query->int2between(time(), time() - (86400 * $config->label_expire_new));
         } else {
             $this->query->int2between(-1, -1);
         }

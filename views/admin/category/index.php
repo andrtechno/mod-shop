@@ -2,6 +2,10 @@
 
 use panix\engine\Html;
 use panix\engine\bootstrap\ActiveForm;
+
+/**
+ * @var \panix\mod\shop\models\Category $model
+ */
 ?>
 
 <div class="row">
@@ -42,7 +46,7 @@ use panix\engine\bootstrap\ActiveForm;
 
             </div>
             <div class="card-footer text-center">
-                <?= Html::submitButton($model->isNewRecord ? Yii::t('app/default', 'CREATE') : Yii::t('app/default', 'UPDATE'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+                <?= $model->submitButton(); ?>
             </div>
         </div>
         <?php ActiveForm::end(); ?>

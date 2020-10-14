@@ -169,7 +169,7 @@ class ProductController extends AdminController
             $model->setKitProducts(Yii::$app->request->post('kitProductId', []));
 
 
-            $model->file = \yii\web\UploadedFile::getInstances($model, 'file');
+            /*$model->file = \yii\web\UploadedFile::getInstances($model, 'file');
             $data=[];
             if ($model->file) {
 
@@ -182,7 +182,7 @@ class ProductController extends AdminController
                 }
 
              //   $model->images_data = json_encode($data);
-            }
+            }*/
 
             if ($model->save()) {
 
@@ -219,6 +219,13 @@ class ProductController extends AdminController
                 // Process variants
                 $this->processVariants($model);
                 $this->processConfigurations($model);
+
+                $model->file = \yii\web\UploadedFile::getInstances($model, 'file');
+                if ($model->file) {
+                    foreach ($model->file as $file) {
+                        $model->attachImage($file);
+                    }
+                }
             }
 
 
