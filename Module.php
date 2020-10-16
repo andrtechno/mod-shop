@@ -28,12 +28,12 @@ class Module extends WebModule implements BootstrapInterface
 
 
         if (!($app instanceof \panix\engine\console\Application)) {
-            /*$rules[] = [
+            $rules[] = [
                 'class' => 'panix\mod\shop\components\SearchUrlRule',
                 //'pattern'=>'products/search',
                 'route' => 'shop/search/index',
                 'defaults' => ['q' => Yii::$app->request->get('q')]
-            ];*/
+            ];
 
             $rules[] = [
                 'class' => 'panix\mod\shop\components\ManufacturerUrlRule',
@@ -49,12 +49,12 @@ class Module extends WebModule implements BootstrapInterface
                 'alias' => 'full_path',
                 //  'pattern' => ''
             ];
-            $rules[] = [
+            /*$rules[] = [
                'class' => 'panix\mod\shop\components\BaseUrlRule',
                 'route' => 'shop/catalog/new',
                 'index' => 'new',
                 'pattern' => 'new'
-            ];
+            ];*/
             /*$rules[] = [
                 'class' => 'app\engine\BaseUrlRule',
                 'route' => 'shop/catalog/best',

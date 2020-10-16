@@ -18,7 +18,7 @@ $id = $this->context->id;
             'value' => $value,
             //'model'=>$searchModel,
             //'attribute' => 'name',
-            'options' => ['placeholder' => 'Поиск...', 'class' => 'form-control'],
+            'options' => ['placeholder' => Yii::t('shop/default','SEARCH'), 'class' => 'form-control'],
             'clientOptions' => [
                 'source' => new JsExpression('function (request, response) {
                     $.ajax({

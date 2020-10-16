@@ -13,7 +13,7 @@ return [
     'FILTER_CURRENT_PRICE_MIN' => 'от {value} {currency}',
     'FILTER_CURRENT_PRICE_MAX' => 'до {value} {currency}',
     'SORT' => 'Сортировать',
-    'SEARCH' => 'Поиск',
+    'SEARCH' => 'Поиск по сайту',
     'NEW' => 'Новинки',
 	'DISCOUNT' => 'Скидки',
     'NOT_FOUND_CATEGORY' => 'Категория не найдена.',
