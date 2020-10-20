@@ -92,28 +92,24 @@ class Product extends ActiveRecord
 
     public function labels()
     {
+        $labelsList=[];
         /** @var \panix\mod\discounts\components\DiscountBehavior|self $this */
 
-        $labelsList['new'] = [
-            'class' => 'success',
+        /*$labelsList['new'] = [
             'value' => self::t('LABEL_NEW')
         ];
         $labelsList['top_sale'] = [
-            'class' => 'success',
             'value' => self::t('LABEL_TOP_SALE')
         ];
         $labelsList['sale'] = [
-            'class' => 'primary',
             'value' => self::t('LABEL_SALE')
         ];
         $labelsList['discount'] = [
-            'class' => 'danger',
             'value' => self::t('LABEL_DISCOUNT')
         ];
-
-        $result = [];
+*/
         $new = Yii::$app->settings->get('shop', 'label_expire_new');
-        if ($this->label == 1) {
+        /*if ($this->label == 1) {
             $result['new'] = $labelsList['new'];
         } elseif ($this->label == 2) {
             $result['sale'] = $labelsList['sale'];
@@ -121,11 +117,11 @@ class Product extends ActiveRecord
             $result['discount'] = $labelsList['discount'];
         } elseif ($this->label == 4) {
 
-        }
+        }*/
         if ($new) {
             if ((time() - 86400 * $new) <= $this->created_at) {
-                $result['new'] = [
-                    'class' => 'success',
+                $labelsList['new'] = [
+                    //'class' => 'success',
                     'value' => self::t('LABEL_NEW'),
                     // 'title' => Yii::t('app/default', 'FROM_BY', Yii::$app->formatter->asDate(date('Y-m-d', $this->created_at))) . ' ' . Yii::t('app/default', 'TO_BY', Yii::$app->formatter->asDate(date('Y-m-d', $this->created_at + (86400 * $new))))
                 ];
@@ -133,13 +129,16 @@ class Product extends ActiveRecord
         }
 
         if (isset($this->hasDiscount)) {
-            $result['discount']['class'] = 'danger';
-            $result['discount']['value'] = '-' . $this->discountSum;
+            $labelsList['discount']['value'] = '-' . $this->discountSum;
             if ($this->discountEndDate) {
-                $result['discount']['title'] = '-' . $this->discountSum . ' до ' . $this->discountEndDate;
+                $labelsList['discount']['title'] = '-' . $this->discountSum . ' до ' . $this->discountEndDate;
             }
         }
-        return $result;
+
+        foreach (self::getLabelByName() as $key=>$label){
+            $labelsList[$key]['value'] = $label;
+        }
+        return $labelsList;
     }
 
     public function getIsAvailable()
@@ -151,10 +150,10 @@ class Product extends ActiveRecord
     {
         $html = '';
         $html .= Html::beginForm(['/cart/add'], 'post', ['id' => 'form-add-cart-' . $this->id]);
-        $html .= Html::hiddenInput('product_id', $this->id,['id'=>'product_id-'.$this->id]);
+        $html .= Html::hiddenInput('product_id', $this->id, ['id' => 'product_id-' . $this->id]);
         //$html .= Html::hiddenInput('product_price', $this->price);
-        $html .= Html::hiddenInput('use_configurations', $this->use_configurations,['id'=>'use_configurations-'.$this->id]);
-        $html .= Html::hiddenInput('configurable_id', 0,['id'=>'configurable_id-'.$this->id]);
+        $html .= Html::hiddenInput('use_configurations', $this->use_configurations, ['id' => 'use_configurations-' . $this->id]);
+        $html .= Html::hiddenInput('configurable_id', 0, ['id' => 'configurable_id-' . $this->id]);
         return $html;
     }
 
@@ -249,7 +248,7 @@ class Product extends ActiveRecord
         $scenarios = parent::scenarios();
         $scenarios[self::SCENARIO_INSERT] = ['use_configurations'];
         $scenarios['duplicate'] = [];
-        $scenarios['configurable'] = ['name','sku','slug','main_category_id'];
+        $scenarios['configurable'] = ['name', 'sku', 'slug', 'main_category_id'];
         return $scenarios;
     }
 
@@ -273,14 +272,7 @@ class Product extends ActiveRecord
         return "https://img.youtube.com/vi/" . CMS::parse_yturl($this->video) . "/{$img}.jpg";
     }
 
-    public static function labelsList()
-    {
-        return [
-            1 => self::t('LABEL_NEW'),
-            2 => self::t('LABEL_SALE'),
-            3 => self::t('LABEL_DISCOUNT')
-        ];
-    }
+
 
     /**
      * @inheritdoc
@@ -307,7 +299,7 @@ class Product extends ActiveRecord
             ];
             $rules[] = [['name', 'slug'], 'required'];
         }
-        $rules[] = [['main_category_id', 'price', 'unit'], 'required','on'=>'default'];
+        $rules[] = [['main_category_id', 'price', 'unit'], 'required', 'on' => 'default'];
 
 
         $rules[] = [['slug'], 'unique'];
@@ -323,12 +315,36 @@ class Product extends ActiveRecord
         $rules[] = ['use_configurations', 'boolean', 'on' => self::SCENARIO_INSERT];
         $rules[] = ['enable_comments', 'boolean'];
         $rules[] = [['unit'], 'default', 'value' => 1];
+        //$rules[] = ['label', 'each', 'rule' => ['integer']];
         $rules[] = [['sku', 'full_description', 'video', 'price_purchase', 'label', 'discount', 'markup'], 'default']; // установим ... как NULL, если они пустые
         $rules[] = [['price', 'price_purchase'], 'double'];
-        $rules[] = [['manufacturer_id', 'type_id', 'quantity', 'views', 'availability', 'added_to_cart_count', 'ordern', 'category_id', 'currency_id', 'supplier_id', 'label', 'weight_class_id', 'length_class_id'], 'integer'];
+        $rules[] = [['manufacturer_id', 'type_id', 'quantity', 'views', 'availability', 'added_to_cart_count', 'ordern', 'category_id', 'currency_id', 'supplier_id', 'weight_class_id', 'length_class_id'], 'integer'];
         $rules[] = [['name', 'slug', 'full_description', 'use_configurations', 'length', 'width', 'height', 'weight'], 'safe'];
 
         return $rules;
+    }
+
+
+    public function getLabel()
+    {
+        if($this->label)
+            return explode(',', $this->label);
+        return [];
+    }
+
+    public function getLabelByName()
+    {
+        return ArrayHelper::filter(self::getLabelList(), $this->getLabel());
+    }
+
+    public static function getLabelList()
+    {
+        return [
+            'new' => self::t('LABEL_NEW'),
+            'top_sale' => self::t('LABEL_TOP_SALE'),
+            'hit_sale' => self::t('LABEL_HIT_SALE'),
+            'sale' => self::t('LABEL_SALE')
+        ];
     }
 
     public function validateLimit($attribute)

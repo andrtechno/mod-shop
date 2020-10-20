@@ -164,11 +164,13 @@ class ProductController extends AdminController
         if ($model->use_configurations){
             $model->setScenario('configurable');
         }
+      //  CMS::dump($post);die;
         if ($model->load($post) && $model->validate() && $this->validateAttributes($model) && $this->validatePrices($model)) {
             $model->setRelatedProducts(Yii::$app->request->post('RelatedProductId', []));
             $model->setKitProducts(Yii::$app->request->post('kitProductId', []));
 
-
+            $model->label = implode(",", $model->label);
+            //  CMS::dump($model->attributes);die;
             /*$model->file = \yii\web\UploadedFile::getInstances($model, 'file');
             $data=[];
             if ($model->file) {

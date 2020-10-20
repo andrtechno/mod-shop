@@ -2,11 +2,12 @@
 return [
     'SELECT_LABEL' => '&mdash; Выбрать лейбл &mdash;',
     'SELECT_ATTRIBUTE' => '&mdash; Выбрать &mdash;',
-    'LABEL' => 'Лейбл товарв',
+    'LABEL' => 'Лейблы товара',
     'LABEL_NEW' => 'Новинка',
     'LABEL_SALE' => 'Распродажа',
     'LABEL_DISCOUNT' => 'Скидка',
     'LABEL_TOP_SALE' => 'Топ продаж',
+    'LABEL_HIT_SALE' => 'Хит продаж',
     'NOT_AVAILABLE' => 'Нет в наличии',
     'NAME' => 'Название товара',
     'SLUG' => 'URL-адрес',

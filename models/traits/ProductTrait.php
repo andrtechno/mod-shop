@@ -62,7 +62,7 @@ trait ProductTrait
                         $labels = [];
                         foreach ($model->labels() as $label) {
                             $labelOptions = [];
-                            $labelOptions['class'] = 'badge badge-' . $label['class'];
+                            $labelOptions['class'] = 'badge badge-secondary';
                             if (isset($label['tooltip']))
                                 $labelOptions['title'] = $label['tooltip'];
                             $labelOptions['data-toggle'] = 'tooltip';
