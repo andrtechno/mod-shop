@@ -33,8 +33,8 @@ trait ProductTrait
 
     public function getGridColumns()
     {
-		
-		$price_max = Product::find()->aggregatePrice('MAX')->asArray()->one();
+
+        $price_max = Product::find()->aggregatePrice('MAX')->asArray()->one();
         $price_min = Product::find()->aggregatePrice('MIN')->asArray()->one();
 
         $columns = [];
@@ -60,9 +60,21 @@ trait ProductTrait
                     }
                     if (true) {
                         $labels = [];
-                        foreach ($model->labels() as $label) {
+                        foreach ($model->labels() as $key => $label) {
+                            $class = 'secondary';
+                            if ($key == 'new') {
+                                $class = 'success';
+                            } elseif ($key == 'top_sale') {
+                                $class = 'primary';
+                            } elseif ($key == 'hit_sale') {
+                                $class = 'info';
+                            } elseif ($key == 'sale') {
+                                $class = 'danger';
+                            } elseif ($key == 'discount') {
+                                $class = 'danger';
+                            }
                             $labelOptions = [];
-                            $labelOptions['class'] = 'badge badge-secondary';
+                            $labelOptions['class'] = 'badge badge-' . $class;
                             if (isset($label['tooltip']))
                                 $labelOptions['title'] = $label['tooltip'];
                             $labelOptions['data-toggle'] = 'tooltip';
@@ -132,7 +144,7 @@ trait ProductTrait
 
                         $prices[Yii::$app->currency->main['id']]['value'] = $model->discountPrice * Yii::$app->currency->currencies[$model->currency_id]['rate'];
                         $prices[Yii::$app->currency->main['id']]['original_value'] = $model->price * Yii::$app->currency->currencies[$model->currency_id]['rate'];
-                    }else{
+                    } else {
                         $prices[Yii::$app->currency->main['id']]['value'] = $model->price * Yii::$app->currency->currencies[$model->currency_id]['rate'];
                     }
 
@@ -156,7 +168,7 @@ trait ProductTrait
             'attribute' => 'supplier_id',
             'filter' => ArrayHelper::map(Supplier::find()
                 ->cache(3200, new DbDependency(['sql' => 'SELECT MAX(`updated_at`) FROM ' . Supplier::tableName()]))
-                ->addOrderBy(['name'=>SORT_ASC])
+                ->addOrderBy(['name' => SORT_ASC])
                 ->all(), 'id', 'name'),
             'filterInputOptions' => ['class' => 'form-control', 'prompt' => html_entity_decode('&mdash; выберите поставщика &mdash;')],
             'value' => function ($model) {
@@ -166,9 +178,9 @@ trait ProductTrait
         $columns['manufacturer_id'] = [
             'attribute' => 'manufacturer_id',
             'filter' => ArrayHelper::map(Manufacturer::find()
-                ->addOrderBy(['name_'.Yii::$app->language=>SORT_ASC])
-               // ->cache(3200, new DbDependency(['sql' => 'SELECT MAX(`updated_at`) FROM ' . Manufacturer::tableName()]))
-                ->all(), 'id', 'name_'.Yii::$app->language),
+                ->addOrderBy(['name_' . Yii::$app->language => SORT_ASC])
+                // ->cache(3200, new DbDependency(['sql' => 'SELECT MAX(`updated_at`) FROM ' . Manufacturer::tableName()]))
+                ->all(), 'id', 'name_' . Yii::$app->language),
             'filterInputOptions' => ['class' => 'form-control', 'prompt' => html_entity_decode('&mdash; выберите производителя &mdash;')],
             'value' => function ($model) {
                 return ($model->manufacturer) ? $model->manufacturer->name : NULL;
@@ -190,7 +202,7 @@ trait ProductTrait
                 $result = '';
 
                 foreach ($model->categories as $category) {
-                    $options=[];
+                    $options = [];
                     $options['data-pjax'] = '0';
                     $options['title'] = $category->name;
                     if ($category->id == $model->main_category_id) {
@@ -351,7 +363,7 @@ trait ProductTrait
 
         // $query = Attribute::getDb()->cache(function () {
         $query = Attribute::find()
-            ->where(['name'=>array_keys($attributes)])
+            ->where(['name' => array_keys($attributes)])
             ->displayOnFront()
             ->sort()
             ->all();
@@ -409,7 +421,7 @@ trait ProductTrait
     }
 
 
-    public function description($codes=[])
+    public function description($codes = [])
     {
         $description = $this->name;
         /** @var $this Product */
@@ -426,14 +438,14 @@ trait ProductTrait
         }*/
         if ($this->type_id) {
             if (!empty($this->type->product_description)) {
-                $description = $this->replaceMeta($this->type->product_description,$codes);
+                $description = $this->replaceMeta($this->type->product_description, $codes);
             }
 
         }
         return $description;
     }
 
-    public function title($codes=[])
+    public function title($codes = [])
     {
         $title = $this->name;
         /** @var $this Product */
@@ -453,7 +465,7 @@ trait ProductTrait
 
         if ($this->type_id) {
             if (!empty($this->type->product_title)) {
-                $title = $this->replaceMeta($this->type->product_title,$codes);
+                $title = $this->replaceMeta($this->type->product_title, $codes);
             }
 
         }
@@ -462,7 +474,7 @@ trait ProductTrait
     }
 
 
-    public function replaceMeta($text,$codesList)
+    public function replaceMeta($text, $codesList)
     {
         /** @var $this Product */
         $codes = [];
@@ -475,7 +487,7 @@ trait ProductTrait
         $codes["{product_category}"] = (isset($this->mainCategory)) ? $this->mainCategory->name : null;
         $codes["{currency.symbol}"] = Yii::$app->currency->active['symbol'];
         $codes["{currency.iso}"] = Yii::$app->currency->active['iso'];
-        $codes=ArrayHelper::merge($codes,$codesList);
+        $codes = ArrayHelper::merge($codes, $codesList);
         return CMS::textReplace($text, $codes);
     }
 

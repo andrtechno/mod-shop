@@ -6,7 +6,7 @@
 
 $('.eavData:not(:first)').attr('disabled', 'disabled');
 
-$('.eavData').change(function () {
+$(document).on('change','.eavData',function () {
     $('#configurable_id').val(0);
     if ($(this).val() === '---' || $(this).val() === '0') {
         recalculateProductPrice();
@@ -71,7 +71,10 @@ $('.eavData:last').change(function () {
 // Process product variants.
 // Calculate prices.
 $(document).ready(function () {
-    $('.variantData').change(function () {
+    //$(document).on('change','.variantData',function () {
+    //    recalculateProductPrice(this);
+    //});
+    $(document).on('click','.variantData input',function () {
         recalculateProductPrice(this);
     });
 });
@@ -88,15 +91,23 @@ function recalculateProductPrice(el_clicked) {
     var data = getFormData(form);
     var result = parseFloat(priceInput.val());
 
-    $.getJSON(common.url('/product/'+id+'/calculate-price'),formData,function (response) {
-        console.log(response);
-        result = response.price;
-        $('#productPrice').html(price_format(result));
+
+
+
+    $.ajax({
+        url:common.url('/product/'+id+'/calculate-price'),
+        type:'POST',
+        dataType:'json',
+        data:formData,
+        success:function(response){
+            console.log(response);
+            $('#productPrice').html(response.price);
+        }
     });
 
 
-console.log('price: '+result);
-return;
+//console.log('price: '+result);
+return false;
     // Update price
 
     if (typeof(productPrices) !== "undefined" && productPrices[$('#configurable_id-'+id).val()] !== undefined) {
@@ -123,9 +134,12 @@ return;
                 result = result + parseFloat(jsVariantsData[variant_id].price);
             }
         }
+
     });
 
     // Apply current currency
+
+
 
    // result = result * parseFloat($('#currency_rate').val());
     console.log('variantData',result);

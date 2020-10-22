@@ -2,6 +2,7 @@
 
 namespace panix\mod\shop\controllers;
 
+use panix\engine\CMS;
 use panix\engine\data\ActiveDataProvider;
 use Yii;
 use yii\helpers\Url;
@@ -51,20 +52,22 @@ class CatalogController extends FilterController
         $this->view->registerJs("var current_url = '" . Url::to($this->dataModel->getUrl()) . "';", yii\web\View::POS_HEAD, 'current_url');
 
         $this->query->published();
+
+        $this->currentQuery = clone $this->query;
+
         $this->query->applyAttributes($this->activeAttributes);
-
-
+        $this->query->applyRangePrices((isset($this->prices[0])) ? $this->prices[0] : 0,(isset($this->prices[1])) ? $this->prices[1] : 0);
 
 //echo $this->query->createCommand()->rawSql;die;
         // Create clone of the current query to use later to get min and max prices.
-        $this->currentQuery = clone $this->query;
+
         // Filter by manufacturer
         if (Yii::$app->request->get('manufacturer')) {
             $manufacturers = explode(',', Yii::$app->request->get('manufacturer', ''));
             $this->query->applyManufacturers($manufacturers);
         }
         // Filter products by price range if we have min or max in request
-        //$this->applyPricesFilter();
+
 
 
 
@@ -190,14 +193,13 @@ class CatalogController extends FilterController
     public function actionNew()
     {
         $config = Yii::$app->settings->get('shop');
-        //$criteria = new CDbCriteria;
-        //$criteria->compare('t.switch', 1);
-        //$criteria->addBetweenCondition('t.date_create', date('Y-m-d H:i:s', strtotime('-3 day')), date('Y-m-d H:i:s'));
-        // $criteria->addBetweenCondition('t.date_create', date('Y-m-d H:i:s'), date('Y-m-d H:i:s', strtotime('+3 day')));
         $this->pageName = Yii::t('shop/default','NEW');
         $this->view->params['breadcrumbs'][] = $this->pageName;
         /** @var Product $productModel */
         $productModel = Yii::$app->getModule('shop')->model('Product');
+        $this->currentUrl = Url::to(['new']);
+        $this->view->registerJs("var current_url = '" . Url::to(['new']) . "';", yii\web\View::POS_HEAD, 'current_url');
+
 
         $this->query = $productModel::find()->published();
         if ($config->label_expire_new) {
@@ -205,7 +207,18 @@ class CatalogController extends FilterController
         } else {
             $this->query->int2between(-1, -1);
         }
+        $this->query->published();
+        $this->query->applyAttributes($this->activeAttributes);
+
         $this->currentQuery = clone $this->query;
+
+        if (Yii::$app->request->get('manufacturer')) {
+            $manufacturers = explode(',', Yii::$app->request->get('manufacturer', ''));
+            $this->query->applyManufacturers($manufacturers);
+        }
+        if (Yii::$app->request->get('sort') == 'price' || Yii::$app->request->get('sort') == '-price') {
+            $this->query->aggregatePriceSelect((Yii::$app->request->get('sort') == 'price') ? SORT_ASC : SORT_DESC);
+        }
         $this->provider = new ActiveDataProvider([
             'query' => $this->query,
             'pagination' => [
@@ -216,7 +229,7 @@ class CatalogController extends FilterController
         return $this->_render();
     }
 
-    public function actionDiscount()
+    public function actionSales()
     {
         /** @var Product $productModel */
         $productModel = Yii::$app->getModule('shop')->model('Product');
@@ -224,12 +237,28 @@ class CatalogController extends FilterController
         $this->pageName = Yii::t('shop/default','DISCOUNT');
         $this->view->params['breadcrumbs'][] = $this->pageName;
 
+        $this->currentUrl = Url::to(['sales']);
+        $this->view->registerJs("var current_url = '" . Url::to(['sales']) . "';", yii\web\View::POS_HEAD, 'current_url');
+
+
+
         $this->query = $productModel::find()
             ->published()
             ->isNotEmpty('discount');
 
-        $this->currentQuery = clone $this->query;
 
+        $this->query->applyAttributes($this->activeAttributes);
+
+
+
+        $this->currentQuery = clone $this->query;
+        if (Yii::$app->request->get('manufacturer')) {
+            $manufacturers = explode(',', Yii::$app->request->get('manufacturer', ''));
+            $this->query->applyManufacturers($manufacturers);
+        }
+        if (Yii::$app->request->get('sort') == 'price' || Yii::$app->request->get('sort') == '-price') {
+            $this->query->aggregatePriceSelect((Yii::$app->request->get('sort') == 'price') ? SORT_ASC : SORT_DESC);
+        }
         $this->provider = new ActiveDataProvider([
             'query' => $this->query,
             'pagination' => [

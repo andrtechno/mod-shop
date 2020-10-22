@@ -3,6 +3,7 @@
 namespace panix\mod\shop\models;
 
 use panix\mod\images\models\Image;
+use panix\mod\shop\models\query\ProductReviewsQuery;
 use panix\mod\sitemap\behaviors\SitemapBehavior;
 use panix\mod\user\models\User;
 use Yii;
@@ -59,6 +60,7 @@ use panix\engine\db\ActiveRecord;
  * @property Kit $kit
  * @property ProductPrices[] $prices
  * @property ProductVariant[] $variants
+ * @property ProductReviews[] $reviews
  * @property ProductType $type
  */
 class Product extends ActiveRecord
@@ -94,30 +96,8 @@ class Product extends ActiveRecord
     {
         $labelsList=[];
         /** @var \panix\mod\discounts\components\DiscountBehavior|self $this */
-
-        /*$labelsList['new'] = [
-            'value' => self::t('LABEL_NEW')
-        ];
-        $labelsList['top_sale'] = [
-            'value' => self::t('LABEL_TOP_SALE')
-        ];
-        $labelsList['sale'] = [
-            'value' => self::t('LABEL_SALE')
-        ];
-        $labelsList['discount'] = [
-            'value' => self::t('LABEL_DISCOUNT')
-        ];
-*/
         $new = Yii::$app->settings->get('shop', 'label_expire_new');
-        /*if ($this->label == 1) {
-            $result['new'] = $labelsList['new'];
-        } elseif ($this->label == 2) {
-            $result['sale'] = $labelsList['sale'];
-        } elseif ($this->label == 3) {
-            $result['discount'] = $labelsList['discount'];
-        } elseif ($this->label == 4) {
 
-        }*/
         if ($new) {
             if ((time() - 86400 * $new) <= $this->created_at) {
                 $labelsList['new'] = [
@@ -340,7 +320,6 @@ class Product extends ActiveRecord
     public static function getLabelList()
     {
         return [
-            'new' => self::t('LABEL_NEW'),
             'top_sale' => self::t('LABEL_TOP_SALE'),
             'hit_sale' => self::t('LABEL_HIT_SALE'),
             'sale' => self::t('LABEL_SALE')
@@ -400,7 +379,7 @@ class Product extends ActiveRecord
 
     public function getUser()
     {
-        return $this->hasOne(User::class, ['id' => 'user_id'])->cache(3600);
+        return $this->hasOne(User::class, ['id' => 'user_id']);
     }
 
     /* public function getCategory2() {
@@ -411,6 +390,13 @@ class Product extends ActiveRecord
         return $this->hasMany(Kit::class, ['owner_id' => 'id']);
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getReviews()
+    {
+        return $this->hasMany(ProductReviews::class, ['product_id' => 'id'])->orderBy(['id'=>SORT_DESC]);
+    }
 
     public function getManufacturer()
     {
@@ -427,8 +413,8 @@ class Product extends ActiveRecord
     public function getType()
     {
         return $this->hasOne(ProductType::class, ['id' => 'type_id']);
-
     }
+
 
     public function getCurrency()
     {

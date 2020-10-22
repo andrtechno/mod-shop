@@ -24,6 +24,8 @@ class Module extends WebModule implements BootstrapInterface
         $rules['manufacturer'] = 'shop/manufacturer/index';
         //$rules['manufacturer/<slug:[0-9a-zA-Z_\-]+>'] =  'shop/manufacturer/view';
         $rules['product/<slug:[0-9a-zA-Z\-]+>'] = 'shop/product/view';
+        $rules['product/<id:\d+>/review-add'] = 'shop/product/review-add';
+        $rules['product/<id:\d+>/review-validate'] = 'shop/product/review-validate';
         $rules['product/<id:\d+>/<action:[0-9a-zA-Z_\-]+>'] = 'shop/product/<action>';
 
 
@@ -49,12 +51,19 @@ class Module extends WebModule implements BootstrapInterface
                 'alias' => 'full_path',
                 //  'pattern' => ''
             ];
-            /*$rules[] = [
-               'class' => 'panix\mod\shop\components\BaseUrlRule',
-                'route' => 'shop/catalog/new',
+            $rules[] = [
+                'class' => 'panix\mod\shop\components\BaseTest2UrlRule',
+                'route' => '/shop/catalog/new',
                 'index' => 'new',
                 'pattern' => 'new'
-            ];*/
+            ];
+
+            $rules[] = [
+                'class' => 'panix\mod\shop\components\BaseTest2UrlRule',
+                'route' => '/shop/catalog/sales',
+                'index' => 'sales',
+                'pattern' => 'sales'
+            ];
             /*$rules[] = [
                 'class' => 'app\engine\BaseUrlRule',
                 'route' => 'shop/catalog/best',

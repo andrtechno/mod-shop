@@ -116,7 +116,7 @@ class FilterController extends WebController
      */
     public function getMaxPrice()
     {
-        $result = $this->currentQuery->aggregatePrice('MAX')->asArray()->one();
+        $result = $this->query->aggregatePrice('MAX')->asArray()->one();
         if (isset($result['aggregation_price'])) {
             return $result['aggregation_price'];
         }

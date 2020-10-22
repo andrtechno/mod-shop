@@ -4,10 +4,12 @@ namespace panix\mod\shop\controllers;
 
 use panix\engine\CMS;
 use panix\mod\shop\models\Attribute;
+use panix\mod\shop\models\ProductReviews;
 use Yii;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use yii\web\ForbiddenHttpException;
+use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use yii\web\View;
@@ -16,6 +18,7 @@ use panix\engine\controllers\WebController;
 use panix\mod\shop\models\Product;
 use panix\mod\shop\models\Category;
 use panix\mod\shop\bundles\ProductConfigureAsset;
+use yii\widgets\ActiveForm;
 
 class ProductController extends WebController
 {
@@ -74,7 +77,7 @@ class ProductController extends WebController
 
                 if (preg_match_all('/{eav.([0-9a-zA-Z_\-]+)\.(name|value)}/', $this->dataModel->type->product_description, $matchDesc)) {
                     foreach (array_unique($matchDesc[1]) as $m) {
-                        $name="eav_{$m}";
+                        $name = "eav_{$m}";
                         $codes["{eav.{$m}.value}"] = $this->dataModel->{$name}['value'];
                         $codes["{eav.{$m}.name}"] = $this->dataModel->{$name}['name'];
                     }
@@ -85,7 +88,7 @@ class ProductController extends WebController
             if (!empty($this->dataModel->type->product_title)) {
                 if (preg_match_all('/{eav.([0-9a-zA-Z_\-]+)\.(name|value)}/', $this->dataModel->type->product_title, $matchTitle)) {
                     foreach (array_unique($matchTitle[1]) as $m) {
-                        $name="eav_{$m}";
+                        $name = "eav_{$m}";
                         if (!isset($codes["{eav.{$m}.value}"]))
                             $codes["{eav.{$m}.value}"] = $this->dataModel->{$name}['value'];
                         if (!isset($codes["{eav.{$m}.name}"]))
@@ -163,19 +166,66 @@ class ProductController extends WebController
             $this->error404(Yii::t('shop/default', 'NOT_FOUND_PRODUCT'));
         }
     }
+    public function actionReviewValidate($id)
+    {
+        $post = Yii::$app->request->post();
+        $model = new ProductReviews;
+        $model->product_id = $id;
+        if ($model->load($post)) {
+            if (Yii::$app->request->isAjax) {
+                return $this->asJson(ActiveForm::validate($model));
+            }
+        }
+    }
+    public function actionReviewAdd($id)
+    {
+
+        $product = Product::findOne($id);
+
+        $model = new ProductReviews;
+        $post = Yii::$app->request->post();
+        $response = [];
+        $response['success'] = false;
+        $response['published'] = false;
+        $model->product_id = $product->id;
+        $model->status = 0;
+        if(Yii::$app->user->can('admin')){
+            $model->status = 1;
+        }
+        if ($model->load($post)) {
+            if (Yii::$app->request->isAjax) {
+                $errors = ActiveForm::validate($model);
+                if ($errors) {
+                    $response['errors'] = $errors;
+                }
+            }
+            if (!$errors) {
+                $response['success'] = true;
+                if($model->status){
+                    $response['published'] = true;
+                    $response['message'] = 'Отзыв успешно добавлен';
+                }else{
+                    $response['message'] = 'Отзыв будет опубликован после модерации';
+                }
+                $model->saveNode();
+            }
+        }
+        return $this->asJson($response);
+
+    }
 
     public function actionCalculatePrice($id)
     {
         $result = [];
-        $result_test = [];
-        $eav = Yii::$app->request->get('eav');
+        $result_options = [];
+        $eav = Yii::$app->request->post('eav');
         if ($id && Yii::$app->request->isAjax) {
-            Yii::$app->response->format = Response::FORMAT_JSON;
+
             $model = Product::findOne($id);
             if ($model) {
                 foreach ($model->processVariants() as $variant) {
                     foreach ($variant['options'] as $v) {
-                        $result_test[$v->id] = [
+                        $result_options[$v->id] = [
                             'price_type' => (int)$v->price_type,
                             'price' => $v->price
                         ];
@@ -186,20 +236,26 @@ class ProductController extends WebController
             }
 
             $price = $model->getFrontPrice();
-            foreach ($eav as $k => $e) {
-                if (isset($result_test[$e]) && !empty($e)) {
-                    $result['price_type'] = $result_test[$e]['price_type'];
-                    if ($result_test[$e]['price_type']) {
-                        // Price type is percent
-                        $price += $price / 100 * $result_test[$e]['price'];
-                    } else {
-                        $price += $result_test[$e]['price'];
+            if ($eav) {
+                foreach ($eav as $k => $e) {
+                    if (isset($result_options[$e])) {
+                        $result['price_type'] = $result_options[$e]['price_type'];
+                        if ($result_options[$e]['price_type']) {
+                            // Price type is percent
+                            $price += $price / 100 * $result_options[$e]['price'];
+                        } else {
+                            $price += $result_options[$e]['price'];
+                        }
                     }
                 }
             }
-            $result['price'] = round($price, 2);
+
+            $result['price'] = Yii::$app->currency->number_format($price);
+            $result['price_formatted'] = Yii::$app->currency->number_format($price);
+        } else {
+            throw new HttpException(403);
         }
-        return $result;
+        return $this->asJson($result);
     }
 
     /**
@@ -221,10 +277,11 @@ class ProductController extends WebController
             }
         }
     }
-	
-    public function getConfigurableData() {
-        $attributeModels = Attribute::findAll(['id'=>$this->dataModel->configurable_attributes]);
-        $models = Product::findAll(['id'=>$this->dataModel->configurations]);
+
+    public function getConfigurableData()
+    {
+        $attributeModels = Attribute::findAll(['id' => $this->dataModel->configurable_attributes]);
+        $models = Product::findAll(['id' => $this->dataModel->configurations]);
 
         $data = array();
         $prices = array();

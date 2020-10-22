@@ -1,4 +1,5 @@
 <?php
+
 namespace panix\mod\shop\models;
 
 /**
@@ -12,21 +13,26 @@ namespace panix\mod\shop\models;
  * @property float $price
  * @property integer $price_type
  * @property string $sku
+ * @property Attribute $productAttribute
+ * @property AttributeOption $option
  */
-class ProductVariant extends \yii\db\ActiveRecord {
+class ProductVariant extends \yii\db\ActiveRecord
+{
 
 
     /**
-     * @return string the associated database table name
+     * @inheritdoc
      */
-    public static function tableName() {
+    public static function tableName()
+    {
         return '{{%shop__product_variant}}';
     }
 
     /**
-     * @return array validation rules for model attributes.
+     * @inheritdoc
      */
-    public function rules() {
+    public function rules()
+    {
         return [
             [['attribute_id', 'option_id', 'product_id', 'price', 'price_type'], 'required'],
             //[['attribute_id', 'option_id', 'product_id', 'price_type'], 'numerical', 'integerOnly' => true],
@@ -36,17 +42,21 @@ class ProductVariant extends \yii\db\ActiveRecord {
         ];
     }
 
-    public function getProductAttribute() {
+    public function getProductAttribute()
+    {
         return $this->hasOne(Attribute::class, ['id' => 'attribute_id']);
     }
-    
-    public function getOption() {
+
+    public function getOption()
+    {
         return $this->hasOne(AttributeOption::class, ['id' => 'option_id']);
     }
+
     /**
-     * @return array customized attribute labels (name=>label)
+     * @inheritdoc
      */
-    public function attributeLabels() {
+    public function attributeLabels()
+    {
         return array(
             'id' => 'ID',
             'attribute_id' => 'Attribute',

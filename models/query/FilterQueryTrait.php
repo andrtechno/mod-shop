@@ -2,6 +2,7 @@
 
 namespace panix\mod\shop\models\query;
 
+use Yii;
 use panix\mod\shop\models\Currency;
 use panix\mod\shop\models\Product;
 use yii\db\Exception;
@@ -19,7 +20,7 @@ trait FilterQueryTrait
                         {$tableName}.`price`
                 END) AS aggregation_price"]);
 
-        $this->orderBy(["aggregation_price" => ($function === 'MIN') ? SORT_ASC : SORT_DESC]);
+        //$this->orderBy(["aggregation_price" => ($function === 'MIN') ? SORT_ASC : SORT_DESC]);
         $this->distinct(false);
         $this->limit(1);
         //echo $this->createCommand()->rawSql;die;
@@ -66,5 +67,19 @@ trait FilterQueryTrait
         $this->orderBy(["aggregation_price" => $order]);
 
         return $this;
+    }
+
+
+    public function applyRangePrices($min = 0, $max = 0)
+    {
+        $cm = Yii::$app->currency;
+        if ($cm->active['id'] !== $cm->main['id'] && ($min > 0 || $max > 0)) {
+            $min = $cm->activeToMain($min);
+            $max = $cm->activeToMain($max);
+        }
+        if ($min > 0)
+            $this->applyPrice($min, '>=');
+        if ($max > 0)
+            $this->applyPrice($max, '<=');
     }
 }

@@ -93,6 +93,7 @@ class ProductController extends AdminController
     {
         /** @var Product|\panix\mod\images\behaviors\ImageBehavior $model */
         $model = Product::findModel($id);
+
         $isNew = $model->isNewRecord;
         $this->pageName = Yii::t('shop/default', 'MODULE_NAME');
 
@@ -169,7 +170,8 @@ class ProductController extends AdminController
             $model->setRelatedProducts(Yii::$app->request->post('RelatedProductId', []));
             $model->setKitProducts(Yii::$app->request->post('kitProductId', []));
 
-            $model->label = implode(",", $model->label);
+            if($model->label)
+                $model->label = implode(",", $model->label);
             //  CMS::dump($model->attributes);die;
             /*$model->file = \yii\web\UploadedFile::getInstances($model, 'file');
             $data=[];

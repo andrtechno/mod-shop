@@ -7,7 +7,7 @@ use Yii;
 use yii\web\HttpException;
 use yii\web\UrlRule;
 
-class BaseUrlRule extends UrlRule
+class BaseTestUrlRule extends UrlRule
 {
 
     public $pattern = 'manufacturer/<slug:[0-9a-zA-Z\-]+>';
@@ -19,7 +19,7 @@ class BaseUrlRule extends UrlRule
     /**
      * @inheritdoc
      */
-    public function createUrl($manager, $route, $params)
+    public function createUrl2($manager, $route, $params)
     {
 
         if ($route === $this->route) {
@@ -40,7 +40,7 @@ class BaseUrlRule extends UrlRule
                     $url .= '/' . implode('/', $parts);
             }
 
-            return $this->index  .'/'. $url . $this->suffix;
+            return $this->index . $url . $this->suffix;
             // return $url . $this->suffix;
         }
         return false;
@@ -60,34 +60,30 @@ class BaseUrlRule extends UrlRule
         if ($this->suffix)
             $pathInfo = strtr($pathInfo, [$this->suffix => '']);
 
-        if (method_exists($this, 'getAllPaths')) {
-            foreach ($this->getAllPaths() as $path) {
-                $pathInfo = str_replace($this->index . '/', '', $pathInfo);
-                //$pathInfo = $pathInfo;
-                if ($path[$this->alias] !== '' && strpos($pathInfo, $path[$this->alias]) === 0) {
 
-                    $params['slug'] = ltrim($path[$this->alias]);
-                    $_GET['slug'] = $params['slug'];
+        $pathInfo = str_replace($this->index . '/', '', $pathInfo);
+        //$pathInfo = $pathInfo;
 
-                    $pathInfo = ltrim(substr($basePathInfo, strlen($this->index . '/' . $path[$this->alias])), '/');
-                    //$pathInfo = ltrim(substr($basePathInfo, strlen($path[$this->alias])), '/');
 
-                    $parts = explode('/', $pathInfo);
-                    $paramsList = array_chunk($parts, 2);
+        //   $params['slug'] = ltrim($path[$this->alias]);
+        //   $_GET['slug'] = $params['slug'];
 
-                    foreach ($paramsList as $k => $p) {
-                        if (isset($p[1]) && isset($p[0])) {
-                            $_GET[$p[0]] = $p[1];
-                            $params[$p[0]] = $p[1];
-                        }
-                    }
+        // $pathInfo = ltrim(substr($basePathInfo, strlen($this->index . '/' . $path[$this->alias])), '/');
+        //$pathInfo = ltrim(substr($basePathInfo, strlen($path[$this->alias])), '/');
 
-                    return [$this->route, $params];
-                }
+        $parts = explode('/', $pathInfo);
+        $paramsList = array_chunk($parts, 2);
+
+        foreach ($paramsList as $k => $p) {
+            if (isset($p[1]) && isset($p[0])) {
+                $_GET[$p[0]] = $p[1];
+                $params[$p[0]] = $p[1];
             }
-        } else {
-            return [$this->route, $params];
         }
+
+        return [$this->route, $params];
+
+
         return false;
     }
 

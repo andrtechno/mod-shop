@@ -25,7 +25,7 @@ class SettingsForm extends SettingsModel
         return [
             [['per_page'], "required"],
             [['product_related_bilateral', 'group_attribute', 'smart_bc', 'smart_title'], 'boolean'],
-            [['label_expire_new','added_to_cart_count'], 'integer'],
+            [['label_expire_new', 'added_to_cart_count'], 'integer'],
             [['added_to_cart_period'], 'string'],
         ];
     }

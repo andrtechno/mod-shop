@@ -4,10 +4,11 @@ namespace panix\mod\shop\components;
 
 use panix\engine\CMS;
 use Yii;
+use yii\helpers\Url;
 use yii\web\HttpException;
 use yii\web\UrlRule;
 
-class BaseUrlRule extends UrlRule
+class BaseTest2UrlRule extends UrlRule
 {
 
     public $pattern = 'manufacturer/<slug:[0-9a-zA-Z\-]+>';
@@ -21,7 +22,6 @@ class BaseUrlRule extends UrlRule
      */
     public function createUrl($manager, $route, $params)
     {
-
         if ($route === $this->route) {
             if (isset($params['slug'])) {
                 $url = trim($params['slug'], '/');
@@ -36,12 +36,9 @@ class BaseUrlRule extends UrlRule
                         $parts[] = $key . '/' . $val;
                     }
                 }
-                if (!empty($url))
-                    $url .= '/' . implode('/', $parts);
+                $url .= '/' . implode('/', $parts);
             }
-
-            return $this->index  .'/'. $url . $this->suffix;
-            // return $url . $this->suffix;
+            return $this->index  . $url . $this->suffix;
         }
         return false;
     }
@@ -60,32 +57,29 @@ class BaseUrlRule extends UrlRule
         if ($this->suffix)
             $pathInfo = strtr($pathInfo, [$this->suffix => '']);
 
-        if (method_exists($this, 'getAllPaths')) {
-            foreach ($this->getAllPaths() as $path) {
-                $pathInfo = str_replace($this->index . '/', '', $pathInfo);
-                //$pathInfo = $pathInfo;
-                if ($path[$this->alias] !== '' && strpos($pathInfo, $path[$this->alias]) === 0) {
 
-                    $params['slug'] = ltrim($path[$this->alias]);
-                    $_GET['slug'] = $params['slug'];
-
-                    $pathInfo = ltrim(substr($basePathInfo, strlen($this->index . '/' . $path[$this->alias])), '/');
-                    //$pathInfo = ltrim(substr($basePathInfo, strlen($path[$this->alias])), '/');
-
-                    $parts = explode('/', $pathInfo);
-                    $paramsList = array_chunk($parts, 2);
-
-                    foreach ($paramsList as $k => $p) {
-                        if (isset($p[1]) && isset($p[0])) {
-                            $_GET[$p[0]] = $p[1];
-                            $params[$p[0]] = $p[1];
-                        }
-                    }
-
-                    return [$this->route, $params];
+        $pathInfoParse = str_replace($this->index . '/', '', $pathInfo);
+        $parts = explode('/', $pathInfoParse);
+        if ($this->index == mb_substr($pathInfo, 0,strlen($this->index))) {
+            $paramsList = array_chunk($parts, 2);
+            //CMS::dump($paramsList);die;
+            foreach ($paramsList as $k => $p) {
+                if (isset($p[1]) && isset($p[0])) {
+                    $_GET[$p[0]] = $p[1];
+                    $params[$p[0]] = $p[1];
                 }
             }
-        } else {
+
+            /*if (isset($params[$this->index])) {
+                $params['slug'] = $params[$this->index];
+                $_GET['slug'] = $params['slug'];
+                unset($params[$this->index]);
+            } else {
+                return false;
+            }*/
+
+          //  CMS::dump([$this->route, $params]);
+          //  die;
             return [$this->route, $params];
         }
         return false;
