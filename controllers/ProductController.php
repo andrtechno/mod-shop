@@ -6,6 +6,7 @@ use panix\engine\CMS;
 use panix\mod\shop\models\Attribute;
 use panix\mod\shop\models\ProductReviews;
 use Yii;
+use yii\base\Exception;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use yii\web\ForbiddenHttpException;
@@ -166,7 +167,8 @@ class ProductController extends WebController
             $this->error404(Yii::t('shop/default', 'NOT_FOUND_PRODUCT'));
         }
     }
-    public function actionReviewValidate($id)
+
+    public function ___actionReviewValidate($id)
     {
         $post = Yii::$app->request->post();
         $model = new ProductReviews;
@@ -177,6 +179,7 @@ class ProductController extends WebController
             }
         }
     }
+
     public function actionReviewAdd($id)
     {
 
@@ -189,27 +192,40 @@ class ProductController extends WebController
         $response['published'] = false;
         $model->product_id = $product->id;
         $model->status = 0;
-        if(Yii::$app->user->can('admin')){
+        if (Yii::$app->user->can('admin')) {
             $model->status = 1;
         }
+
+
         if ($model->load($post)) {
             if (Yii::$app->request->isAjax) {
                 $errors = ActiveForm::validate($model);
+                if(Yii::$app->request->get('validate') == 1){
+                    return $this->asJson($errors);
+                }
+
                 if ($errors) {
                     $response['errors'] = $errors;
                 }
             }
             if (!$errors) {
                 $response['success'] = true;
-                if($model->status){
+                if ($model->status) {
                     $response['published'] = true;
                     $response['message'] = 'Отзыв успешно добавлен';
-                }else{
+                } else {
                     $response['message'] = 'Отзыв будет опубликован после модерации';
                 }
-                $model->saveNode();
+                try {
+                    $model->saveNode();
+                    $ss = ProductReviews::find()->where(['product_id' => $model->product_id])->status(1)->count();
+                    $response['total'] = $ss;
+                } catch (\yii\db\Exception $exception) {
+                    $response = $exception;
+                }
             }
         }
+
         return $this->asJson($response);
 
     }

@@ -164,6 +164,13 @@ class Module extends WebModule implements BootstrapInterface
                         'visible' => Yii::$app->user->can('/shop/admin/attribute/index') || Yii::$app->user->can('/shop/admin/attribute/*')
                     ],
                     [
+                        'label' => Yii::t('shop/admin', 'REVIEWS'),
+                        "url" => ['/admin/shop/reviews'],
+                        'icon' => 'comments',
+                        'badge'=>1,
+                        'visible' => Yii::$app->user->can('/shop/admin/reviews/index') || Yii::$app->user->can('/shop/admin/reviews/*')
+                    ],
+                    [
                         'label' => Yii::t('shop/admin', 'TYPE_PRODUCTS'),
                         "url" => ['/admin/shop/type'],
                         'icon' => 't',

@@ -94,7 +94,7 @@ class Product extends ActiveRecord
 
     public function labels()
     {
-        $labelsList=[];
+        $labelsList = [];
         /** @var \panix\mod\discounts\components\DiscountBehavior|self $this */
         $new = Yii::$app->settings->get('shop', 'label_expire_new');
 
@@ -115,7 +115,7 @@ class Product extends ActiveRecord
             }
         }
 
-        foreach (self::getLabelByName() as $key=>$label){
+        foreach (self::getLabelByName() as $key => $label) {
             $labelsList[$key]['value'] = $label;
         }
         return $labelsList;
@@ -253,7 +253,6 @@ class Product extends ActiveRecord
     }
 
 
-
     /**
      * @inheritdoc
      */
@@ -307,7 +306,7 @@ class Product extends ActiveRecord
 
     public function getLabel()
     {
-        if($this->label)
+        if ($this->label)
             return explode(',', $this->label);
         return [];
     }
@@ -361,9 +360,10 @@ class Product extends ActiveRecord
     {
         $result = [];
         foreach ($this->variants as $v) {
-            //print_r($v);die;
-            $result[$v->productAttribute->id]['attribute'] = $v->productAttribute;
-            $result[$v->productAttribute->id]['options'][] = $v;
+            if (isset($v->productAttribute->id)) {
+                $result[$v->productAttribute->id]['attribute'] = $v->productAttribute;
+                $result[$v->productAttribute->id]['options'][] = $v;
+            }
         };
         return $result;
     }
@@ -395,7 +395,7 @@ class Product extends ActiveRecord
      */
     public function getReviews()
     {
-        return $this->hasMany(ProductReviews::class, ['product_id' => 'id'])->orderBy(['id'=>SORT_DESC]);
+        return $this->hasMany(ProductReviews::class, ['product_id' => 'id'])->orderBy(['id' => SORT_DESC]);
     }
 
     public function getManufacturer()

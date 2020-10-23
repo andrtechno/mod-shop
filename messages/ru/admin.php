@@ -11,6 +11,7 @@ return [
     'VIEW_PRODUCT' => 'Просмотр товара',
     'UPDATE_PRODUCT' => 'Редактирование товара',
     'CURRENCY' => 'Валюта',
+    'REVIEWS' => 'Отзывы',
     'SUPPLIER' => 'Поставщики',
     'NOTIFIER' => 'Уведомление',
     'CATEGORIES' => 'Категории',

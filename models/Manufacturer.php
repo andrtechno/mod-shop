@@ -126,7 +126,7 @@ class Manufacturer extends ActiveRecord
             [['name', 'slug'], 'string', 'max' => 255],
             [['ordern'], 'integer'],
             [['name', 'slug'], 'safe'],
-            [['image'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg'],
+            [['image'], 'file', 'skipOnEmpty' => true, 'extensions' => ['png', 'jpg']],
         ];
     }
 

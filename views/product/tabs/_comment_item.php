@@ -3,36 +3,60 @@
  * @var \app\modules\reviews\models\Reviews $model
  */
 
-
+$hasAnswer = ($model->rgt > 2) ? true : false;
 ?>
-<div class="review">
+<div class="review <?= $hasAnswer ? 'review-answer' : ''; ?>">
     <div class="row">
         <div class="col-4 col-lg-2">
-            <div class="review-raiting">
-                <?php
-                echo \panix\ext\rating\RatingInput::widget([
-                    'model' => $model,
-                    'attribute' => 'rate',
-                    'options' => [
-                        'readOnly' => true,
-                        'starOff' => $this->theme->asset[1] . '/img/star-off.svg',
-                        'starOn' => $this->theme->asset[1] . '/img/star-on.svg',
+            <?php if ($model->user_id) { ?>
+                <div class="review-raiting">
+                    <?php
+                    echo \panix\ext\rating\RatingInput::widget([
+                        'model' => $model,
+                        'attribute' => 'rate',
+                        'options' => [
+                            'readOnly' => true,
+                            'starOff' => $this->theme->asset[1] . '/img/star-off.svg',
+                            'starOn' => $this->theme->asset[1] . '/img/star-on.svg',
 
-                    ]
-                ]);
-                ?>
-            </div>
+                        ]
+                    ]);
+                    ?>
+                </div>
+            <?php } ?>
             <div class="review-info">
                 <div class="review-name"><?= $model->getDisplayName(); ?></div>
                 <div class="review-date"><?= \panix\engine\CMS::date($model->created_at, false); ?></div>
-                <ul class="social clearfix">
-                    <li><a class="fb" href="/"></a></li>
-                    <li><a class="inst" href="/"></a></li>
-                </ul>
+                <?php if ($model->user_id) { ?>
+                    <ul class="social clearfix">
+                        <li><a class="fb" href="/"></a></li>
+                        <li><a class="inst" href="/"></a></li>
+                    </ul>
+                <?php } ?>
             </div>
         </div>
         <div class="col-8 col-lg-10">
             <p class="review-txt"><?= $model->text; ?></p>
         </div>
     </div>
+    <?php
+    // print_r($model->query);
+
+    if ($hasAnswer) {
+        $descendants = $model->children()->orderBy(['id' => SORT_DESC])->all();
+        ?>
+        <div class="row">
+            <div class="col-lg-11 offset-lg-1">
+                <?php
+                foreach ($descendants as $data) { ?>
+
+
+                    <?= $this->render('_comment_answer', ['model' => $data]); ?>
+
+
+                <?php } ?>
+
+            </div>
+        </div>
+    <?php } ?>
 </div>

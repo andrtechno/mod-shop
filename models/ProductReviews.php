@@ -2,6 +2,7 @@
 
 namespace panix\mod\shop\models;
 
+use panix\mod\cart\models\OrderProduct;
 use Yii;
 use panix\engine\behaviors\nestedsets\NestedSetsBehavior;
 use panix\mod\shop\models\query\ProductReviewsQuery;
@@ -35,6 +36,10 @@ class ProductReviews extends ActiveRecord
     const route = '/admin/shop/default';
     const MODULE_ID = 'shop';
 
+    const STATUS_WAIT = 0;
+    const STATUS_PUBLISHED = 1;
+    const STATUS_SPAM = 2;
+
     public static function find()
     {
         return new ProductReviewsQuery(get_called_class());
@@ -65,11 +70,12 @@ class ProductReviews extends ActiveRecord
     {
 
         $rules = [];
+        $rules[] = ['status', 'default', 'value' => self::STATUS_WAIT];
         $rules[] = ['text', 'filter', 'filter' => function ($value) {
             //return Html::encode(HtmlPurifier::process($value));
             return HtmlPurifier::process($value);
         }];
-        $rules[] = [['text', 'user_email', 'user_name'], 'required'];
+        $rules[] = [['text', 'user_email', 'user_name', 'status'], 'required'];
         $rules[] = [['user_name'], 'string', 'max' => 50];
         $rules[] = [['user_name'], 'string'];
         $rules[] = [['user_email'], 'email'];
@@ -78,14 +84,18 @@ class ProductReviews extends ActiveRecord
         $rules[] = [['rate'], 'in', 'range' => [0, 1, 2, 3, 4, 5]];
         $rules[] = ['rate', 'default', 'value' => 0];
 
+
         return $rules;
     }
 
 
-    public function beforeValidate()
+    public function getStatusList()
     {
-
-        return parent::beforeValidate();
+        return [
+            self::STATUS_WAIT => self::t('STATUS_WAIT'),
+            self::STATUS_PUBLISHED => self::t('STATUS_PUBLISHED'),
+            self::STATUS_SPAM => self::t('STATUS_SPAM'),
+        ];
     }
 
     public function getUser()
@@ -98,11 +108,25 @@ class ProductReviews extends ActiveRecord
         return $this->hasOne(Product::class, ['id' => 'product_id']);
     }
 
+    public function getBuy()
+    {
+        return $this->hasOne(OrderProduct::class, ['product_id' => 'product_id']);
+    }
+
+    public function getHasBuy()
+    {
+        if ($this->user_id) {
+            if ($this->buy) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public function afterSave($insert, $changedAttributes)
     {
 
-        if($insert){
+        if ($insert) {
             $product = Product::findOne($this->product_id);
             $product->rating = $this->rate;
             $product->votes += 1;
@@ -114,8 +138,45 @@ class ProductReviews extends ActiveRecord
 
     public function getDisplayName()
     {
-        return ($this->user_id || $this->user) ? $this->user->username : $this->user_name;
+        return ($this->user_name) ? $this->user_name : $this->user->username;
     }
+
+
+    public function getHasAnswer()
+    {
+        return ($this->rgt > 2) ? true : false;
+    }
+
+    public function getGridStatusLabel()
+    {
+        $badge = '';
+        if ($this->hasAnswer) {
+            $descendants = $this->children()->andWhere(['status' => self::STATUS_WAIT])->count();
+            if ($descendants) {
+                $badge = $this->getStatusLabel(self::STATUS_WAIT);//Html::tag('span', $this->statusList[self::STATUS_WAIT], ['class' => 'badge badge-danger']);
+            }
+        } else {
+            $badge = $this->getStatusLabel();
+        }
+        return $badge;
+    }
+
+    public function getStatusLabel($value = null)
+    {
+
+        $status = (!is_null($value)) ? $value : $this->status;
+
+        $badge = '';
+        if ($status == self::STATUS_WAIT) {
+
+            $badge = Html::tag('span', $this->statusList[$status], ['class' => 'badge badge-danger']);
+        } elseif ($status == self::STATUS_SPAM) {
+            $badge = Html::tag('span', $this->statusList[$status], ['class' => 'badge badge-warning']);
+        }
+
+        return $badge;
+    }
+
     public function behaviors()
     {
         $a = [];
