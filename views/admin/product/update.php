@@ -118,13 +118,13 @@ use panix\mod\shop\models\ProductType;
                         'headerOptions' => [],
                         'options' => ['class' => 'flex-sm-fill text-center nav-item'],
                     ];
-                    $tabs[] = [
+                    /*$tabs[] = [
                         'label' => $model::t('TAB_KIT'),
                         'content' => $this->render('tabs/_kit', ['exclude' => $model->id, 'form' => $form, 'model' => $model]),
                         'headerOptions' => [],
                         'options' => ['class' => 'flex-sm-fill text-center nav-item'],
-                        //'visible' => false,
-                    ];
+                        'visible' => false,
+                    ];*/
                     $tabs[] = [
                         'label' => $model::t('TAB_VARIANTS'),
                         'content' => $this->render('tabs/_variations', ['model' => $model]),

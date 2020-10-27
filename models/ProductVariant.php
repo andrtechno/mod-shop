@@ -38,7 +38,8 @@ class ProductVariant extends \yii\db\ActiveRecord
             //[['attribute_id', 'option_id', 'product_id', 'price_type'], 'numerical', 'integerOnly' => true],
             //['price', 'numerical'],
             ['sku', 'string', 'max' => 255],
-            [['id', 'attribute_id', 'option_id', 'product_id', 'price', 'price_type', 'sku'], 'safe'],
+            ['currency_id', 'default'],
+            [['id', 'attribute_id', 'option_id', 'product_id', 'price', 'price_type', 'sku', 'currency_id'], 'safe'],
         ];
     }
 

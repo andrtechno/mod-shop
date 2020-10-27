@@ -84,10 +84,29 @@ class ProductReviews extends ActiveRecord
         $rules[] = [['rate'], 'in', 'range' => [0, 1, 2, 3, 4, 5]];
         $rules[] = ['rate', 'default', 'value' => 0];
 
+        // $rules[] = ['rate', 'validateAlreadyRate'];
+
 
         return $rules;
     }
 
+    public function validateAlreadyRate($attribute)
+    {
+        if (!Yii::$app->user->isGuest) {
+            if ($this->checkUserRate() && $this->{$attribute} > 0) {
+                $this->addError($attribute, 'Вы уже оценили этот товар.');
+            }
+        }
+    }
+
+    public function checkUserRate()
+    {
+        $find = self::find()->where(['user_id' => Yii::$app->user->id])->andWhere(['>', 'rate', 0])->count();
+        if ($find) {
+            return true;
+        }
+        return false;
+    }
 
     public function getStatusList()
     {
@@ -127,13 +146,28 @@ class ProductReviews extends ActiveRecord
     {
 
         if ($insert) {
-            $product = Product::findOne($this->product_id);
-            $product->rating = $this->rate;
-            $product->votes += 1;
-            $product->save(false);
+            if ($this->rate > 0) {
+                $product = Product::findOne($this->product_id);
+                $product->rating += $this->rate;
+                $product->votes += 1;
+                $product->save(false);
+            }
         }
 
         parent::afterSave($insert, $changedAttributes);
+    }
+
+    public function afterDelete()
+    {
+
+        if ($this->rate > 0) {
+            $product = Product::findOne($this->product_id);
+            $product->rating -= $this->rate;
+            $product->votes -= 1;
+            $product->save(false);
+        }
+
+        parent::afterDelete();
     }
 
     public function getDisplayName()
@@ -151,9 +185,9 @@ class ProductReviews extends ActiveRecord
     {
         $badge = '';
         if ($this->hasAnswer) {
-            $descendants = $this->children()->andWhere(['status' => self::STATUS_WAIT])->count();
+            $descendants = ProductReviews::find()->where(['tree' => $this->id, 'status' => self::STATUS_WAIT])->count();
             if ($descendants) {
-                $badge = $this->getStatusLabel(self::STATUS_WAIT);//Html::tag('span', $this->statusList[self::STATUS_WAIT], ['class' => 'badge badge-danger']);
+                $badge = $this->getStatusLabel(self::STATUS_WAIT);
             }
         } else {
             $badge = $this->getStatusLabel();

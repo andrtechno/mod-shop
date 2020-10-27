@@ -119,12 +119,11 @@ trait EavQueryTrait
                     $values = array_intersect($cache[$attribute], $values);
                 }
 
-                $this->join('JOIN', '{{%shop__product_attribute_eav}} eavb' . $i, "$pk=`eavb$i`.`entity`");
-                $this->andWhere(['IN', "`eavb$i`.`value`", $values]);
+                 $this->join('JOIN', '{{%shop__product_attribute_eav}} eavb' . $i, "$pk=`eavb$i`.`entity`");
+               // $this->join['eavb' . $i] = ['JOIN', '{{%shop__product_attribute_eav}} eavb' . $i, "$pk=`eavb$i`.`entity`"];
+                $this->where(['IN', "`eavb$i`.`value`", $values]);
                 $i++;
-
-            } // If search models with attribute name with anything values.
-            elseif (is_int($attribute)) {
+            } elseif (is_int($attribute)) { // If search models with attribute name with anything values.
                 $this->join('JOIN', '{{%shop__product_attribute_eav}} eavb' . $i, "$pk=`eavb$i`.`entity` AND eavb$i.attribute = '$values'");
                 $i++;
             }
@@ -136,7 +135,7 @@ trait EavQueryTrait
 
         $this->groupBy("{$pk}");
         //$this->addGroupBy("{$pk}");
-      //echo $this->createCommand()->getRawSql();die;
+    //  echo $this->createCommand()->getRawSql();die;
         return $this;
     }
 

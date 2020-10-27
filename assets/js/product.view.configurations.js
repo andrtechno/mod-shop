@@ -77,8 +77,33 @@ $(document).ready(function () {
     $(document).on('click','.variantData input',function () {
         recalculateProductPrice(this);
     });
-});
 
+    $(document).on('change','.eavData2',function () {
+        recalculateProductPrice2(this);
+    });
+});
+function recalculateProductPrice2(el) {
+    var id = $(el).val();
+    var form = $('#form-add-cart-' + $(el).data('product_id'));
+    var priceInput = form.find('input[name="product_price"]');
+    var formData = form.serialize();
+    var data = getFormData(form);
+    var result = parseFloat(priceInput.val());
+
+
+    $.ajax({
+        url: common.url('/product/' + id + '/calculate-price'),
+        type: 'POST',
+        dataType: 'json',
+        data: formData,
+        success: function (response) {
+            console.log(response);
+            $('#productPrice').html(response.price);
+        }
+    });
+
+    return false;
+}
 /**
  * Recalculate product price on change variant or configurable options.
  * Sum product price + variant prices + configurable prices.

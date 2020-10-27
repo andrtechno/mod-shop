@@ -57,7 +57,14 @@ trait FilterQueryTrait
         $tableName = Product::tableName();
         $tableNameCur = Currency::tableName();
 
-        $this->select([$tableName . '.*', "(CASE WHEN ({$tableName}.`currency_id`)
+        /**$this->select([$tableName . '.*', "(CASE WHEN ({$tableName}.`currency_id`)
+                    THEN
+                        ({$tableName}.`price` * (SELECT rate FROM {$tableNameCur} WHERE {$tableNameCur}.`id`={$tableName}.`currency_id`))
+                    ELSE
+                        {$tableName}.`price`
+                END) AS aggregation_price"]);*/
+
+        $this->select([$tableName . '.*',"(CASE WHEN {$tableName}.`currency_id` IS NOT NULL
                     THEN
                         ({$tableName}.`price` * (SELECT rate FROM {$tableNameCur} WHERE {$tableNameCur}.`id`={$tableName}.`currency_id`))
                     ELSE

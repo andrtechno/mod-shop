@@ -16,11 +16,16 @@ use panix\engine\controllers\WebController;
  * Class FilterController
  *
  * @property array $activeAttributes
+ * @property \panix\mod\shop\models\query\ProductQuery $query
+ * @property \panix\mod\shop\models\query\ProductQuery $currentQuery
+ * @property integer $per_page
  *
  * @package panix\mod\shop\components
  */
 class FilterController extends WebController
 {
+
+    public $filterQuery;
     /**
      * Sets page limits
      * @var array
@@ -116,7 +121,7 @@ class FilterController extends WebController
      */
     public function getMaxPrice()
     {
-        $result = $this->query->aggregatePrice('MAX')->asArray()->one();
+        $result = $this->currentQuery->aggregatePrice('MAX')->asArray()->one();
         if (isset($result['aggregation_price'])) {
             return $result['aggregation_price'];
         }
@@ -150,6 +155,7 @@ class FilterController extends WebController
             return $this->_currentMaxPrice;
 
         $this->_currentMaxPrice = (isset($this->prices[1])) ? trim($this->prices[1]) : Yii::$app->currency->convert($this->getMaxPrice());
+       // $this->_currentMaxPrice = (isset($this->prices[1])) ? trim($this->prices[1]) : Yii::$app->currency->convert($this->_maxPrice);
 
         return $this->_currentMaxPrice;
     }
@@ -160,14 +166,15 @@ class FilterController extends WebController
             return $this->_eavAttributes;
 
         // Find category types
-        $queryCategoryTypes = Product::find();
-        if ($this->dataModel instanceof Category) {
+        //$queryCategoryTypes = Product::find();
+        $queryCategoryTypes = $this->currentQuery;
+        /*if ($this->dataModel instanceof Category) {
             $queryCategoryTypes->applyCategories($this->dataModel);
         } elseif ($this->dataModel instanceof Manufacturer) {
             $queryCategoryTypes->applyManufacturers($this->dataModel->id);
-        }
+        }*/
 
-        $queryCategoryTypes->published();
+        //$queryCategoryTypes->published();
         $queryCategoryTypes->select(Product::tableName() . '.type_id');
         $queryCategoryTypes->groupBy(Product::tableName() . '.type_id');
         $queryCategoryTypes->distinct(true);
@@ -208,18 +215,40 @@ class FilterController extends WebController
     public function getActiveAttributes()
     {
         $data = [];
-
         foreach (array_keys($_GET) as $key) {
             if (array_key_exists($key, $this->eavAttributes)) {
 
-                if (empty($_GET[$key]) && isset($_GET[$key])) {
-                    //	 throw new CHttpException(404, Yii::t('shop/default', 'NOFIND_CATEGORY'));
-                }
+                // if (empty($_GET[$key]) && isset($_GET[$key])) {
+                //	 throw new CHttpException(404, Yii::t('shop/default', 'NOFIND_CATEGORY'));
+                // }
 
                 if ((boolean)$this->eavAttributes[$key]->select_many === true) {
                     $data[$key] = explode(',', $_GET[$key]);
                 } else {
-                    $data[$key] = [$_GET[$key]];
+                    $data[$key] = [$params[$key]];
+                }
+            } else {
+                //  $this->error404(Yii::t('shop/default', 'NOFIND_CATEGORY1'));
+            }
+        }
+        return $data;
+    }
+
+    public function getActiveAttributes2()
+    {
+        $data = [];
+        $sss = (Yii::$app->request->post('filter'))?Yii::$app->request->post('filter'):$_GET;
+        foreach (array_keys($sss) as $key) {
+            if (array_key_exists($key, $this->eavAttributes)) {
+
+                // if (empty($_GET[$key]) && isset($_GET[$key])) {
+                //	 throw new CHttpException(404, Yii::t('shop/default', 'NOFIND_CATEGORY'));
+                // }
+
+                if ((boolean)$this->eavAttributes[$key]->select_many === true) {
+                    $data[$key] = (is_array($sss[$key]))?$sss[$key]:explode(',', $sss[$key]);
+                } else {
+                    $data[$key] = [$params[$key]];
                 }
             } else {
                 //  $this->error404(Yii::t('shop/default', 'NOFIND_CATEGORY1'));
@@ -449,6 +478,10 @@ class FilterController extends WebController
     public function _render($view = '@shop/views/catalog/view')
     {
         $activeFilters = $this->getActiveFilters();
+        $render = $this->renderPartial('@shop/views/catalog/listview', [
+            'provider' => $this->provider,
+            'itemView' => $this->itemView
+        ]);
         if (Yii::$app->request->isAjax) {
             if (Yii::$app->request->headers->has('filter-ajax')) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
@@ -457,10 +490,7 @@ class FilterController extends WebController
                     //'currentFilters' => $filterData,
                     //'full_url' => Url::to($this->currentUrl),
                     'currentUrl' => Yii::$app->request->getUrl(),
-                    'items' => $this->renderPartial('@shop/views/catalog/listview', [
-                        'provider' => $this->provider,
-                        'itemView' => $this->itemView
-                    ]),
+                    'items' => $render,
                     'i' => $this->itemView,
                     'currentFiltersData' => ($activeFilters) ? $this->renderPartial('@shop/widgets/filtersnew/views/current', [ //'@shop/widgets/filtersnew/views/current', '@app/widgets/filters/current'
                         'dataModel' => $this->dataModel,
@@ -469,10 +499,7 @@ class FilterController extends WebController
                     ]) : null
                 ];
             } else {
-                return $this->renderPartial('@shop/views/catalog/listview', [
-                    'provider' => $this->provider,
-                    'itemView' => $this->itemView
-                ]);
+                return $render;
             }
         }
         return $this->render($view, [

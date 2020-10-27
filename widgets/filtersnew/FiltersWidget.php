@@ -4,6 +4,7 @@ namespace panix\mod\shop\widgets\filtersnew;
 
 use panix\engine\CMS;
 use panix\mod\shop\models\Attribute;
+use panix\mod\shop\models\traits\EavQueryTrait;
 use yii\caching\DbDependency;
 use yii\helpers\Html;
 use Yii;
@@ -40,6 +41,7 @@ class FiltersWidget extends Widget
     public $attributeView = 'attributes';
     public $currentView = 'current';
 
+    public $query;
 
 
 
@@ -114,9 +116,7 @@ class FiltersWidget extends Widget
 
     public function countAttributeProducts2($attribute, $option)
     {
-        $model = Product::find();
-        //$model->attachBehaviors($model->behaviors());
-        $model->published();
+        $model = Product::find()->published();
         //$model->applyCategories($this->model);
         if ($this->model)
             $model->andWhere([Product::tableName() . '.main_category_id' => $this->model->id]);
@@ -152,29 +152,34 @@ class FiltersWidget extends Widget
 
     public function countAttributeProducts($attribute, $option)
     {
-        $model = Product::find()->published();
-        //$model->attachBehaviors($model->behaviors());
+        //CMS::dump($this->query);die;
+       // $model = Product::find()->published();
+       // CMS::dump($model);die;
+        /** @var Product $model */
+        $model = clone $this->query;
         // $model->getEavAttributes22222222($this->view->context->getEavAttributes());
-        if ($this->model instanceof Category) {
-            $model->applyCategories($this->model);
+        //if ($this->model instanceof Category) {
+
+           // $model->applyCategories($this->model);
             //$model->andWhere([Product::tableName() . '.main_category_id' => $this->model->id]);
-        } elseif ($this->model instanceof Manufacturer) {
-            $model->applyManufacturers($this->model->id);
-        }
+        //} elseif ($this->model instanceof Manufacturer) {
+        //    $model->applyManufacturers($this->model->id);
+       // }
 
 
-        if (Yii::$app->request->get('q') && Yii::$app->requestedRoute == 'shop/search/index') {
-            $model->applySearch(Yii::$app->request->get('q'));
-        }
+       // if (Yii::$app->request->get('q') && Yii::$app->requestedRoute == 'shop/search/index') {
+       //     $model->applySearch(Yii::$app->request->get('q'));
+       // }
 
 
         $newData = [];
         $newData[$attribute->name][] = $option->id;
-
+        /** @var EavQueryTrait $model */
         $res = $model->withEavAttributes($newData);
         // $res->groupBy = false;
         //$res->distinct(false);
-        $res->cache(86400);
+
+        //$res->cache(86400);
 
         // print_r($newData);die;
         // echo $res->createCommand()->rawSql;die;
@@ -189,7 +194,7 @@ class FiltersWidget extends Widget
         // $count = Attribute::getDb()->cache(function () use ($model) {
         //     return $model->count();
         // }, 1, $dependency);
-
+      //  echo $res->createCommand()->rawSql;die;
         return $res->count();
     }
 

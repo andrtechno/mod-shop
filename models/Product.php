@@ -62,6 +62,7 @@ use panix\engine\db\ActiveRecord;
  * @property ProductVariant[] $variants
  * @property ProductReviews[] $reviews
  * @property ProductType $type
+ * @property string $ratingScore
  */
 class Product extends ActiveRecord
 {
@@ -103,6 +104,7 @@ class Product extends ActiveRecord
                 $labelsList['new'] = [
                     //'class' => 'success',
                     'value' => self::t('LABEL_NEW'),
+                    'label' => self::t('LABEL_NEW'),
                     // 'title' => Yii::t('app/default', 'FROM_BY', Yii::$app->formatter->asDate(date('Y-m-d', $this->created_at))) . ' ' . Yii::t('app/default', 'TO_BY', Yii::$app->formatter->asDate(date('Y-m-d', $this->created_at + (86400 * $new))))
                 ];
             }
@@ -110,12 +112,14 @@ class Product extends ActiveRecord
 
         if (isset($this->hasDiscount)) {
             $labelsList['discount']['value'] = '-' . $this->discountSum;
+            $labelsList['discount']['label'] = self::t('LABEL_DISCOUNT');
             if ($this->discountEndDate) {
                 $labelsList['discount']['title'] = '-' . $this->discountSum . ' до ' . $this->discountEndDate;
             }
         }
 
         foreach (self::getLabelByName() as $key => $label) {
+            $labelsList[$key]['label'] = $label;
             $labelsList[$key]['value'] = $label;
         }
         return $labelsList;
@@ -663,13 +667,13 @@ class Product extends ActiveRecord
         // Save configurable attributes
         if ($this->_configurable_attribute_changed === true) {
             // Clear
-            self::getDb()->createCommand()->delete('{{%shop__product_configurable_attributes}}', 'product_id = :id', array(':id' => $this->id));
+            self::getDb()->createCommand()->delete('{{%shop__product_configurable_attributes}}', ['product_id' => $this->id]);
 
             foreach ($this->_configurable_attributes as $attr_id) {
                 self::getDb()->createCommand()->insert('{{%shop__product_configurable_attributes}}', [
                     'product_id' => $this->id,
                     'attribute_id' => $attr_id
-                ]);
+                ])->execute();
             }
         }
 
@@ -907,7 +911,8 @@ class Product extends ActiveRecord
 
 
             //$attributeModel = Attribute::find()->where(['name' => $attribute])->cache(3600 * 24, $dependency)->one();
-            return ['name' => $attributeModel->title, 'value' => $attributeModel->renderValue($value)];
+           return (object)['name' => $attributeModel->title, 'value' => $attributeModel->renderValue($value)];
+            //return $attributeModel->renderValue($value);
         }
         return parent::__get($name);
     }
@@ -1060,4 +1065,8 @@ class Product extends ActiveRecord
     }
 
 
+    public function getRatingScore()
+    {
+        return ($this->votes > 0) ? round($this->rating / $this->votes, 1) : 0;
+    }
 }

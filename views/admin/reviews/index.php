@@ -15,9 +15,9 @@ echo GridView::widget([
         [
             'attribute' => 'user_name',
             'format' => 'raw',
-            'value' => function($model){
-               // $labelOptions['class'] = 'badge badge-'.$class;
-                return $model->getDisplayName().' '.$model->getGridStatusLabel();
+            'value' => function ($model) {
+                /** @var ProductReviews $model */
+                return $model->getDisplayName() . ' ' . $model->getGridStatusLabel();
             },
         ],
         ['attribute' => 'text'],
@@ -33,7 +33,7 @@ echo GridView::widget([
         [
             'attribute' => 'rate',
             'format' => 'raw',
-            'value'=>function($model){
+            'value' => function ($model) {
                 return \panix\ext\rating\RatingInput::widget([
                     'model' => $model,
                     'attribute' => 'rate',

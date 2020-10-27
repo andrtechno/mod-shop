@@ -4,6 +4,8 @@ namespace panix\mod\shop\controllers;
 
 use panix\engine\CMS;
 use panix\engine\data\ActiveDataProvider;
+use panix\mod\pages\models\Pages;
+use setasign\Fpdi\PdfReader\Page;
 use Yii;
 use yii\helpers\Url;
 use yii\web\Response;
@@ -11,6 +13,14 @@ use panix\mod\shop\components\FilterController;
 use panix\mod\shop\models\Product;
 use panix\mod\shop\models\Category;
 
+/**
+ * Class CatalogController
+ *
+ * @property \panix\engine\data\ActiveDataProvider $provider
+ * @property array $currentUrl
+ *
+ * @package panix\mod\shop\controllers
+ */
 class CatalogController extends FilterController
 {
 
@@ -31,8 +41,7 @@ class CatalogController extends FilterController
         $productModel = Yii::$app->getModule('shop')->model('Product');
         $this->currentUrl = $this->dataModel->getUrl();
         $this->query = $productModel::find();
-        //$this->query->attachBehaviors((new $productModel)->behaviors());
-        $this->query->sort();
+        $this->query->sort()->published();
 
 
         //  $cr->with = array('manufacturerActive');
@@ -41,8 +50,14 @@ class CatalogController extends FilterController
         //$this->query->with(array('manufacturer' => array(
         //        'scopes' => array('published')
         //)));
-
         $this->query->applyCategories($this->dataModel);
+
+        $this->filterQuery = clone $this->query;
+        $this->currentQuery = clone $this->query;
+
+
+
+
         //$this->query->andWhere([Product::tableName().'.main_category_id'=>$this->dataModel->id]);
 
         //  $this->query->with('manufacturerActive');
@@ -51,12 +66,12 @@ class CatalogController extends FilterController
         //$this->view->title = $this->pageName;
         $this->view->registerJs("var current_url = '" . Url::to($this->dataModel->getUrl()) . "';", yii\web\View::POS_HEAD, 'current_url');
 
-        $this->query->published();
 
-        $this->currentQuery = clone $this->query;
+
+
 
         $this->query->applyAttributes($this->activeAttributes);
-        $this->query->applyRangePrices((isset($this->prices[0])) ? $this->prices[0] : 0,(isset($this->prices[1])) ? $this->prices[1] : 0);
+        $this->query->applyRangePrices((isset($this->prices[0])) ? $this->prices[0] : 0, (isset($this->prices[1])) ? $this->prices[1] : 0);
 
 //echo $this->query->createCommand()->rawSql;die;
         // Create clone of the current query to use later to get min and max prices.
@@ -69,17 +84,16 @@ class CatalogController extends FilterController
         // Filter products by price range if we have min or max in request
 
 
-
-
         //$this->query->addOrderBy(['price'=>SORT_DESC]);
         //$this->query->orderBy(['price'=>SORT_DESC]);
 
 
         if (Yii::$app->request->get('sort') == 'price' || Yii::$app->request->get('sort') == '-price') {
             $this->query->aggregatePriceSelect((Yii::$app->request->get('sort') == 'price') ? SORT_ASC : SORT_DESC);
+           // echo $this->query->createCommand()->rawSql;die;
         }
 
-        //echo $this->query->createCommand()->rawSql;die;
+
         $this->provider = new \panix\engine\data\ActiveDataProvider([
             'query' => $this->query,
             'sort' => Product::getSort(),
@@ -128,7 +142,7 @@ class CatalogController extends FilterController
                 if (isset($filter['items'])) {
                     $params = [];
                     foreach ($filter['items'] as $item) {
-						$params[] = ($filter['name'] == 'price') ? $item['value_url']: $item['value'];
+                        $params[] = ($filter['name'] == 'price') ? $item['value_url'] : $item['value'];
                     }
                     $currentUrl[$filter['name']] = implode(',', $params);
                 }
@@ -168,37 +182,37 @@ class CatalogController extends FilterController
                 'url' => $this->dataModel->getUrl()
             ];
         }*/
-        if(Yii::$app->settings->get('shop','smart_bc')){
+        if (Yii::$app->settings->get('shop', 'smart_bc')) {
             $smartData = $this->smartNames();
             $this->view->params['breadcrumbs'][] = [
                 'label' => $this->dataModel->name,
                 'url' => $this->dataModel->getUrl()
             ];
             //CMS::dump($smartData);die;
-            if($smartData['breadcrumbs'])
+            if ($smartData['breadcrumbs'])
                 $this->view->params['breadcrumbs'][] = $smartData['breadcrumbs'];
-        }else{
+        } else {
             $this->view->params['breadcrumbs'][] = $this->dataModel->name;
         }
-        if(Yii::$app->settings->get('shop','smart_title')){
+        if (Yii::$app->settings->get('shop', 'smart_title')) {
             $smartData = $this->smartNames();
             $this->pageName .= $smartData['title'];
             $this->view->title = $this->pageName;
         }
 
 
-
         return $this->_render();
     }
+
     public function actionNew()
     {
         $config = Yii::$app->settings->get('shop');
-        $this->pageName = Yii::t('shop/default','NEW');
+        $this->pageName = Yii::t('shop/default', 'NEW');
         $this->view->params['breadcrumbs'][] = $this->pageName;
         /** @var Product $productModel */
         $productModel = Yii::$app->getModule('shop')->model('Product');
         $this->currentUrl = Url::to(['new']);
-        $this->view->registerJs("var current_url = '" . Url::to(['new']) . "';", yii\web\View::POS_HEAD, 'current_url');
+        $this->view->registerJs("var current_url = '" . $this->currentUrl . "';", yii\web\View::POS_HEAD, 'current_url');
 
 
         $this->query = $productModel::find()->published();
@@ -208,9 +222,11 @@ class CatalogController extends FilterController
             $this->query->int2between(-1, -1);
         }
         $this->query->published();
+        $this->filterQuery = clone $this->query;
+        $this->currentQuery = clone $this->query;
         $this->query->applyAttributes($this->activeAttributes);
 
-        $this->currentQuery = clone $this->query;
+
 
         if (Yii::$app->request->get('manufacturer')) {
             $manufacturers = explode(',', Yii::$app->request->get('manufacturer', ''));
@@ -231,27 +247,24 @@ class CatalogController extends FilterController
 
     public function actionSales()
     {
-        /** @var Product $productModel */
-        $productModel = Yii::$app->getModule('shop')->model('Product');
+        /** @var Product $dataModel */
+        $this->dataModel = Yii::$app->getModule('shop')->model('Product');
 
-        $this->pageName = Yii::t('shop/default','DISCOUNT');
+        $this->pageName = Yii::t('shop/default', 'DISCOUNT');
         $this->view->params['breadcrumbs'][] = $this->pageName;
 
         $this->currentUrl = Url::to(['sales']);
-        $this->view->registerJs("var current_url = '" . Url::to(['sales']) . "';", yii\web\View::POS_HEAD, 'current_url');
+        $this->view->registerJs("var current_url = '" . $this->currentUrl . "';", yii\web\View::POS_HEAD, 'current_url');
 
+        $this->query = $this->dataModel::find()->published()->isNotEmpty('discount');
 
-
-        $this->query = $productModel::find()
-            ->published()
-            ->isNotEmpty('discount');
-
+        $this->filterQuery = clone $this->query;
+        $this->currentQuery = clone $this->query;
 
         $this->query->applyAttributes($this->activeAttributes);
+        //$this->query->applyRangePrices((isset($this->prices[0])) ? $this->prices[0] : 0, (isset($this->prices[1])) ? $this->prices[1] : 0);
 
 
-
-        $this->currentQuery = clone $this->query;
         if (Yii::$app->request->get('manufacturer')) {
             $manufacturers = explode(',', Yii::$app->request->get('manufacturer', ''));
             $this->query->applyManufacturers($manufacturers);
@@ -275,6 +288,7 @@ class CatalogController extends FilterController
         return $this->_render();
 
     }
+
     protected function findModel($slug)
     {
         if (($this->dataModel = Category::findOne(['full_path' => $slug])) !== null) {

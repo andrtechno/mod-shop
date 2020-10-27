@@ -9,6 +9,7 @@ use panix\mod\shop\models\ProductReviews;
 use panix\mod\shop\models\search\ProductReviewsSearch;
 use panix\engine\controllers\AdminController;
 use yii\base\InlineAction;
+use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 
 class ReviewsController extends AdminController
@@ -55,7 +56,12 @@ class ReviewsController extends AdminController
             'searchModel' => $searchModel,
         ]);
     }
-
+    public function actionItems($id)
+    {
+        $model = ProductReviews::findOne(['id' => $id]);
+        $items = $model->children()->orderBy(['created_at'=>SORT_DESC])->all();
+        return $this->render('_items', ['items' => $items]);
+    }
     public function actionReplyAdd($id)
     {
 
@@ -82,6 +88,7 @@ class ReviewsController extends AdminController
                         if ($model->appendTo($reply)) {
                             $result['status'] = true;
                             $result['published'] = true;
+                            $result['url'] = Url::to(['items','id'=>$model->tree]);
                             $result['message'] = 'Ответ успешно добавлен';
                         }
                     } else {
@@ -89,10 +96,12 @@ class ReviewsController extends AdminController
                     }
 
                 }
-                //$parent = ProductReviews::findOne(['id' => Yii::$app->request->get('id')]);
-                //$items = $parent->children()->all();
-                //return $this->render('_items', ['items' => $items]);
                 return $this->asJson($result);
+                //$parent = ProductReviews::findOne(['id' => $model->tree]);
+                //$items = $parent->children()->orderBy(['created_at'=>SORT_DESC])->all();
+                //return $this->render('_items', ['items' => $items,'root_id'=>$model->tree]);
+
+
             }
 
             return $this->render('_reply_add');
@@ -154,7 +163,7 @@ class ReviewsController extends AdminController
             //  return $this->asJson($response);
 
             $parent = ProductReviews::findOne(['id' => $model->tree]);
-            $items = $parent->children()->all();
+            $items = $parent->children()->orderBy(['created_at'=>SORT_DESC])->all();
 
             return $this->render('_items', ['items' => $items,'root_id'=>$model->tree]);
         }

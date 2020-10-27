@@ -22,6 +22,7 @@ use yii\helpers\ArrayHelper;
         <tr>
             <th>Значение</th>
             <th><?=Yii::t('shop/Product','PRICE')?> (<?=Yii::$app->currency->main['iso'] ?>)</th>
+            <th>Валюта</th>
             <th>Тип цены</th>
             <th><?=Yii::t('shop/Product','SKU')?></th>
             <th class="text-center">
@@ -39,13 +40,16 @@ use yii\helpers\ArrayHelper;
         <?php if (!isset($options)) { ?>
             <tr>
                 <td>
-                    <?php echo Html::dropDownList('variants[' . $attribute->id . '][option_id][]', null, ArrayHelper::map($attribute->options, 'id', 'value'), ['class' => 'options_list select form-control']); ?>
+                    <?php echo Html::dropDownList('variants[' . $attribute->id . '][option_id][]', null, ArrayHelper::map($attribute->options, 'id', 'value'), ['class' => 'options_list select custom-select w-auto']); ?>
                 </td>
                 <td>
                     <input class="form-control" type="text" name="variants[<?php echo $attribute->id ?>][price][]">
                 </td>
                 <td>
-                    <?= Html::dropDownList('variants[' . $attribute->id . '][price_type][]', null, array(0 => Yii::t('shop/admin','VARIANTS_PRICE_FIX'), 1 => Yii::t('shop/admin','VARIANTS_PRICE_PERCENT')), ['class' => 'form-control']); ?>
+                    <?= Html::dropDownList('variants[' . $attribute->id . '][currency][]', null, ArrayHelper::map(\panix\mod\shop\models\Currency::find()->published()->andWhere(['!=', 'id', Yii::$app->currency->main['id']])->all(), 'id', 'iso'), ['class' => 'custom-select w-auto','prompt'=>'---']); ?>
+                </td>
+                <td>
+                    <?= Html::dropDownList('variants[' . $attribute->id . '][price_type][]', null, array(0 => Yii::t('shop/admin','VARIANTS_PRICE_FIX'), 1 => Yii::t('shop/admin','VARIANTS_PRICE_PERCENT')), ['class' => 'custom-select w-auto']); ?>
                 </td>
                 <td>
                     <input class="form-control" type="text" name="variants[<?php echo $attribute->id ?>][sku][]" />
@@ -61,13 +65,16 @@ use yii\helpers\ArrayHelper;
                 ?>
                 <tr>
                     <td>
-                        <?php echo Html::dropDownList('variants[' . $attribute->id . '][option_id][]', $o->option->id, ArrayHelper::map($attribute->options, 'id', 'value'), ['class' => 'options_list custom-select']); ?>
+                        <?php echo Html::dropDownList('variants[' . $attribute->id . '][option_id][]', $o->option->id, ArrayHelper::map($attribute->options, 'id', 'value'), ['class' => 'options_list custom-select w-auto']); ?>
                     </td>
                     <td>
                         <input class="form-control" type="text" name="variants[<?php echo $attribute->id ?>][price][]" value="<?php echo $o->price ?>">
                     </td>
                     <td>
-                        <?php echo Html::dropDownList('variants[' . $attribute->id . '][price_type][]', $o->price_type, array(0 => Yii::t('shop/admin','VARIANTS_PRICE_FIX'), 1 => Yii::t('shop/admin','VARIANTS_PRICE_PERCENT')), ['class' => 'custom-select']); ?>
+                        <?= Html::dropDownList('variants[' . $attribute->id . '][currency][]', $o->currency_id, ArrayHelper::map(\panix\mod\shop\models\Currency::find()->published()->andWhere(['!=', 'id', Yii::$app->currency->main['id']])->all(), 'id', 'iso'), ['class' => 'custom-select w-auto','prompt'=>'---']); ?>
+                    </td>
+                    <td>
+                        <?php echo Html::dropDownList('variants[' . $attribute->id . '][price_type][]', $o->price_type, array(0 => Yii::t('shop/admin','VARIANTS_PRICE_FIX'), 1 => Yii::t('shop/admin','VARIANTS_PRICE_PERCENT')), ['class' => 'custom-select w-auto']); ?>
                     </td>
                     <td>
                         <input class="form-control" type="text" name="variants[<?php echo $attribute->id ?>][sku][]" value="<?php echo $o->sku ?>">

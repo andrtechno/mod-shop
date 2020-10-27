@@ -28,6 +28,10 @@ class ProductController extends WebController
     {
 
         $this->dataModel = $this->findModel($slug);
+
+
+
+
         $this->dataModel->updateCounters(['views' => 1]);
         $this->view->setModel($this->dataModel);
         $category = $this->dataModel->mainCategory;
@@ -180,10 +184,38 @@ class ProductController extends WebController
         }
     }
 
+    private function stopFlood($expire = 5)
+    {
+        $readCookie = Yii::$app->request->cookies;
+        $setCookie = Yii::$app->response->cookies;
+
+        if (isset($readCookie['review_expire'])) {
+            return $this->asJson(['stop_food' => $readCookie['review_expire']]);
+        }
+        if (!isset($readCookie['review_expire'])) {
+
+            $setCookie->add(new \yii\web\Cookie([
+                'name' => 'review_expire',
+                'httpOnly' => true,
+                'value' => time() + (60 * $expire),
+                'expire' => 60 * $expire
+            ]));
+            //  return $this->asJson(['set' => $cookies['review_expire']]);
+        }
+        return $this->asJson(['set' => $readCookie['review_expire']]);
+    }
+
     public function actionReviewAdd($id)
     {
 
         $product = Product::findOne($id);
+
+        $alreadyRate = false;
+        $readCookie = Yii::$app->request->cookies;
+        $setCookie = Yii::$app->response->cookies;
+
+
+        //$this->stopFlood(50);
 
         $model = new ProductReviews;
         $post = Yii::$app->request->post();
@@ -196,20 +228,41 @@ class ProductController extends WebController
             $model->status = 1;
         }
 
-
-        if ($model->load($post)) {
-            if (Yii::$app->request->isAjax) {
-                $errors = ActiveForm::validate($model);
-                if(Yii::$app->request->get('validate') == 1){
-                    return $this->asJson($errors);
-                }
-
-                if ($errors) {
-                    $response['errors'] = $errors;
+        /*if (Yii::$app->user->isGuest) {
+            if (isset($readCookie['review_expire'])) {
+                if ($readCookie->get('review_expire')->value > time()) {
+                    $response['message'] = 'STOP flood: ' . Yii::$app->formatter->asTime($readCookie->get('review_expire')->value);
+                    return $this->asJson($response);
+                } else {
+                    $setCookie->remove('review_expire');
                 }
             }
-            if (!$errors) {
+        } else {
+            $time = ProductReviews::find()
+                ->where(['product_id' => $product->id, 'user_id' => Yii::$app->user->id])
+                ->orderBy(['created_at' => SORT_DESC])
+                ->one();
+            if ($time) {
+                $date = new \DateTime(date(\DateTime::ISO8601, $time->created_at), new \DateTimeZone(CMS::timezone()));
+                if (($date->format('U') + 60 * 1) > time()) {
+                    $response['message'] = 'STOP FLOOD';
+                    return $this->asJson($response);
+                }
+            }
+        }*/
+        $response['message'] = 'Ошибка';
+        if ($model->load($post)) {
+
+            if (Yii::$app->request->isAjax) {
+                $response['errors'] = ActiveForm::validate($model);
+                if (Yii::$app->request->get('validate') == 1) {
+
+                    return $this->asJson($response);
+                }
+            }
+            if (!$response['errors']) {
                 $response['success'] = true;
+
                 if ($model->status) {
                     $response['published'] = true;
                     $response['message'] = 'Отзыв успешно добавлен';
@@ -218,8 +271,22 @@ class ProductController extends WebController
                 }
                 try {
                     $model->saveNode();
+                    $response['rated'] = $model->checkUserRate();
+
+                    if (!isset($readCookie['review_expire'])) {
+                        $setCookie->add(new \yii\web\Cookie([
+                            'name' => 'review_expire',
+                            'httpOnly' => true,
+                            'value' => time() + 60 * 1,
+                            'expire' => time() + 60 * 1
+                        ]));
+                    }
+
+
                     $ss = ProductReviews::find()->where(['product_id' => $model->product_id])->status(1)->count();
+                    $score = Product::findOne($model->product_id);
                     $response['total'] = $ss;
+                    $response['score'] = $score->ratingScore;
                 } catch (\yii\db\Exception $exception) {
                     $response = $exception;
                 }
@@ -299,8 +366,8 @@ class ProductController extends WebController
         $attributeModels = Attribute::findAll(['id' => $this->dataModel->configurable_attributes]);
         $models = Product::findAll(['id' => $this->dataModel->configurations]);
 
-        $data = array();
-        $prices = array();
+        $data = [];
+        $prices = [];
         foreach ($attributeModels as $attr) {
             foreach ($models as $m) {
                 $prices[$m->id] = $m->price;
@@ -308,12 +375,12 @@ class ProductController extends WebController
                     $data[$attr->name] = ['---' => '0'];
 
                 $method = 'eav_' . $attr->name;
-                $value = $m->$method;
+                $value = $m->$method->value;
 
                 if (!isset($data[$attr->name][$value]))
                     $data[$attr->name][$value] = '';
 
-                $data[$attr->name][$value] .= $m->id . '/';
+                $data[$attr->name][$value] .= $m->id;
             }
         }
 

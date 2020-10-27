@@ -44,7 +44,31 @@ trait ProductTrait
             // 'filter'=>true,
             'value' => function ($model) {
                 /** @var $model Product */
-                return $model->renderGridImage();
+
+
+                $reviewsQuery = $model->getReviews()->status(1);
+                $aggregate = $reviewsQuery->aggregateRate();
+
+                $reviewsCount = $aggregate->count();
+                $aggregate = $aggregate->one();
+                Yii::$app->view->registerCss("
+                    .cancel-on-png, .cancel-off-png, .star-on-png, .star-off-png, .star-half-png{font-size:13px;}
+                    .star-off-png{color:#dee2e6}
+                    .star-on-png,.star-half-png{color:orange}
+                    .raty img{width:13px;height:13px;}
+                    ",[],'rating');
+                $rating= \panix\ext\rating\RatingInput::widget([
+                    'name' => 'product-rating',
+                    'value' => ($reviewsCount > 0) ? round($aggregate->rate / $reviewsCount, 1) : 0,
+                    'options' => [
+                        'starType'=>'img',
+                        'readOnly' => true,
+                    ],
+                ]);
+
+
+
+                return $model->renderGridImage().$rating;
             },
         ];
         $columns['name'] = [
@@ -93,6 +117,30 @@ trait ProductTrait
         ];
         $columns['type_id'] = [
             'attribute' => 'type_id',
+        ];
+        $columns['rating'] = [
+            'header' => 't',
+            'format' => 'raw',
+            'contentOptions' => ['style' => 'min-width:140px'],
+            'value' => function ($model) {
+
+                $reviewsQuery = $model->getReviews()->status(1);
+                $aggregate = $reviewsQuery->aggregateRate();
+
+                $reviewsCount = $aggregate->count();
+                $aggregate = $aggregate->one();
+/*Yii::$app->view->registerCss("
+.cancel-on-png, .cancel-off-png, .star-on-png, .star-off-png, .star-half-png{font-size:1rem}
+",[],'rating');*/
+                return \panix\ext\rating\RatingInput::widget([
+                    'name' => 'product-rating',
+                    'value' => ($reviewsCount > 0) ? round($aggregate->rate / $reviewsCount, 1) : 0,
+                    'options' => [
+                        'starType'=>'i',
+                        'readOnly' => true,
+                    ],
+                ]);
+            }
         ];
         /*$columns['price'] = [
             'attribute' => 'price',

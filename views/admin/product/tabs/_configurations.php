@@ -25,40 +25,40 @@ $model2 = new Product;
 if (isset($_GET['ConfProduct']))
     $model->attributes = $_GET['ConfProduct'];
 
-$columns = [
-    [
-        'class' => 'panix\engine\grid\columns\CheckboxColumn',
-        'enableMenu' => false,
-        'name' => 'ConfigurationsProduct'
-        //'checked' => (!empty($product->configurations) && !isset($clearConfigurations) && !$product->isNewRecord) ? 'true' : 'false'
-    ],
-    [
-        'attribute' => 'id',
-        'format' => 'text',
-        //'value' => '$data->id',
-        'filter' => Html::textInput('ConfProduct[id]', $model2->id, ['class' => 'form-control'])
-    ],
-    [
-        'attribute' => 'name',
-        'format' => 'raw',
-        'value' => function ($model) {
-            return Html::a(Html::encode($model->name), ["update", "id" => $model->id], ["target" => "_blank"]);
-        },
 
-        'filter' => Html::textInput('ConfProduct[name]', $model2->name, ['class' => 'form-control'])
-    ],
-    [
-        'attribute' => 'sku',
-        //'value' => '$data->sku',
-        'filter' => Html::textInput('ConfProduct[sku]', $model2->sku, ['class' => 'form-control'])
-    ],
-    [
-        'attribute' => 'price',
-        'format' => 'raw',
-        //'value' => '$data->price',
-        'filter' => Html::textInput('ConfProduct[price]', $model2->price, ['class' => 'form-control'])
-    ],
+$columns[] = [
+    'class' => 'panix\engine\grid\columns\CheckboxColumn',
+    'enableMenu' => false,
+    'name' => 'ConfigurationsProduct'
+    //'checked' => (!empty($product->configurations) && !isset($clearConfigurations) && !$product->isNewRecord) ? 'true' : 'false'
 ];
+$columns[] = [
+    'attribute' => 'id',
+    'format' => 'text',
+    //   'value' => '$data->id',
+    'filter' => Html::textInput('ConfProduct[id]', $model2->id, ['class' => 'form-control'])
+];
+$columns[] = [
+    'attribute' => 'name',
+    'format' => 'raw',
+    'value' => function ($model) {
+        return Html::a(Html::encode($model->name), ["update", "id" => $model->id], ["target" => "_blank"]);
+    },
+
+    'filter' => Html::textInput('ConfProduct[name]', $model2->name, ['class' => 'form-control'])
+];
+$columns[] = [
+    'attribute' => 'sku',
+    //'value' => '$data->sku',
+    'filter' => Html::textInput('ConfProduct[sku]', $model2->sku, ['class' => 'form-control'])
+];
+$columns[] = [
+    'attribute' => 'price',
+    'format' => 'raw',
+    //'value' => '$data->price',
+    'filter' => Html::textInput('ConfProduct[price]', $model2->price, ['class' => 'form-control'])
+];
+
 
 // Process attributes
 $eavAttributes = [];
@@ -75,16 +75,18 @@ foreach ($attributeModels as $attribute) {
     } else
         array_push($eavAttributes, $attribute->name);
 
+    if ($attribute->title && $attribute->name) {
+        $columns[] = [
+            'attribute' => 'eav_' . $attribute->name . '.value',
+            'header' => $attribute->title,
+            'contentOptions' => ['class' => 'eav'],
 
-    $columns[] = [
-        'attribute' => 'eav_' . $attribute->name,
-        'header' => $attribute->title,
-        'contentOptions' => ['class' => 'eav'],
-        'filter' => Html::dropDownList('eav[' . $attribute->name . ']', $selected, ArrayHelper::map($attribute->options, 'id', 'value'), [
-            'prompt' => html_entity_decode($model2::t('SELECT_ATTRIBUTE')),
-            'class' => 'custom-select w-auto'
-        ])
-    ];
+            'filter' => Html::dropDownList('eav[' . $attribute->name . ']', $selected, ArrayHelper::map($attribute->options, 'id', 'value'), [
+                'prompt' => html_entity_decode($model2::t('SELECT_ATTRIBUTE')),
+                'class' => 'custom-select w-auto'
+            ])
+        ];
+    }
 }
 
 if (!empty($eavAttributes))
@@ -121,7 +123,7 @@ $dataProvider = new ActiveDataProvider([
 
 
 echo GridView::widget([
-    //'id' => 'ConfigurationsProductGrid',
+    'id' => 'ConfigurationsProductGrid',
     'tableOptions' => ['class' => 'table table-striped'],
     'dataProvider' => $dataProvider,
     'filterModel' => $searchModel,

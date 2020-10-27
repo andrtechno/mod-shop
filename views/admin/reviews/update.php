@@ -94,7 +94,7 @@ echo \panix\ext\fancybox\Fancybox::widget([
                 <div class="card-body p-3">
                     <?php
                     Pjax::begin(['timeout' => false, 'id' => 'tester-p', 'enablePushState' => false, 'enableReplaceState' => false]);
-                    $descendants = $model->children()->orderBy(['id' => SORT_DESC])->all();
+                    $descendants = $model->children()->orderBy(['created_at'=>SORT_DESC])->all();
                     echo $this->render('_items', ['items' => $descendants]);
                     Pjax::end();
 
@@ -104,32 +104,50 @@ echo \panix\ext\fancybox\Fancybox::widget([
 
 
             <?php
+
+$this->registerJs('$(document).on("pjax:timeout", function(event) {
+  event.preventDefault();
+});');
+
             $js = <<<JS
-$(document).on('submit', '#review-product-form2',function(){
+$(document).on('submit', '#review-product-form2',function(e){
+
     var that = $(this);
     $.ajax({
         url:$(this).attr('action'),
         type:'POST',
         data:$(this).serialize(),
         dataType:'json',
+        beforeSend:function(){
+            //$('#tester-p').addClass('pjax-loading');
+        },
         success:function(response) {
-            console.log(response);
+
+            console.log('SEND',response);
            // if(response.success){
                // $('#review-modal').modal('hide');
                 common.notify(response.message,'success');
-                if(response.published){
-                    $.pjax.reload('#tester-p',{timeout:false});
-                }
+
 
                // $('input',that).val('');
                // $('textarea',that).val('');
 
                 var instance = $.fancybox.getInstance();
-                console.log(instance);
+               // console.log(instance);
                 instance.close();
+
+
+
+                  $.pjax.reload('#tester-p',{timeout:false, url: response.url});
+                  //  $.pjax.xhr = null;
+//$.pjax({url: response.url, container: '#tester-p',timeout:false})
+
+               
+               
            // }
         }
     });
+
     return false;
 });
 JS;
@@ -171,22 +189,12 @@ JS;
 $this->registerJs("
 $(document).on('pjax:beforeSend', function(xhr, options) {
   $(xhr.target).addClass('pjax-loading');
-  console.log(xhr, options);
+  //console.log(xhr, options);
 });
 $(document).on('pjax:complete', function(xhr, options) {
     $(xhr.target).removeClass('pjax-loading');
 });
-$(document).on('click','.change-status',function(){
-    /*$.ajax({
-        url:$(this).attr('href'),
-        type:'POST',
-        success:function(data){
-          //  $.pjax.reload('#tester-p',{timeout:false});
-        }
-    });*/
-    return false;
 
-});
 
 $(document).on('click','.delete',function(){
     $.ajax({

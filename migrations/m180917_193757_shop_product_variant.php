@@ -22,6 +22,7 @@ class m180917_193757_shop_product_variant extends Migration
             'attribute_id' => $this->integer(11)->null()->unsigned(),
             'option_id' => $this->integer(11)->null()->unsigned(),
             'product_id' => $this->integer(11)->null()->unsigned(),
+            'currency_id' => $this->integer(11)->unsigned(),
             'price' => $this->float('10,2')->null(),
             'price_type' => $this->boolean()->null(),
             'sku' => $this->string(255)->null(),

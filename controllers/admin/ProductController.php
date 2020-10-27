@@ -67,7 +67,7 @@ class ProductController extends AdminController
         $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams());
 
         $this->pageName = Yii::t('shop/admin', 'PRODUCTS');
-        if (Yii::$app->user->can("/{$this->module->id}/{$this->id}/*") ||  Yii::$app->user->can("/{$this->module->id}/{$this->id}/create")) {
+        if (Yii::$app->user->can("/{$this->module->id}/{$this->id}/*") || Yii::$app->user->can("/{$this->module->id}/{$this->id}/create")) {
             $this->buttons = [
                 [
                     'icon' => 'add',
@@ -97,7 +97,7 @@ class ProductController extends AdminController
         $isNew = $model->isNewRecord;
         $this->pageName = Yii::t('shop/default', 'MODULE_NAME');
 
-        if (Yii::$app->user->can("/{$this->module->id}/{$this->id}/*") ||  Yii::$app->user->can("/{$this->module->id}/{$this->id}/create")) {
+        if (Yii::$app->user->can("/{$this->module->id}/{$this->id}/*") || Yii::$app->user->can("/{$this->module->id}/{$this->id}/create")) {
             if (!$isNew && $model->switch) {
                 $this->buttons[] = [
                     'icon' => 'eye',
@@ -161,16 +161,20 @@ class ProductController extends AdminController
         if ($isNew) {
             if ($model->use_configurations && isset($_GET['Product']['configurable_attributes']))
                 $model->configurable_attributes = $_GET['Product']['configurable_attributes'];
+
+
         }
-        if ($model->use_configurations){
+        if ($model->use_configurations) {
             $model->setScenario('configurable');
         }
-      //  CMS::dump($post);die;
+
+
+        //  CMS::dump($post);die;
         if ($model->load($post) && $model->validate() && $this->validateAttributes($model) && $this->validatePrices($model)) {
             $model->setRelatedProducts(Yii::$app->request->post('RelatedProductId', []));
             $model->setKitProducts(Yii::$app->request->post('kitProductId', []));
 
-            if($model->label)
+            if ($model->label)
                 $model->label = implode(",", $model->label);
             //  CMS::dump($model->attributes);die;
             /*$model->file = \yii\web\UploadedFile::getInstances($model, 'file');
@@ -206,14 +210,13 @@ class ProductController extends AdminController
                         }
 
                     }
-                    $categories = ArrayHelper::merge($categories,Yii::$app->request->post('categories', []));
+                    $categories = ArrayHelper::merge($categories, Yii::$app->request->post('categories', []));
                 } else {
 
                     $categories = Yii::$app->request->post('categories', []);
                 }
 
                 $model->setCategories($categories, $mainCategoryId);
-
 
 
                 if (isset(Yii::$app->request->post('Product')['prices']) && !empty(Yii::$app->request->post('Product')['prices'])) {
@@ -379,7 +382,7 @@ class ProductController extends AdminController
         $productPks = Yii::$app->request->post('ConfigurationsProduct', []);
 
         // Clear relations
-        Yii::$app->db->createCommand()->delete('{{%shop__product_configurations}}', ['product_id'=>$model->id])->execute();
+        Yii::$app->db->createCommand()->delete('{{%shop__product_configurations}}', ['product_id' => $model->id])->execute();
 
         if (!sizeof($productPks))
             return;
@@ -461,10 +464,33 @@ class ProductController extends AdminController
                         'attribute_id' => $attribute_id,
                         'option_id' => $option_id,
                         'product_id' => $model->id,
+                        'currency_id' => $values['currency'][$i],
                         'price' => $values['price'][$i],
                         'price_type' => $values['price_type'][$i],
                         'sku' => $values['sku'][$i],
                     ), false);
+
+
+                    $diff = array_diff($variant->oldAttributes, $variant->attributes);
+
+                    if ($diff) {
+                      //  CMS::dump(Yii::$app->currency->currencies[$values['currency'][$i]]['rate']);die;
+                        //if (isset($changedAttributes['price_purchase'])) {
+                            if ($variant->oldAttributes['price'] <> $variant->attributes['price']) {
+                                Yii::$app->getDb()->createCommand()->insert('{{%shop__product_price_history_test}}', [
+                                    'product_id' => $model->id,
+                                    'currency_id' => $values['currency'][$i],
+                                    'currency_rate' => ($values['currency'][$i])?Yii::$app->currency->currencies[$values['currency'][$i]]['rate']:null,
+                                    'price' => $diff['price'],
+                                   // 'price_purchase' => $this->price_purchase,
+                                    'created_at' => time(),
+                                    'type' => ($variant->oldAttributes['price'] < $variant->attributes['price']) ? 1 : 0
+                                ])->execute();
+                            }
+                       // }
+                    }
+                   // CMS::dump(array_diff($variant->attributes, $variant->oldAttributes));
+                  //  die;
 
                     $variant->save(false);
                     array_push($dontDelete, $variant->id);
@@ -567,10 +593,10 @@ class ProductController extends AdminController
 
             $duplicator = new \panix\mod\shop\components\ProductsDuplicator;
             $ids = $duplicator->createCopy($product_ids, $duplicates['copy']);
-            if($ids){
+            if ($ids) {
                 $result['success'] = true;
                 $result['message'] = 'Копия упешно создана';
-            }else{
+            } else {
                 $result['message'] = 'Ошибка копирование.';
             }
             //return $this->redirect('/admin/shop/product/?Product[id]=' . implode(',', $ids));

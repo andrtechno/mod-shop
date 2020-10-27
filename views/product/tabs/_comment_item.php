@@ -14,10 +14,12 @@ $hasAnswer = ($model->rgt > 2) ? true : false;
                     echo \panix\ext\rating\RatingInput::widget([
                         'model' => $model,
                         'attribute' => 'rate',
+                        //'jsonld'=>false,
                         'options' => [
                             'readOnly' => true,
-                            'starOff' => $this->theme->asset[1] . '/img/star-off.svg',
-                            'starOn' => $this->theme->asset[1] . '/img/star-on.svg',
+                            'path' => $this->theme->asset[1] . '/img/',
+                            'starOff' => 'star-off.svg',
+                            'starOn' => 'star-on.svg',
 
                         ]
                     ]);

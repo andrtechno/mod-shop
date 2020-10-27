@@ -61,17 +61,17 @@ var flagDeletePrices = false;
 var global_url;
 
 
-function filter_ajax(url) {
-    var objects = getSerializeObjects();
+function filter_ajax(e, objects) {
     if (xhrFilters && xhrFilters.readyState !== 4) {
         xhrFilters.onreadystatechange = null;
         xhrFilters.abort();
         ajaxSelector.removeClass('loading');
     }
 
-    if (url === undefined) {
-        url = formattedURL(objects);
-    }
+    //if (url === undefined) {
+    var url = formattedURL(e, objects);
+    //var url = current_url;
+   // }
 
     xhrFilters = $.ajax({
         dataType: "json",
@@ -80,7 +80,7 @@ function filter_ajax(url) {
         headers: {
             "filter-ajax": true
         },
-        data: {},
+        data: $('#filter-form input[type="checkbox"]').serialize(),
         success: function (data) {
             ajaxSelector.html(data.items).toggleClass('loading');
             form.attr('action', data.currentUrl);
@@ -119,11 +119,19 @@ function filter_ajax(url) {
  }
  */
 function getSerializeObjects() {
-    return $.extend(form.serializeObject(), sortForm.serializeObject())
+
+    var formObject = form.serializeObject();
+    return $.extend(formObject, sortForm.serializeObject())
 }
 
-function formattedURL(objects) {
+function getSerialize() {
+
+    return $.extend(form.serialize(), sortForm.serialize())
+}
+
+function formattedURL(e, objects) {
     var uri = current_url;
+    var valuesList;
     delete objects[yii.getCsrfParam()];
     //delete objects.min_price;
     //delete objects.max_price;
@@ -133,19 +141,26 @@ function formattedURL(objects) {
         if (values !== '') {
             //var matches = name.match(/filter\[([a-zA-Z0-9-_]+)\]\[]|/i);
             var matches = name.match(/filter\[([a-zA-Z0-9-_]+)\]\[]/i);
-            uri += (matches) ? '/' + matches[1] : '/' + name;
 
-            if (values instanceof Array) {
-                uri += '/' + values.join(',');
-            } else {
-                uri += '/' + values;
 
-            }
+            valuesList = (values instanceof Array) ? '/' + values.join(',') : '/' + values;
+           // if (e.type !== 'slidestop') {
+                uri += ((matches) ? '/' + matches[1] : '/' + name)+valuesList;
+           // }
+
+
+            /*if (values instanceof Array) {
+             uri += '/' + values.join(',');
+             } else {
+             uri += '/' + values;
+
+             }*/
+
         }
     });
 
 
-    console.log(uri, 'formattedURL', objects);
+   // console.log(uri, 'formattedURL', objects);
     return uri;
 }
 
@@ -177,8 +192,18 @@ $(function () {
         }
 
         //$.fn.yiiListView.update('shop-products', {url: formattedURL(objects)});
+        if(objects['filter[price][]'] == undefined){
 
-        filter_ajax();
+        }
+
+
+     //   console.log(formattedURL(e, getSerializeObjects()));
+
+
+
+        //delete objects['filter[price][]'];
+        //delete objects['sort'];
+        filter_ajax(e,objects);
 
         e.preventDefault();
     });
@@ -210,27 +235,27 @@ $(function () {
         slider.slider("values", [valueMin, valueMax]);
 
 
-       // $.fn.yiiListView.update('shop-products', {url: formattedURL(getSerializeObjects())});
-        filter_ajax();
+        // $.fn.yiiListView.update('shop-products', {url: formattedURL(getSerializeObjects())});
+        filter_ajax(e,getSerializeObjects());
         //currentFilters(formattedURL(getSerializeObjects()));
         //reload path by url
         //window.location.pathname = uri;
 
-        history.pushState(null, $('title').text(), formattedURL(getSerializeObjects()));
+        //history.pushState(null, $('title').text(), formattedURL(e, getSerializeObjects()));
         e.preventDefault();
         console.log('click #filter-form input[type="text"]');
     });
 
 
     $(document).on('click', '#sorting-form button2', function (e) {
-        filter_ajax();
+        filter_ajax(e,getSerializeObjects());
         console.log('#sorting-form button');
         e.preventDefault();
         return false;
     });
 
     $(document).on('change', '#sorting-form', function (e) {
-        filter_ajax();
+        filter_ajax(e,getSerializeObjects());
         console.log('#sorting-form');
         e.preventDefault();
         return false;

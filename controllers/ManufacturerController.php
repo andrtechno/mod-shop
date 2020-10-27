@@ -40,6 +40,9 @@ class ManufacturerController extends FilterController
         //$this->query->attachBehaviors((new $productModel)->behaviors());
         $this->query->published();
         $this->query->applyManufacturers($this->dataModel->id);
+
+        $this->filterQuery = clone $this->query;
+
         $this->query->applyAttributes($this->activeAttributes);
 
         $this->currentQuery = clone $this->query;

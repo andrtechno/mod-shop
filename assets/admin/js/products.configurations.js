@@ -1,7 +1,7 @@
 
 function initConfigurationsTable()
 {
-    $("#ConfigurationsProductGrid_c0_all").hide();
+    $("#ConfigurationsProductGrid .select-on-check-all").hide();
 
     $('#ConfigurationsProductGrid table tbody tr').click(function(){
         if($(this).find('input[disabled]').length > 0)

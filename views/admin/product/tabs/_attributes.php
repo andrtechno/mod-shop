@@ -8,12 +8,12 @@ use yii\helpers\ArrayHelper;
 
 $attributes = (isset($model->type->shopAttributes)) ? $model->type->shopAttributes : [];
 
-
+/*
 echo \panix\engine\barcode\BarcodeGenerator::widget([
     'elementId' => 'showBarcode',
     'value' => '4797111018719',
     'type' => 'ean13'
-]);
+]);*/
 ?>
 
 
