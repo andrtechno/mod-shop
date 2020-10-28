@@ -30,8 +30,6 @@ class ProductController extends WebController
         $this->dataModel = $this->findModel($slug);
 
 
-
-
         $this->dataModel->updateCounters(['views' => 1]);
         $this->view->setModel($this->dataModel);
         $category = $this->dataModel->mainCategory;
@@ -80,24 +78,47 @@ class ProductController extends WebController
             $codes = [];
             if (!empty($this->dataModel->type->product_description)) {
 
-                if (preg_match_all('/{eav.([0-9a-zA-Z_\-]+)\.(name|value)}/', $this->dataModel->type->product_description, $matchDesc)) {
-                    foreach (array_unique($matchDesc[1]) as $m) {
-                        $name = "eav_{$m}";
-                        $codes["{eav.{$m}.value}"] = $this->dataModel->{$name}['value'];
-                        $codes["{eav.{$m}.name}"] = $this->dataModel->{$name}['name'];
+                if (preg_match_all('/{([0-9a-zA-Z_\-]+)\.(name|value)}/', $this->dataModel->type->product_description, $matchDesc)) {
+                    foreach (array_unique($matchDesc[1]) as $name) {
+
+                        if (!isset($codes["{{$name}.value}"])) {
+                            if (isset($this->dataModel->{$name})) {
+                                $codes["{{$name}.value}"] = $this->dataModel->{$name}->value;
+                            }else{
+                                $codes["{{$name}.value}"] = '';
+                            }
+                        }
+
+                        if (!isset($codes["{{$name}.name}"])){
+                            if (isset($this->dataModel->{$name})) {
+                                $codes["{{$name}.name}"] = $this->dataModel->{$name}->name;
+                            }else{
+                                $codes["{{$name}.name}"] = '';
+                            }
+                        }
+
+
                     }
                 }
                 $this->view->description = $this->dataModel->replaceMeta($this->dataModel->type->product_description, $codes);
             }
 
             if (!empty($this->dataModel->type->product_title)) {
-                if (preg_match_all('/{eav.([0-9a-zA-Z_\-]+)\.(name|value)}/', $this->dataModel->type->product_title, $matchTitle)) {
-                    foreach (array_unique($matchTitle[1]) as $m) {
-                        $name = "eav_{$m}";
-                        if (!isset($codes["{eav.{$m}.value}"]))
-                            $codes["{eav.{$m}.value}"] = $this->dataModel->{$name}['value'];
-                        if (!isset($codes["{eav.{$m}.name}"]))
-                            $codes["{eav.{$m}.name}"] = $this->dataModel->{$name}['name'];
+                if (preg_match_all('/{([0-9a-zA-Z_\-]+)\.(name|value)}/', $this->dataModel->type->product_title, $matchTitle)) {
+
+                    foreach (array_unique($matchTitle[1]) as $name) {
+                        if (!isset($codes["{{$name}.value}"])) {
+                            if ($this->dataModel->{$name}) {
+                                $codes["{{$name}.value}"] = $this->dataModel->{$name}->value;
+                            }
+                        }
+
+                        if (!isset($codes["{{$name}.name}"])){
+                            if ($this->dataModel->{$name}) {
+                                $codes["{{$name}.name}"] = $this->dataModel->{$name}->name;
+                            }
+                        }
+
                     }
                 }
                 $this->view->title = $this->dataModel->replaceMeta($this->dataModel->type->product_title, $codes);
@@ -106,9 +127,8 @@ class ProductController extends WebController
         }
 
 
-        //$this->view->description = $this->dataModel->description($codes);
-
-        // $this->view->title = $this->dataModel->title($codes);
+        $this->view->description = $this->dataModel->description($codes);
+        $this->view->title = $this->dataModel->title($codes);
 
 
         $this->sessionViews($this->dataModel->id);
@@ -367,20 +387,27 @@ class ProductController extends WebController
         $models = Product::findAll(['id' => $this->dataModel->configurations]);
 
         $data = [];
+        $data2 = [];
         $prices = [];
         foreach ($attributeModels as $attr) {
             foreach ($models as $m) {
                 $prices[$m->id] = $m->price;
-                if (!isset($data[$attr->name]))
-                    $data[$attr->name] = ['---' => '0'];
+                if (!isset($data[$attr->name])) {
+                    $data[$attr->name] = ['' => '---'];
+                    //  $data2[$attr->name] = ['' => '---'];
+                }
 
                 $method = 'eav_' . $attr->name;
-                $value = $m->$method->value;
+                if (isset($m->$method->value)) {
+                    $value = $m->$method->value;
 
-                if (!isset($data[$attr->name][$value]))
-                    $data[$attr->name][$value] = '';
+                    if (!isset($data[$attr->name][$value])) {
+                        $data[$attr->name][$value] = '';
+                    }
 
-                $data[$attr->name][$value] .= $m->id;
+                    $data[$attr->name][$value] .= $m->id;
+                    $data2[$attr->name][$m->id] = $value;
+                }
             }
         }
 
@@ -388,6 +415,7 @@ class ProductController extends WebController
             'attributes' => $attributeModels,
             'prices' => $prices,
             'data' => $data,
+            'data2' => $data2,
         ];
     }
 

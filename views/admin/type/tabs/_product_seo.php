@@ -45,7 +45,7 @@ $templates = [
     </tr>
     <?php foreach ($model->shopAttributes as $tpl) { ?>
         <tr>
-            <td><code>{eav_<?= $tpl->name; ?>_value}</code> &mdash; значение<br/><code>{eav_<?= $tpl->name; ?>_name}</code> &mdash; название</td>
+            <td><code>{eav_<?= $tpl->name; ?>.value}</code> &mdash; значение<br/><code>{eav_<?= $tpl->name; ?>.name}</code> &mdash; название</td>
             <td><?= $tpl->title; ?></td>
         </tr>
     <?php } ?>

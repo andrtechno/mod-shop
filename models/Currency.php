@@ -2,8 +2,12 @@
 
 namespace panix\mod\shop\models;
 
-use \panix\engine\db\ActiveRecord;
+use panix\engine\CMS;
+use panix\mod\shop\components\ProductPriceHistoryQueue;
+use Yii;
+use panix\engine\db\ActiveRecord;
 use panix\mod\shop\models\query\CurrencyQuery;
+use yii\db\Query;
 
 /**
  * Class Currency
@@ -75,6 +79,52 @@ class Currency extends ActiveRecord
             ',' => self::t('COMMA'),
             '.' => self::t('DOT')
         ];
+    }
+
+
+    public function beforeSave($insert)
+    {
+
+        if ($this->attributes['rate'] <> $this->oldAttributes['rate']) {
+            static::getDb()->createCommand()->insert('{{%shop__currency_history}}', [
+                'currency_id' => $this->id,
+                'rate' => $this->rate,
+                'rate_old' => $this->rate_old,
+                'created_at' => time(),
+                'type' => ($this->oldAttributes['rate'] < $this->attributes['rate']) ? 1 : 0
+            ])->execute();
+        }
+
+        return parent::beforeSave($insert);
+    }
+
+    public function afterSave($insert, $changedAttributes)
+    {
+        if (!$insert && Yii::$app->queue) {
+           // Yii::$app->queue->channel = 'currency';
+
+            if (isset($changedAttributes['rate'])) {
+
+                if ($changedAttributes['rate'] <> $this->attributes['rate']) {
+                    // CMS::dump($this->attributes);
+                    $query = (new Query())
+                        ->select(['id', 'price', 'price_purchase'])
+                        ->where(['currency_id' => $this->id])
+                        ->from(Product::tableName());
+
+                    foreach ($query->batch(500) as $items) {
+                        Yii::$app->queue->push(new ProductPriceHistoryQueue([
+                            'items' => $items,
+                            'currency_id' => $this->id,
+                            'currency_rate' => $this->rate,
+                            'type' => ($changedAttributes['rate'] < $this->attributes['rate']) ? 1 : 0,
+                        ]));
+                    }
+                }
+            }
+
+        }
+        parent::afterSave($insert, $changedAttributes);
     }
 
 }

@@ -45,13 +45,13 @@ class m180917_193517_shop_currency extends Migration
             'rate' => $this->money(10, 2)->notNull()->defaultValue(null),
             'rate_old' => $this->money(10, 2),
             'created_at' => $this->integer(),
-            'updated_at' => $this->integer(),
+            'type' => $this->tinyInteger(1)->null()->defaultValue(0)->comment('1=up, 0=down'),
         ]);
 
 
         $this->createIndex('currency_id', '{{%shop__currency_history}}', 'currency_id');
         $this->createIndex('created_at', '{{%shop__currency_history}}', 'created_at');
-        $this->createIndex('updated_at', '{{%shop__currency_history}}', 'updated_at');
+        $this->createIndex('type', '{{%shop__currency_history}}', 'type');
 
         $columns = ['name', 'iso', 'symbol', 'rate', 'penny', 'separator_hundredth', 'separator_thousandth', 'is_main', 'is_default', 'switch', 'created_at', 'ordern'];
         $this->batchInsert(Currency::tableName(), $columns, [

@@ -146,6 +146,7 @@ class Attribute extends ActiveRecord
             ['name', '\panix\engine\validators\UrlValidator',
                 'attributeCompare' => 'title',
                 'attributeSlug' => 'name',
+                'replacement'=>'_',
                 'message' => self::t('ID_BUSY')
             ],
             [['name', 'title', 'abbreviation'], 'string', 'max' => 255],
@@ -162,7 +163,7 @@ class Attribute extends ActiveRecord
                 'use_in_variants'
             ], 'boolean'],
             ['name', 'match',
-                'pattern' => '/^([a-z0-9-])+$/i',
+                'pattern' => '/^([a-z0-9-\_])+$/i',
                 'message' => Yii::t('app/default', 'PATTERN_URL')
             ],
             [['sort'], 'default', 'value' => null],

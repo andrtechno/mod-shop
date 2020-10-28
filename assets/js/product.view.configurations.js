@@ -78,18 +78,19 @@ $(document).ready(function () {
         recalculateProductPrice(this);
     });
 
-    $(document).on('change','.eavData2',function () {
+    $(document).on('click','.eavData2 input',function () {
         recalculateProductPrice2(this);
     });
 });
-function recalculateProductPrice2(el) {
-    var id = $(el).val();
-    var form = $('#form-add-cart-' + $(el).data('product_id'));
+function recalculateProductPrice2(el_clicked) {
+    var id = $(el_clicked).val();
+    var form = $(el_clicked).closest('form');
     var priceInput = form.find('input[name="product_price"]');
     var formData = form.serialize();
     var data = getFormData(form);
     var result = parseFloat(priceInput.val());
 
+    form.find('input[name="configurable_id"]').val(id);
 
     $.ajax({
         url: common.url('/product/' + id + '/calculate-price'),

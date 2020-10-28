@@ -32,6 +32,7 @@ class m180917_193313_shop_product_prices extends Migration
             'id' => $this->primaryKey()->unsigned(),
             'product_id' => $this->integer()->null(),
             'currency_id' => $this->integer()->null(),
+            'currency_rate' => $this->money(10,2),
             'discount' => $this->string(10)->null(),
             'price' => $this->money(10,2),
             'price_purchase' => $this->money(10,2),

@@ -29,7 +29,10 @@ if (isset($_GET['ConfProduct']))
 $columns[] = [
     'class' => 'panix\engine\grid\columns\CheckboxColumn',
     'enableMenu' => false,
-    'name' => 'ConfigurationsProduct'
+    'name' => 'ConfigurationsProduct',
+   // 'value'=>5,
+    'checkboxOptions'=>['checked'=>(!empty($product->configurations) && !isset($clearConfigurations) && !$product->isNewRecord) ? true : false],
+
     //'checked' => (!empty($product->configurations) && !isset($clearConfigurations) && !$product->isNewRecord) ? 'true' : 'false'
 ];
 $columns[] = [

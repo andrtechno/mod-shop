@@ -165,15 +165,14 @@ class ProductController extends AdminController
 
         }
         if ($model->use_configurations) {
-            $model->setScenario('configurable');
+           // $model->setScenario('configurable');
         }
 
 
-        //  CMS::dump($post);die;
         if ($model->load($post) && $model->validate() && $this->validateAttributes($model) && $this->validatePrices($model)) {
             $model->setRelatedProducts(Yii::$app->request->post('RelatedProductId', []));
             $model->setKitProducts(Yii::$app->request->post('kitProductId', []));
-
+            $model->processConfigurations(Yii::$app->request->post('ConfigurationsProduct', []));
             if ($model->label)
                 $model->label = implode(",", $model->label);
             //  CMS::dump($model->attributes);die;
@@ -225,7 +224,8 @@ class ProductController extends AdminController
                 $this->processAttributes($model);
                 // Process variants
                 $this->processVariants($model);
-                $this->processConfigurations($model);
+                //$this->processConfigurations($model);
+
 
                 $model->file = \yii\web\UploadedFile::getInstances($model, 'file');
                 if ($model->file) {
@@ -382,16 +382,23 @@ class ProductController extends AdminController
         $productPks = Yii::$app->request->post('ConfigurationsProduct', []);
 
         // Clear relations
-        Yii::$app->db->createCommand()->delete('{{%shop__product_configurations}}', ['product_id' => $model->id])->execute();
+        $model::getDb()->createCommand()->delete('{{%shop__product_configurations}}', ['product_id' => $model->id])->execute();
 
         if (!sizeof($productPks))
             return;
 
         foreach ($productPks as $pk) {
-            Yii::$app->db->createCommand()->insert('{{%shop__product_configurations}}', [
+            $model::getDb()->createCommand()->insert('{{%shop__product_configurations}}', [
                 'product_id' => $model->id,
                 'configurable_id' => $pk
             ])->execute();
+            if(true){
+                $model::getDb()->createCommand()->delete('{{%shop__product_configurations}}', ['product_id' => $pk])->execute();
+                $model::getDb()->createCommand()->insert('{{%shop__product_configurations}}', [
+                    'product_id' => $pk,
+                    'configurable_id' => $model->id
+                ])->execute();
+            }
         }
     }
 

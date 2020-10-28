@@ -12,15 +12,15 @@ use panix\mod\shop\models\Currency;
 <?php
 
 echo $form->field($model, 'price_purchase')->hint('Данная цена не где не отображается, она нужна только для статистики');
-if ($model->use_configurations) {
+//if ($model->use_configurations) {
     //echo $form->field($model, 'price')->hiddenInput()->label(false);
-} else {
+//} else {
     echo $form->field($model, 'price', [
         'parts' => [
             '{label_unit}' => Html::activeLabel($model, 'unit'),
             '{unit}' => Html::activeDropDownList($model, 'unit', $model->getUnits(), ['class' => 'custom-select']),
             '{label_currency}' => Html::activeLabel($model, 'currency_id'),
-            '{currency}' => Html::activeDropDownList($model, 'currency_id', ArrayHelper::map(Currency::find()->published()->andWhere(['!=', 'id', Yii::$app->currency->main['id']])->all(), 'id', 'name'), [
+            '{currency}' => Html::activeDropDownList($model, 'currency_id', ArrayHelper::map(Currency::find()->published()->andWhere(['!=', 'id', Yii::$app->currency->main['id']])->all(), 'id', 'iso'), [
                 'class' => 'custom-select',
                 'prompt' => $model::t('SELECT_CURRENCY', [
                     'currency' => Yii::$app->currency->main['iso']
@@ -66,4 +66,4 @@ echo $form->field($model, 'prices')->label(false)->widget(\panix\ext\multipleinp
         ],
     ]
 ]);
-}
+//}

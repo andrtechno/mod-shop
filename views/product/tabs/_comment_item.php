@@ -20,7 +20,13 @@ $hasAnswer = ($model->rgt > 2) ? true : false;
                             'path' => $this->theme->asset[1] . '/img/',
                             'starOff' => 'star-off.svg',
                             'starOn' => 'star-on.svg',
-
+                            'hints' => [
+                                Yii::t('default', 'RATING_1'),
+                                Yii::t('default', 'RATING_2'),
+                                Yii::t('default', 'RATING_3'),
+                                Yii::t('default', 'RATING_4'),
+                                Yii::t('default', 'RATING_5'),
+                            ],
                         ]
                     ]);
                     ?>

@@ -40,10 +40,11 @@ class DevController extends ConsoleController
     public function actionIndex()
     {
 
-        Product::getDb()->createCommand()->truncateTable(Product::tableName())->execute();
-        for ($i = 1; $i <= 10; $i++) {
+        //Product::getDb()->createCommand()->truncateTable(Product::tableName())->execute();
+        for ($i = 1; $i <= 10000; $i++) {
             $data[] = [
                 1,
+                3,
                 5,
                 rand(1, 8),
                 CMS::gen(255),
@@ -60,6 +61,7 @@ class DevController extends ConsoleController
 
         Product::getDb()->createCommand()->batchInsert(Product::tableName(), [
             'type_id',
+            'currency_id',
             'main_category_id',
             'manufacturer_id',
             'slug',

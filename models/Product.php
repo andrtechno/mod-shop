@@ -298,7 +298,7 @@ class Product extends ActiveRecord
         $rules[] = ['use_configurations', 'boolean', 'on' => self::SCENARIO_INSERT];
         $rules[] = ['enable_comments', 'boolean'];
         $rules[] = [['unit'], 'default', 'value' => 1];
-        //$rules[] = ['label', 'each', 'rule' => ['integer']];
+       // $rules[] = ['ConfigurationsProduct', 'each', 'rule' => ['integer']];
         $rules[] = [['sku', 'full_description', 'video', 'price_purchase', 'label', 'discount', 'markup'], 'default']; // установим ... как NULL, если они пустые
         $rules[] = [['price', 'price_purchase'], 'double'];
         $rules[] = [['manufacturer_id', 'type_id', 'quantity', 'views', 'availability', 'added_to_cart_count', 'ordern', 'category_id', 'currency_id', 'supplier_id', 'weight_class_id', 'length_class_id'], 'integer'];
@@ -375,8 +375,8 @@ class Product extends ActiveRecord
     public function beforeValidate()
     {
         // For configurable product set 0 price
-        if ($this->use_configurations)
-            $this->price = 0;
+       // if ($this->use_configurations)
+       //     $this->price = 0;
 
         return parent::beforeValidate();
     }
@@ -667,7 +667,7 @@ class Product extends ActiveRecord
         // Save configurable attributes
         if ($this->_configurable_attribute_changed === true) {
             // Clear
-            self::getDb()->createCommand()->delete('{{%shop__product_configurable_attributes}}', ['product_id' => $this->id]);
+            self::getDb()->createCommand()->delete('{{%shop__product_configurable_attributes}}', ['product_id' => $this->id])->execute();
 
             foreach ($this->_configurable_attributes as $attr_id) {
                 self::getDb()->createCommand()->insert('{{%shop__product_configurable_attributes}}', [
@@ -678,15 +678,15 @@ class Product extends ActiveRecord
         }
 
         // Process min and max price for configurable product
-        if ($this->use_configurations)
-            $this->updatePrices($this);
-        else {
+       // if ($this->use_configurations)
+           // $this->updatePrices($this);
+       // else {
             // Check if product is configuration
 
-            $query = (new Query())
+           /* $query = (new Query())
                 ->from('{{%shop__product_configurations}} t')
                 ->where(['in', 't.configurable_id', [$this->id]])
-                ->all();
+                ->all();*/
 
 
             /* $query = Yii::$app->db->createCommand()
@@ -694,12 +694,12 @@ class Product extends ActiveRecord
               ->where(['in', 't.configurable_id', [$this->id]])
               ->queryAll();
              */
-            foreach ($query as $row) {
+           /* foreach ($query as $row) {
                 $model = Product::findOne($row['product_id']);
                 if ($model)
                     $this->updatePrices($model);
-            }
-        }
+            }*/
+       // }
 
         if ($this->auto) {
             $this->name = $this->replaceName();
@@ -713,6 +713,7 @@ class Product extends ActiveRecord
                 static::getDb()->createCommand()->insert('{{%shop__product_price_history}}', [
                     'product_id' => $this->id,
                     'currency_id' => $this->currency_id,
+                    'currency_rate' => Yii::$app->currency->currencies[$this->currency_id]['rate'],
                     'price' => $this->price,
                     'price_purchase' => $this->price_purchase,
                     'created_at' => time(),
@@ -882,6 +883,7 @@ class Product extends ActiveRecord
      */
     public function __get($name)
     {
+
         if (substr($name, 0, 4) === 'eav_') {
 
             $table = Attribute::tableName();
@@ -911,7 +913,7 @@ class Product extends ActiveRecord
 
 
             //$attributeModel = Attribute::find()->where(['name' => $attribute])->cache(3600 * 24, $dependency)->one();
-           return (object)['name' => $attributeModel->title, 'value' => $attributeModel->renderValue($value)];
+            return (object)['name' => $attributeModel->title, 'value' => $attributeModel->renderValue($value)];
             //return $attributeModel->renderValue($value);
         }
         return parent::__get($name);
@@ -984,12 +986,6 @@ class Product extends ActiveRecord
 
         return ArrayHelper::merge($a, parent::behaviors());
     }
-
-    /*public static function formatPrice($price)
-    {
-        $c = Yii::$app->settings->get('shop');
-        return iconv("windows-1251", "UTF-8", number_format($price, $c->price_penny, $c->price_thousand, $c->price_decimal));
-    }*/
 
     /**
      * Replaces comma to dot
@@ -1068,5 +1064,49 @@ class Product extends ActiveRecord
     public function getRatingScore()
     {
         return ($this->votes > 0) ? round($this->rating / $this->votes, 1) : 0;
+    }
+
+
+
+
+
+    public function processConfigurations($productPks){
+        // Clear relations
+       // CMS::dump($productPks);die;
+        self::getDb()->createCommand()->delete('{{%shop__product_configurations}}', ['product_id' => $this->id])->execute();
+
+        if (!sizeof($productPks))
+            return;
+
+        foreach ($productPks as $k=>$pk) {
+            self::getDb()->createCommand()->insert('{{%shop__product_configurations}}', [
+                'product_id' => $this->id,
+                'configurable_id' => $pk
+            ])->execute();
+            if(true){ //recursive
+              //  CMS::dump($this->getConfigurable_attributes());die;
+                self::getDb()->createCommand()->delete('{{%shop__product_configurations}}', ['product_id' => $pk])->execute();
+                $newids = $productPks;
+                $newids[]=$this->id;
+                unset($newids[$k]);
+                foreach ($newids as $pk2) {
+                    self::getDb()->createCommand()->insert('{{%shop__product_configurations}}', [
+                        'product_id' => $pk,
+                        'configurable_id' => $pk2
+                    ])->execute();
+
+                    self::getDb()->createCommand()->delete('{{%shop__product_configurable_attributes}}', ['product_id' => $pk])->execute();
+
+                    foreach ($this->getConfigurable_attributes() as $attr_id) {
+                        self::getDb()->createCommand()->insert('{{%shop__product_configurable_attributes}}', [
+                            'product_id' => $pk,
+                            'attribute_id' => $attr_id
+                        ])->execute();
+                    }
+                }
+
+
+            }
+        }
     }
 }

@@ -1,27 +1,48 @@
 <?php
 use yii\db\Query;
+use panix\engine\CMS;
+
+
+//CMS::dump(Yii::$app->queue->isDone(2207));
 
 if (!$model->isNewRecord) {
-    $pricesHistory = (new Query())
+
+
+
+    /*if($findLast['currency_rate'] <> $current_rate){
+        Yii::$app->getDb()->createCommand()->insert('{{%shop__product_price_history}}', [
+            'product_id' => $model->id,
+            'currency_id' => $model->currency_id,
+            'currency_rate' => Yii::$app->currency->currencies[$model->currency_id]['rate'],
+            'price' => $model->price,
+            'price_purchase' => $model->price_purchase,
+            'created_at' => time(),
+            'type' => ($findLast['currency_rate'] < $current_rate) ? 1 : 0
+        ])->execute();
+    }*/
+
+
+
+   $pricesHistory = (new Query())
         ->where(['product_id' => $model->id])
         ->from('{{%shop__product_price_history}}');
     $prices = $pricesHistory->all();
 
 
-    $currencyHistory = (new Query())
+    /* $currencyHistory = (new Query())
         ->from('{{%shop__currency_history}}');
     $currencies = $currencyHistory->all();
     $seriesCurrency = [];
     $seriesCurrencyList = [];
     foreach ($currencies as $c) {
         $seriesCurrencyList[date('Ymd', $c['created_at'])] = [
-            'y' => (double)$c['rate'],
-
+            'y' => (float)$c['rate'],
+            'value' => (double)$c['rate'],
         ];
-    }
+    }*/
 
 
-    $last = end($seriesCurrencyList);
+   // $last = end($seriesCurrencyList);
     $series = [];
     $categories = [];
     $currenciesList = [];
@@ -29,18 +50,21 @@ if (!$model->isNewRecord) {
         //$series[]=(double) $p['price_purchase'];
         $series[] = [
             'name' => 'test',
-            'value' => (double)$p['price_purchase'] . ' грн.',
-            'y' => (double)$p['price_purchase'],
+            'value' => $p['price_purchase'] * $p['currency_rate'] . ' грн.',
+            'y' => (float)$p['price_purchase'] * (double)$p['currency_rate'],
             'marker' => [
                 'symbol' => ($p['type']) ? 'url(https://kurs.com.ua/storage/images/up.png)' : 'url(https://kurs.com.ua/storage/images/down.png)'
             ]
         ];
 
-        $seriesCurrency[] = [
+        /*$seriesCurrency[] = [
             'name' => 'test',
             'value' => (isset($seriesCurrencyList[date('Ymd', $p['created_at'])])) ? $seriesCurrencyList[date('Ymd', $p['created_at'])]['y'] : $last['y'],
             'y' => (isset($seriesCurrencyList[date('Ymd', $p['created_at'])])) ? $seriesCurrencyList[date('Ymd', $p['created_at'])]['y'] : $last['y'],
-        ];
+            'marker' => [
+                'symbol' => ($c['type']) ? 'url(https://kurs.com.ua/storage/images/up.png)' : 'url(https://kurs.com.ua/storage/images/down.png)'
+            ]
+        ];*/
         $categories[] = \panix\engine\CMS::date($p['created_at'], false);
     }
 
@@ -97,7 +121,7 @@ if (!$model->isNewRecord) {
                     //'borderWidth' => 1,
                     'dataLabels' => [
                         'enabled' => true,
-                        'format' => '{point.value}'
+                        'format' => '{point.value:.2f}'
                     ]
                 ],
 
@@ -105,7 +129,7 @@ if (!$model->isNewRecord) {
             'tooltip' => [
                 'enabled' => true,
                 'headerFormat' => '<table border="1">',
-                'pointFormat' => '<tr><td><span style="font-size:11px">{series.name}</span></td></tr><span style="color:{point.color}">{point.name}</span>: <strong>{point.value} грн. Продано товаров: {point.products}</strong>',
+                'pointFormat' => '<tr><td><span style="font-size:11px">{series.name}</span></td></tr><span style="color:{point.color}">{point.name}</span>: <strong>{point.value:.2f} грн.</strong>',
                 'footerFormat' => '</table>',
                 'shared' => true,
                 'crosshairs' => true,
@@ -117,20 +141,20 @@ if (!$model->isNewRecord) {
                     'name' => 'Цена',
                     'colorByPoint' => true,
                     'tooltip' => [
-                        'pointFormat' => '<tr><td><span style="font-weight: bold; color: {series.color}">{series.name}</span>: {point.value}</td><td>dsadsa</td></tr>'
+                        'pointFormat' => '<tr><td><span style="font-weight: bold; color: {series.color}">{series.name}</span>: {point.value:.2f}</td></tr>'
                     ],
 
                     'data' => $series
                 ],
-                [
+                /*[
                     'name' => 'Валюта',
                     'colorByPoint' => true,
                     'tooltip' => [
-                        'pointFormat' => '<tr><td><span style="font-weight: bold; color: {series.color}">{series.name}</span>: 123<br/><b>Продано товаров: {point.products}<br/></b></td><td>dsadsa</td></tr>'
+                        'pointFormat' => '<tr><td><span style="font-weight: bold; color: {series.color}">{series.name}</span>:{point.value:.2f}</td></tr>'
                     ],
 
                     'data' => $seriesCurrency
-                ],
+                ],*/
             ],
         ]
     ]);
