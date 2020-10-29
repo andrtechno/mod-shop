@@ -35,7 +35,8 @@ class ProductPriceHistoryQueue extends BaseObject implements JobInterface
                 'price' => $item['price'],
                 'price_purchase' => $item['price_purchase'],
                 'created_at' => time(),
-                'type' => $this->type
+                'type' => $this->type,
+                'event'=>'currency'
             ];
         }
 
@@ -48,7 +49,8 @@ class ProductPriceHistoryQueue extends BaseObject implements JobInterface
             'price',
             'price_purchase',
             'created_at',
-            'type'
+            'type',
+            'event'
         ], $data)->execute();
 
 

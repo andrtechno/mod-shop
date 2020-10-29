@@ -42,10 +42,10 @@ class ManufacturerController extends FilterController
         $this->query->applyManufacturers($this->dataModel->id);
 
         $this->filterQuery = clone $this->query;
-
+        $this->currentQuery = clone $this->query;
         $this->query->applyAttributes($this->activeAttributes);
 
-        $this->currentQuery = clone $this->query;
+
 
         //$this->applyPricesFilter();
         $this->pageName = $this->dataModel->name;
@@ -100,7 +100,7 @@ class ManufacturerController extends FilterController
 
         $this->currentUrl = Url::to($currentUrl);
 
-        return $this->_render();
+        return $this->_render('view');
 
     }
 

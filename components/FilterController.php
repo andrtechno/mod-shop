@@ -168,11 +168,11 @@ class FilterController extends WebController
         // Find category types
         //$queryCategoryTypes = Product::find();
         $queryCategoryTypes = $this->currentQuery;
-        /*if ($this->dataModel instanceof Category) {
-            $queryCategoryTypes->applyCategories($this->dataModel);
-        } elseif ($this->dataModel instanceof Manufacturer) {
-            $queryCategoryTypes->applyManufacturers($this->dataModel->id);
-        }*/
+        //if ($this->dataModel instanceof Category) {
+        //    $queryCategoryTypes->applyCategories($this->dataModel);
+       // } elseif ($this->dataModel instanceof Manufacturer) {
+       //     $queryCategoryTypes->applyManufacturers($this->dataModel->id);
+       // }
 
         //$queryCategoryTypes->published();
         $queryCategoryTypes->select(Product::tableName() . '.type_id');

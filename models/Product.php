@@ -298,7 +298,7 @@ class Product extends ActiveRecord
         $rules[] = ['use_configurations', 'boolean', 'on' => self::SCENARIO_INSERT];
         $rules[] = ['enable_comments', 'boolean'];
         $rules[] = [['unit'], 'default', 'value' => 1];
-       // $rules[] = ['ConfigurationsProduct', 'each', 'rule' => ['integer']];
+        // $rules[] = ['ConfigurationsProduct', 'each', 'rule' => ['integer']];
         $rules[] = [['sku', 'full_description', 'video', 'price_purchase', 'label', 'discount', 'markup'], 'default']; // установим ... как NULL, если они пустые
         $rules[] = [['price', 'price_purchase'], 'double'];
         $rules[] = [['manufacturer_id', 'type_id', 'quantity', 'views', 'availability', 'added_to_cart_count', 'ordern', 'category_id', 'currency_id', 'supplier_id', 'weight_class_id', 'length_class_id'], 'integer'];
@@ -375,8 +375,8 @@ class Product extends ActiveRecord
     public function beforeValidate()
     {
         // For configurable product set 0 price
-       // if ($this->use_configurations)
-       //     $this->price = 0;
+        // if ($this->use_configurations)
+        //     $this->price = 0;
 
         return parent::beforeValidate();
     }
@@ -678,28 +678,28 @@ class Product extends ActiveRecord
         }
 
         // Process min and max price for configurable product
-       // if ($this->use_configurations)
-           // $this->updatePrices($this);
-       // else {
-            // Check if product is configuration
+        // if ($this->use_configurations)
+        // $this->updatePrices($this);
+        // else {
+        // Check if product is configuration
 
-           /* $query = (new Query())
-                ->from('{{%shop__product_configurations}} t')
-                ->where(['in', 't.configurable_id', [$this->id]])
-                ->all();*/
+        /* $query = (new Query())
+             ->from('{{%shop__product_configurations}} t')
+             ->where(['in', 't.configurable_id', [$this->id]])
+             ->all();*/
 
 
-            /* $query = Yii::$app->db->createCommand()
-              ->from('{{%shop__product_configurations}} t')
-              ->where(['in', 't.configurable_id', [$this->id]])
-              ->queryAll();
-             */
-           /* foreach ($query as $row) {
-                $model = Product::findOne($row['product_id']);
-                if ($model)
-                    $this->updatePrices($model);
-            }*/
-       // }
+        /* $query = Yii::$app->db->createCommand()
+          ->from('{{%shop__product_configurations}} t')
+          ->where(['in', 't.configurable_id', [$this->id]])
+          ->queryAll();
+         */
+        /* foreach ($query as $row) {
+             $model = Product::findOne($row['product_id']);
+             if ($model)
+                 $this->updatePrices($model);
+         }*/
+        // }
 
         if ($this->auto) {
             $this->name = $this->replaceName();
@@ -713,13 +713,60 @@ class Product extends ActiveRecord
                 static::getDb()->createCommand()->insert('{{%shop__product_price_history}}', [
                     'product_id' => $this->id,
                     'currency_id' => $this->currency_id,
-                    'currency_rate' => Yii::$app->currency->currencies[$this->currency_id]['rate'],
+                    'currency_rate' => ($this->currency_id) ? Yii::$app->currency->currencies[$this->currency_id]['rate'] : NULL,
                     'price' => $this->price,
-                    'price_purchase' => $this->price_purchase,
+                  //  'price_purchase' => $this->price_purchase,
                     'created_at' => time(),
-                    'type' => ($changedAttributes['price_purchase'] < $this->attributes['price_purchase']) ? 1 : 0
+                    'type' => ($changedAttributes['price_purchase'] < $this->attributes['price_purchase']) ? 1 : 0,
+                    'event' => 'product'
                 ])->execute();
             }
+        }
+        if (isset($changedAttributes['discount'])) {
+            if ($this->attributes['discount'] <> $changedAttributes['discount']) {
+
+
+                $sum = $this->attributes['discount'];
+                if (strpos($sum, '%')) {
+                    $sum = (double)str_replace('%', '', $sum);
+                    $this->price -= $this->price * ((double)$sum) / 100;
+                }
+
+                static::getDb()->createCommand()->insert('{{%shop__product_price_history}}', [
+                    'product_id' => $this->id,
+                    'currency_id' => $this->currency_id,
+                    'currency_rate' => ($this->currency_id) ? Yii::$app->currency->currencies[$this->currency_id]['rate'] : NULL,
+                    'price' => $this->price,
+                    // 'price_purchase' => $this->price_purchase,
+                    'created_at' => time(),
+                   // 'type' => ($changedAttributes['discount'] < $this->attributes['discount']) ? 1 : 0,
+                    'event' => 'product_discount'
+                ])->execute();
+            }
+        }
+
+
+        if (isset($changedAttributes['currency_id'])) {
+          //  if ($this->attributes['currency_id'] <> $changedAttributes['currency_id']) {
+
+
+                $sum = $this->discount;
+                if (strpos($sum, '%')) {
+                    $sum = (double)str_replace('%', '', $sum);
+                    $this->price -= $this->price * ((double)$sum) / 100;
+                }
+
+                static::getDb()->createCommand()->insert('{{%shop__product_price_history}}', [
+                    'product_id' => $this->id,
+                    'currency_id' => $this->currency_id,
+                    'currency_rate' => ($this->currency_id) ? Yii::$app->currency->currencies[$this->currency_id]['rate'] : NULL,
+                    'price' => $this->price,
+                    // 'price_purchase' => $this->price_purchase,
+                    'created_at' => time(),
+                  //  'type' => ($changedAttributes['discount'] < $this->attributes['discount']) ? 1 : 0,
+                    'event' => 'product_currency'
+                ])->execute();
+           // }
         }
 
         parent::afterSave($insert, $changedAttributes);
@@ -973,12 +1020,12 @@ class Product extends ActiveRecord
                 'owner_title' => 'name', // Attribute name to present comment owner in admin panel
             ];
         }
-        if (Yii::$app->getModule('markup') && Yii::$app->id !== 'console')
+        if (Yii::$app->getModule('markup')) // && Yii::$app->id !== 'console'
             $a['markup'] = [
                 'class' => '\panix\mod\markup\components\MarkupBehavior'
             ];
 
-        if (Yii::$app->getModule('discounts') && Yii::$app->id !== 'console')
+        if (Yii::$app->getModule('discounts')) // && Yii::$app->id !== 'console')
             $a['discounts'] = [
                 'class' => '\panix\mod\discounts\components\DiscountBehavior'
             ];
@@ -1067,27 +1114,25 @@ class Product extends ActiveRecord
     }
 
 
-
-
-
-    public function processConfigurations($productPks){
+    public function processConfigurations($productPks)
+    {
         // Clear relations
-       // CMS::dump($productPks);die;
+        // CMS::dump($productPks);die;
         self::getDb()->createCommand()->delete('{{%shop__product_configurations}}', ['product_id' => $this->id])->execute();
 
         if (!sizeof($productPks))
             return;
 
-        foreach ($productPks as $k=>$pk) {
+        foreach ($productPks as $k => $pk) {
             self::getDb()->createCommand()->insert('{{%shop__product_configurations}}', [
                 'product_id' => $this->id,
                 'configurable_id' => $pk
             ])->execute();
-            if(true){ //recursive
-              //  CMS::dump($this->getConfigurable_attributes());die;
+            if (true) { //recursive
+                //  CMS::dump($this->getConfigurable_attributes());die;
                 self::getDb()->createCommand()->delete('{{%shop__product_configurations}}', ['product_id' => $pk])->execute();
                 $newids = $productPks;
-                $newids[]=$this->id;
+                $newids[] = $this->id;
                 unset($newids[$k]);
                 foreach ($newids as $pk2) {
                     self::getDb()->createCommand()->insert('{{%shop__product_configurations}}', [

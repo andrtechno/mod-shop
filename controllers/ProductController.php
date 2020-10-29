@@ -146,7 +146,8 @@ class ProductController extends WebController
         var separator_hundredth = '" . Yii::$app->currency->active['separator_hundredth'] . "';
         ", View::POS_END);
 
-        if ($this->dataModel->use_configurations || $this->dataModel->processVariants())
+        //$this->dataModel->use_configurations ||
+       // if ($this->dataModel->use_configurations || $this->dataModel->processVariants())
             ProductConfigureAsset::register($this->view);
         //$this->view->registerJsFile($this->module->assetsUrl . '/js/product.view.configurations.js', ['position'=>View::POS_END]);
 

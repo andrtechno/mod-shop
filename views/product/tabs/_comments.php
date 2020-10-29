@@ -161,8 +161,8 @@ $this->registerJs($js);
         <?php //if(!$reviewModel->checkUserRate()){ ?>
         <div class="d-flex align-items-center mb-4" id="review-rate">
             <?php if (Yii::$app->user->isGuest) { ?>
-                <p>Чтобы оценить товар необходимо <?= Html::a('зарегистрироваться', ['/user/default/reguster']); ?>
-                    или <?= Html::a('войти', ['/user/default/login']); ?></p>
+                <p><?= Yii::t('default','RATING_GUEST_PRODUCT'); ?> <?= Html::a(Yii::t('user/default','REGISTRATION'), ['/user/default/reguster']); ?>
+                    <?= Yii::t('default','OR'); ?> <?= Html::a(Yii::t('user/default','LOGIN'), ['/user/default/login']); ?></p>
             <?php } else { ?>
 
                 <p>Ваша оценка</p>
