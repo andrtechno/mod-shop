@@ -22,11 +22,16 @@
     "panix/mod-images": "dev-master",
     "panix/mod-discounts": "dev-master",
     "panix/mod-sitemap": "dev-master",
-    "panix/mod-wishlist": "dev-master",
     "panix/wgt-jstree": "dev-master",
     "panix/wgt-fancybox": "dev-master",
     "panix/wgt-scroll-pager": "dev-master",
     "panix/wgt-telinput": "dev-master"
+  },
+  "suggest": {
+    "panix/mod-csv": "Addon module import/export office tables",
+    "panix/mod-cart": "Addon module cart",
+    "panix/mod-wishlist": "Addon module wishlist products",
+    "panix/mod-compare": "Addon module compare products"
   },
   "autoload": {
     "psr-4": {
