@@ -85,6 +85,9 @@ class ReviewsController extends AdminController
                     }
 
                     if (!$errors) {
+                        if (Yii::$app->user->can('admin')) {
+                            $model->status = 1;
+                        }
                         if ($model->appendTo($reply)) {
                             $result['status'] = true;
                             $result['published'] = true;

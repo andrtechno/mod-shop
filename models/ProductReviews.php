@@ -48,7 +48,7 @@ class ProductReviews extends ActiveRecord
     public function init()
     {
         if (!Yii::$app->user->isGuest) {
-            $this->user_name = Yii::$app->user->username;
+            $this->user_name = Yii::$app->user->identity->first_name;
             $this->user_email = Yii::$app->user->email;
 
         }

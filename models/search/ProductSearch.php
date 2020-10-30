@@ -134,7 +134,8 @@ class ProductSearch extends Product
             $query->andFilterWhere([
                 self::tableName() . '.id' => $this->id,
             ]);
-            $query->andFilterWhere(['like', 'name', $this->name]);
+            $query->andFilterWhere(['like', 'name_ru', $this->name]);
+            //$query->andFilterWhere(['like', 'name_ru', $this->name]);
         }
 
         /*$query->andFilterWhere([
