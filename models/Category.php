@@ -245,11 +245,16 @@ class Category extends ActiveRecord
             unset($ancestors[0]);
 
             $parts = [];
-            foreach ($ancestors as $ancestor)
+            $partsName = [];
+            foreach ($ancestors as $ancestor){
                 $parts[] = $ancestor->slug;
+                $partsName[] = $ancestor->name_ru;
+            }
 
             $parts[] = $this->slug;
+            $partsName[] = $this->name_ru;
             $this->full_path = implode('/', array_filter($parts));
+            $this->path_hash = md5(implode('/', array_filter($partsName)));
         }
 
         return $this;

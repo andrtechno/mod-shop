@@ -60,6 +60,14 @@ class Manufacturer extends ActiveRecord
                     return Html::a($model->productsCount, ['/admin/shop/product', 'ProductSearch[manufacturer_id]' => $model->id]);
                 }
             ],
+            'created_at' => [
+                'attribute' => 'created_at',
+                'class' => 'panix\engine\grid\columns\jui\DatepickerColumn',
+            ],
+            'updated_at' => [
+                'attribute' => 'updated_at',
+                'class' => 'panix\engine\grid\columns\jui\DatepickerColumn',
+            ],
             'DEFAULT_CONTROL' => [
                 'class' => 'panix\engine\grid\columns\ActionColumn',
             ],
@@ -76,7 +84,6 @@ class Manufacturer extends ActiveRecord
     {
         return new \yii\data\Sort([
             'attributes' => [
-                //'date_create',
                 'name' => [
                     'asc' => ['name' => SORT_ASC],
                     'desc' => ['name' => SORT_DESC],

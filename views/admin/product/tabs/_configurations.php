@@ -100,7 +100,7 @@ if (!empty($eavAttributes))
 //$cr = new CDbCriteria;
 $exclude[] = $product->id;
 foreach ($exclude as $id) {
-    //$model->andWhere(['!=', '{{%shop_product}}.id', $id]);
+    $model->andWhere(['!=', Product::tableName().'.id', $id]);
 }
 
 

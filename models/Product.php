@@ -133,11 +133,16 @@ class Product extends ActiveRecord
     public function beginCartForm()
     {
         $html = '';
-        $html .= Html::beginForm(['/cart/add'], 'post', ['id' => 'form-add-cart-' . $this->id]);
-        $html .= Html::hiddenInput('product_id', $this->id, ['id' => 'product_id-' . $this->id]);
+        $html .= Html::beginForm(['/cart/add'], 'post');
+        $html .= Html::hiddenInput('product_id', $this->id);
         //$html .= Html::hiddenInput('product_price', $this->price);
-        $html .= Html::hiddenInput('use_configurations', $this->use_configurations, ['id' => 'use_configurations-' . $this->id]);
-        $html .= Html::hiddenInput('configurable_id', 0, ['id' => 'configurable_id-' . $this->id]);
+        //$html .= Html::hiddenInput('use_configurations', $this->use_configurations, ['id' => 'use_configurations-' . $this->id]);
+        //$html .= Html::hiddenInput('use_configurations', 0);
+        $configurable_id= 0;
+        if($this->use_configurations){
+            $configurable_id = $this->id;
+        }
+        $html .= Html::hiddenInput('configurable_id', $configurable_id);
         return $html;
     }
 
@@ -404,8 +409,8 @@ class Product extends ActiveRecord
 
     public function getManufacturer()
     {
-        return $this->hasOne(Manufacturer::class, ['id' => 'manufacturer_id']);
-        //->cache(3200, new DbDependency(['sql' => 'SELECT MAX(`updated_at`) FROM ' . Manufacturer::tableName()]));
+        return $this->hasOne(Manufacturer::class, ['id' => 'manufacturer_id'])
+        ->cache(3200, new DbDependency(['sql' => 'SELECT MAX(`updated_at`) FROM ' . Manufacturer::tableName()]));
     }
 
     public function getSupplier()
@@ -846,8 +851,8 @@ class Product extends ActiveRecord
         $price = $this->getFrontPrice();
         $max_price = Yii::$app->currency->convert($this->max_price);
 
-        if ($this->use_configurations && $max_price > 0)
-            return Yii::$app->currency->number_format($price) . ' - ' . Yii::$app->currency->number_format($max_price);
+       // if ($this->use_configurations && $max_price > 0)
+       //     return Yii::$app->currency->number_format($price) . ' - ' . Yii::$app->currency->number_format($max_price);
 
         return Yii::$app->currency->number_format($price);
     }

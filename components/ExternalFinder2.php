@@ -17,7 +17,7 @@ use panix\mod\shop\models\Manufacturer;
 use panix\mod\shop\models\Product;
 use panix\mod\shop\models\Supplier;
 
-class ExternalFinder
+class ExternalFinder2
 {
 
 
@@ -27,16 +27,10 @@ class ExternalFinder
     const OBJECT_MANUFACTURER = 4;
     const OBJECT_ATTRIBUTE_OPTION = 5;
     const OBJECT_IMAGE = 6;
-    const OBJECT_MAIN_CATEGORY = 7;
-    const OBJECT_SUPPLIER = 8;
+    const OBJECT_SUPPLIER = 7;
+    const OBJECT_MAIN_CATEGORY = 8;
     public $cacheData;
-    public $table;
-
-    public function __construct($table = '{{%exchange}}')
-    {
-        $this->table = $table;
-
-    }
+    public $table = '{{%exchange}}';
 
     /**
      * @param $type
@@ -126,38 +120,52 @@ class ExternalFinder
                     $this->cacheData[$type][$externalId] = $data;
                     return $data;
                     break;
-
             }
         }
         $this->cacheData[$type][$externalId] = $query['object_id'];
         return $query['object_id'];
     }
 
-    public function removeByExternal($type, $external_id)
+    public function removeObject($type, $external_id, $loadModel = true)
     {
 
-
-        $query = Yii::$app->db->createCommand()->delete(
+        Yii::$app->db->createCommand()->delete(
             $this->table,
             'object_type=:type AND external_id=:external_id',
-            [
+            array(
                 ':type' => $type,
                 ':external_id' => $external_id
-            ]
-        )->execute();
+
+            )
+        );
+
+        $img = self::getObject($type, $external_id, $loadModel);
+        if ($img)
+            $img->delete();
     }
 
-    public function removeByObject($type, $object_id)
+    public function removeObjectByPk($type, $obj_id)
     {
         $query = Yii::$app->db->createCommand()->delete(
             $this->table,
             'object_type=:type AND object_id=:object_id',
-            [
+            array(
                 ':type' => $type,
-                ':object_id' => $object_id
-            ]
-        )->execute();
+                ':object_id' => $obj_id
+            )
+        );
 
+    }
+
+    public function removeObjectByPk__Old($type, $obj_id)
+    {
+        $query = Yii::$app->db->createCommand()
+            ->from($this->table)
+            ->where('object_type=:type AND object_id=:obj_id', array(
+                ':type' => $type,
+                ':obj_id' => $obj_id
+            ))
+            ->delete();
     }
 
     /**

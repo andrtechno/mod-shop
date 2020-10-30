@@ -24,6 +24,7 @@ class m180917_193505_shop_category extends Migration {
             'depth' => $this->smallInteger(5)->unsigned()->notNull(),
             'slug' => $this->string(255)->null()->defaultValue(null),
             'full_path' => $this->string(255)->null(),
+            'path_hash' => $this->string(32)->null(),
             'image' => $this->string(50)->null(),
             'name_ru' => $this->string(255)->null(),
             'name_uk' => $this->string(255)->null(),
