@@ -21,11 +21,8 @@
   "require": {
     "panix/mod-images": "dev-master",
     "panix/mod-discounts": "dev-master",
-    "panix/mod-cart": "dev-master",
     "panix/mod-sitemap": "dev-master",
     "panix/mod-wishlist": "dev-master",
-    "panix/mod-comments": "dev-master",
-    "panix/mod-csv": "dev-master",
     "panix/wgt-jstree": "dev-master",
     "panix/wgt-fancybox": "dev-master",
     "panix/wgt-scroll-pager": "dev-master",
