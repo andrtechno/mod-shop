@@ -56,7 +56,7 @@ echo GridView::widget([
         ],
         [
             'class' => 'panix\engine\grid\columns\ActionColumn',
-            'template' => '{view} {update} {delete}'
+            'template' => '{update} {delete}'
         ]
     ]
 ]);

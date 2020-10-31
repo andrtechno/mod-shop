@@ -152,6 +152,15 @@ class ProductReviews extends ActiveRecord
                 $product->votes += 1;
                 $product->save(false);
             }
+
+            $mailer = Yii::$app->mailer;
+            $mailer->htmlLayout = "@app/mail/layouts/html";
+            $mailer->compose(['html' => Yii::$app->getModule('shop')->mailPath . '/' . Yii::$app->language . '/product-review-notify'], ['model' => $this])
+                ->setFrom(['noreply@' . Yii::$app->request->serverName => Yii::$app->name . ' robot'])
+                ->setTo([Yii::$app->settings->get('app', 'email') => Yii::$app->name])
+                ->setSubject(Yii::t('shop/admin', 'MAIL_ADMIN_SUBJECT_REVIEW'))
+                ->send();
+
         }
 
         parent::afterSave($insert, $changedAttributes);

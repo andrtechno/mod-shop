@@ -29,6 +29,7 @@ return [
     'VARIANTS_PRICE_PERCENT' => 'Процент',
     'EMPTY_ATTRIBUTES_LIST' => 'Список свойств пустой',
     'PRODUCT_COUNT' => 'Товаров',
+    'MAIL_ADMIN_SUBJECT_REVIEW' => 'Оставлен новый отзыв о товаре',
     'NO_FOUND_TYPE_PRODUCT' => 'Тип товара не найдет',
     'TYPE_CREATE' => 'Создание нового типа продукта',
     'TYPE_UPDATE' => 'Редактирование типа продукта',

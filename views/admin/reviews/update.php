@@ -73,6 +73,14 @@ echo \panix\ext\fancybox\Fancybox::widget([
                     </div>
                 </div>
                 <div class="card-body">
+                    <div class="form-group row">
+                        <div class="col-sm-4 col-md-4 col-lg-3 col-xl-2">
+                            <?= Html::activeLabel($model, 'username', ['class' => 'col-form-label']); ?>
+                        </div>
+                        <div class="col-sm-8 col-md-8 col-lg-9 col-xl-10">
+                            <?= $model->getDisplayName(); ?>
+                        </div>
+                    </div>
                     <?= $form->field($model, 'text')->textarea(); ?>
                     <?= $form->field($model, 'status')->dropDownList($model->getStatusList()); ?>
                 </div>

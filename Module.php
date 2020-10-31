@@ -11,7 +11,7 @@ class Module extends WebModule implements BootstrapInterface
 {
 
     public $icon = 'shopcart';
-
+    public $mailPath = '@shop/mail';
     /**
      * @inheritdoc
      */

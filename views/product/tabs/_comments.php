@@ -4,12 +4,16 @@ use yii\widgets\ActiveForm;
 use panix\mod\shop\models\ProductReviews;
 use yii\helpers\Html;
 
+/**
+ * @var \panix\engine\behaviors\nestedsets\NestedSetsQuery $model
+ */
 $reviewModel = new ProductReviews;
 
 //echo $query->createCommand()->rawSql;die;
 
 $provider = new \panix\engine\data\ActiveDataProvider([
-    'query' => $model->getReviews()->status(1),
+    //'query' => $model->getReviews()->status(1),
+    'query' => $model->getReviews()->status(1)->roots(),
     'pagination' => [
         'pageSize' => 50,
     ]

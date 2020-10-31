@@ -51,7 +51,7 @@ $hasAnswer = ($model->rgt > 2) ? true : false;
     // print_r($model->query);
 
     if ($hasAnswer) {
-        $descendants = $model->children()->orderBy(['id' => SORT_DESC])->all();
+        $descendants = $model->children()->status(1)->all();
         ?>
         <div class="row">
             <div class="col-lg-11 offset-lg-1">
