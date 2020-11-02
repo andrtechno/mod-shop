@@ -172,7 +172,7 @@ class ProductController extends AdminController
         if ($model->load($post) && $model->validate() && $this->validateAttributes($model) && $this->validatePrices($model)) {
             $model->setRelatedProducts(Yii::$app->request->post('RelatedProductId', []));
             $model->setKitProducts(Yii::$app->request->post('kitProductId', []));
-            $model->processConfigurations(Yii::$app->request->post('ConfigurationsProduct', []));
+
             if ($model->label)
                 $model->label = implode(",", $model->label);
             //  CMS::dump($model->attributes);die;
@@ -192,7 +192,7 @@ class ProductController extends AdminController
             }*/
 
             if ($model->save()) {
-
+                $model->processConfigurations(Yii::$app->request->post('ConfigurationsProduct', []));
                 $mainCategoryId = 1;
                 if (isset(Yii::$app->request->post('Product')['main_category_id']))
                     $mainCategoryId = Yii::$app->request->post('Product')['main_category_id'];

@@ -153,15 +153,15 @@ echo $this->render('_prices_history', ['model' => $model]);
                 ];
 
 
-                //  if ($model->use_configurations) {
-                $tabs[] = [
-                    'label' => 'UPDATE_PRODUCT_TAB_CONF',
-                    'content' => $this->render('tabs/_configurations', ['product' => $model]),
-                    'headerOptions' => [],
-                    'itemOptions' => ['class' => 'flex-sm-fill text-center nav-item'],
-                    'visible' => true,
-                ];
-                // }
+                if ($model->use_configurations) {
+                    $tabs[] = [
+                        'label' => $model::t('USE_CONFIGURATIONS'),
+                        'content' => $this->render('tabs/_configurations', ['product' => $model]),
+                        'headerOptions' => [],
+                        'itemOptions' => ['class' => 'flex-sm-fill text-center nav-item'],
+                        'visible' => true,
+                    ];
+                }
 
                 echo \panix\engine\bootstrap\Tabs::widget([
                     //'encodeLabels'=>true,

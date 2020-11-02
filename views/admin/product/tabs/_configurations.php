@@ -30,8 +30,8 @@ $columns[] = [
     'class' => 'panix\engine\grid\columns\CheckboxColumn',
     'enableMenu' => false,
     'name' => 'ConfigurationsProduct',
-   // 'value'=>5,
-    'checkboxOptions'=>['checked'=>(!empty($product->configurations) && !isset($clearConfigurations) && !$product->isNewRecord) ? true : false],
+    // 'value'=>5,
+    'checkboxOptions' => ['checked' => (!empty($product->configurations) && !isset($clearConfigurations) && !$product->isNewRecord) ? true : false],
 
     //'checked' => (!empty($product->configurations) && !isset($clearConfigurations) && !$product->isNewRecord) ? 'true' : 'false'
 ];
@@ -67,7 +67,13 @@ $columns[] = [
 $eavAttributes = [];
 $attributeModels = Attribute::find();
 //$attributeModels->setTableAlias('Attribute');
-$attributeModels = $attributeModels->where([Attribute::tableName() . '.id' => $product->configurable_attributes])->all();
+
+if (isset(Yii::$app->request->get('Product')['configurable_attributes'])) {
+    $attribute_id = Yii::$app->request->get('Product')['configurable_attributes'];
+} else {
+    $attribute_id = $product->configurable_attributes;
+}
+$attributeModels = $attributeModels->where([Attribute::tableName() . '.id' => $attribute_id])->all();
 
 foreach ($attributeModels as $attribute) {
     $selected = null;
@@ -98,26 +104,27 @@ if (!empty($eavAttributes))
 
 // On edit display only saved configurations
 //$cr = new CDbCriteria;
-$exclude[] = $product->id;
-foreach ($exclude as $id) {
-    $model->andWhere(['!=', Product::tableName().'.id', $id]);
+if (!$product->isNewRecord) {
+    $exclude[] = $product->id;
+    foreach ($exclude as $id) {
+        $model->andWhere(['!=', Product::tableName() . '.id', $id]);
+    }
 }
-
 
 //$model->use_configurations = false;
 $searchModel = new ProductSearch();
 $searchModel->exclude[] = $product->id;
-$searchModel->use_configurations = false;
+//$searchModel->use_configurations = false;
 
 $configure = [];
 
 if (!empty($product->configurations) && !isset($clearConfigurations) && !$product->isNewRecord) {
     // $configure['conf']=$product->configurations;
     $model->andWhere(['IN', 'id', $product->configurations]);
-    //$dataProvider->andWhere(['IN','id',$product->configurations]);//addInCondition('t.id', $product->configurations);
+    //$dataProvider->andWhere(['IN','id',$product->configurations]);
 }
 //$dataProvider = $searchModel->search(Yii::$app->request->getQueryParams(),$configure);
-
+//echo $model->createCommand()->rawSql;
 
 $dataProvider = new ActiveDataProvider([
     'query' => $model,
