@@ -38,8 +38,6 @@ use yii\widgets\Pjax;
 </table>
 
 
-<br/><br/>
-
 
 <?php
 /* Pjax::begin([

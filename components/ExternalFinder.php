@@ -52,8 +52,8 @@ class ExternalFinder
             return $this->cacheData[$type][$externalId];
 
         if ($object_id) {
-            $query = Yii::$app->db->createCommand()
-                //->select("*")
+            $query = (new Query())
+                ->select('*')
                 ->from($this->table)
                 ->where('object_type=:type AND external_id=:externalId AND object_id=:object_id', [
                     ':type' => $type,
@@ -61,6 +61,7 @@ class ExternalFinder
                     ':object_id' => $object_id
                 ])
                 ->limit(1)
+                ->createCommand()
                 ->queryOne();
         } else {
 

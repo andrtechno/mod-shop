@@ -29,7 +29,8 @@ class Module extends WebModule implements BootstrapInterface
         $rules['product/<id:\d+>/<action:[0-9a-zA-Z_\-]+>'] = 'shop/product/<action>';
 
 
-        if (!($app instanceof \panix\engine\console\Application)) {
+        if ($app->id != 'console') {
+
             $rules[] = [
                 'class' => 'panix\mod\shop\components\SearchUrlRule',
                 //'pattern'=>'products/search',

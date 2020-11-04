@@ -15,20 +15,9 @@ use yii\helpers\HtmlPurifier;
 
 /**
  * Class ProductReviews
- * @property integer $id Product id
- * @property integer $manufacturer_id Manufacturer
- * @property integer $type_id Type
- * @property integer $supplier_id Supplier
- * @property integer $currency_id Currency
- * @property Currency $currency
- * @property integer $use_configurations
- * @property string $slug
- * @property string $name Product name
- * @property string $short_description Product short_description
- * @property string $full_description Product full_description
- * @property float $price Price
- * @property float $max_price Max price
- * @property float $price_purchase
+ * @property integer $id id
+ * @property integer $product_id Product id
+ * @property string $text
  */
 class ProductReviews extends ActiveRecord
 {

@@ -10,22 +10,26 @@ use panix\mod\shop\models\ProductReviews;
 /**
  * ProductReviewsSearch represents the model behind the search form about `panix\shop\models\Manufacturer`.
  */
-class ProductReviewsSearch extends ProductReviews {
+class ProductReviewsSearch extends ProductReviews
+{
 
     /**
      * @inheritdoc
      */
-    public function rules() {
+    public function rules()
+    {
         return [
-            [['id'], 'integer'],
-            [['name'], 'safe'],
+            [['id', 'product_id'], 'integer'],
+            [['text'], 'string'],
+            [['text'], 'safe'],
         ];
     }
 
     /**
      * @inheritdoc
      */
-    public function scenarios() {
+    public function scenarios()
+    {
         // bypass scenarios() implementation in the parent class
         return Model::scenarios();
     }
@@ -37,11 +41,12 @@ class ProductReviewsSearch extends ProductReviews {
      *
      * @return ActiveDataProvider
      */
-    public function search($params) {
-        $query = ProductReviews::find()->where(['depth'=>1])->orderBy(['status'=>SORT_ASC,'created_at'=>SORT_DESC]);//->groupBy('product_id');
+    public function search($params)
+    {
+        $query = ProductReviews::find()->where(['depth' => 1])->orderBy(['status' => SORT_ASC, 'created_at' => SORT_DESC]);//->groupBy('product_id');
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-           // 'sort' => self::getSort()
+            // 'sort' => self::getSort()
         ]);
 
         $this->load($params);
@@ -53,6 +58,7 @@ class ProductReviewsSearch extends ProductReviews {
         }
 
         $query->andFilterWhere(['id' => $this->id]);
+        $query->andFilterWhere(['product_id' => $this->product_id]);
         $query->andFilterWhere(['like', 'text', $this->text]);
 
         return $dataProvider;

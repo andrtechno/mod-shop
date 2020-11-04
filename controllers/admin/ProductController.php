@@ -741,4 +741,20 @@ class ProductController extends AdminController
     {
         return $this->actionUpdate(false);
     }
+
+    public function actionApplyConfigurationsFilter()
+    {
+        $product = Product::findOne(Yii::$app->request->get('product_id'));
+
+        // On create new product
+        if (!$product) {
+            $product = new Product();
+            $product->configurable_attributes = Yii::$app->request->get('configurable_attributes');
+        }
+
+        return $this->render('tabs/_configurations', [
+            'product' => $product,
+            'clearConfigurations' => true // Show all products
+        ]);
+    }
 }
