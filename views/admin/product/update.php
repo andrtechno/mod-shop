@@ -75,7 +75,7 @@ if (count($typesList) > 0) {
 
     <?php } else { ?>
         <div class="row">
-            <div class="col-md-8">
+            <div class="col-lg-8">
                 <div class="card">
                     <div class="card-header">
                         <h5><?= Html::encode($this->context->pageName) ?></h5>
@@ -182,7 +182,7 @@ if (count($typesList) > 0) {
 
 
             </div>
-            <div class="col-md-4">
+            <div class="col-lg-4">
 
                 <div class="card">
                     <div class="card-header">
@@ -198,7 +198,7 @@ if (count($typesList) > 0) {
                             <div class="col-sm-4 col-md-6"><?= \panix\engine\CMS::date($model->updated_at); ?></div>
                         </div>
                         <div class="form-group row">
-                            <div class="col-sm-12"><?= Yii::t('app/default', 'VIEWS', ['n'=>$model->views]); ?> <?= Html::a('Очистить просмотры', ['/shop/admin/product/update-views','id'=>$model->id],['class'=>'btn btn-sm','onclick'=>"updateProductsViews(this); return false;",'data-confirm'=>'Вы уверены, что хотите обновить просмотры?']); ?></div>
+                            <div class="col-sm-12"><?= Yii::t('app/default', 'VIEWS', ['n'=>$model->views]); ?> <?php // Html::a('Очистить просмотры', ['/shop/admin/product/update-views','id'=>$model->id],['class'=>'btn btn-sm','onclick'=>"updateProductsViews(this); return false;",'data-confirm'=>'Вы уверены, что хотите обновить просмотры?']); ?></div>
                         </div>
                         <?php
 
