@@ -1077,7 +1077,7 @@ class Product extends ActiveRecord
             $configuration = Product::findOne($configuration);
 
         if ($configuration instanceof Product) {
-            $result = $configuration->price;
+            $result = $configuration->hasDiscount ? $configuration->discountPrice : $configuration->price;
         } else {
 
             // if ($quantity > 1 && ($pr = $product->getPriceByQuantity($quantity))) {
