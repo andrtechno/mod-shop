@@ -56,7 +56,6 @@ use panix\engine\db\ActiveRecord;
  * @property boolean $isAvailable
  * @property Category $categories
  * @property array $eavAttributes
- * @property \panix\mod\comments\models\Comments $commentsCount
  * @property Kit $kit
  * @property ProductPrices[] $prices
  * @property ProductVariant[] $variants
@@ -295,8 +294,6 @@ class Product extends ActiveRecord
 
         $rules[] = [['slug'], 'unique'];
         $rules[] = ['price', 'commaToDot'];
-        //$rules[] = [['file'], 'file', 'maxFiles' => Yii::$app->params['plan'][Yii::$app->params['plan_id']]['product_upload_files']];
-        //$rules[] = [['file'], 'validateLimit'];
         $rules[] = [['name', 'slug', 'video'], 'string', 'max' => 255];
         $rules[] = ['video', 'url'];
         $rules[] = [['image'], 'image'];
@@ -335,28 +332,6 @@ class Product extends ActiveRecord
             'hit_sale' => self::t('LABEL_HIT_SALE'),
             'sale' => self::t('LABEL_SALE')
         ];
-    }
-
-    public function validateLimit($attribute)
-    {
-        $planCount = Yii::$app->params['plan'][Yii::$app->params['plan_id']]['product_upload_files'];
-        $imageCount = Image::find()->where([
-            'object_id' => $this->primaryKey,
-            'handler_hash' => $this->getHash()
-        ])->count();
-
-
-        $files = $_FILES[(new \ReflectionClass($this))->getShortName()];
-
-        if (isset($files['name'])) {
-            if (!empty($files['name']['file'][0])) {
-                $imageCount += count($files['name']['file']);
-            }
-        }
-
-        if (($imageCount > $planCount)) {
-            $this->addError($attribute, Yii::t('app/default', 'Привышен лимит изображений, доступно всего {0}', $planCount));
-        }
     }
 
     public function getUnits()
