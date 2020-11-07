@@ -1052,6 +1052,7 @@ class Product extends ActiveRecord
             $configuration = Product::findOne($configuration);
 
         if ($configuration instanceof Product) {
+          //  $result = $configuration->hasDiscount ? $configuration->discountPrice : $configuration->price;
             $result = $configuration->hasDiscount ? $configuration->discountPrice : $configuration->price;
         } else {
 

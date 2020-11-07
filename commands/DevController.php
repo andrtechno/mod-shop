@@ -48,10 +48,10 @@ class DevController extends ConsoleController
     {
 
         //Product::getDb()->createCommand()->truncateTable(Product::tableName())->execute();
-        for ($i = 1; $i <= 10000; $i++) {
+        for ($i = 1; $i <= 1000; $i++) {
             $data[] = [
-                50 + $i,
-                1,
+                77000 + $i,
+                3,
                 3,
                 5,
                 rand(1, 8),
