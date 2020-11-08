@@ -15,7 +15,7 @@ use panix\ext\tinymce\TinyMce;
 
 <?php if (!$model->auto) { ?>
     <?= $form->field($model, 'name')->textInput(['maxlength' => 255]) ?>
-    <?= $form->field($model, 'slug')->textInput(['maxlength' => 255]) ?>
+    <?php //echo $form->field($model, 'slug')->textInput(['maxlength' => 255]) ?>
 <?php } ?>
 <?= $form->field($model, 'sku')->textInput(['maxlength' => 255]) ?>
 

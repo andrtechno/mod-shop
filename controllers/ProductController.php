@@ -24,10 +24,10 @@ use yii\widgets\ActiveForm;
 class ProductController extends WebController
 {
 
-    public function actionView($slug)
+    public function actionView($slug,$id)
     {
 
-        $this->dataModel = $this->findModel($slug);
+        $this->dataModel = $this->findModel($slug,$id);
 
 
         $this->dataModel->updateCounters(['views' => 1]);
@@ -179,10 +179,10 @@ class ProductController extends WebController
 
     /**
      * @param string $slug
-     * @return array|null|Product
+     * @return array|null|\yii\db\ActiveRecord
      * @throws NotFoundHttpException
      */
-    protected function findModel($slug)
+    protected function findModel_old($slug)
     {
         /** @var Product $productModel */
         $productModel = Yii::$app->getModule('shop')->model('Product');
@@ -194,6 +194,28 @@ class ProductController extends WebController
 
         if ($model !== null) {
             return $model;
+        } else {
+            $this->error404(Yii::t('shop/default', 'NOT_FOUND_PRODUCT'));
+        }
+    }
+
+
+
+    protected function findModel($slug,$id)
+    {
+        /** @var Product $productModel */
+        $productModel = Yii::$app->getModule('shop')->model('Product');
+        $model = $productModel::find()
+            ->where(['id' => $id])
+            ->published()
+            //->cache()
+            ->one();
+
+        if ($model !== null) {
+            if($model->slug == $slug){
+                return $model;
+            }
+            $this->error404(Yii::t('shop/default', 'NOT_FOUND_PRODUCT'));
         } else {
             $this->error404(Yii::t('shop/default', 'NOT_FOUND_PRODUCT'));
         }

@@ -137,8 +137,8 @@ class Product extends ActiveRecord
         //$html .= Html::hiddenInput('product_price', $this->price);
         //$html .= Html::hiddenInput('use_configurations', $this->use_configurations, ['id' => 'use_configurations-' . $this->id]);
         //$html .= Html::hiddenInput('use_configurations', 0);
-        $configurable_id= 0;
-        if($this->use_configurations){
+        $configurable_id = 0;
+        if ($this->use_configurations) {
             $configurable_id = $this->id;
         }
         $html .= Html::hiddenInput('configurable_id', $configurable_id);
@@ -221,7 +221,7 @@ class Product extends ActiveRecord
 
     public function getUrl()
     {
-        return ['/shop/product/view', 'slug' => $this->slug];
+        return ['/shop/product/view', 'slug' => $this->slug, 'id' => $this->id];
     }
 
     /* public function transactions() {
@@ -280,19 +280,18 @@ class Product extends ActiveRecord
         }
 
 
-
         if (!$auto) {
-            $rules[] = ['slug', '\panix\engine\validators\UrlValidator', 'attributeCompare' => 'name'];
+            /*$rules[] = ['slug', '\panix\engine\validators\UrlValidator', 'attributeCompare' => 'name'];
             $rules[] = ['slug', 'match',
                 'pattern' => '/^([a-z0-9-])+$/i',
                 'message' => Yii::t('app/default', 'PATTERN_URL')
-            ];
-            $rules[] = [['name', 'slug'], 'required'];
+            ];*/
+            $rules[] = [['name'], 'required']; //, 'slug'
         }
         $rules[] = [['main_category_id', 'price', 'unit'], 'required', 'on' => 'default'];
 
 
-        $rules[] = [['slug'], 'unique'];
+        //$rules[] = [['slug'], 'unique'];
         $rules[] = ['price', 'commaToDot'];
         $rules[] = [['name', 'slug', 'video'], 'string', 'max' => 255];
         $rules[] = ['video', 'url'];
@@ -307,7 +306,7 @@ class Product extends ActiveRecord
         $rules[] = [['sku', 'full_description', 'video', 'price_purchase', 'label', 'discount', 'markup'], 'default']; // установим ... как NULL, если они пустые
         $rules[] = [['price', 'price_purchase'], 'double'];
         $rules[] = [['manufacturer_id', 'type_id', 'quantity', 'views', 'availability', 'added_to_cart_count', 'ordern', 'category_id', 'currency_id', 'supplier_id', 'weight_class_id', 'length_class_id'], 'integer'];
-        $rules[] = [['id','name', 'slug', 'full_description', 'use_configurations', 'length', 'width', 'height', 'weight'], 'safe'];
+        $rules[] = [['id', 'name', 'slug', 'full_description', 'use_configurations', 'length', 'width', 'height', 'weight'], 'safe'];
 
         return $rules;
     }
@@ -361,6 +360,7 @@ class Product extends ActiveRecord
         // if ($this->use_configurations)
         //     $this->price = 0;
 
+        $this->slug = CMS::slug($this->name);
         return parent::beforeValidate();
     }
 
@@ -388,7 +388,7 @@ class Product extends ActiveRecord
     public function getManufacturer()
     {
         return $this->hasOne(Manufacturer::class, ['id' => 'manufacturer_id'])
-        ->cache(3200, new DbDependency(['sql' => 'SELECT MAX(`updated_at`) FROM ' . Manufacturer::tableName()]));
+            ->cache(3200, new DbDependency(['sql' => 'SELECT MAX(`updated_at`) FROM ' . Manufacturer::tableName()]));
     }
 
     public function getSupplier()
@@ -698,7 +698,7 @@ class Product extends ActiveRecord
                     'currency_id' => $this->currency_id,
                     'currency_rate' => ($this->currency_id) ? Yii::$app->currency->currencies[$this->currency_id]['rate'] : NULL,
                     'price' => $this->price,
-                  //  'price_purchase' => $this->price_purchase,
+                    //  'price_purchase' => $this->price_purchase,
                     'created_at' => time(),
                     'type' => ($changedAttributes['price_purchase'] < $this->attributes['price_purchase']) ? 1 : 0,
                     'event' => 'product'
@@ -722,7 +722,7 @@ class Product extends ActiveRecord
                     'price' => $this->price,
                     // 'price_purchase' => $this->price_purchase,
                     'created_at' => time(),
-                   // 'type' => ($changedAttributes['discount'] < $this->attributes['discount']) ? 1 : 0,
+                    // 'type' => ($changedAttributes['discount'] < $this->attributes['discount']) ? 1 : 0,
                     'event' => 'product_discount'
                 ])->execute();
             }
@@ -730,26 +730,26 @@ class Product extends ActiveRecord
 
 
         if (isset($changedAttributes['currency_id'])) {
-          //  if ($this->attributes['currency_id'] <> $changedAttributes['currency_id']) {
+            //  if ($this->attributes['currency_id'] <> $changedAttributes['currency_id']) {
 
 
-                $sum = $this->discount;
-                if (strpos($sum, '%')) {
-                    $sum = (double)str_replace('%', '', $sum);
-                    $this->price -= $this->price * ((double)$sum) / 100;
-                }
+            $sum = $this->discount;
+            if (strpos($sum, '%')) {
+                $sum = (double)str_replace('%', '', $sum);
+                $this->price -= $this->price * ((double)$sum) / 100;
+            }
 
-                static::getDb()->createCommand()->insert('{{%shop__product_price_history}}', [
-                    'product_id' => $this->id,
-                    'currency_id' => $this->currency_id,
-                    'currency_rate' => ($this->currency_id) ? Yii::$app->currency->currencies[$this->currency_id]['rate'] : NULL,
-                    'price' => $this->price,
-                    // 'price_purchase' => $this->price_purchase,
-                    'created_at' => time(),
-                  //  'type' => ($changedAttributes['discount'] < $this->attributes['discount']) ? 1 : 0,
-                    'event' => 'product_currency'
-                ])->execute();
-           // }
+            static::getDb()->createCommand()->insert('{{%shop__product_price_history}}', [
+                'product_id' => $this->id,
+                'currency_id' => $this->currency_id,
+                'currency_rate' => ($this->currency_id) ? Yii::$app->currency->currencies[$this->currency_id]['rate'] : NULL,
+                'price' => $this->price,
+                // 'price_purchase' => $this->price_purchase,
+                'created_at' => time(),
+                //  'type' => ($changedAttributes['discount'] < $this->attributes['discount']) ? 1 : 0,
+                'event' => 'product_currency'
+            ])->execute();
+            // }
         }
 
         parent::afterSave($insert, $changedAttributes);
@@ -829,8 +829,8 @@ class Product extends ActiveRecord
         $price = $this->getFrontPrice();
         $max_price = Yii::$app->currency->convert($this->max_price);
 
-       // if ($this->use_configurations && $max_price > 0)
-       //     return Yii::$app->currency->number_format($price) . ' - ' . Yii::$app->currency->number_format($max_price);
+        // if ($this->use_configurations && $max_price > 0)
+        //     return Yii::$app->currency->number_format($price) . ' - ' . Yii::$app->currency->number_format($max_price);
 
         return Yii::$app->currency->number_format($price);
     }
@@ -1052,7 +1052,7 @@ class Product extends ActiveRecord
             $configuration = Product::findOne($configuration);
 
         if ($configuration instanceof Product) {
-          //  $result = $configuration->hasDiscount ? $configuration->discountPrice : $configuration->price;
+            //  $result = $configuration->hasDiscount ? $configuration->discountPrice : $configuration->price;
             $result = $configuration->hasDiscount ? $configuration->discountPrice : $configuration->price;
         } else {
 

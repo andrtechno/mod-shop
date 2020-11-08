@@ -23,7 +23,8 @@ class Module extends WebModule implements BootstrapInterface
         $rules['shop/ajax/currency/<id:\d+>'] = 'shop/ajax/currency';
         $rules['manufacturer'] = 'shop/manufacturer/index';
         //$rules['manufacturer/<slug:[0-9a-zA-Z_\-]+>'] =  'shop/manufacturer/view';
-        $rules['product/<slug:[0-9a-zA-Z\-]+>'] = 'shop/product/view';
+        $rules['product/<slug:[0-9a-zA-Z\-]+>/<id:\d+>'] = 'shop/product/view';
+        //$rules['product/<slug:[0-9a-zA-Z\-]+>'] = 'shop/product/view';
         $rules['product/<id:\d+>/review-add'] = 'shop/product/review-add';
         $rules['product/<id:\d+>/review-validate'] = 'shop/product/review-validate';
         $rules['product/<id:\d+>/<action:[0-9a-zA-Z_\-]+>'] = 'shop/product/<action>';
