@@ -62,11 +62,17 @@ class ProductController extends WebController
             if ($this->dataModel->manufacturer) {
                 $this->view->params['breadcrumbs'][] = [
                     'label' => $category->name . ' ' . $this->dataModel->manufacturer->name,
-                    'url' => Url::to([
+                    /*'url' => Url::to([
                         '/shop/category/view',
                         'slug' => $category->full_path,
                         'manufacturer' => $this->dataModel->manufacturer->id
-                    ])
+                    ])*/
+
+                'url' => Url::to([
+                    '/catalog/'.$category->full_path.'/manufacturer/'.$this->dataModel->manufacturer->id,
+                   // 'slug' => $category->full_path,
+                   // 'manufacturer' => $this->dataModel->manufacturer->id
+                ])
                 ];
             } else {
                 $this->view->params['breadcrumbs'][] = $this->dataModel->name;
