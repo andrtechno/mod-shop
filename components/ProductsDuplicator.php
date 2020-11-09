@@ -4,6 +4,7 @@ namespace panix\mod\shop\components;
 
 
 use panix\mod\images\models\Image;
+use panix\mod\shop\models\ProductAttributesEav;
 use Yii;
 use panix\mod\shop\models\Product;
 use panix\mod\shop\models\RelatedProduct;
@@ -173,7 +174,7 @@ class ProductsDuplicator extends \yii\base\Component
 
         if (!empty($attributes)) {
             foreach ($attributes as $key => $val) {
-                Yii::$app->db->createCommand()->insert('{{%shop__product_attribute_eav}}', [
+                Yii::$app->db->createCommand()->insert(ProductAttributesEav::tableName(), [
                     'entity' => $copy->id,
                     'attribute' => $key,
                     'value' => $val

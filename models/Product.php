@@ -270,17 +270,10 @@ class Product extends ActiveRecord
         $rules = [];
 
 
-        $auto = false;
-        if (Yii::$app->id != 'console') {
-            if ($this->isNewRecord && isset(Yii::$app->request->get('Product')['type_id'])) {
-                $type = ProductType::findOne(Yii::$app->request->get('Product')['type_id']);
-                if ($type && $type->product_name)
-                    $auto = true;
-            }
-        }
 
 
-        if (!$auto) {
+
+        if (!$this->auto) {
             /*$rules[] = ['slug', '\panix\engine\validators\UrlValidator', 'attributeCompare' => 'name'];
             $rules[] = ['slug', 'match',
                 'pattern' => '/^([a-z0-9-])+$/i',
@@ -360,7 +353,10 @@ class Product extends ActiveRecord
         // if ($this->use_configurations)
         //     $this->price = 0;
 
+
         $this->slug = CMS::slug($this->name);
+
+
         return parent::beforeValidate();
     }
 
@@ -598,18 +594,20 @@ class Product extends ActiveRecord
     }
 
     public $auto = false;
-
-    public function init()
-    {
-        if (Yii::$app->id != 'console') {
-            if ($this->isNewRecord && isset(Yii::$app->request->get('Product')['type_id'])) {
-                $type = ProductType::findOne(Yii::$app->request->get('Product')['type_id']);
-                if ($type && $type->product_name)
-                    $this->auto = true;
-            }
+/*
+public function getAuto222(){
+    if (Yii::$app->id != 'console') {
+        $type_id = $this->type_id;
+        if ($this->isNewRecord && isset(Yii::$app->request->get('Product')['type_id'])) {
+            $type_id = Yii::$app->request->get('Product')['type_id'];
         }
-        parent::init();
+
+        $type = ProductType::findOne($type_id);
+
+        if ($type && $type->product_name)
+            $this->auto = true;
     }
+}*/
 
     public function afterSave($insert, $changedAttributes)
     {
@@ -684,10 +682,11 @@ class Product extends ActiveRecord
          }*/
         // }
 
-        if ($this->auto) {
-            $this->name = $this->replaceName();
-            $this->slug = CMS::slug($this->name);
-        }
+        //if ($this->type->product_name) {
+        //    $this->name = $this->replaceName();
+        //    $this->slug = CMS::slug($this->name);
+        //    $this->save(false);
+        //}
 
 
         //Prices history
@@ -727,10 +726,11 @@ class Product extends ActiveRecord
                 ])->execute();
             }
         }
-
+        $this->name = $this->replaceName();
+        $this->slug = CMS::slug($this->name);
 
         if (isset($changedAttributes['currency_id'])) {
-            //  if ($this->attributes['currency_id'] <> $changedAttributes['currency_id']) {
+              if ($this->attributes['currency_id'] <> $changedAttributes['currency_id']) {
 
 
             $sum = $this->discount;
@@ -749,7 +749,7 @@ class Product extends ActiveRecord
                 //  'type' => ($changedAttributes['discount'] < $this->attributes['discount']) ? 1 : 0,
                 'event' => 'product_currency'
             ])->execute();
-            // }
+            }
         }
 
         parent::afterSave($insert, $changedAttributes);
@@ -984,7 +984,7 @@ class Product extends ActiveRecord
         ];
         $a['eav'] = [
             'class' => '\panix\mod\shop\components\EavBehavior',
-            'tableName' => '{{%shop__product_attribute_eav}}'
+            'tableName' => ProductAttributesEav::tableName()
         ];
         $a['translate'] = [
             'class' => '\panix\mod\shop\components\TranslateBehavior',

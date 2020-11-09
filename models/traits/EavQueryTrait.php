@@ -3,6 +3,7 @@
 namespace panix\mod\shop\models\traits;
 
 use panix\mod\shop\components\collections\CList;
+use panix\mod\shop\models\ProductAttributesEav;
 use Yii;
 
 trait EavQueryTrait
@@ -80,13 +81,13 @@ trait EavQueryTrait
                     $values = array_intersect($cache[$attribute], $values);
                 }
                 foreach ($values as $value) {
-                    $this->join('JOIN', '{{%shop__product_attribute_eav}} eavb' . $i, "{$pk}=`eavb{$i}`.`entity`");
+                    $this->join('JOIN', ProductAttributesEav::tableName().' eavb' . $i, "{$pk}=`eavb{$i}`.`entity`");
                     $this->andWhere(['IN', "`eavb$i`.`value`", $values]);
                     $i++;
                 }
             } // If search models with attribute name with anything values.
             elseif (is_int($attribute)) {
-                $this->join('JOIN', '{{%shop__product_attribute_eav}} eavb' . $i, "$pk=`eavb$i`.`entity` AND eavb$i.attribute = '$values'");
+                $this->join('JOIN', ProductAttributesEav::tableName().' eavb' . $i, "$pk=`eavb$i`.`entity` AND eavb$i.attribute = '$values'");
                 $i++;
             }
         }
@@ -119,12 +120,12 @@ trait EavQueryTrait
                     $values = array_intersect($cache[$attribute], $values);
                 }
 
-                 $this->join('JOIN', '{{%shop__product_attribute_eav}} eavb' . $i, "$pk=`eavb$i`.`entity`");
+                 $this->join('JOIN', ProductAttributesEav::tableName().' eavb' . $i, "$pk=`eavb$i`.`entity`");
                // $this->join['eavb' . $i] = ['JOIN', '{{%shop__product_attribute_eav}} eavb' . $i, "$pk=`eavb$i`.`entity`"];
                 $this->where(['IN', "`eavb$i`.`value`", $values]);
                 $i++;
             } elseif (is_int($attribute)) { // If search models with attribute name with anything values.
-                $this->join('JOIN', '{{%shop__product_attribute_eav}} eavb' . $i, "$pk=`eavb$i`.`entity` AND eavb$i.attribute = '$values'");
+                $this->join('JOIN', ProductAttributesEav::tableName().' eavb' . $i, "$pk=`eavb$i`.`entity` AND eavb$i.attribute = '$values'");
                 $i++;
             }
         }

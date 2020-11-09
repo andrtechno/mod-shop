@@ -9,7 +9,7 @@ use panix\ext\tinymce\TinyMce;
 /**
  * @var panix\engine\bootstrap\ActiveForm $form
  */
-
+var_dump($model->auto);
 ?>
 
 

@@ -5,6 +5,7 @@ namespace panix\mod\shop\components;
 use panix\engine\CMS;
 use panix\mod\shop\models\Attribute;
 use panix\mod\shop\models\AttributeOption;
+use panix\mod\shop\models\ProductAttributesEav;
 use Yii;
 use yii\base\Exception;
 use yii\db\ActiveRecord;
@@ -610,7 +611,7 @@ class EavBehavior extends \yii\base\Behavior
                 }
                 foreach ($values as $value) {
                     //$value = $conn->quoteValue($value);
-                    $owner::find()->join('JOIN', '{{%shop__product_attribute_eav}} eavb' . $i, "$pk=eavb$i.`entity` AND eavb$i.`attribute` = '$attribute' AND eavb$i.`value` = '$value'");
+                    $owner::find()->join('JOIN', ProductAttributesEav::tableName().' eavb' . $i, "$pk=eavb$i.`entity` AND eavb$i.`attribute` = '$attribute' AND eavb$i.`value` = '$value'");
                     $owner::find()->andWhere(['IN', "`eavb$i`.`value`", $values]);
                     /* $criteria->join .= "\nJOIN {$this->tableName} eavb$i"
                       . "\nON t.{$pk} = eavb$i.{$this->entityField}"
@@ -622,7 +623,7 @@ class EavBehavior extends \yii\base\Behavior
                 }
             } // If search models with attribute name with anything values.
             elseif (is_int($attribute)) {
-                $owner::find()->join('JOIN', '{{%shop__product_attribute_eav}} eavb' . $i, "$pk=`eavb$i`.`entity` AND eavb$i.attribute = '$values'");
+                $owner::find()->join('JOIN', ProductAttributesEav::tableName().' eavb' . $i, "$pk=`eavb$i`.`entity` AND eavb$i.attribute = '$values'");
                 //$values = $conn->quoteValue($values);
                 /* $this->join .= "\nJOIN {{%shop__product_attribute_eav}} eavb$i"
                          . "\nON t.{$pk} = eavb$i.entity"

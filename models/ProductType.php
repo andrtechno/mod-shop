@@ -61,6 +61,7 @@ class ProductType extends ActiveRecord
             [['name'], 'required'],
             [['name'], 'string', 'max' => 255],
             [['product_description', 'product_title', 'product_name'], 'string'],
+            [['product_description', 'product_title', 'product_name'], 'default'],
             [['name', 'categories_preset'], 'safe'],
         ];
     }

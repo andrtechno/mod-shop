@@ -7,6 +7,7 @@ namespace panix\mod\shop\components;
  */
 
 
+use panix\engine\CMS;
 use Yii;
 use yii\db\Query;
 use panix\mod\images\models\Image;
@@ -47,7 +48,7 @@ class ExternalFinder
      */
     public function getObject($type, $externalId, $loadModel = true, $object_id = false)
     {
-
+        $externalId = CMS::hash($externalId,true);
         if (isset($this->cacheData[$type][$externalId]))
             return $this->cacheData[$type][$externalId];
 
@@ -70,7 +71,7 @@ class ExternalFinder
                 ->from($this->table)
                 ->where('object_type=:type AND external_id=:externalId', [
                     ':type' => $type,
-                    ':externalId' => $externalId
+                    ':externalId' =>  $externalId
                 ])
                 ->limit(1)
                 ->createCommand()
@@ -174,7 +175,8 @@ class ExternalFinder
         Yii::$app->db->createCommand()->insert($this->table, [
             'object_type' => $type,
             'object_id' => $id,
-            'external_id' => $externalId
+            'external_id' => CMS::hash($externalId,true),
+            'external_data' => $externalId
         ])->execute();
     }
 }

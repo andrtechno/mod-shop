@@ -570,8 +570,8 @@ trait ProductTrait
         }
 
         foreach ($this->getEavAttributesValue($reAttributes) as $k => $attr) {
-            $codes['{eav_' . $k . '_value}'] = $attr['value'];
-            $codes['{eav_' . $k . '_name}'] = $attr['name'];
+            $codes['{eav_' . $k . '.value}'] = $attr['value'];
+            $codes['{eav_' . $k . '.name}'] = $attr['name'];
 
         }
 

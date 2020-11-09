@@ -414,7 +414,7 @@ class ProductController extends AdminController
          * @var EavBehavior|Product $model
          */
         $deleteModel = Product::findOne($model->id);
-        $deleteModel->deleteEavAttributes([], true);
+        //$deleteModel->deleteEavAttributes([], true); //WARN!!! DUPLICATE DELETE QUERY
         // Delete empty values
         /*foreach ($attributes as $key => $val) {
             if (is_string($val) && $val === '') {
