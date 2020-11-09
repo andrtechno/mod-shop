@@ -7,6 +7,11 @@ use yii\db\ActiveQuery;
 use panix\engine\traits\query\DefaultQueryTrait;
 use panix\engine\traits\query\TranslateQueryTrait;
 
+/**
+ * Class AttributeQuery
+ * @package panix\mod\shop\models\query
+ * @use ActiveQuery
+ */
 class AttributeQuery extends ActiveQuery
 {
 
