@@ -3,6 +3,7 @@
 namespace panix\mod\shop\models;
 
 use panix\engine\CMS;
+use panix\mod\shop\components\ExternalFinder;
 use Yii;
 use yii\caching\DbDependency;
 use yii\helpers\ArrayHelper;
@@ -421,7 +422,10 @@ class Attribute extends ActiveRecord
 
         // Delete attributes assigned to products
         self::getDb()->createCommand()->delete(ProductAttributesEav::tableName(), "`attribute`='{$this->name}'")->execute();
-
+        if (Yii::$app->hasModule('csv')) {
+            $external = new ExternalFinder('{{%csv}}');
+            $external->deleteObject(ExternalFinder::OBJECT_ATTRIBUTE, $this->id);
+        }
 
         return parent::afterDelete();
     }

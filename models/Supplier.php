@@ -2,6 +2,8 @@
 
 namespace panix\mod\shop\models;
 
+use panix\mod\shop\components\ExternalFinder;
+use Yii;
 use panix\engine\db\ActiveRecord;
 use panix\engine\Html;
 
@@ -39,8 +41,8 @@ class Supplier extends ActiveRecord
                 'contentOptions' => ['class' => 'text-center'],
                 'value' => function ($model) {
                     /** @var $model self */
-					if($model->phone)
-						return Html::tel($model->phone);
+                    if ($model->phone)
+                        return Html::tel($model->phone);
                 }
             ],
             'email' => [
@@ -93,5 +95,17 @@ class Supplier extends ActiveRecord
     public function getProductsCount()
     {
         return $this->hasOne(Product::class, ['supplier_id' => 'id'])->count();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function afterDelete()
+    {
+        if (Yii::$app->hasModule('csv')) {
+            $external = new ExternalFinder('{{%csv}}');
+            $external->deleteObject(ExternalFinder::OBJECT_SUPPLIER, $this->id);
+        }
+        parent::afterDelete();
     }
 }

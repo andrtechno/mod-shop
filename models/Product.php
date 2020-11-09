@@ -836,6 +836,9 @@ public function getAuto222(){
         return Yii::$app->currency->number_format($price);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function afterDelete()
     {
         $this->clearRelatedProducts();

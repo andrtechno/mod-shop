@@ -3,6 +3,7 @@
 namespace panix\mod\shop\models;
 
 use panix\engine\Html;
+use panix\mod\shop\components\ExternalFinder;
 use Yii;
 use yii\helpers\ArrayHelper;
 use panix\engine\db\ActiveRecord;
@@ -165,4 +166,15 @@ class Manufacturer extends ActiveRecord
         return ArrayHelper::merge($a, parent::behaviors());
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function afterDelete()
+    {
+        if (Yii::$app->hasModule('csv')) {
+            $external = new ExternalFinder('{{%csv}}');
+            $external->deleteObject(ExternalFinder::OBJECT_MANUFACTURER, $this->id);
+        }
+        parent::afterDelete();
+    }
 }

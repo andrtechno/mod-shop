@@ -2,6 +2,7 @@
 
 namespace panix\mod\shop\models;
 
+use panix\mod\shop\components\ExternalFinder;
 use Yii;
 use yii\caching\DbDependency;
 use yii\db\Exception;
@@ -98,6 +99,14 @@ class AttributeOption extends ActiveRecord
             }
             return true;
         }
+    }
+    public function afterDelete()
+    {
+        if (Yii::$app->hasModule('csv')) {
+            $external = new ExternalFinder('{{%csv}}');
+            $external->deleteObject(ExternalFinder::OBJECT_ATTRIBUTE_OPTION, $this->id);
+        }
+        parent::afterDelete();
     }
 
 }

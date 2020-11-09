@@ -3,6 +3,7 @@
 namespace panix\mod\shop\models;
 
 
+use panix\mod\shop\components\ExternalFinder;
 use panix\mod\sitemap\behaviors\SitemapBehavior;
 use Yii;
 use yii\helpers\ArrayHelper;
@@ -246,7 +247,7 @@ class Category extends ActiveRecord
 
             $parts = [];
             $partsName = [];
-            foreach ($ancestors as $ancestor){
+            foreach ($ancestors as $ancestor) {
                 $parts[] = $ancestor->slug;
                 $partsName[] = $ancestor->name_ru;
             }
@@ -277,6 +278,18 @@ class Category extends ActiveRecord
             "{currency.symbol}" => Yii::$app->currency->active['symbol'],
         ];
         return CMS::textReplace($text, $replace);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function afterDelete()
+    {
+        if (Yii::$app->hasModule('csv')) {
+            $external = new ExternalFinder('{{%csv}}');
+            $external->deleteObject(ExternalFinder::OBJECT_MAIN_CATEGORY, $this->id);
+        }
+        parent::afterDelete();
     }
 
 }
