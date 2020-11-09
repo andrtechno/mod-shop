@@ -48,7 +48,8 @@ class ExternalFinder
      */
     public function getObject($type, $externalId, $loadModel = true, $object_id = false)
     {
-        $externalId = CMS::hash($externalId,true);
+        $externalId = CMS::hash($externalId, true);
+
         if (isset($this->cacheData[$type][$externalId]))
             return $this->cacheData[$type][$externalId];
 
@@ -71,16 +72,18 @@ class ExternalFinder
                 ->from($this->table)
                 ->where('object_type=:type AND external_id=:externalId', [
                     ':type' => $type,
-                    ':externalId' =>  $externalId
+                    ':externalId' => $externalId
                 ])
                 ->limit(1)
                 ->createCommand()
                 ->queryOne();
 
+
         }
 
         if ($query === false)
             return false;
+
 
         if ($loadModel === true && $query['object_id']) {
             switch ($type) {
@@ -135,21 +138,31 @@ class ExternalFinder
         return $query['object_id'];
     }
 
-    public function removeByExternal($type, $external_id)
+    /**
+     * @param $type
+     * @param $external_id
+     * @return int
+     */
+    public function deleteExternal($type, $external_id)
     {
-
 
         $query = Yii::$app->db->createCommand()->delete(
             $this->table,
             'object_type=:type AND external_id=:external_id',
             [
                 ':type' => $type,
-                ':external_id' => $external_id
+                ':external_id' => CMS::hash($external_id, true)
             ]
         )->execute();
+        return $query;
     }
 
-    public function removeByObject($type, $object_id)
+    /**
+     * @param $type
+     * @param $object_id
+     * @return int
+     */
+    public function deleteObject($type, $object_id)
     {
         $query = Yii::$app->db->createCommand()->delete(
             $this->table,
@@ -159,7 +172,7 @@ class ExternalFinder
                 ':object_id' => $object_id
             ]
         )->execute();
-
+        return $query;
     }
 
     /**
@@ -175,7 +188,7 @@ class ExternalFinder
         Yii::$app->db->createCommand()->insert($this->table, [
             'object_type' => $type,
             'object_id' => $id,
-            'external_id' => CMS::hash($externalId,true),
+            'external_id' => CMS::hash($externalId, true),
             'external_data' => $externalId
         ])->execute();
     }

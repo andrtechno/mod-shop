@@ -246,13 +246,7 @@ if (count($typesList) > 0) {
                                             Yii::t('shop/default', 'RATING_SCORE', $model->ratingScore),
                                             Yii::t('shop/default', 'RATING_SCORE', $model->ratingScore),
                                         ],
-                                        // 'starType'=>'i',
                                         'readOnly' => true,
-                                        // 'path' => $this->theme->asset[1] . '/img/',
-                                        // 'starOff' => 'star-off.svg',
-                                        // 'starOn' => 'star-on.svg',
-                                        // 'starHalf' => 'star-half.svg',
-
                                     ]
                                 ]);
                                 ?>

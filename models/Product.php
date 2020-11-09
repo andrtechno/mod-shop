@@ -3,6 +3,7 @@
 namespace panix\mod\shop\models;
 
 use panix\mod\images\models\Image;
+use panix\mod\shop\components\ExternalFinder;
 use panix\mod\shop\models\query\ProductReviewsQuery;
 use panix\mod\sitemap\behaviors\SitemapBehavior;
 use panix\mod\user\models\User;
@@ -726,8 +727,8 @@ public function getAuto222(){
                 ])->execute();
             }
         }
-        $this->name = $this->replaceName();
-        $this->slug = CMS::slug($this->name);
+        //$this->name = $this->replaceName();
+        //$this->slug = CMS::slug($this->name);
 
         if (isset($changedAttributes['currency_id'])) {
               if ($this->attributes['currency_id'] <> $changedAttributes['currency_id']) {
@@ -871,7 +872,10 @@ public function getAuto222(){
         if (Yii::$app->hasModule('wishlist')) {
             Yii::$app->db->createCommand()->delete(\panix\mod\wishlist\models\WishListProducts::tableName(), ['product_id' => $this->id])->execute();
         }
-
+        if (Yii::$app->hasModule('csv')) {
+            $external = new ExternalFinder('{{%csv}}');
+            $external->deleteObject(ExternalFinder::OBJECT_PRODUCT,$this->id);
+        }
         parent::afterDelete();
     }
 

@@ -10,7 +10,7 @@ use panix\engine\bootstrap\Modal;
  * @var $form \panix\engine\bootstrap\ActiveForm
  */
 ?>
-<?= Fancybox::widget(['target' => 'a.fancybox']); ?>
+<?php echo Fancybox::widget(['target' => 'a.fancybox']); ?>
 <?= $form->field($model, 'video')->textInput(['maxlength' => 255])->hint('Пример: https://www.youtube.com/watch?v=[ID]') ?>
 <?= $form->field($model, 'file[]')->fileInput(['multiple' => true]); ?>
 
@@ -42,7 +42,7 @@ $(document).on('click','.attachment-delete', function(e) {
         
         
         
-        $('.copper').on('click', function(e) {
+        $(document).on('click','.copper', function(e) {
       //  var id = $(this).attr('data-id');
     $.ajax({
        url: $(this).attr('href'),
@@ -78,7 +78,7 @@ Modal::begin([
     'bodyOptions' => ['id' => 'cropper-body', 'style' => 'width:100%']
 ]);
 
-echo 'Say hello...';
+echo '';
 
 Modal::end();
 
