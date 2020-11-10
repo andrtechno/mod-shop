@@ -37,6 +37,7 @@ class SearchController extends FilterController
 
 
         // Create clone of the current query to use later to get min and max prices.
+        $this->filterQuery = clone $this->query;
         $this->currentQuery = clone $this->query;
         // Filter products by price range if we have min or max in request
         //$this->applyPricesFilter();
@@ -79,28 +80,44 @@ class SearchController extends FilterController
             $q = '+';
         }
 
-
+        $res = [];
         if (Yii::$app->request->isAjax && $q) {
-            $res = [];
+
             $model = Product::find();
             $model->applySearch($q);
             $model->limit(5);
 
             $result = $model->all();
 
-            $res['count'] = count($result);
-            /** @var Product $m */
-            //$res['data'] = $this->renderAjax('@shop/widgets/search/views/_result', ['model' => $model->all(),'q'=>$q]);
+            //$res['count'] = count($result);
             foreach ($result as $m) {
                 /** @var Product $m */
                 $res[] = [
-                    'url' => Url::to($m->getUrl()),
-                    'renderItem' => $this->renderPartial('@shop/widgets/search/views/_item', ['model' => $m])
+                    //'html' => $this->renderPartial('@shop/widgets/search/views/_item', ['model' => $m]),
+                    'id'=>$m->id,
+                    'name'=>$m->name,
+                    'url'=>Url::to($m->getUrl()),
+                    'image'=>$m->getMainImage('50x50')->url,
                 ];
             }
-            Yii::$app->response->format = Response::FORMAT_JSON;
-            return $res;
+
         }
+
+
+
+
+        $status = true;
+
+       return $this->asJson(array(
+           "status" => $status,
+           "error"  => null,
+           "data"   => array(
+               "products"   => $res
+           )
+       ));
+
+
+
     }
 
 }

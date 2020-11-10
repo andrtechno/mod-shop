@@ -30,9 +30,10 @@ class ProductQuery extends ActiveQuery
 
     /**
      * @param $manufacturers array|int
+     * @param $whereType string
      * @return $this
      */
-    public function applyManufacturers($manufacturers)
+    public function applyManufacturers($manufacturers,$whereType = 'andWhere')
     {
         if (!is_array($manufacturers))
             $manufacturers = [$manufacturers];
@@ -42,7 +43,7 @@ class ProductQuery extends ActiveQuery
 
         sort($manufacturers);
 
-        $this->andWhere(['manufacturer_id' => $manufacturers]);
+        $this->$whereType(['manufacturer_id' => $manufacturers]);
         return $this;
     }
 
@@ -104,8 +105,11 @@ class ProductQuery extends ActiveQuery
     {
         $language = Yii::$app->language;
         if ($q) {
+            $modelClass = $this->modelClass;
+            $tableName = $modelClass::tableName();
             $this->andWhere(['LIKE', 'sku', $q]);
-            $this->orWhere(['LIKE', 'name_'.$language, $q]);
+            $this->orWhere(['LIKE', $tableName . '.name_' . $language, $q]);
+
         }
         return $this;
     }
@@ -164,9 +168,6 @@ class ProductQuery extends ActiveQuery
 
         return $this;
     }
-
-
-
 
 
 }

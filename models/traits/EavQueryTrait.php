@@ -122,7 +122,7 @@ trait EavQueryTrait
 
                  $this->join('JOIN', ProductAttributesEav::tableName().' eavb' . $i, "$pk=`eavb$i`.`entity`");
                // $this->join['eavb' . $i] = ['JOIN', '{{%shop__product_attribute_eav}} eavb' . $i, "$pk=`eavb$i`.`entity`"];
-                $this->where(['IN', "`eavb$i`.`value`", $values]);
+                $this->andwhere(['IN', "`eavb$i`.`value`", $values]);
                 $i++;
             } elseif (is_int($attribute)) { // If search models with attribute name with anything values.
                 $this->join('JOIN', ProductAttributesEav::tableName().' eavb' . $i, "$pk=`eavb$i`.`entity` AND eavb$i.attribute = '$values'");

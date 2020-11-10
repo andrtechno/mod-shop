@@ -110,7 +110,7 @@ class Product extends ActiveRecord
             }
         }
 
-        if (isset($this->hasDiscount)) {
+        if ($this->hasDiscount) {
             $labelsList['discount']['value'] = '-' . $this->discountSum;
             $labelsList['discount']['label'] = self::t('LABEL_DISCOUNT');
             if ($this->discountEndDate) {

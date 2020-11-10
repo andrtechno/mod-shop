@@ -6,6 +6,7 @@ use panix\engine\CMS;
 use panix\mod\shop\models\Attribute;
 use panix\mod\shop\models\traits\EavQueryTrait;
 use yii\caching\DbDependency;
+use yii\db\ActiveQuery;
 use yii\helpers\Html;
 use Yii;
 use panix\mod\shop\models\Category;
@@ -155,8 +156,11 @@ class FiltersWidget extends Widget
         //CMS::dump($this->query);die;
        // $model = Product::find()->published();
        // CMS::dump($model);die;
-        /** @var Product $model */
+        /** @var Product|ActiveQuery $model */
         $model = clone $this->query;
+
+       // echo $model->createCommand()->rawSql;die;
+
         // $model->getEavAttributes22222222($this->view->context->getEavAttributes());
         //if ($this->model instanceof Category) {
 
@@ -174,8 +178,10 @@ class FiltersWidget extends Widget
 
         $newData = [];
         $newData[$attribute->name][] = $option->id;
-        /** @var EavQueryTrait $model */
-        $res = $model->withEavAttributes($newData);
+       // echo $model->createCommand()->rawSql;
+       // echo '<br><br><br>';
+        /** @var EavQueryTrait|ActiveQuery $model */
+        $model->withEavAttributes($newData);
         // $res->groupBy = false;
         //$res->distinct(false);
 
@@ -194,8 +200,8 @@ class FiltersWidget extends Widget
         // $count = Attribute::getDb()->cache(function () use ($model) {
         //     return $model->count();
         // }, 1, $dependency);
-      //  echo $res->createCommand()->rawSql;die;
-        return $res->count();
+
+        return $model->count();
     }
 
     public function run()

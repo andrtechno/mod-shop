@@ -4,7 +4,9 @@ namespace panix\mod\shop\controllers;
 
 use panix\engine\CMS;
 use panix\engine\data\ActiveDataProvider;
+use panix\mod\discounts\models\Discount;
 use panix\mod\pages\models\Pages;
+use panix\mod\shop\models\ProductCategoryRef;
 use setasign\Fpdi\PdfReader\Page;
 use Yii;
 use yii\helpers\Url;
@@ -56,8 +58,6 @@ class CatalogController extends FilterController
         $this->currentQuery = clone $this->query;
 
 
-
-
         //$this->query->andWhere([Product::tableName().'.main_category_id'=>$this->dataModel->id]);
 
         //  $this->query->with('manufacturerActive');
@@ -65,9 +65,6 @@ class CatalogController extends FilterController
         $this->view->setModel($this->dataModel);
         //$this->view->title = $this->pageName;
         $this->view->registerJs("var current_url = '" . Url::to($this->dataModel->getUrl()) . "';", yii\web\View::POS_HEAD, 'current_url');
-
-
-
 
 
         $this->query->applyAttributes($this->activeAttributes);
@@ -90,7 +87,7 @@ class CatalogController extends FilterController
 
         if (Yii::$app->request->get('sort') == 'price' || Yii::$app->request->get('sort') == '-price') {
             $this->query->aggregatePriceSelect((Yii::$app->request->get('sort') == 'price') ? SORT_ASC : SORT_DESC);
-           // echo $this->query->createCommand()->rawSql;die;
+            // echo $this->query->createCommand()->rawSql;die;
         }
 
 
@@ -221,11 +218,10 @@ class CatalogController extends FilterController
         } else {
             $this->query->int2between(-1, -1);
         }
-        $this->query->published();
+
         $this->filterQuery = clone $this->query;
         $this->currentQuery = clone $this->query;
         $this->query->applyAttributes($this->activeAttributes);
-
 
 
         if (Yii::$app->request->get('manufacturer')) {
@@ -256,22 +252,60 @@ class CatalogController extends FilterController
         $this->currentUrl = Url::to(['sales']);
         $this->view->registerJs("var current_url = '" . $this->currentUrl . "';", yii\web\View::POS_HEAD, 'current_url');
 
-        $this->query = $this->dataModel::find()->published()->isNotEmpty('discount');
+        // $this->query = $this->dataModel::find()->published()->isNotEmpty('discount');
+
+        $this->query = Product::find()->published();
+
+        $this->query->andWhere(['IS NOT', Product::tableName() . '.discount', null])
+            ->andWhere(['!=', Product::tableName() . '.discount', '']);
+
+        $manufacturers = [];
+        $categories = [];
+        $discounts = (Yii::$app->hasModule('discounts')) ? Yii::$app->getModule('discounts')->discounts : false;
+        if ($discounts) {
+            $categoriesList = [];
+            $manufacturersList = [];
+            foreach ($discounts as $discount) {
+                /** @var Discount $discount */
+                $categoriesList[] = $discount->categories;
+                $manufacturersList[] = $discount->manufacturers;
+            }
+
+            foreach ($categoriesList as $category) {
+                foreach ($category as $item) {
+                    $categories[] = $item;
+                }
+            }
+
+            foreach ($manufacturersList as $manufacturer) {
+                foreach ($manufacturer as $item2) {
+                    $manufacturers[] = $item2;
+                }
+            }
+
+        }
+
+        //$this->query->applyRangePrices((isset($this->prices[0])) ? $this->prices[0] : 0, (isset($this->prices[1])) ? $this->prices[1] : 0);
+
+
+        if ($manufacturers || Yii::$app->request->get('manufacturer')) {
+            if (!$manufacturers)
+                $manufacturers = explode(',', Yii::$app->request->get('manufacturer', ''));
+            $this->query->applyManufacturers(array_unique($manufacturers), 'orWhere');
+        }
+        if ($categories) {
+            $this->query->applyCategories(array_unique($categories));
+        }
 
         $this->filterQuery = clone $this->query;
         $this->currentQuery = clone $this->query;
 
         $this->query->applyAttributes($this->activeAttributes);
-        //$this->query->applyRangePrices((isset($this->prices[0])) ? $this->prices[0] : 0, (isset($this->prices[1])) ? $this->prices[1] : 0);
 
-
-        if (Yii::$app->request->get('manufacturer')) {
-            $manufacturers = explode(',', Yii::$app->request->get('manufacturer', ''));
-            $this->query->applyManufacturers($manufacturers);
-        }
         if (Yii::$app->request->get('sort') == 'price' || Yii::$app->request->get('sort') == '-price') {
             $this->query->aggregatePriceSelect((Yii::$app->request->get('sort') == 'price') ? SORT_ASC : SORT_DESC);
         }
+        // echo $this->query->createCommand()->rawSql;die;
         $this->provider = new ActiveDataProvider([
             'query' => $this->query,
             'pagination' => [

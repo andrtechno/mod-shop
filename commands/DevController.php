@@ -3,6 +3,7 @@
 namespace panix\mod\shop\commands;
 
 use panix\engine\CMS;
+use panix\mod\discounts\models\Discount;
 use panix\mod\shop\models\Product;
 use panix\mod\shop\models\ProductCategoryRef;
 use Yii;
@@ -99,5 +100,47 @@ class DevController extends ConsoleController
             'is_main',
             'switch',
         ], $data2)->execute();
+    }
+
+    public function actionDiscount(){
+        print_r(Yii::$app->getModule('discount')->discounts);
+
+        $ss = Discount::find()
+            ->published()
+            ->applyDate()
+            ->all();
+
+
+        $categoriesList = [];
+        $manufacturersList = [];
+        foreach ($ss as $discount){
+            /** @var Discount $discount */
+            $categoriesList[]=$discount->categories;
+            $manufacturersList[]=$discount->manufacturers;
+        }
+        $categories = [];
+        foreach ($categoriesList as $category){
+            foreach ($category as $item){
+                $categories[] = $item;
+            }
+
+        }
+        $manufacturers = [];
+        foreach ($manufacturersList as $manufacturer){
+            foreach ($manufacturer as $item2){
+                $manufacturers[] = $item2;
+            }
+
+        }
+
+        $query = Product::find();
+        if($categories)
+            $query->applyCategories(array_unique($categories));
+        if($manufacturers)
+            $query->applyManufacturers(array_unique($manufacturers));
+
+
+        $query->count();
+        print_r($query->count());
     }
 }
