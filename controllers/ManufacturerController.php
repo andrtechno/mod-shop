@@ -73,7 +73,7 @@ class ManufacturerController extends FilterController
 
 
         $this->view->params['breadcrumbs'][] = [
-            'label' => Yii::t('shop/default', 'MANUFACTURER'),
+            'label' => Yii::t('shop/default', 'MANUFACTURERS'),
             'url' => ['/manufacturer']
         ];
         $this->view->params['breadcrumbs'][] = $this->pageName;

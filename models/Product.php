@@ -384,14 +384,12 @@ class Product extends ActiveRecord
 
     public function getManufacturer()
     {
-        return $this->hasOne(Manufacturer::class, ['id' => 'manufacturer_id'])
-            ->cache(3200, new DbDependency(['sql' => 'SELECT MAX(`updated_at`) FROM ' . Manufacturer::tableName()]));
+        return $this->hasOne(Manufacturer::class, ['id' => 'manufacturer_id']);
     }
 
     public function getSupplier()
     {
         return $this->hasOne(Supplier::class, ['id' => 'supplier_id']);
-        // ->cache(3200, new DbDependency(['sql' => 'SELECT MAX(`updated_at`) FROM ' . Supplier::tableName()]));
     }
 
     public function getType()

@@ -33,49 +33,66 @@ class DevController extends ConsoleController
 
         return parent::beforeAction($action);
     }
-    public function actionTest(){
+
+    public function actionTest()
+    {
 
         for ($i = 1; $i <= 10; $i++) {
-            copy('https://i.citrus.ua/uploads/shop/c/2/c27e2c410abf6f7b4221980e5dc4e4d3.jpg', Yii::getAlias('@app/web/uploads').DIRECTORY_SEPARATOR.'pic'.$i.'.jpg');
+            copy('https://i.citrus.ua/uploads/shop/c/2/c27e2c410abf6f7b4221980e5dc4e4d3.jpg', Yii::getAlias('@app/web/uploads') . DIRECTORY_SEPARATOR . 'pic' . $i . '.jpg');
         }
     }
 
-    public function actionDelete(){
+    public function actionDelete()
+    {
         Yii::$app->db->createCommand()
-            ->delete(Product::tableName(), ['!=','id',range(1,30)])
+            ->delete(Product::tableName(), ['!=', 'id', range(1, 30)])
             ->execute();
     }
+
     public function actionIndex()
     {
+        $lorem = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.';
+        // $input = array("Для волос", "Крем", "Маска", "Для глаз", "увлажнитель", 'Лицо', 'Тело','мыло','Духи','для кожи');
+        $lorem = str_replace([',', '.'], ['', ''], $lorem);
+        $input = explode(' ', $lorem);
+        $rand_keys = array_rand($input, 2);
+        //  echo $input[$rand_keys[0]] . "\n";
+        // echo $input[$rand_keys[1]] . "\n";
 
         //Product::getDb()->createCommand()->truncateTable(Product::tableName())->execute();
-        for ($i = 1; $i <= 1000; $i++) {
-            $data[] = [
-                77000 + $i,
+        for ($i = 1; $i <= 5; $i++) {
+            $id = 720 + $i;
+            $name = implode(' ',$this->array_random($input, 3));
+            $categoryId = 5;
+            $products[] = [
+                $id,
                 3,
                 3,
-                5,
+                $categoryId,
                 rand(1, 8),
-                CMS::gen(255),
+                CMS::slug($name),
                 rand(100, 5000),
                 rand(50, 2500),
-                CMS::gen(10) . '_ru',
-                CMS::gen(10) . '_uk',
-                $i,
+                $name.'_ru',
+                $name.'_ua',
+                $id,
                 time(),
                 time(),
             ];
 
 
             $data2[] = [
-                50 + $i,
-                3,
+                $id,
+                $categoryId,
                 1,
                 3
             ];
 
         }
 
+
+       // print_r($this->array_random($input, 3));
+       // die;
 
         Product::getDb()->createCommand()->batchInsert(Product::tableName(), [
             'id',
@@ -91,7 +108,7 @@ class DevController extends ConsoleController
             'ordern',
             'created_at',
             'updated_at',
-        ], $data)->execute();
+        ], $products)->execute();
 
 
         ProductCategoryRef::getDb()->createCommand()->batchInsert(ProductCategoryRef::tableName(), [
@@ -102,45 +119,14 @@ class DevController extends ConsoleController
         ], $data2)->execute();
     }
 
-    public function actionDiscount(){
-        print_r(Yii::$app->getModule('discount')->discounts);
-
-        $ss = Discount::find()
-            ->published()
-            ->applyDate()
-            ->all();
-
-
-        $categoriesList = [];
-        $manufacturersList = [];
-        foreach ($ss as $discount){
-            /** @var Discount $discount */
-            $categoriesList[]=$discount->categories;
-            $manufacturersList[]=$discount->manufacturers;
-        }
-        $categories = [];
-        foreach ($categoriesList as $category){
-            foreach ($category as $item){
-                $categories[] = $item;
-            }
-
-        }
-        $manufacturers = [];
-        foreach ($manufacturersList as $manufacturer){
-            foreach ($manufacturer as $item2){
-                $manufacturers[] = $item2;
-            }
-
+    private function array_random(array $array, int $n = 1): array
+    {
+        if ($n < 1 || $n > count($array)) {
+            // throw new OutOfBoundsException();
         }
 
-        $query = Product::find();
-        if($categories)
-            $query->applyCategories(array_unique($categories));
-        if($manufacturers)
-            $query->applyManufacturers(array_unique($manufacturers));
-
-
-        $query->count();
-        print_r($query->count());
+        return ($n !== 1)
+            ? array_values(array_intersect_key($array, array_flip(array_rand($array, $n))))
+            : array($array[array_rand($array)]);
     }
 }

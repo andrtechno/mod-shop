@@ -398,7 +398,7 @@ class ProductController extends WebController
         $session = Yii::$app->session;
         //$session->get('views');
         //$session->setTimeout(86400 * 7);
-        $session->cookieParams = ['lifetime' => 60];
+        //$session->cookieParams = ['lifetime' => 60];
         if (!isset($session['views'])) {
             $session['views'] = [];
         }

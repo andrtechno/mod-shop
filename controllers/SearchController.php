@@ -96,6 +96,8 @@ class SearchController extends FilterController
                     //'html' => $this->renderPartial('@shop/widgets/search/views/_item', ['model' => $m]),
                     'id'=>$m->id,
                     'name'=>$m->name,
+                    'price'=>$m->getFrontPrice(),
+                    'currency'=>Yii::$app->currency->active['symbol'],
                     'url'=>Url::to($m->getUrl()),
                     'image'=>$m->getMainImage('50x50')->url,
                 ];
