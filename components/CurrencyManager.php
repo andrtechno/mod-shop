@@ -85,7 +85,8 @@ class CurrencyManager extends Component
         else
             $this->_active = $this->_default;
 
-        Yii::$app->session['currency'] = $this->_active['id'];
+        //Todo need set session
+        //Yii::$app->session['currency'] = $this->_active['id'];
     }
 
     /**
