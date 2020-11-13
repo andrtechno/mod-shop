@@ -88,6 +88,7 @@ function filter_ajax(e, objects) {
             history.pushState(null, $('title').text(), data.currentUrl);
             console.log('success filter_ajax');
             $('#summary').html(data.totalCount);
+            $('h1').html(data.pageName);
         },
         beforeSend: function () {
             ajaxSelector.toggleClass('loading');

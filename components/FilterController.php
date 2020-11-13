@@ -156,7 +156,7 @@ class FilterController extends WebController
             return $this->_currentMaxPrice;
 
         $this->_currentMaxPrice = (isset($this->prices[1])) ? trim($this->prices[1]) : Yii::$app->currency->convert($this->getMaxPrice());
-       // $this->_currentMaxPrice = (isset($this->prices[1])) ? trim($this->prices[1]) : Yii::$app->currency->convert($this->_maxPrice);
+        // $this->_currentMaxPrice = (isset($this->prices[1])) ? trim($this->prices[1]) : Yii::$app->currency->convert($this->_maxPrice);
 
         return $this->_currentMaxPrice;
     }
@@ -169,7 +169,7 @@ class FilterController extends WebController
         //CMS::dump($this->currentQuery);die;
         // Find category types
         $queryCategoryTypes = Product::find();
-       // $queryCategoryTypes = $this->currentQuery;
+        // $queryCategoryTypes = $this->currentQuery;
         if ($this->dataModel instanceof Category) {
             $queryCategoryTypes->applyCategories($this->dataModel);
         } elseif ($this->dataModel instanceof Manufacturer) {
@@ -239,7 +239,7 @@ class FilterController extends WebController
     public function getActiveAttributes2()
     {
         $data = [];
-        $sss = (Yii::$app->request->post('filter'))?Yii::$app->request->post('filter'):$_GET;
+        $sss = (Yii::$app->request->post('filter')) ? Yii::$app->request->post('filter') : $_GET;
         foreach (array_keys($sss) as $key) {
             if (array_key_exists($key, $this->eavAttributes)) {
 
@@ -248,7 +248,7 @@ class FilterController extends WebController
                 // }
 
                 if ((boolean)$this->eavAttributes[$key]->select_many === true) {
-                    $data[$key] = (is_array($sss[$key]))?$sss[$key]:explode(',', $sss[$key]);
+                    $data[$key] = (is_array($sss[$key])) ? $sss[$key] : explode(',', $sss[$key]);
                 } else {
                     $data[$key] = [$params[$key]];
                 }
@@ -443,10 +443,10 @@ class FilterController extends WebController
                 $manufacturerNames = [];
 
                 if (isset($filterItems['items'])) {
-                    $i=0;
+                    $i = 0;
                     foreach ($filterItems['items'] as $mKey => $mItems) {
                         $manufacturerNames[] = $mItems['label'];
-                        if($i == 3) break;
+                        if ($i == 3) break;
                         $i++;
                     }
                     $sep = (count($manufacturerNames) > 2) ? ', ' : ' ' . Yii::t('shop/default', 'AND') . ' ';
@@ -455,10 +455,10 @@ class FilterController extends WebController
             } else {
                 $attributesNames[$filterKey] = [];
                 if (isset($filterItems['items'])) {
-                    $i=0;
+                    $i = 0;
                     foreach ($filterItems['items'] as $mKey => $mItems) {
                         $attributesNames[$filterKey][] = $mItems['label'];
-                        if($i == 3) break;
+                        if ($i == 3) break;
                         $i++;
                         //$attributesNames[$filterKey]['url'][]=$mItems['value'];
                     }
@@ -494,6 +494,7 @@ class FilterController extends WebController
                     'currentUrl' => Yii::$app->request->getUrl(),
                     'items' => $render,
                     'i' => $this->itemView,
+                    'pageName' => $this->pageName,
                     'totalCount' => $this->provider->totalCount,
                     'currentFiltersData' => ($activeFilters) ? $this->renderPartial('@shop/widgets/filtersnew/views/current', [ //'@shop/widgets/filtersnew/views/current', '@app/widgets/filters/current'
                         'dataModel' => $this->dataModel,
