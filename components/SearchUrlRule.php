@@ -76,7 +76,7 @@ class SearchUrlRule extends UrlRule
                 $_GET[$p[0]] = $p[1];
                 $params[$p[0]] = $p[1];
             } else {
-                throw new NotFoundHttpException(Yii::t('app/error', 404));
+                throw new NotFoundHttpException(Yii::t('app/error', '404'));
             }
         }
 

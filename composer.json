@@ -28,7 +28,7 @@
     "panix/wgt-telinput": "dev-master"
   },
   "suggest": {
-    "panix/mod-csv": "Addon module import/export office tables",
+    "panix/mod-csv": "Addon module import/export office tables (CSV, XSL, XLSX) and Google Sheets",
     "panix/mod-cart": "Addon module cart",
     "panix/mod-wishlist": "Addon module wishlist products",
     "panix/mod-compare": "Addon module compare products"

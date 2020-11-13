@@ -52,9 +52,8 @@ class ProductPriceHistoryMarkupQueue extends BaseObject implements JobInterface
         ], $data)->execute();
 
 
-        //print_r($queue);
-        echo 'done1' . PHP_EOL;
+        echo basename(__CLASS__).' done!' . PHP_EOL;
         return true;
-        //file_put_contents($this->file, file_get_contents($this->url));
+
     }
 }

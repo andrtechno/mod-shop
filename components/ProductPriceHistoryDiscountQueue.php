@@ -68,9 +68,8 @@ class ProductPriceHistoryDiscountQueue extends BaseObject implements JobInterfac
             'event'
         ], $data)->execute();
 
-        // print_r($data);
-        echo 'done' . PHP_EOL;
+
+        echo basename(__CLASS__).' done!' . PHP_EOL;
         return true;
-        //file_put_contents($this->file, file_get_contents($this->url));
     }
 }

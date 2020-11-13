@@ -227,7 +227,7 @@ class FilterController extends WebController
                 if ((boolean)$this->eavAttributes[$key]->select_many === true) {
                     $data[$key] = explode(',', $_GET[$key]);
                 } else {
-                    $data[$key] = [$params[$key]];
+                    $data[$key] = [$_GET[$key]];
                 }
             } else {
                 //  $this->error404(Yii::t('shop/default', 'NOFIND_CATEGORY1'));
@@ -494,6 +494,7 @@ class FilterController extends WebController
                     'currentUrl' => Yii::$app->request->getUrl(),
                     'items' => $render,
                     'i' => $this->itemView,
+                    'totalCount' => $this->provider->totalCount,
                     'currentFiltersData' => ($activeFilters) ? $this->renderPartial('@shop/widgets/filtersnew/views/current', [ //'@shop/widgets/filtersnew/views/current', '@app/widgets/filters/current'
                         'dataModel' => $this->dataModel,
                         'active' => $activeFilters,

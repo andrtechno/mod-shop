@@ -87,6 +87,7 @@ function filter_ajax(e, objects) {
             containerFilterCurrent.html(data.currentFiltersData).removeClass('loading');
             history.pushState(null, $('title').text(), data.currentUrl);
             console.log('success filter_ajax');
+            $('#summary').html(data.totalCount);
         },
         beforeSend: function () {
             ajaxSelector.toggleClass('loading');
