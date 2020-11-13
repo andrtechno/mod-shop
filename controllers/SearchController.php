@@ -21,10 +21,15 @@ class SearchController extends FilterController
         /** @var Product $productModel */
         $productModel = Yii::$app->getModule('shop')->model('Product');
         $this->query = $productModel::find();
-        $this->query->attachBehaviors((new $productModel)->behaviors());
+        //$this->query->attachBehaviors((new $productModel)->behaviors());
         $this->query->sort();
         $this->query->published();
 
+        //fix for POST send form
+        if (!Yii::$app->request->isPjax || !Yii::$app->request->isAjax) {
+            if (Yii::$app->request->post('q'))
+                return $this->redirect(['/shop/search/index', 'q' => Yii::$app->request->post('q')]);
+        }
 
         // Filter by manufacturer
         if (Yii::$app->request->get('manufacturer')) {
@@ -33,12 +38,14 @@ class SearchController extends FilterController
         }
         $this->query->groupBy(Product::tableName() . '.`id`');
         $this->query->applySearch(Yii::$app->request->get('q'));
-        $this->query->applyAttributes($this->activeAttributes);
 
 
         // Create clone of the current query to use later to get min and max prices.
         $this->filterQuery = clone $this->query;
         $this->currentQuery = clone $this->query;
+
+        $this->query->applyAttributes($this->activeAttributes);
+
         // Filter products by price range if we have min or max in request
         //$this->applyPricesFilter();
 
@@ -94,30 +101,27 @@ class SearchController extends FilterController
                 /** @var Product $m */
                 $res[] = [
                     //'html' => $this->renderPartial('@shop/widgets/search/views/_item', ['model' => $m]),
-                    'id'=>$m->id,
-                    'name'=>$m->name,
-                    'price'=>$m->getFrontPrice(),
-                    'currency'=>Yii::$app->currency->active['symbol'],
-                    'url'=>Url::to($m->getUrl()),
-                    'image'=>$m->getMainImage('50x50')->url,
+                    'id' => $m->id,
+                    'name' => $m->name,
+                    'price' => $m->getFrontPrice(),
+                    'currency' => Yii::$app->currency->active['symbol'],
+                    'url' => Url::to($m->getUrl()),
+                    'image' => $m->getMainImage('50x50')->url,
                 ];
             }
 
         }
 
 
-
-
         $status = true;
 
-       return $this->asJson(array(
-           "status" => $status,
-           "error"  => null,
-           "data"   => array(
-               "products"   => $res
-           )
-       ));
-
+        return $this->asJson(array(
+            "status" => $status,
+            "error" => null,
+            "data" => array(
+                "products" => $res
+            )
+        ));
 
 
     }
