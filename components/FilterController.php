@@ -449,7 +449,7 @@ class FilterController extends WebController
                         if ($i == 3) break;
                         $i++;
                     }
-                    $sep = (count($manufacturerNames) > 2) ? ', ' : ' ' . Yii::t('shop/default', 'AND') . ' ';
+                    $sep = (count($manufacturerNames) > 2) ? ', ' : ' ' . Yii::t('yii', 'AND') . ' ';
                     $name .= ' ' . implode($sep, $manufacturerNames);
                 }
             } else {
@@ -464,7 +464,7 @@ class FilterController extends WebController
                     }
                     $prefix = isset($filterData['manufacturer']) ? '; ' : ', ';
 
-                    $sep = (count($attributesNames[$filterKey]) > 2) ? ', ' : ' ' . Yii::t('shop/default', 'AND') . ' ';
+                    $sep = (count($attributesNames[$filterKey]) > 2) ? ', ' : ' ' . Yii::t('yii', 'AND') . ' ';
                     $breadcrumbs .= ' ' . $filterItems['label'] . ' ' . implode($sep, $attributesNames[$filterKey]);
                     $name .= $prefix . ' ' . $breadcrumbs;
                 }

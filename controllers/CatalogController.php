@@ -158,7 +158,7 @@ class CatalogController extends FilterController
                     foreach ($filterItems['items'] as $mKey => $mItems) {
                         $manufacturerNames[] = $mItems['label'];
                     }
-                    $sep = (count($manufacturerNames) > 2) ? ', ' : ' ' . Yii::t('shop/default', 'AND') . ' ';
+                    $sep = (count($manufacturerNames) > 2) ? ', ' : ' ' . Yii::t('yii', 'AND') . ' ';
                     $name .= ' ' . implode($sep, $manufacturerNames);
                     $this->pageName .= ' ' . implode($sep, $manufacturerNames);
                 } else {
@@ -168,7 +168,7 @@ class CatalogController extends FilterController
                     }
                     $prefix = isset($filterData['manufacturer']) ? '; ' : ', ';
 
-                    $sep = (count($attributesNames[$filterKey]) > 2) ? ', ' : ' ' . Yii::t('shop/default', 'AND') . ' ';
+                    $sep = (count($attributesNames[$filterKey]) > 2) ? ', ' : ' ' . Yii::t('yii', 'AND') . ' ';
                     $name .= $prefix . $filterItems['label'] . ' ' . implode($sep, $attributesNames[$filterKey]);
                     $this->pageName .= $prefix . $filterItems['label'] . ' ' . implode($sep, $attributesNames[$filterKey]);
                     $this->view->title = $this->pageName;
