@@ -266,7 +266,7 @@ class CatalogController extends FilterController
             $categoriesList = [];
             $manufacturersList = [];
             foreach ($discounts as $discount) {
-                /** @var Discount $discount */
+                /** @var \panix\mod\discounts\models\Discount $discount */
                 $categoriesList[] = $discount->categories;
                 $manufacturersList[] = $discount->manufacturers;
             }

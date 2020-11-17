@@ -232,6 +232,18 @@ class Category extends ActiveRecord
             }
         }
         Yii::$app->cache->delete('CategoryUrlRule');
+
+
+        if (Yii::$app->hasModule('csv')) {
+            $external = new ExternalFinder('{{%csv}}');
+
+            if(!$external->getObject(ExternalFinder::OBJECT_MAIN_CATEGORY, $this->path_hash))
+                $external->createExternalId(ExternalFinder::OBJECT_MAIN_CATEGORY, $this->id,$this->path_hash);
+
+            if(!$external->getObject(ExternalFinder::OBJECT_CATEGORY, $this->path_hash))
+                $external->createExternalId(ExternalFinder::OBJECT_CATEGORY, $this->id,$this->path_hash);
+        }
+
         return parent::afterSave($insert, $changedAttributes);
     }
 
@@ -288,6 +300,7 @@ class Category extends ActiveRecord
         if (Yii::$app->hasModule('csv')) {
             $external = new ExternalFinder('{{%csv}}');
             $external->deleteObject(ExternalFinder::OBJECT_MAIN_CATEGORY, $this->id);
+            $external->deleteObject(ExternalFinder::OBJECT_CATEGORY, $this->id);
         }
         parent::afterDelete();
     }

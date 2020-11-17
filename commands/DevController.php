@@ -34,12 +34,23 @@ class DevController extends ConsoleController
         return parent::beforeAction($action);
     }
 
-    public function actionTest()
+    public function actionRefreshHotSale()
     {
+        $aggregate = 86400*90;
+       // $newDate = date('Y-m-d', strtotime('+3 month'));
+        $newDate = date('Y-m-d', time()+$aggregate);
 
-        for ($i = 1; $i <= 10; $i++) {
-            copy('https://i.citrus.ua/uploads/shop/c/2/c27e2c410abf6f7b4221980e5dc4e4d3.jpg', Yii::getAlias('@app/web/uploads') . DIRECTORY_SEPARATOR . 'pic' . $i . '.jpg');
-        }
+
+echo time() - 86400 *50;
+echo '---';
+
+
+        $productQuery = Product::find()->where(['>=','added_to_cart_count',10])->andWhere(['<=','added_to_cart_date',time()-$aggregate]);
+        //$productQuery->int2between(time(), time() - (86400),'added_to_cart_date');
+     //   echo $newDate;
+       echo $productQuery->createCommand()->rawSql;
+        echo $productQuery->count();
+        die;
     }
 
     public function actionDelete()

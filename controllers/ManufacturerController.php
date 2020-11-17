@@ -52,6 +52,8 @@ class ManufacturerController extends FilterController
         $this->view->setModel($this->dataModel);
         $this->view->title = $this->dataModel->name;
 
+        $this->view->text = $this->dataModel->description;
+
 
 
 

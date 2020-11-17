@@ -15,6 +15,7 @@ use panix\mod\shop\models\ProductType;
 if (!$model->isNewRecord && Yii::$app->settings->get('shop', 'auto_gen_url')) {
     echo Yii::t('shop/admin', 'ENABLE_AUTOURL_MODE');
 }
+
 ?>
 
 <?php
