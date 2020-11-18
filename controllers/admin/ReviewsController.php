@@ -2,6 +2,7 @@
 
 namespace panix\mod\shop\controllers\admin;
 
+use app\modules\reviews\models\Reviews;
 use panix\engine\behaviors\nestedsets\actions\DeleteNodeAction;
 use panix\engine\behaviors\nestedsets\NestedSetsBehavior;
 use Yii;
@@ -27,17 +28,6 @@ class ReviewsController extends AdminController
         ];
     }
 
-    public function actionDelete2()
-    {
-
-
-        $act = new DeleteNodeAction;
-        $act->modelClass = ProductReviews::class;
-        $act->run(123);
-        return $this->render('update', ['model' => true]);
-        // $test = parent::actions()['delete'];
-    }
-
     public function actionIndex()
     {
         $this->pageName = Yii::t('shop/admin', 'REVIEWS');
@@ -56,12 +46,14 @@ class ReviewsController extends AdminController
             'searchModel' => $searchModel,
         ]);
     }
+
     public function actionItems($id)
     {
         $model = ProductReviews::findOne(['id' => $id]);
-        $items = $model->children()->orderBy(['created_at'=>SORT_DESC])->all();
+        $items = $model->children()->orderBy(['created_at' => SORT_DESC])->all();
         return $this->render('_items', ['items' => $items]);
     }
+
     public function actionReplyAdd($id)
     {
 
@@ -91,7 +83,7 @@ class ReviewsController extends AdminController
                         if ($model->appendTo($reply)) {
                             $result['status'] = true;
                             $result['published'] = true;
-                            $result['url'] = Url::to(['items','id'=>$model->tree]);
+                            $result['url'] = Url::to(['items', 'id' => $model->tree]);
                             $result['message'] = 'Ответ успешно добавлен';
                         }
                     } else {
@@ -135,6 +127,17 @@ class ReviewsController extends AdminController
         $post = Yii::$app->request->post();
         if ($model->load($post)) {
             if ($model->validate()) {
+
+
+                if ($model->user_id && $model->status == Reviews::STATUS_PUBLISHED && !$model->apply_points) {
+                    $has = ProductReviews::find()->where(['apply_points' => 0, 'product' => $model->product_id])->count();
+                    if ($has) {
+                        $model->apply_points = true;
+                        $model->user->setPoints(Yii::$app->settings->get('user', 'bonus_comment_value'));
+                    }
+                }
+
+
                 $model->saveNode();
                 return $this->redirectPage($isNew, $post);
             }
@@ -165,10 +168,15 @@ class ReviewsController extends AdminController
             $post = Yii::$app->request->post();
             //  return $this->asJson($response);
 
-            $parent = ProductReviews::findOne(['id' => $model->tree]);
-            $items = $parent->children()->orderBy(['created_at'=>SORT_DESC])->all();
+            //if($model->user_id && $response['published']){
+            //    $model->user->setPoints(Yii::$app->settings->get('user','bonus_comment_value'));
+            //}
 
-            return $this->render('_items', ['items' => $items,'root_id'=>$model->tree]);
+
+            $parent = ProductReviews::findOne(['id' => $model->tree]);
+            $items = $parent->children()->orderBy(['created_at' => SORT_DESC])->all();
+
+            return $this->render('_items', ['items' => $items, 'root_id' => $model->tree]);
         }
     }
 

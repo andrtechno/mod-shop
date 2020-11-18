@@ -291,7 +291,7 @@ class Attribute extends ActiveRecord
                 break;
             case self::TYPE_RADIO_LIST:
                 $data = ArrayHelper::map($this->options, 'id', 'value');
-                return Html::radioList($name, $value[$this->name], $data, ['separator' => '<br/>']);
+                return Html::radioList($name, $value, $data, ['separator' => '<br/>']);
                 break;
             case self::TYPE_CHECKBOX_LIST:
                 $data = ArrayHelper::map($this->options, 'id', 'value');

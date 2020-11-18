@@ -35,6 +35,7 @@ class m180857_143215_shop_product_reviews extends Migration
             'rate' => $this->smallInteger()->null(),
             'status' => $this->tinyInteger(1)->defaultValue(0)->null(),
             'ip_create' => $this->string(100),
+            'apply_points' => $this->tinyInteger(1)->defaultValue(0),
             'created_at' => $this->integer(11)->null(),
             'updated_at' => $this->integer(11)->null(),
         ]);
@@ -45,6 +46,7 @@ class m180857_143215_shop_product_reviews extends Migration
         $this->createIndex('product_id', ProductReviews::tableName(), 'product_id');
         $this->createIndex('user_id', ProductReviews::tableName(), 'user_id');
         $this->createIndex('status', ProductReviews::tableName(), 'status');
+        $this->createIndex('apply_points', ProductReviews::tableName(), 'apply_points');
 
 
 
