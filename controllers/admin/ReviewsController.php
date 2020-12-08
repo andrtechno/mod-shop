@@ -129,8 +129,8 @@ class ReviewsController extends AdminController
             if ($model->validate()) {
 
 
-                if ($model->user_id && $model->status == Reviews::STATUS_PUBLISHED && !$model->apply_points) {
-                    $has = ProductReviews::find()->where(['apply_points' => 0, 'product' => $model->product_id])->count();
+                if ($model->user_id && $model->status == ProductReviews::STATUS_PUBLISHED && !$model->apply_points) {
+                    $has = ProductReviews::find()->where(['apply_points' => 0, 'product_id' => $model->product_id])->count();
                     if ($has) {
                         $model->apply_points = true;
                         $model->user->setPoints(Yii::$app->settings->get('user', 'bonus_comment_value'));

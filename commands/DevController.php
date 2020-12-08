@@ -36,19 +36,26 @@ class DevController extends ConsoleController
 
     public function actionRefreshHotSale()
     {
-        $aggregate = 86400*90;
-       // $newDate = date('Y-m-d', strtotime('+3 month'));
-        $newDate = date('Y-m-d', time()+$aggregate);
+        $aggregate = 86400 * 90;
+        // $newDate = date('Y-m-d', strtotime('+3 month'));
+        $newDate = date('Y-m-d', time() + $aggregate);
 
 
-echo time() - 86400 *50;
-echo '---';
+        echo time() - 86400 * 50;
+        echo '---';
 
 
-        $productQuery = Product::find()->where(['>=','added_to_cart_count',10])->andWhere(['<=','added_to_cart_date',time()-$aggregate]);
+        $productQuery = Product::find()->where(['>=', 'added_to_cart_count', 10])->andWhere(['<=', 'added_to_cart_date', time() - $aggregate]);
         //$productQuery->int2between(time(), time() - (86400),'added_to_cart_date');
-     //   echo $newDate;
-       echo $productQuery->createCommand()->rawSql;
+        //   echo $newDate;
+        $items = $productQuery->all();
+        foreach ($items as $item) {
+            /** @var Product $item */
+            $item->added_to_cart_count=0;
+            $item->added_to_cart_date=NULL;
+            //$item->save(false);
+        }
+        echo $productQuery->createCommand()->rawSql;
         echo $productQuery->count();
         die;
     }
@@ -73,7 +80,7 @@ echo '---';
         //Product::getDb()->createCommand()->truncateTable(Product::tableName())->execute();
         for ($i = 1; $i <= 5; $i++) {
             $id = 720 + $i;
-            $name = implode(' ',$this->array_random($input, 3));
+            $name = implode(' ', $this->array_random($input, 3));
             $categoryId = 5;
             $products[] = [
                 $id,
@@ -84,8 +91,8 @@ echo '---';
                 CMS::slug($name),
                 rand(100, 5000),
                 rand(50, 2500),
-                $name.'_ru',
-                $name.'_ua',
+                $name . '_ru',
+                $name . '_ua',
                 $id,
                 time(),
                 time(),
@@ -102,8 +109,8 @@ echo '---';
         }
 
 
-       // print_r($this->array_random($input, 3));
-       // die;
+        // print_r($this->array_random($input, 3));
+        // die;
 
         Product::getDb()->createCommand()->batchInsert(Product::tableName(), [
             'id',

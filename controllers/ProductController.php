@@ -319,7 +319,20 @@ class ProductController extends WebController
                     $response['message'] = 'Отзыв будет опубликован после модерации';
                 }
                 try {
+
+
+
                     $model->saveNode();
+
+                    if ($model->user_id && $model->status == ProductReviews::STATUS_PUBLISHED && !$model->apply_points) {
+                        $has = ProductReviews::find()->where(['apply_points' => 0, 'product_id' => $model->product_id])->count();
+
+                        if ($has) {
+                            $model->apply_points = true;
+                            $model->user->setPoints(Yii::$app->settings->get('user', 'bonus_comment_value'));
+                        }
+                    }
+
                     $response['rated'] = $model->checkUserRate();
 
                     if (!isset($readCookie['review_expire'])) {

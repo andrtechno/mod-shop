@@ -50,12 +50,12 @@ class ProductController extends AdminController
         if (in_array($action->id, ['render-products-price-window', 'set-products'])) {
             $this->enableCsrfValidation = false;
         }
-        if (in_array($action->id, ['create', 'update'])) {
+        /*if (in_array($action->id, ['create', 'update'])) {
             $count = Product::find()->count();
             if ($count >= Yii::$app->params['plan'][Yii::$app->params['plan_id']]['product_limit']) {
                 throw new HttpException(403, Yii::t('app/default', 'Достигнут лимит товаров {count} шт.', ['count' => $count]));
             }
-        }
+        }*/
 
         return parent::beforeAction($action);
     }
