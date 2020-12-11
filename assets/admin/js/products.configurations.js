@@ -16,7 +16,7 @@ function processConfigurableSelection(gridId)
 
     $('#'+gridId+' table tbody tr.selected').each(function(){
         var signature = '';
-        $(this).find("td.eav'").each(function(){
+        $(this).find("td.eav").each(function(){
             signature = signature + $(this).text();
         });
         disableOther(gridId, signature);

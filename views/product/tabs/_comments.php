@@ -35,7 +35,7 @@ echo \panix\ext\fancybox\Fancybox::widget([
 
     <div class="container">
         <div class="text-center mt-5">
-            <button type="button" id="review-button" class="btn btn-lg btn-outline-danger" data-fancybox
+            <button type="button" id="review-button" class="btn btn-outline-danger" data-fancybox
                     data-src="#rev-modal">
                 <?= $reviewModel::t('BTN_SUBMIT'); ?>
             </button>
