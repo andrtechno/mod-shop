@@ -120,17 +120,19 @@ class Category extends ActiveRecord
         if (Yii::$app->getModule('sitemap')) {
             $a['sitemap'] = [
                 'class' => SitemapBehavior::class,
+                'groupName'=>'Каталог',
                 //'batchSize' => 100,
                 'scope' => function ($model) {
                     /** @var \yii\db\ActiveQuery $model */
-                    $model->select(['full_path', 'updated_at']);
-                    $model->andWhere(['switch' => 1]);
+                   // $model->select(['full_path', 'updated_at']);
+                    $model->andWhere(['switch' => 1])->andWhere(['!=','id',1]);
                 },
                 'dataClosure' => function ($model) {
                     /** @var self $model */
                     return [
                         'loc' => $model->getUrl(),
                         'lastmod' => $model->updated_at,
+                        'name' => $model->name,
                         'changefreq' => SitemapBehavior::CHANGEFREQ_DAILY,
                         'priority' => 0.8
                     ];

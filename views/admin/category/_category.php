@@ -28,7 +28,7 @@ use panix\mod\shop\models\Category;
         echo \panix\ext\jstree\JsTree::widget([
             'id' => 'CategoryTree',
             'allOpen' => true,
-            'data'=>Category::find()->dataTree(),
+            'data' => Category::find()->dataTree(),
             'core' => [
                 'force_text' => true,
                 'animation' => 0,

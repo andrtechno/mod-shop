@@ -85,8 +85,11 @@ class CatalogController extends FilterController
         //$this->query->orderBy(['price'=>SORT_DESC]);
 
 
-        if (Yii::$app->request->get('sort') == 'price' || Yii::$app->request->get('sort') == '-price') {
-            $this->query->aggregatePriceSelect((Yii::$app->request->get('sort') == 'price') ? SORT_ASC : SORT_DESC);
+        $sort = explode(',',Yii::$app->request->get('sort'));
+
+
+        if ($sort[0] == 'price' || $sort[0] == '-price') {
+            $this->query->aggregatePriceSelect(($sort[0] == 'price') ? SORT_ASC : SORT_DESC);
             // echo $this->query->createCommand()->rawSql;die;
         }
 

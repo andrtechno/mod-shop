@@ -49,6 +49,12 @@ $(function () {
         var active = $(this).attr('id');
         $.cookie(active, null);
     });
+
+
+
+    $(document).on('click','.sorting .radio_item',function(){
+        $('.sorting').removeClass('open');
+    });
 });
 
 
@@ -71,8 +77,8 @@ function filter_ajax(e, objects) {
     //if (url === undefined) {
     var url = formattedURL(e, objects);
     //var url = current_url;
-   // }
-
+    // }
+    console.log('URL', objects);
     xhrFilters = $.ajax({
         dataType: "json",
         url: url,
@@ -86,7 +92,7 @@ function filter_ajax(e, objects) {
             form.attr('action', data.currentUrl);
             containerFilterCurrent.html(data.currentFiltersData).removeClass('loading');
             history.pushState(null, $('title').text(), data.currentUrl);
-            console.log('success filter_ajax');
+            //console.log('success filter_ajax');
             $('#summary').html(data.totalCount);
             $('h1').html(data.pageName);
         },
@@ -141,28 +147,28 @@ function formattedURL(e, objects) {
 
     $.each(objects, function (name, values) {
         if (values !== '') {
+
             //var matches = name.match(/filter\[([a-zA-Z0-9-_]+)\]\[]|/i);
             var matches = name.match(/filter\[([a-zA-Z0-9-_]+)\]\[]/i);
 
 
             valuesList = (values instanceof Array) ? '/' + values.join(',') : '/' + values;
-           // if (e.type !== 'slidestop') {
-                uri += ((matches) ? '/' + matches[1] : '/' + name)+valuesList;
-           // }
+            // if (e.type !== 'slidestop') {
+            if(name === 'sort') {
+                console.log(valuesList);
+                uri += '/sort' + valuesList;
+            }else {
+                uri += ((matches) ? '/' + matches[1] : '/' + name) + valuesList;
+            }
 
+            // }
 
-            /*if (values instanceof Array) {
-             uri += '/' + values.join(',');
-             } else {
-             uri += '/' + values;
-
-             }*/
 
         }
     });
 
 
-   // console.log(uri, 'formattedURL', objects);
+    // console.log(uri, 'formattedURL', objects);
     return uri;
 }
 
@@ -194,18 +200,17 @@ $(function () {
         }
 
         //$.fn.yiiListView.update('shop-products', {url: formattedURL(objects)});
-        if(objects['filter[price][]'] == undefined){
+        if (objects['filter[price][]'] == undefined) {
 
         }
 
 
-     //   console.log(formattedURL(e, getSerializeObjects()));
-
+        //   console.log(formattedURL(e, getSerializeObjects()));
 
 
         //delete objects['filter[price][]'];
         //delete objects['sort'];
-        filter_ajax(e,objects);
+        filter_ajax(e, objects);
 
         e.preventDefault();
     });
@@ -238,7 +243,7 @@ $(function () {
 
 
         // $.fn.yiiListView.update('shop-products', {url: formattedURL(getSerializeObjects())});
-        filter_ajax(e,getSerializeObjects());
+        filter_ajax(e, getSerializeObjects());
         //currentFilters(formattedURL(getSerializeObjects()));
         //reload path by url
         //window.location.pathname = uri;
@@ -250,15 +255,22 @@ $(function () {
 
 
     $(document).on('click', '#sorting-form button2', function (e) {
-        filter_ajax(e,getSerializeObjects());
+        filter_ajax(e, getSerializeObjects());
         console.log('#sorting-form button');
         e.preventDefault();
         return false;
     });
 
-    $(document).on('change', '#sorting-form', function (e) {
-        filter_ajax(e,getSerializeObjects());
-        console.log('#sorting-form');
+    $(document).on('click', '#sorting-form input[type="radio"]', function (e) {
+        filter_ajax(e, getSerializeObjects());
+        console.log('#sorting-form input[type="radio"]');
+        e.preventDefault();
+        return false;
+    });
+
+    $(document).on('change', '#sorting-form select', function (e) {
+        filter_ajax(e, getSerializeObjects());
+        console.log('#sorting-form select');
         e.preventDefault();
         return false;
     });

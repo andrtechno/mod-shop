@@ -37,6 +37,7 @@ class ProductPriceHistoryMarkupQueue extends BaseObject implements JobInterface
                 'type' => $this->type,
                 'event' => 'markup'
             ];
+            $command->update(Product::tableName(), ['price' => $price], ['id' => $item['id']])->execute();
         }
 
 
@@ -52,7 +53,7 @@ class ProductPriceHistoryMarkupQueue extends BaseObject implements JobInterface
         ], $data)->execute();
 
 
-        echo basename(__CLASS__).' done!' . PHP_EOL;
+        echo basename(__CLASS__) . ' done!' . PHP_EOL;
         return true;
 
     }

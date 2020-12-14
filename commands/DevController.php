@@ -30,33 +30,30 @@ class DevController extends ConsoleController
 
     public function beforeAction($action)
     {
-
         return parent::beforeAction($action);
     }
 
-    public function actionRefreshHotSale()
+    /**
+     * Сбросить топ продаж use var: days=123 (default:90)
+     * @param int $days
+     */
+    public function actionRefreshHotSale($days = 90)
     {
-        $aggregate = 86400 * 90;
+        $aggregate = 86400 * (int)$days;
         // $newDate = date('Y-m-d', strtotime('+3 month'));
-        $newDate = date('Y-m-d', time() + $aggregate);
-
-
-        echo time() - 86400 * 50;
-        echo '---';
-
 
         $productQuery = Product::find()->where(['>=', 'added_to_cart_count', 10])->andWhere(['<=', 'added_to_cart_date', time() - $aggregate]);
         //$productQuery->int2between(time(), time() - (86400),'added_to_cart_date');
-        //   echo $newDate;
+        echo date('Y-m-d H:i', time() - $aggregate);
         $items = $productQuery->all();
         foreach ($items as $item) {
             /** @var Product $item */
-            $item->added_to_cart_count=0;
-            $item->added_to_cart_date=NULL;
+            $item->added_to_cart_count = 0;
+            $item->added_to_cart_date = NULL;
             //$item->save(false);
         }
-        echo $productQuery->createCommand()->rawSql;
-        echo $productQuery->count();
+        // echo $productQuery->createCommand()->rawSql;
+        // echo $productQuery->count();
         die;
     }
 

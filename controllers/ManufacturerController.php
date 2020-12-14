@@ -60,9 +60,9 @@ class ManufacturerController extends FilterController
         $this->view->registerJs("var current_url = '" . Url::to($this->dataModel->getUrl()) . "';", yii\web\View::POS_HEAD, 'current_url');
 
 
-
-        if (Yii::$app->request->get('sort') == 'price' || Yii::$app->request->get('sort') == '-price') {
-            $this->query->aggregatePriceSelect((Yii::$app->request->get('sort') == 'price') ? SORT_ASC : SORT_DESC);
+        $sort = explode(',',Yii::$app->request->get('sort'));
+        if ($sort[0] == 'price' || $sort[0] == '-price') {
+            $this->query->aggregatePriceSelect(($sort[0] == 'price') ? SORT_ASC : SORT_DESC);
         }
 
         $this->provider = new \panix\engine\data\ActiveDataProvider([
