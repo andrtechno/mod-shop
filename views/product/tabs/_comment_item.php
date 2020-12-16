@@ -35,12 +35,18 @@ $hasAnswer = ($model->rgt > 2) ? true : false;
             <div class="review-info">
                 <div class="review-name"><?= $model->getDisplayName(); ?></div>
                 <div class="review-date"><?= \panix\engine\CMS::date($model->created_at, false); ?></div>
+
                 <?php if ($model->user_id) { ?>
                     <ul class="social clearfix">
-                        <li><a class="fb" href="/"></a></li>
-                        <li><a class="inst" href="/"></a></li>
+                        <?php if ($model->user->facebook_url) { ?>
+                            <li><a class="fb" href="<?= $model->user->facebook_url; ?>"></a></li>
+                        <?php } ?>
+                        <?php if ($model->user->instagram_url) { ?>
+                            <li><a class="inst" href="<?= $model->user->instagram_url; ?>"></a></li>
+                        <?php } ?>
                     </ul>
                 <?php } ?>
+
             </div>
         </div>
         <div class="col-8 col-lg-10">
