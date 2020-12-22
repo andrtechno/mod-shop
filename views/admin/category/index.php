@@ -29,7 +29,7 @@ use panix\engine\bootstrap\ActiveForm;
                 ];
                 $tabs[] = [
                     'label' => Yii::t('seo/default','TAB_SEO'),
-                    'content' => $this->render('@seo/views/admin/default/_module_seo', ['model' => $model]),
+                    'content' => $this->render('_seo', ['form' => $form, 'model' => $model]),
                     'options' => ['class' => 'text-center nav-item'],
                 ];
 

@@ -18,4 +18,8 @@ return [
     'CURRENT_CURRENCY' => 'Поточна валюта ({symbol}).',
     'PRODUCT_NAME' => 'Назва товару',
     'PRODUCT_PRICE' => 'Ціна товару',
+    'USE_SEO_PARENTS' => 'Застосувати до всіх дочірнім категоріям',
+    'META_TITLE' => 'Meta title',
+    'META_DESCRIPTION' => 'Meta description',
+    'ADD_TO_PARENT' => 'Додавання в категорію: {0}'
 ];

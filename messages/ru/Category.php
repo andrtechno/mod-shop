@@ -18,4 +18,8 @@ return [
     'CURRENT_CURRENCY' => 'Текущая валюта ({symbol}).',
     'PRODUCT_NAME' => 'Название товара',
     'PRODUCT_PRICE' => 'Цена товара',
+    'USE_SEO_PARENTS' => 'Применить ко всем дочерним категориям',
+    'META_TITLE' => 'Meta title',
+    'META_DESCRIPTION' => 'Meta description',
+    'ADD_TO_PARENT' => 'Добавление в категорию: {0}'
 ];
