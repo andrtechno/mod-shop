@@ -80,8 +80,10 @@ class Category extends ActiveRecord
             ],
             [['name', 'slug'], 'trim'],
             [['name', 'slug'], 'required'],
+            ['use_seo_parents', 'boolean'],
             [['description', 'image'], 'default', 'value' => null],
-            [['name'], 'string', 'max' => 255],
+            [['name', 'meta_title', 'h1'], 'string', 'max' => 255],
+            [['meta_description'], 'string'],
             ['description', 'safe']
         ];
     }
@@ -102,11 +104,11 @@ class Category extends ActiveRecord
      */
     public function behaviors()
     {
-        if (Yii::$app->getModule('seo'))
-            $a['seo'] = [
-                'class' => '\panix\mod\seo\components\SeoBehavior',
-                'url' => $this->getUrl()
-            ];
+        /* if (Yii::$app->getModule('seo'))
+             $a['seo'] = [
+                 'class' => '\panix\mod\seo\components\SeoBehavior',
+                 'url' => $this->getUrl()
+             ];*/
 
         $a['uploadFile'] = [
             'class' => UploadFileBehavior::class,
@@ -120,12 +122,12 @@ class Category extends ActiveRecord
         if (Yii::$app->getModule('sitemap')) {
             $a['sitemap'] = [
                 'class' => SitemapBehavior::class,
-                'groupName'=>'Каталог',
+                'groupName' => 'Каталог',
                 //'batchSize' => 100,
                 'scope' => function ($model) {
                     /** @var \yii\db\ActiveQuery $model */
-                   // $model->select(['full_path', 'updated_at']);
-                    $model->andWhere(['switch' => 1])->andWhere(['!=','id',1]);
+                    // $model->select(['full_path', 'updated_at']);
+                    $model->andWhere(['switch' => 1])->andWhere(['!=', 'id', 1]);
                 },
                 'dataClosure' => function ($model) {
                     /** @var self $model */
@@ -145,7 +147,7 @@ class Category extends ActiveRecord
         ];
         $a['translate'] = [
             'class' => '\panix\mod\shop\components\TranslateBehavior',
-            'translationAttributes' => ['name', 'description']
+            'translationAttributes' => ['name', 'description', 'meta_title', 'meta_description', 'h1']
         ];
         return ArrayHelper::merge($a, parent::behaviors());
     }
@@ -239,11 +241,11 @@ class Category extends ActiveRecord
         if (Yii::$app->hasModule('csv')) {
             $external = new ExternalFinder('{{%csv}}');
 
-            if(!$external->getObject(ExternalFinder::OBJECT_MAIN_CATEGORY, $this->path_hash))
-                $external->createExternalId(ExternalFinder::OBJECT_MAIN_CATEGORY, $this->id,$this->path_hash);
+            if (!$external->getObject(ExternalFinder::OBJECT_MAIN_CATEGORY, $this->path_hash))
+                $external->createExternalId(ExternalFinder::OBJECT_MAIN_CATEGORY, $this->id, $this->path_hash);
 
-            if(!$external->getObject(ExternalFinder::OBJECT_CATEGORY, $this->path_hash))
-                $external->createExternalId(ExternalFinder::OBJECT_CATEGORY, $this->id,$this->path_hash);
+            if (!$external->getObject(ExternalFinder::OBJECT_CATEGORY, $this->path_hash))
+                $external->createExternalId(ExternalFinder::OBJECT_CATEGORY, $this->id, $this->path_hash);
         }
 
         return parent::afterSave($insert, $changedAttributes);
@@ -269,29 +271,64 @@ class Category extends ActiveRecord
             $parts[] = $this->slug;
             $partsName[] = $this->name_ru;
             $this->full_path = implode('/', array_filter($parts));
-            $this->path_hash = md5(implode('/', array_filter($partsName)));
+            $this->path_hash = md5(mb_strtolower(implode('/', array_filter($partsName))));
         }
 
         return $this;
     }
 
     /**
-     * @return string
+     * @param array $params
+     * @return mixed
      */
-    public function title()
+    public function h1($params=array())
     {
-        $value = $this->name;
-        return $value;
+        if (!empty($this->h1)) {
+            $value = $this->h1;
+        } else {
+            $value = $this->name;
+        }
+
+        return $this->replaceMeta($value, $params);
+    }
+    /**
+     * @param array $params
+     * @return mixed
+     */
+    public function title($params=array())
+    {
+        if (!empty($this->meta_title)) {
+            $value = $this->meta_title;
+        } else {
+            $value = $this->name;
+        }
+
+        return $this->replaceMeta($value, $params);
     }
 
-    public function replaceMeta($text, $parentCategory)
+    /**
+     * @param array $params
+     * @return mixed
+     */
+    public function description($params=array())
     {
-        $replace = [
-            "{category_name}" => $this->name,
-            "{sub_category_name}" => ($parentCategory->name == 'root') ? '' : $parentCategory->name,
-            "{currency.symbol}" => Yii::$app->currency->active['symbol'],
-        ];
-        return CMS::textReplace($text, $replace);
+        if (!empty($this->meta_description)) {
+            $value = $this->meta_description;
+        } else {
+            $value = $this->name;
+        }
+
+        return $this->replaceMeta($value, $params);
+    }
+
+    public function replaceMeta($text, $params)
+    {
+
+        //$replace = [
+       //     "{name}" => $name,
+        //    "{currency.symbol}" => Yii::$app->currency->active['symbol'],
+        //];
+        return CMS::textReplace($text, $params);
     }
 
     /**

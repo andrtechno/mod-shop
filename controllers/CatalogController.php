@@ -39,6 +39,8 @@ class CatalogController extends FilterController
     {
 
         $this->dataModel = $this->findModel(Yii::$app->request->getQueryParam('slug'));
+
+
         /** @var Product $productModel */
         $productModel = Yii::$app->getModule('shop')->model('Product');
         $this->currentUrl = $this->dataModel->getUrl();
@@ -85,7 +87,7 @@ class CatalogController extends FilterController
         //$this->query->orderBy(['price'=>SORT_DESC]);
 
 
-        $sort = explode(',',Yii::$app->request->get('sort'));
+        $sort = explode(',', Yii::$app->request->get('sort'));
 
 
         if ($sort[0] == 'price' || $sort[0] == '-price') {
@@ -105,7 +107,73 @@ class CatalogController extends FilterController
         ]);
 
 
-        $this->view->title = $this->dataModel->title();
+        //if (YII_DEBUG) {
+        //   $s = $this->dataModel->parent()->andWhere(['use_seo_parents'=>1])->addOrderBy(['depth'=>SORT_ASC])->one();
+
+        /*  if ($this->dataModel->use_seo_parents) {
+
+              $this->view->title = $this->dataModel->title($this->dataModel->name);
+              $this->view->description = $this->dataModel->description($this->dataModel->name);
+              $this->view->h1 = $this->dataModel->h1($this->dataModel->name);
+          } else {
+              $s = $this->dataModel->parent()
+                  ->andWhere(['use_seo_parents' => 1])
+                  ->addOrderBy(['depth' => SORT_DESC])
+                  ->one();
+              if ($s) {
+                  $this->view->title = $s->title($this->dataModel->name).'zzz';
+                  $this->view->description = $s->description($this->dataModel->name);
+                  $this->view->h1 = $s->h1($this->dataModel->name);
+              } else {
+                  $this->view->title = $this->dataModel->title($this->dataModel->name);
+                  $this->view->description = $this->dataModel->description($this->dataModel->name);
+                  $this->view->h1 = $this->dataModel->h1($this->dataModel->name);
+              }
+
+          }*/
+        $min_price = $this->getMinPrice();
+        $meta_params['{name}'] = $this->dataModel->name;
+        $meta_params['{min_price}'] = ($min_price) ? Yii::$app->currency->number_format($min_price) : 0;
+        $meta_params['{currency.symbol}'] = Yii::$app->currency->active['symbol'];
+
+        if ($this->dataModel->use_seo_parents) {
+
+            $this->view->title = $this->dataModel->title($meta_params);
+            $this->view->description = $this->dataModel->description($meta_params);
+            $this->view->h1 = $this->dataModel->h1($meta_params);
+        } else {
+            $s = $this->dataModel->parent()
+                ->andWhere(['use_seo_parents' => 1])
+                ->addOrderBy(['depth' => SORT_DESC])
+                ->one();
+            if ($s) {
+                if (!empty($this->dataModel->meta_title)) {
+                    $this->view->title = $this->dataModel->title($meta_params);
+                } else {
+                    $this->view->title = $s->title($meta_params);
+                }
+                if (!empty($this->dataModel->meta_description)) {
+                    $this->view->description = $this->dataModel->description($meta_params);
+                } else {
+                    $this->view->description = $s->description($meta_params);
+                }
+
+                if (!empty($this->dataModel->h1)) {
+                    $this->view->h1 = $this->dataModel->h1($meta_params);
+                } else {
+                    $this->view->h1 = $s->h1($meta_params);
+                }
+
+
+            } else {
+                $this->view->title = $this->dataModel->title($meta_params);
+                $this->view->description = $this->dataModel->description($meta_params);
+                $this->view->h1 = $this->dataModel->h1($meta_params);
+            }
+
+        }
+
+        //}
 
 
         $this->view->params['breadcrumbs'][] = [
@@ -194,7 +262,7 @@ class CatalogController extends FilterController
         } else {
             $this->view->params['breadcrumbs'][] = $this->dataModel->name;
         }
-        if (Yii::$app->settings->get('shop', 'smart_title')) {
+        if (!$this->view->title && Yii::$app->settings->get('shop', 'smart_title')) {
             $smartData = $this->smartNames();
             $this->pageName .= $smartData['title'];
             $this->view->title = $this->pageName;
