@@ -27,7 +27,7 @@ class ProductController extends WebController
     public function actionView($slug,$id)
     {
 
-        $this->dataModel = $this->findModel($slug,$id);
+        $this->dataModel = $this->findModel($slug, $id);
 
 
         $this->dataModel->updateCounters(['views' => 1]);
@@ -40,10 +40,10 @@ class ProductController extends WebController
             }, 3600);
 
             //$ancestors = $category->ancestors()->excludeRoot()->addOrderBy('depth')->all();
-            $this->view->params['breadcrumbs'][] = [
-                'label' => Yii::t('shop/default', 'CATALOG'),
-                'url' => ['/catalog']
-            ];
+            /* $this->view->params['breadcrumbs'][] = [
+                 'label' => Yii::t('shop/default', 'CATALOG'),
+                 'url' => ['/catalog']
+             ];*/
             foreach ($ancestors as $c) {
                 /** @var $c Category */
                 $this->view->params['breadcrumbs'][] = [
@@ -68,11 +68,11 @@ class ProductController extends WebController
                         'manufacturer' => $this->dataModel->manufacturer->id
                     ])*/
 
-                'url' => Url::to([
-                    '/catalog/'.$category->full_path.'/manufacturer/'.$this->dataModel->manufacturer->id,
-                   // 'slug' => $category->full_path,
-                   // 'manufacturer' => $this->dataModel->manufacturer->id
-                ])
+                    'url' => Url::to([
+                        '/catalog/' . $category->full_path . '/manufacturer/' . $this->dataModel->manufacturer->id,
+                        // 'slug' => $category->full_path,
+                        // 'manufacturer' => $this->dataModel->manufacturer->id
+                    ])
                 ];
             } else {
                 $this->view->params['breadcrumbs'][] = $this->dataModel->name;
@@ -90,15 +90,15 @@ class ProductController extends WebController
                         if (!isset($codes["{{$name}.value}"])) {
                             if (isset($this->dataModel->{$name})) {
                                 $codes["{{$name}.value}"] = $this->dataModel->{$name}->value;
-                            }else{
+                            } else {
                                 $codes["{{$name}.value}"] = '';
                             }
                         }
 
-                        if (!isset($codes["{{$name}.name}"])){
+                        if (!isset($codes["{{$name}.name}"])) {
                             if (isset($this->dataModel->{$name})) {
                                 $codes["{{$name}.name}"] = $this->dataModel->{$name}->name;
-                            }else{
+                            } else {
                                 $codes["{{$name}.name}"] = '';
                             }
                         }
@@ -119,7 +119,7 @@ class ProductController extends WebController
                             }
                         }
 
-                        if (!isset($codes["{{$name}.name}"])){
+                        if (!isset($codes["{{$name}.name}"])) {
                             if ($this->dataModel->{$name}) {
                                 $codes["{{$name}.name}"] = $this->dataModel->{$name}->name;
                             }
@@ -153,8 +153,8 @@ class ProductController extends WebController
         ", View::POS_END);
 
         //$this->dataModel->use_configurations ||
-       // if ($this->dataModel->use_configurations || $this->dataModel->processVariants())
-            ProductConfigureAsset::register($this->view);
+        // if ($this->dataModel->use_configurations || $this->dataModel->processVariants())
+        ProductConfigureAsset::register($this->view);
         //$this->view->registerJsFile($this->module->assetsUrl . '/js/product.view.configurations.js', ['position'=>View::POS_END]);
 
 

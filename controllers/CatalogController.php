@@ -176,10 +176,10 @@ class CatalogController extends FilterController
         //}
 
 
-        $this->view->params['breadcrumbs'][] = [
+       /* $this->view->params['breadcrumbs'][] = [
             'label' => Yii::t('shop/default', 'CATALOG'),
             'url' => ['/catalog']
-        ];
+        ];*/
 
         $ancestors = $this->dataModel->ancestors()->addOrderBy('depth')->excludeRoot()->cache(3600)->all();
         //$ancestors = Category::getDb()->cache(function ($db) use ($m) {
