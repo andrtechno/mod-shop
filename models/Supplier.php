@@ -82,7 +82,7 @@ class Supplier extends ActiveRecord
     public function rules()
     {
         return [
-            [['address', 'phone', 'name'], 'required'],
+            [['name'], 'required'],
             [['address', 'name'], 'trim'],
             ['phone', '\panix\ext\telinput\PhoneInputValidator'],
             [['email'], 'email'],

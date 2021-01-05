@@ -7,7 +7,7 @@ use panix\engine\CMS;
 
 echo Fancybox::widget(['target' => '.image a']);
 
-Pjax::begin(['dataProvider' => $dataProvider]);
+Pjax::begin(['dataProvider' => $dataProvider,'id'=>'pjax-grid-product']);
 ProductIndex::register($this);
 echo GridView::widget([
     'id' => 'grid-product',
