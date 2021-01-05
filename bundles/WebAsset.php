@@ -26,7 +26,7 @@ class WebAsset extends AssetBundle
 
     public $depends = [
         'panix\mod\cart\CartAsset',
-        'panix\mod\wishlist\WishlistAsset',
+        'panix\mod\wishlist\WishListAsset',
     ];
 
 }
