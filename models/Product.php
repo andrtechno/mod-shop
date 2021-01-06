@@ -1013,7 +1013,7 @@ public function getAuto222(){
                 'class' => '\panix\mod\markup\components\MarkupBehavior'
             ];
 
-        if (Yii::$app->getModule('discounts')) // && Yii::$app->id !== 'console')
+        if (Yii::$app->getModule('discounts') && Yii::$app->id !== 'console') // && Yii::$app->id !== 'console')
             $a['discounts'] = [
                 'class' => '\panix\mod\discounts\components\DiscountBehavior'
             ];
