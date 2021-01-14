@@ -8,7 +8,7 @@ use yii\widgets\Pjax;
  * @var \yii\web\View $this
  */
 \panix\mod\shop\bundles\AdminAsset::register($this);
-$searchModel = new panix\mod\shop\models\search\ProductSearch();
+$searchModel = new panix\mod\shop\models\search\ProductRelatedSearch();
 ?>
 
 <table class="table table-striped table-bordered" id="relatedProductsTable">
