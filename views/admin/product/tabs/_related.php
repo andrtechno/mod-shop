@@ -112,6 +112,7 @@ Pjax::end();
 $this->registerJs('
 $(document).on("beforeFilter", "#RelatedProductsGrid" , function(event,k) {
     var data = $(this).yiiGridView("data");
+
     $.pjax({
         url: data.settings.filterUrl,
         container: "#pjax-RelatedProductsGrid",
@@ -119,7 +120,7 @@ $(document).on("beforeFilter", "#RelatedProductsGrid" , function(event,k) {
         push:false,
         timeout:false,
         scrollTo:false,
-        data:$(this).closest("form").serialize()
+        data:$(data.settings.filterSelector).serialize()
     });
     return false;
 });
