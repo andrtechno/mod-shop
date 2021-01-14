@@ -23,10 +23,10 @@ class ProductRelatedSearch extends Product
     public function rules()
     {
         return [
-            [['supplier_id', 'manufacturer_id', 'main_category_id'], 'integer'],
+          //  [['supplier_id', 'manufacturer_id', 'main_category_id'], 'integer'],
             // [['image'],'boolean'],
-            [['slug', 'sku', 'price', 'id'], 'safe'], //commentsCount
-            [['name'], 'string'],
+            //[['slug', 'sku', 'price', 'id'], 'safe'], //commentsCount
+            [['name','price'], 'string'],
             [['created_at', 'updated_at'], 'date', 'format' => 'php:Y-m-d']
         ];
     }
@@ -119,8 +119,6 @@ class ProductRelatedSearch extends Product
 
 
         $query->andFilterWhere(['like', 'sku', $this->sku]);
-        $query->andFilterWhere(['supplier_id' => $this->supplier_id]);
-        $query->andFilterWhere(['manufacturer_id' => $this->manufacturer_id]);
 
         return $dataProvider;
     }
