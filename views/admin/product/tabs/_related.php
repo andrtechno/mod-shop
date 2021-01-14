@@ -114,7 +114,7 @@ $(document).on("beforeFilter", "#RelatedProductsGrid" , function(event,k) {
     var data = $(this).yiiGridView("data");
     $.pjax({
         url: data.settings.filterUrl,
-        container: \'#pjax-RelatedProductsGrid\',
+        container: "#pjax-RelatedProductsGrid",
         type:"GET",
         push:false,
         timeout:false,

@@ -23,10 +23,7 @@ class ProductRelatedSearch extends Product
     public function rules()
     {
         return [
-          //  [['supplier_id', 'manufacturer_id', 'main_category_id'], 'integer'],
-            // [['image'],'boolean'],
-            //[['slug', 'sku', 'price', 'id'], 'safe'], //commentsCount
-            [['name','price'], 'string'],
+            [['name', 'price'], 'string'],
             [['created_at', 'updated_at'], 'date', 'format' => 'php:Y-m-d']
         ];
     }
@@ -60,17 +57,6 @@ class ProductRelatedSearch extends Product
             'query' => $query,
             'sort' => self::getSort(),
             'pagination' => ['pageSize' => 20]
-            /*'sort22' => [
-                //'defaultOrder' => ['created_at' => SORT_ASC],
-                'attributes' => [
-                    'price',
-                    'created_at',
-                    'name' => [
-                        'asc' => ['translations.name' => SORT_ASC],
-                        'desc' => ['translations.name' => SORT_DESC],
-                    ]
-                ],
-            ],*/
         ]);
 
 
@@ -83,18 +69,6 @@ class ProductRelatedSearch extends Product
         }
 
 
-        /*if (isset($params[$className]['eav'])) {
-            $result = array();
-            foreach ($params[$className]['eav'] as $name => $eav) {
-                if (!empty($eav)) {
-                    $result[$name][] = $eav;
-                }
-            }
-
-            $query->getFindByEavAttributes2($result);
-        }*/
-
-
         // Id of product to exclude from search
         if ($this->exclude) {
             foreach ($this->exclude as $id) {
@@ -102,22 +76,9 @@ class ProductRelatedSearch extends Product
             }
 
         }
-        //if (isset($configure['conf'])) {
-        //    $query->andWhere(['IN', 'id', $configure['conf']]);
-        // }
-        /*if (strpos($this->id, ',')) {
-            $query->andFilterWhere(['in',
-                self::tableName() . '.id', explode(',', $this->id),
-            ]);
-        } else {*/
-        $query->andFilterWhere([
-            self::tableName() . '.id' => $this->id,
-        ]);
-        // $query->andFilterWhere(['like', 'name', $this->name]);
+
+        $query->andFilterWhere(['id' => $this->id]);
         $query->andFilterWhere(['like', 'name_' . Yii::$app->language, $this->name]);
-        // }
-
-
         $query->andFilterWhere(['like', 'sku', $this->sku]);
 
         return $dataProvider;

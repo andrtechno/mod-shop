@@ -777,7 +777,7 @@ class ProductController extends AdminController
             ]);
 
         } else {
-            throw new ForbiddenHttpException(Yii::t('app/error',403));
+            throw new ForbiddenHttpException(Yii::t('app/error','304-5'));
         }
     }
 }
