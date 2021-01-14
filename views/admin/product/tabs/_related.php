@@ -3,25 +3,21 @@
 use panix\engine\Html;
 use yii\widgets\Pjax;
 
+/**
+ * @var \panix\mod\shop\models\Product $model
+ * @var \yii\web\View $this
+ */
 \panix\mod\shop\bundles\AdminAsset::register($this);
-?>
-
-<?php
-//\yii\helpers\VarDumper::dump($model,10,true);
-//echo $model->getRelatedProductCount(); 
+$searchModel = new panix\mod\shop\models\search\ProductSearch();
 ?>
 
 <table class="table table-striped table-bordered" id="relatedProductsTable">
     <?php
-    //print_r($model->relatedProducts2);
-    ?>
-    <?php
-
-
-
-    foreach ($model->relatedProducts as $related) { ?>
+    foreach ($model->relatedProducts as $related) {
+        //$searchModel->exclude[]=$related->id;
+        ?>
         <tr>
-            <input type="hidden" value="<?php echo $related->id ?>" name="RelatedProductId[]">
+            <input type="hidden" value="<?= $related->id ?>" name="RelatedProductId[]">
             <td class="image text-center relatedProductLine<?= $related->id ?>"><?= $related->renderGridImage('50x50'); ?></td>
             <td>
                 <?= Html::a($related->name, ['/admin/shop/products/update', 'id' => $related->id], [
@@ -37,25 +33,19 @@ use yii\widgets\Pjax;
 
 </table>
 
-
-
-<?php
-/* Pjax::begin([
-  'id' => 'pjax-container-related', 'enablePushState' => false,
-  ]); */
-?>
-
-
 <?php
 
-
-$searchModel = new panix\mod\shop\models\search\ProductSearch();
 $searchModel->exclude[] = $exclude;
 //$searchModel->detachBehavior(['seo','comments','imagesBehavior']);
 
 $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams());
 
-
+Pjax::begin([
+    //'dataProvider' => $dataProvider,
+    'id'=>'pjax-RelatedProductsGrid',
+    'enablePushState' => false,
+    'timeout' => false
+]);
 echo \panix\engine\grid\GridView::widget([
     'id' => 'RelatedProductsGrid',
     'tableOptions' => ['class' => 'table table-striped'],
@@ -65,6 +55,12 @@ echo \panix\engine\grid\GridView::widget([
     /*'rowOptions' => function ($model, $key, $index, $grid) {
         return ['id' => $model['id']];
     },*/
+
+    'filterUrl' => [
+        'apply-related-filter',
+        'product_id' => $model->id,
+     //   'configurable_attributes' => isset($_GET['configurable_attributes']) ? $_GET['configurable_attributes'] : $product->configurable_attributes
+    ],
     'columns' => [
         [
             'format' => 'raw',
@@ -110,7 +106,24 @@ echo \panix\engine\grid\GridView::widget([
         ]
     ]
 ]);
+Pjax::end();
+
+
+$this->registerJs('
+$(document).on("beforeFilter", "#RelatedProductsGrid" , function(event,k) {
+    var data = $(this).yiiGridView("data");
+    $.pjax({
+        url: data.settings.filterUrl,
+        container: \'#pjax-RelatedProductsGrid\',
+        type:"GET",
+        push:false,
+        timeout:false,
+        scrollTo:false,
+        data:$(this).closest("form").serialize()
+    });
+    return false;
+});
+');
 ?>
-<?php //Pjax::end(); ?>
 
 

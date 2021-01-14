@@ -63,6 +63,7 @@ use panix\engine\db\ActiveRecord;
  * @property ProductReviews[] $reviews
  * @property ProductType $type
  * @property string $ratingScore
+ * @property RelatedProduct[] $relatedProducts
  */
 class Product extends ActiveRecord
 {
@@ -421,8 +422,8 @@ class Product extends ActiveRecord
 
     public function getRelatedProducts()
     {
-        return $this->hasMany(Product::class, ['id' => 'product_id'])
-            ->viaTable(RelatedProduct::tableName(), ['related_id' => 'id']);
+        return $this->hasMany(Product::class, ['id' => 'related_id'])
+            ->viaTable(RelatedProduct::tableName(), ['product_id' => 'id']);
     }
 
 
@@ -619,7 +620,9 @@ public function getAuto222(){
                 $related = new RelatedProduct;
                 $related->product_id = $this->id;
                 $related->related_id = (int)$id;
+
                 if ($related->save()) {
+
                     //двустороннюю связь между товарами
                     if (Yii::$app->settings->get('shop', 'product_related_bilateral')) {
                         $related = new RelatedProduct;
@@ -630,6 +633,8 @@ public function getAuto222(){
                             throw new \yii\base\Exception('Error save product relation');
                         }
                     }
+                }else{
+
                 }
             }
         }

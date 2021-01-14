@@ -165,7 +165,7 @@ class ProductController extends AdminController
 
         }
         if ($model->use_configurations) {
-           // $model->setScenario('configurable');
+            // $model->setScenario('configurable');
         }
 
 
@@ -392,7 +392,7 @@ class ProductController extends AdminController
                 'product_id' => $model->id,
                 'configurable_id' => $pk
             ])->execute();
-            if(true){
+            if (true) {
                 $model::getDb()->createCommand()->delete('{{%shop__product_configurations}}', ['product_id' => $pk])->execute();
                 $model::getDb()->createCommand()->insert('{{%shop__product_configurations}}', [
                     'product_id' => $pk,
@@ -481,23 +481,23 @@ class ProductController extends AdminController
                     $diff = array_diff($variant->oldAttributes, $variant->attributes);
 
                     if ($diff) {
-                      //  CMS::dump(Yii::$app->currency->currencies[$values['currency'][$i]]['rate']);die;
+                        //  CMS::dump(Yii::$app->currency->currencies[$values['currency'][$i]]['rate']);die;
                         //if (isset($changedAttributes['price_purchase'])) {
-                            if ($variant->oldAttributes['price'] <> $variant->attributes['price']) {
-                                Yii::$app->getDb()->createCommand()->insert('{{%shop__product_price_history_test}}', [
-                                    'product_id' => $model->id,
-                                    'currency_id' => $values['currency'][$i],
-                                    'currency_rate' => ($values['currency'][$i])?Yii::$app->currency->currencies[$values['currency'][$i]]['rate']:null,
-                                    'price' => $diff['price'],
-                                   // 'price_purchase' => $this->price_purchase,
-                                    'created_at' => time(),
-                                    'type' => ($variant->oldAttributes['price'] < $variant->attributes['price']) ? 1 : 0
-                                ])->execute();
-                            }
-                       // }
+                        if ($variant->oldAttributes['price'] <> $variant->attributes['price']) {
+                            Yii::$app->getDb()->createCommand()->insert('{{%shop__product_price_history_test}}', [
+                                'product_id' => $model->id,
+                                'currency_id' => $values['currency'][$i],
+                                'currency_rate' => ($values['currency'][$i]) ? Yii::$app->currency->currencies[$values['currency'][$i]]['rate'] : null,
+                                'price' => $diff['price'],
+                                // 'price_purchase' => $this->price_purchase,
+                                'created_at' => time(),
+                                'type' => ($variant->oldAttributes['price'] < $variant->attributes['price']) ? 1 : 0
+                            ])->execute();
+                        }
+                        // }
                     }
-                   // CMS::dump(array_diff($variant->attributes, $variant->oldAttributes));
-                  //  die;
+                    // CMS::dump(array_diff($variant->attributes, $variant->oldAttributes));
+                    //  die;
 
                     $variant->save(false);
                     array_push($dontDelete, $variant->id);
@@ -733,7 +733,7 @@ class ProductController extends AdminController
             return ['message' => Product::t('SUCCESS_UPDATE_VIEWS')];
 
         } else {
-            throw new ForbiddenHttpException();
+            throw new ForbiddenHttpException(Yii::t('app/error',403));
         }
     }
 
@@ -756,5 +756,28 @@ class ProductController extends AdminController
             'product' => $product,
             'clearConfigurations' => true // Show all products
         ]);
+    }
+
+
+    public function actionApplyRelatedFilter()
+    {
+        if (Yii::$app->request->isAjax) {
+            $product = Product::findOne(Yii::$app->request->get('product_id'));
+
+            // On create new product
+            if (!$product) {
+                //  $product = new Product();
+                // $product->configurable_attributes = Yii::$app->request->get('configurable_attributes');
+            }
+
+            return $this->render('tabs/_related', [
+                'model' => $product,
+                'exclude' => []
+                //'clearConfigurations' => true // Show all products
+            ]);
+
+        } else {
+            throw new ForbiddenHttpException(Yii::t('app/error',403));
+        }
     }
 }
