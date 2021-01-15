@@ -107,7 +107,7 @@ class ProductQuery extends ActiveQuery
         if ($q) {
             $modelClass = $this->modelClass;
             $tableName = $modelClass::tableName();
-            $this->andWhere(['LIKE', Yii::$app->getModule('shop')->searchAttribute, $q]);
+            $this->andWhere(['LIKE', $tableName . '.'.Yii::$app->getModule('shop')->searchAttribute, $q]);
             $this->orWhere(['LIKE', $tableName . '.name_' . $language, $q]);
 
         }
