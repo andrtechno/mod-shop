@@ -761,7 +761,7 @@ class ProductController extends AdminController
 
     public function actionApplyRelatedFilter()
     {
-        if (Yii::$app->request->isAjax) {
+        if (Yii::$app->request->isAjax || Yii::$app->request->isPjax) {
             $product = Product::findOne(Yii::$app->request->get('product_id'));
 
             // On create new product

@@ -23,7 +23,8 @@ class ProductRelatedSearch extends Product
     public function rules()
     {
         return [
-            [['name', 'price'], 'string'],
+            [['name', 'price','sku'], 'string'],
+            [['id'], 'integer'],
             [['created_at', 'updated_at'], 'date', 'format' => 'php:Y-m-d']
         ];
     }
@@ -49,8 +50,8 @@ class ProductRelatedSearch extends Product
         $query = Product::find();
         $query->sort();
 
-        $query->joinWith(['categorization categories']); //, 'commentsCount'
-        $className = substr(strrchr(__CLASS__, "\\"), 1);
+       // $query->joinWith(['categorization categories']); //, 'commentsCount'
+       // $className = substr(strrchr(__CLASS__, "\\"), 1);
 
 
         $dataProvider = new ActiveDataProvider([

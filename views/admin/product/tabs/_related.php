@@ -26,13 +26,14 @@ $searchModel = new panix\mod\shop\models\search\ProductRelatedSearch();
                 ?>
             </td>
             <td class="text-center">
-                <a class="btn btn-danger" href="#" onclick="$(this).parents('tr').remove();"><?= Yii::t('app/default', 'DELETE') ?></a>
+                <a class="btn btn-danger" href="#"
+                   onclick="$(this).parents('tr').remove();"><?= Yii::t('app/default', 'DELETE') ?></a>
             </td>
         </tr>
     <?php } ?>
 
 </table>
-
+<?php echo $this->render('_related_search', ['model' => $searchModel]); ?>
 <?php
 
 $searchModel->exclude[] = $exclude;
@@ -42,7 +43,7 @@ $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams());
 
 Pjax::begin([
     //'dataProvider' => $dataProvider,
-    'id'=>'pjax-RelatedProductsGrid',
+    'id' => 'pjax-RelatedProductsGrid',
     'enablePushState' => false,
     'timeout' => false
 ]);
@@ -51,7 +52,8 @@ echo \panix\engine\grid\GridView::widget([
     'tableOptions' => ['class' => 'table table-striped'],
     'dataProvider' => $dataProvider,
     'filterModel' => $searchModel,
-    'enableLayout'=>false,
+    'enableLayout' => false,
+    'enableColumns' => false,
     /*'rowOptions' => function ($model, $key, $index, $grid) {
         return ['id' => $model['id']];
     },*/
@@ -59,7 +61,7 @@ echo \panix\engine\grid\GridView::widget([
     'filterUrl' => [
         'apply-related-filter',
         'product_id' => $model->id,
-     //   'configurable_attributes' => isset($_GET['configurable_attributes']) ? $_GET['configurable_attributes'] : $product->configurable_attributes
+        //   'configurable_attributes' => isset($_GET['configurable_attributes']) ? $_GET['configurable_attributes'] : $product->configurable_attributes
     ],
     'columns' => [
         [
@@ -83,6 +85,11 @@ echo \panix\engine\grid\GridView::widget([
             // 'filter' => Html::textField('RelatedProducts[name]', $model->name)
         ],
         [
+            'attribute' => 'sku',
+            'format' => 'html',
+            'contentOptions' => ['class' => 'text-center'],
+        ],
+        [
             'attribute' => 'price',
             'format' => 'html',
             'contentOptions' => ['class' => 'text-center'],
@@ -93,6 +100,7 @@ echo \panix\engine\grid\GridView::widget([
         [
             'class' => 'panix\engine\grid\columns\ActionColumn',
             'template' => '{add}',
+            'enableEditColumns' => false,
             'buttons' => [
                 'add' => function ($url, $model) { //$model->id . '/' . Html::encode($model->name)
                     return Html::a(Html::icon('add'), '#', [
