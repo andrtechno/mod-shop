@@ -67,9 +67,10 @@ class ProductQuery extends ActiveQuery
 
     /**
      * @param $categories array|int|object
+     * @param $whereType string
      * @return $this
      */
-    public function applyCategories($categories)
+    public function applyCategories($categories, $whereType = 'andWhere')
     {
         if ($categories instanceof Category)
             $categories = [$categories->id];
@@ -79,7 +80,7 @@ class ProductQuery extends ActiveQuery
         }
         //  $tableName = ($this->modelClass)->tableName();
         $this->leftJoin(ProductCategoryRef::tableName(), ProductCategoryRef::tableName() . '.`product`=' . $this->modelClass::tableName() . '.`id`');
-        $this->andWhere([ProductCategoryRef::tableName() . '.`category`' => $categories]);
+        $this->$whereType([ProductCategoryRef::tableName() . '.`category`' => $categories]);
 
         return $this;
     }

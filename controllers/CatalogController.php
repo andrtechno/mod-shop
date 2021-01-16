@@ -365,7 +365,7 @@ class CatalogController extends FilterController
             $this->query->applyManufacturers(array_unique($manufacturers), 'orWhere');
         }
         if ($categories) {
-            $this->query->applyCategories(array_unique($categories));
+            $this->query->applyCategories(array_unique($categories),'orWhere');
         }
 
         $this->filterQuery = clone $this->query;
@@ -376,7 +376,10 @@ class CatalogController extends FilterController
         if (Yii::$app->request->get('sort') == 'price' || Yii::$app->request->get('sort') == '-price') {
             $this->query->aggregatePriceSelect((Yii::$app->request->get('sort') == 'price') ? SORT_ASC : SORT_DESC);
         }
-        // echo $this->query->createCommand()->rawSql;die;
+
+
+       // echo $this->query->createCommand()->rawSql;
+
         $this->provider = new ActiveDataProvider([
             'query' => $this->query,
             'pagination' => [
