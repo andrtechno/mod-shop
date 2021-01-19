@@ -31,7 +31,7 @@ class FiltersWidget extends Widget
     public $tagCount = 'sup';
     public $tagCountOptions = ['class' => 'filter-count'];
     //public $showEmpty = false;
-
+    public $searchItem = 20;
 
     /**
      * @var \panix\mod\shop\models\query\CategoryQuery

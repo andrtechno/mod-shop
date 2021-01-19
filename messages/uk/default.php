@@ -13,6 +13,7 @@ return [
     'FILTER_CURRENT_PRICE_MAX' => 'до {value} {currency}',
     'SORT' => 'Сортувати',
     'SEARCH' => 'Пошук по сайту',
+    'SEARCH_BY' => 'Пошук по {0}',
     'NEW' => 'Новинки',
     'RATING_SCORE' => 'Рейтинг: {0}',
     'DISCOUNT' => 'Знижки',

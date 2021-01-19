@@ -21,9 +21,9 @@ foreach ($attributes as $attrData) {
             </a>
             <div class="card-collapse collapse in" id="collapse-<?= $attrData['key'] ?>">
 
-                <?php if ($attrData['filtersCount'] >= 20 && !in_array($attrData['type'],[\panix\mod\shop\models\Attribute::TYPE_COLOR])) { ?>
+                <?php if ($this->context->searchItem > 0 && $attrData['filtersCount'] >= $this->context->searchItem && !in_array($attrData['type'],[\panix\mod\shop\models\Attribute::TYPE_COLOR])) { ?>
                     <input type="text" name="search-filter"
-                           onkeyup="filterSearchInput(this,'filter-<?= $attrData['key']; ?>')" class="form-control" placeholder="<?=Yii::t('shop/default','SEARCH');?>">
+                           onkeyup="filterSearchInput(this,'filter-<?= $attrData['key']; ?>')" class="form-control" placeholder="<?=Yii::t('shop/default','SEARCH_BY', mb_strtolower($attrData['title']));?>">
                 <?php } ?>
                 <div class="card-body">
                     <ul class="filter-list" id="filter-<?= $attrData['key']; ?>">
