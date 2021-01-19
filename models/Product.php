@@ -272,9 +272,6 @@ class Product extends ActiveRecord
         $rules = [];
 
 
-
-
-
         if (!$this->auto) {
             /*$rules[] = ['slug', '\panix\engine\validators\UrlValidator', 'attributeCompare' => 'name'];
             $rules[] = ['slug', 'match',
@@ -383,38 +380,58 @@ class Product extends ActiveRecord
         return $this->hasMany(ProductReviews::class, ['product_id' => 'id'])->orderBy(['id' => SORT_DESC]);
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getManufacturer()
     {
         return $this->hasOne(Manufacturer::class, ['id' => 'manufacturer_id']);
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getSupplier()
     {
         return $this->hasOne(Supplier::class, ['id' => 'supplier_id']);
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getType()
     {
         return $this->hasOne(ProductType::class, ['id' => 'type_id']);
     }
 
-
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getCurrency()
     {
         return $this->hasOne(Currency::class, ['id' => 'currency_id']);
 
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getType2()
     {
         return $this->hasOne(ProductType::class, ['type_id' => 'id']);
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getRelated()
     {
         return $this->hasMany(RelatedProduct::class, ['related_id' => 'id']);
     }
 
+    /**
+     * @return int|string
+     */
     public function getRelatedProductCount()
     {
         return $this->hasMany(RelatedProduct::class, ['product_id' => 'id'])->count();
@@ -594,20 +611,21 @@ class Product extends ActiveRecord
     }
 
     public $auto = false;
-/*
-public function getAuto222(){
-    if (Yii::$app->id != 'console') {
-        $type_id = $this->type_id;
-        if ($this->isNewRecord && isset(Yii::$app->request->get('Product')['type_id'])) {
-            $type_id = Yii::$app->request->get('Product')['type_id'];
+
+    /*
+    public function getAuto222(){
+        if (Yii::$app->id != 'console') {
+            $type_id = $this->type_id;
+            if ($this->isNewRecord && isset(Yii::$app->request->get('Product')['type_id'])) {
+                $type_id = Yii::$app->request->get('Product')['type_id'];
+            }
+
+            $type = ProductType::findOne($type_id);
+
+            if ($type && $type->product_name)
+                $this->auto = true;
         }
-
-        $type = ProductType::findOne($type_id);
-
-        if ($type && $type->product_name)
-            $this->auto = true;
-    }
-}*/
+    }*/
 
     public function afterSave($insert, $changedAttributes)
     {
@@ -633,7 +651,7 @@ public function getAuto222(){
                             throw new \yii\base\Exception('Error save product relation');
                         }
                     }
-                }else{
+                } else {
 
                 }
             }
@@ -734,25 +752,25 @@ public function getAuto222(){
         //$this->slug = CMS::slug($this->name);
 
         if (isset($changedAttributes['currency_id'])) {
-              if ($this->attributes['currency_id'] <> $changedAttributes['currency_id']) {
+            if ($this->attributes['currency_id'] <> $changedAttributes['currency_id']) {
 
 
-            $sum = $this->discount;
-            if (strpos($sum, '%')) {
-                $sum = (double)str_replace('%', '', $sum);
-                $this->price -= $this->price * ((double)$sum) / 100;
-            }
+                $sum = $this->discount;
+                if (strpos($sum, '%')) {
+                    $sum = (double)str_replace('%', '', $sum);
+                    $this->price -= $this->price * ((double)$sum) / 100;
+                }
 
-            static::getDb()->createCommand()->insert('{{%shop__product_price_history}}', [
-                'product_id' => $this->id,
-                'currency_id' => $this->currency_id,
-                'currency_rate' => ($this->currency_id) ? Yii::$app->currency->currencies[$this->currency_id]['rate'] : NULL,
-                'price' => $this->price,
-                // 'price_purchase' => $this->price_purchase,
-                'created_at' => time(),
-                //  'type' => ($changedAttributes['discount'] < $this->attributes['discount']) ? 1 : 0,
-                'event' => 'product_currency'
-            ])->execute();
+                static::getDb()->createCommand()->insert('{{%shop__product_price_history}}', [
+                    'product_id' => $this->id,
+                    'currency_id' => $this->currency_id,
+                    'currency_rate' => ($this->currency_id) ? Yii::$app->currency->currencies[$this->currency_id]['rate'] : NULL,
+                    'price' => $this->price,
+                    // 'price_purchase' => $this->price_purchase,
+                    'created_at' => time(),
+                    //  'type' => ($changedAttributes['discount'] < $this->attributes['discount']) ? 1 : 0,
+                    'event' => 'product_currency'
+                ])->execute();
             }
         }
 
@@ -880,7 +898,7 @@ public function getAuto222(){
         }
         if (Yii::$app->hasModule('csv')) {
             $external = new ExternalFinder('{{%csv}}');
-            $external->deleteObject(ExternalFinder::OBJECT_PRODUCT,$this->id);
+            $external->deleteObject(ExternalFinder::OBJECT_PRODUCT, $this->id);
         }
         parent::afterDelete();
     }

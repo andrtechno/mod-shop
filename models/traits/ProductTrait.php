@@ -269,8 +269,9 @@ trait ProductTrait
             'format' => 'html',
             'filter' => true,
             'value' => function ($model) {
+                /** @var $model Product */
                 $options['data-pjax'] = 0;
-                return Html::a($model->commentsCount, ['/admin/comments/default/index', 'CommentsSearch[object_id]' => $model->primaryKey], $options);
+                return Html::a($model->getReviews()->count(), ['/admin/comments/default/index', 'CommentsSearch[object_id]' => $model->primaryKey], $options);
             }
         ];
         $columns['created_at'] = [
