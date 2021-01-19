@@ -134,7 +134,7 @@ class ProductSearch extends Product
             $query->andFilterWhere([
                 self::tableName() . '.id' => $this->id,
             ]);
-            $query->andFilterWhere(['like', 'name_'.Yii::$app->language, $this->name]);
+            $query->andFilterWhere(['like', 'name_' . Yii::$app->language, $this->name]);
             //$query->andFilterWhere(['like', 'name_ru', $this->name]);
         }
 
@@ -153,11 +153,10 @@ class ProductSearch extends Product
         $query->andFilterWhere(['like', 'sku', $this->sku]);
         $query->andFilterWhere(['supplier_id' => $this->supplier_id]);
         $query->andFilterWhere(['manufacturer_id' => $this->manufacturer_id]);
-        if ($this->main_category_id){
-             $query->joinWith(['categorization categories']); //, 'commentsCount'
-            $query->andFilterWhere(['categories.category'=>$this->main_category_id]);
+        if ($this->main_category_id) {
+            $query->joinWith(['categorization categories']); //, 'commentsCount'
+            $query->andFilterWhere(['categories.category' => $this->main_category_id]);
         }
-
 
 
         //echo $query->createCommand()->rawSql; die;

@@ -268,6 +268,7 @@ trait ProductTrait
             'attribute' => 'commentsCount',
             'format' => 'html',
             'filter' => true,
+            'contentOptions' => ['class' => 'text-center'],
             'value' => function ($model) {
                 /** @var $model Product */
                 $options['data-pjax'] = 0;

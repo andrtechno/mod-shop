@@ -175,8 +175,10 @@ class Product extends ActiveRecord
                 ],
                 'name' => [
                     'default' => SORT_ASC,
-                    'asc' => ['translation.name' => SORT_ASC],
-                    'desc' => ['translation.name' => SORT_DESC],
+                    //'asc' => ['translation.name' => SORT_ASC],
+                    //'desc' => ['translation.name' => SORT_DESC],
+                    'asc' => ['name_'.Yii::$app->language => SORT_ASC],
+                    'desc' => ['name_'.Yii::$app->language => SORT_DESC],
                 ],
                 'commentsCount',
             ],
