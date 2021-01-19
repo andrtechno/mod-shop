@@ -18,7 +18,7 @@ class ProductSearch extends Product
     public $price_max;
     // public $image;
     //public $commentsCount;
-
+    public $name;
     /**
      * @inheritdoc
      */
@@ -61,17 +61,6 @@ class ProductSearch extends Product
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'sort' => self::getSort(),
-            /*'sort22' => [
-                //'defaultOrder' => ['created_at' => SORT_ASC],
-                'attributes' => [
-                    'price',
-                    'created_at',
-                    'name' => [
-                        'asc' => ['translations.name' => SORT_ASC],
-                        'desc' => ['translations.name' => SORT_DESC],
-                    ]
-                ],
-            ],*/
         ]);
         if (isset($params[$className]['price']['min'])) {
             $this->price_min = $params[$className]['price']['min'];
@@ -145,6 +134,7 @@ class ProductSearch extends Product
         ]);*/
 
 
+
         // $query->andFilterWhere(['between', 'date_update', $this->start, $this->end]);
         //$query->andFilterWhere(['like', "DATE(CONVERT_TZ('date_update', 'UTC', '".Yii::$app->timezone."'))", $this->date_update.' 23:59:59']);
         //  $query->andFilterWhere(['like', "DATE(CONVERT_TZ('date_create', 'UTC', '".Yii::$app->timezone."'))", $this->date_create.]);
@@ -159,7 +149,7 @@ class ProductSearch extends Product
         }
 
 
-        //echo $query->createCommand()->rawSql; die;
+       // echo $query->createCommand()->rawSql; die;
         return $dataProvider;
     }
 
