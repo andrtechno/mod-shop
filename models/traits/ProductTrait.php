@@ -118,8 +118,8 @@ trait ProductTrait
         $columns['type_id'] = [
             'attribute' => 'type_id',
         ];
-        $columns['rating'] = [
-            'header' => 't',
+        /*$columns['rating'] = [
+            'header' => 'Rating',
             'format' => 'raw',
             'contentOptions' => ['style' => 'min-width:140px'],
             'value' => function ($model) {
@@ -129,9 +129,7 @@ trait ProductTrait
 
                 $reviewsCount = $aggregate->count();
                 $aggregate = $aggregate->one();
-/*Yii::$app->view->registerCss("
-.cancel-on-png, .cancel-off-png, .star-on-png, .star-off-png, .star-half-png{font-size:1rem}
-",[],'rating');*/
+//Yii::$app->view->registerCss(".cancel-on-png, .cancel-off-png, .star-on-png, .star-off-png, .star-half-png{font-size:1rem}",[],'rating');
                 return \panix\ext\rating\RatingInput::widget([
                     'name' => 'product-rating',
                     'value' => ($reviewsCount > 0) ? round($aggregate->rate / $reviewsCount, 1) : 0,
@@ -141,7 +139,7 @@ trait ProductTrait
                     ],
                 ]);
             }
-        ];
+        ];*/
         /*$columns['price'] = [
             'attribute' => 'price',
             'format' => 'raw',
