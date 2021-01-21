@@ -9,10 +9,11 @@ use panix\engine\bootstrap\Modal;
 /**
  * @var $form \panix\engine\bootstrap\ActiveForm
  */
+
 ?>
 <?php echo Fancybox::widget(['target' => 'a.fancybox']); ?>
 <?= $form->field($model, 'video')->textInput(['maxlength' => 255])->hint('Пример: https://www.youtube.com/watch?v=[ID]') ?>
-<?= $form->field($model, 'file[]')->fileInput(['multiple' => true]); ?>
+<?= $form->field($model, 'file[]')->fileInput(['multiple' => true])->hint('Доступные форматы: <strong>jpg, jpeg, png, webp, gif</strong>') ; ?>
 
 
 
