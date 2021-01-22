@@ -68,7 +68,13 @@ class ProductType extends ActiveRecord
 
     public function getProductsCount()
     {
-        return $this->hasOne(Product::class, ['id' => 'type_id'])->count();
+        return $this->hasOne(Product::class, ['type_id' => 'id'])->count();
+    }
+
+
+    public function getProducts()
+    {
+        return $this->hasMany(Product::class, ['type_id' => 'id']);
     }
 
     public function getAttributeRelation()
