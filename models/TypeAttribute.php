@@ -22,8 +22,8 @@ class TypeAttribute extends ActiveRecord {
         return '{{%shop__type_attribute}}';
     }
 
-    public function getMyAttribute() {
-        return $this->hasOne(Attribute::class, ['attribute_id' => 'id']);
+    public function getCurrentAttribute() {
+        return $this->hasOne(Attribute::class, ['id' => 'attribute_id']);
     }
 
 }
