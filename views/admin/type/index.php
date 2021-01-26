@@ -7,23 +7,28 @@ Pjax::begin([
     'id' => 'pjax-grid-producttype',
 ]);
 echo GridView::widget([
-    'id'=>'grid-producttype',
+    'id' => 'grid-producttype',
     'tableOptions' => ['class' => 'table table-striped'],
     'dataProvider' => $dataProvider,
     'filterModel' => $searchModel,
     'layoutOptions' => ['title' => $this->context->pageName],
     'columns' => [
-        [
+        /*[
             'class' => 'yii\grid\SerialColumn',
             'contentOptions' => ['class' => 'text-center']
+        ],*/
+        [
+            'attribute' => 'id',
+            'contentOptions' => ['class' => 'text-center'],
+            'filterOptions' => ['style' => 'width:100px'],
         ],
         'name',
         [
-            'attribute'=>'productsCount',
+            'attribute' => 'productsCount',
             'contentOptions' => ['class' => 'text-center'],
-            'format'=>'raw',
-            'value'=>function($model){
-    return  \panix\engine\Html::a($model->productsCount,['/shop/admin/product','ProductSearch[type_id]'=>$model->id],['target'=>'_blank']);
+            'format' => 'raw',
+            'value' => function ($model) {
+                return \panix\engine\Html::a($model->productsCount, ['/shop/admin/product', 'ProductSearch[type_id]' => $model->id], ['target' => '_blank']);
             }
         ],
         [

@@ -56,19 +56,18 @@ trait ProductTrait
                     .star-off-png{color:#dee2e6}
                     .star-on-png,.star-half-png{color:orange}
                     .raty img{width:13px;height:13px;}
-                    ",[],'rating');
-                $rating= \panix\ext\rating\RatingInput::widget([
+                    ", [], 'rating');
+                $rating = \panix\ext\rating\RatingInput::widget([
                     'name' => 'product-rating',
                     'value' => ($reviewsCount > 0) ? round($aggregate->rate / $reviewsCount, 1) : 0,
                     'options' => [
-                        'starType'=>'img',
+                        'starType' => 'img',
                         'readOnly' => true,
                     ],
                 ]);
 
 
-
-                return $model->renderGridImage().$rating;
+                return $model->renderGridImage() . $rating;
             },
         ];
         $columns['name'] = [

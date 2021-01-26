@@ -54,9 +54,7 @@ class ProductTypeSearch extends ProductType {
             return $dataProvider;
         }
 
-        $query->andFilterWhere([
-            'id' => $this->id,
-        ]);
+        $query->andFilterWhere(['id' => $this->id]);
         // Id of product to exclude from search
         if ($this->exclude) {
             foreach($this->exclude as $id){
