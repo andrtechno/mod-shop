@@ -13,6 +13,7 @@ use yii\helpers\ArrayHelper;
  * @property string $product_title
  * @property string $product_description
  * @property string $name
+ * @property int $productsCount
  *
  * @package panix\mod\shop\models
  */

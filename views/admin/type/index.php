@@ -18,7 +18,14 @@ echo GridView::widget([
             'contentOptions' => ['class' => 'text-center']
         ],
         'name',
-        'productsCount',
+        [
+            'attribute'=>'productsCount',
+            'contentOptions' => ['class' => 'text-center'],
+            'format'=>'raw',
+            'value'=>function($model){
+    return  \panix\engine\Html::a($model->productsCount,['/shop/admin/product','ProductSearch[type_id]'=>$model->id],['target'=>'_blank']);
+            }
+        ],
         [
             'class' => 'panix\engine\grid\columns\ActionColumn',
             'template' => '{update} {delete}',

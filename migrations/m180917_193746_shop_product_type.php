@@ -26,7 +26,7 @@ class m180917_193746_shop_product_type extends Migration
             'categories_preset' => $this->text()->null()->defaultValue(null),
             'main_category' => $this->integer(11)->null()->defaultValue(0),
         ]);
-
+        $this->createIndex('name', ProductType::tableName(), 'name');
     }
 
     public function down()

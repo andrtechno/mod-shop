@@ -19,15 +19,16 @@ class ProductSearch extends Product
     // public $image;
     //public $commentsCount;
     public $name;
+
     /**
      * @inheritdoc
      */
     public function rules()
     {
         return [
-            [['price_min', 'price_max', 'supplier_id', 'manufacturer_id', 'main_category_id'], 'integer'],
+            [['price_min', 'price_max', 'supplier_id', 'manufacturer_id', 'main_category_id', 'type_id'], 'integer'],
             // [['image'],'boolean'],
-            [['slug', 'sku', 'price', 'id'], 'safe'], //commentsCount
+            [['slug', 'sku', 'price', 'id', 'type_id'], 'safe'], //commentsCount
             [['name'], 'string'],
             [['created_at', 'updated_at'], 'date', 'format' => 'php:Y-m-d']
         ];
@@ -52,7 +53,7 @@ class ProductSearch extends Product
     public function search($params, $configure = [])
     {
         $query = Product::find();
-        $query->sort();
+        //$query->sort();
 
 
         $className = substr(strrchr(__CLASS__, "\\"), 1);
@@ -134,7 +135,6 @@ class ProductSearch extends Product
         ]);*/
 
 
-
         // $query->andFilterWhere(['between', 'date_update', $this->start, $this->end]);
         //$query->andFilterWhere(['like', "DATE(CONVERT_TZ('date_update', 'UTC', '".Yii::$app->timezone."'))", $this->date_update.' 23:59:59']);
         //  $query->andFilterWhere(['like', "DATE(CONVERT_TZ('date_create', 'UTC', '".Yii::$app->timezone."'))", $this->date_create.]);
@@ -142,6 +142,7 @@ class ProductSearch extends Product
 
         $query->andFilterWhere(['like', 'sku', $this->sku]);
         $query->andFilterWhere(['supplier_id' => $this->supplier_id]);
+        $query->andFilterWhere(['type_id' => $this->type_id]);
         $query->andFilterWhere(['manufacturer_id' => $this->manufacturer_id]);
         if ($this->main_category_id) {
             $query->joinWith(['categorization categories']); //, 'commentsCount'
@@ -149,7 +150,7 @@ class ProductSearch extends Product
         }
 
 
-       // echo $query->createCommand()->rawSql; die;
+        //echo $query->createCommand()->rawSql; die;
         return $dataProvider;
     }
 
