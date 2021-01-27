@@ -109,7 +109,7 @@ class Attribute extends ActiveRecord
         // $table = self::tableName();
         // $dependency = new DbDependency();
         // $dependency->sql = "SELECT MAX(updated_at) FROM {$table}";
-        return $this->hasMany(AttributeOption::class, ['attribute_id' => 'id'])->orderBy(['ordern'=>SORT_ASC]);//->cache(3600, $dependency);
+        return $this->hasMany(AttributeOption::class, ['attribute_id' => 'id']);//->cache(3600, $dependency);
     }
 
 
@@ -118,7 +118,7 @@ class Attribute extends ActiveRecord
         // $table = self::tableName();
         // $dependency = new DbDependency();
         // $dependency->sql = "SELECT MAX(updated_at) FROM {$table}";
-        return $this->hasMany(AttributeOption::class, ['attribute_id' => 'id'])->orderBy(['ordern'=>SORT_ASC])->asArray();//->cache(3600, $dependency);
+        return $this->hasMany(AttributeOption::class, ['attribute_id' => 'id'])->asArray();//->cache(3600, $dependency);
     }
 
     public function getGroups()
