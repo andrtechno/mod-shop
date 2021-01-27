@@ -5,15 +5,36 @@ use panix\ext\fancybox\Fancybox;
 use panix\mod\images\models\ImageSearch;
 use panix\engine\widgets\Pjax;
 use panix\engine\bootstrap\Modal;
+use panix\engine\CMS;
 
 /**
  * @var $form \panix\engine\bootstrap\ActiveForm
+ * @var $model \panix\mod\shop\models\Product
  */
+if ($model->video) {
+    $video= '<br/>'.Html::a(Html::img(CMS::getYouTubeImg($model->video, 'mqdefault'), ['class' => 'img-fluid']), $model->video, ['class' => 'video']);
+}else{
+    $video='';
+}
+?>
+<?php echo Fancybox::widget([
+    'target' => 'a.fancybox, a.video',
+    'options' => [
+        'youtube' => [
+            'autoplay' => 0,
+            'controls' => 1,
+            'showinfo' => 1
+        ]
+    ]
+]); ?>
+<?= $form->field($model, 'video')->textInput(['maxlength' => 255])->hint('Пример: https://www.youtube.com/watch?v=XXXXXX'.$video) ?>
+
+<?php
+
 
 ?>
-<?php echo Fancybox::widget(['target' => 'a.fancybox']); ?>
-<?= $form->field($model, 'video')->textInput(['maxlength' => 255])->hint('Пример: https://www.youtube.com/watch?v=[ID]') ?>
-<?= $form->field($model, 'file[]')->fileInput(['multiple' => true])->hint('Доступные форматы: <strong>jpg, jpeg, png, webp, gif</strong>') ; ?>
+
+<?= $form->field($model, 'file[]')->fileInput(['multiple' => true])->hint('Доступные форматы: <strong>jpg, jpeg, png, webp, gif</strong>'); ?>
 
 
 
@@ -157,7 +178,7 @@ echo panix\engine\grid\GridView::widget([
                         'class' => 'btn btn-sm btn-danger attachment-delete',
                         'data-id' => $data->id,
                         //'data-object_id' => $model->id,
-                        'data-pjax'=>'0',
+                        'data-pjax' => '0',
                         //'data-model' => get_class($model)
                     ]);
                 },
