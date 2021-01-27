@@ -4,11 +4,13 @@
 use panix\engine\Html;
 use panix\mod\shop\models\Product;
 use panix\mod\shop\models\Attribute;
+use panix\mod\shop\models\traits\ProductTrait;
 use yii\helpers\ArrayHelper;
 use panix\mod\shop\models\search\ProductSearch;
 use panix\engine\grid\GridView;
 use panix\engine\data\ActiveDataProvider;
 use panix\engine\widgets\Pjax;
+
 //use yii\widgets\Pjax;
 use panix\mod\shop\models\search\ProductConfigureSearch;
 
@@ -31,13 +33,14 @@ $columns[] = [
     'checkboxOptions' => function ($model, $key, $index, $column) use ($product) {
         return [
             'value' => $model->id,
-            'checked' => (!empty($product->configurations) && !$product->isNewRecord) ? in_array($key,$product->configurations) : false
+            'checked' => (!empty($product->configurations) && !$product->isNewRecord) ? in_array($key, $product->configurations) : false
         ];
     },
 ];
 $columns[] = [
     'attribute' => 'id',
     'format' => 'text',
+    'contentOptions' => ['class' => 'text-center']
 ];
 $columns[] = [
     'attribute' => 'name',
@@ -48,11 +51,15 @@ $columns[] = [
 ];
 $columns[] = [
     'attribute' => 'sku',
+    'contentOptions' => ['class' => 'text-center']
 ];
 $columns[] = [
     'attribute' => 'price',
     'format' => 'raw',
-    //'value' => '$data->price',
+    'contentOptions' => ['class' => 'text-center'],
+    'value' => function ($model) {
+        return $model->getGridPrice();
+    }
 ];
 
 
@@ -80,7 +87,7 @@ foreach ($attributeModels as $attribute) {
         $columns[] = [
             'attribute' => 'eav_' . $attribute->name . '.value',
             'header' => $attribute->title,
-            'contentOptions' => ['class' => 'eav'],
+            'contentOptions' => ['class' => 'eav text-center'],
 
             'filter' => Html::dropDownList('eav[' . $attribute->name . ']', $selected, ArrayHelper::map($attribute->options, 'id', 'value'), [
                 'prompt' => html_entity_decode($product::t('SELECT_ATTRIBUTE')),
@@ -125,6 +132,7 @@ Pjax::end();
 $this->registerJs('initConfigurationsTable();
 $(document).on("beforeFilter", "#ConfigurationsProductGrid" , function(event,k) {
     var data = $(this).yiiGridView("data");
+    console.log(data.settings.filterSelector);//
     $.pjax({
         url: data.settings.filterUrl,
         container: \'#pjax-ConfigurationsProductGrid\',
@@ -132,7 +140,7 @@ $(document).on("beforeFilter", "#ConfigurationsProductGrid" , function(event,k) 
         push:false,
         timeout:false,
         scrollTo:false,
-        data:$(this).closest("form").serialize()
+        data:$(data.settings.filterSelector).serialize()
     });
     return false;
 });

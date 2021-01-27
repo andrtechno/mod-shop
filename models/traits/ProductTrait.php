@@ -185,37 +185,7 @@ trait ProductTrait
             'contentOptions' => ['class' => 'text-center', 'style' => 'position:relative'],
             'value' => function ($model) {
                 /** @var static $model */
-                $prices = [];
-                $prices[Yii::$app->currency->main['id']]['symbol'] = Yii::$app->currency->main['symbol'];
-                if ($model->hasDiscount) {
-                    $prices[Yii::$app->currency->main['id']]['value'] = $model->discountPrice;
-                    $prices[Yii::$app->currency->main['id']]['original_value'] = $model->price;
-                } else {
-                    $prices[Yii::$app->currency->main['id']]['value'] = $model->price;
-                }
-                if ($model->currency_id && Yii::$app->currency->main['id'] != $model->currency_id) {
-                    if ($model->hasDiscount) {
-
-                        $prices[Yii::$app->currency->main['id']]['value'] = $model->discountPrice * Yii::$app->currency->currencies[$model->currency_id]['rate'];
-                        $prices[Yii::$app->currency->main['id']]['original_value'] = $model->price * Yii::$app->currency->currencies[$model->currency_id]['rate'];
-                    } else {
-                        $prices[Yii::$app->currency->main['id']]['value'] = $model->price * Yii::$app->currency->currencies[$model->currency_id]['rate'];
-                    }
-
-                }
-
-
-                $data = [];
-                foreach ($prices as $currency => $price_data) {
-                    $price = '';
-                    if (isset($price_data['original_value'])) {
-                        $price .= '<del class="text-secondary">' . Yii::$app->currency->number_format($price_data['original_value']) . '</del> / ';
-                    }
-                    $price .= Html::tag('span', Yii::$app->currency->number_format($price_data['value']), ['class' => 'text-success font-weight-bold']) . ' ' . $price_data['symbol'];
-                    //$price .= Html::tag('span', $price_data['value'], ['class' => 'text-success font-weight-bold']) . ' ' . $price_data['symbol'];
-                    $data[] = $price;
-                }
-                return implode('<br>', $data);
+                return $model->getGridPrice();
             }
         ];
         $columns['supplier_id'] = [
@@ -406,6 +376,43 @@ trait ProductTrait
         return $columns;
     }
 
+    public function getGridPrice()
+    {
+
+
+        $prices = [];
+        $prices[Yii::$app->currency->main['id']]['symbol'] = Yii::$app->currency->main['symbol'];
+        if ($this->hasDiscount) {
+            $prices[Yii::$app->currency->main['id']]['value'] = $this->discountPrice;
+            $prices[Yii::$app->currency->main['id']]['original_value'] = $this->price;
+        } else {
+            $prices[Yii::$app->currency->main['id']]['value'] = $this->price;
+        }
+        if ($this->currency_id && Yii::$app->currency->main['id'] != $this->currency_id) {
+            if ($this->hasDiscount) {
+
+                $prices[Yii::$app->currency->main['id']]['value'] = $this->discountPrice * Yii::$app->currency->currencies[$this->currency_id]['rate'];
+                $prices[Yii::$app->currency->main['id']]['original_value'] = $this->price * Yii::$app->currency->currencies[$this->currency_id]['rate'];
+            } else {
+                $prices[Yii::$app->currency->main['id']]['value'] = $this->price * Yii::$app->currency->currencies[$this->currency_id]['rate'];
+            }
+
+        }
+
+
+        $data = [];
+        foreach ($prices as $currency => $price_data) {
+            $price = '';
+            if (isset($price_data['original_value'])) {
+                $price .= '<del class="text-secondary">' . Yii::$app->currency->number_format($price_data['original_value']) . '</del> / ';
+            }
+            $price .= Html::tag('span', Yii::$app->currency->number_format($price_data['value']), ['class' => 'text-success font-weight-bold']) . ' ' . $price_data['symbol'];
+            //$price .= Html::tag('span', $price_data['value'], ['class' => 'text-success font-weight-bold']) . ' ' . $price_data['symbol'];
+            $data[] = $price;
+        }
+        return implode('<br>', $data);
+
+    }
 
     public function getDataAttributes()
     {

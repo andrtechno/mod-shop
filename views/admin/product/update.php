@@ -191,12 +191,16 @@ if (count($typesList) > 0) {
                     </div>
                     <div class="card-body p-3">
                         <div class="form-group row">
+                            <div class="col-sm-8 col-md-6">ID</div>
+                            <div class="col-sm-4 col-md-6 font-weight-bold"><?= $model->id; ?></div>
+                        </div>
+                        <div class="form-group row">
                             <div class="col-sm-8 col-md-6">Дата добавление</div>
-                            <div class="col-sm-4 col-md-6"><?= \panix\engine\CMS::date($model->created_at); ?></div>
+                            <div class="col-sm-4 col-md-6 font-weight-bold"><?= \panix\engine\CMS::date($model->created_at); ?></div>
                         </div>
                         <div class="form-group row">
                             <div class="col-sm-8 col-md-6">Дата редактирование</div>
-                            <div class="col-sm-4 col-md-6"><?= \panix\engine\CMS::date($model->updated_at); ?></div>
+                            <div class="col-sm-4 col-md-6 font-weight-bold"><?= \panix\engine\CMS::date($model->updated_at); ?></div>
                         </div>
                         <div class="form-group row">
                             <div class="col-sm-12"><?= Yii::t('app/default', 'VIEWS', ['n'=>$model->views]); ?> <?php // Html::a('Очистить просмотры', ['/shop/admin/product/update-views','id'=>$model->id],['class'=>'btn btn-sm','onclick'=>"updateProductsViews(this); return false;",'data-confirm'=>'Вы уверены, что хотите обновить просмотры?']); ?></div>
@@ -227,7 +231,7 @@ if (count($typesList) > 0) {
                         <?php if ($model->user_id) { ?>
                             <div class="form-group row">
                                 <div class="col-sm-8 col-md-6">Добавил</div>
-                                <div class="col-sm-4 col-md-6"><?= Html::a($model->user->username, $model->user->getUpdateUrl()); ?></div>
+                                <div class="col-sm-4 col-md-6 font-weight-bold"><?= Html::a($model->user->username, $model->user->getUpdateUrl()); ?></div>
                             </div>
                         <?php } ?>
 
