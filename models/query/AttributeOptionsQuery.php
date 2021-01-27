@@ -16,8 +16,6 @@ class AttributeOptionsQuery extends ActiveQuery
 
     use DefaultQueryTrait;
 
-
-
     public function init()
     {
         /** @var \yii\db\ActiveRecord $modelClass */
