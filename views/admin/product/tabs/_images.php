@@ -28,12 +28,6 @@ if ($model->video) {
     ]
 ]); ?>
 <?= $form->field($model, 'video')->textInput(['maxlength' => 255])->hint('Пример: https://www.youtube.com/watch?v=XXXXXX'.$video) ?>
-
-<?php
-
-
-?>
-
 <?= $form->field($model, 'file[]')->fileInput(['multiple' => true])->hint('Доступные форматы: <strong>jpg, jpeg, png, webp, gif</strong>'); ?>
 
 
