@@ -39,30 +39,6 @@ $form = ActiveForm::begin([
     </div>
 </div>
 <?php ActiveForm::end(); ?>
-<?php
-
-if(isset(Yii::$app->queue)){
-    $query = (new \yii\db\Query())
-       // ->where(['channel' => Yii::$app->queue->channel])
-        ->from(Yii::$app->queue->tableName);
-
-    $qqq = $query->all();
-    foreach ($qqq as $item) {
-
-      //  \panix\engine\CMS::dump(Yii::$app->queue->isWaiting($item['id']));
-
-// Check whether a worker got the job from the queue and executes it.
-       // \panix\engine\CMS::dump(Yii::$app->queue->isReserved($item['id']));
-
-// Check whether a worker has executed the job.
-      //  \panix\engine\CMS::dump(Yii::$app->queue->isDone($item['id']));
-        var_dump(Yii::$app->queue->isDone($item['id']));
-        echo '<br>';
-
-
-    }
-}
-?>
 
 
 

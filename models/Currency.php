@@ -100,13 +100,13 @@ class Currency extends ActiveRecord
 
     public function afterSave($insert, $changedAttributes)
     {
-        if (!$insert && Yii::$app->queue) {
+        if (!$insert && Yii::$app->queue && Yii::$app->id != 'console') {
            // Yii::$app->queue->channel = 'currency';
 
             if (isset($changedAttributes['rate'])) {
 
                 if ($changedAttributes['rate'] <> $this->attributes['rate']) {
-                    // CMS::dump($this->attributes);
+
                     $query = (new Query())
                         ->select(['id', 'price', 'price_purchase'])
                         ->where(['currency_id' => $this->id])
