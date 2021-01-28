@@ -4,10 +4,13 @@ namespace panix\mod\shop\commands;
 
 use panix\engine\CMS;
 use panix\mod\discounts\models\Discount;
+use panix\mod\shop\models\Currency;
 use panix\mod\shop\models\Product;
 use panix\mod\shop\models\ProductCategoryRef;
 use Yii;
 use panix\engine\console\controllers\ConsoleController;
+use yii\helpers\Console;
+use yii\httpclient\Client;
 
 
 /**
@@ -134,6 +137,9 @@ class DevController extends ConsoleController
         ], $data2)->execute();
     }
 
+
+
+
     private function array_random(array $array, int $n = 1): array
     {
         if ($n < 1 || $n > count($array)) {
@@ -144,4 +150,6 @@ class DevController extends ConsoleController
             ? array_values(array_intersect_key($array, array_flip(array_rand($array, $n))))
             : array($array[array_rand($array)]);
     }
+
+
 }
