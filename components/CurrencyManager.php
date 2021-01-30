@@ -47,9 +47,11 @@ class CurrencyManager extends Component
             if ($currency['is_default'])
                 $this->_default = $currency;
         }
-        $detectActive = $this->detectActive();
-        if ($detectActive) {
-            $this->setActive($detectActive['id']);
+        if(Yii::$app->id != 'console') {
+            $detectActive = $this->detectActive();
+            if ($detectActive) {
+                $this->setActive($detectActive['id']);
+            }
         }
     }
 
