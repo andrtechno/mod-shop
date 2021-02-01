@@ -112,6 +112,22 @@ class Currency extends ActiveRecord
                         ->where(['currency_id' => $this->id])
                         ->from(Product::tableName());
 
+
+
+                    $queueDoneCount = (new \yii\db\Query())->select(['pushed_at', 'ttr', 'delay', 'priority', 'reserved_at', 'attempt', 'done_at', 'channel'])
+                        ->from(Yii::$app->queue->tableName)
+                        ->where(['not', ['done_at' => null]])
+                        ->andWhere(['channel' => Yii::$app->queue->channel])
+                        ->andWhere(['>=','pushed_at', time()])
+                        ->createCommand()
+                        ->query()
+                        ->count();
+
+                    Yii::$app->settings->set('app', ['QUEUE_CHANNEL_' . Yii::$app->queue->channel => $queueDoneCount]);
+
+                    Yii::$app->settings->set('app', ['QUEUE_date_'.Yii::$app->queue->channel.'' => time()]);
+//echo $queueDoneCount;die;
+
                     foreach ($query->batch(500) as $items) {
                         Yii::$app->queue->push(new ProductPriceHistoryQueue([
                             'items' => $items,

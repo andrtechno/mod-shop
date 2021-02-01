@@ -7,7 +7,7 @@
     "shop"
   ],
   "homepage": "https://github.com/andrtechno/mod-shop",
-  "type": "yii2-extension",
+  "type": "pixelion-module",
   "license": "MIT",
   "minimum-stability": "stable",
   "prefer-stable": true,
