@@ -344,7 +344,7 @@ class m190316_061840_shop_insert extends Migration
         if (!$attributeOption) {
             $attributeOption = new AttributeOption;
             $attributeOption->attribute_id = $attribute_id;
-            $attributeOption->value_ru = $value;
+            $attributeOption->value = $value;
             $attributeOption->value_uk = $value;
             $attributeOption->value_en = $value;
             $attributeOption->save(false);

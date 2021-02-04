@@ -20,7 +20,7 @@ class m180917_193433_shop_attribute_option extends Migration
             'id' => $this->primaryKey()->unsigned(),
             'attribute_id' => $this->integer()->null(),
             'data' => $this->text()->null(),
-            'value_ru' => $this->string(255)->null(),
+            'value' => $this->string(255)->null(),
             'value_uk' => $this->string(255)->null(),
             'value_en' => $this->string(255)->null(),
             'ordern' => $this->integer()->unsigned(),
