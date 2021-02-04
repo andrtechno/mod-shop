@@ -1,7 +1,5 @@
 <?php
 
-namespace panix\mod\shop\migrations;
-
 /**
  * Generation migrate by PIXELION CMS
  * @author PIXELION CMS development team <dev@pixelion.com.ua>
@@ -9,11 +7,8 @@ namespace panix\mod\shop\migrations;
  * Class m180917_193421_shop_attribute
  */
 
-use Yii;
-use panix\engine\CMS;
 use panix\engine\db\Migration;
 use panix\mod\shop\models\Attribute;
-use panix\mod\shop\models\translate\AttributeTranslate;
 
 class m180917_193421_shop_attribute extends Migration
 {

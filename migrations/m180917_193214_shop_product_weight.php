@@ -1,7 +1,5 @@
 <?php
 
-namespace panix\mod\shop\migrations;
-
 /**
  * Generation migrate by PIXELION CMS
  * @author PIXELION CMS development team <dev@pixelion.com.ua>
@@ -10,7 +8,6 @@ namespace panix\mod\shop\migrations;
  */
 
 use panix\mod\shop\models\Weight;
-use Yii;
 use panix\engine\db\Migration;
 
 class m180917_193214_shop_product_weight extends Migration

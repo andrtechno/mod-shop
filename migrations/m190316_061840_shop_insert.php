@@ -1,7 +1,5 @@
 <?php
 
-namespace panix\mod\shop\migrations;
-
 /**
  * Generation migrate by PIXELION CMS
  *
@@ -11,7 +9,6 @@ namespace panix\mod\shop\migrations;
  * Class m190316_061840_shop_insert
  */
 
-use Yii;
 use panix\engine\CMS;
 use panix\engine\db\Migration;
 use panix\mod\shop\models\Attribute;
@@ -347,7 +344,9 @@ class m190316_061840_shop_insert extends Migration
         if (!$attributeOption) {
             $attributeOption = new AttributeOption;
             $attributeOption->attribute_id = $attribute_id;
-            $attributeOption->value = $value;
+            $attributeOption->value_ru = $value;
+            $attributeOption->value_uk = $value;
+            $attributeOption->value_en = $value;
             $attributeOption->save(false);
         }
         return $attributeOption;

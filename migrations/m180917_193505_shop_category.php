@@ -1,16 +1,15 @@
 <?php
 
-namespace panix\mod\shop\migrations;
 /**
  * Generation migrate by PIXELION CMS
  * @author PIXELION CMS development team <dev@pixelion.com.ua>
  * 
  * Class m180917_193505_shop_category
  */
-use Yii;
+
 use panix\engine\db\Migration;
 use panix\mod\shop\models\Category;
-use panix\mod\shop\models\translate\CategoryTranslate;
+
 
 class m180917_193505_shop_category extends Migration {
 

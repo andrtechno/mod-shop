@@ -1,16 +1,15 @@
 <?php
 
-namespace panix\mod\shop\migrations;
 /**
  * Generation migrate by PIXELION CMS
  * @author PIXELION CMS development team <dev@pixelion.com.ua>
  *
  * Class m180917_193433_shop_attribute_option
  */
-use yii\db\Schema;
+
 use panix\engine\db\Migration;
 use panix\mod\shop\models\AttributeOption;
-use panix\mod\shop\models\translate\AttributeOptionTranslate;
+
 
 class m180917_193433_shop_attribute_option extends Migration
 {
@@ -21,8 +20,9 @@ class m180917_193433_shop_attribute_option extends Migration
             'id' => $this->primaryKey()->unsigned(),
             'attribute_id' => $this->integer()->null(),
             'data' => $this->text()->null(),
-            'value' => $this->string(255)->null(),
-            'value_ua' => $this->string(255)->null(),
+            'value_ru' => $this->string(255)->null(),
+            'value_uk' => $this->string(255)->null(),
+            'value_en' => $this->string(255)->null(),
             'ordern' => $this->integer()->unsigned(),
         ]);
 

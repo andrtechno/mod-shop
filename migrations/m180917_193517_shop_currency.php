@@ -1,14 +1,12 @@
 <?php
 
-namespace panix\mod\shop\migrations;
-
 /**
  * Generation migrate by PIXELION CMS
  * @author PIXELION CMS development team <dev@pixelion.com.ua>
  *
  * Class m180917_193517_shop_currency
  */
-use yii\db\Schema;
+
 use panix\engine\db\Migration;
 use panix\mod\shop\models\Currency;
 
