@@ -24,7 +24,7 @@ return [
     'AVAILABILITY' => 'Наличие',
     'AVAILABILITY_1' => 'Есть в наличии',
     'AVAILABILITY_2' => 'Под заказ',
-    'AVAILABILITY_3' => 'Нет в наличие',
+    'AVAILABILITY_3' => 'Нет в наличии',
     'AVAILABILITY_4' => 'Архив (товар будет доступен по ссылке, но его купить нельзя)',
     'GRID_OPTION_COPY' => 'Копировать',
     'GRID_OPTION_ACTIVE' => 'Активен',
