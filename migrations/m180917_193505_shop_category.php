@@ -32,6 +32,7 @@ class m180917_193505_shop_category extends Migration {
             'description_uk' => $this->text()->null(),
             'created_at' => $this->integer(),
             'updated_at' => $this->integer(),
+            'use_seo_parents'=>$this->boolean()->defaultValue(0),
             'switch' => $this->boolean()->defaultValue(1),
         ]);
 

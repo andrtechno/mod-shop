@@ -44,9 +44,9 @@ class m180917_193313_shop_product_prices extends Migration
         $this->createIndex('currency_id', '{{%shop__product_price_history}}', 'currency_id');
 
 
-        if ($this->db->driverName != "sqlite") {
-            $this->addForeignKey('{{%fk_product_price_history_product_id}}', '{{%shop__product_price_history}}', 'product_id', Product::tableName(), 'id', "CASCADE", "CASCADE");
-        }
+        //if ($this->db->driverName != "sqlite") {
+        //    $this->addForeignKey('{{%fk_product_price_history_product_id}}', '{{%shop__product_price_history}}', 'product_id', Product::tableName(), 'id', "CASCADE", "CASCADE");
+       // }
     }
 
     /**
@@ -54,10 +54,9 @@ class m180917_193313_shop_product_prices extends Migration
      */
     public function down()
     {
-        if ($this->db->driverName != "sqlite") {
-            $this->dropForeignKey('{{%fk_product_price_history_product_id}}', '{{%shop__product_price_history}}');
-
-        }
+        //if ($this->db->driverName != "sqlite") {
+        //    $this->dropForeignKey('{{%fk_product_price_history_product_id}}', '{{%shop__product_price_history}}');
+       // }
         $this->dropTable(ProductPrices::tableName());
         $this->dropTable('{{%shop__product_price_history}}');
     }

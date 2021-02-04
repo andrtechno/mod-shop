@@ -120,10 +120,10 @@ class m190316_061840_shop_insert extends Migration
                     'Объём накопителя' => '500 ГБ'
                 ],
                 'images' => [
-                    'http://i1.foxtrot.com.ua/product/MediumImages/6404192_0.jpg',
-                    'http://i1.foxtrot.com.ua/product/MediumImages/6404192_1.jpg',
-                    'http://i1.foxtrot.com.ua/product/MediumImages/6404192_2.jpg',
-                    'http://i1.foxtrot.com.ua/product/MediumImages/6404192_4.jpg',
+                    'https://i1.foxtrot.com.ua/product/MediumImages/6404192_0.jpg',
+                    'https://i1.foxtrot.com.ua/product/MediumImages/6404192_1.jpg',
+                    'https://i1.foxtrot.com.ua/product/MediumImages/6404192_2.jpg',
+                    'https://i1.foxtrot.com.ua/product/MediumImages/6404192_4.jpg',
                 ]
             ],
             [
