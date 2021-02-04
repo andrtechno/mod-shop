@@ -2,6 +2,7 @@
 
 
 use panix\engine\Html;
+use panix\mod\shop\models\Manufacturer;
 use panix\mod\shop\models\Product;
 use panix\mod\shop\models\Attribute;
 use panix\mod\shop\models\traits\ProductTrait;
@@ -48,6 +49,18 @@ $columns[] = [
     'value' => function ($model) {
         return Html::a(Html::encode($model->name), ["update", "id" => $model->id], ["target" => "_blank"]);
     },
+];
+$columns[] = [
+    'attribute' => 'manufacturer_id',
+    'contentOptions' => ['class' => 'text-center'],
+    'filter' => ArrayHelper::map(Manufacturer::find()
+        ->addOrderBy(['name_' . Yii::$app->language => SORT_ASC])
+        // ->cache(3200, new DbDependency(['sql' => 'SELECT MAX(`updated_at`) FROM ' . Manufacturer::tableName()]))
+        ->all(), 'id', 'name_' . Yii::$app->language),
+    'filterInputOptions' => ['class' => 'form-control', 'prompt' => html_entity_decode('&mdash; выберите производителя &mdash;')],
+    'value' => function ($model) {
+        return ($model->manufacturer) ? $model->manufacturer->name : NULL;
+    }
 ];
 $columns[] = [
     'attribute' => 'sku',
