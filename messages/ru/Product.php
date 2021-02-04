@@ -22,7 +22,7 @@ return [
     'AUTO_DECREASE_QUANTITY' => 'Автоматически уменьшать количество',
     'QUANTITY' => 'Количество на складе',
     'AVAILABILITY' => 'Наличие',
-    'AVAILABILITY_1' => 'Есть в наличие',
+    'AVAILABILITY_1' => 'Есть в наличии',
     'AVAILABILITY_2' => 'Под заказ',
     'AVAILABILITY_3' => 'Нет в наличие',
     'AVAILABILITY_4' => 'Архив (товар будет доступен по ссылке, но его купить нельзя)',
