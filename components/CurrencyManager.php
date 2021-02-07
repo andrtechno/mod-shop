@@ -153,7 +153,7 @@ class CurrencyManager extends Component
             $decimals = $this->_active['penny'];
 
 
-        if (preg_match('/^(\d+\.00|\d+)$/', $sum, $match)) {
+        if (preg_match('/^(\d+\.00|\d+)$/', $sum, $match) && !$decimals) {
             $format = number_format($sum, 0, $hundredth, $thousandth);
         } else {
             $format = number_format($sum, $decimals, $hundredth, $thousandth);

@@ -1,0 +1,64 @@
+.item {
+    float: left;
+    width: 70mm;
+}
+
+.item .container {
+    border-right: 1px dashed #c1c1c1;
+    border-bottom: 1px dashed #c1c1c1;
+    height: 49.5mm;
+    padding: 4px;
+}
+
+.item .container table {
+    width: 100%;
+    padding: 0;
+    margin: 0;
+
+    /*border-collapse: collapse;*/
+}
+
+.item .container table tr {
+    margin: 0;
+    padding: 0;
+}
+
+.item .container table td {
+    margin: 0;
+    padding: 2px;
+    border: 1px solid red;
+}
+
+
+.price {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.price-old {
+    position: relative;
+}
+
+.price-old2:before {
+    height: 2px;
+    background: red;
+    content: '';
+    position: absolute;
+    width: 100%;
+    top: 0;
+    left: 0;
+}
+
+.price-old {
+    font-size: 15px;
+    position: relative;
+}
+
+.sep {
+    height: 5px;
+    background: red;
+
+    display: block;
+    width: 100%;
+
+}
