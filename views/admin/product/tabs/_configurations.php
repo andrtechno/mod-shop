@@ -32,7 +32,7 @@ $js = <<<JS
 $(document).on('click','#ConfigurationsProductGrid input[type=\"checkbox\"]',function(){
 
     $.ajax({
-        url:'/admin/shop/product/add-configurations?id='+$(this).val(),
+        url:'/admin/shop/product/configurations?id='+$(this).val(),
         dataType:'json',
         type:'POST',
         data:{
@@ -47,9 +47,7 @@ $(document).on('click','#ConfigurationsProductGrid input[type=\"checkbox\"]',fun
             }
         }
     });
-    
-//console.log($(this).val(),confs,$(this).prop('checked'));
-//$('#product-form').append('<input type="hidden" name="ConfigurationsProduct2[]" value="'+$(this).val()+'" />')
+
 });
 JS;
 

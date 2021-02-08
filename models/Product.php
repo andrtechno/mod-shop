@@ -1181,28 +1181,32 @@ class Product extends ActiveRecord
         }
     }
 */
-    public function removeConfigure($id)
+    public function removeConfigure($id,$action='insert')
     {
         $tableName = '{{%shop__product_configurations}}';
+
         try {
-            self::getDb()->createCommand()->delete($tableName, [
+            self::getDb()->createCommand()->{$action}($tableName, [
                 'product_id' => $this->id,
                 'configurable_id' => $id
             ])->execute();
             if (true) { //recursive
-                self::getDb()->createCommand()->delete($tableName, [
+                self::getDb()->createCommand()->{$action}($tableName, [
                     'product_id' => $id,
                     'configurable_id' => $this->id
                 ])->execute();
+if($action=='insert'){
+    foreach ($this->getConfigurable_attributes() as $attr_id) {
+        self::getDb()->createCommand()->insert('{{%shop__product_configurable_attributes}}', [
+            'product_id' => $id,
+            'attribute_id' => $attr_id
+        ])->execute();
+    }
+}else{
+    self::getDb()->createCommand()->delete('{{%shop__product_configurable_attributes}}', ['product_id' => $id])->execute();
 
-                self::getDb()->createCommand()->delete('{{%shop__product_configurable_attributes}}', ['product_id' => $id])->execute();
+}
 
-               /* foreach ($this->getConfigurable_attributes() as $attr_id) {
-                    self::getDb()->createCommand()->insert('{{%shop__product_configurable_attributes}}', [
-                        'product_id' => $id,
-                        'attribute_id' => $attr_id
-                    ])->execute();
-                }*/
             }
         } catch (Exception $exception) {
 
@@ -1223,9 +1227,6 @@ class Product extends ActiveRecord
                     'configurable_id' => $this->id
                 ])->execute();
 
-
-                //self::getDb()->createCommand()->delete('{{%shop__product_configurable_attributes}}', ['product_id' => $id])->execute();
-
                 foreach ($this->getConfigurable_attributes() as $attr_id) {
                     self::getDb()->createCommand()->insert('{{%shop__product_configurable_attributes}}', [
                         'product_id' => $id,
@@ -1236,47 +1237,9 @@ class Product extends ActiveRecord
 
             }
         } catch (Exception $exception) {
-
+            //error duplicate
         }
 
     }
 
-    public function processConfigurationsNew($id)
-    {
-        // Clear relations
-        // CMS::dump($productPks);die;
-        $tableName = '{{%shop__product_configurations}}';
-        self::getDb()->createCommand()->delete($tableName, ['product_id' => $this->id])->execute();
-
-
-        self::getDb()->createCommand()->insert($tableName, [
-            'product_id' => $this->id,
-            'configurable_id' => $id
-        ])->execute();
-        if (true) { //recursive
-            //  CMS::dump($this->getConfigurable_attributes());die;
-            self::getDb()->createCommand()->delete($tableName, ['product_id' => $id])->execute();
-            //$newids = $productPks;
-            //$newids[] = $this->id;
-            // unset($newids[$k]);
-            //foreach ($newids as $pk2) {
-            self::getDb()->createCommand()->insert($tableName, [
-                'product_id' => $id,
-                'configurable_id' => $this->id
-            ])->execute();
-
-            self::getDb()->createCommand()->delete('{{%shop__product_configurable_attributes}}', ['product_id' => $id])->execute();
-
-            foreach ($this->getConfigurable_attributes() as $attr_id) {
-                self::getDb()->createCommand()->insert('{{%shop__product_configurable_attributes}}', [
-                    'product_id' => $id,
-                    'attribute_id' => $attr_id
-                ])->execute();
-            }
-            // }
-
-
-        }
-
-    }
 }

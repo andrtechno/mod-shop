@@ -386,7 +386,7 @@ class ProductController extends AdminController
          * @var EavBehavior|Product $deleteModel
          * @var EavBehavior|Product $model
          */
-        $deleteModel = Product::findOne($model->id);
+        //$deleteModel = Product::findOne($model->id);
         //$deleteModel->deleteEavAttributes([], true); //WARN!!! DUPLICATE DELETE QUERY
         // Delete empty values
         /*foreach ($attributes as $key => $val) {
@@ -731,7 +731,7 @@ class ProductController extends AdminController
         ]);
     }
 
-    public function actionAddConfigurations($id)
+    public function actionConfigurations($id)
     {
         $action = Yii::$app->request->post('action');
         $product = Product::findOne(Yii::$app->request->post('product_id'));
@@ -739,12 +739,12 @@ class ProductController extends AdminController
         if ($product) {
             if ($action) {
                 $result['success'] = true;
-                $result['message'] = 'Добавлено';
-                $product->addConfigure($id);
+                $result['message'] = 'Конфигурация успешно добавлена';
+                $product->removeConfigure($id,'insert');
             } else {
                 $result['success'] = true;
-                $result['message'] = 'Удалено';
-                $product->removeConfigure($id);
+                $result['message'] = 'Конфигурация успешно убрана';
+                $product->removeConfigure($id,'delete');
             }
 
         }
