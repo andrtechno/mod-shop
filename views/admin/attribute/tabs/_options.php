@@ -4,6 +4,7 @@ use panix\mod\shop\models\translate\AttributeOptionTranslate;
 use panix\engine\Html;
 use panix\engine\widgets\Pjax;
 use panix\mod\shop\models\AttributeOption;
+
 \panix\mod\shop\bundles\admin\AttributeAsset::register($this);
 /**
  * @var $this \yii\web\View
@@ -11,10 +12,10 @@ use panix\mod\shop\models\AttributeOption;
  */
 
 ?>
-<?php if($model->sort){ ?>
-<div class="alert alert-warning">
-    Активирована сортировка: <strong><?= $model::sortList()[$model->sort] ?></strong>
-</div>
+<?php if ($model->sort) { ?>
+    <div class="alert alert-warning">
+        <?= $model::t('ALERT_ENABLE_SORT', $model::sortList()[$model->sort]); ?>
+    </div>
 <?php } ?>
 <style type="text/css">
     table.optionsEditTable input[type="text"] {
@@ -31,10 +32,10 @@ use panix\mod\shop\models\AttributeOption;
     <tr class="copyMe">
         <td class="text-center">&mdash;</td>
         <?php foreach (Yii::$app->languageManager->languages as $k => $l) { ?>
-        <td>
-            <input name="sample" type="text" class="value form-control input-lang"
-                   style="background-image:url(/uploads/language/<?= $k;?>.png"/>
-        </td>
+            <td>
+                <input name="sample" type="text" class="value form-control input-lang"
+                       style="background-image:url(/uploads/language/<?= $k; ?>.png"/>
+            </td>
         <?php } ?>
         <td class="text-center">&mdash;</td>
         <td class="text-center">
@@ -46,7 +47,7 @@ use panix\mod\shop\models\AttributeOption;
 
 
 $columns = [];
-if(!$model->sort) {
+if (!$model->sort) {
     $columns[] = [
         'class' => 'panix\engine\grid\sortable\Column',
         'url' => ['/admin/shop/attribute/sortableOptions']
@@ -61,11 +62,10 @@ foreach ($model->options as $k => $o) {
     //foreach (Yii::$app->languageManager->languages as $k => $l) {
 
 
-
-        /*$otest = AttributeOption::find()
-            ->where([AttributeOption::tableName().'.id' => $o->id])
-            ->translate($l->id)
-            ->one();*/
+    /*$otest = AttributeOption::find()
+        ->where([AttributeOption::tableName().'.id' => $o->id])
+        ->translate($l->id)
+        ->one();*/
 //foreach (Yii::$app->languageManager->languages as $k => $l) {
 
 
@@ -75,12 +75,10 @@ foreach ($model->options as $k => $o) {
     $data2['name'] = Html::textInput('options[' . $o->id . '][]', $o->value, ['class' => 'form-control input-lang', 'style' => 'background-image:url(/uploads/language/ru.png);']);
     $data2['name_ua'] = Html::textInput('options[' . $o->id . '][]', $o->value_ua, ['class' => 'form-control input-lang', 'style' => 'background-image:url(/uploads/language/ua.png);']);
 
-        $data2['products'] = Html::a($o->productsCount, ['/admin/shop/product/index', 'ProductSearch[eav][' . $model->name . ']' => $o->id], ['target' => '_blank']);
-        $data[$o->id] = (array)$data2;
-   // }
+    $data2['products'] = Html::a($o->productsCount, ['/admin/shop/product/index', 'ProductSearch[eav][' . $model->name . ']' => $o->id], ['target' => '_blank']);
+    $data[$o->id] = (array)$data2;
+    // }
 }
-
-
 
 
 $columns[] = [
@@ -93,7 +91,7 @@ $columns[] = [
     'attribute' => 'name_ua',
     'format' => 'raw',
 ];
-    $sortAttributes[] = 'name';
+$sortAttributes[] = 'name';
 
 $columns[] = [
     'header' => Yii::t('shop/admin', 'PRODUCT_COUNT'),

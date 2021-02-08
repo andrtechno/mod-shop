@@ -30,5 +30,6 @@ return [
     'TAB_OPTIONS' => 'Опции',
     'TAB_COLOR' => 'Цвет',
     'INFO' => 'Чтобы атрибут отображался в товарах его необходимо добавить к необходимому {productType}',
-    'ERROR_DUPLICATE_OPTIONS' => 'Ошибка: Дубликат'
+    'ERROR_DUPLICATE_OPTIONS' => 'Ошибка: Дубликат',
+    'ALERT_ENABLE_SORT' => 'Активирована сортировка: <strong>{0}</strong>'
 ];
