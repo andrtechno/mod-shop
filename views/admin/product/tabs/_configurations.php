@@ -16,7 +16,7 @@ use panix\engine\widgets\Pjax;
 use panix\mod\shop\models\search\ProductConfigureSearch;
 
 /**
- * @var Controller $this
+ * @var \yii\web\View $this
  * @var Product $product Current product
  */
 
@@ -26,6 +26,34 @@ use panix\mod\shop\models\search\ProductConfigureSearch;
 // For grid view we use new products instance
 //$model = Product::find();
 
+$js = <<<JS
+
+
+$(document).on('click','#ConfigurationsProductGrid input[type=\"checkbox\"]',function(){
+
+    $.ajax({
+        url:'/admin/shop/product/add-configurations?id='+$(this).val(),
+        dataType:'json',
+        type:'POST',
+        data:{
+            product_id:{$product->id},
+            action:$(this).is(':checked')?1:0
+        },
+        success:function(response){
+            if(response.success){
+                common.notify(response.message,'success');
+            }else {
+                common.notify(response.message,'error');
+            }
+        }
+    });
+    
+//console.log($(this).val(),confs,$(this).prop('checked'));
+//$('#product-form').append('<input type="hidden" name="ConfigurationsProduct2[]" value="'+$(this).val()+'" />')
+});
+JS;
+
+$this->registerJs($js);
 $columns[] = [
     'class' => 'panix\engine\grid\columns\CheckboxColumn',
     'enableMenu' => false,
@@ -97,12 +125,22 @@ foreach ($attributeModels as $attribute) {
         array_push($eavAttributes, $attribute->name);
 
     if ($attribute->title && $attribute->name) {
+        // echo 'eav_' . $attribute->name . '.value';
+
+
+        $data2 = Yii::$app->cache->get('configuration' . $attribute->id);
+        if ($data2 === false) {
+            //   $data2 = ArrayHelper::map($attribute->options, 'id', 'value');
+            Yii::$app->cache->set('configuration' . $attribute->id, $data2, 86400);
+        }
+
+
         $columns[] = [
             'attribute' => 'eav_' . $attribute->name . '.value',
             'header' => $attribute->title,
             'contentOptions' => ['class' => 'eav text-center'],
 
-            'filter' => Html::dropDownList('eav[' . $attribute->name . ']', $selected, ArrayHelper::map($attribute->options, 'id', 'value'), [
+            'filter' => Html::dropDownList('eav[' . $attribute->name . ']', $selected, ArrayHelper::map($attribute->getOptions()->cache(86400), 'id', 'value'), [
                 'prompt' => html_entity_decode($product::t('SELECT_ATTRIBUTE')),
                 'class' => 'custom-select w-auto'
             ])
@@ -137,6 +175,11 @@ echo GridView::widget([
     'columns' => $columns,
     'showFooter' => false,
     'enableColumns' => false,
+    'pager' => [
+        'options' => [
+            'class' => 'pagination justify-content-center pb-3 pt-3 mb-0'
+        ]
+    ]
 
 ]);
 Pjax::end();

@@ -60,7 +60,7 @@ class ProductConfigureSearch extends Product
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'sort' => self::getSort(),
-            'pagination' => ['pageSize' => 999999]
+            'pagination' => ['pageSize' => 50]
             /*'sort22' => [
                 //'defaultOrder' => ['created_at' => SORT_ASC],
                 'attributes' => [

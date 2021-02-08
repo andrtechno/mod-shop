@@ -11,6 +11,7 @@ use Yii;
 use panix\engine\CMS;
 use panix\mod\shop\models\query\ProductQuery;
 use yii\caching\DbDependency;
+use yii\db\Exception;
 use yii\db\Query;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
@@ -1179,5 +1180,104 @@ class Product extends ActiveRecord
 
             }
         }
+    }
+
+    public function removeConfigure($id)
+    {
+        $tableName = '{{%shop__product_configurations}}';
+        try {
+            self::getDb()->createCommand()->delete($tableName, [
+                'product_id' => $this->id,
+                'configurable_id' => $id
+            ])->execute();
+            if (true) { //recursive
+                self::getDb()->createCommand()->delete($tableName, [
+                    'product_id' => $id,
+                    'configurable_id' => $this->id
+                ])->execute();
+
+                self::getDb()->createCommand()->delete('{{%shop__product_configurable_attributes}}', ['product_id' => $id])->execute();
+
+               /* foreach ($this->getConfigurable_attributes() as $attr_id) {
+                    self::getDb()->createCommand()->insert('{{%shop__product_configurable_attributes}}', [
+                        'product_id' => $id,
+                        'attribute_id' => $attr_id
+                    ])->execute();
+                }*/
+            }
+        } catch (Exception $exception) {
+
+        }
+    }
+
+    public function addConfigure($id)
+    {
+        $tableName = '{{%shop__product_configurations}}';
+        try {
+            self::getDb()->createCommand()->insert($tableName, [
+                'product_id' => $this->id,
+                'configurable_id' => $id
+            ])->execute();
+            if (true) { //recursive
+                self::getDb()->createCommand()->insert($tableName, [
+                    'product_id' => $id,
+                    'configurable_id' => $this->id
+                ])->execute();
+
+
+                //self::getDb()->createCommand()->delete('{{%shop__product_configurable_attributes}}', ['product_id' => $id])->execute();
+
+                foreach ($this->getConfigurable_attributes() as $attr_id) {
+                    self::getDb()->createCommand()->insert('{{%shop__product_configurable_attributes}}', [
+                        'product_id' => $id,
+                        'attribute_id' => $attr_id
+                    ])->execute();
+                }
+
+
+            }
+        } catch (Exception $exception) {
+
+        }
+
+    }
+
+    public function processConfigurationsNew($id)
+    {
+        // Clear relations
+        // CMS::dump($productPks);die;
+        $tableName = '{{%shop__product_configurations}}';
+        self::getDb()->createCommand()->delete($tableName, ['product_id' => $this->id])->execute();
+
+
+        self::getDb()->createCommand()->insert($tableName, [
+            'product_id' => $this->id,
+            'configurable_id' => $id
+        ])->execute();
+        if (true) { //recursive
+            //  CMS::dump($this->getConfigurable_attributes());die;
+            self::getDb()->createCommand()->delete($tableName, ['product_id' => $id])->execute();
+            //$newids = $productPks;
+            //$newids[] = $this->id;
+            // unset($newids[$k]);
+            //foreach ($newids as $pk2) {
+            self::getDb()->createCommand()->insert($tableName, [
+                'product_id' => $id,
+                'configurable_id' => $this->id
+            ])->execute();
+
+            self::getDb()->createCommand()->delete('{{%shop__product_configurable_attributes}}', ['product_id' => $id])->execute();
+
+            foreach ($this->getConfigurable_attributes() as $attr_id) {
+                self::getDb()->createCommand()->insert('{{%shop__product_configurable_attributes}}', [
+                    'product_id' => $id,
+                    'attribute_id' => $attr_id
+                ])->execute();
+            }
+            // }
+
+
+        }
+
     }
 }

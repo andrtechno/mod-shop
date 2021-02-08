@@ -192,7 +192,7 @@ class ProductController extends AdminController
             }*/
 
             if ($model->save()) {
-                $model->processConfigurations(Yii::$app->request->post('ConfigurationsProduct', []));
+                //$model->processConfigurations(Yii::$app->request->post('ConfigurationsProduct', []));
                 $mainCategoryId = 1;
                 if (isset(Yii::$app->request->post('Product')['main_category_id']))
                     $mainCategoryId = Yii::$app->request->post('Product')['main_category_id'];
@@ -733,7 +733,7 @@ class ProductController extends AdminController
             return ['message' => Product::t('SUCCESS_UPDATE_VIEWS')];
 
         } else {
-            throw new ForbiddenHttpException(Yii::t('app/error',403));
+            throw new ForbiddenHttpException(Yii::t('app/error', 403));
         }
     }
 
@@ -758,6 +758,26 @@ class ProductController extends AdminController
         ]);
     }
 
+    public function actionAddConfigurations($id)
+    {
+        $action = Yii::$app->request->post('action');
+        $product = Product::findOne(Yii::$app->request->post('product_id'));
+        $result['success'] = false;
+        if ($product) {
+            if ($action) {
+                $result['success'] = true;
+                $result['message'] = 'Добавлено';
+                $product->addConfigure($id);
+            } else {
+                $result['success'] = true;
+                $result['message'] = 'Удалено';
+                $product->removeConfigure($id);
+            }
+
+        }
+        return $this->asJson($result);
+
+    }
 
     public function actionApplyRelatedFilter()
     {
@@ -777,7 +797,7 @@ class ProductController extends AdminController
             ]);
 
         } else {
-            throw new ForbiddenHttpException(Yii::t('app/error','304-5'));
+            throw new ForbiddenHttpException(Yii::t('app/error', '304-5'));
         }
     }
 }
