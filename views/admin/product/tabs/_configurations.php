@@ -40,11 +40,7 @@ $(document).on('click','#ConfigurationsProductGrid input[type=\"checkbox\"]',fun
             action:$(this).is(':checked')?1:0
         },
         success:function(response){
-            if(response.success){
-                common.notify(response.message,'success');
-            }else {
-                common.notify(response.message,'error');
-            }
+            common.notify(response.message,'success');
         }
     });
 
