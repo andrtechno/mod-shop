@@ -224,8 +224,6 @@ class ProductController extends AdminController
                 $this->processAttributes($model);
                 // Process variants
                 $this->processVariants($model);
-                //$this->processConfigurations($model);
-
 
                 $model->file = \yii\web\UploadedFile::getInstances($model, 'file');
                 if ($model->file) {
@@ -375,31 +373,6 @@ class ProductController extends AdminController
             throw new ForbiddenHttpException();
         }
 
-    }
-
-    protected function processConfigurations(Product $model)
-    {
-        $productPks = Yii::$app->request->post('ConfigurationsProduct', []);
-
-        // Clear relations
-        $model::getDb()->createCommand()->delete('{{%shop__product_configurations}}', ['product_id' => $model->id])->execute();
-
-        if (!sizeof($productPks))
-            return;
-
-        foreach ($productPks as $pk) {
-            $model::getDb()->createCommand()->insert('{{%shop__product_configurations}}', [
-                'product_id' => $model->id,
-                'configurable_id' => $pk
-            ])->execute();
-            if (true) {
-                $model::getDb()->createCommand()->delete('{{%shop__product_configurations}}', ['product_id' => $pk])->execute();
-                $model::getDb()->createCommand()->insert('{{%shop__product_configurations}}', [
-                    'product_id' => $pk,
-                    'configurable_id' => $model->id
-                ])->execute();
-            }
-        }
     }
 
     protected function processAttributes(Product $model)

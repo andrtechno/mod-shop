@@ -1140,11 +1140,10 @@ class Product extends ActiveRecord
         return ($this->votes > 0) ? round($this->rating / $this->votes, 1) : 0;
     }
 
-
+/*
     public function processConfigurations($productPks)
     {
         // Clear relations
-        // CMS::dump($productPks);die;
         self::getDb()->createCommand()->delete('{{%shop__product_configurations}}', ['product_id' => $this->id])->execute();
 
         if (!sizeof($productPks))
@@ -1181,7 +1180,7 @@ class Product extends ActiveRecord
             }
         }
     }
-
+*/
     public function removeConfigure($id)
     {
         $tableName = '{{%shop__product_configurations}}';
