@@ -4,10 +4,18 @@ use panix\mod\shop\models\translate\AttributeOptionTranslate;
 use panix\engine\Html;
 use panix\engine\widgets\Pjax;
 use panix\mod\shop\models\AttributeOption;
-
 \panix\mod\shop\bundles\admin\AttributeAsset::register($this);
-?>
+/**
+ * @var $this \yii\web\View
+ * @var $model \panix\mod\shop\models\Attribute
+ */
 
+?>
+<?php if($model->sort){ ?>
+<div class="alert alert-warning">
+    Активирована сортировка: <strong><?= $model::sortList()[$model->sort] ?></strong>
+</div>
+<?php } ?>
 <style type="text/css">
     table.optionsEditTable input[type="text"] {
         width: 200px;
@@ -38,10 +46,12 @@ use panix\mod\shop\models\AttributeOption;
 
 
 $columns = [];
-$columns[] = [
-    'class' => 'panix\engine\grid\sortable\Column',
-    'url' => ['/admin/shop/attribute/sortableOptions']
-];
+if(!$model->sort) {
+    $columns[] = [
+        'class' => 'panix\engine\grid\sortable\Column',
+        'url' => ['/admin/shop/attribute/sortableOptions']
+    ];
+}
 $data = [];
 $data2 = [];
 $test = [];
@@ -56,10 +66,10 @@ foreach ($model->options as $k => $o) {
             ->where([AttributeOption::tableName().'.id' => $o->id])
             ->translate($l->id)
             ->one();*/
-foreach (Yii::$app->languageManager->languages as $k => $l) {
+//foreach (Yii::$app->languageManager->languages as $k => $l) {
 
 
-}
+//}
 
 
     $data2['name'] = Html::textInput('options[' . $o->id . '][]', $o->value, ['class' => 'form-control input-lang', 'style' => 'background-image:url(/uploads/language/ru.png);']);

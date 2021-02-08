@@ -28,6 +28,7 @@ use panix\engine\db\ActiveRecord;
  * @property boolean $required
  * @property boolean $use_in_compare
  * @property string $abbreviation
+ * @property integer $sort
  * @property AttributeOption[] $options
  * @property TypeAttribute[] $types
  * @property boolean $use_in_filter Display attribute options as filter on front
