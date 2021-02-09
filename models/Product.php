@@ -950,7 +950,12 @@ class Product extends ActiveRecord
 
         return $this->_configurable_attributes;
     }
-
+    public function getHasDiscount(){
+        if(!empty($this->discount)){
+            return true;
+        }
+        return false;
+    }
     /**
      * @inheritdoc
      */

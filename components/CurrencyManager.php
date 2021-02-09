@@ -47,12 +47,12 @@ class CurrencyManager extends Component
             if ($currency['is_default'])
                 $this->_default = $currency;
         }
-        if(Yii::$app->id != 'console') {
-            $detectActive = $this->detectActive();
-            if ($detectActive) {
-                $this->setActive($detectActive['id']);
-            }
+
+        $detectActive = $this->detectActive();
+        if ($detectActive) {
+            $this->setActive($detectActive['id']);
         }
+
     }
 
     /**
@@ -69,11 +69,13 @@ class CurrencyManager extends Component
      */
     public function detectActive()
     {
-        // Detect currency from session
-        $sessionCurrency = Yii::$app->session['currency'];
+        if (Yii::$app->id != 'console') {
+            // Detect currency from session
+            $sessionCurrency = Yii::$app->session['currency'];
 
-        if ($sessionCurrency && isset($this->_currencies[$sessionCurrency]))
-            return $this->_currencies[$sessionCurrency];
+            if ($sessionCurrency && isset($this->_currencies[$sessionCurrency]))
+                return $this->_currencies[$sessionCurrency];
+        }
         return $this->_default;
     }
 
@@ -116,6 +118,7 @@ class CurrencyManager extends Component
      */
     public function convert($sum, $id = null)
     {
+
         $result = $sum;
         if ($id !== null && isset($this->_currencies[$id])) {
             $currency = $this->_currencies[$id];
