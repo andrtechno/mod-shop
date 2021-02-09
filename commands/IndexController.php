@@ -23,6 +23,7 @@ class IndexController extends ConsoleController
      */
     public function actionGoogleFeed()
     {
+        //https://support.google.com/merchants/answer/6324484?hl=ru&ref_topic=6324338
         $ns = 'http://base.google.com/ns/1.0';
         $xml = new SimpleXMLExtended('<rss xmlns:g="' . $ns . '" version="2.0" />', 0, false, "g", 'http://base.google.com/ns/1.0');
         $channel = $xml->addChild('channel');
@@ -33,7 +34,7 @@ class IndexController extends ConsoleController
         $channel->addChildWithCDATA('description', Yii::$app->settings->get('app', 'sitename'));
         $products = Product::find()
            // ->limit(100)
-            ->where(['switch' => 1])
+           // ->where(['switch' => 1])
             //->andWhere(['use_configurations' => 1])
             //->andWhere(['availability'=>1])
             ->all();

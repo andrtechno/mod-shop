@@ -78,7 +78,13 @@ class CurrencyManager extends Component
         }
         return $this->_default;
     }
+    public function getById($id)
+    {
+            if (isset($this->_currencies[$id]))
+                return (object) $this->_currencies[$id];
 
+        return (object) $this->_default[$id];
+    }
     /**
      * @param int $id currency id
      */
