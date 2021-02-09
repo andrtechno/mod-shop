@@ -105,6 +105,7 @@ class PrintController extends AdminController
 
     public function actionXmlGoogle()
     {
+        //https://support.google.com/merchants/answer/6324497?hl=ru&ref_topic=6324338
         $test = [];
 
         $ns = 'http://base.google.com/ns/1.0';
@@ -112,22 +113,23 @@ class PrintController extends AdminController
         $channel = $xml->addChild('channel');
 
 
-        $channel->addChildWithCDATA('link', "https://ultradruk.com");
-        $channel->addChildWithCDATA('title', "name");
-        $channel->addChildWithCDATA('description', "no");
+        $channel->addChildWithCDATA('link', 'https://' . Yii::$app->request->serverName);
+        $channel->addChildWithCDATA('title', Yii::$app->settings->get('app', 'sitename'));
+        $channel->addChildWithCDATA('description', Yii::$app->settings->get('app', 'sitename'));
         $products = Product::find()
             ->limit(10)
             ->where(['switch' => 1])
+            ->andWhere(['use_configurations' => 1])
             //->andWhere(['availability'=>1])
             ->all();
         foreach ($products as $i => $product) {
             $item = $channel->addChild('item');
-            $item->addChild('g:id', $product->id, $ns);
-            $item->addChildWithCDATA('g:title', $product->name, $ns);
-            $item->addChildWithCDATA('g:description', $product->full_description, $ns);
+            $item->addChild('id', $product->id, $ns);
+            $item->addChildWithCDATA('title', $product->name, $ns);
+            $item->addChildWithCDATA('description', $product->full_description, $ns);
 
 
-            $item->addChild('g:link', Url::to($product->getUrl(), true), $ns);
+            $item->addChild('link', Url::to($product->getUrl(), true), $ns);
 
 
             $images = Image::find()
@@ -138,32 +140,71 @@ class PrintController extends AdminController
 
                 if (file_exists(Yii::getAlias($image->path) . DIRECTORY_SEPARATOR . $image->filePath)) {
                     if ($image->is_main) {
-                        $item->addChild('g:image_link', Url::to('/uploads/store/product/' . $image->filePath, true), $ns);
+                        $item->addChild('image_link', Url::to('/uploads/store/product/' . $image->filePath, true), $ns);
                     } else {
-                        $item->addChild('g:additional_image_link', '/uploads/store/product/' . $image->filePath, $ns);
+                        $item->addChild('additional_image_link', '/uploads/store/product/' . $image->filePath, $ns);
                     }
                 }
 
             }
 
 
-            $item->addChild('g:price', $product->getFrontPrice() . " UAH", $ns);
-            $item->addChild('g:condition', "new", $ns);
+            $item->addChild('price', $product->getFrontPrice() . " UAH", $ns);
+            $item->addChild('condition', "new", $ns);
 
 
             //in_stock [в_наличии]
             //out_of_stock [нет_в_наличии]
             //preorder [предзаказ]
             if ($product->availability == 1) { //Есть в наличии
-                $item->addChild('g:availability', "in_stock", $ns);
+                $item->addChild('availability', "in_stock", $ns);
             } elseif ($product->availability == 3) { //Нет в наличии
-                $item->addChild('g:availability', "out_of_stock", $ns);
+                $item->addChild('gavailability', "out_of_stock", $ns);
             } elseif ($product->availability == 2) {
-                $item->addChild('g:availability', "preorder", $ns);
+                $item->addChild('availability', "preorder", $ns);
             }
 
-            $item->addChild('g:adult', "no", $ns);
-            $item->addChild('g:identifier_exists', "yes", $ns);
+            //$item->addChild('g:adult', "no", $ns);
+            //$item->addChild('g:identifier_exists', "yes", $ns);
+            if ($product->manufacturer_id) {
+                $brand = $product->manufacturer;
+                if ($brand) {
+                    $item->addChild('brand', $brand->name, $ns);
+                }
+            }
+
+            //Bonus program
+            $loyalty_points = $item->addChild('loyalty_points', null, $ns);
+            $loyalty_points->addChild('name', "Бонусная программа", $ns);
+            $loyalty_points->addChild('points_value', $product->getFrontPrice() * Yii::$app->settings->get('user', 'bonus_ratio'), $ns);
+            $loyalty_points->addChild('ratio', Yii::$app->settings->get('user', 'bonus_ratio'), $ns);
+
+
+            //Доставка
+            $shipping = $item->addChild('shipping', null, $ns);
+            $shipping->addChild('country', "US", $ns);
+            $shipping->addChild('region', "MA", $ns);
+            $shipping->addChild('service', "Наземная доставка", $ns);
+            $shipping->addChild('price', "6.49 USD", $ns);
+            $shipping = $item->addChild('shipping', null, $ns);
+            $shipping->addChild('country', "UA", $ns);
+            $shipping->addChild('region', "UA", $ns);
+            $shipping->addChild('postal_code', 65000, $ns);
+            $shipping->addChild('service', "Новая почта", $ns);
+            $shipping->addChild('price', "65.00 UAH", $ns);
+
+
+            if ($product->use_configurations) {
+                $configuration = $product->getConfigurations(true);
+                if ($configuration) {
+                    sort($configuration); //generate unique hash configuration
+                    $item->addChild('item_group_id', implode('-', $configuration), $ns);
+                }
+            }
+
+
+            $item->addChild('ships_from_country', 'UA', $ns);
+
 
             foreach ($product->getDataAttributes() as $data) {
                 foreach ($data as $key => $attribute) {
