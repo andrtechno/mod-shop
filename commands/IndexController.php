@@ -32,14 +32,15 @@ class IndexController extends ConsoleController
         $channel->addChildWithCDATA('title', Yii::$app->settings->get('app', 'sitename'));
         $channel->addChildWithCDATA('description', Yii::$app->settings->get('app', 'sitename'));
         $products = Product::find()
-            //->limit(10)
+           // ->limit(100)
             ->where(['switch' => 1])
             //->andWhere(['use_configurations' => 1])
             //->andWhere(['availability'=>1])
             ->all();
         $count=count($products);
         $i=0;
-        echo Console::startProgress($i, $count, ' - ', 100) . PHP_EOL;
+        Console::startProgress($i, $count);
+
         foreach ($products as $i => $product) {
             $item = $channel->addChild('item');
             $item->addChild('id', $product->id, $ns);
@@ -131,10 +132,10 @@ class IndexController extends ConsoleController
 
             }
             $i++;
-            echo Console::updateProgress($i, $count, ' - ') . PHP_EOL;
+            Console::updateProgress($i, $count);
 
         }
-        echo Console::endProgress(false) . PHP_EOL;
+        Console::endProgress(false);
         return $xml->saveXML(Yii::getAlias('@runtime').DIRECTORY_SEPARATOR.'google-feed.xml');
     }
 
