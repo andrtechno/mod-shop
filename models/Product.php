@@ -950,12 +950,15 @@ class Product extends ActiveRecord
 
         return $this->_configurable_attributes;
     }
-    public function getHasDiscount(){
-        if(!empty($this->discount)){
+
+    public function getHasDiscount()
+    {
+        if (!empty($this->discount)) {
             return true;
         }
         return false;
     }
+
     /**
      * @inheritdoc
      */
@@ -1092,7 +1095,6 @@ class Product extends ActiveRecord
      */
     public static function calculatePrices($product, array $variants, $configuration, $quantity = 1)
     {
-        // print_r($product);die;
         if (($product instanceof Product) === false)
             $product = Product::findOne($product);
 
@@ -1101,7 +1103,11 @@ class Product extends ActiveRecord
 
         if ($configuration instanceof Product) {
             //  $result = $configuration->hasDiscount ? $configuration->discountPrice : $configuration->price;
-            $result = $configuration->hasDiscount ? $configuration->discountPrice : $configuration->price;
+            if ($configuration->currency_id) {
+                $result = Yii::$app->currency->convert($configuration->hasDiscount ? $configuration->discountPrice : $configuration->price, $configuration->currency_id);
+            } else {
+                $result = ($configuration->hasDiscount) ? $configuration->discountPrice : $configuration->price;
+            }
         } else {
 
             // if ($quantity > 1 && ($pr = $product->getPriceByQuantity($quantity))) {
@@ -1114,12 +1120,11 @@ class Product extends ActiveRecord
                 //     $result = $pr->value;
                 //}
             } else {
-                // if ($product->currency_id) {
-                //     $result = Yii::$app->currency->convert($product->hasDiscount ? $product->discountPrice : $product->price, $product->currency_id);
-                // } else {
-                // $result = Yii::$app->currency->convert($product->hasDiscount ? $product->discountPrice : $product->price, $product->currency_id);
-                $result = ($product->hasDiscount) ? $product->discountPrice : $product->price;
-                // }
+                if ($product->currency_id) {
+                    $result = Yii::$app->currency->convert($product->hasDiscount ? $product->discountPrice : $product->price, $product->currency_id);
+                } else {
+                    $result = ($product->hasDiscount) ? $product->discountPrice : $product->price;
+                }
 
             }
         }
@@ -1145,48 +1150,48 @@ class Product extends ActiveRecord
         return ($this->votes > 0) ? round($this->rating / $this->votes, 1) : 0;
     }
 
-/*
-    public function processConfigurations($productPks)
-    {
-        // Clear relations
-        self::getDb()->createCommand()->delete('{{%shop__product_configurations}}', ['product_id' => $this->id])->execute();
+    /*
+        public function processConfigurations($productPks)
+        {
+            // Clear relations
+            self::getDb()->createCommand()->delete('{{%shop__product_configurations}}', ['product_id' => $this->id])->execute();
 
-        if (!sizeof($productPks))
-            return;
+            if (!sizeof($productPks))
+                return;
 
-        foreach ($productPks as $k => $pk) {
-            self::getDb()->createCommand()->insert('{{%shop__product_configurations}}', [
-                'product_id' => $this->id,
-                'configurable_id' => $pk
-            ])->execute();
-            if (true) { //recursive
-                //  CMS::dump($this->getConfigurable_attributes());die;
-                self::getDb()->createCommand()->delete('{{%shop__product_configurations}}', ['product_id' => $pk])->execute();
-                $newids = $productPks;
-                $newids[] = $this->id;
-                unset($newids[$k]);
-                foreach ($newids as $pk2) {
-                    self::getDb()->createCommand()->insert('{{%shop__product_configurations}}', [
-                        'product_id' => $pk,
-                        'configurable_id' => $pk2
-                    ])->execute();
-
-                    self::getDb()->createCommand()->delete('{{%shop__product_configurable_attributes}}', ['product_id' => $pk])->execute();
-
-                    foreach ($this->getConfigurable_attributes() as $attr_id) {
-                        self::getDb()->createCommand()->insert('{{%shop__product_configurable_attributes}}', [
+            foreach ($productPks as $k => $pk) {
+                self::getDb()->createCommand()->insert('{{%shop__product_configurations}}', [
+                    'product_id' => $this->id,
+                    'configurable_id' => $pk
+                ])->execute();
+                if (true) { //recursive
+                    //  CMS::dump($this->getConfigurable_attributes());die;
+                    self::getDb()->createCommand()->delete('{{%shop__product_configurations}}', ['product_id' => $pk])->execute();
+                    $newids = $productPks;
+                    $newids[] = $this->id;
+                    unset($newids[$k]);
+                    foreach ($newids as $pk2) {
+                        self::getDb()->createCommand()->insert('{{%shop__product_configurations}}', [
                             'product_id' => $pk,
-                            'attribute_id' => $attr_id
+                            'configurable_id' => $pk2
                         ])->execute();
+
+                        self::getDb()->createCommand()->delete('{{%shop__product_configurable_attributes}}', ['product_id' => $pk])->execute();
+
+                        foreach ($this->getConfigurable_attributes() as $attr_id) {
+                            self::getDb()->createCommand()->insert('{{%shop__product_configurable_attributes}}', [
+                                'product_id' => $pk,
+                                'attribute_id' => $attr_id
+                            ])->execute();
+                        }
                     }
+
+
                 }
-
-
             }
         }
-    }
-*/
-    public function removeConfigure($id,$action='insert')
+    */
+    public function removeConfigure($id, $action = 'insert')
     {
         $tableName = '{{%shop__product_configurations}}';
 
@@ -1200,17 +1205,17 @@ class Product extends ActiveRecord
                     'product_id' => $id,
                     'configurable_id' => $this->id
                 ])->execute();
-if($action=='insert'){
-    foreach ($this->getConfigurable_attributes() as $attr_id) {
-        self::getDb()->createCommand()->insert('{{%shop__product_configurable_attributes}}', [
-            'product_id' => $id,
-            'attribute_id' => $attr_id
-        ])->execute();
-    }
-}else{
-    self::getDb()->createCommand()->delete('{{%shop__product_configurable_attributes}}', ['product_id' => $id])->execute();
+                if ($action == 'insert') {
+                    foreach ($this->getConfigurable_attributes() as $attr_id) {
+                        self::getDb()->createCommand()->insert('{{%shop__product_configurable_attributes}}', [
+                            'product_id' => $id,
+                            'attribute_id' => $attr_id
+                        ])->execute();
+                    }
+                } else {
+                    self::getDb()->createCommand()->delete('{{%shop__product_configurable_attributes}}', ['product_id' => $id])->execute();
 
-}
+                }
 
             }
         } catch (Exception $exception) {

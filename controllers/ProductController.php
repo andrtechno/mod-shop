@@ -372,7 +372,8 @@ class ProductController extends WebController
                     foreach ($variant['options'] as $v) {
                         $result_options[$v->id] = [
                             'price_type' => (int)$v->price_type,
-                            'price' => $v->price
+                            'price' => $v->price,
+                            'test'=>$v
                         ];
 
 
@@ -384,6 +385,7 @@ class ProductController extends WebController
             if ($eav) {
                 foreach ($eav as $k => $e) {
                     if (isset($result_options[$e])) {
+                        $result['test'] = $result_options[$e]['test'];
                         $result['price_type'] = $result_options[$e]['price_type'];
                         if ($result_options[$e]['price_type']) {
                             // Price type is percent
@@ -394,7 +396,7 @@ class ProductController extends WebController
                     }
                 }
             }
-
+            $result['test'] = Yii::$app->currency->number_format($price);
             $result['price'] = Yii::$app->currency->number_format($price);
             $result['price_formatted'] = Yii::$app->currency->number_format($price);
         } else {
