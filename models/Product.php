@@ -51,9 +51,10 @@ use panix\engine\db\ActiveRecord;
  * @property Supplier[] $supplier
  * @property string $discount Discount
  * @property string $video Youtube video URL
- * @property boolean $hasDiscount See [[\panix\mod\discounts\components\DiscountBehavior]] //Discount
+ * @property boolean $hasDiscount
  * @property float $originalPrice See [[\panix\mod\discounts\components\DiscountBehavior]]
- * @property float $discountPrice See [[\panix\mod\discounts\components\DiscountBehavior]]
+ * @property float $discountPrice
+ * @property string $discountSum
  * @property integer $ordern
  * @property boolean $isAvailable
  * @property Category $categories
@@ -87,6 +88,10 @@ class Product extends ActiveRecord
     private $_kit;
     public $file;
 
+    public $hasDiscount = null;
+    public $discountPrice;
+    public $discountSum;
+
     const route = '/admin/shop/default';
     const MODULE_ID = 'shop';
 
@@ -115,7 +120,7 @@ class Product extends ActiveRecord
         if ($this->hasDiscount) {
             $labelsList['discount']['value'] = '-' . $this->discountSum;
             $labelsList['discount']['label'] = self::t('LABEL_DISCOUNT');
-            if ($this->discountEndDate) {
+            if (isset($this->discountEndDate)) {
                 $labelsList['discount']['title'] = '-' . $this->discountSum . ' до ' . $this->discountEndDate;
             }
         }
@@ -197,6 +202,54 @@ class Product extends ActiveRecord
         ]);
     }
 
+    /* public function getHasDiscount2()
+     {
+         if (!empty($this->discount)) {
+             return $this->discount;
+         }
+         return null;
+     }
+
+     public function getHasDiscount()
+     {
+         if (!empty($this->discount)) {
+             return $this->_hasDiscount;
+         }
+         return null;
+     }
+
+     public function setHasDiscount($v){
+         $this->_hasDiscount = $v;
+     }
+
+
+    public function discount()
+    {
+        if ($this->discount) {
+            $sum = $this->discount;
+            if ('%' === substr($sum, -1, 1)) {
+                $sum = $this->price * ((double)$sum) / 100;
+            }
+            $this->discountSum = $sum;
+            $this->discountPrice = $this->price - $sum;
+        }
+    }*/
+
+    public function afterFind()
+    {
+       // $this->discount();
+        if ($this->discount) {
+            $sum = $this->discount;
+            if ('%' === substr($sum, -1, 1)) {
+                $sum = $this->price * ((double)$sum) / 100;
+            }
+            $this->discountSum = $this->discount;
+            $this->discountPrice = $this->price - $sum;
+            $this->hasDiscount = $this->discount;
+        }
+
+        parent::afterFind();
+    }
 
     public function getMainImage($size = false)
     {
@@ -951,14 +1004,6 @@ class Product extends ActiveRecord
         return $this->_configurable_attributes;
     }
 
-    public function getHasDiscount()
-    {
-        if (!empty($this->discount)) {
-            return true;
-        }
-        return false;
-    }
-
     /**
      * @inheritdoc
      */
@@ -1059,13 +1104,21 @@ class Product extends ActiveRecord
                 'class' => '\panix\mod\markup\components\MarkupBehavior'
             ];
 
-        if (Yii::$app->getModule('discounts') && Yii::$app->id !== 'console') // && Yii::$app->id !== 'console')
+        if (Yii::$app->getModule('discounts') && Yii::$app->id !== 'console') // && Yii::$app->id !== 'console'
             $a['discounts'] = [
                 'class' => '\panix\mod\discounts\components\DiscountBehavior'
             ];
 
 
         return ArrayHelper::merge($a, parent::behaviors());
+    }
+
+    protected $_discountPrice;
+    public function setDiscountPrice($value){
+        $this->_discountPrice=$value;
+    }
+    public function getDiscountPrice(){
+        return $this->_discountPrice;
     }
 
     /**
