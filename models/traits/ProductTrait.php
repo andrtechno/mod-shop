@@ -70,6 +70,10 @@ trait ProductTrait
                 return $model->renderGridImage() . $rating;
             },
         ];
+        $columns['id'] = [
+            'attribute' => 'id',
+            'contentOptions' => ['class' => 'text-center'],
+        ];
         $columns['name'] = [
             'attribute' => 'name',
             'format' => 'raw',
