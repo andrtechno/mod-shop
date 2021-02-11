@@ -54,6 +54,7 @@ class IndexController extends ConsoleController
         Console::startProgress($i, $count);
 
         foreach ($products as $i => $product) {
+            /** @var Product $product */
             $item = $channel->addChild('item');
             $item->addChild('id', $product->id, $ns);
             $item->addChildWithCDATA('title', StringHelper::truncate($product->name, 150 - 3), $ns);
@@ -102,6 +103,12 @@ class IndexController extends ConsoleController
                 }
                 $discountPrice = $priceValue - $sum;
                 $item->addChild('price_sale', (($product->currency_id) ? $discountPrice * $currencies[$product->currency_id]['rate'] : $discountPrice) . " " . $main_iso, $ns);
+
+                if (isset($product->discountEndDate)) {
+                    //date('Y-m-d\TH:i:sO');
+                    //$item->addChild('sale_price_effective_date', "2016-02-24T13:00-0800/2016-02-29T15:30-0800", $ns);
+                }
+
             }
 
             $item->addChild('price', $priceValue . " " . $main_iso, $ns);
