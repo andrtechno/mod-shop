@@ -47,7 +47,7 @@ class IndexController extends ConsoleController
              //->where(['switch' => 0])
             //->andWhere(['use_configurations' => 1])
             //->andWhere(['availability'=>1])
-            ->andWhere(['id' => [9087,9086,9088]])
+            //->andWhere(['id' => [9087,9086,9088]])
             ->all();
         $count = count($products);
         $i = 0;
@@ -146,7 +146,7 @@ class IndexController extends ConsoleController
 
             //Bonus program
             $loyalty_points = $item->addChild('loyalty_points', null, $ns);
-            $loyalty_points->addChild('name', StringHelper::truncate("Бонусная программа", 15 - 3), $ns);
+            $loyalty_points->addChild('name', StringHelper::truncate("Бонусы", 15,''), $ns);
             $loyalty_points->addChild('points_value', floor($priceValue * Yii::$app->settings->get('user', 'bonus_ratio')), $ns);
             $loyalty_points->addChild('ratio', Yii::$app->settings->get('user', 'bonus_ratio'), $ns);
 
@@ -166,11 +166,8 @@ class IndexController extends ConsoleController
 
             $configuration = $product->getConfigurations(true);
             if ($configuration) {
-
-                if ($configuration) {
                     sort($configuration); //generate unique hash configuration
                     $item->addChild('item_group_id', CMS::hash(implode('-', $configuration)), $ns);
-                }
             }
 
 
