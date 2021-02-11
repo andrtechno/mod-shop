@@ -90,6 +90,7 @@ class Product extends ActiveRecord
 
     public $hasDiscount = null;
     public $discountPrice;
+    public $originalPrice;
     public $discountSum;
 
     const route = '/admin/shop/default';
@@ -245,6 +246,7 @@ class Product extends ActiveRecord
             }
             $this->discountSum = $this->discount;
             $this->discountPrice = $this->price - $sum;
+            $this->originalPrice=$this->price;
             $this->hasDiscount = $this->discount;
         }
 
