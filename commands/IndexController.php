@@ -44,7 +44,7 @@ class IndexController extends ConsoleController
         $channel->addChildWithCDATA('description', Yii::$app->settings->get('app', 'sitename'));
         $products = Product::find()
             //->limit(10)
-            // ->where(['switch' => 1])
+             ->where(['switch' => 0])
             //->andWhere(['use_configurations' => 1])
             //->andWhere(['availability'=>1])
             //->andWhere(['id' => 8812])
@@ -83,7 +83,7 @@ class IndexController extends ConsoleController
 
             $custom_label = 0;
             foreach ($product->labels() as $key => $label) {
-                $item->addChild('custom_label_' . $custom_label, $label['label'], $ns);
+                $item->addChild('custom_label_' . $custom_label, $label['value'], $ns);
                 $custom_label++;
             }
 
@@ -96,7 +96,18 @@ class IndexController extends ConsoleController
             }
 
 
-            if ($product->discount) {
+            if ($product->hasDiscount) {
+                $item->addChild('price_sale', (($product->currency_id) ? $product->discountPrice * $currencies[$product->currency_id]['rate'] : $product->discountPrice) . " " . $main_iso, $ns);
+
+                if (isset($product->discountEndDate)) {
+                    //date('Y-m-d\TH:i:sO');
+                    //$item->addChild('sale_price_effective_date', "2016-02-24T13:00-0800/2016-02-29T15:30-0800", $ns);
+                }
+
+            }
+
+
+            /*if ($product->discount) {
                 $sum = $product->discount;
                 if ('%' === substr($sum, -1, 1)) {
                     $sum = $priceValue * ((double)$sum) / 100;
@@ -109,7 +120,9 @@ class IndexController extends ConsoleController
                     //$item->addChild('sale_price_effective_date', "2016-02-24T13:00-0800/2016-02-29T15:30-0800", $ns);
                 }
 
-            }
+            }*/
+
+
 
             $item->addChild('price', $priceValue . " " . $main_iso, $ns);
             $item->addChild('condition', "new", $ns);
