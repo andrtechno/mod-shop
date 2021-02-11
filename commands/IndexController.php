@@ -80,9 +80,9 @@ class IndexController extends ConsoleController
             }
 
 
-            $custom_label=0;
+            $custom_label = 0;
             foreach ($product->labels() as $key => $label) {
-                $item->addChild('custom_label_'.$custom_label, $label['label'], $ns);
+                $item->addChild('custom_label_' . $custom_label, $label['label'], $ns);
                 $custom_label++;
             }
 
@@ -93,7 +93,6 @@ class IndexController extends ConsoleController
             } else {
                 $priceValue = $product->price;
             }
-
 
 
             if ($product->discount) {
@@ -109,16 +108,14 @@ class IndexController extends ConsoleController
             $item->addChild('condition', "new", $ns);
 
 
-            //in_stock [в_наличии]
-            //out_of_stock [нет_в_наличии]
-            //preorder [предзаказ]
             if ($product->availability == 1) { //Есть в наличии
                 $item->addChild('availability', "in_stock", $ns);
             } elseif ($product->availability == 3) { //Нет в наличии
-                $item->addChild('gavailability', "out_of_stock", $ns);
-            } elseif ($product->availability == 2) {
+                $item->addChild('availability', "out_of_stock", $ns);
+            } elseif ($product->availability == 2) { //предзаказ
                 $item->addChild('availability', "preorder", $ns);
             }
+
 
             //$item->addChild('g:adult', "no", $ns);
             //$item->addChild('g:identifier_exists', "yes", $ns);
@@ -179,7 +176,7 @@ class IndexController extends ConsoleController
         $dom = new \DOMDocument();
         $dom->loadXML($xml->asXML());
         $dom->encoding = 'UTF-8';
-        if(!$minify){
+        if (!$minify) {
             $dom->preserveWhiteSpace = false;
             $dom->formatOutput = true;
         }
