@@ -237,7 +237,7 @@ class Product extends ActiveRecord
 
     public function afterFind()
     {
-       // $this->discount();
+        // $this->discount();
         if ($this->discount) {
             $sum = $this->discount;
             if ('%' === substr($sum, -1, 1)) {
@@ -1104,7 +1104,7 @@ class Product extends ActiveRecord
                 'class' => '\panix\mod\markup\components\MarkupBehavior'
             ];
 
-        if (Yii::$app->getModule('discounts') && Yii::$app->id !== 'console') // && Yii::$app->id !== 'console'
+        if (Yii::$app->getModule('discounts')) // && Yii::$app->id !== 'console'
             $a['discounts'] = [
                 'class' => '\panix\mod\discounts\components\DiscountBehavior'
             ];
@@ -1114,10 +1114,14 @@ class Product extends ActiveRecord
     }
 
     protected $_discountPrice;
-    public function setDiscountPrice($value){
-        $this->_discountPrice=$value;
+
+    public function setDiscountPrice($value)
+    {
+        $this->_discountPrice = $value;
     }
-    public function getDiscountPrice(){
+
+    public function getDiscountPrice()
+    {
         return $this->_discountPrice;
     }
 
@@ -1253,24 +1257,26 @@ class Product extends ActiveRecord
                 'product_id' => $this->id,
                 'configurable_id' => $id
             ])->execute();
-            if (true) { //recursive
-                self::getDb()->createCommand()->{$action}($tableName, [
+
+            self::getDb()->createCommand()->{$action}($tableName, [
+                'product_id' => $id,
+                'configurable_id' => $this->id
+            ])->execute();
+
+
+            self::getDb()->createCommand()->delete('{{%shop__product_configurable_attributes}}', ['product_id' => $id])->execute();
+
+            $use_configurations = ($action == 'insert') ? 1 : 0;
+            self::getDb()->createCommand()->update(self::tableName(), ['use_configurations' => $use_configurations], ['id' => $id])->execute();
+
+            foreach ($this->getConfigurable_attributes() as $attr_id) {
+                self::getDb()->createCommand()->insert('{{%shop__product_configurable_attributes}}', [
                     'product_id' => $id,
-                    'configurable_id' => $this->id
+                    'attribute_id' => $attr_id
                 ])->execute();
-                if ($action == 'insert') {
-                    foreach ($this->getConfigurable_attributes() as $attr_id) {
-                        self::getDb()->createCommand()->insert('{{%shop__product_configurable_attributes}}', [
-                            'product_id' => $id,
-                            'attribute_id' => $attr_id
-                        ])->execute();
-                    }
-                } else {
-                    self::getDb()->createCommand()->delete('{{%shop__product_configurable_attributes}}', ['product_id' => $id])->execute();
-
-                }
-
             }
+
+
         } catch (Exception $exception) {
 
         }

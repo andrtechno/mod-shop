@@ -54,8 +54,6 @@ class ProductConfigureSearch extends Product
         $query->sort();
 
         $query->joinWith(['categorization categories']); //, 'commentsCount'
-        $className = substr(strrchr(__CLASS__, "\\"), 1);
-
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

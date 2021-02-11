@@ -44,10 +44,10 @@ class IndexController extends ConsoleController
         $channel->addChildWithCDATA('description', Yii::$app->settings->get('app', 'sitename'));
         $products = Product::find()
             //->limit(10)
-             ->where(['switch' => 0])
+             //->where(['switch' => 0])
             //->andWhere(['use_configurations' => 1])
             //->andWhere(['availability'=>1])
-            //->andWhere(['id' => 8812])
+            ->andWhere(['id' => [9087,9086,9088]])
             ->all();
         $count = count($products);
         $i = 0;
@@ -69,7 +69,6 @@ class IndexController extends ConsoleController
                 ->all();
 
             foreach ($images as $image) {
-
                 if (file_exists(Yii::getAlias($image->path) . DIRECTORY_SEPARATOR . $image->filePath)) {
                     if ($image->is_main) {
                         $item->addChild('image_link', $fullURL . '/uploads/store/product/' . $image->filePath, $ns);
@@ -77,7 +76,6 @@ class IndexController extends ConsoleController
                         $item->addChild('additional_image_link', $fullURL . '/uploads/store/product/' . $image->filePath, $ns);
                     }
                 }
-
             }
 
 
@@ -166,9 +164,9 @@ class IndexController extends ConsoleController
             $shipping->addChild('service', "Новая почта", $ns);
             $shipping->addChild('price', "65.00 UAH", $ns);*/
 
+            $configuration = $product->getConfigurations(true);
+            if ($configuration) {
 
-            if ($product->use_configurations) {
-                $configuration = $product->getConfigurations(true);
                 if ($configuration) {
                     sort($configuration); //generate unique hash configuration
                     $item->addChild('item_group_id', CMS::hash(implode('-', $configuration)), $ns);

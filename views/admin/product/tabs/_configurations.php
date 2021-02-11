@@ -145,11 +145,11 @@ foreach ($attributeModels as $attribute) {
 $searchModel = new ProductConfigureSearch();
 $searchModel->exclude[] = $product->id;
 $searchModel->eavAttributes = $eavAttributes;
-
+//print_r($product->getConfigurations());
 $configure = [];
 
 
-$dataProvider = $searchModel->search(Yii::$app->request->getQueryParams(), ['attribute_id' => $attribute_id]);
+$dataProvider = $searchModel->search(Yii::$app->request->getQueryParams(), ['attribute_id' => $attribute_id,'confs'=>$product->getConfigurations()]);
 Pjax::begin([
     'id' => 'pjax-ConfigurationsProductGrid',
     'enablePushState' => false,
