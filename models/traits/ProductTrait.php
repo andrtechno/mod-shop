@@ -119,7 +119,7 @@ trait ProductTrait
             'attribute' => 'sku',
             'contentOptions' => ['class' => 'text-center'],
         ];
-        $columns['type_id'] = [
+       /* $columns['type_id'] = [
             'attribute' => 'type_id',
             'format' => 'raw',
             'contentOptions' => ['class' => 'text-center'],
@@ -129,7 +129,7 @@ trait ProductTrait
                 ->all(), 'id', 'name'),
             'filterInputOptions' => ['class' => 'form-control', 'prompt' => html_entity_decode('&mdash; выберите тип &mdash;')],
             'value' => 'type.name'
-        ];
+        ];*/
         /*$columns['rating'] = [
             'header' => 'Rating',
             'format' => 'raw',

@@ -25,5 +25,7 @@ class TypeAttribute extends ActiveRecord {
     public function getCurrentAttribute() {
         return $this->hasOne(Attribute::class, ['id' => 'attribute_id']);
     }
-
+    public function getCurrentAttributes() {
+        return $this->hasMany(Attribute::class, ['id' => 'attribute_id']);
+    }
 }

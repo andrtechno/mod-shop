@@ -331,3 +331,52 @@ function setProductsPrice() {
  }
  });
  });*/
+
+
+
+
+$(document).on("click", "#collapse-grid-filter button" , function(event,k) {
+    var data = $("#grid-product").yiiGridView("data");
+    console.log(data.settings.filterUrl,data.settings.filterSelector);
+    $.pjax({
+        //url: data.settings.filterUrl,
+        url: "/admin/shop/product",
+        container: '#pjax-grid-product',
+        type:"GET",
+        push:false,
+        timeout:false,
+        scrollTo:false,
+        data:$("#collapse-grid-filter input, #collapse-grid-filter select").serialize()
+    });
+    return false;
+});
+
+$(document).on("change", "#collapse-grid-filter #productsearch-type_id" , function(event,k) {
+
+
+
+    $.getJSON("/admin/shop/product/load-attributes?type_id="+$(this).val(), function (response) {
+
+        if(Object.keys(response).length > 0){
+            $("#filter-grid-attributes").html("");
+            $.each(response,function(key,items){
+                $("#filter-grid-attributes").append("<div class=\"col-sm-3\"><div class=\"form-group\"><label for=\""+items.inputId+"\">"+items.label+"</label><select class=\"custom-select\" id=\""+items.inputId+"\" name=\""+items.inputName+"\"></select></div></div>");
+                $("#"+items.inputId).append($("<option>", {
+                    value: "",
+                    text : "—"
+                }));
+                $.each(items.options,function(option_id,option_value){
+                    $("#"+items.inputId).append($("<option>", {
+                        value: option_id,
+                        text : option_value
+                    }));
+                });
+            });
+        } else {
+            $("#filter-grid-attributes").html("");
+        }
+
+    });
+
+    return false;
+});

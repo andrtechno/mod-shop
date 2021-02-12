@@ -4,12 +4,11 @@ namespace panix\mod\shop\models;
 
 use panix\engine\CMS;
 use panix\mod\shop\components\ExternalFinder;
+use panix\mod\shop\models\AttributeOption;
 use Yii;
 use yii\caching\DbDependency;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
-use panix\mod\shop\models\translate\AttributeTranslate;
-use panix\mod\shop\models\AttributeOption;
 use panix\mod\shop\models\query\AttributeQuery;
 use panix\engine\db\ActiveRecord;
 
@@ -110,6 +109,7 @@ class Attribute extends ActiveRecord
         // $table = self::tableName();
         // $dependency = new DbDependency();
         // $dependency->sql = "SELECT MAX(updated_at) FROM {$table}";
+
         return $this->hasMany(AttributeOption::class, ['attribute_id' => 'id']);//->cache(3600, $dependency);
     }
 

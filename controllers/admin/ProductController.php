@@ -5,6 +5,7 @@ namespace panix\mod\shop\controllers\admin;
 use panix\engine\CMS;
 use panix\mod\shop\components\EavBehavior;
 use panix\mod\shop\models\Category;
+use panix\mod\shop\models\TypeAttribute;
 use Yii;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
@@ -740,16 +741,63 @@ class ProductController extends AdminController
             if ($action) {
                 $result['success'] = true;
                 $result['message'] = 'Конфигурация успешно добавлена';
-                $product->removeConfigure($id,'insert');
+                $product->removeConfigure($id, 'insert');
             } else {
                 $result['success'] = true;
                 $result['message'] = 'Конфигурация успешно убрана';
-                $product->removeConfigure($id,'delete');
+                $product->removeConfigure($id, 'delete');
             }
 
         }
         return $this->asJson($result);
 
+    }
+
+    public function actionLoadAttributes($type_id)
+    {
+        $attributes = \panix\mod\shop\models\TypeAttribute::findAll(['type_id' => $type_id]);
+        $result = [];
+        foreach ($attributes as $attribute) {
+            foreach ($attribute->currentAttributes as $r) {
+                $result[$r->name] = [];
+                $result[$r->name]['label'] = $r->title;
+                $result[$r->name]['type'] = $r->type;
+                $result[$r->name]['inputName'] = "ProductSearch[eav][{$r->name}]";
+                $result[$r->name]['inputId'] = "product-search-eav-{$r->name}";
+                if ($r->options) {
+
+                    /*if ($r->sort == SORT_ASC) {
+                        $os = $r->getOptions()->orderBy([AttributeOption::tableName().'.value'=>SORT_ASC]);
+                    } elseif ($r->sort == SORT_DESC) {
+                        $os = $r->getOptions()->orderBy([AttributeOption::tableName().'.value'=>SORT_DESC]);
+                    }else{
+                        $os = $r->getOptions();
+                    }
+
+                    $res= $os->all();
+
+                    $result['q'][]=$os->createCommand()->rawsql;
+                    foreach ($r->getOptions()->all() as $rr) {
+                        $result[$r->name]['options'][$rr->id] = $rr->value;
+                    }*/
+
+                    $options = [];
+                    foreach ($r->options as $rr) {
+                        $options[$rr->id] = $rr->value;
+                    }
+                    if ($r->sort == SORT_ASC) {
+                        sort($options);
+                    } elseif ($r->sort == SORT_DESC) {
+                        rsort($options);
+                    }
+                    foreach ($options as $id => $value) {
+                        $result[$r->name]['options'][$id] = $value;
+                    }
+                }
+            }
+        }
+
+        return $this->asJson($result);
     }
 
     public function actionApplyRelatedFilter()

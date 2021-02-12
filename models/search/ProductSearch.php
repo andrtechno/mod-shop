@@ -26,10 +26,11 @@ class ProductSearch extends Product
     public function rules()
     {
         return [
-            [['price_min', 'price_max', 'supplier_id', 'manufacturer_id', 'main_category_id', 'type_id'], 'integer'],
+            [['price_min', 'price_max', 'supplier_id', 'manufacturer_id', 'main_category_id', 'type_id','currency_id','availability'], 'integer'],
             // [['image'],'boolean'],
             [['slug', 'sku', 'price', 'id', 'type_id'], 'safe'], //commentsCount
             [['name'], 'string'],
+            [['switch','use_configurations'], 'boolean'],
             [['created_at', 'updated_at'], 'date', 'format' => 'php:Y-m-d']
         ];
     }
@@ -149,9 +150,33 @@ class ProductSearch extends Product
             $query->andFilterWhere(['categories.category' => $this->main_category_id]);
         }
 
+        if($this->switch){
+            $query->andFilterWhere(['switch' => 0]);
+        }
+        if($this->use_configurations){
+            $query->andFilterWhere(['use_configurations' => $this->use_configurations]);
+        }
+        if($this->currency_id){
+            $query->andFilterWhere(['currency_id' => $this->currency_id]);
+        }
+        if($this->availability){
+            $query->andFilterWhere(['availability' => $this->availability]);
+        }
 
-        //echo $query->createCommand()->rawSql; die;
+
+       // echo $query->createCommand()->rawSql; die;
         return $dataProvider;
+    }
+
+    public function attributeLabels()
+    {
+        return [
+            'use_configurations'=>Yii::t('shop/Product','USE_CONFIGURATIONS'),
+            'type_id'=>Yii::t('shop/Product','TYPE_ID'),
+            'switch'=>Yii::t('shop/Product','Только скрытые'),
+            'currency_id'=>Yii::t('shop/Product','CURRENCY_ID'),
+            'availability'=>Yii::t('shop/Product','AVAILABILITY')
+        ];
     }
 
 }
