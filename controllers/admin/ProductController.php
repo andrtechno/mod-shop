@@ -764,35 +764,24 @@ class ProductController extends AdminController
                 $result[$r->name]['type'] = $r->type;
                 $result[$r->name]['inputName'] = "ProductSearch[eav][{$r->name}]";
                 $result[$r->name]['inputId'] = "product-search-eav-{$r->name}";
+                $result[$r->name]['sort'] = $r->sort;
                 if ($r->options) {
-
-                    /*if ($r->sort == SORT_ASC) {
-                        $os = $r->getOptions()->orderBy([AttributeOption::tableName().'.value'=>SORT_ASC]);
-                    } elseif ($r->sort == SORT_DESC) {
-                        $os = $r->getOptions()->orderBy([AttributeOption::tableName().'.value'=>SORT_DESC]);
-                    }else{
-                        $os = $r->getOptions();
-                    }
-
-                    $res= $os->all();
-
-                    $result['q'][]=$os->createCommand()->rawsql;
-                    foreach ($r->getOptions()->all() as $rr) {
-                        $result[$r->name]['options'][$rr->id] = $rr->value;
-                    }*/
-
-                    $options = [];
-                    foreach ($r->options as $rr) {
-                        $options[$rr->id] = $rr->value;
-                    }
+                    $os = $r->getOptions();
                     if ($r->sort == SORT_ASC) {
-                        sort($options);
+                        $os->orderBy([AttributeOption::tableName() . '.value' => SORT_ASC]);
                     } elseif ($r->sort == SORT_DESC) {
-                        rsort($options);
+                        $os->orderBy([AttributeOption::tableName() . '.value' => SORT_DESC]);
                     }
-                    foreach ($options as $id => $value) {
-                        $result[$r->name]['options'][$id] = $value;
+
+                    $res = $os->all();
+
+                    foreach ($res as $opt) {
+                        $result[$r->name]['options'][] = [
+                            'key' => $opt->id,
+                            'value' => $opt->value
+                        ];
                     }
+
                 }
             }
         }

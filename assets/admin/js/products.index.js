@@ -353,10 +353,7 @@ $(document).on("click", "#collapse-grid-filter button" , function(event,k) {
 
 $(document).on("change", "#collapse-grid-filter #productsearch-type_id" , function(event,k) {
 
-
-
-    $.getJSON("/admin/shop/product/load-attributes?type_id="+$(this).val(), function (response) {
-
+    $.getJSON(common.url("/admin/shop/product/load-attributes?type_id="+$(this).val()), function (response) {
         if(Object.keys(response).length > 0){
             $("#filter-grid-attributes").html("");
             $.each(response,function(key,items){
@@ -365,18 +362,17 @@ $(document).on("change", "#collapse-grid-filter #productsearch-type_id" , functi
                     value: "",
                     text : "—"
                 }));
-                $.each(items.options,function(option_id,option_value){
+
+                $.each(items.options,function(i,option){
                     $("#"+items.inputId).append($("<option>", {
-                        value: option_id,
-                        text : option_value
+                        value: option.key,
+                        text : option.value
                     }));
                 });
             });
         } else {
             $("#filter-grid-attributes").html("");
         }
-
     });
-
     return false;
 });

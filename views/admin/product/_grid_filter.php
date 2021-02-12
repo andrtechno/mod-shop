@@ -36,7 +36,7 @@ $class = '';//($model->status_id || $model->delivery_city) ? 'show' : '';
                         echo Html::activeDropDownList($model, 'type_id', ArrayHelper::map(\panix\mod\shop\models\ProductType::find()
                             ->addOrderBy(['name' => SORT_ASC])
                             ->all(), 'id', 'name'), [
-                            'class' => 'form-control',
+                            'class' => 'custom-select',
                             'prompt' => html_entity_decode('&mdash;'),
                             'id' => Html::getInputId($model, 'type_id')
                         ])
@@ -56,7 +56,7 @@ $class = '';//($model->status_id || $model->delivery_city) ? 'show' : '';
 
                             return $data->iso . ' - ' . $data->rate;
                         }), [
-                            'class' => 'form-control',
+                            'class' => 'custom-select',
                             'prompt' => html_entity_decode('&mdash;'),
                             'id' => Html::getInputId($model, 'currency_id')
                         ])
@@ -66,7 +66,7 @@ $class = '';//($model->status_id || $model->delivery_city) ? 'show' : '';
                         <?php
                         echo Html::activeLabel($model, 'availability');
                         echo Html::activeDropDownList($model, 'availability', \panix\mod\shop\models\Product::getAvailabilityItems(), [
-                            'class' => 'form-control',
+                            'class' => 'custom-select',
                             'prompt' => html_entity_decode('&mdash;'),
                             'id' => Html::getInputId($model, 'availability')
                         ])
