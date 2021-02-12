@@ -1,11 +1,15 @@
 <?php
+
 use panix\mod\shop\models\ProductReviews;
 use panix\engine\widgets\Pjax;
 use panix\engine\grid\GridView;
+use panix\mod\shop\models\ProductType;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
-//Pjax::begin(['dataProvider' => $dataProvider]);
+Pjax::begin(['id' => 'pjax-grid-product-reviews']);
 echo GridView::widget([
+    'id' => 'grid-product-reviews',
     'tableOptions' => ['class' => 'table table-striped'],
     'dataProvider' => $dataProvider,
     'filterModel' => $searchModel,
@@ -32,6 +36,9 @@ echo GridView::widget([
         ],*/
         [
             'attribute' => 'rate',
+            'filter' => [1 => 1, 2 => 2, 3 => 3, 4 => 4, 5 => 5],
+            'filterInputOptions' => ['class' => 'form-control', 'prompt' => html_entity_decode('&mdash;')],
+
             'format' => 'raw',
             'value' => function ($model) {
                 return \panix\ext\rating\RatingInput::widget([
@@ -61,5 +68,5 @@ echo GridView::widget([
     ]
 ]);
 
-//Pjax::end();
+Pjax::end();
 

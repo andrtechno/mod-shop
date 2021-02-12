@@ -19,7 +19,7 @@ class ProductReviewsSearch extends ProductReviews
     public function rules()
     {
         return [
-            [['id', 'product_id'], 'integer'],
+            [['id', 'product_id','rate'], 'integer'],
             [['text'], 'string'],
             [['text'], 'safe'],
         ];
@@ -60,6 +60,7 @@ class ProductReviewsSearch extends ProductReviews
         $query->andFilterWhere(['id' => $this->id]);
         $query->andFilterWhere(['product_id' => $this->product_id]);
         $query->andFilterWhere(['like', 'text', $this->text]);
+        $query->andFilterWhere(['like', 'rate', $this->rate]);
 
         return $dataProvider;
     }
