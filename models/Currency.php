@@ -82,22 +82,6 @@ class Currency extends ActiveRecord
     }
 
 
-    public function beforeSave($insert)
-    {
-
-        /*if ($this->attributes['rate'] <> $this->oldAttributes['rate']) {
-            static::getDb()->createCommand()->insert('{{%shop__currency_history}}', [
-                'currency_id' => $this->id,
-                'rate' => $this->rate,
-                'rate_old' => $this->rate_old,
-                'created_at' => time(),
-                'type' => ($this->oldAttributes['rate'] < $this->attributes['rate']) ? 1 : 0
-            ])->execute();
-        }*/
-
-        return parent::beforeSave($insert);
-    }
-
     public function afterSave($insert, $changedAttributes)
     {
 
@@ -105,16 +89,13 @@ class Currency extends ActiveRecord
             if (isset($changedAttributes['rate'])) {
                 if ($changedAttributes['rate'] <> $this->attributes['rate']) {
                     Yii::$app->db->createCommand()->insert('{{%shop__currency_history}}', [
-                        'user_id' => Yii::$app->user->id,
+                        'user_id' => (Yii::$app->user) ? Yii::$app->user->id : NULL,
                         'currency_id' => $this->id,
                         'rate' => $this->rate,
-                        'rate_old' => $changedAttributes['rate'],
                         'created_at' => time(),
-                        'type' => ($changedAttributes['rate'] < $this->rate) ? 1 : 0,
                     ])->execute();
                 }
             }
-
         }
 
 
