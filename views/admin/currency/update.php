@@ -17,20 +17,26 @@ $form = ActiveForm::begin([
     </div>
     <div class="card-body">
         <?php
+        $tabs[]=[
+            'label' => 'Общие',
+            'content' => $this->render('_global', ['form' => $form, 'model' => $model]),
+            'active' => true,
+            'options' => ['id' => 'global'],
+        ];
+        $tabs[]=[
+            'label' => 'Формат цены',
+            'content' => $this->render('_price', ['form' => $form, 'model' => $model]),
+            'options' => ['id' => 'price'],
+        ];
+        if(!$model->isNewRecord){
+            $tabs[]=[
+                'label' => 'График курса',
+                'content' => $this->render('_history_rate', ['form' => $form, 'model' => $model]),
+                'options' => ['id' => 'history_rate'],
+            ];
+        }
         echo yii\bootstrap4\Tabs::widget([
-            'items' => [
-                [
-                    'label' => 'Общие',
-                    'content' => $this->render('_global', ['form' => $form, 'model' => $model]),
-                    'active' => true,
-                    'options' => ['id' => 'global'],
-                ],
-                [
-                    'label' => 'Формат цены',
-                    'content' => $this->render('_price', ['form' => $form, 'model' => $model]),
-                    'options' => ['id' => 'price'],
-                ],
-            ],
+            'items' => $tabs,
         ]);
         ?>
     </div>

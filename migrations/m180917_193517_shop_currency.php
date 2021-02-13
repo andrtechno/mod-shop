@@ -39,17 +39,19 @@ class m180917_193517_shop_currency extends Migration
 
         $this->createTable('{{%shop__currency_history}}', [
             'id' => $this->primaryKey()->unsigned(),
+            'user_id' => $this->integer()->unsigned(),
             'currency_id' => $this->integer()->null(),
-            'rate' => $this->money(10, 2)->notNull()->defaultValue(null),
-            'rate_old' => $this->money(10, 2),
+            'rate' => $this->money(10, 2)->defaultValue(null),
+            //'rate_old' => $this->money(10, 2),
             'created_at' => $this->integer(),
-            'type' => $this->tinyInteger(1)->null()->defaultValue(0)->comment('1=up, 0=down'),
+            //'type' => $this->tinyInteger(1)->null()->defaultValue(0)->comment('1=up, 0=down'),
         ]);
 
 
         $this->createIndex('currency_id', '{{%shop__currency_history}}', 'currency_id');
+        $this->createIndex('user_id', '{{%shop__currency_history}}', 'user_id');
         $this->createIndex('created_at', '{{%shop__currency_history}}', 'created_at');
-        $this->createIndex('type', '{{%shop__currency_history}}', 'type');
+        //$this->createIndex('type', '{{%shop__currency_history}}', 'type');
 
         $columns = ['name', 'iso', 'symbol', 'rate', 'penny', 'separator_hundredth', 'separator_thousandth', 'is_main', 'is_default', 'switch', 'created_at', 'ordern'];
         $this->batchInsert(Currency::tableName(), $columns, [

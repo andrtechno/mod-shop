@@ -85,7 +85,7 @@ class Currency extends ActiveRecord
     public function beforeSave($insert)
     {
 
-        if ($this->attributes['rate'] <> $this->oldAttributes['rate']) {
+        /*if ($this->attributes['rate'] <> $this->oldAttributes['rate']) {
             static::getDb()->createCommand()->insert('{{%shop__currency_history}}', [
                 'currency_id' => $this->id,
                 'rate' => $this->rate,
@@ -93,15 +93,33 @@ class Currency extends ActiveRecord
                 'created_at' => time(),
                 'type' => ($this->oldAttributes['rate'] < $this->attributes['rate']) ? 1 : 0
             ])->execute();
-        }
+        }*/
 
         return parent::beforeSave($insert);
     }
 
     public function afterSave($insert, $changedAttributes)
     {
+
+        if (!$insert) {
+            if (isset($changedAttributes['rate'])) {
+                if ($changedAttributes['rate'] <> $this->attributes['rate']) {
+                    Yii::$app->db->createCommand()->insert('{{%shop__currency_history}}', [
+                        'user_id' => Yii::$app->user->id,
+                        'currency_id' => $this->id,
+                        'rate' => $this->rate,
+                        'rate_old' => $changedAttributes['rate'],
+                        'created_at' => time(),
+                        'type' => ($changedAttributes['rate'] < $this->rate) ? 1 : 0,
+                    ])->execute();
+                }
+            }
+
+        }
+
+
         if (!$insert && Yii::$app->queue && Yii::$app->id != 'console') {
-           // Yii::$app->queue->channel = 'currency';
+            // Yii::$app->queue->channel = 'currency';
 
             if (isset($changedAttributes['rate'])) {
 
@@ -113,19 +131,18 @@ class Currency extends ActiveRecord
                         ->from(Product::tableName());
 
 
-
                     $queueDoneCount = (new \yii\db\Query())->select(['pushed_at', 'ttr', 'delay', 'priority', 'reserved_at', 'attempt', 'done_at', 'channel'])
                         ->from(Yii::$app->queue->tableName)
                         ->where(['not', ['done_at' => null]])
                         ->andWhere(['channel' => Yii::$app->queue->channel])
-                        ->andWhere(['>=','pushed_at', time()])
+                        ->andWhere(['>=', 'pushed_at', time()])
                         ->createCommand()
                         ->query()
                         ->count();
 
                     Yii::$app->settings->set('app', ['QUEUE_CHANNEL_' . Yii::$app->queue->channel => $queueDoneCount]);
 
-                    Yii::$app->settings->set('app', ['QUEUE_date_'.Yii::$app->queue->channel.'' => time()]);
+                    Yii::$app->settings->set('app', ['QUEUE_date_' . Yii::$app->queue->channel . '' => time()]);
 //echo $queueDoneCount;die;
 
                     foreach ($query->batch(500) as $items) {
