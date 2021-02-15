@@ -176,10 +176,10 @@ class CatalogController extends FilterController
         //}
 
 
-       /* $this->view->params['breadcrumbs'][] = [
-            'label' => Yii::t('shop/default', 'CATALOG'),
-            'url' => ['/catalog']
-        ];*/
+        /* $this->view->params['breadcrumbs'][] = [
+             'label' => Yii::t('shop/default', 'CATALOG'),
+             'url' => ['/catalog']
+         ];*/
 
         $ancestors = $this->dataModel->ancestors()->addOrderBy('depth')->excludeRoot()->cache(3600)->all();
         //$ancestors = Category::getDb()->cache(function ($db) use ($m) {
@@ -203,7 +203,7 @@ class CatalogController extends FilterController
 
         $currentUrl[] = '/shop/catalog/view';
         $currentUrl['slug'] = $this->dataModel->full_path;
-
+        $this->view->canonical = Url::to($currentUrl, true);
         foreach ($filterData as $name => $filter) {
             if (isset($filter['name'])) { //attributes
                 $currentUrl[$filter['name']] = [];
@@ -365,7 +365,7 @@ class CatalogController extends FilterController
             $this->query->applyManufacturers(array_unique($manufacturers), 'orWhere');
         }
         if ($categories) {
-            $this->query->applyCategories(array_unique($categories),'orWhere');
+            $this->query->applyCategories(array_unique($categories), 'orWhere');
         }
 
         $this->filterQuery = clone $this->query;
@@ -378,7 +378,7 @@ class CatalogController extends FilterController
         }
 
 
-       // echo $this->query->createCommand()->rawSql;
+        // echo $this->query->createCommand()->rawSql;
 
         $this->provider = new ActiveDataProvider([
             'query' => $this->query,
