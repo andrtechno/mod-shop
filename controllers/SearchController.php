@@ -48,7 +48,7 @@ class SearchController extends FilterController
 
         // Filter products by price range if we have min or max in request
         //$this->applyPricesFilter();
-        $sort = explode(',',Yii::$app->request->get('sort'));
+        $sort = explode(',', Yii::$app->request->get('sort'));
         if ($sort[0] == 'price' || $sort[0] == '-price') {
             $this->query->aggregatePriceSelect(($sort[0] == 'price') ? SORT_ASC : SORT_DESC);
         }
@@ -61,6 +61,7 @@ class SearchController extends FilterController
                 'pageSize' => $this->per_page,
             ]
         ]);
+        $this->view->canonical = Url::to(['/shop/search/index', 'q' => Yii::$app->request->get('q')], true);
         $this->view->registerJs("var current_url = '" . Url::to(Yii::$app->request->getUrl()) . "';", yii\web\View::POS_HEAD, 'current_url');
 
         $this->pageName = Yii::t('shop/default', 'SEARCH_RESULT', [

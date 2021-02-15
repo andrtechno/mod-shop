@@ -137,7 +137,7 @@ class CategoryUrlRule extends BaseUrlRule
                 if ($pos === false) {
                     throw new NotFoundHttpException(Yii::t('app/error', 404));
                 }
-           // }
+           //    }
 
 
             foreach ($this->getAllPaths() as $path) {
