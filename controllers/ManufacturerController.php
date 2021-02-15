@@ -86,6 +86,8 @@ class ManufacturerController extends FilterController
 
         $currentUrl[] = '/shop/manufacturer/view';
         $currentUrl['slug'] = $this->dataModel->slug;
+
+        $this->view->canonical = Url::to($currentUrl, true);
         //  print_r($filterData);die;
         foreach ($filterData as $name => $filter) {
             if (isset($filter['name'])) { //attributes

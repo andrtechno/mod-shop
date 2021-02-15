@@ -280,6 +280,7 @@ class CatalogController extends FilterController
         /** @var Product $productModel */
         $productModel = Yii::$app->getModule('shop')->model('Product');
         $this->currentUrl = Url::to(['new']);
+        $this->view->canonical = Url::to($this->currentUrl, true);
         $this->view->registerJs("var current_url = '" . $this->currentUrl . "';", yii\web\View::POS_HEAD, 'current_url');
 
 
@@ -321,6 +322,7 @@ class CatalogController extends FilterController
         $this->view->params['breadcrumbs'][] = $this->pageName;
 
         $this->currentUrl = Url::to(['sales']);
+        $this->view->canonical = Url::to($this->currentUrl, true);
         $this->view->registerJs("var current_url = '" . $this->currentUrl . "';", yii\web\View::POS_HEAD, 'current_url');
 
         // $this->query = $this->dataModel::find()->published()->isNotEmpty('discount');

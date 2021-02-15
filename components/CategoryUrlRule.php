@@ -2,8 +2,9 @@
 
 namespace panix\mod\shop\components;
 
+use Yii;
 use panix\engine\CMS;
-use yii\web\UrlRule;
+use yii\web\NotFoundHttpException;
 use panix\mod\shop\models\Category;
 
 /**
@@ -12,7 +13,7 @@ use panix\mod\shop\models\Category;
  */
 class CategoryUrlRule extends BaseUrlRule
 {
-   // public $pattern = '';
+    // public $pattern = '';
     /*public $route = 'shop/category/view';
     public $pattern = '';
     public $cacheDuration = 0;
@@ -98,7 +99,7 @@ class CategoryUrlRule extends BaseUrlRule
                 return strlen($b['full_path']) - strlen($a['full_path']);
             });
 
-            \Yii::$app->cache->set('CategoryUrlRule', $allPaths,3600);
+            \Yii::$app->cache->set('CategoryUrlRule', $allPaths, 3600);
         }
 
         return $allPaths;
@@ -111,7 +112,7 @@ class CategoryUrlRule extends BaseUrlRule
         $params = [];
         $pathInfo = $request->getPathInfo();
 
-        $basePathInfo= $pathInfo;
+        $basePathInfo = $pathInfo;
         if (empty($pathInfo))
             return false;
 
@@ -122,14 +123,16 @@ class CategoryUrlRule extends BaseUrlRule
         //    $pathInfo = strtolower($request->getHostInfo()) . ($pathInfo === '' ? '' : '/' . $pathInfo);
         //}
 
+        $pos = strpos($pathInfo, $this->index . '/');
 
-
-
+        if ($pos === false && $this->route == 'shop/catalog/view') {
+            throw new NotFoundHttpException(Yii::t('app/error', 404));
+        }
 
         foreach ($this->getAllPaths() as $path) {
-           $pathInfo = str_replace($this->index . '/', '', $pathInfo);
-           // $pathInfo = preg_replace($this->pattern, '', $pathInfo);
-           // //$preg = preg_match($this->pattern, $pathInfo, $match);
+            $pathInfo = str_replace($this->index . '/', '', $pathInfo);
+            // $pathInfo = preg_replace($this->pattern, '', $pathInfo);
+            // //$preg = preg_match($this->pattern, $pathInfo, $match);
             //CMS::dump($path);
             //print_r($pathInfo);die;
             if ($path[$this->alias] !== '' && strpos($pathInfo, $path[$this->alias]) === 0) {
@@ -137,7 +140,7 @@ class CategoryUrlRule extends BaseUrlRule
                 $params['slug'] = ltrim($path[$this->alias]);
                 $_GET['slug'] = $params['slug'];
 
-                $pathInfo = ltrim(substr($basePathInfo, strlen($this->index.'/'.$path[$this->alias])), '/');
+                $pathInfo = ltrim(substr($basePathInfo, strlen($this->index . '/' . $path[$this->alias])), '/');
 
                 $parts = explode('/', $pathInfo);
                 $paramsList = array_chunk($parts, 2);
@@ -151,6 +154,7 @@ class CategoryUrlRule extends BaseUrlRule
 
                 return [$this->route, $params];
             }
+
         }
 
         return false;
