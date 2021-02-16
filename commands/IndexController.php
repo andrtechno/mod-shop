@@ -43,8 +43,8 @@ class IndexController extends ConsoleController
         $channel->addChildWithCDATA('title', Yii::$app->settings->get('app', 'sitename'));
         $channel->addChildWithCDATA('description', Yii::$app->settings->get('app', 'sitename'));
         $products = Product::find()
-            //->limit(10)
-             //->where(['switch' => 0])
+            //->limit(100)
+             ->where(['switch' => 1])
             //->andWhere(['use_configurations' => 1])
             //->andWhere(['availability'=>1])
             //->andWhere(['id' => [9087,9086,9088]])
@@ -67,13 +67,12 @@ class IndexController extends ConsoleController
             $images = Image::find()
                 ->where(['object_id' => $product->id, 'handler_hash' => $product->getHash()])
                 ->all();
-
             foreach ($images as $image) {
-                if (file_exists(Yii::getAlias($image->path) . DIRECTORY_SEPARATOR . $image->filePath)) {
+                if (file_exists(Yii::getAlias($image->path) . DIRECTORY_SEPARATOR . $product->id.DIRECTORY_SEPARATOR.$image->filePath)) {
                     if ($image->is_main) {
-                        $item->addChild('image_link', $fullURL . '/uploads/store/product/' . $image->filePath, $ns);
+                        $item->addChild('image_link', $fullURL . '/uploads/store/product/'.$product->id.'/' . $image->filePath, $ns);
                     } else {
-                        $item->addChild('additional_image_link', $fullURL . '/uploads/store/product/' . $image->filePath, $ns);
+                        $item->addChild('additional_image_link', $fullURL . '/uploads/store/product/'.$product->id.'/' . $image->filePath, $ns);
                     }
                 }
             }

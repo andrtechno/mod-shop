@@ -13,6 +13,7 @@ use panix\mod\shop\models\Category;
  */
 class CategoryUrlRule extends BaseUrlRule
 {
+    private $all_paths;
     // public $pattern = '';
     /*public $route = 'shop/category/view';
     public $pattern = '';
@@ -87,19 +88,25 @@ class CategoryUrlRule extends BaseUrlRule
     {
         $allPaths = \Yii::$app->cache->get('CategoryUrlRule');
         if ($allPaths === false) {
-            $allPaths = (new \yii\db\Query())
+            $items = (new \yii\db\Query())
                 ->select(['full_path'])
                 ->andWhere('id!=:id', [':id' => 1])
                 ->from(Category::tableName())
                 ->all();
 
+            $allPaths = [];
+            foreach ($items as $item) {
+                $allPaths[] = $item['full_path'];
+            }
 
             // Sort paths by length.
             usort($allPaths, function ($a, $b) {
-                return strlen($b['full_path']) - strlen($a['full_path']);
+                return strlen($b) - strlen($a);
+                // return strlen($b['full_path']) - strlen($a['full_path']);
             });
 
-            \Yii::$app->cache->set('CategoryUrlRule', $allPaths, 3600);
+
+            \Yii::$app->cache->set('CategoryUrlRule', $allPaths, 1);
         }
 
         return $allPaths;
@@ -129,40 +136,30 @@ class CategoryUrlRule extends BaseUrlRule
             //    $pathInfo = strtolower($request->getHostInfo()) . ($pathInfo === '' ? '' : '/' . $pathInfo);
             //}
 
-            $pos = strpos($pathInfo, $this->index . '/');
-
-            //CMS::dump(Yii::$app->controller);
-            //die;
-           // if ($this->route == 'shop/catalog/view') {
-                if ($pos === false) {
-                    throw new NotFoundHttpException(Yii::t('app/error', 404));
-                }
-           //    }
-
-
             foreach ($this->getAllPaths() as $path) {
                 $pathInfo = str_replace($this->index . '/', '', $pathInfo);
-                // $pathInfo = preg_replace($this->pattern, '', $pathInfo);
-                // //$preg = preg_match($this->pattern, $pathInfo, $match);
-                //CMS::dump($path);
-                //print_r($pathInfo);die;
-                if ($path[$this->alias] !== '' && strpos($pathInfo, $path[$this->alias]) === 0) {
+                if ($path !== '' && strpos($pathInfo, $path) === 0) {
 
-                    $params['slug'] = ltrim($path[$this->alias]);
+                    $params['slug'] = ltrim($path);
                     $_GET['slug'] = $params['slug'];
 
-                    $pathInfo = ltrim(substr($basePathInfo, strlen($this->index . '/' . $path[$this->alias])), '/');
+                    $pathInfo = ltrim(substr($basePathInfo, strlen($this->index . '/' . $path)), '/');
+                   // $pathInfo = trim(substr($basePathInfo, strlen($this->index . '/' . $path)));
 
-                    $parts = explode('/', $pathInfo);
-                    $paramsList = array_chunk($parts, 2);
+                    if (!empty($pathInfo)) {
+                        $parts = explode('/', $pathInfo);
+                        $paramsList = array_chunk($parts, 2);
+                        foreach ($paramsList as $k => $p) {
 
-                    foreach ($paramsList as $k => $p) {
-                        if (isset($p[1]) && isset($p[0])) {
-                            $_GET[$p[0]] = $p[1];
-                            $params[$p[0]] = $p[1];
+                            if (!isset($p[1])) {
+                                return false;
+                            }
+                            if (isset($p[1]) && isset($p[0])) {
+                                $_GET[$p[0]] = $p[1];
+                                $params[$p[0]] = $p[1];
+                            }
                         }
                     }
-
                     return [$this->route, $params];
                 }
 

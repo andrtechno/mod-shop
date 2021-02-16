@@ -262,10 +262,16 @@ class CatalogController extends FilterController
         } else {
             $this->view->params['breadcrumbs'][] = $this->dataModel->name;
         }
-        if (!$this->view->title && Yii::$app->settings->get('shop', 'smart_title')) {
+        if (Yii::$app->settings->get('shop', 'smart_title')) {
             $smartData = $this->smartNames();
             $this->pageName .= $smartData['title'];
-            $this->view->title = $this->pageName;
+            if($this->view->title){
+                $this->view->title .= $smartData['title'];
+              //  $this->view->h1 = $smartData['title'];
+            }else{
+                $this->view->title = $this->pageName;
+            }
+
         }
 
 

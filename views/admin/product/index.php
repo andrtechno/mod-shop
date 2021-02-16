@@ -18,10 +18,15 @@ echo Fancybox::widget(['target' => '.image a']);
     ]
 ]);*/
 
+/*
+$pattern = '#^catalog/(?P<slug>[0-9a-zA-Z_\/\-]+)/(?P<filter>\/[\w,\/]+)$#u';
 
-
-
-
+$pathInfo = 'catalog/ukhod-dla-volos/kondicioner-dla-volos/filter/size/13,5/brand/1';
+if (!preg_match($pattern, $pathInfo, $matches)) {
+  //  return false;
+}
+CMS::dump($matches);die;
+*/
 ?>
 <div class="card">
     <div class="card-header">

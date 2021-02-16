@@ -2,6 +2,7 @@
 
 namespace panix\mod\shop;
 
+use panix\mod\shop\models\Category;
 use Yii;
 use panix\engine\WebModule;
 use yii\base\BootstrapInterface;
@@ -46,14 +47,49 @@ class Module extends WebModule implements BootstrapInterface
                 'index' => 'manufacturer',
                 'pattern'=>'manufacturer/<slug:[0-9a-zA-Z_\-]+>'
             ];
-            $rules[] = [
+           /* $rules[] = [
                 'class' => 'panix\mod\shop\components\CategoryUrlRule',
                 'route' => 'shop/catalog/view',
                 'index' => 'catalog',
-                'pattern'=>'catalog/<slug:[0-9a-zA-Z_\-]+>',
+                //'pattern'=>'catalog/<slug:[0-9a-zA-Z_\-]+>',
                 'alias' => 'full_path',
                 //  'pattern' => ''
-            ];
+            ];*/
+
+
+            foreach ($this->getAllPaths() as $path){
+                $rules[] = [
+                    'class' => 'panix\mod\shop\components\CategoryUrlRuleNew',
+                    'route' => 'shop/catalog/view',
+                    'defaults'=>['slug'=>$path['full_path']],
+                    //'suffix'=>'.html',
+                    'pattern'=>"catalog/<alias:[0-9a-zA-Z_\-]+>", ///<alias:[\w]+>
+                ];
+
+               /* $rules[] = [
+                    'class' => 'panix\mod\shop\components\CategoryUrlRuleNew',
+                    'route' => 'shop/catalog/view',
+                    'defaults'=>['slug'=>$slug],
+                    'pattern'=>"catalog/<alias:[0-9a-zA-Z_\-]+>/<filter:[\w,\/]+>", //
+                    'encodeParams'=>false,
+                ];*/
+               /* $rules[] = [
+                    'class' => 'panix\mod\shop\components\CategoryUrlRuleNew',
+                    'route' => 'shop/catalog/view',
+                    'pattern'=>"catalog/<slug:[0-9a-zA-Z_\/\-]+>/<filter:[\w,\/]+>", //<filter:[\w-,\/]+>
+                    'encodeParams'=>false,
+                    //'mode'         => \yii\web\UrlRule::PARSING_ONLY,
+                ];*/
+                /*$rules[] = [
+                    'class' => 'panix\mod\shop\components\CategoryUrlRuleNew',
+                    'route' => 'shop/catalog/view',
+                    'pattern'=>"catalog/<slug:{$slug}>",
+                    'encodeParams'=>false,
+                    //'mode'         => \yii\web\UrlRule::PARSING_ONLY,
+                ];*/
+
+            }
+
             $rules[] = [
                 'class' => 'panix\mod\shop\components\BaseTest2UrlRule',
                 'route' => '/shop/catalog/new',
@@ -94,7 +130,27 @@ class Module extends WebModule implements BootstrapInterface
         ]);
 
     }
+    protected function getAllPaths()
+    {
+        $allPaths = \Yii::$app->cache->get('CategoryUrlRule');
+        if ($allPaths === false) {
+            $allPaths = (new \yii\db\Query())
+                ->select(['full_path'])
+                ->andWhere('id!=:id', [':id' => 1])
+                ->from(Category::tableName())
+                ->all();
 
+
+            // Sort paths by length.
+            usort($allPaths, function ($a, $b) {
+                return strlen($b['full_path']) - strlen($a['full_path']);
+            });
+
+            \Yii::$app->cache->set('CategoryUrlRule', $allPaths, 3600);
+        }
+
+        return $allPaths;
+    }
     public function init()
     {
         if (Yii::$app->id == 'console') {
