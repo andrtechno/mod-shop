@@ -202,5 +202,4 @@ class IndexController extends ConsoleController
         return $xml->saveXML(Yii::getAlias($path) . DIRECTORY_SEPARATOR . 'google-feed.xml');
     }
 
-
 }
