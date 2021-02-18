@@ -25,9 +25,10 @@ class IndexController extends ConsoleController
      * Generate google feed XML.
      * @param string $host Host for url
      * @param integer $minify Minimization file content: use 1 or 0
+     * @param string $path Alias path save file: default '@runtime'
      * @return mixed
      */
-    public function actionGoogleFeed($host = 'no-host.com', $minify = 1)
+    public function actionGoogleFeed($host = 'no-host.com', $minify = 1, $path = '@runtime')
     {
         //https://support.google.com/merchants/answer/6324484?hl=ru
         $ns = 'http://base.google.com/ns/1.0';
@@ -43,8 +44,8 @@ class IndexController extends ConsoleController
         $channel->addChildWithCDATA('title', Yii::$app->settings->get('app', 'sitename'));
         $channel->addChildWithCDATA('description', Yii::$app->settings->get('app', 'sitename'));
         $products = Product::find()
-            //->limit(100)
-             ->where(['switch' => 1])
+            //->limit(50)
+             ->where(['switch' => 1])->andWhere(['>','price', 1000])
             //->andWhere(['use_configurations' => 1])
             //->andWhere(['availability'=>1])
             //->andWhere(['id' => [9087,9086,9088]])
@@ -54,6 +55,7 @@ class IndexController extends ConsoleController
         Console::startProgress($i, $count);
 
         foreach ($products as $i => $product) {
+
             /** @var Product $product */
             $item = $channel->addChild('item');
             $item->addChild('id', $product->id, $ns);
@@ -94,7 +96,7 @@ class IndexController extends ConsoleController
 
 
             if ($product->hasDiscount) {
-                $item->addChild('price_sale', (($product->currency_id) ? $product->discountPrice * $currencies[$product->currency_id]['rate'] : $product->discountPrice) . " " . $main_iso, $ns);
+                $item->addChild('price_sale', number_format((($product->currency_id) ? $product->discountPrice * $currencies[$product->currency_id]['rate'] : $product->discountPrice),2,'.','') . " " . $main_iso, $ns);
 
                 if (isset($product->discountEndDate)) {
                     //date('Y-m-d\TH:i:sO');
@@ -121,7 +123,7 @@ class IndexController extends ConsoleController
 
 
 
-            $item->addChild('price', $priceValue . " " . $main_iso, $ns);
+            $item->addChild('price', number_format($priceValue,2,'.','') . " " . $main_iso, $ns);
             $item->addChild('condition', "new", $ns);
 
 
@@ -197,7 +199,7 @@ class IndexController extends ConsoleController
         $xml = $dom->saveXML();
         $xml = new SimpleXMLExtended($xml, 0, false, "g", 'http://base.google.com/ns/1.0');
 
-        return $xml->saveXML(Yii::getAlias('@runtime') . DIRECTORY_SEPARATOR . 'google-feed.xml');
+        return $xml->saveXML(Yii::getAlias($path) . DIRECTORY_SEPARATOR . 'google-feed.xml');
     }
 
 
