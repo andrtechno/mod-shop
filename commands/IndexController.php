@@ -45,7 +45,7 @@ class IndexController extends ConsoleController
         $channel->addChildWithCDATA('description', Yii::$app->settings->get('app', 'sitename'));
         $products = Product::find()
             //->limit(50)
-             ->where(['switch' => 1])->andWhere(['>','price', 1000])
+             ->where(['switch' => 1])
             //->andWhere(['use_configurations' => 1])
             //->andWhere(['availability'=>1])
             //->andWhere(['id' => [9087,9086,9088]])
