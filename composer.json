@@ -20,8 +20,6 @@
   ],
   "require": {
     "panix/mod-images": "dev-master",
-    "panix/mod-discounts": "dev-master",
-    "panix/mod-sitemap": "dev-master",
     "panix/wgt-jstree": "dev-master",
     "panix/wgt-fancybox": "dev-master",
     "panix/wgt-scroll-pager": "dev-master",
@@ -30,6 +28,8 @@
   "suggest": {
     "panix/mod-csv": "Addon module import/export office tables (CSV, XSL, XLSX) and Google Sheets",
     "panix/mod-cart": "Addon module cart",
+    "panix/mod-discounts": "Addon module discount products",
+    "panix/mod-sitemap": "Addon module sitemap",
     "panix/mod-wishlist": "Addon module wishlist products",
     "panix/mod-compare": "Addon module compare products"
   },
