@@ -6,7 +6,7 @@
  * @author PIXELION CMS development team <dev@pixelion.com.ua>
  * @link http://pixelion.com.ua PIXELION CMS
  *
- * Class m190316_061840_shop_insert
+ * Class m999999_999999_shop_insert
  */
 
 use panix\engine\CMS;
@@ -23,10 +23,10 @@ use panix\mod\shop\models\ProductCategoryRef;
 use panix\mod\shop\models\Kit;
 
 /**
- * Class m190316_061840_shop_insert
+ * Class m999999_999999_shop_insert
  * @package panix\mod\shop\migrations
  */
-class m190316_061840_shop_insert extends Migration
+class m999999_999999_shop_insert extends Migration
 {
 
     public function up()
