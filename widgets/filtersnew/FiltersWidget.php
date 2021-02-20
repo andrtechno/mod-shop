@@ -221,9 +221,12 @@ class FiltersWidget extends Widget
             echo $this->render($this->currentView, ['active' => $active, 'dataModel' => $this->model, 'url' => $url]);
         }
         echo Html::endTag('div');
-        echo $this->render($this->priceView, ['priceMin' => $this->priceMin, 'priceMax' => $this->priceMax]);
-        echo $this->render($this->attributeView, ['attributes' => $this->getCategoryAttributes()]);
-        echo $this->render($this->manufacturerView, ['manufacturers' => $manufacturers]);
+		if($this->priceView)
+			echo $this->render($this->priceView, ['priceMin' => $this->priceMin, 'priceMax' => $this->priceMax]);
+        if($this->attributeView)
+			echo $this->render($this->attributeView, ['attributes' => $this->getCategoryAttributes()]);
+        if($this->manufacturerView)
+			echo $this->render($this->manufacturerView, ['manufacturers' => $manufacturers]);
         echo Html::endForm();
         echo Html::endTag('div');
         $this->view->registerJs("

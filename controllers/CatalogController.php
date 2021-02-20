@@ -31,7 +31,9 @@ class CatalogController extends FilterController
 
     public function beforeAction($action)
     {
-
+        if (Yii::$app->request->headers->has('filter-ajax')) {
+            $this->enableCsrfValidation = false;
+        }
         return parent::beforeAction($action);
     }
 
@@ -265,10 +267,10 @@ class CatalogController extends FilterController
         if (Yii::$app->settings->get('shop', 'smart_title')) {
             $smartData = $this->smartNames();
             $this->pageName .= $smartData['title'];
-            if($this->view->title){
+            if ($this->view->title) {
                 $this->view->title .= $smartData['title'];
-              //  $this->view->h1 = $smartData['title'];
-            }else{
+                //  $this->view->h1 = $smartData['title'];
+            } else {
                 $this->view->title = $this->pageName;
             }
 
