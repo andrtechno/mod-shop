@@ -77,7 +77,7 @@ foreach ($model->options as $k => $o) {
     }
 
 
-    $data2['products'] = Html::a($o->productsCount, ['/admin/shop/product/index', 'ProductSearch[eav][' . $model->name . ']' => $o->id], ['target' => '_blank']);
+    $data2['products'] = Html::a($o->productsCount, ['/admin/shop/product/index', 'ProductSearch[eav][' . $model->name . ']' => $o->id], ['target' => '_blank','data-pjax'=>0]);
     $data[$o->id] = (array)$data2;
     // }
 
