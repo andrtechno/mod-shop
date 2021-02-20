@@ -148,15 +148,19 @@ class AttributeController extends AdminController
                     } else {
                         $attributeOption->data = NULL;
                     }
-                    $attributeOption->value = $data[$index];
-                    $attributeOption->value_ua = $data[$index];
+                    foreach (Yii::$app->languageManager->languages as $k => $l) {
+                        $value = ($k == 'ru') ? 'value' : 'value_' . $l->code;
+                        $attributeOption->{$value} = $data[$index];
+						++$index;
+
+					}
                     $attributeOption->save(false);
 
 
                     //foreach (Yii::$app->languageManager->languages as $lang) {
 
 
-                    ++$index;
+                   // ++$index;
                     // }
                     array_push($dontDelete, $attributeOption->id);
                 }

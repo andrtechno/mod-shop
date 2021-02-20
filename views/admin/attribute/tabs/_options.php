@@ -66,31 +66,24 @@ foreach ($model->options as $k => $o) {
         ->where([AttributeOption::tableName().'.id' => $o->id])
         ->translate($l->id)
         ->one();*/
-//foreach (Yii::$app->languageManager->languages as $k => $l) {
+    foreach (Yii::$app->languageManager->languages as $k => $l) {
+        $value = ($k == 'ru') ? 'value' : 'value_' . $l->code;
+        $data2['name_' . $l->code] = Html::textInput('options[' . $o->id . '][]', $o->{$value}, ['class' => 'form-control input-lang', 'style' => 'background-image:url(/uploads/language/' . $k . '.png);']);
+        $columns[$l->code] = [
+            'header' => $l->name,
+            'attribute' => 'name_' . $l->code,
+            'format' => 'raw',
+        ];
+    }
 
-
-//}
-
-
-    $data2['name'] = Html::textInput('options[' . $o->id . '][]', $o->value, ['class' => 'form-control input-lang', 'style' => 'background-image:url(/uploads/language/ru.png);']);
-    $data2['name_ua'] = Html::textInput('options[' . $o->id . '][]', $o->value_ua, ['class' => 'form-control input-lang', 'style' => 'background-image:url(/uploads/language/ua.png);']);
 
     $data2['products'] = Html::a($o->productsCount, ['/admin/shop/product/index', 'ProductSearch[eav][' . $model->name . ']' => $o->id], ['target' => '_blank']);
     $data[$o->id] = (array)$data2;
     // }
+
+
 }
 
-
-$columns[] = [
-    'header' => 'ru',
-    'attribute' => 'name',
-    'format' => 'raw',
-];
-$columns[] = [
-    'header' => 'ua',
-    'attribute' => 'name_ua',
-    'format' => 'raw',
-];
 $sortAttributes[] = 'name';
 
 $columns[] = [
@@ -109,7 +102,7 @@ $columns[] = [
 ];
 
 
-$data_array = new \yii\data\ArrayDataProvider([
+$dataProvider = new \yii\data\ArrayDataProvider([
     'allModels' => $data,
     'pagination' => false,
 ]);
@@ -122,12 +115,12 @@ Pjax::begin([
 ]);
 echo panix\engine\grid\GridView::widget([
     'tableOptions' => ['class' => 'table table-striped optionsEditTable'],
-    'dataProvider' => $data_array,
+    'dataProvider' => $dataProvider,
     'rowOptions' => ['class' => 'sortable-column'],
     'enableLayout' => false,
     'layout' => '{items}',
     'columns' => $columns,
-    'filterModel' => true
+    //  'filterModel' => true
 ]);
 Pjax::end();
 ?>
