@@ -23,7 +23,8 @@
     "panix/wgt-jstree": "dev-master",
     "panix/wgt-fancybox": "dev-master",
     "panix/wgt-scroll-pager": "dev-master",
-    "panix/wgt-telinput": "dev-master"
+    "panix/wgt-telinput": "dev-master",
+	"panix/wgt-rating": "dev-main"
   },
   "suggest": {
     "panix/mod-csv": "Addon module import/export office tables (CSV, XSL, XLSX) and Google Sheets",
