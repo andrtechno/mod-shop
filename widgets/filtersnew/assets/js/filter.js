@@ -21,35 +21,36 @@ $(function () {
     selector.collapse({
         toggle: false
     });
-    var panels = $.cookie();
+	if ($.fn.cookie) {
+		var panels = $.cookie();
 
-    for (var panel in panels) {
-        //console.log(panel);
-        if (panel) {
-            var panelSelector = $('#' + panel);
-            if (panelSelector) {
-                if (panelSelector.hasClass('card-collapse')) {
-                    if ($.cookie(panel) === '1') {
-                        panelSelector.collapse('show');
-                    } else {
-                        panelSelector.collapse('hide');
-                    }
-                }
-            }
-        }
-    }
+		for (var panel in panels) {
+			//console.log(panel);
+			if (panel) {
+				var panelSelector = $('#' + panel);
+				if (panelSelector) {
+					if (panelSelector.hasClass('card-collapse')) {
+						if ($.cookie(panel) === '1') {
+							panelSelector.collapse('show');
+						} else {
+							panelSelector.collapse('hide');
+						}
+					}
+				}
+			}
+		}
 
-    selector.on('show.bs.collapse', function () {
-        var active = $(this).attr('id');
-        $.cookie(active, '1');
+		selector.on('show.bs.collapse', function () {
+			var active = $(this).attr('id');
+			$.cookie(active, '1');
 
-    });
+		});
 
-    selector.on('hide.bs.collapse', function () {
-        var active = $(this).attr('id');
-        $.cookie(active, null);
-    });
-
+		selector.on('hide.bs.collapse', function () {
+			var active = $(this).attr('id');
+			$.cookie(active, null);
+		});
+	}
 
 
     $(document).on('click','.sorting .radio_item',function(){
