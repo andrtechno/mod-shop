@@ -27,6 +27,13 @@ class ProductQuery extends ActiveQuery
         return $this;
     }
 
+    public function getSales(){
+        $this->published();
+        $this->andWhere(['IS NOT', Product::tableName() . '.discount', null])
+            ->andWhere(['!=', Product::tableName() . '.discount', '']);
+        return $this;
+    }
+
 
     /**
      * @param $manufacturers array|int
