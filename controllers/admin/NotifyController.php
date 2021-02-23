@@ -152,7 +152,6 @@ class NotifyController extends AdminController
                 'product' => $row->product,
                 'site_name' => $siteName
             ]);
-            $mail->setFrom(['noreply@' . Yii::$app->request->serverName => $siteName . ' robot']);
             $mail->setTo($row->email);
             $mail->setSubject(Yii::t('shop/admin', 'MAIL_PRODUCT_NOTIFY_SUBJECT', [
                 'site_name' => $siteName
