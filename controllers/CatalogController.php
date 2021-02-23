@@ -308,6 +308,8 @@ class CatalogController extends FilterController
             $manufacturers = explode(',', Yii::$app->request->get('manufacturer', ''));
             $this->query->applyManufacturers($manufacturers);
         }
+        $this->query->applyRangePrices((isset($this->prices[0])) ? $this->prices[0] : 0, (isset($this->prices[1])) ? $this->prices[1] : 0);
+
         if (Yii::$app->request->get('sort') == 'price' || Yii::$app->request->get('sort') == '-price') {
             $this->query->aggregatePriceSelect((Yii::$app->request->get('sort') == 'price') ? SORT_ASC : SORT_DESC);
         }
@@ -366,7 +368,6 @@ class CatalogController extends FilterController
 
         }
 
-        //$this->query->applyRangePrices((isset($this->prices[0])) ? $this->prices[0] : 0, (isset($this->prices[1])) ? $this->prices[1] : 0);
 
 
         if ($manufacturers || Yii::$app->request->get('manufacturer')) {
@@ -382,6 +383,7 @@ class CatalogController extends FilterController
         $this->currentQuery = clone $this->query;
 
         $this->query->applyAttributes($this->activeAttributes);
+        $this->query->applyRangePrices((isset($this->prices[0])) ? $this->prices[0] : 0, (isset($this->prices[1])) ? $this->prices[1] : 0);
 
         if (Yii::$app->request->get('sort') == 'price' || Yii::$app->request->get('sort') == '-price') {
             $this->query->aggregatePriceSelect((Yii::$app->request->get('sort') == 'price') ? SORT_ASC : SORT_DESC);
