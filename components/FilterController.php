@@ -73,15 +73,12 @@ class FilterController extends WebController
             }
         }
 
-
         $this->allowedPageLimit = explode(',', Yii::$app->settings->get('shop', 'per_page'));
 
-
         $this->per_page = (int)$this->allowedPageLimit[0];
-        if (Yii::$app->request->get('per_page') && in_array($_GET['per_page'], $this->allowedPageLimit)) {
-            $this->per_page = (int)Yii::$app->request->get('per_page');
+        if (Yii::$app->request->get('per-page') && in_array(Yii::$app->request->get('per-page'), $this->allowedPageLimit)) {
+            $this->per_page = (int)Yii::$app->request->get('per-page');
         }
-
 
         if (Yii::$app->request->get('price')) {
             $this->prices = explode(',', Yii::$app->request->get('price'));

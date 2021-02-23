@@ -54,6 +54,7 @@ class ManufacturerController extends FilterController
 
         $this->view->text = $this->dataModel->description;
 
+        $this->query->applyRangePrices((isset($this->prices[0])) ? $this->prices[0] : 0, (isset($this->prices[1])) ? $this->prices[1] : 0);
 
 
 
