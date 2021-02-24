@@ -56,7 +56,7 @@ class SearchController extends FilterController
         //echo $this->query->createCommand()->rawSql;die;
         $this->provider = new \panix\engine\data\ActiveDataProvider([
             'query' => $this->query,
-            'sort' => Product::getSort(),
+            'sort' => $productModel::getSort(),
             'pagination' => [
                 'pageSize' => $this->per_page,
             ]
@@ -90,8 +90,9 @@ class SearchController extends FilterController
 
         $res = [];
         if (Yii::$app->request->isAjax && $q) {
-
-            $model = Product::find()->published();
+            /** @var Product $productModel */
+            $productModel = Yii::$app->getModule('shop')->model('Product');
+            $model = $productModel::find()->published();
             $model->applySearch($q);
             $model->limit(5);
 
