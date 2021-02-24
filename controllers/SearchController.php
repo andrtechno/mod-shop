@@ -23,7 +23,7 @@ class SearchController extends FilterController
         $this->query = $productModel::find();
         //$this->query->attachBehaviors((new $productModel)->behaviors());
         $this->query->sort();
-        $this->query->published();
+
 
         //fix for POST send form
         if (!Yii::$app->request->isPjax || !Yii::$app->request->isAjax) {
@@ -37,7 +37,7 @@ class SearchController extends FilterController
             $this->query->applyManufacturers($manufacturers);
         }
         $this->query->groupBy(Product::tableName() . '.`id`');
-        $this->query->applySearch(Yii::$app->request->get('q'));
+        $this->query->applySearch(Yii::$app->request->get('q'))->published();
 
 
         // Create clone of the current query to use later to get min and max prices.
@@ -92,9 +92,9 @@ class SearchController extends FilterController
         if (Yii::$app->request->isAjax && $q) {
             /** @var Product $productModel */
             $productModel = Yii::$app->getModule('shop')->model('Product');
-            $model = $productModel::find()->published();
+            $model = $productModel::find();
             $model->applySearch($q);
-            $model->limit(5);
+            $model->published()->limit(5);
 
             $result = $model->all();
 
