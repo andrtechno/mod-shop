@@ -11,13 +11,16 @@ use panix\mod\shop\widgets\filtersnew\FiltersWidget;
 <div class="row">
     <div class="col-sm-3">
         <?= CategoriesWidget::widget([]) ?>
-        panix\mod\shop\widgets\filtersnew\FiltersWidget
+
 
         <?php
 
         echo FiltersWidget::widget([
             'model' => $this->context->dataModel,
             'attributes' => $this->context->eavAttributes,
+            'query' => $this->context->filterQuery,
+            'tagCount' => false,
+            'searchItem' => 0,
         ]);
 
         ?>

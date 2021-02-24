@@ -20,12 +20,9 @@ $this->registerJs("
 <script>
 
 </script>
-<div class="clearfix filters-container">
+<div class="filters-container mb-5">
     <div class="row">
-
-
         <div class="col-sm-5 col-md-5 col-lg-5">
-
             <?php
             $sorter[Yii::$app->urlManager->removeUrlParam('/' . Yii::$app->requestedRoute, 'sort')] = Yii::t('shop/default', 'SORT');
             $sorter[Yii::$app->urlManager->addUrlParam('/' . Yii::$app->requestedRoute, ['sort' => 'price'])] = Yii::t('shop/default', 'SORT_BY_PRICE_ASC');
@@ -35,12 +32,8 @@ $this->registerJs("
 
             echo Html::dropDownList('sort', $active, $sorter, ['onChange' => 'window.location = $(this).val()', 'class' => 'custom-select', 'style' => 'width:auto;']);
             ?>
-
-
-        </div><!-- /.col -->
+        </div>
         <div class="col-sm-3 col-md-4 col-lg-4">
-
-
             <?php
             $limits = array(Yii::$app->urlManager->removeUrlParam('/' . Yii::$app->requestedRoute, 'per-page') => $this->context->allowedPageLimit[0]);
             array_shift($this->context->allowedPageLimit);
@@ -49,25 +42,27 @@ $this->registerJs("
                 $limits[Yii::$app->urlManager->addUrlParam('/' . Yii::$app->requestedRoute, ['per-page' => $l])] = $l;
             }
             ?>
-            <span class=""><?= Yii::t('shop/default', 'OUTPUT_ON'); ?> </span>
+            <span class="text-muted"><?= Yii::t('shop/default', 'OUTPUT_ON'); ?> </span>
             <?php
             echo Html::dropDownList('per-page', $active, $limits, ['onChange' => 'window.location = $(this).val()', 'class' => 'custom-select', 'style' => 'width:auto;']);
             ?>
-            <span class=""><?= Yii::t('shop/default', 'товаров'); ?></span>
+            <span class="text-muted"><?= Yii::t('shop/default', 'товаров'); ?></span>
 
         </div>
 
 
-        <div class="col-sm-4 col-md-3 col-lg-3">
-
-            <div class="btn-group btn-group-sm1">
+        <div class="col-sm-4 col-md-3 col-lg-3 text-right">
+            <div class="btn-group btn-group-sm">
                 <a class="btn btn-outline-secondary <?php if ($itemView === '_view_grid') echo 'active'; ?>"
                    href="<?= Yii::$app->urlManager->removeUrlParam('/' . Yii::$app->requestedRoute, 'view') ?>"><i
-                            class="icon-grid"></i></a>
+                            class="icon-grid"></i>
+                </a>
                 <a class="btn btn-outline-secondary <?php if ($itemView === '_view_list') echo 'active'; ?>"
                    href="<?= Yii::$app->urlManager->addUrlParam('/' . Yii::$app->requestedRoute, ['view' => 'list']) ?>"><i
-                            class="icon-menu"></i></a>
+                            class="icon-menu"></i>
+                </a>
             </div>
         </div>
     </div>
 </div>
+

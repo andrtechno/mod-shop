@@ -191,6 +191,11 @@ class Product extends ActiveRecord
                     'desc' => ['created_at' => SORT_DESC],
                     'label' => 'по дате добавления'
                 ],
+				'created_at' => [
+                    'asc' => ['created_at' => SORT_ASC],
+                    'desc' => ['created_at' => SORT_DESC],
+                    'label' => 'по дате добавление'
+                ],
                 'name' => [
                     'default' => SORT_ASC,
                     //'asc' => ['translation.name' => SORT_ASC],

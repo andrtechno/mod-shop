@@ -13,7 +13,7 @@ foreach ($attributes as $attrData) {
 
         ?>
 
-        <div class="card filter-block" id="filter-attributes-<?= $attrData['key']; ?>">
+        <div class="card filter-block mb-3" id="filter-attributes-<?= $attrData['key']; ?>">
             <a class="card-header collapsed h5" data-toggle="collapse"
                href="#collapse-<?= $attrData['key']; ?>" aria-expanded="true"
                aria-controls="collapse-<?= $attrData['key']; ?>">
@@ -26,7 +26,7 @@ foreach ($attributes as $attrData) {
                            onkeyup="filterSearchInput(this,'filter-<?= $attrData['key']; ?>')" class="form-control" placeholder="<?=Yii::t('shop/default','SEARCH_BY', mb_strtolower($attrData['title']));?>">
                 <?php } ?>
                 <div class="card-body">
-                    <ul class="filter-list" id="filter-<?= $attrData['key']; ?>">
+                    <ul class="filter-list list-unstyled" id="filter-<?= $attrData['key']; ?>">
                         <?php
                         foreach ($attrData['filters'] as $filter) {
 

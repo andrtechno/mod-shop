@@ -19,7 +19,7 @@ $max = (int)ceil($getMax);
 if($getDefaultMin != $getDefaultMax){
 ?>
 
-    <div class="card filter filter-price">
+    <div class="card filter filter-price mb-3">
         <a class="card-header collapsed h5" data-toggle="collapse"
            href="#collapse-<?= md5('prices') ?>" aria-expanded="true"
            aria-controls="collapse-<?= md5('prices') ?>">
@@ -32,12 +32,12 @@ if($getDefaultMin != $getDefaultMax){
                 <div class="row">
                     <div class="col-6">
                         <?php
-                        echo Html::textInput('filter[price][]', (isset(Yii::$app->controller->prices[0])) ? $getMin : null, ['id' => 'min_price', 'class' => '']);
+                        echo Html::textInput('filter[price][]', (isset(Yii::$app->controller->prices[0])) ? $getMin : null, ['id' => 'min_price', 'class' => 'form-control']);
                         ?>
                     </div>
                     <div class="col-6">
                         <?php
-                        echo Html::textInput('filter[price][]', (isset(Yii::$app->controller->prices[1])) ? $getMax : null, ['id' => 'max_price', 'class' => '']);
+                        echo Html::textInput('filter[price][]', (isset(Yii::$app->controller->prices[1])) ? $getMax : null, ['id' => 'max_price', 'class' => 'form-control']);
                         ?>
                     </div>
                 </div>

@@ -4,7 +4,7 @@ use yii\helpers\Html;
 
 ?>
 <?php if ($manufacturers['filters'] && count($manufacturers['filters']) > 1) { ?>
-    <div class="card filter-block">
+    <div class="card filter-block mb-3">
         <a class="card-header h5" data-toggle="collapse" href="#collapse-<?= md5('manufacturer') ?>"
            aria-expanded="true" aria-controls="collapse-<?= md5('manufacturer') ?>">
             <?= Yii::t('shop/default', 'FILTER_BY_MANUFACTURER') ?>
@@ -15,7 +15,7 @@ use yii\helpers\Html;
                        onkeyup="filterSearchInput(this,'filter-manufacturer')" class="form-control" placeholder="<?=Yii::t('shop/default','SEARCH');?>">
             <?php } ?>
             <div class="card-body">
-                <ul class="filter-list" id="filter-manufacturer">
+                <ul class="filter-list list-unstyled" id="filter-manufacturer">
                     <?php
                     foreach ($manufacturers['filters'] as $filter) {
                         $url = Yii::$app->urlManager->addUrlParam('/' . Yii::$app->requestedRoute, [$filter['key'] => $filter['queryParam']], $manufacturers['selectMany']);

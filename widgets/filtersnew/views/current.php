@@ -9,7 +9,7 @@ use yii\widgets\Menu;
  */
  
 ?>
-<div class="card" id="filter-current">
+<div class="card mb-3" id="filter-current">
     <div class="card-header">
         <h5><?= Yii::t('shop/default', 'FILTER_CURRENT') ?></h5>
     </div>

@@ -6,58 +6,29 @@ use yii\helpers\HtmlPurifier;
 ?>
 
 
-<div class="product">
-    <div class="product-image">
-        <?php
-        echo Html::a(Html::img($model->getMainImage('400x')->url, ['alt' => $model->name, 'class' => 'img-fluid']), $model->getUrl());
-        ?>
-    </div>
+<div class="card mb-4 shadow-sm">
+    <?php
+    echo Html::a(Html::img($model->getMainImage('400x225')->url, ['alt' => $model->name, 'class' => 'card-img-top']), $model->getUrl());
+    ?>
 
-    <div class="product-info">
-        <div class="product-title">
-            <h4 class="group inner list-group-item-heading"><?= Html::a(Html::encode($model->name), $model->getUrl()) ?></h4>
+    <div class="card-body">
 
-        </div>
-
-        <div class="product-price clearfix">
-
-            <div>
-                <span class="price">
-                    <span><?= $model->priceRange() ?></span>
-                    <sup><?= Yii::$app->currency->active['symbol'] ?></sup>
-                </span>
+        <?= Html::a(Html::encode($model->name), $model->getUrl(), ['class' => 'card-text']) ?>
+        <div class="d-flex justify-content-between align-items-center">
+            <?= $model->beginCartForm(); ?>
+            <div class="btn-group">
+                <?= Html::button(Html::icon('shopcart') . ' ' . Yii::t('cart/default', 'BUY'), ['onclick' => 'javascript:cart.add(this)', 'class' => 'btn btn-sm btn-primary']); ?>
             </div>
 
-            <?php if ($model->hasDiscount) { ?>
-                <div>
-                    <span class="price price-strike">
-                        discount
-                        <span><?= Yii::$app->currency->number_format(Yii::$app->currency->convert($model->originalPrice)) ?></span>
-                        <sup><?= Yii::$app->currency->active['symbol'] ?></sup>
-                    </span>
-                </div>
+            <?= $model->endCartForm(); ?>
 
-            <?php } ?>
-
-
+            <small class="text-muted"><strong><?= $model->priceRange() ?></strong> <?= Yii::$app->currency->active['symbol'] ?></small>
         </div>
-
-    </div>
-    <div class="">
-
-        <?php
-        echo $model->beginCartForm();
-        ?>
-        <div class="action btn-group">
-
-
-        </div>
-        <?php echo Html::a(Html::icon('shopcart') . ' ' . Yii::t('cart/default', 'BUY'), 'javascript:cart.add(' . $model->id . ')', array('class' => 'btn btn-primary')); ?>
-
-
-        <?php echo $model->endCartForm(); ?>
     </div>
 </div>
+
+
+
 
 
 
