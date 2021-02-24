@@ -91,7 +91,7 @@ class SearchController extends FilterController
         $res = [];
         if (Yii::$app->request->isAjax && $q) {
 
-            $model = Product::find();
+            $model = Product::find()->published();
             $model->applySearch($q);
             $model->limit(5);
 
