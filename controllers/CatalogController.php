@@ -163,7 +163,7 @@ class CatalogController extends FilterController
                 if (!empty($this->dataModel->h1)) {
                     $this->view->h1 = $this->dataModel->h1($meta_params);
                 } else {
-                    $this->view->h1 = $s->h1($meta_params);
+                    $this->view->h1 = (!empty($s->h1)) ? $s->h1($meta_params) : $this->dataModel->h1($meta_params);
                 }
 
 
