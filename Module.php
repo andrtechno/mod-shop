@@ -230,7 +230,7 @@ class Module extends WebModule implements BootstrapInterface
                         'label' => Yii::t('shop/admin', 'REVIEWS'),
                         "url" => ['/admin/shop/reviews'],
                         'icon' => 'comments',
-                        'badge' => ProductReviews::find()->where(['status_id' => ProductReviews::STATUS_WAIT])->count(),
+                        'badge' => ProductReviews::find()->where(['status' => ProductReviews::STATUS_WAIT])->count(),
                         'visible' => Yii::$app->user->can('/shop/admin/reviews/index') || Yii::$app->user->can('/shop/admin/reviews/*')
                     ],
                     [
