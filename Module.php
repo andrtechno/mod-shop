@@ -3,6 +3,7 @@
 namespace panix\mod\shop;
 
 use panix\mod\shop\models\Category;
+use panix\mod\shop\models\ProductReviews;
 use Yii;
 use panix\engine\WebModule;
 use yii\base\BootstrapInterface;
@@ -14,6 +15,7 @@ class Module extends WebModule implements BootstrapInterface
     public $icon = 'shopcart';
     public $mailPath = '@shop/mail';
     public $searchAttribute = 'sku';
+
     /**
      * @inheritdoc
      */
@@ -21,7 +23,7 @@ class Module extends WebModule implements BootstrapInterface
     {
         $rules['catalog'] = 'shop/default/index';
         $rules['search/ajax'] = 'shop/search/ajax';
-        $rules['shop/notify'] = 'shop/notify/index';
+        $rules['notify/<id:\d+>'] = 'shop/notify/index';
         $rules['shop/ajax/currency/<id:\d+>'] = 'shop/ajax/currency';
         $rules['manufacturer'] = 'shop/manufacturer/index';
         //$rules['manufacturer/<slug:[0-9a-zA-Z_\-]+>'] =  'shop/manufacturer/view';
@@ -45,41 +47,41 @@ class Module extends WebModule implements BootstrapInterface
                 'class' => 'panix\mod\shop\components\ManufacturerUrlRule',
                 'route' => 'shop/manufacturer/view',
                 'index' => 'manufacturer',
-                'pattern'=>'manufacturer/<slug:[0-9a-zA-Z_\-]+>'
+                'pattern' => 'manufacturer/<slug:[0-9a-zA-Z_\-]+>'
             ];
-           /* $rules[] = [
-                'class' => 'panix\mod\shop\components\CategoryUrlRule',
-                'route' => 'shop/catalog/view',
-                'index' => 'catalog',
-                //'pattern'=>'catalog/<slug:[0-9a-zA-Z_\-]+>',
-                'alias' => 'full_path',
-                //  'pattern' => ''
-            ];*/
+            /* $rules[] = [
+                 'class' => 'panix\mod\shop\components\CategoryUrlRule',
+                 'route' => 'shop/catalog/view',
+                 'index' => 'catalog',
+                 //'pattern'=>'catalog/<slug:[0-9a-zA-Z_\-]+>',
+                 'alias' => 'full_path',
+                 //  'pattern' => ''
+             ];*/
 
 
-            foreach ($this->getAllPaths() as $path){
+            foreach ($this->getAllPaths() as $path) {
                 $rules[] = [
                     'class' => 'panix\mod\shop\components\CategoryUrlRuleNew',
                     'route' => 'shop/catalog/view',
-                    'defaults'=>['slug'=>$path['full_path']],
+                    'defaults' => ['slug' => $path['full_path']],
                     //'suffix'=>'.html',
-                    'pattern'=>"catalog/<alias:[0-9a-zA-Z_\-]+>", ///<alias:[\w]+>
+                    'pattern' => "catalog/<alias:[0-9a-zA-Z_\-]+>", ///<alias:[\w]+>
                 ];
 
-               /* $rules[] = [
-                    'class' => 'panix\mod\shop\components\CategoryUrlRuleNew',
-                    'route' => 'shop/catalog/view',
-                    'defaults'=>['slug'=>$slug],
-                    'pattern'=>"catalog/<alias:[0-9a-zA-Z_\-]+>/<filter:[\w,\/]+>", //
-                    'encodeParams'=>false,
-                ];*/
-               /* $rules[] = [
-                    'class' => 'panix\mod\shop\components\CategoryUrlRuleNew',
-                    'route' => 'shop/catalog/view',
-                    'pattern'=>"catalog/<slug:[0-9a-zA-Z_\/\-]+>/<filter:[\w,\/]+>", //<filter:[\w-,\/]+>
-                    'encodeParams'=>false,
-                    //'mode'         => \yii\web\UrlRule::PARSING_ONLY,
-                ];*/
+                /* $rules[] = [
+                     'class' => 'panix\mod\shop\components\CategoryUrlRuleNew',
+                     'route' => 'shop/catalog/view',
+                     'defaults'=>['slug'=>$slug],
+                     'pattern'=>"catalog/<alias:[0-9a-zA-Z_\-]+>/<filter:[\w,\/]+>", //
+                     'encodeParams'=>false,
+                 ];*/
+                /* $rules[] = [
+                     'class' => 'panix\mod\shop\components\CategoryUrlRuleNew',
+                     'route' => 'shop/catalog/view',
+                     'pattern'=>"catalog/<slug:[0-9a-zA-Z_\/\-]+>/<filter:[\w,\/]+>", //<filter:[\w-,\/]+>
+                     'encodeParams'=>false,
+                     //'mode'         => \yii\web\UrlRule::PARSING_ONLY,
+                 ];*/
                 /*$rules[] = [
                     'class' => 'panix\mod\shop\components\CategoryUrlRuleNew',
                     'route' => 'shop/catalog/view',
@@ -130,6 +132,7 @@ class Module extends WebModule implements BootstrapInterface
         ]);
 
     }
+
     protected function getAllPaths()
     {
         $allPaths = \Yii::$app->cache->get('CategoryUrlRule');
@@ -151,6 +154,7 @@ class Module extends WebModule implements BootstrapInterface
 
         return $allPaths;
     }
+
     public function init()
     {
         if (Yii::$app->id == 'console') {
@@ -226,7 +230,7 @@ class Module extends WebModule implements BootstrapInterface
                         'label' => Yii::t('shop/admin', 'REVIEWS'),
                         "url" => ['/admin/shop/reviews'],
                         'icon' => 'comments',
-                        'badge'=>1,
+                        'badge' => ProductReviews::find()->where(['status_id' => ProductReviews::STATUS_WAIT])->count(),
                         'visible' => Yii::$app->user->can('/shop/admin/reviews/index') || Yii::$app->user->can('/shop/admin/reviews/*')
                     ],
                     [
