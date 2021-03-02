@@ -18,6 +18,14 @@ class ProductNotifications extends ActiveRecord
 
     const MODULE_ID = 'cart';
 
+    public function init()
+    {
+        if (!Yii::$app->user->isGuest) {
+            $this->email = Yii::$app->user->email;
+        }
+        parent::init();
+    }
+
     /**
      * @inheritdoc
      */

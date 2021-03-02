@@ -96,6 +96,11 @@ class Product extends ActiveRecord
     const route = '/admin/shop/default';
     const MODULE_ID = 'shop';
 
+    const STATUS_IN_STOCK = 1;
+    const STATUS_PREORDER = 2;
+    const STATUS_OUT_STOCK = 3;
+    const STATUS_ARCHIVE = 4;
+
     public static function find()
     {
         return new ProductQuery(get_called_class());
@@ -135,7 +140,7 @@ class Product extends ActiveRecord
 
     public function getIsAvailable()
     {
-        return $this->availability == 1;
+        return $this->availability == self::STATUS_IN_STOCK;
     }
 
     public function beginCartForm()
@@ -191,7 +196,7 @@ class Product extends ActiveRecord
                     'desc' => ['created_at' => SORT_DESC],
                     'label' => 'по дате добавления'
                 ],
-				'updated_at' => [
+                'updated_at' => [
                     'asc' => ['updated_at' => SORT_ASC],
                     'desc' => ['updated_at' => SORT_DESC],
                     'label' => 'по дате изменения'
@@ -251,7 +256,7 @@ class Product extends ActiveRecord
             }
             $this->discountSum = $this->discount;
             $this->discountPrice = $this->price - $sum;
-            $this->originalPrice=$this->price;
+            $this->originalPrice = $this->price;
             $this->hasDiscount = $this->discount;
         }
 
@@ -848,9 +853,45 @@ class Product extends ActiveRecord
                 ])->execute();
             }
         }
+        if (!$insert && isset($changedAttributes['availability']) && false) { // @todo: dev
+            if ($this->attributes['availability'] == self::STATUS_IN_STOCK) {
+                $records = $this->getNotifications()->all();
+                $siteName = Yii::$app->settings->get('app', 'sitename');
+                foreach ($records as $row) {
+                    if (!$row->product)
+                        continue;
 
+                    /**
+                     * @var $mailer \yii\swiftmailer\Mailer
+                     */
+                    $mailer = Yii::$app->mailer;
+                    $mailer->htmlLayout = "@app/mail/layouts/html";
+                    $mail = $mailer->compose(['html' => "@shop/mail/{$lang}/product_notify"], [
+                        'data' => $row,
+                        'product' => $row->product,
+                        'site_name' => $siteName
+                    ]);
+                    $mail->setTo($row->email);
+                    $mail->setSubject(Yii::t('shop/admin', 'MAIL_PRODUCT_NOTIFY_SUBJECT', [
+                        'site_name' => $siteName
+                    ]));
+                    $mail->send();
+
+                    //$row->delete();
+                }
+            }
+
+        }
         parent::afterSave($insert, $changedAttributes);
     }
+
+    public function getNotifications()
+    {
+        return $this->hasMany(ProductNotifications::class, ['product_id' => 'id']);
+    }
+
+
+//
 
     /**
      * Update price and max_price for configurable product
