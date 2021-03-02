@@ -189,6 +189,7 @@ class Module extends WebModule implements BootstrapInterface
 
     public function getAdminMenu()
     {
+        $reviewCount = ProductReviews::find()->where(['status' => ProductReviews::STATUS_WAIT])->count();
         return [
             'shop' => [
                 'label' => Yii::t('shop/default', 'MODULE_NAME'),
@@ -230,7 +231,7 @@ class Module extends WebModule implements BootstrapInterface
                         'label' => Yii::t('shop/admin', 'REVIEWS'),
                         "url" => ['/admin/shop/reviews'],
                         'icon' => 'comments',
-                        'badge' => ProductReviews::find()->where(['status' => ProductReviews::STATUS_WAIT])->count(),
+                        'badge' => ($reviewCount) ? $reviewCount : '',
                         'visible' => Yii::$app->user->can('/shop/admin/reviews/index') || Yii::$app->user->can('/shop/admin/reviews/*')
                     ],
                     [
