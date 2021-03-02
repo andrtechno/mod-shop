@@ -92,6 +92,7 @@ echo \yii\helpers\Inflector::sentence($words);
         ]);
 
         echo panix\mod\cart\widgets\buyOneClick\BuyOneClickWidget::widget();
+		//echo \panix\mod\shop\widgets\notify\NotifyWidget::widget(['model'=>$model]);
         ?>
         <?php
         if (Yii::$app->user->isGuest) {

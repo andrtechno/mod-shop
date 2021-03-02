@@ -19,7 +19,7 @@ $currency = Yii::$app->currency;
 
 
 </h4>
-</p>
+
 
 <table border="0" width="100%" cellspacing="1" cellpadding="5" style="border-spacing: 0;border-collapse: collapse;">
     <tr>

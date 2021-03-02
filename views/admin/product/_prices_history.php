@@ -44,7 +44,7 @@ if (!$model->isNewRecord) {
     $series = [];
     $categories = [];
     $currenciesList = [];
-    $hasMarkup = $model->hasMarkup;
+
     foreach ($prices as $k => $p) {
         //$series[]=(double) $p['price_purchase'];
         if ($p['currency_id']) {
