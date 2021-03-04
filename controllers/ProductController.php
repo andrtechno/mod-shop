@@ -24,11 +24,18 @@ use yii\widgets\ActiveForm;
 class ProductController extends WebController
 {
 
-    public function actionView($slug,$id)
+    public function actionView($slug, $id)
     {
 
         $this->dataModel = $this->findModel($slug, $id);
 
+        /*$this->view->registerJs("
+window.dataLayer = window.dataLayer || [];
+dataLayer.push({
+ecomm_prodid: $id,
+ecomm_pagetype: 'offerdetail',
+ecomm_totalvalue: {$this->dataModel->getFrontPrice()}
+});", $this->view::POS_HEAD);*/
 
         $this->dataModel->updateCounters(['views' => 1]);
         $this->view->setModel($this->dataModel);
@@ -200,8 +207,7 @@ class ProductController extends WebController
     }
 
 
-
-    protected function findModel($slug,$id)
+    protected function findModel($slug, $id)
     {
         /** @var Product $productModel */
         $productModel = Yii::$app->getModule('shop')->model('Product');
@@ -212,7 +218,7 @@ class ProductController extends WebController
             ->one();
 
         if ($model !== null) {
-            if($model->slug == $slug){
+            if ($model->slug == $slug) {
                 return $model;
             }
             $this->error404(Yii::t('shop/default', 'NOT_FOUND_PRODUCT'));
@@ -321,7 +327,6 @@ class ProductController extends WebController
                 try {
 
 
-
                     $model->saveNode();
 
                     if ($model->user_id && $model->status == ProductReviews::STATUS_PUBLISHED && !$model->apply_points) {
@@ -373,7 +378,7 @@ class ProductController extends WebController
                         $result_options[$v->id] = [
                             'price_type' => (int)$v->price_type,
                             'price' => $v->price,
-                            'test'=>$v
+                            'test' => $v
                         ];
 
 

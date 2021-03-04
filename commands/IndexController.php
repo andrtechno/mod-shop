@@ -60,7 +60,9 @@ class IndexController extends ConsoleController
             $item = $channel->addChild('item');
             $item->addChild('id', $product->id, $ns);
             $item->addChildWithCDATA('title', StringHelper::truncate($product->name, 150 - 3), $ns);
-            $item->addChildWithCDATA('description', StringHelper::truncate($product->full_description, 5000 - 3), $ns);
+
+            $pageBreak = explode("<!-- pagebreak -->", $product->full_description);
+            $item->addChildWithCDATA('description', StringHelper::truncate($pageBreak[0], 5000 - 3), $ns);
 
 
             $item->addChild('link', $fullURL . Url::to($product->getUrl()), $ns);
