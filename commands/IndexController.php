@@ -45,7 +45,7 @@ class IndexController extends ConsoleController
         $channel->addChildWithCDATA('description', Yii::$app->settings->get('app', 'sitename'));
         $products = Product::find()
             //->limit(50)
-             ->where(['switch' => 1])
+            ->where(['switch' => 1])
             //->andWhere(['use_configurations' => 1])
             //->andWhere(['availability'=>1])
             //->andWhere(['id' => [9087,9086,9088]])
@@ -72,11 +72,11 @@ class IndexController extends ConsoleController
                 ->where(['object_id' => $product->id, 'handler_hash' => $product->getHash()])
                 ->all();
             foreach ($images as $image) {
-                if (file_exists(Yii::getAlias($image->path) . DIRECTORY_SEPARATOR . $product->id.DIRECTORY_SEPARATOR.$image->filePath)) {
+                if (file_exists(Yii::getAlias($image->path) . DIRECTORY_SEPARATOR . $product->id . DIRECTORY_SEPARATOR . $image->filePath)) {
                     if ($image->is_main) {
-                        $item->addChild('image_link', $fullURL . '/uploads/store/product/'.$product->id.'/' . $image->filePath, $ns);
+                        $item->addChild('image_link', $fullURL . '/uploads/store/product/' . $product->id . '/' . $image->filePath, $ns);
                     } else {
-                        $item->addChild('additional_image_link', $fullURL . '/uploads/store/product/'.$product->id.'/' . $image->filePath, $ns);
+                        $item->addChild('additional_image_link', $fullURL . '/uploads/store/product/' . $product->id . '/' . $image->filePath, $ns);
                     }
                 }
             }
@@ -98,7 +98,7 @@ class IndexController extends ConsoleController
 
 
             if ($product->hasDiscount) {
-                $item->addChild('price_sale', number_format((($product->currency_id) ? $product->discountPrice * $currencies[$product->currency_id]['rate'] : $product->discountPrice),2,'.','') . " " . $main_iso, $ns);
+                $item->addChild('price_sale', number_format((($product->currency_id) ? $product->discountPrice * $currencies[$product->currency_id]['rate'] : $product->discountPrice), 2, '.', '') . " " . $main_iso, $ns);
 
                 if (isset($product->discountEndDate)) {
                     //date('Y-m-d\TH:i:sO');
@@ -124,9 +124,17 @@ class IndexController extends ConsoleController
             }*/
 
 
+            $item->addChild('price', number_format($priceValue, 2, '.', '') . " " . $main_iso, $ns);
 
-            $item->addChild('price', number_format($priceValue,2,'.','') . " " . $main_iso, $ns);
-            $item->addChild('condition', "new", $ns);
+
+            if ($product->is_condition == 1) {
+                $condition = "refurbished";
+            } elseif ($product->is_condition == 2) {
+                $condition = "used";
+            } else {
+                $condition = "new";
+            }
+            $item->addChild('condition', $condition, $ns);
 
 
             if ($product->availability == 1) { //Есть в наличии
@@ -149,7 +157,7 @@ class IndexController extends ConsoleController
 
             //Bonus program
             $loyalty_points = $item->addChild('loyalty_points', null, $ns);
-            $loyalty_points->addChild('name', StringHelper::truncate("Бонусы", 15,''), $ns);
+            $loyalty_points->addChild('name', StringHelper::truncate("Бонусы", 15, ''), $ns);
             $loyalty_points->addChild('points_value', floor($priceValue * Yii::$app->settings->get('user', 'bonus_ratio')), $ns);
             $loyalty_points->addChild('ratio', Yii::$app->settings->get('user', 'bonus_ratio'), $ns);
 
@@ -169,8 +177,8 @@ class IndexController extends ConsoleController
 
             $configuration = $product->getConfigurations(true);
             if ($configuration) {
-                    sort($configuration); //generate unique hash configuration
-                    $item->addChild('item_group_id', CMS::hash(implode('-', $configuration)), $ns);
+                sort($configuration); //generate unique hash configuration
+                $item->addChild('item_group_id', CMS::hash(implode('-', $configuration)), $ns);
             }
 
 

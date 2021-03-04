@@ -27,7 +27,12 @@ $form->field($model, 'auto_decrease_quantity')->dropDownList([
     //'prompt' => 'Укажите производителя'
 ])->hint($model::t('HINT_AUTO_DECREASE_QUANTITY'));
 ?>
+<?=
 
+$form->field($model, 'is_condition')->dropDownList($model->getConditions(), [
+    //'prompt' => 'Укажите производителя'
+]);
+?>
 <?=
 
 $form->field($model, 'availability')->dropDownList($model::getAvailabilityItems(), [

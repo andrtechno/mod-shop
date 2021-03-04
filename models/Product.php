@@ -38,6 +38,7 @@ use panix\engine\db\ActiveRecord;
  * @property integer $quantity
  * @property integer $availability
  * @property integer $label
+ * @property integer $is_condition
  * @property integer $main_category_id
  * @property integer $auto_decrease_quantity
  * @property integer $views Views product on frontend
@@ -377,7 +378,7 @@ class Product extends ActiveRecord
         // $rules[] = ['ConfigurationsProduct', 'each', 'rule' => ['integer']];
         $rules[] = [['sku', 'full_description', 'video', 'price_purchase', 'label', 'discount', 'markup'], 'default']; // установим ... как NULL, если они пустые
         $rules[] = [['price', 'price_purchase'], 'double'];
-        $rules[] = [['manufacturer_id', 'type_id', 'quantity', 'views', 'availability', 'added_to_cart_count', 'ordern', 'category_id', 'currency_id', 'supplier_id', 'weight_class_id', 'length_class_id'], 'integer'];
+        $rules[] = [['manufacturer_id', 'type_id', 'quantity', 'views', 'availability', 'added_to_cart_count', 'ordern', 'category_id', 'currency_id', 'supplier_id', 'weight_class_id', 'length_class_id', 'is_condition'], 'integer'];
         $rules[] = [['id', 'name', 'slug', 'full_description', 'use_configurations', 'length', 'width', 'height', 'weight'], 'safe'];
 
         return $rules;
@@ -411,6 +412,15 @@ class Product extends ActiveRecord
             1 => self::t('UNIT_THING'),
             2 => self::t('UNIT_METER'),
             3 => self::t('UNIT_BOX'),
+        ];
+    }
+
+    public function getConditions()
+    {
+        return [
+            0 => self::t('CONDITION_NEW'),
+            1 => self::t('CONDITION_REFURBISHED'),
+            2 => self::t('CONDITION_USED'),
         ];
     }
 
