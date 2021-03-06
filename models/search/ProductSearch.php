@@ -26,11 +26,11 @@ class ProductSearch extends Product
     public function rules()
     {
         return [
-            [['price_min', 'price_max', 'supplier_id', 'manufacturer_id', 'main_category_id', 'type_id','currency_id','availability'], 'integer'],
+            [['price_min', 'price_max', 'supplier_id', 'manufacturer_id', 'main_category_id', 'type_id', 'currency_id', 'availability'], 'integer'],
             // [['image'],'boolean'],
             [['slug', 'sku', 'price', 'id', 'type_id'], 'safe'], //commentsCount
             [['name'], 'string'],
-            [['switch','use_configurations'], 'boolean'],
+            [['switch', 'use_configurations'], 'boolean'],
             [['created_at', 'updated_at'], 'date', 'format' => 'php:Y-m-d']
         ];
     }
@@ -101,10 +101,10 @@ class ProductSearch extends Product
         }
 
         if (isset($params[$className]['price']['max'])) {
-            $query->applyPrice($params[$className]['price']['max'], '<=');
+             $query->applyPrice($params[$className]['price']['max'], '<=');
         }
         if (isset($params[$className]['price']['min'])) {
-            $query->applyPrice($params[$className]['price']['min'], '>=');
+             $query->applyPrice($params[$className]['price']['min'], '>=');
         }
 
         // Id of product to exclude from search
@@ -146,36 +146,37 @@ class ProductSearch extends Product
         $query->andFilterWhere(['type_id' => $this->type_id]);
         $query->andFilterWhere(['manufacturer_id' => $this->manufacturer_id]);
         if ($this->main_category_id) {
-            $query->joinWith(['categorization categories']); //, 'commentsCount'
+            $query->joinWith(['categorization categories']);
             $query->andFilterWhere(['categories.category' => $this->main_category_id]);
+
         }
 
-        if($this->switch){
+        if ($this->switch) {
             $query->andFilterWhere(['switch' => 0]);
         }
-        if($this->use_configurations){
+        if ($this->use_configurations) {
             $query->andFilterWhere(['use_configurations' => $this->use_configurations]);
         }
-        if($this->currency_id){
+        if ($this->currency_id) {
             $query->andFilterWhere(['currency_id' => $this->currency_id]);
         }
-        if($this->availability){
+        if ($this->availability) {
             $query->andFilterWhere(['availability' => $this->availability]);
         }
 
 
-       // echo $query->createCommand()->rawSql; die;
+        // echo $query->createCommand()->rawSql; die;
         return $dataProvider;
     }
 
     public function attributeLabels()
     {
         return [
-            'use_configurations'=>Yii::t('shop/Product','USE_CONFIGURATIONS'),
-            'type_id'=>Yii::t('shop/Product','TYPE_ID'),
-            'switch'=>Yii::t('shop/Product','Только скрытые'),
-            'currency_id'=>Yii::t('shop/Product','CURRENCY_ID'),
-            'availability'=>Yii::t('shop/Product','AVAILABILITY')
+            'use_configurations' => Yii::t('shop/Product', 'USE_CONFIGURATIONS'),
+            'type_id' => Yii::t('shop/Product', 'TYPE_ID'),
+            'switch' => Yii::t('shop/Product', 'Только скрытые'),
+            'currency_id' => Yii::t('shop/Product', 'CURRENCY_ID'),
+            'availability' => Yii::t('shop/Product', 'AVAILABILITY')
         ];
     }
 

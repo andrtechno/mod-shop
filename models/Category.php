@@ -164,8 +164,8 @@ class Category extends ActiveRecord
     public static function flatTree()
     {
         $result = [];
-        $categories = Category::find()->orderBy(['lft' => SORT_ASC])->all();
-        array_shift($categories);
+        $categories = Category::find()->orderBy(['lft' => SORT_ASC])->excludeRoot()->all();
+      //  array_shift($categories);
 
         foreach ($categories as $c) {
             /**
