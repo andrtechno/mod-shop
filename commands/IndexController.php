@@ -98,7 +98,7 @@ class IndexController extends ConsoleController
 
 
             if ($product->hasDiscount) {
-                $item->addChild('price_sale', number_format((($product->currency_id) ? $product->discountPrice * $currencies[$product->currency_id]['rate'] : $product->discountPrice), 2, '.', '') . " " . $main_iso, $ns);
+                $item->addChild('sale_price', number_format((($product->currency_id) ? $product->discountPrice * $currencies[$product->currency_id]['rate'] : $product->discountPrice), 2, '.', '') . " " . $main_iso, $ns);
 
                 if (isset($product->discountEndDate)) {
                     //date('Y-m-d\TH:i:sO');
