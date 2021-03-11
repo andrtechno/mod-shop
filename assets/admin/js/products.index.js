@@ -18,11 +18,66 @@
 var grid = $('#grid-product');
 var pjax = '#pjax-grid-product';
 var uiDialog = $('.ui-dialog');
+
 /**
  * Update selected comments status
  * @param status_id
+ * @param el object
  */
 function setProductsStatus(status_id, el) {
+
+    grid_selections = grid.yiiGridView('getSelectedRows');
+
+    if (grid_selections.length > 0) {
+
+
+        yii.confirm($(el).data('confirm-info'), function () {
+            $.ajax({
+                url: common.url('/admin/shop/product/update-is-active'),
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    _csrf: yii.getCsrfToken(),
+                    ids: grid_selections,
+                    'switch': status_id
+                },
+                success: function (data) {
+                    //if (data.success) {
+                    common.notify(data.message, 'success');
+                    $.pjax.reload(pjax, {timeout: false});
+                    //} else {
+                    //     common.notify(data.message, 'error');
+                    // }
+                },
+                error: function (XHR, textStatus, errorThrown) {
+                    var err = '';
+                    switch (textStatus) {
+                        case 'timeout':
+                            err = 'The request timed out!';
+                            break;
+                        case 'parsererror':
+                            err = 'Parser error!';
+                            break;
+                        case 'error':
+                            if (XHR.status && !/^\s*$/.test(XHR.status))
+                                err = 'Error ' + XHR.status;
+                            else
+                                err = 'Error';
+                            if (XHR.responseText && !/^\s*$/.test(XHR.responseText))
+                                err = err + ': ' + XHR.responseText;
+                            break;
+                    }
+                    alert(err);
+                }
+            });
+        }, function () {
+            return false;
+        });
+    }else{
+        common.notify('Объект не выбран.','info');
+    }
+
+    /*
     $.ajax(common.url('/admin/shop/product/update-is-active'), {
         type: "post",
         dataType: "json",
@@ -33,7 +88,8 @@ function setProductsStatus(status_id, el) {
         },
         success: function (data) {
             common.notify(data.message, 'success');
-            grid.yiiGridView('applyFilter');
+            //grid.yiiGridView('applyFilter');
+            $.pjax.reload(pjax, {timeout: false});
         },
         error: function (XHR, textStatus, errorThrown) {
             var err = '';
@@ -55,7 +111,7 @@ function setProductsStatus(status_id, el) {
             }
             alert(err);
         }
-    });
+    });*/
     return false;
 }
 
@@ -74,6 +130,7 @@ function showCategoryAssignWindow2(el_clicked) {
     })
 
 }
+
 /**
  * Display window with all categories list.
  *
@@ -194,7 +251,7 @@ function showDuplicateProductsWindow() {
                 text: 'Копировать',
                 'class': 'btn btn-primary',
                 click: function () {
-                    console.log('getSelectedRows',grid.yiiGridView('getSelectedRows'));
+                    console.log('getSelectedRows', grid.yiiGridView('getSelectedRows'));
                     $.ajax(common.url('/admin/shop/product/duplicate-products'), {
                         type: "post",
                         dataType: 'json',
@@ -333,40 +390,38 @@ function setProductsPrice() {
  });*/
 
 
-
-
-$(document).on("click", "#collapse-grid-filter button" , function(event,k) {
+$(document).on("click", "#collapse-grid-filter button", function (event, k) {
     var data = $("#grid-product").yiiGridView("data");
-    console.log(data.settings.filterUrl,data.settings.filterSelector);
+    console.log(data.settings.filterUrl, data.settings.filterSelector);
     $.pjax({
         //url: data.settings.filterUrl,
         url: "/admin/shop/product",
         container: '#pjax-grid-product',
-        type:"GET",
-        push:false,
-        timeout:false,
-        scrollTo:false,
-        data:$("#collapse-grid-filter input, #collapse-grid-filter select").serialize()
+        type: "GET",
+        push: false,
+        timeout: false,
+        scrollTo: false,
+        data: $("#collapse-grid-filter input, #collapse-grid-filter select").serialize()
     });
     return false;
 });
 
-$(document).on("change", "#collapse-grid-filter #productsearch-type_id" , function(event,k) {
+$(document).on("change", "#collapse-grid-filter #productsearch-type_id", function (event, k) {
 
-    $.getJSON(common.url("/admin/shop/product/load-attributes?type_id="+$(this).val()), function (response) {
-        if(Object.keys(response).length > 0){
+    $.getJSON(common.url("/admin/shop/product/load-attributes?type_id=" + $(this).val()), function (response) {
+        if (Object.keys(response).length > 0) {
             $("#filter-grid-attributes").html("");
-            $.each(response,function(key,items){
-                $("#filter-grid-attributes").append("<div class=\"col-sm-3\"><div class=\"form-group\"><label for=\""+items.inputId+"\">"+items.label+"</label><select class=\"custom-select\" id=\""+items.inputId+"\" name=\""+items.inputName+"\"></select></div></div>");
-                $("#"+items.inputId).append($("<option>", {
+            $.each(response, function (key, items) {
+                $("#filter-grid-attributes").append("<div class=\"col-sm-3\"><div class=\"form-group\"><label for=\"" + items.inputId + "\">" + items.label + "</label><select class=\"custom-select\" id=\"" + items.inputId + "\" name=\"" + items.inputName + "\"></select></div></div>");
+                $("#" + items.inputId).append($("<option>", {
                     value: "",
-                    text : "—"
+                    text: "—"
                 }));
 
-                $.each(items.options,function(i,option){
-                    $("#"+items.inputId).append($("<option>", {
+                $.each(items.options, function (i, option) {
+                    $("#" + items.inputId).append($("<option>", {
                         value: option.key,
-                        text : option.value
+                        text: option.value
                     }));
                 });
             });
