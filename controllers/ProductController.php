@@ -29,13 +29,15 @@ class ProductController extends WebController
 
         $this->dataModel = $this->findModel($slug, $id);
 
-        /*$this->view->registerJs("
+        if (Yii::$app->settings->get('seo', 'google_tag_manager')) {
+            $dataLayer['ecomm_pagetype'] = 'offerdetail';
+            $dataLayer['ecomm_totalvalue'] = $this->dataModel->getFrontPrice();
+            $dataLayer['ecomm_prodid'] = $id;
+            $dataLayer = json_encode($dataLayer);
+            $this->view->registerJs("
 window.dataLayer = window.dataLayer || [];
-dataLayer.push({
-ecomm_prodid: $id,
-ecomm_pagetype: 'offerdetail',
-ecomm_totalvalue: {$this->dataModel->getFrontPrice()}
-});", $this->view::POS_HEAD);*/
+dataLayer.push($dataLayer);", $this->view::POS_HEAD,'gtm_dataLayer');
+        }
 
         $this->dataModel->updateCounters(['views' => 1]);
         $this->view->setModel($this->dataModel);

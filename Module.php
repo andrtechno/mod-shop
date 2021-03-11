@@ -7,7 +7,7 @@ use panix\mod\shop\models\ProductReviews;
 use Yii;
 use panix\engine\WebModule;
 use yii\base\BootstrapInterface;
-use panix\mod\admin\widgets\sidebar\BackendNav;
+use app\web\themes\dashboard\sidebar\BackendNav;
 
 class Module extends WebModule implements BootstrapInterface
 {
@@ -194,6 +194,7 @@ class Module extends WebModule implements BootstrapInterface
             'shop' => [
                 'label' => Yii::t('shop/default', 'MODULE_NAME'),
                 'icon' => $this->icon,
+                'sort'=>1,
                 'items' => [
                     [
                         'label' => Yii::t('shop/admin', 'PRODUCTS'),
