@@ -140,7 +140,7 @@ class CurrencyManager extends Component
             }
         }
 
-        return $result;
+        return round($result,2);
     }
 
     /**
