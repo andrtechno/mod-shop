@@ -8,6 +8,7 @@ use panix\engine\CMS;
  */
 
 $product = $model->product;
+if($product){
 ?>
 <div class="card">
     <div class="card-header">
@@ -41,5 +42,8 @@ $product = $model->product;
     </div>
 </div>
 
-
+<?php
+}else{
+    echo 'Product not exist';
+}
 

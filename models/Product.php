@@ -1026,6 +1026,9 @@ class Product extends ActiveRecord
             $external = new ExternalFinder('{{%csv}}');
             $external->deleteObject(ExternalFinder::OBJECT_PRODUCT, $this->id);
         }
+
+        ProductReviews::deleteAll(['product_id'=>$this->id]);
+
         parent::afterDelete();
     }
 
