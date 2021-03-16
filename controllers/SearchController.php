@@ -22,7 +22,7 @@ class SearchController extends FilterController
         $productModel = Yii::$app->getModule('shop')->model('Product');
         $this->query = $productModel::find();
         //$this->query->attachBehaviors((new $productModel)->behaviors());
-        $this->query->sort();
+
 
 
         //fix for POST send form
@@ -43,7 +43,7 @@ class SearchController extends FilterController
         // Create clone of the current query to use later to get min and max prices.
         $this->filterQuery = clone $this->query;
         $this->currentQuery = clone $this->query;
-
+        $this->query->sort();
         $this->query->applyAttributes($this->activeAttributes);
 
         // Filter products by price range if we have min or max in request

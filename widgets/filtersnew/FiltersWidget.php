@@ -88,6 +88,7 @@ class FiltersWidget extends Widget
             $filtersCount = 0;
             foreach ($attribute->options as $option) {
                 $count = $this->countAttributeProducts($attribute, $option);
+                //$count=1;
                 // if ($count > 1) {
                 $data[$attribute->name]['filters'][] = [
                     'title' => $option->value,
@@ -159,8 +160,8 @@ class FiltersWidget extends Widget
         /** @var Product|ActiveQuery $model */
         $model = clone $this->query;
 
-       // echo $model->createCommand()->rawSql;die;
-
+     //  echo $model->createCommand()->rawSql;
+      //  echo '<br><br>';
         // $model->getEavAttributes22222222($this->view->context->getEavAttributes());
         //if ($this->model instanceof Category) {
 
@@ -175,20 +176,20 @@ class FiltersWidget extends Widget
        //     $model->applySearch(Yii::$app->request->get('q'));
        // }
 
-
+        $model->select('COUNT(*)');
         $newData = [];
         $newData[$attribute->name][] = $option->id;
        // echo $model->createCommand()->rawSql;
        // echo '<br><br><br>';
         /** @var EavQueryTrait|ActiveQuery $model */
         $model->withEavAttributes($newData);
-        // $res->groupBy = false;
+        $model->groupBy = false;
         //$res->distinct(false);
 
         //$res->cache(86400);
 
         // print_r($newData);die;
-        // echo $res->createCommand()->rawSql;die;
+
 
         //$dependencyQuery = $model;
         //$dependencyQuery->select('COUNT(*)');
@@ -200,8 +201,8 @@ class FiltersWidget extends Widget
         // $count = Attribute::getDb()->cache(function () use ($model) {
         //     return $model->count();
         // }, 1, $dependency);
-
-        return $model->count();
+       // echo $model->createCommand()->rawSql;die;
+        return $model->createCommand()->queryScalar();
     }
 
     public function run()

@@ -132,7 +132,7 @@ trait EavQueryTrait
 
 
 
-        $this->distinct(true);
+       // $this->distinct(true);
 
         $this->groupBy("{$pk}");
         //$this->addGroupBy("{$pk}");

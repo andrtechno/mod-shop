@@ -47,7 +47,7 @@ class CatalogController extends FilterController
         $productModel = Yii::$app->getModule('shop')->model('Product');
         $this->currentUrl = $this->dataModel->getUrl();
         $this->query = $productModel::find();
-        $this->query->sort()->published();
+        $this->query->published();
 
 
         //  $cr->with = array('manufacturerActive');
@@ -61,7 +61,7 @@ class CatalogController extends FilterController
         $this->filterQuery = clone $this->query;
         $this->currentQuery = clone $this->query;
 
-
+        $this->query->sort();
         //$this->query->andWhere([Product::tableName().'.main_category_id'=>$this->dataModel->id]);
 
         //  $this->query->with('manufacturerActive');
