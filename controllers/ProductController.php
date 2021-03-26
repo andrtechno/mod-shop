@@ -31,7 +31,7 @@ class ProductController extends WebController
 
         if (Yii::$app->settings->get('seo', 'google_tag_manager')) {
             $dataLayer['ecomm_pagetype'] = 'offerdetail';
-            $dataLayer['ecomm_totalvalue'] = $this->dataModel->getFrontPrice();
+            $dataLayer['ecomm_totalvalue'] = (string) $this->dataModel->getFrontPrice();
             $dataLayer['ecomm_prodid'] = $id;
             $dataLayer = json_encode($dataLayer);
             $this->view->registerJs("
