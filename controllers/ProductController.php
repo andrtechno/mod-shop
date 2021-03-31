@@ -33,10 +33,7 @@ class ProductController extends WebController
             $dataLayer['ecomm_pagetype'] = 'offerdetail';
             $dataLayer['ecomm_totalvalue'] = (string) $this->dataModel->getFrontPrice();
             $dataLayer['ecomm_prodid'] = $id;
-            $dataLayer = json_encode($dataLayer);
-            $this->view->registerJs("
-window.dataLayer = window.dataLayer || [];
-dataLayer.push($dataLayer);", $this->view::POS_HEAD,'gtm_dataLayer');
+            $this->view->params['gtm_ecomm']= $dataLayer;
         }
 
         $this->dataModel->updateCounters(['views' => 1]);
