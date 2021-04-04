@@ -217,11 +217,7 @@ class ProductController extends AdminController
                 }
 
                 $model->setCategories($categories, $mainCategoryId);
-
-
-                if (isset(Yii::$app->request->post('Product')['prices']) && !empty(Yii::$app->request->post('Product')['prices'])) {
-                    $model->processPrices(Yii::$app->request->post('Product')['prices']);
-                }
+				$model->processPrices((isset(Yii::$app->request->post('Product')['prices'])) ? Yii::$app->request->post('Product')['prices'] : []);
                 $this->processAttributes($model);
                 // Process variants
                 $this->processVariants($model);

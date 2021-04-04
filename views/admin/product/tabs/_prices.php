@@ -43,7 +43,7 @@ echo $form->field($model, 'prices')->label(false)->widget(\panix\ext\multipleinp
     'min' => 0, // should be at least 2 rows
     'allowEmptyList' => false,
     'enableGuessTitle' => true,
-    'sortable' => true,
+    'sortable' => false,
     'addButtonOptions'=>['class'=>'text-right btn btn-sm btn-success'],
     'addButtonPosition' => \panix\ext\multipleinput\MultipleInput::POS_HEADER, // show add button in the header
     'columns' => [

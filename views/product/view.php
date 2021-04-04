@@ -102,7 +102,30 @@ echo \yii\helpers\Inflector::sentence($words);
         }
         ?>
         <?php echo Html::endForm(); ?>
+                        <?php if ($model->prices) { ?>
+                            <a class="btn btn-sm btn-link" data-toggle="collapse" href="#prices" role="button"
+                               aria-expanded="false" aria-controls="prices">
+                                Показать все оптовые цены
+                            </a>
+                            <div class="collapse" id="prices">
+                                <?php foreach ($model->prices as $price) { ?>
 
+                                    <div>
+                                                <span class="price price-sm text-success">
+                                                    <span><?= Yii::$app->currency->number_format(Yii::$app->currency->convert($price->value, $model->currency_id)); ?></span>
+                                                    <sub><?= Yii::$app->currency->active['symbol']; ?>
+
+
+                                                        /<?= $model->units[$model->unit]; ?></sub>
+
+                                                    </span>
+
+
+                                        при заказе от <?= $price->from; ?> <?= $model->units[$model->unit]; ?>
+                                    </div>
+                                <?php } ?>
+                            </div>
+                        <?php } ?>
 
         <ul class="list-group">
             <?php if ($model->manufacturer_id) { ?>

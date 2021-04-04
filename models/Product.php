@@ -576,11 +576,11 @@ class Product extends ActiveRecord
     /**
      * @param array $prices
      */
-    public function processPrices(array $prices)
+    public function processPrices(array $prices = [])
     {
         $dontDelete = [];
-
         foreach ($prices as $index => $price) {
+
             if ($price['value'] > 0) {
 
                 $record = ProductPrices::find()->where(array(
@@ -1230,8 +1230,14 @@ class Product extends ActiveRecord
 
             // if ($quantity > 1 && ($pr = $product->getPriceByQuantity($quantity))) {
             if ($product->prices && $quantity > 1) {
+               // var_dump($quantity);die;
                 $pr = $product->getPriceByQuantity($quantity);
-                $result = $pr->value;
+                if($pr){
+                    $result = Yii::$app->currency->convert($pr->value, $product->currency_id);
+                }else{
+                    $result = $product->price;
+                }
+
                 // if ($product->currency_id) {
                 //$result = Yii::$app->currency->convert($pr->value, $product->currency_id);
                 //} else {

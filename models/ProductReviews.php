@@ -130,7 +130,13 @@ class ProductReviews extends ActiveRecord
         }
         return false;
     }
-
+    public function getUserAvatar(){
+        if($this->user_id){
+            if($this->user){
+                return $this->user->getAvatarUrl();
+            }
+        }
+    }
     public function afterSave($insert, $changedAttributes)
     {
 
