@@ -40,8 +40,6 @@ class FiltersWidget extends Widget
     public $priceView = 'price';
     public $manufacturerView = 'manufacturer';
     public $attributeView = 'attributes';
-    public $currentView = 'current';
-
     public $query;
 
 
@@ -219,7 +217,7 @@ class FiltersWidget extends Widget
         echo Html::beginTag('div', ['id' => 'ajax_filter_current']);
         if (!empty($active)) {
             $url = ($this->model) ? $this->model->getUrl() : ['/' . Yii::$app->requestedRoute];
-            echo $this->render($this->currentView, ['active' => $active, 'dataModel' => $this->model, 'url' => $url]);
+            echo $this->render(Yii::$app->getModule('shop')->filterViewCurrent, ['active' => $active, 'dataModel' => $this->model, 'url' => $url]);
         }
         echo Html::endTag('div');
 		if($this->priceView)

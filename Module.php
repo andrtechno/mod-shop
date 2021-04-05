@@ -15,7 +15,8 @@ class Module extends WebModule implements BootstrapInterface
     public $icon = 'shopcart';
     public $mailPath = '@shop/mail';
     public $searchAttribute = 'sku';
-
+    public $filterViewCurrent = '@shop/widgets/filtersnew/views/current';
+	
     /**
      * @inheritdoc
      */

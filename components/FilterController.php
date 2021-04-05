@@ -493,7 +493,7 @@ class FilterController extends WebController
                     'i' => $this->itemView,
                     'pageName' => $this->pageName,
                     'totalCount' => $this->provider->totalCount,
-                    'currentFiltersData' => ($activeFilters) ? $this->renderPartial('@shop/widgets/filtersnew/views/current', [ //'@shop/widgets/filtersnew/views/current', '@app/widgets/filters/current'
+                    'currentFiltersData' => ($activeFilters) ? $this->renderPartial($this->module->filterViewCurrent, [ //'@shop/widgets/filtersnew/views/current', '@app/widgets/filters/current'
                         'dataModel' => $this->dataModel,
                         'active' => $activeFilters,
                         'url' => $url
