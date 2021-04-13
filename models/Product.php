@@ -580,24 +580,25 @@ class Product extends ActiveRecord
     {
         $dontDelete = [];
         foreach ($prices as $index => $price) {
+			if(isset($price['value'])){
+				if ($price['value'] > 0) {
 
-            if ($price['value'] > 0) {
+					$record = ProductPrices::find()->where(array(
+						'id' => $index,
+						'product_id' => $this->id,
+					))->one();
 
-                $record = ProductPrices::find()->where(array(
-                    'id' => $index,
-                    'product_id' => $this->id,
-                ))->one();
+					if (!$record) {
+						$record = new ProductPrices;
+					}
+					$record->from = $price['from'];
+					$record->value = $price['value'];
+					$record->product_id = $this->id;
+					$record->save();
 
-                if (!$record) {
-                    $record = new ProductPrices;
-                }
-                $record->from = $price['from'];
-                $record->value = $price['value'];
-                $record->product_id = $this->id;
-                $record->save();
-
-                $dontDelete[] = $record->id;
-            }
+					$dontDelete[] = $record->id;
+				}
+			}
         }
 
         // Delete not used relations
