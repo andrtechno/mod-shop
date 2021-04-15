@@ -2,6 +2,7 @@
 
 use panix\engine\Html;
 use panix\engine\bootstrap\ActiveForm;
+
 //use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
 use panix\mod\shop\models\ProductType;
@@ -203,7 +204,7 @@ if (count($typesList) > 0) {
                             <div class="col-sm-4 col-md-6 font-weight-bold"><?= \panix\engine\CMS::date($model->updated_at); ?></div>
                         </div>
                         <div class="form-group row">
-                            <div class="col-sm-12"><?= Yii::t('app/default', 'VIEWS', ['n'=>$model->views]); ?> <?php // Html::a('Очистить просмотры', ['/shop/admin/product/update-views','id'=>$model->id],['class'=>'btn btn-sm','onclick'=>"updateProductsViews(this); return false;",'data-confirm'=>'Вы уверены, что хотите обновить просмотры?']); ?></div>
+                            <div class="col-sm-12"><?= Yii::t('app/default', 'VIEWS', ['n' => $model->views]); ?><?php // Html::a('Очистить просмотры', ['/shop/admin/product/update-views','id'=>$model->id],['class'=>'btn btn-sm','onclick'=>"updateProductsViews(this); return false;",'data-confirm'=>'Вы уверены, что хотите обновить просмотры?']); ?></div>
                         </div>
                         <?php
 
@@ -220,18 +221,26 @@ if (count($typesList) > 0) {
                         return false;
                         }
                         
-                        ",\yii\web\View::POS_END);
+                        ", \yii\web\View::POS_END);
 
                         $revCount = $model->getReviews()->count();
                         if ($revCount) { ?>
                             <div class="form-group row">
-                                <div class="col-sm-12"><?= Html::a(Yii::t('app/default', 'REVIEWS', ['n'=>$revCount]), ['/shop/admin/reviews/index', Html::getInputName(new \panix\mod\shop\models\search\ProductReviewsSearch(), 'product_id') => $model->id]); ?></div>
+                                <div class="col-sm-12"><?= Html::a(Yii::t('app/default', 'REVIEWS', ['n' => $revCount]), ['/shop/admin/reviews/index', Html::getInputName(new \panix\mod\shop\models\search\ProductReviewsSearch(), 'product_id') => $model->id]); ?></div>
                             </div>
                         <?php } ?>
                         <?php if ($model->user_id) { ?>
                             <div class="form-group row">
                                 <div class="col-sm-8 col-md-6">Добавил</div>
                                 <div class="col-sm-4 col-md-6 font-weight-bold"><?= Html::a($model->user->username, $model->user->getUpdateUrl()); ?></div>
+                            </div>
+                        <?php } ?>
+                        <?php if (is_object($model->hasMarkup)) { ?>
+                            <div class="form-group row">
+                                <div class="col-sm-8 col-md-6">Применена наценка</div>
+                                <div class="col-sm-4 col-md-6">
+                                    <?= $model->hasMarkup->name; ?>: <span class="font-weight-bold"><?= $model->hasMarkup->sum; ?></span>
+                                </div>
                             </div>
                         <?php } ?>
 

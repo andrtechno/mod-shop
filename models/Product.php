@@ -42,9 +42,9 @@ use panix\engine\db\ActiveRecord;
  * @property integer $main_category_id
  * @property integer $auto_decrease_quantity
  * @property integer $views Views product on frontend
- * @property integer $created_at
- * @property integer $updated_at
- * @property boolean $switch
+ * @property integer $created_at Date created
+ * @property integer $updated_at Date updated
+ * @property boolean $switch On/Off object
  * @property integer $added_to_cart_count
  * @property integer $votes
  * @property integer $rating
@@ -53,10 +53,11 @@ use panix\engine\db\ActiveRecord;
  * @property string $discount Discount
  * @property string $video Youtube video URL
  * @property boolean $hasDiscount
+ * @property object|bool $hasMarkup See module markup
  * @property float $originalPrice See [[\panix\mod\discounts\components\DiscountBehavior]]
  * @property float $discountPrice
  * @property string $discountSum
- * @property integer $ordern
+ * @property integer $ordern Sorting drag-and-drop
  * @property boolean $isAvailable
  * @property Category $categories
  * @property array $eavAttributes

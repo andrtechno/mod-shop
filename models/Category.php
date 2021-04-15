@@ -143,7 +143,7 @@ class Category extends ActiveRecord
         }
         $a['tree'] = [
             'class' => NestedSetsBehavior::class,
-            'hasManyRoots' => false
+            'hasManyRoots' => false,
         ];
         $a['translate'] = [
             'class' => '\panix\mod\shop\components\TranslateBehavior',
