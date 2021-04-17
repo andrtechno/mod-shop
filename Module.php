@@ -2,6 +2,7 @@
 
 namespace panix\mod\shop;
 
+use panix\engine\CMS;
 use panix\mod\shop\models\Category;
 use panix\mod\shop\models\ProductReviews;
 use Yii;
@@ -16,7 +17,7 @@ class Module extends WebModule implements BootstrapInterface
     public $mailPath = '@shop/mail';
     public $searchAttribute = 'sku';
     public $filterViewCurrent = '@shop/widgets/filtersnew/views/current';
-	
+
     /**
      * @inheritdoc
      */
@@ -64,7 +65,7 @@ class Module extends WebModule implements BootstrapInterface
                 $rules[] = [
                     'class' => 'panix\mod\shop\components\CategoryUrlRuleNew',
                     'route' => 'shop/catalog/view',
-                    'defaults' => ['slug' => $path['full_path']],
+                    'defaults' => ['slug' => $path],
                     //'suffix'=>'.html',
                     'pattern' => "catalog/<alias:[0-9a-zA-Z_\-]+>", ///<alias:[\w]+>
                 ];
@@ -134,23 +135,29 @@ class Module extends WebModule implements BootstrapInterface
 
     }
 
-    protected function getAllPaths()
+    public function getAllPaths()
     {
+
+        $tableName = Category::tableName();
+        $dependency = new \yii\caching\DbDependency(['sql' => "SELECT MAX(updated_at) FROM {$tableName}"]);
         $allPaths = \Yii::$app->cache->get('CategoryUrlRule');
         if ($allPaths === false) {
-            $allPaths = (new \yii\db\Query())
-                ->select(['full_path'])
+            $items = (new \yii\db\Query())
+                ->select(['id', 'full_path'])
                 ->andWhere('id!=:id', [':id' => 1])
-                ->from(Category::tableName())
+                ->from($tableName)
                 ->all();
 
-
+            $allPaths = [];
+            foreach ($items as $item) {
+                $allPaths[$item['id']] = $item['full_path'];
+            }
             // Sort paths by length.
-            usort($allPaths, function ($a, $b) {
-                return strlen($b['full_path']) - strlen($a['full_path']);
+            uasort($allPaths, function ($a, $b) {
+                return strlen($b) - strlen($a);
             });
 
-            \Yii::$app->cache->set('CategoryUrlRule', $allPaths, 3600);
+            \Yii::$app->cache->set('CategoryUrlRule', $allPaths, Yii::$app->db->queryCacheDuration, $dependency);
         }
 
         return $allPaths;
@@ -195,7 +202,7 @@ class Module extends WebModule implements BootstrapInterface
             'shop' => [
                 'label' => Yii::t('shop/default', 'MODULE_NAME'),
                 'icon' => $this->icon,
-                'sort'=>1,
+                'sort' => 1,
                 'items' => [
                     [
                         'label' => Yii::t('shop/admin', 'PRODUCTS'),
