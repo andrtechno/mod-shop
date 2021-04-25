@@ -24,9 +24,9 @@ class m180917_194311_shop_product_image extends Migration
             'user_id' => $this->integer()->unsigned(),
             'product_id' => $this->integer()->unsigned(),
             'filename' => $this->string(255)->notNull(),
-            'is_main' => $this->boolean()->defaultValue(0)->notNull(),
+            'is_main' => $this->boolean()->defaultValue(false)->notNull(),
             'created_at' => $this->integer(),
-            'switch' => $this->boolean()->defaultValue(1)->notNull(),
+            'switch' => $this->boolean()->defaultValue(true)->notNull(),
             'ordern' => $this->integer()->unsigned(),
         ]);
 

@@ -37,7 +37,7 @@ class m180917_193213_shop_product extends Migration
             'short_description_uk' => $this->text()->null(),
             'full_description_ru' => $this->text()->null(),
             'full_description_uk' => $this->text()->null(),
-            'use_configurations' => $this->boolean()->defaultValue(0),
+            'use_configurations' => $this->boolean()->defaultValue(false),
             'slug' => $this->string(255)->null(),
             'price' => $this->money(10, 2),
             'unit' => $this->tinyInteger(1)->unsigned()->defaultValue(1),
@@ -51,7 +51,7 @@ class m180917_193213_shop_product extends Migration
             'width' => $this->decimal(15, 4),
             'height' => $this->decimal(15, 4),
             'quantity' => $this->smallInteger(2)->unsigned()->defaultValue(1),
-            'archive' => $this->boolean()->defaultValue(0),
+            'archive' => $this->boolean()->defaultValue(false),
             'availability' => $this->tinyInteger(1)->unsigned()->defaultValue(1),
             'auto_decrease_quantity' => $this->smallInteger(2)->unsigned()->defaultValue(0),
             'views' => $this->integer()->unsigned()->defaultValue(0),
@@ -65,7 +65,7 @@ class m180917_193213_shop_product extends Migration
             'enable_comments' => $this->tinyInteger(1)->defaultValue(1)->unsigned(),
             'created_at' => $this->integer(),
             'updated_at' => $this->integer(),
-            'switch' => $this->boolean()->defaultValue(1)->notNull(),
+            'switch' => $this->boolean()->defaultValue(true)->notNull(),
             'ordern' => $this->integer()->unsigned(),
         ]);
 

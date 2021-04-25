@@ -21,7 +21,7 @@ class m180917_193731_shop_product_configurations extends Migration
 
         $this->addCommentOnColumn('{{%shop__product_configurations}}', 'product_id', 'Saves relations beetwen product and configurations');
 
-        $this->createIndex('idsunique', '{{%shop__product_configurations}}', ['product_id', 'configurable_id'], 1);
+        $this->createIndex('idsunique', '{{%shop__product_configurations}}', ['product_id', 'configurable_id'], true);
     }
 
     public function down()

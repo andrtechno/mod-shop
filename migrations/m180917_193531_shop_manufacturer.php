@@ -22,7 +22,7 @@ class m180917_193531_shop_manufacturer extends Migration
             'cat_id' => $this->integer()->null(),
             'image' => $this->string()->null(),
             'slug' => $this->string(255)->null(),
-            'switch' => $this->boolean()->defaultValue(1),
+            'switch' => $this->boolean()->defaultValue(true),
             'name_ru' => $this->string(255)->null(),
             'name_uk' => $this->string(255)->null(),
             'description_ru' => $this->text()->null(),

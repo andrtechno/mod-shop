@@ -28,7 +28,7 @@ class m180917_193433_shop_attribute_option extends Migration
 
 
         $this->createIndex('attribute_id', AttributeOption::tableName(), 'attribute_id');
-        $this->createIndex('ordern', AttributeOption::tableName(), 'ordern', 0);
+        $this->createIndex('ordern', AttributeOption::tableName(), 'ordern', false);
 
     }
 

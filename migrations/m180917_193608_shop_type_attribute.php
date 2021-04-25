@@ -6,7 +6,7 @@
  *
  * Class m180917_193608_shop_type_attribute
  */
-use yii\db\Schema;
+
 use panix\engine\db\Migration;
 use panix\mod\shop\models\TypeAttribute;
 
@@ -20,8 +20,9 @@ class m180917_193608_shop_type_attribute extends Migration
             'attribute_id' => $this->integer()->notNull()->unsigned(),
         ]);
 
-
-        $this->addPrimaryKey('{{%pk_shop__type_attribute}}', TypeAttribute::tableName(), ['type_id', 'attribute_id']);
+        if ($this->db->driverName != "sqlite" || $this->db->driverName != 'pgsql') {
+            $this->addPrimaryKey('{{%pk_shop__type_attribute}}', TypeAttribute::tableName(), ['type_id', 'attribute_id']);
+        }
         $this->createIndex('attribute_id', TypeAttribute::tableName(), 'attribute_id');
 
     }
