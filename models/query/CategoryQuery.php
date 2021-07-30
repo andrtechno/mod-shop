@@ -60,7 +60,7 @@ class CategoryQuery extends ActiveQuery
             /** @var \panix\mod\shop\models\Category|\panix\engine\behaviors\nestedsets\NestedSetsBehavior $root */
             $res[$root->{$root->idAttribute}]['key'] = $root->{$root->idAttribute};
             $res[$root->{$root->idAttribute}]['title'] = $root->{$root->titleAttribute};
-            $res[$root->{$root->idAttribute}]['count'] = $root->countItems;
+            //$res[$root->{$root->idAttribute}]['count'] = $root->countItems;
             if (method_exists($root, 'getUrl'))
                 $res[$root->{$root->idAttribute}]['url'] = Url::to($root->getUrl(), $absoluteUrl);
             if (isset($root->switch))
@@ -72,7 +72,7 @@ class CategoryQuery extends ActiveQuery
                 foreach ($root->children()->all() as $childRoot) {
                     $aux = $this->prepareData($childRoot, $level - 1, $absoluteUrl);
 
-                    $res[$root->{$root->idAttribute}]['count'] = $childRoot->countItems;
+                   // $res[$root->{$root->idAttribute}]['count'] = $childRoot->countItems;
 
                     if (isset($res[$root->{$root->idAttribute}]['children']) && !empty($aux)) {
                         $res[$root->{$root->idAttribute}]['folder'] = true;
@@ -85,10 +85,11 @@ class CategoryQuery extends ActiveQuery
                 }
                 // print_r($res);die;
                 // $res[$root->{$root->idAttribute}]['totalCount'] = $totalCount;
+                $res[$root->{$root->idAttribute}]['totalCount'] = 0;
             } elseif (is_null($level)) {
                 $totalCount = 0;
                 foreach ($root->children()->all() as $childRoot) {
-                    $res[$root->{$root->idAttribute}]['count'] = $childRoot->countItems;
+                  //  $res[$root->{$root->idAttribute}]['count'] = $childRoot->countItems;
                     $aux = $this->prepareData($childRoot, null,$absoluteUrl);
                     if (isset($res[$root->{$root->idAttribute}]['children']) && !empty($aux)) {
                         $res[$root->{$root->idAttribute}]['folder'] = true;
@@ -98,11 +99,12 @@ class CategoryQuery extends ActiveQuery
                         $res[$root->{$root->idAttribute}]['folder'] = true;
                         $res[$root->{$root->idAttribute}]['children'] = $aux;
                     }
-                    $totalCount += $res[$root->{$root->idAttribute}]['count'];
+                   // $totalCount += $res[$root->{$root->idAttribute}]['count'];
                 }
 
             }
-            $res[$root->{$root->idAttribute}]['totalCount'] = $root->countItems + $totalCount;
+         //   $res[$root->{$root->idAttribute}]['totalCount'] = $root->countItems + $totalCount;
+            $res[$root->{$root->idAttribute}]['totalCount'] = 0;
         } elseif (is_scalar($root)) {
 
             if ($root == 0) {

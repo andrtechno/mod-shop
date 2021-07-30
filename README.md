@@ -47,15 +47,15 @@ php yii migrate --migrationPath=vendor/panix/mod-shop/migrations
 
 ### See also
 - [PIXELION CMS](https://pixelion.com.ua)
-- [Module discounts Github](https://https://github.com/andrtechno/mod-discounts)
-- [Module compare Github](https://https://github.com/andrtechno/mod-compare)
-- [Module wishlist Github](https://https://github.com/andrtechno/mod-wishlist)
-- [Module cart Github](https://https://github.com/andrtechno/mod-cart)
-- [Module sitemap Github](https://https://github.com/andrtechno/mod-sitemap)
-    * [Module cart Github](https://https://github.com/andrtechno/mod-cart)
-    * [Module sitemap Github](https://https://github.com/andrtechno/mod-sitemap)
-* [Module cart Github](https://https://github.com/andrtechno/mod-cart)
-* [Module sitemap Github](https://https://github.com/andrtechno/mod-sitemap)
+- [Module discounts Github](https://github.com/andrtechno/mod-discounts)
+- [Module compare Github](https://github.com/andrtechno/mod-compare)
+- [Module wishlist Github](https://github.com/andrtechno/mod-wishlist)
+- [Module cart Github](https://github.com/andrtechno/mod-cart)
+- [Module sitemap Github](https://github.com/andrtechno/mod-sitemap)
+    * [Module cart Github](https://github.com/andrtechno/mod-cart)
+    * [Module sitemap Github](https://github.com/andrtechno/mod-sitemap)
+* [Module cart Github](https://github.com/andrtechno/mod-cart)
+* [Module sitemap Github](https://github.com/andrtechno/mod-sitemap)
 
 
 > [![PIXELION CMS!](https://pixelion.com.ua/uploads/logo.svg "PIXELION CMS")](https://pixelion.com.ua)  

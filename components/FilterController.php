@@ -5,6 +5,7 @@ namespace panix\mod\shop\components;
 use panix\engine\CMS;
 use panix\mod\shop\models\Category;
 use Yii;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use yii\web\Response;
 use panix\engine\Html;
@@ -62,6 +63,67 @@ class FilterController extends WebController
     public $currentUrl;
     public $itemView = '_view_grid';
     public $per_page;
+    public $filter;
+
+    public function actionFilterCallback($category_id)
+    {
+
+        /** @var Product $productModel */
+        $productModel = Yii::$app->getModule('shop')->model('Product');
+        $query = $productModel::find();
+        $query->published();
+
+
+        if ($category_id) {
+            $category = Category::findOne($category_id);
+            if (!$category)
+                $this->error404();
+            $query->applyCategories($category);
+        }
+
+
+
+
+
+        if (Yii::$app->request->post('filter')){
+            if(isset(Yii::$app->request->post('filter')['manufacturer'])){
+                $query->applyManufacturers(Yii::$app->request->post('filter')['manufacturer']);
+            }
+            //unset(Yii::$app->request->post('filter')['manufacturer']);
+            $query->getFindByEavAttributes2(Yii::$app->request->post('filter'));
+        }
+
+
+
+
+
+
+        $filter = new Filter($query, $category);
+        //print_r($f->getPostActiveAttributes());die;
+        $attributes = $filter->getCategoryAttributesCallback();
+        $brands = $filter->getCategoryManufacturersCallback();
+        $total = 0;
+        $results = ArrayHelper::merge($attributes, ['manufacturer' => $brands]);
+        /*$firstItem = array_key_first(Yii::$app->request->post('filter'));
+        foreach ($results as $att) {
+            if ($att['filters']) {
+                foreach ($att['filters'] as $filterName => $filter) {
+if($filterName == $firstItem){
+                    $total += $filter['count'];
+}
+                }
+            }
+        }*/
+        $total = $query->count();
+//CMS::dump(ArrayHelper::merge($ss,['manufacturer'=>$f->getCategoryManufacturers()]));die;
+        return $this->asJson([
+            'first'=>array_key_first(Yii::$app->request->post('filter')),
+            'textTotal'=>"Показать ".Yii::t('shop/default','PRODUCTS_COUNTER',$total),
+            'totalCount' => $total,
+            'filters' => $results
+        ]);
+        // return $this->asJson(ArrayHelper::merge($ss, ['manufacturer' => $f->getCategoryManufacturers()]));
+    }
 
     public function beforeAction($action)
     {
@@ -81,7 +143,12 @@ class FilterController extends WebController
         }
 
         if (Yii::$app->request->get('price')) {
-            $this->prices = explode(',', Yii::$app->request->get('price'));
+            if (preg_match('/^[0-9\-]+$/', Yii::$app->request->get('price'))) {
+                $this->prices = explode('-', Yii::$app->request->get('price'));
+            } else {
+                $this->error404();
+            }
+
             //foreach ($this->prices as $key=>$price) {
             // $this->prices[]=$price;
             //}
@@ -99,7 +166,7 @@ class FilterController extends WebController
     /**
      * @return string min price
      */
-    public function getMinPrice()
+    public function getMinPrice2()
     {
         if ($this->_minPrice !== null)
             return $this->_minPrice;
@@ -117,7 +184,7 @@ class FilterController extends WebController
     /**
      * @return string max price
      */
-    public function getMaxPrice()
+    public function getMaxPrice2()
     {
         $result = $this->currentQuery->aggregatePrice('MAX')->asArray()->one();
         if (isset($result['aggregation_price'])) {
@@ -130,7 +197,7 @@ class FilterController extends WebController
     /**
      * @return mixed
      */
-    public function getCurrentMinPrice()
+    public function getCurrentMinPrice2()
     {
         if ($this->_currentMinPrice !== null)
             return $this->_currentMinPrice;
@@ -147,7 +214,7 @@ class FilterController extends WebController
     /**
      * @return string
      */
-    public function getCurrentMaxPrice()
+    public function getCurrentMaxPrice2()
     {
         if ($this->_currentMaxPrice !== null)
             return $this->_currentMaxPrice;
@@ -158,7 +225,7 @@ class FilterController extends WebController
         return $this->_currentMaxPrice;
     }
 
-    public function getEavAttributes()
+    public function getEavAttributes2()
     {
         if (is_array($this->_eavAttributes))
             return $this->_eavAttributes;
@@ -211,27 +278,6 @@ class FilterController extends WebController
         return $this->_eavAttributes;
     }
 
-    public function getActiveAttributes()
-    {
-        $data = [];
-        foreach (array_keys($_GET) as $key) {
-            if (array_key_exists($key, $this->eavAttributes)) {
-
-                // if (empty($_GET[$key]) && isset($_GET[$key])) {
-                //	 throw new CHttpException(404, Yii::t('shop/default', 'NOFIND_CATEGORY'));
-                // }
-
-                if ((boolean)$this->eavAttributes[$key]->select_many === true) {
-                    $data[$key] = explode(',', $_GET[$key]);
-                } else {
-                    $data[$key] = [$_GET[$key]];
-                }
-            } else {
-                //  $this->error404(Yii::t('shop/default', 'NOFIND_CATEGORY1'));
-            }
-        }
-        return $data;
-    }
 
     public function getActiveAttributes2()
     {
@@ -348,7 +394,7 @@ class FilterController extends WebController
                     $menuItems['manufacturer']['items'][] = [
                         'value' => $manufacturer->id,
                         'label' => $manufacturer->name,
-                        'linkOptions' => [
+                        'options' => [
                             'class' => 'remove',
                             'data-name' => 'manufacturer',
                             'data-target' => '#filter_manufacturer_' . $manufacturer->id
@@ -360,7 +406,7 @@ class FilterController extends WebController
         }
 
         // Process eav attributes
-        $activeAttributes = $this->activeAttributes;
+        $activeAttributes = $this->filter->activeAttributes;
         if (!empty($activeAttributes)) {
             foreach ($activeAttributes as $attributeName => $value) {
                 if (isset($this->eavAttributes[$attributeName])) {
@@ -430,7 +476,7 @@ class FilterController extends WebController
 
     public function smartNames()
     {
-        $filterData = $this->getActiveFilters();
+        $filterData = $this->filter->getActiveFilters();
         unset($filterData['price']);
         $result = [];
         $name = '';
@@ -476,10 +522,11 @@ class FilterController extends WebController
 
     public function _render($view = '@shop/views/catalog/view')
     {
-        $activeFilters = $this->getActiveFilters();
+        $activeFilters = $this->filter->getActiveFilters();
         $render = $this->renderPartial('@shop/views/catalog/listview', [
             'provider' => $this->provider,
-            'itemView' => $this->itemView
+            'itemView' => $this->itemView,
+            'filter' => $this->filter
         ]);
         if (Yii::$app->request->isAjax) {
             if (Yii::$app->request->headers->has('filter-ajax')) {
@@ -506,7 +553,10 @@ class FilterController extends WebController
         return $this->render($view, [
             'provider' => $this->provider,
             'itemView' => $this->itemView,
+            'filter' => $this->filter
 
         ]);
     }
+
+
 }

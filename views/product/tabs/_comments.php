@@ -1,4 +1,5 @@
 <?php
+
 use yii\widgets\Pjax;
 use yii\widgets\ActiveForm;
 use panix\mod\shop\models\ProductReviews;
@@ -165,8 +166,8 @@ $this->registerJs($js);
         <?php //if(!$reviewModel->checkUserRate()){ ?>
         <div class="d-flex align-items-center mb-4" id="review-rate">
             <?php if (Yii::$app->user->isGuest) { ?>
-                <p><?= Yii::t('default','RATING_GUEST_PRODUCT'); ?> <?= Html::a(Yii::t('user/default','REGISTRATION'), ['/user/default/reguster']); ?>
-                    <?= Yii::t('default','OR'); ?> <?= Html::a(Yii::t('user/default','LOGIN'), ['/user/default/login']); ?></p>
+                <p><?= Yii::t('default', 'RATING_GUEST_PRODUCT'); ?> <?= Html::a(Yii::t('user/default', 'REGISTRATION'), ['/user/default/reguster']); ?>
+                    <?= Yii::t('default', 'OR'); ?> <?= Html::a(Yii::t('user/default', 'LOGIN'), ['/user/default/login']); ?></p>
             <?php } else { ?>
 
                 <p>Ваша оценка</p>

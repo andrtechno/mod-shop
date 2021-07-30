@@ -6,6 +6,7 @@ use panix\engine\CMS;
 use panix\engine\data\ActiveDataProvider;
 use panix\mod\discounts\models\Discount;
 use panix\mod\pages\models\Pages;
+use panix\mod\shop\components\Filter;
 use panix\mod\shop\models\ProductCategoryRef;
 use setasign\Fpdi\PdfReader\Page;
 use Yii;
@@ -58,8 +59,13 @@ class CatalogController extends FilterController
         //)));
         $this->query->applyCategories($this->dataModel);
 
+
+        $this->filter = new Filter($this->query, $this->dataModel);
+
+
         $this->filterQuery = clone $this->query;
         $this->currentQuery = clone $this->query;
+
 
         $this->query->sort();
         //$this->query->andWhere([Product::tableName().'.main_category_id'=>$this->dataModel->id]);
@@ -71,7 +77,7 @@ class CatalogController extends FilterController
         $this->view->registerJs("var current_url = '" . Url::to($this->dataModel->getUrl()) . "';", yii\web\View::POS_HEAD, 'current_url');
 
 
-        $this->query->applyAttributes($this->activeAttributes);
+        $this->query->applyAttributes($this->filter->activeAttributes);
         $this->query->applyRangePrices((isset($this->prices[0])) ? $this->prices[0] : 0, (isset($this->prices[1])) ? $this->prices[1] : 0);
 
 //echo $this->query->createCommand()->rawSql;die;
@@ -96,7 +102,7 @@ class CatalogController extends FilterController
             $this->query->aggregatePriceSelect(($sort[0] == 'price') ? SORT_ASC : SORT_DESC);
             // echo $this->query->createCommand()->rawSql;die;
         }
-
+//echo  $this->query->createCommand()->rawSql;die;
 
         $this->provider = new \panix\engine\data\ActiveDataProvider([
             'query' => $this->query,
@@ -133,7 +139,7 @@ class CatalogController extends FilterController
               }
 
           }*/
-        $min_price = $this->getMinPrice();
+        $min_price = $this->filter->price_min;
         $meta_params['{name}'] = $this->dataModel->name;
         $meta_params['{min_price}'] = ($min_price) ? Yii::$app->currency->number_format($min_price) : 0;
         $meta_params['{currency.symbol}'] = Yii::$app->currency->active['symbol'];
@@ -200,7 +206,7 @@ class CatalogController extends FilterController
         $name = $this->dataModel->name;
 
 
-        $filterData = $this->getActiveFilters();
+        $filterData = $this->filter->getActiveFilters();
 
 
         $currentUrl[] = '/shop/catalog/view';
@@ -258,7 +264,6 @@ class CatalogController extends FilterController
                 'label' => $this->dataModel->name,
                 'url' => $this->dataModel->getUrl()
             ];
-            //CMS::dump($smartData);die;
             if ($smartData['breadcrumbs'])
                 $this->view->params['breadcrumbs'][] = $smartData['breadcrumbs'];
         } else {
@@ -299,9 +304,11 @@ class CatalogController extends FilterController
             $this->query->int2between(-1, -1);
         }
 
+        $this->filter = new Filter($this->query, $productModel);
+
         $this->filterQuery = clone $this->query;
         $this->currentQuery = clone $this->query;
-        $this->query->applyAttributes($this->activeAttributes);
+        $this->query->applyAttributes($this->filter->activeAttributes);
 
 
         if (Yii::$app->request->get('manufacturer')) {
@@ -369,7 +376,6 @@ class CatalogController extends FilterController
         }
 
 
-
         if ($manufacturers || Yii::$app->request->get('manufacturer')) {
             if (!$manufacturers)
                 $manufacturers = explode(',', Yii::$app->request->get('manufacturer', ''));
@@ -379,10 +385,14 @@ class CatalogController extends FilterController
             $this->query->applyCategories(array_unique($categories), 'orWhere');
         }
 
+
+        $this->filter = new Filter($this->query, $this->dataModel);
+
+
         $this->filterQuery = clone $this->query;
         $this->currentQuery = clone $this->query;
 
-        $this->query->applyAttributes($this->activeAttributes);
+        $this->query->applyAttributes($this->filter->activeAttributes);
         $this->query->applyRangePrices((isset($this->prices[0])) ? $this->prices[0] : 0, (isset($this->prices[1])) ? $this->prices[1] : 0);
 
         if (Yii::$app->request->get('sort') == 'price' || Yii::$app->request->get('sort') == '-price') {
