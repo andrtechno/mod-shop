@@ -21,6 +21,7 @@ use panix\engine\controllers\WebController;
  * @property \panix\mod\shop\models\query\ProductQuery $query
  * @property \panix\mod\shop\models\query\ProductQuery $currentQuery
  * @property integer $per_page
+ * @property Filter $filter
  *
  * @package panix\mod\shop\components
  */

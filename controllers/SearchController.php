@@ -3,6 +3,7 @@
 namespace panix\mod\shop\controllers;
 
 use panix\engine\Html;
+use panix\mod\shop\components\Filter;
 use Yii;
 use yii\helpers\Url;
 use yii\web\Response;
@@ -39,12 +40,13 @@ class SearchController extends FilterController
         $this->query->groupBy(Product::tableName() . '.`id`');
         $this->query->applySearch(Yii::$app->request->get('q'))->published();
 
+        $this->filter = new Filter($this->query);
 
         // Create clone of the current query to use later to get min and max prices.
         $this->filterQuery = clone $this->query;
         $this->currentQuery = clone $this->query;
         $this->query->sort();
-        $this->query->applyAttributes($this->activeAttributes);
+        $this->query->applyAttributes($this->filter->activeAttributes);
 
         // Filter products by price range if we have min or max in request
         //$this->applyPricesFilter();

@@ -91,14 +91,15 @@ class Filter extends BaseObject
         return $data;
     }
 
-    public function __construct(ProductQuery $query, ActiveRecord $model, $config = [])
+    public function __construct(ProductQuery $query, ActiveRecord $model = null, $config = [])
     {
         $this->attributes = $this->getEavAttributes();
         $this->activeAttributes = $this->getActiveAttributes();
 
         $this->buildQuery = clone $query;
         $this->query = clone $query;
-        $this->model = $model;
+        if($model)
+            $this->model = $model;
 
 
         if (Yii::$app->request->get('price')) {

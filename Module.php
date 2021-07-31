@@ -300,6 +300,7 @@ class Module extends WebModule implements BootstrapInterface
             'Product' => '\panix\mod\shop\models\Product',
             'Manufacturer' => '\panix\mod\shop\models\Manufacturer',
             'Category' => '\panix\mod\shop\models\Category',
+            'ProductType' => '\panix\mod\shop\models\ProductType',
         ];
     }
 
