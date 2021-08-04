@@ -9,7 +9,7 @@ use panix\engine\grid\GridView;
 
 <?php
 //\yii\helpers\VarDumper::dump($model,10,true);
-//echo $model->getRelatedProductCount(); 
+//echo $model->getRelatedProductCount();
 ?>
 
 <table class="table table-striped" id="kitProductsTable">
@@ -31,7 +31,7 @@ use panix\engine\grid\GridView;
                 ?>
             </td>
             <td class="text-center">
-                <?= Html::textInput('kit[price]',$data->price,['class'=>'form-control']); ?>
+                <?= Html::textInput('kits['.$data->id.'][price]',$data->price,['class'=>'form-control']); ?>
             </td>
             <td class="text-center">
                 <a class="btn btn-sm btn-danger" href="#" onclick="$(this).parents('tr').remove();"><?= Yii::t('app/default', 'DELETE') ?></a>
@@ -48,13 +48,10 @@ use panix\engine\grid\GridView;
 
 <?php
 
+$baseModel = $model;
 
 $searchModel = new panix\mod\shop\models\search\ProductSearch();
 $searchModel->exclude[] = $exclude;
-
-foreach ($model->kit as $d) {
-    //  $searchModel->exclude[] = $d->id;
-}
 
 $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams());
 
@@ -67,6 +64,12 @@ echo GridView::widget([
     'dataProvider' => $dataProvider,
     'filterModel' => $searchModel,
     'enableLayout'=>false,
+    /*'beforeRow' => function($model, $key, $index, $grid){
+        return '<tr><td colspan="4">' . $model->id . '<td></tr>';
+    },
+    'afterRow' => function($model, $key, $index, $grid){
+        return '<tr><td colspan="4">' . $model->price . '<td></tr>';
+    },*/
     /*'rowOptions' => function ($model, $key, $index, $grid) {
         return ['id' => $model['id']];
     },*/
@@ -93,21 +96,21 @@ echo GridView::widget([
         ],
         [
             'attribute' => 'price',
-            'format' => 'html',
+            'format' => 'raw',
             'contentOptions' => ['class' => 'text-center'],
             'value' => function ($model) {
-                return Yii::$app->currency->number_format($model->price) . ' ' . Yii::$app->currency->main['symbol'];
+                return Html::textInput('price',$model->price).Yii::$app->currency->number_format($model->price) . ' ' . Yii::$app->currency->main['symbol'];
             }
         ],
         [
             'class' => 'panix\engine\grid\columns\ActionColumn',
             'template' => '{add}',
             'buttons' => [
-                'add' => function ($url, $model) { //$model->id . '/' . Html::encode($model->name)
-                    return Html::a(Html::icon('add'), '#', [
+                'add' => function ($url, $model) use($baseModel) { //$model->id . '/' . Html::encode($model->name)
+                    return Html::a(Html::icon('add'), ['/admin/shop/product/kit-add','owner'=>$baseModel->id,'product_id'=>$model->id], [
                         'title' => Yii::t('app/default', 'ADD'),
-                        'class' => 'btn btn-sm btn-success',
-                        'onClick' => 'return addKitProduct(this);',
+                        'class' => 'btn btn-sm btn-success kit-add',
+                        //'onClick' => 'return addKitProduct(this);',
                         'data-pjax' => false
                     ]);
                 },

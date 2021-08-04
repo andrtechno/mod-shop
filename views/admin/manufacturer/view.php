@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
-/* @var $model panix\mod\shop\models\Manufacturer */
+/* @var $model panix\mod\shop\models\Brand */
 
 $this->view->title = $model->name;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app/default', 'Pages'), 'url' => ['index']];

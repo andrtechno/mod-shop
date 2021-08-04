@@ -16,7 +16,7 @@ class SettingsForm extends SettingsModel
     public $label_expire_new;
     public $smart_bc;
     public $smart_title;
-
+    public $email_notify_reviews;
     public $added_to_cart_count;
     public $added_to_cart_period;
 
@@ -26,6 +26,7 @@ class SettingsForm extends SettingsModel
             [['per_page'], "required"],
             [['product_related_bilateral', 'group_attribute', 'smart_bc', 'smart_title'], 'boolean'],
             [['label_expire_new', 'added_to_cart_count'], 'integer'],
+            [['email_notify_reviews'], '\panix\engine\validators\EmailListValidator'],
             [['added_to_cart_period'], 'string'],
         ];
     }
@@ -43,6 +44,7 @@ class SettingsForm extends SettingsModel
             'label_expire_new' => 7,
             'smart_bc' => true,
             'smart_title' => true,
+            'email_notify_reviews' => NULL
         ];
     }
 

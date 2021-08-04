@@ -11,7 +11,7 @@ use yii\helpers\Html;
 use Yii;
 use panix\mod\shop\models\Category;
 use panix\mod\shop\models\Product;
-use panix\mod\shop\models\Manufacturer;
+use panix\mod\shop\models\Brand;
 use panix\engine\data\Widget;
 
 /**
@@ -26,7 +26,7 @@ class FiltersWidget extends Widget
      */
     public $attributes;
     //public $countAttr = true;
-    //public $countManufacturer = true;
+    //public $countBrand = true;
     //public $prices = [];
     public $tagCount = 'sup';
     public $tagCountOptions = ['class' => 'filter-count'];
@@ -38,7 +38,7 @@ class FiltersWidget extends Widget
      */
     public $model;
     public $priceView = 'price';
-    public $manufacturerView = 'manufacturer';
+    public $brandView = 'brand';
     public $attributeView = 'attributes';
     public $query;
 
@@ -126,8 +126,8 @@ class FiltersWidget extends Widget
         if (Yii::$app->request->get('max_price'))
             $model->applyMaxPrice($this->convertCurrency(Yii::$app->request->getQueryParam('max_price')));
 
-        if (Yii::$app->request->get('manufacturer'))
-            $model->applyManufacturers(explode(',', Yii::$app->request->get('manufacturer')));
+        if (Yii::$app->request->get('brand'))
+            $model->applyBrands(explode(',', Yii::$app->request->get('brand')));
 
         //$data = array($attribute->name => $option->id);
         $current = $this->view->context->activeAttributes;
@@ -165,8 +165,8 @@ class FiltersWidget extends Widget
 
            // $model->applyCategories($this->model);
             //$model->andWhere([Product::tableName() . '.main_category_id' => $this->model->id]);
-        //} elseif ($this->model instanceof Manufacturer) {
-        //    $model->applyManufacturers($this->model->id);
+        //} elseif ($this->model instanceof Brand) {
+        //    $model->applyBrands($this->model->id);
        // }
 
 
@@ -205,7 +205,7 @@ class FiltersWidget extends Widget
 
     public function run()
     {
-        $manufacturers = $this->getCategoryManufacturers();
+        $brands = $this->getCategoryBrands();
 
 
         $active = $this->view->context->getActiveFilters();
@@ -224,8 +224,8 @@ class FiltersWidget extends Widget
 			echo $this->render($this->priceView, ['priceMin' => $this->priceMin, 'priceMax' => $this->priceMax]);
         if($this->attributeView)
 			echo $this->render($this->attributeView, ['attributes' => $this->getCategoryAttributes()]);
-        if($this->manufacturerView)
-			echo $this->render($this->manufacturerView, ['manufacturers' => $manufacturers]);
+        if($this->brandView)
+			echo $this->render($this->brandView, ['brands' => $brands]);
         echo Html::endForm();
         echo Html::endTag('div');
         $this->view->registerJs("
@@ -276,7 +276,7 @@ class FiltersWidget extends Widget
     }
 
 
-    public function getCategoryManufacturers()
+    public function getCategoryBrands()
     {
 
         $query = Product::find();
@@ -291,23 +291,23 @@ class FiltersWidget extends Widget
         }
         $query->published();
         $queryClone = clone $query;
-        $queryMan = $queryClone->addSelect(['manufacturer_id', Product::tableName() . '.id']);
+        $queryMan = $queryClone->addSelect(['brand_id', Product::tableName() . '.id']);
         $queryMan->joinWith([
-            'manufacturer' => function (\yii\db\ActiveQuery $query) {
-                $query->andWhere([Manufacturer::tableName() . '.switch' => 1]);
+            'brand' => function (\yii\db\ActiveQuery $query) {
+                $query->andWhere([Brand::tableName() . '.switch' => 1]);
             },
         ]);
         //$queryMan->->applyMaxPrice($this->convertCurrency(Yii::$app->request->getQueryParam('max_price')))
         //$queryMan->->applyMinPrice($this->convertCurrency(Yii::$app->request->getQueryParam('min_price')))
 
-        $queryMan->andWhere('manufacturer_id IS NOT NULL');
-        $queryMan->groupBy('manufacturer_id');
+        $queryMan->andWhere('brand_id IS NOT NULL');
+        $queryMan->groupBy('brand_id');
 
 
-        // $manufacturers = $queryMan->all();
+        // $brands = $queryMan->all();
 
 
-        $manufacturers = Manufacturer::getDb()->cache(function ($db) use ($queryMan) {
+        $brands = Brand::getDb()->cache(function ($db) use ($queryMan) {
             return $queryMan
                 //->joinWith('translations as translate')
                 //->orderBy(['translate.name'=>SORT_ASC])
@@ -315,7 +315,7 @@ class FiltersWidget extends Widget
         }, 86400);
 
 
-        //$manufacturers =$queryMan->all();
+        //$brands =$queryMan->all();
         //echo $q->createCommand()->rawSql;die;
         $data = [
             'title' => Yii::t('shop/default', 'FILTER_BY_MANUFACTURER'),
@@ -323,11 +323,11 @@ class FiltersWidget extends Widget
             'filters' => []
         ];
 
-        if ($manufacturers) {
+        if ($brands) {
 
-            foreach ($manufacturers as $m) {
+            foreach ($brands as $m) {
 
-                $m = $m->manufacturer;
+                $m = $m->brand;
 
                 if ($m) {
                     $query = Product::find();
@@ -339,7 +339,7 @@ class FiltersWidget extends Widget
 
                     //$q->applyMinPrice($this->convertCurrency(Yii::app()->request->getQuery('min_price')))
                     //$q->applyMaxPrice($this->convertCurrency(Yii::app()->request->getQuery('max_price')))
-                    $query->applyManufacturers($m->id);
+                    $query->applyBrands($m->id);
 
                     if (Yii::$app->request->get('q') && Yii::$app->requestedRoute == 'shop/search/index') {
                         $query->applySearch(Yii::$app->request->get('q'));
@@ -363,12 +363,12 @@ class FiltersWidget extends Widget
                     $data['filters'][] = [
                         'title' => $m->name,
                         'count' => (int)$count,
-                        'key' => 'manufacturer',
+                        'key' => 'brand',
                         'queryParam' => $m->id,
                     ];
                     sort($data['filters']);
                 } else {
-                    die('err manufacturer');
+                    die('err brand');
                 }
             }
         }

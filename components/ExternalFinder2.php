@@ -13,7 +13,7 @@ use panix\mod\images\models\Image;
 use panix\mod\shop\models\Attribute;
 use panix\mod\shop\models\AttributeOption;
 use panix\mod\shop\models\Category;
-use panix\mod\shop\models\Manufacturer;
+use panix\mod\shop\models\Brand;
 use panix\mod\shop\models\Product;
 use panix\mod\shop\models\Supplier;
 
@@ -24,7 +24,7 @@ class ExternalFinder2
     const OBJECT_CATEGORY = 1;
     const OBJECT_ATTRIBUTE = 2;
     const OBJECT_PRODUCT = 3;
-    const OBJECT_MANUFACTURER = 4;
+    const OBJECT_BRAND = 4;
     const OBJECT_ATTRIBUTE_OPTION = 5;
     const OBJECT_IMAGE = 6;
     const OBJECT_SUPPLIER = 7;
@@ -100,8 +100,8 @@ class ExternalFinder2
                     return $data;
                     break;
 
-                case self::OBJECT_MANUFACTURER:
-                    $data = Manufacturer::findOne($query['object_id']);
+                case self::OBJECT_BRAND:
+                    $data = Brand::findOne($query['object_id']);
                     return $data;
                     break;
 

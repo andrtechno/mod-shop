@@ -3,22 +3,22 @@
 use yii\helpers\Html;
 
 ?>
-<?php if ($manufacturers['filters'] && count($manufacturers['filters']) > 1) { ?>
+<?php if ($brands['filters'] && count($brands['filters']) > 1) { ?>
     <div class="card filter-block">
-        <a class="card-header h5" data-toggle="collapse" href="#collapse-<?= md5('manufacturer') ?>"
-           aria-expanded="true" aria-controls="collapse-<?= md5('manufacturer') ?>">
+        <a class="card-header h5" data-toggle="collapse" href="#collapse-<?= md5('brand') ?>"
+           aria-expanded="true" aria-controls="collapse-<?= md5('brand') ?>">
             <?= Yii::t('shop/default', 'FILTER_BY_MANUFACTURER') ?>
         </a>
-        <div class="card-collapse collapse in" id="collapse-<?= md5('manufacturer') ?>">
-            <?php if (count($manufacturers['filters']) >= 20 && $this->context->searchItem > 0) { ?>
+        <div class="card-collapse collapse in" id="collapse-<?= md5('brand') ?>">
+            <?php if (count($brands['filters']) >= 20 && $this->context->searchItem > 0) { ?>
                 <input type="text" name="search-filter"
-                       onkeyup="filterSearchInput(this,'filter-manufacturer')" class="form-control" placeholder="<?=Yii::t('shop/default','SEARCH');?>">
+                       onkeyup="filterSearchInput(this,'filter-brand')" class="form-control" placeholder="<?=Yii::t('shop/default','SEARCH');?>">
             <?php } ?>
             <div class="card-body">
-                <ul class="filter-list list-unstyled" id="filter-manufacturer">
+                <ul class="filter-list list-unstyled" id="filter-brand">
                     <?php
-                    foreach ($manufacturers['filters'] as $filter) {
-                        $url = Yii::$app->urlManager->addUrlParam('/' . Yii::$app->requestedRoute, [$filter['key'] => $filter['queryParam']], $manufacturers['selectMany']);
+                    foreach ($brands['filters'] as $filter) {
+                        $url = Yii::$app->urlManager->addUrlParam('/' . Yii::$app->requestedRoute, [$filter['key'] => $filter['queryParam']], $brands['selectMany']);
                         $queryData = explode(',', Yii::$app->request->getQueryParam($filter['key']));
 
                         echo Html::beginTag('li');

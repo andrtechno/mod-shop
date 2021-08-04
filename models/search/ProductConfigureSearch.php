@@ -24,7 +24,7 @@ class ProductConfigureSearch extends Product
     public function rules()
     {
         return [
-            [['supplier_id', 'manufacturer_id', 'main_category_id'], 'integer'],
+            [['supplier_id', 'brand_id', 'main_category_id'], 'integer'],
             // [['image'],'boolean'],
             [['slug', 'sku', 'price', 'id'], 'safe'], //commentsCount
             [['name'], 'string'],
@@ -119,7 +119,7 @@ class ProductConfigureSearch extends Product
 
         $query->andFilterWhere(['like', 'sku', $this->sku]);
         $query->andFilterWhere(['supplier_id' => $this->supplier_id]);
-        $query->andFilterWhere(['manufacturer_id' => $this->manufacturer_id]);
+        $query->andFilterWhere(['brand_id' => $this->brand_id]);
 
 
         if ($this->eavAttributes)

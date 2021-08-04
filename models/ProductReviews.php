@@ -130,13 +130,16 @@ class ProductReviews extends ActiveRecord
         }
         return false;
     }
-    public function getUserAvatar(){
-        if($this->user_id){
-            if($this->user){
+
+    public function getUserAvatar()
+    {
+        if ($this->user_id) {
+            if ($this->user) {
                 return $this->user->getAvatarUrl();
             }
         }
     }
+
     public function afterSave($insert, $changedAttributes)
     {
 
@@ -148,12 +151,15 @@ class ProductReviews extends ActiveRecord
                 $product->save(false);
             }
 
-            $mailer = Yii::$app->mailer;
-            $mailer->htmlLayout = "@app/mail/layouts/html";
-            $mailer->compose(['html' => Yii::$app->getModule('shop')->mailPath . '/' . Yii::$app->language . '/product-review-notify'], ['model' => $this])
-                ->setTo([Yii::$app->settings->get('app', 'email') => Yii::$app->name])
-                ->setSubject(Yii::t('shop/admin', 'MAIL_ADMIN_SUBJECT_REVIEW'))
-                ->send();
+            if (Yii::$app->settings->get('shop', 'email_notify_reviews')) {
+                $emails = explode(',',Yii::$app->settings->get('shop', 'email_notify_reviews'));
+                $mailer = Yii::$app->mailer;
+                $mailer->htmlLayout = "@app/mail/layouts/html";
+                $mailer->compose(['html' => Yii::$app->getModule('shop')->mailPath . '/' . Yii::$app->language . '/product-review-notify'], ['model' => $this])
+                    ->setTo($emails)
+                    ->setSubject(Yii::t('shop/admin', 'MAIL_ADMIN_SUBJECT_REVIEW'))
+                    ->send();
+            }
 
         }
 

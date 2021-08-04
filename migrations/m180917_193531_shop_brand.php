@@ -4,20 +4,20 @@
  * Generation migrate by PIXELION CMS
  * @author PIXELION CMS development team <dev@pixelion.com.ua>
  *
- * Class m180917_193531_shop_manufacturer
+ * Class m180917_193531_shop_brand
  */
 
 
 use panix\engine\CMS;
 use panix\engine\db\Migration;
-use panix\mod\shop\models\Manufacturer;
+use panix\mod\shop\models\Brand;
 
-class m180917_193531_shop_manufacturer extends Migration
+class m180917_193531_shop_brand extends Migration
 {
 
     public function up()
     {
-        $this->createTable(Manufacturer::tableName(), [
+        $this->createTable(Brand::tableName(), [
             'id' => $this->primaryKey()->unsigned(),
             'cat_id' => $this->integer()->null(),
             'image' => $this->string()->null(),
@@ -34,10 +34,10 @@ class m180917_193531_shop_manufacturer extends Migration
 
 
 
-        $this->createIndex('switch', Manufacturer::tableName(), 'switch');
-        $this->createIndex('ordern', Manufacturer::tableName(), 'ordern');
-        $this->createIndex('slug', Manufacturer::tableName(), 'slug');
-        $this->createIndex('cat_id', Manufacturer::tableName(), 'cat_id');
+        $this->createIndex('switch', Brand::tableName(), 'switch');
+        $this->createIndex('ordern', Brand::tableName(), 'ordern');
+        $this->createIndex('slug', Brand::tableName(), 'slug');
+        $this->createIndex('cat_id', Brand::tableName(), 'cat_id');
 
         $brands = [
             [
@@ -83,18 +83,18 @@ class m180917_193531_shop_manufacturer extends Migration
         ];
         $id = 1;
         foreach ($brands as $key => $brand) {
-            $this->batchInsert(Manufacturer::tableName(), ['cat_id', 'slug', 'image', 'switch', 'ordern', 'name_ru', 'name_uk', 'description_ru', 'description_uk'], [
+            $this->batchInsert(Brand::tableName(), ['cat_id', 'slug', 'image', 'switch', 'ordern', 'name_ru', 'name_uk', 'description_ru', 'description_uk'], [
                 [NULL, CMS::slug($brand['name']), $brand['image'], 1, $id, $brand['name'], $brand['name'], $brand['description'], $brand['description']]
             ]);
             $id++;
         }
 
-        $this->loadColumns('grid-manufacturer', Manufacturer::class, ['image', 'name', 'products']);
+        $this->loadColumns('grid-brand', Brand::class, ['image', 'name', 'products']);
 
     }
 
     public function down()
     {
-        $this->dropTable(Manufacturer::tableName());
+        $this->dropTable(Brand::tableName());
     }
 }

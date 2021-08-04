@@ -7,6 +7,7 @@ use panix\engine\CMS;
 use panix\mod\images\models\Image;
 use panix\mod\shop\components\SimpleXMLExtended;
 use panix\mod\shop\models\Attribute;
+use panix\mod\shop\models\forms\PrintForm;
 use panix\mod\shop\models\Product;
 use Yii;
 use panix\engine\controllers\AdminController;
@@ -20,8 +21,23 @@ class PrintController extends AdminController
 
     public $icon = 'print';
 
-
     public function actionIndex()
+    {
+        $model = new PrintForm();
+
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            // данные в $model удачно проверены
+
+            // делаем что-то полезное с $model ...
+
+        } else {
+            // либо страница отображается первый раз, либо есть ошибка в данных
+
+        }
+        return $this->render('index',['model'=>$model]);
+    }
+
+    public function actionIndex2()
     {
         $mpdf = new Mpdf([
             // 'debug' => true,
@@ -53,11 +69,12 @@ class PrintController extends AdminController
         die;
     }
 
-    public function actionTermo()
+    public function actionTermo($size)
     {
+        list($width,$height) = explode('x',$size);
         $mpdf = new \Mpdf\Mpdf([
             'mode' => 'utf-8',
-            'format' => [58, 40],
+            'format' => [$width, $height],
             'margin_top' => 1,
             'margin_bottom' => 0,
             'margin_left' => 1,
@@ -68,7 +85,7 @@ class PrintController extends AdminController
             'extrapagebreak' => false,
         ]);
         // $mpdf->extrapagebreak=false;
-        $pr = \panix\mod\shop\models\Product::find()->limit(15)->all();
+        $pr = \panix\mod\shop\models\Product::find()->limit(5)->all();
         foreach ($pr as $k => $p) {
             $mpdf->AddPage();
             // $mpdf->WriteHTML('<pagebreak sheet-size="58mm 40mm" />');
@@ -76,8 +93,37 @@ class PrintController extends AdminController
         }
 
 
-        $mpdf->Output();
-        die;
+        return $mpdf->Output();
+     //   die;
+    }
+
+
+    public function actionQr($size)
+    {
+        list($width,$height) = explode('x',$size);
+        $mpdf = new \Mpdf\Mpdf([
+            'mode' => 'utf-8',
+            'format' => [$width, $height],
+            'margin_top' => 0,
+            'margin_bottom' => 0,
+            'margin_left' => 0,
+            'margin_right' => 0,
+            'margin_footer' => 0,
+            'margin_header' => 0,
+            'mirrorMargins' => false,
+            'extrapagebreak' => false,
+        ]);
+        // $mpdf->extrapagebreak=false;
+        $pr = \panix\mod\shop\models\Product::find()->limit(2)->all();
+        foreach ($pr as $k => $p) {
+            $mpdf->AddPage();
+           //  $mpdf->WriteHTML('<pagebreak sheet-size="58mm 40mm" />');
+            $mpdf->WriteHTML($this->renderPartial('_qr', ['product' => $p]));
+        }
+
+
+        return $mpdf->Output();
+        //   die;
     }
 
     public function behaviors()
@@ -166,8 +212,8 @@ class PrintController extends AdminController
 
             //$item->addChild('g:adult', "no", $ns);
             //$item->addChild('g:identifier_exists', "yes", $ns);
-            if ($product->manufacturer_id) {
-                $brand = $product->manufacturer;
+            if ($product->brand_id) {
+                $brand = $product->brand;
                 if ($brand) {
                     $item->addChild('brand', $brand->name, $ns);
                 }

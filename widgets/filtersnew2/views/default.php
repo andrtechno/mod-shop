@@ -31,8 +31,8 @@ use yii\helpers\Html;
                     'currentPriceMax' => $currentPriceMax,
                 ]);
 
-            if ($this->context->manufacturerView)
-                echo $this->render($this->context->manufacturerView, ['manufacturers' => $manufacturers]);
+            if ($this->context->brandView)
+                echo $this->render($this->context->brandView, ['brands' => $brands]);
 
             if ($this->context->attributeView)
                 echo $this->render($this->context->attributeView, ['attributes' => $attributes]);

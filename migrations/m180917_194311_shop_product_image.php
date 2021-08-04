@@ -23,10 +23,12 @@ class m180917_194311_shop_product_image extends Migration
             'id' => $this->primaryKey()->unsigned(),
             'user_id' => $this->integer()->unsigned(),
             'product_id' => $this->integer()->unsigned(),
-            'filename' => $this->string(255)->notNull(),
-            'is_main' => $this->boolean()->defaultValue(false)->notNull(),
+            'filename' => $this->string(255),
+            'alt_title' => $this->string(255),
+            'urlAlias' => $this->string(255),
+            'is_main' => $this->boolean()->defaultValue(false),
             'created_at' => $this->integer(),
-            'switch' => $this->boolean()->defaultValue(true)->notNull(),
+            'switch' => $this->boolean()->defaultValue(true),
             'ordern' => $this->integer()->unsigned(),
         ]);
 

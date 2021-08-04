@@ -19,7 +19,7 @@ class CategoryUrlRule_1 extends Object implements UrlRuleInterface {
             $parts = [];
             if (!empty($params)) {
                 foreach ($params as $key => $val){
-           
+
                 $parts[] = $key . '/' . $val;
 
                 }
@@ -54,8 +54,8 @@ class CategoryUrlRule_1 extends Object implements UrlRuleInterface {
             }
         }
         // check $matches[1] and $matches[3] to see
-        // if they match a manufacturer and a model in the database.
-        // If so, set $params['manufacturer'] and/or $params['model']
+        // if they match a brand and a model in the database.
+        // If so, set $params['brand'] and/or $params['model']
         // and return ['car/index', $params]
         // }
         return false; // this rule does not apply

@@ -10,7 +10,7 @@ $templates = [
     'product_sku' => $product->getAttributeLabel('sku'),
     'product_price' => $product->getAttributeLabel('price'),
     'product_category' => $product->getAttributeLabel('main_category_id'),
-    'product_manufacturer' => $product->getAttributeLabel('manufacturer_id'),
+    'product_brand' => $product->getAttributeLabel('brand_id'),
     'currency.symbol' => Yii::$app->currency->active['symbol'],
     'currency.iso' => Yii::$app->currency->active['iso'],
 ];

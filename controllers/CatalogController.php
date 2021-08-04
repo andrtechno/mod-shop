@@ -51,10 +51,10 @@ class CatalogController extends FilterController
         $this->query->published();
 
 
-        //  $cr->with = array('manufacturerActive');
+        //  $cr->with = array('brandActive');
         // Скрывать товары если производитель скрыт.
         //TODO: если у товара не выбран производитель то он тоже скрывается!! need fix
-        //$this->query->with(array('manufacturer' => array(
+        //$this->query->with(array('brand' => array(
         //        'scopes' => array('published')
         //)));
         $this->query->applyCategories($this->dataModel);
@@ -70,7 +70,7 @@ class CatalogController extends FilterController
         $this->query->sort();
         //$this->query->andWhere([Product::tableName().'.main_category_id'=>$this->dataModel->id]);
 
-        //  $this->query->with('manufacturerActive');
+        //  $this->query->with('brandActive');
         $this->pageName = $this->dataModel->name;
         $this->view->setModel($this->dataModel);
         //$this->view->title = $this->pageName;
@@ -83,10 +83,10 @@ class CatalogController extends FilterController
 //echo $this->query->createCommand()->rawSql;die;
         // Create clone of the current query to use later to get min and max prices.
 
-        // Filter by manufacturer
-        if (Yii::$app->request->get('manufacturer')) {
-            $manufacturers = explode(',', Yii::$app->request->get('manufacturer', ''));
-            $this->query->applyManufacturers($manufacturers);
+        // Filter by brand
+        if (Yii::$app->request->get('brand')) {
+            $brands = explode(',', Yii::$app->request->get('brand', ''));
+            $this->query->applyBrands($brands);
         }
         // Filter products by price range if we have min or max in request
 
@@ -232,20 +232,20 @@ class CatalogController extends FilterController
         if ($filterData) {
             $name = '';
             foreach ($filterData as $filterKey => $filterItems) {
-                if ($filterKey == 'manufacturer') {
-                    $manufacturerNames = [];
+                if ($filterKey == 'brand') {
+                    $brandNames = [];
                     foreach ($filterItems['items'] as $mKey => $mItems) {
-                        $manufacturerNames[] = $mItems['label'];
+                        $brandNames[] = $mItems['label'];
                     }
-                    $sep = (count($manufacturerNames) > 2) ? ', ' : ' ' . Yii::t('yii', 'AND') . ' ';
-                    $name .= ' ' . implode($sep, $manufacturerNames);
-                    $this->pageName .= ' ' . implode($sep, $manufacturerNames);
+                    $sep = (count($brandNames) > 2) ? ', ' : ' ' . Yii::t('yii', 'AND') . ' ';
+                    $name .= ' ' . implode($sep, $brandNames);
+                    $this->pageName .= ' ' . implode($sep, $brandNames);
                 } else {
                     $attributesNames[$filterKey] = [];
                     foreach ($filterItems['items'] as $mKey => $mItems) {
                         $attributesNames[$filterKey][] = $mItems['label'];
                     }
-                    $prefix = isset($filterData['manufacturer']) ? '; ' : ', ';
+                    $prefix = isset($filterData['brand']) ? '; ' : ', ';
 
                     $sep = (count($attributesNames[$filterKey]) > 2) ? ', ' : ' ' . Yii::t('yii', 'AND') . ' ';
                     $name .= $prefix . $filterItems['label'] . ' ' . implode($sep, $attributesNames[$filterKey]);
@@ -311,9 +311,9 @@ class CatalogController extends FilterController
         $this->query->applyAttributes($this->filter->activeAttributes);
 
 
-        if (Yii::$app->request->get('manufacturer')) {
-            $manufacturers = explode(',', Yii::$app->request->get('manufacturer', ''));
-            $this->query->applyManufacturers($manufacturers);
+        if (Yii::$app->request->get('brand')) {
+            $brands = explode(',', Yii::$app->request->get('brand', ''));
+            $this->query->applyBrands($brands);
         }
         $this->query->applyRangePrices((isset($this->prices[0])) ? $this->prices[0] : 0, (isset($this->prices[1])) ? $this->prices[1] : 0);
 
@@ -349,16 +349,16 @@ class CatalogController extends FilterController
         $this->query->andWhere(['IS NOT', Product::tableName() . '.discount', null])
             ->andWhere(['!=', Product::tableName() . '.discount', '']);
 
-        $manufacturers = [];
+        $brands = [];
         $categories = [];
         $discounts = (Yii::$app->hasModule('discounts')) ? Yii::$app->getModule('discounts')->discounts : false;
         if ($discounts) {
             $categoriesList = [];
-            $manufacturersList = [];
+            $brandsList = [];
             foreach ($discounts as $discount) {
                 /** @var \panix\mod\discounts\models\Discount $discount */
                 $categoriesList[] = $discount->categories;
-                $manufacturersList[] = $discount->manufacturers;
+                $brandsList[] = $discount->brands;
             }
 
             foreach ($categoriesList as $category) {
@@ -367,19 +367,19 @@ class CatalogController extends FilterController
                 }
             }
 
-            foreach ($manufacturersList as $manufacturer) {
-                foreach ($manufacturer as $item2) {
-                    $manufacturers[] = $item2;
+            foreach ($brandsList as $brand) {
+                foreach ($brand as $item2) {
+                    $brands[] = $item2;
                 }
             }
 
         }
 
 
-        if ($manufacturers || Yii::$app->request->get('manufacturer')) {
-            if (!$manufacturers)
-                $manufacturers = explode(',', Yii::$app->request->get('manufacturer', ''));
-            $this->query->applyManufacturers(array_unique($manufacturers), 'orWhere');
+        if ($brands || Yii::$app->request->get('brand')) {
+            if (!$brands)
+                $brands = explode(',', Yii::$app->request->get('brand', ''));
+            $this->query->applyBrands(array_unique($brands), 'orWhere');
         }
         if ($categories) {
             $this->query->applyCategories(array_unique($categories), 'orWhere');

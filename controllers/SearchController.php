@@ -32,10 +32,10 @@ class SearchController extends FilterController
                 return $this->redirect(['/shop/search/index', 'q' => Yii::$app->request->post('q')]);
         }
 
-        // Filter by manufacturer
-        if (Yii::$app->request->get('manufacturer')) {
-            $manufacturers = explode(',', Yii::$app->request->get('manufacturer', ''));
-            $this->query->applyManufacturers($manufacturers);
+        // Filter by brand
+        if (Yii::$app->request->get('brand')) {
+            $brands = explode(',', Yii::$app->request->get('brand', ''));
+            $this->query->applyBrands($brands);
         }
         $this->query->groupBy(Product::tableName() . '.`id`');
         $this->query->applySearch(Yii::$app->request->get('q'))->published();

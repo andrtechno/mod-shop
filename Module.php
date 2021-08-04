@@ -4,6 +4,7 @@ namespace panix\mod\shop;
 
 use panix\engine\CMS;
 use panix\mod\shop\models\Category;
+use panix\mod\shop\models\ProductImage;
 use panix\mod\shop\models\ProductReviews;
 use Yii;
 use panix\engine\WebModule;
@@ -17,23 +18,108 @@ class Module extends WebModule implements BootstrapInterface
     public $mailPath = '@shop/mail';
     public $searchAttribute = 'sku';
     public $filterViewCurrent = '@shop/widgets/filtersnew/views/current';
+    public function getImage($dirtyAlias)
+    {
+        //Get params
+        $params = $data = $this->parseImageAlias($dirtyAlias);
 
+        $alias = $params['alias'];
+        $size = $params['size'];
+
+            $imageQuery = ProductImage::find();
+
+        $image = $imageQuery
+            ->where(['urlAlias' => $alias])
+            ->one();
+        //if (!$image) {
+        //    return $this->getPlaceHolder();
+        //}
+
+        return $image;
+    }
+    public function parseImageAlias($parameterized)
+    {
+        $params = explode('_', $parameterized);
+
+        if (count($params) == 1) {
+            $alias = $params[0];
+            $size = null;
+        } elseif (count($params) == 2) {
+            $alias = $params[0];
+            $size = $this->parseSize($params[1]);
+            if (!$size) {
+                $alias = null;
+            }
+        } else {
+            $alias = null;
+            $size = null;
+        }
+
+
+        return ['alias' => $alias, 'size' => $size];
+    }
+
+
+    /**
+     *
+     * Parses size string
+     * For instance: 400x400, 400x, x400
+     *
+     * @param $notParsedSize
+     * @return array|null
+     */
+    public function parseSize($notParsedSize)
+    {
+        $sizeParts = explode('x', $notParsedSize);
+        $part1 = (isset($sizeParts[0]) and $sizeParts[0] != '');
+        $part2 = (isset($sizeParts[1]) and $sizeParts[1] != '');
+        if ($part1 && $part2) {
+            if (intval($sizeParts[0]) > 0 &&
+                intval($sizeParts[1]) > 0
+            ) {
+                $size = [
+                    'width' => intval($sizeParts[0]),
+                    'height' => intval($sizeParts[1])
+                ];
+            } else {
+                $size = null;
+            }
+        } elseif ($part1 && !$part2) {
+            $size = [
+                'width' => intval($sizeParts[0]),
+                'height' => null
+            ];
+        } elseif (!$part1 && $part2) {
+            $size = [
+                'width' => null,
+                'height' => intval($sizeParts[1])
+            ];
+        } else {
+            throw new \Exception('Something bad with size, sorry!');
+        }
+
+        return $size;
+    }
     /**
      * @inheritdoc
      */
     public function bootstrap($app)
     {
+
         $rules['catalog'] = 'shop/default/index';
         $rules['search/ajax'] = 'shop/search/ajax';
         $rules['notify/<id:\d+>'] = 'shop/notify/index';
         $rules['shop/ajax/currency/<id:\d+>'] = 'shop/ajax/currency';
-        $rules['manufacturer'] = 'shop/manufacturer/index';
-        //$rules['manufacturer/<slug:[0-9a-zA-Z_\-]+>'] =  'shop/manufacturer/view';
+        $rules['brand'] = 'shop/brand/index';
+        //$rules['brand/<slug:[0-9a-zA-Z_\-]+>'] =  'shop/brand/view';
+
         $rules['product/<slug:[0-9a-zA-Z\-]+>-<id:\d+>'] = 'shop/product/view';
         //$rules['product/<slug:[0-9a-zA-Z\-]+>'] = 'shop/product/view';
         $rules['product/<id:\d+>/review-add'] = 'shop/product/review-add';
         $rules['product/<id:\d+>/review-validate'] = 'shop/product/review-validate';
         $rules['product/<id:\d+>/<action:[0-9a-zA-Z_\-]+>'] = 'shop/product/<action>';
+        $rules['product/image/<action:[0-9a-zA-Z_\-]+>/<dirtyAlias:\w.+>'] = 'shop/image/<action>';
+
 
 
         if ($app->id != 'console') {
@@ -46,10 +132,10 @@ class Module extends WebModule implements BootstrapInterface
             ];
 
             $rules[] = [
-                'class' => 'panix\mod\shop\components\ManufacturerUrlRule',
-                'route' => 'shop/manufacturer/view',
-                'index' => 'manufacturer',
-                'pattern' => 'manufacturer/<slug:[0-9a-zA-Z_\-]+>'
+                'class' => 'panix\mod\shop\components\BrandUrlRule',
+                'route' => 'shop/brand/view',
+                'index' => 'brand',
+                'pattern' => 'brand/<slug:[0-9a-zA-Z_\-]+>'
             ];
             /* $rules[] = [
                  'class' => 'panix\mod\shop\components\CategoryUrlRule',
@@ -123,6 +209,7 @@ class Module extends WebModule implements BootstrapInterface
             /*$rules[] = [
                 'class' => 'panix\mod\shop\components\CategoryUrlRule',
             ];*/
+
         }
 
         $app->urlManager->addRules(
@@ -263,9 +350,9 @@ class Module extends WebModule implements BootstrapInterface
                     ],
                     [
                         'label' => Yii::t('shop/admin', 'MANUFACTURER'),
-                        "url" => ['/admin/shop/manufacturer'],
+                        "url" => ['/admin/shop/brand'],
                         'icon' => 'apple',
-                        'visible' => Yii::$app->user->can('/shop/admin/manufacturer/index') || Yii::$app->user->can('/shop/admin/manufacturer/*')
+                        'visible' => Yii::$app->user->can('/shop/admin/brand/index') || Yii::$app->user->can('/shop/admin/brand/*')
                     ],
                     [
                         'label' => Yii::t('shop/admin', 'SUPPLIER'),
@@ -298,7 +385,7 @@ class Module extends WebModule implements BootstrapInterface
     {
         return [
             'Product' => '\panix\mod\shop\models\Product',
-            'Manufacturer' => '\panix\mod\shop\models\Manufacturer',
+            'Brand' => '\panix\mod\shop\models\Brand',
             'Category' => '\panix\mod\shop\models\Category',
             'ProductType' => '\panix\mod\shop\models\ProductType',
         ];

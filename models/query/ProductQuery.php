@@ -36,21 +36,21 @@ class ProductQuery extends ActiveQuery
 
 
     /**
-     * @param $manufacturers array|int
+     * @param $brands array|int
      * @param $whereType string
      * @return $this
      */
-    public function applyManufacturers($manufacturers,$whereType = 'andWhere')
+    public function applyBrands($brands,$whereType = 'andWhere')
     {
-        if (!is_array($manufacturers))
-            $manufacturers = [$manufacturers];
+        if (!is_array($brands))
+            $brands = [$brands];
 
-        if (empty($manufacturers))
+        if (empty($brands))
             return $this;
 
-        sort($manufacturers);
+        sort($brands);
 
-        $this->$whereType(['manufacturer_id' => $manufacturers]);
+        $this->$whereType(['brand_id' => $brands]);
         return $this;
     }
 
@@ -94,13 +94,13 @@ class ProductQuery extends ActiveQuery
 
 
     /**
-     * Product by manufacturer
+     * Product by brand
      *
      * @return $this
      */
-    public function manufacturer()
+    public function brand()
     {
-        $this->joinWith(['manufacturer']);
+        $this->joinWith(['brand']);
         return $this;
     }
 

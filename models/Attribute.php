@@ -3,6 +3,7 @@
 namespace panix\mod\shop\models;
 
 use panix\engine\CMS;
+use panix\ext\select2\Select2;
 use panix\mod\shop\components\ExternalFinder;
 use Yii;
 use yii\caching\DbDependency;
@@ -49,7 +50,8 @@ class Attribute extends ActiveRecord
     const TYPE_COLOR = 9;//todo new Under construction
 
     const MODULE_ID = 'shop';
-   // public $translationClass = AttributeTranslate::class;
+
+    // public $translationClass = AttributeTranslate::class;
 
 
     public static function find()
@@ -147,7 +149,7 @@ class Attribute extends ActiveRecord
             ['name', '\panix\engine\validators\UrlValidator',
                 'attributeCompare' => 'title',
                 'attributeSlug' => 'name',
-                'replacement'=>'_',
+                'replacement' => '_',
                 'message' => self::t('ID_BUSY')
             ],
             [['name', 'title', 'abbreviation'], 'string', 'max' => 255],
@@ -184,7 +186,7 @@ class Attribute extends ActiveRecord
             ],
             'translate' => [
                 'class' => '\panix\mod\shop\components\TranslateBehavior',
-                'translationAttributes' => ['title','abbreviation','hint']
+                'translationAttributes' => ['title', 'abbreviation', 'hint']
             ]
         ], parent::behaviors());
     }
@@ -275,11 +277,25 @@ class Attribute extends ActiveRecord
                 break;
             case self::TYPE_DROPDOWN:
                 $data = ArrayHelper::map($this->options, 'id', 'value');
-                return Html::dropDownList($name, $value, $data, [
+
+                return Select2::widget([
+                    'id' => 'attribute-'.$this->name,
+                    'name' => $name,
+                    'value' => $value,
+                    'items' => $data,
+                    'options' => [
+                        'prompt' => html_entity_decode(Yii::t('app/default', 'EMPTY_LIST'))
+                    ],
+                    'clientOptions' => [
+                        /// 'placeholder'=>Yii::t('app/default', 'EMPTY_LIST'),
+                        'width' => '100%'
+                    ]
+                ]);
+                /*return Html::dropDownList($name, $value, $data, [
                     'class' => 'form-control ' . $inputClass,
                     'prompt' => html_entity_decode(Yii::t('app/default', 'EMPTY_LIST'))
-                ]);
-                //return Yii::app()->controller->widget('ext.bootstrap.selectinput.SelectInput',array('data'=>$data,'value'=>$value,'htmlOptions'=>array('name'=>$name,'empty'=>Yii::t('app/default','EMPTY_LIST'))),true);
+                ]);*/
+
                 break;
             case self::TYPE_SELECT_MANY:
                 $data = ArrayHelper::map($this->options, 'id', 'value');

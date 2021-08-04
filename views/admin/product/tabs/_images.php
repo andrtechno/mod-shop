@@ -104,8 +104,8 @@ Modal::end();
 <?php
 
 
-$searchModel = new ImageSearch();
-$dataProvider = $searchModel->search(Yii::$app->request->getQueryParams(), ['model' => $model, 'object_id' => $model->primaryKey]);
+$searchModel = new \panix\mod\shop\models\search\ProductImageSearch();
+$dataProvider = $searchModel->search(Yii::$app->request->getQueryParams(), ['model' => $model, 'product_id' => $model->primaryKey]);
 
 
 Pjax::begin([
@@ -131,7 +131,7 @@ echo panix\engine\grid\GridView::widget([
             'format' => 'raw',
             'contentOptions' => ['class' => 'text-center image'],
             'value' => function ($model) {
-                return Html::a(Html::img($model->getUrl('100x100'), ['class' => 'img-thumbnail']), $model->getUrl(), ['class' => 'fancybox']);
+                return Html::a(Html::img($model->get('50x50'), ['class' => 'img-thumbnail']), $model->get(), ['class' => 'fancybox']);
             },
         ],
         [
@@ -168,7 +168,7 @@ echo panix\engine\grid\GridView::widget([
                      return Html::a(Html::icon('settings'), ['/admin/images/default/edit-crop', 'id' => $data->id], array('class' => 'btn btn-sm btn-default copper'));
                  },*/
                 'delete' => function ($url, $data, $key) use ($model) {
-                    return Html::a(Html::icon('delete'), ['/admin/images/default/delete', 'id' => $data->id], [
+                    return Html::a(Html::icon('delete'), ['/admin/shop/product/image-delete', 'id' => $data->id], [
                         'class' => 'btn btn-sm btn-danger attachment-delete',
                         'data-id' => $data->id,
                         //'data-object_id' => $model->id,

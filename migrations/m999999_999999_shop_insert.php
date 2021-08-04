@@ -107,7 +107,7 @@ class m999999_999999_shop_insert extends Migration
                 'name' => 'Ноутбук Lenovo IdeaPad 330-15AST',
                 'price' => '5999',
                 'type_id' => 2,
-                'manufacturer_id' => 6,
+                'brand_id' => 6,
                 'main_category' => 12,
                 'attributes' => [
                     'Диагональ экрана' => '15.6" (1366x768) WXGA HD',
@@ -128,7 +128,7 @@ class m999999_999999_shop_insert extends Migration
                 'name' => 'Ноутбук Lenovo IdeaPad 330-15ICH',
                 'price' => '17999',
                 'type_id' => 2,
-                'manufacturer_id' => 6,
+                'brand_id' => 6,
                 'main_category' => 12,
                 'images' => [
                     'https://i.citrus.ua/uploads/shop/c/2/c27e2c410abf6f7b4221980e5dc4e4d3.jpg',
@@ -157,7 +157,7 @@ class m999999_999999_shop_insert extends Migration
                 'name' => 'Ноутбук Lenovo Ideapad S340-15IWL Platinum Grey',
                 'price' => '9499',
                 'type_id' => 2,
-                'manufacturer_id' => 6,
+                'brand_id' => 6,
                 'main_category' => 12,
                 'images' => [
                     'https://i.citrus.ua/uploads/shop/7/9/79e1105ecd90d96b37e65f1cd72e88fd.jpg',
@@ -197,7 +197,7 @@ class m999999_999999_shop_insert extends Migration
                 'name' => 'Apple MacBook 12" 256Gb Space Gray (MNYF2) 2017',
                 'price' => '27499',
                 'type_id' => 2,
-                'manufacturer_id' => 1,
+                'brand_id' => 1,
                 'main_category' => 12,
                 'discount' => '5%',
                 'images' => [
@@ -244,7 +244,7 @@ class m999999_999999_shop_insert extends Migration
             $model->name = $product['name'];
             $model->slug = CMS::slug($model->name);
             $model->price = $product['price'];
-            $model->manufacturer_id = $product['manufacturer_id'];
+            $model->brand_id = $product['brand_id'];
             $model->main_category_id = $product['main_category'];
             if (isset($product['discount']))
                 $model->discount = $product['discount'];

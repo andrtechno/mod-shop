@@ -117,7 +117,7 @@ class DevController extends ConsoleController
             'type_id',
             'currency_id',
             'main_category_id',
-            'manufacturer_id',
+            'brand_id',
             'slug',
             'price',
             'price_purchase',

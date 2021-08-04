@@ -8,7 +8,7 @@ use panix\engine\data\ActiveDataProvider;
 use panix\mod\shop\models\Supplier;
 
 /**
- * ManufacturerSearch represents the model behind the search form about `panix\shop\models\Manufacturer`.
+ * BrandSearch represents the model behind the search form about `panix\shop\models\Brand`.
  */
 class SupplierSearch extends Supplier {
 

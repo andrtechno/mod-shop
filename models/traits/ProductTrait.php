@@ -6,7 +6,7 @@ use Yii;
 use yii\helpers\ArrayHelper;
 use yii\caching\DbDependency;
 use panix\mod\shop\models\Category;
-use panix\mod\shop\models\Manufacturer;
+use panix\mod\shop\models\Brand;
 use panix\mod\shop\models\ProductType;
 use panix\mod\shop\models\search\ProductSearch;
 use panix\mod\shop\models\Supplier;
@@ -125,7 +125,7 @@ trait ProductTrait
             'contentOptions' => ['class' => 'text-center'],
             'filter' => ArrayHelper::map(ProductType::find()
                 ->addOrderBy(['name' => SORT_ASC])
-                // ->cache(3200, new DbDependency(['sql' => 'SELECT MAX(`updated_at`) FROM ' . Manufacturer::tableName()]))
+                // ->cache(3200, new DbDependency(['sql' => 'SELECT MAX(`updated_at`) FROM ' . Brand::tableName()]))
                 ->all(), 'id', 'name'),
             'filterInputOptions' => ['class' => 'form-control', 'prompt' => html_entity_decode('&mdash; выберите тип &mdash;')],
             'value' => 'type.name'
@@ -203,15 +203,15 @@ trait ProductTrait
                 return ($model->supplier) ? $model->supplier->name : NULL;
             }
         ];
-        $columns['manufacturer_id'] = [
-            'attribute' => 'manufacturer_id',
-            'filter' => ArrayHelper::map(Manufacturer::find()
+        $columns['brand_id'] = [
+            'attribute' => 'brand_id',
+            'filter' => ArrayHelper::map(Brand::find()
                 ->addOrderBy(['name_' . Yii::$app->language => SORT_ASC])
-                // ->cache(3200, new DbDependency(['sql' => 'SELECT MAX(`updated_at`) FROM ' . Manufacturer::tableName()]))
+                // ->cache(3200, new DbDependency(['sql' => 'SELECT MAX(`updated_at`) FROM ' . Brand::tableName()]))
                 ->all(), 'id', 'name_' . Yii::$app->language),
             'filterInputOptions' => ['class' => 'form-control', 'prompt' => html_entity_decode('&mdash; выберите производителя &mdash;')],
             'value' => function ($model) {
-                return ($model->manufacturer) ? $model->manufacturer->name : NULL;
+                return ($model->brand) ? $model->brand->name : NULL;
             }
         ];
         $columns['categories'] = [
@@ -550,7 +550,7 @@ trait ProductTrait
         $codes["{product_price}"] = $this->getFrontPrice();
         $codes["{product_sku}"] = $this->sku;
         $codes["{product_type}"] = ($this->type) ? $this->type->name : null;
-        $codes["{product_manufacturer}"] = (isset($this->manufacturer)) ? $this->manufacturer->name : null;
+        $codes["{product_brand}"] = (isset($this->brand)) ? $this->brand->name : null;
         $codes["{product_category}"] = (isset($this->mainCategory)) ? $this->mainCategory->name : null;
         $codes["{currency.symbol}"] = Yii::$app->currency->active['symbol'];
         $codes["{currency.iso}"] = Yii::$app->currency->active['iso'];
@@ -605,14 +605,14 @@ trait ProductTrait
             $type = ProductType::findOne(Yii::$app->request->get('Product')['type_id']);
         }
         $codes["{product_type}"] = $type->name;
-        $codes['{product_manufacturer}'] = null;
-        if (isset($this->manufacturer)) {
-            $codes['{product_manufacturer}'] = $this->manufacturer->name;
+        $codes['{product_brand}'] = null;
+        if (isset($this->brand)) {
+            $codes['{product_brand}'] = $this->brand->name;
         } else {
-            if (isset(Yii::$app->request->post('Product')['manufacturer_id']) && Yii::$app->request->post('Product')['manufacturer_id']) {
-                $manufacturer = Manufacturer::findOne(Yii::$app->request->post('Product')['manufacturer_id']);
-                if ($manufacturer) {
-                    $codes['{product_manufacturer}'] = $manufacturer->name;
+            if (isset(Yii::$app->request->post('Product')['brand_id']) && Yii::$app->request->post('Product')['brand_id']) {
+                $brand = Brand::findOne(Yii::$app->request->post('Product')['brand_id']);
+                if ($brand) {
+                    $codes['{product_brand}'] = $brand->name;
                 }
             }
         }

@@ -43,7 +43,7 @@ class CurrencyController extends AdminController
         if (Yii::$app->request->isAjax) { // Render the index view
             return $this->actionIndex();
         } else
-            return $this->redirect(['manufacturer/index']);
+            return $this->redirect(['brand/index']);
     }
 
     public function actionIndex()

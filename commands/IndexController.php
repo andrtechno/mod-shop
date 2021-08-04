@@ -148,8 +148,8 @@ class IndexController extends ConsoleController
 
             //$item->addChild('g:adult', "no", $ns);
             //$item->addChild('g:identifier_exists', "yes", $ns);
-            if ($product->manufacturer_id) {
-                $brand = $product->manufacturer;
+            if ($product->brand_id) {
+                $brand = $product->brand;
                 if ($brand) {
                     $item->addChild('brand', StringHelper::truncate($brand->name, 70 - 3), $ns);
                 }

@@ -2,7 +2,7 @@
 
 
 use panix\engine\Html;
-use panix\mod\shop\models\Manufacturer;
+use panix\mod\shop\models\Brand;
 use panix\mod\shop\models\Product;
 use panix\mod\shop\models\Attribute;
 use panix\mod\shop\models\traits\ProductTrait;
@@ -73,15 +73,15 @@ $columns[] = [
     },
 ];
 $columns[] = [
-    'attribute' => 'manufacturer_id',
+    'attribute' => 'brand_id',
     'contentOptions' => ['class' => 'text-center'],
-    'filter' => ArrayHelper::map(Manufacturer::find()
+    'filter' => ArrayHelper::map(Brand::find()
         ->addOrderBy(['name_' . Yii::$app->language => SORT_ASC])
-        // ->cache(3200, new DbDependency(['sql' => 'SELECT MAX(`updated_at`) FROM ' . Manufacturer::tableName()]))
+        // ->cache(3200, new DbDependency(['sql' => 'SELECT MAX(`updated_at`) FROM ' . Brand::tableName()]))
         ->all(), 'id', 'name_' . Yii::$app->language),
     'filterInputOptions' => ['class' => 'form-control', 'prompt' => html_entity_decode('&mdash; выберите производителя &mdash;')],
     'value' => function ($model) {
-        return ($model->manufacturer) ? $model->manufacturer->name : NULL;
+        return ($model->brand) ? $model->brand->name : NULL;
     }
 ];
 $columns[] = [

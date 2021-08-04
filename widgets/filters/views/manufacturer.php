@@ -2,17 +2,17 @@
 
 use yii\helpers\Html;
 ?>
-<?php if($manufacturers['filters']) { ?>
+<?php if($brands['filters']) { ?>
 <div class="card filter-block">
-    <div class="card-header" data-toggle="collapse" data-target="#collapse-<?=md5('manufacturer')?>" aria-expanded="true" aria-controls="collapse-<?=md5('manufacturer')?>">
+    <div class="card-header" data-toggle="collapse" data-target="#collapse-<?=md5('brand')?>" aria-expanded="true" aria-controls="collapse-<?=md5('brand')?>">
         <h5><?= Yii::t('shop/default', 'FILTER_BY_MANUFACTURER') ?></h5>
     </div>
-    <div class="card-collapse collapse in" id="collapse-<?=md5('manufacturer')?>">
+    <div class="card-collapse collapse in" id="collapse-<?=md5('brand')?>">
     <div class="card-body">
         <ul class="filter-list">
             <?php
-            foreach ($manufacturers['filters'] as $filter) {
-                $url = Yii::$app->urlManager->addUrlParam('/' . Yii::$app->requestedRoute, array($filter['queryKey'] => $filter['queryParam']), $manufacturers['selectMany']);
+            foreach ($brands['filters'] as $filter) {
+                $url = Yii::$app->urlManager->addUrlParam('/' . Yii::$app->requestedRoute, array($filter['queryKey'] => $filter['queryParam']), $brands['selectMany']);
                 $queryData = explode(',', Yii::$app->request->getQueryParam($filter['queryKey']));
 
                 echo Html::beginTag('li');

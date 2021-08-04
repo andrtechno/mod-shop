@@ -20,7 +20,7 @@ use panix\engine\db\ActiveRecord;
 /**
  * Class Product
  * @property integer $id Product id
- * @property integer $manufacturer_id Manufacturer
+ * @property integer $brand_id Brand
  * @property integer $type_id Type
  * @property integer $supplier_id Supplier
  * @property integer $currency_id Currency
@@ -48,7 +48,7 @@ use panix\engine\db\ActiveRecord;
  * @property integer $added_to_cart_count
  * @property integer $votes
  * @property integer $rating
- * @property Manufacturer[] $manufacturer
+ * @property Brand[] $brand
  * @property Supplier[] $supplier
  * @property string $discount Discount
  * @property string $video Youtube video URL
@@ -91,6 +91,7 @@ class Product extends ActiveRecord
     public $file;
 
     public $hasDiscount = null;
+    public $hasMarkup = null;
     public $discountPrice;
     public $originalPrice;
     public $discountSum;
@@ -143,6 +144,23 @@ class Product extends ActiveRecord
     public function getIsAvailable()
     {
         return $this->availability == self::STATUS_IN_STOCK;
+    }
+
+    public function buy($value, array $options)
+    {
+
+        $configurable_id = 0;
+        if ($this->use_configurations) {
+            $configurable_id = $this->id;
+        }
+
+        $options['data'] = [
+            'product' => $this->id,
+            'configurable' => $configurable_id
+        ];
+
+        Html::addCssClass($options, 'btn-buy');
+        return Html::button($value, $options);
     }
 
     public function beginCartForm()
@@ -267,15 +285,18 @@ class Product extends ActiveRecord
 
     public function getMainImage($size = false)
     {
-        /** @var $image \panix\mod\images\behaviors\ImageBehavior|\panix\mod\images\models\Image */
-        $image = $this->getImageData($size);
+        /** @var $image \panix\mod\shop\components\ImageBehavior|\panix\mod\shop\models\ProductImage */
+       // $image = $this->getImageData2($size);
+        $mainImage = $this->getMainImageObject();
 
+        $img = $mainImage->get($size);
         $result = [];
-        if ($image) {
-            $result['url'] = $image->url;
-            $result['title'] = (isset($image->model) && $image->model->alt_title) ? $image->model->alt_title : $this->name;
+        if ($img) {
+            $result['url'] = $img;
+            $result['title'] = (!empty($mainImage->alt_title)) ? $mainImage->alt_title : $this->name;
         } else {
-            $result['url'] = CMS::placeholderUrl(['size' => $size, 'bg' => 'fff']);
+
+            $result['url'] = CMS::placeholderUrl(['size' => $size, 'bg' => 'c1c1c1']);
             $result['title'] = $this->name;
         }
 
@@ -288,10 +309,14 @@ class Product extends ActiveRecord
      */
     public function renderGridImage($size = '50x50')
     {
-        $small = $this->getMainImage($size);
-        $big = $this->getMainImage();
+        $mainImage = $this->getMainImageResponse();
+        $small = $mainImage->get($size);
+        $big = $mainImage->get();
 
-        return Html::a(Html::img($small->url, ['alt' => $small->title, 'class' => 'img-thumbnail']), $big->url, ['title' => $this->name, 'data-fancybox' => 'gallery']);
+       // $small = $this->getMainImage($size);
+      //  $big = $this->getMainImage();
+
+        return Html::a(Html::img($small, ['alt' => $mainImage->alt_title, 'class' => 'img-thumbnail']), $big, ['title' => $this->name, 'data-fancybox' => 'gallery']);
     }
 
 
@@ -369,17 +394,17 @@ class Product extends ActiveRecord
         $rules[] = ['price', 'commaToDot'];
         $rules[] = [['name', 'slug', 'video'], 'string', 'max' => 255];
         $rules[] = ['video', 'url'];
-        $rules[] = [['image'], 'image'];
+       // $rules[] = [['image'], 'image'];
 
         $rules[] = [['name', 'slug'], 'trim'];
-        $rules[] = [['full_description', 'length', 'width', 'height', 'weight'], 'string'];
+        $rules[] = [['full_description', 'length', 'width', 'height', 'weight','main_image'], 'string'];
         $rules[] = ['use_configurations', 'boolean', 'on' => self::SCENARIO_INSERT];
         $rules[] = ['enable_comments', 'boolean'];
         $rules[] = [['unit'], 'default', 'value' => 1];
         // $rules[] = ['ConfigurationsProduct', 'each', 'rule' => ['integer']];
         $rules[] = [['sku', 'full_description', 'video', 'price_purchase', 'label', 'discount', 'markup'], 'default']; // установим ... как NULL, если они пустые
         $rules[] = [['price', 'price_purchase'], 'double'];
-        $rules[] = [['manufacturer_id', 'type_id', 'quantity', 'views', 'availability', 'added_to_cart_count', 'ordern', 'category_id', 'currency_id', 'supplier_id', 'weight_class_id', 'length_class_id', 'is_condition'], 'integer'];
+        $rules[] = [['brand_id', 'type_id', 'quantity', 'views', 'availability', 'added_to_cart_count', 'ordern', 'category_id', 'currency_id', 'supplier_id', 'weight_class_id', 'length_class_id', 'is_condition'], 'integer'];
         $rules[] = [['id', 'name', 'slug', 'full_description', 'use_configurations', 'length', 'width', 'height', 'weight'], 'safe'];
 
         return $rules;
@@ -470,13 +495,20 @@ class Product extends ActiveRecord
     {
         return $this->hasMany(ProductReviews::class, ['product_id' => 'id'])->orderBy(['id' => SORT_DESC]);
     }
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getReviewsCount()
+    {
+        return $this->hasMany(ProductReviews::class, ['product_id' => 'id'])->count();
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getManufacturer()
+    public function getBrand()
     {
-        return $this->hasOne(Manufacturer::class, ['id' => 'manufacturer_id']);
+        return $this->hasOne(Brand::class, ['id' => 'brand_id']);
     }
 
     /**
@@ -510,6 +542,21 @@ class Product extends ActiveRecord
     public function getType2()
     {
         return $this->hasOne(ProductType::class, ['type_id' => 'id']);
+    }
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getImages()
+    {
+        return $this->hasMany(ProductImage::class, ['product_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMainImage2()
+    {
+        return $this->hasOne(ProductImage::class, ['product_id' => 'id'])->where(['is_main'=>1]);
     }
 
     /**
@@ -581,25 +628,25 @@ class Product extends ActiveRecord
     {
         $dontDelete = [];
         foreach ($prices as $index => $price) {
-			if(isset($price['value'])){
-				if ($price['value'] > 0) {
+            if (isset($price['value'])) {
+                if ($price['value'] > 0) {
 
-					$record = ProductPrices::find()->where(array(
-						'id' => $index,
-						'product_id' => $this->id,
-					))->one();
+                    $record = ProductPrices::find()->where(array(
+                        'id' => $index,
+                        'product_id' => $this->id,
+                    ))->one();
 
-					if (!$record) {
-						$record = new ProductPrices;
-					}
-					$record->from = $price['from'];
-					$record->value = $price['value'];
-					$record->product_id = $this->id;
-					$record->save();
+                    if (!$record) {
+                        $record = new ProductPrices;
+                    }
+                    $record->from = $price['from'];
+                    $record->value = $price['value'];
+                    $record->product_id = $this->id;
+                    $record->save();
 
-					$dontDelete[] = $record->id;
-				}
-			}
+                    $dontDelete[] = $record->id;
+                }
+            }
         }
 
         // Delete not used relations
@@ -750,8 +797,8 @@ class Product extends ActiveRecord
         }
 
         if ($this->_kit !== null) {
-            $this->clearKitProducts();
-
+            //$this->clearKitProducts();
+CMS::dump($this->_kit);die;
             foreach ($this->_kit as $id) {
                 $kit = new Kit;
                 $kit->owner_id = $this->id;
@@ -1031,7 +1078,7 @@ class Product extends ActiveRecord
             $external->deleteObject(ExternalFinder::OBJECT_PRODUCT, $this->id);
         }
 
-        ProductReviews::deleteAll(['product_id'=>$this->id]);
+        ProductReviews::deleteAll(['product_id' => $this->id]);
 
         parent::afterDelete();
     }
@@ -1135,8 +1182,9 @@ class Product extends ActiveRecord
         }
         // if (Yii::$app->getModule('images'))
         $a['imagesBehavior'] = [
-            'class' => '\panix\mod\images\behaviors\ImageBehavior',
-            'path' => '@uploads/store/product'
+           // 'class2' => '\panix\mod\images\behaviors\ImageBehavior',
+            'class' => '\panix\mod\shop\components\ImageBehavior',
+            'savePath' => '@uploads/store/product'
         ];
         $a['slug'] = [
             'class' => '\yii\behaviors\SluggableBehavior',
@@ -1234,11 +1282,11 @@ class Product extends ActiveRecord
 
             // if ($quantity > 1 && ($pr = $product->getPriceByQuantity($quantity))) {
             if ($product->prices && $quantity > 1) {
-               // var_dump($quantity);die;
+                // var_dump($quantity);die;
                 $pr = $product->getPriceByQuantity($quantity);
-                if($pr){
+                if ($pr) {
                     $result = Yii::$app->currency->convert($pr->value, $product->currency_id);
-                }else{
+                } else {
                     $result = $product->price;
                 }
 

@@ -1,6 +1,7 @@
 .item {
     float: left;
     width: 70mm;
+    height:40mm
 }
 
 .item .container {
@@ -17,7 +18,9 @@
 
     /*border-collapse: collapse;*/
 }
-
+.item table{
+    max-height:40mm
+}
 .item .container table tr {
     margin: 0;
     padding: 0;
@@ -26,7 +29,7 @@
 .item .container table td {
     margin: 0;
     padding: 2px;
-    border: 1px solid red;
+    border: 1px solid #333;
 }
 
 
@@ -41,7 +44,7 @@
 
 .price-old2:before {
     height: 2px;
-    background: red;
+    background: #333;
     content: '';
     position: absolute;
     width: 100%;
@@ -56,7 +59,7 @@
 
 .sep {
     height: 5px;
-    background: red;
+    background: #333;
 
     display: block;
     width: 100%;

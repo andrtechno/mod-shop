@@ -114,7 +114,9 @@ echo \panix\engine\barcode\BarcodeGenerator::widget([
                     <?= Html::label($a->title, $a->name, ['class' => 'col-sm-4 col-form-label']); ?>
                     <div class="col-sm-8 rowInput eavInput">
                         <div class="input-group<?= ($a->type == Attribute::TYPE_CHECKBOX_LIST) ? '1' : ''; ?>">
+
                             <?= $a->renderField($value, $inputClass); ?>
+
                             <?php if ($a->abbreviation) { ?>
                                 <div class="input-group-append">
                                     <span class="input-group-text"><?= $a->abbreviation; ?></span>

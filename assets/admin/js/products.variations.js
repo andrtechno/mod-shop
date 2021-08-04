@@ -52,24 +52,32 @@ function addNewOption(link_clicked){
 
     if(name != null){
         $.ajax({
-            type: 'get',
+            type: 'GET',
             dataType: 'json',
-            url: '/admin/shop/product/add-option-to-attribute',
+            url: common.url('/admin/shop/product/add-option-to-attribute'),
             data: {
                 attr_id: attr_id,
                 value: name
             },
             success: function(data){
                 $('#variantAttribute'+attr_id+' select.options_list, #'+$(link_clicked).data('name')).each(function(i,el){
-                    $(el).append($("<option/>", {
+                    $(el).prepend($("<option/>", {
                         value: data.id,
                         text: name
                     }));
-                    
+
+                    //var newOption = new Option(name, data.id, false, false);
+                    //$(el).prepend(newOption).trigger('change');
                 });
+
+
+
                 common.notify(data.message,'success');
                 if( $(link_clicked).data('name') ){
-                    $('#' + $(link_clicked).data('name')).trigger("liszt:updated");
+
+                  //  $('#' + $(link_clicked).data('name')).trigger("liszt:updated");
+
+
                 }
             }
         });

@@ -14,7 +14,7 @@ use panix\mod\images\models\Image;
 use panix\mod\shop\models\Attribute;
 use panix\mod\shop\models\AttributeOption;
 use panix\mod\shop\models\Category;
-use panix\mod\shop\models\Manufacturer;
+use panix\mod\shop\models\Brand;
 use panix\mod\shop\models\Product;
 use panix\mod\shop\models\Supplier;
 
@@ -112,7 +112,7 @@ class ExternalFinder
                     break;
 
                 case self::OBJECT_MANUFACTURER:
-                    $data = Manufacturer::findOne($query['object_id']);
+                    $data = Brand::findOne($query['object_id']);
                     return $data;
                     break;
 

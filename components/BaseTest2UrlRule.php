@@ -11,9 +11,9 @@ use yii\web\UrlRule;
 class BaseTest2UrlRule extends UrlRule
 {
 
-    public $pattern = 'manufacturer/<slug:[0-9a-zA-Z\-]+>';
+    public $pattern = 'brand/<slug:[0-9a-zA-Z\-]+>';
     public $cacheDuration = 0;
-    public $index = 'manufacturer';
+    public $index = 'brand';
     public $alias = 'slug';
     public $query;
 

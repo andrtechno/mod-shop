@@ -11,7 +11,7 @@ use yii\db\QueryInterface;
 use yii\helpers\Html;
 use Yii;
 use panix\mod\shop\models\Product;
-use panix\mod\shop\models\Manufacturer;
+use panix\mod\shop\models\Brand;
 
 class FiltersWidget extends \panix\engine\data\Widget
 {
@@ -21,7 +21,7 @@ class FiltersWidget extends \panix\engine\data\Widget
      */
     public $attributes;
     //public $countAttr = true;
-    //public $countManufacturer = true;
+    //public $countBrand = true;
     //public $prices = [];
     public $tagCount = 'sup';
     public $tagCountOptions = ['class' => 'filter-count'];
@@ -90,8 +90,8 @@ class FiltersWidget extends \panix\engine\data\Widget
         if (Yii::$app->request->get('max_price'))
             $model->applyMaxPrice($this->convertCurrency(Yii::$app->request->getQueryParam('max_price')));
 
-        if (Yii::$app->request->get('manufacturer'))
-            $model->applyManufacturers(explode(',', Yii::$app->request->get('manufacturer')));
+        if (Yii::$app->request->get('brand'))
+            $model->applyBrands(explode(',', Yii::$app->request->get('brand')));
 
         //$data = array($attribute->name => $option->id);
         $current = $this->view->context->activeAttributes;
@@ -152,7 +152,7 @@ class FiltersWidget extends \panix\engine\data\Widget
 
     public function run()
     {
-        $manufacturers = $this->getCategoryManufacturers();
+        $brands = $this->getCategoryBrands();
 
 
         $active = $this->view->context->getActiveFilters();
@@ -163,7 +163,7 @@ class FiltersWidget extends \panix\engine\data\Widget
         }
         echo $this->render('price');
         echo $this->render('attributes', ['attributes' => $this->getCategoryAttributes()]);
-        echo $this->render('manufacturer', ['manufacturers' => $manufacturers]);
+        echo $this->render('brand', ['brands' => $brands]);
         echo Html::endTag('div');
         $this->view->registerJs("
             $(function () {
@@ -206,7 +206,7 @@ class FiltersWidget extends \panix\engine\data\Widget
     }
 
 
-    public function getCategoryManufacturers()
+    public function getCategoryBrands()
     {
 
         $query = Product::find();
@@ -221,28 +221,28 @@ class FiltersWidget extends \panix\engine\data\Widget
         }
         $query->published();
         $queryClone = clone $query;
-        $queryMan = $queryClone->addSelect(['manufacturer_id', Product::tableName() . '.id']);
+        $queryMan = $queryClone->addSelect(['brand_id', Product::tableName() . '.id']);
         $queryMan->joinWith([
-            'manufacturer' => function (\yii\db\ActiveQuery $query) {
-                $query->andWhere([Manufacturer::tableName() . '.switch' => 1]);
+            'brand' => function (\yii\db\ActiveQuery $query) {
+                $query->andWhere([Brand::tableName() . '.switch' => 1]);
             },
         ]);
         //$queryMan->->applyMaxPrice($this->convertCurrency(Yii::$app->request->getQueryParam('max_price')))
         //$queryMan->->applyMinPrice($this->convertCurrency(Yii::$app->request->getQueryParam('min_price')))
 
-        $queryMan->andWhere('manufacturer_id IS NOT NULL');
-        $queryMan->groupBy('manufacturer_id');
+        $queryMan->andWhere('brand_id IS NOT NULL');
+        $queryMan->groupBy('brand_id');
 
 
-        // $manufacturers = $queryMan->all();
+        // $brands = $queryMan->all();
 
 
-        $manufacturers = Manufacturer::getDb()->cache(function ($db) use ($queryMan) {
+        $brands = Brand::getDb()->cache(function ($db) use ($queryMan) {
             return $queryMan->all();
         }, 3600);
 
 
-        //$manufacturers =$queryMan->all();
+        //$brands =$queryMan->all();
         //echo $q->createCommand()->rawSql;die;
         $data = array(
             'title' => Yii::t('shop/default', 'FILTER_BY_MANUFACTURER'),
@@ -250,11 +250,11 @@ class FiltersWidget extends \panix\engine\data\Widget
             'filters' => array()
         );
 
-        if ($manufacturers) {
+        if ($brands) {
 
-            foreach ($manufacturers as $m) {
+            foreach ($brands as $m) {
 
-                $m = $m->manufacturer;
+                $m = $m->brand;
 
                 if ($m) {
                     $query = Product::find();
@@ -266,7 +266,7 @@ class FiltersWidget extends \panix\engine\data\Widget
 
                     //$q->applyMinPrice($this->convertCurrency(Yii::app()->request->getQuery('min_price')))
                     //$q->applyMaxPrice($this->convertCurrency(Yii::app()->request->getQuery('max_price')))
-                    $query->applyManufacturers($m->id);
+                    $query->applyBrands($m->id);
 
                     if (Yii::$app->request->get('q') && Yii::$app->requestedRoute == 'shop/category/search') {
                         $query->applySearch(Yii::$app->request->get('q'));
@@ -286,14 +286,14 @@ class FiltersWidget extends \panix\engine\data\Widget
                     $data['filters'][] = array(
                         'title' => $m->name,
                         'count' => $count,
-                        'queryKey' => 'manufacturer',
+                        'queryKey' => 'brand',
                         'queryParam' => $m->id,
                     );
-                    //$this->_manufacturer[$m->id] = array(
+                    //$this->_brand[$m->id] = array(
                     //    'label' => $m->name,
                     //);
                 } else {
-                    die('err manufacturer');
+                    die('err brand');
                 }
             }
         }

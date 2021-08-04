@@ -31,7 +31,7 @@ ksort($sorting);
     <div class="row">
         <div class="col-12 mb-5">
             <?php foreach ($sorting as $key => $items) { ?>
-                <?= Html::a(mb_strtoupper($key, 'utf-8'), ['/shop/manufacturer/index', '#' => $key], ['class' => 'h3 mr-2']); ?>
+                <?= Html::a(mb_strtoupper($key, 'utf-8'), ['/shop/brand/index', '#' => $key], ['class' => 'h3 mr-2']); ?>
             <?php } ?>
         </div>
         <hr/>

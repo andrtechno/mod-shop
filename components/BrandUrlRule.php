@@ -2,20 +2,20 @@
 
 namespace panix\mod\shop\components;
 
-use panix\mod\shop\models\Manufacturer;
+use panix\mod\shop\models\Brand;
 use yii\web\NotFoundHttpException;
 use yii\web\UrlRule;
 
 /**
- * Class ManufacturerUrlRule
+ * Class BrandUrlRule
  * @package panix\mod\shop\components
  */
-class ManufacturerUrlRule extends UrlRule
+class BrandUrlRule extends UrlRule
 {
 
-    public $pattern = 'manufacturer/<slug:[0-9a-zA-Z\-]+>';
+    public $pattern = 'brand/<slug:[0-9a-zA-Z\-]+>';
     public $cacheDuration = 0;
-    public $index = 'manufacturer';
+    public $index = 'brand';
     public $alias = 'slug';
     /**
      * @inheritdoc
@@ -87,11 +87,11 @@ class ManufacturerUrlRule extends UrlRule
     }
     public function getAllPaths()
     {
-        $allPaths = \Yii::$app->cache->get('ManufacturerUrlRule');
+        $allPaths = \Yii::$app->cache->get('BrandUrlRule');
         if ($allPaths === false) {
             $allPaths = (new \yii\db\Query())
                 ->select([$this->alias])
-                ->from(Manufacturer::tableName())
+                ->from(Brand::tableName())
                 ->all();
 
             // Sort paths by length.
@@ -99,7 +99,7 @@ class ManufacturerUrlRule extends UrlRule
                 return strlen($b[$this->alias]) - strlen($a[$this->alias]);
             });
 
-            \Yii::$app->cache->set('ManufacturerUrlRule', $allPaths, 1);
+            \Yii::$app->cache->set('BrandUrlRule', $allPaths, 1);
         }
 
         return $allPaths;

@@ -83,7 +83,7 @@ class NotifyController extends AdminController
             $tables .= '<tr>
             <td style="' . $tdStyle . '" align="center"><a href="' . $row->absoluteUrl . '"  target="_blank"><img border="0" src="http://' . $host . '/' . $row->getImageUrl("200x200") . '" alt="' . $row->name . '" /></a></td>
             <td style="' . $tdStyle . '"><a href="' . $row->absoluteUrl . '"  target="_blank">' . $row->name . '</a></td>
-            <td style="' . $tdStyle . '" align="center" class="footer">' . $row->manufacturer->name . '</td>
+            <td style="' . $tdStyle . '" align="center" class="footer">' . $row->brand->name . '</td>
             <td style="' . $tdStyle . '" align="center">' . $row->price . ' ' . $currency . '</td>
             </tr>';
         }

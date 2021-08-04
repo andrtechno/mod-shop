@@ -8,7 +8,7 @@ use panix\engine\data\ActiveDataProvider;
 use panix\mod\shop\models\ProductReviews;
 
 /**
- * ProductReviewsSearch represents the model behind the search form about `panix\shop\models\Manufacturer`.
+ * ProductReviewsSearch represents the model behind the search form about `panix\shop\models\Brand`.
  */
 class ProductReviewsSearch extends ProductReviews
 {

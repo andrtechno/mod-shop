@@ -6,7 +6,7 @@ use panix\engine\CMS;
 use panix\engine\Html;
 use panix\mod\shop\models\Attribute;
 use panix\mod\shop\models\Category;
-use panix\mod\shop\models\Manufacturer;
+use panix\mod\shop\models\Brand;
 use panix\mod\shop\models\Product;
 use panix\mod\shop\models\ProductAttributesEav;
 use panix\mod\shop\models\traits\EavQueryTrait;
@@ -120,18 +120,18 @@ class Filter extends BaseObject
     public function getActiveFilters()
     {
         $request = Yii::$app->request;
-        // Render links to cancel applied filters like prices, manufacturers, attributes.
+        // Render links to cancel applied filters like prices, brands, attributes.
         $menuItems = [];
 
 
         if (Yii::$app->controller->route == 'shop/catalog/view' || Yii::$app->controller->route == 'shop/search/index') {
-            $manufacturers = array_filter(explode(',', $request->getQueryParam('manufacturer')));
-            $manufacturers = Manufacturer::getDb()->cache(function ($db) use ($manufacturers) {
-                return Manufacturer::findAll($manufacturers);
+            $brands = array_filter(explode(',', $request->getQueryParam('brand')));
+            $brands = Brand::getDb()->cache(function ($db) use ($brands) {
+                return Brand::findAll($brands);
             }, 3600);
         }
 
-        //$manufacturersIds = array_filter(explode(',', $request->getQueryParam('manufacturer')));
+        //$brandsIds = array_filter(explode(',', $request->getQueryParam('brand')));
 
 
         if ($request->getQueryParam('price')) {
@@ -217,23 +217,23 @@ class Filter extends BaseObject
         }*/
 
         if (Yii::$app->controller->route == 'shop/catalog/view') {
-            if (!empty($manufacturers)) {
-                $menuItems['manufacturer'] = [
-                    'name' => 'manufacturer',
-                    'label' => Yii::t('shop/default', 'FILTER_BY_MANUFACTURER') . ':',
-                    'itemOptions' => ['id' => 'current-filter-manufacturer']
+            if (!empty($brands)) {
+                $menuItems['brand'] = [
+                    'name' => 'brand',
+                    'label' => Yii::t('shop/default', 'FILTER_BY_BRAND') . ':',
+                    'itemOptions' => ['id' => 'current-filter-brand']
                 ];
-                foreach ($manufacturers as $id => $manufacturer) {
-                    $menuItems['manufacturer']['items'][] = [
-                        'value' => $manufacturer->id,
-                        'label' => $manufacturer->name,
+                foreach ($brands as $id => $brand) {
+                    $menuItems['brand']['items'][] = [
+                        'value' => $brand->id,
+                        'label' => $brand->name,
                         'options' => [
                             'class' => 'remove',
                             'data-type' => 'checkbox',
-                            'data-name' => 'manufacturer',
-                            'data-target' => '#filter_manufacturer_' . $manufacturer->id
+                            'data-name' => 'brand',
+                            'data-target' => '#filter_brand_' . $brand->id
                         ],
-                        'url' => Yii::$app->urlManager->removeUrlParam('/' . Yii::$app->requestedRoute, 'manufacturer', $manufacturer->id)
+                        'url' => Yii::$app->urlManager->removeUrlParam('/' . Yii::$app->requestedRoute, 'brand', $brand->id)
                     ];
                 }
             }
@@ -453,8 +453,8 @@ class Filter extends BaseObject
         // $queryCategoryTypes = $this->currentQuery;
         if ($this->model instanceof Category) {
             $queryCategoryTypes->applyCategories($this->model);
-        } elseif ($this->model instanceof Manufacturer) {
-            $queryCategoryTypes->applyManufacturers($this->model->id);
+        } elseif ($this->model instanceof Brand) {
+            $queryCategoryTypes->applyBrands($this->model->id);
         }
 
         //$queryCategoryTypes->published();
@@ -509,8 +509,8 @@ class Filter extends BaseObject
         // $queryCategoryTypes = $this->currentQuery;
         if ($this->model instanceof Category) {
             $queryCategoryTypes->applyCategories($this->model);
-        } elseif ($this->model instanceof Manufacturer) {
-            $queryCategoryTypes->applyManufacturers($this->model->id);
+        } elseif ($this->model instanceof Brand) {
+            $queryCategoryTypes->applyBrands($this->model->id);
         }
 
         //$queryCategoryTypes->published();
@@ -620,7 +620,7 @@ class Filter extends BaseObject
     }
 
 
-    public function getCategoryManufacturers()
+    public function getCategoryBrands()
     {
 
         $query = Product::find();
@@ -635,23 +635,23 @@ class Filter extends BaseObject
         }
         $query->published();
         $queryClone = clone $query;
-        $queryMan = $queryClone->addSelect(['manufacturer_id', Product::tableName() . '.id']);
+        $queryMan = $queryClone->addSelect(['brand_id', Product::tableName() . '.id']);
         $queryMan->joinWith([
-            'manufacturer' => function (\yii\db\ActiveQuery $query) {
-                $query->andWhere([Manufacturer::tableName() . '.switch' => 1]);
+            'brand' => function (\yii\db\ActiveQuery $query) {
+                $query->andWhere([Brand::tableName() . '.switch' => 1]);
             },
         ]);
         //$queryMan->->applyMaxPrice($this->convertCurrency(Yii::$app->request->getQueryParam('max_price')))
         //$queryMan->->applyMinPrice($this->convertCurrency(Yii::$app->request->getQueryParam('min_price')))
 
-        $queryMan->andWhere('manufacturer_id IS NOT NULL');
-        $queryMan->groupBy('manufacturer_id');
+        $queryMan->andWhere('brand_id IS NOT NULL');
+        $queryMan->groupBy('brand_id');
 
 
-        // $manufacturers = $queryMan->all();
+        // $brands = $queryMan->all();
 
 
-        $manufacturers = Manufacturer::getDb()->cache(function ($db) use ($queryMan) {
+        $brands = Brand::getDb()->cache(function ($db) use ($queryMan) {
             return $queryMan
                 //->joinWith('translations as translate')
                 //->orderBy(['translate.name'=>SORT_ASC])
@@ -659,19 +659,19 @@ class Filter extends BaseObject
         }, $this->cacheDuration);
 
 
-        //$manufacturers =$queryMan->all();
+        //$brands =$queryMan->all();
         //echo $q->createCommand()->rawSql;die;
         $data = [
-            'title' => Yii::t('shop/default', 'FILTER_BY_MANUFACTURER'),
+            'title' => Yii::t('shop/default', 'FILTER_BY_BRAND'),
             'selectMany' => true,
             'filters' => []
         ];
 
-        if ($manufacturers) {
+        if ($brands) {
 
-            foreach ($manufacturers as $m) {
+            foreach ($brands as $m) {
 
-                $m = $m->manufacturer;
+                $m = $m->brand;
 
                 if ($m) {
                     $query = Product::find();
@@ -683,7 +683,7 @@ class Filter extends BaseObject
 
                     //$q->applyMinPrice($this->convertCurrency(Yii::app()->request->getQuery('min_price')))
                     //$q->applyMaxPrice($this->convertCurrency(Yii::app()->request->getQuery('max_price')))
-                    $query->applyManufacturers($m->id);
+                    $query->applyBrands($m->id);
 
                     if (Yii::$app->request->get('q') && Yii::$app->requestedRoute == 'shop/search/index') {
                         $query->applySearch(Yii::$app->request->get('q'));
@@ -707,12 +707,12 @@ class Filter extends BaseObject
                     $data['filters'][] = [
                         'title' => $m->name,
                         'count' => (int)$count,
-                        'key' => 'manufacturer',
+                        'key' => 'brand',
                         'queryParam' => $m->id,
                     ];
                     sort($data['filters']);
                 } else {
-                    die('err manufacturer');
+                    die('err brand');
                 }
             }
         }
@@ -721,7 +721,7 @@ class Filter extends BaseObject
     }
 
 
-    public function getCategoryManufacturersCallback()
+    public function getCategoryBrandsCallback()
     {
 
 
@@ -740,30 +740,30 @@ class Filter extends BaseObject
 
 
         $queryClone = clone $query;
-        $queryMan = $queryClone->addSelect(['manufacturer_id', Product::tableName() . '.id']);
+        $queryMan = $queryClone->addSelect(['brand_id', Product::tableName() . '.id']);
         $queryMan->joinWith([
-            'manufacturer' => function (\yii\db\ActiveQuery $query) {
-                $query->andWhere([Manufacturer::tableName() . '.switch' => 1]);
+            'brand' => function (\yii\db\ActiveQuery $query) {
+                $query->andWhere([Brand::tableName() . '.switch' => 1]);
             },
         ]);
         //$queryMan->->applyMaxPrice($this->convertCurrency(Yii::$app->request->getQueryParam('max_price')))
         //$queryMan->->applyMinPrice($this->convertCurrency(Yii::$app->request->getQueryParam('min_price')))
 
-        $queryMan->andWhere('`manufacturer_id` IS NOT NULL');
-        $queryMan->groupBy('manufacturer_id');
+        $queryMan->andWhere('`brand_id` IS NOT NULL');
+        $queryMan->groupBy('brand_id');
 
-        $manufacturers = $queryMan->cache($this->cacheDuration)->all();
+        $brands = $queryMan->cache($this->cacheDuration)->all();
         //  echo $queryMan->createCommand()->rawSql;die;
 
-        /*$manufacturers = Manufacturer::getDb()->cache(function ($db) use ($queryMan) {
+        /*$brands = Brand::getDb()->cache(function ($db) use ($queryMan) {
             return $queryMan
                 //->joinWith('translations as translate')
                 //->orderBy(['translate.name'=>SORT_ASC])
                 ->all();
         }, $this->cacheDuration);*/
 
-//print_r($manufacturers);die;
-        //$manufacturers =$queryMan->all();
+//print_r($brands);die;
+        //$brands =$queryMan->all();
         //echo $q->createCommand()->rawSql;die;
         $data = [
             'title' => Yii::t('shop/default', 'FILTER_BY_MANUFACTURER'),
@@ -771,11 +771,11 @@ class Filter extends BaseObject
             'filters' => []
         ];
 
-        if ($manufacturers) {
+        if ($brands) {
 
-            foreach ($manufacturers as $m) {
+            foreach ($brands as $m) {
 
-                $m = $m->manufacturer;
+                $m = $m->brand;
 
                 if ($m) {
                     /*$query = Product::find();
@@ -787,7 +787,7 @@ class Filter extends BaseObject
 
                     //$q->applyMinPrice($this->convertCurrency(Yii::app()->request->getQuery('min_price')))
                     //$q->applyMaxPrice($this->convertCurrency(Yii::app()->request->getQuery('max_price')))
-                    $query->applyManufacturers($m->id);
+                    $query->applyBrands($m->id);
 
                     if (Yii::$app->request->get('q') && Yii::$app->requestedRoute == 'shop/search/index') {
                         $query->applySearch(Yii::$app->request->get('q'));
@@ -806,19 +806,19 @@ class Filter extends BaseObject
 
                     $query = clone $this->buildQuery;
                     $query->orderBy = false;
-                    $query->applyManufacturers($m->id);
+                    $query->applyBrands($m->id);
                     // echo $query->createCommand()->rawSql;die;
                     $count = $query->cache($this->cacheDuration)->count();
 
                     $data['filters'][] = [
                         'title' => $m->name,
                         'count' => (int)$count,
-                        'key' => 'manufacturer',
+                        'key' => 'brand',
                         'queryParam' => $m->id,
                     ];
                     sort($data['filters']);
                 } else {
-                    die('err manufacturer');
+                    die('err brand');
                 }
             }
         }

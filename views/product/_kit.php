@@ -1,7 +1,10 @@
 <?php
 use panix\engine\Html;
 use panix\engine\CMS;
-
+/**
+ * @var $model \panix\mod\shop\models\Product
+ * @var $mainImage \panix\mod\shop\models\ProductImage
+ */
 $sets = [];
 foreach ($model->kit as $set) {
 
@@ -25,12 +28,13 @@ foreach ($model->kit as $set) {
                             <div class="col-sm-5">
                                 <div style="height: 50px"><strong>Ваш товар:</strong></div>
                                 <div>
-                                    <?= Html::img($model->getMainImage('300x200')->url, ['alt' => $model->name]); ?></div>
+                                    <?= Html::img($mainImage->get('300x200'), ['alt' => $model->name]); ?></div>
                                 <div class="h6 mt-4"><?= $model->name; ?></div>
                                 <div>
                                 <span class="badge badge-light text-dark">
                                     Код комплекта: <span id="kit-code">
                                         <?= CMS::idToNumber($model->id, 5); ?>
+
                                         -<?= CMS::idToNumber(key($sets[$group_id]), 5); ?>
                                     </span>
                                 </span>
@@ -62,7 +66,10 @@ foreach ($model->kit as $set) {
                                                         <div class="col-sm-6 d-flex align-items-center">
                                                             <div>
                                                                 <div><?= $data->price; ?></div>
-                                                                <div><?= Html::a(Yii::t('cart/default', 'BUY_SET'), 'javascript:cart.add_set(' . $set_id . ')', ['class' => 'btn btn-primary']); ?></div>
+                                                                <div>
+                                                                    <?php
+                                                                    echo Html::button(Yii::t('cart/default', 'BUY_SET'), ['onclick'=>'javascript:cart.add_set(' . $set_id . ')', 'class' => 'btn btn-primary']);
+                                                                    ?></div>
                                                             </div>
                                                         </div>
                                                     </div>

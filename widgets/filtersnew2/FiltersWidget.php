@@ -11,7 +11,7 @@ use yii\helpers\Html;
 use Yii;
 use panix\mod\shop\models\Category;
 use panix\mod\shop\models\Product;
-use panix\mod\shop\models\Manufacturer;
+use panix\mod\shop\models\Brand;
 use panix\engine\data\Widget;
 
 /**
@@ -26,7 +26,7 @@ class FiltersWidget extends Widget
      */
     public $attributes;
     //public $countAttr = true;
-    //public $countManufacturer = true;
+    //public $countBrand = true;
     //public $prices = [];
     public $count=false;
     public $tagCount = 'sup';
@@ -39,7 +39,7 @@ class FiltersWidget extends Widget
      */
     public $model;
     public $priceView = 'price';
-    public $manufacturerView = 'manufacturer';
+    public $brandView = 'brand';
     public $attributeView = 'attributes';
     public $query;
     public $cacheDuration = 86400;
@@ -74,7 +74,7 @@ class FiltersWidget extends Widget
 
     public function run()
     {
-        $manufacturers = $this->getCategoryManufacturers();
+        $brands = $this->getCategoryBrands();
 
 
         $active = $this->data->getActiveFilters();
@@ -98,8 +98,8 @@ class FiltersWidget extends Widget
             ]);
         if($this->attributeView)
             echo $this->render($this->attributeView, ['attributes' => $this->data->getCategoryAttributes()]);
-        if($this->manufacturerView)
-            echo $this->render($this->manufacturerView, ['manufacturers' => $manufacturers]);
+        if($this->brandView)
+            echo $this->render($this->brandView, ['brands' => $brands]);
 
         echo Html::submitButton('Применить',['class'=>'btn btn-block btn-primary']);
         echo Html::submitButton('Стросить',['class'=>'btn btn-block btn-secondary']);*/
@@ -118,7 +118,7 @@ class FiltersWidget extends Widget
             'currentPriceMax' => $this->data->getCurrentMaxPrice(),
             'active' => $active,
             'attributes' => $this->data->getCategoryAttributes(),
-            'manufacturers' => $manufacturers
+            'brands' => $brands
         ]);
         // var category_id = {$this->model->id};
         $this->view->registerJs("
@@ -170,7 +170,7 @@ class FiltersWidget extends Widget
     }
 
 
-    public function getCategoryManufacturers()
+    public function getCategoryBrands()
     {
 
         $query = Product::find();
@@ -185,23 +185,23 @@ class FiltersWidget extends Widget
         }
         $query->published();
         $queryClone = clone $query;
-        $queryMan = $queryClone->addSelect(['manufacturer_id', Product::tableName() . '.id']);
+        $queryMan = $queryClone->addSelect(['brand_id', Product::tableName() . '.id']);
         $queryMan->joinWith([
-            'manufacturer' => function (\yii\db\ActiveQuery $query) {
-                $query->andWhere([Manufacturer::tableName() . '.switch' => 1]);
+            'brand' => function (\yii\db\ActiveQuery $query) {
+                $query->andWhere([Brand::tableName() . '.switch' => 1]);
             },
         ]);
         //$queryMan->->applyMaxPrice($this->convertCurrency(Yii::$app->request->getQueryParam('max_price')))
         //$queryMan->->applyMinPrice($this->convertCurrency(Yii::$app->request->getQueryParam('min_price')))
 
-        $queryMan->andWhere('manufacturer_id IS NOT NULL');
-        $queryMan->groupBy('manufacturer_id');
+        $queryMan->andWhere('brand_id IS NOT NULL');
+        $queryMan->groupBy('brand_id');
 
 
-        // $manufacturers = $queryMan->all();
+        // $brands = $queryMan->all();
 
 
-        $manufacturers = Manufacturer::getDb()->cache(function ($db) use ($queryMan) {
+        $brands = Brand::getDb()->cache(function ($db) use ($queryMan) {
             return $queryMan
                 //->joinWith('translations as translate')
                 //->orderBy(['translate.name'=>SORT_ASC])
@@ -209,7 +209,7 @@ class FiltersWidget extends Widget
         }, $this->cacheDuration);
 
 
-        //$manufacturers =$queryMan->all();
+        //$brands =$queryMan->all();
         //echo $q->createCommand()->rawSql;die;
         $data = [
             'title' => Yii::t('shop/default', 'FILTER_BY_MANUFACTURER'),
@@ -217,11 +217,11 @@ class FiltersWidget extends Widget
             'filters' => []
         ];
 
-        if ($manufacturers) {
+        if ($brands) {
 
-            foreach ($manufacturers as $m) {
+            foreach ($brands as $m) {
 
-                $m = $m->manufacturer;
+                $m = $m->brand;
 
                 if ($m) {
                     $query = Product::find();
@@ -233,7 +233,7 @@ class FiltersWidget extends Widget
 
                     //$q->applyMinPrice($this->convertCurrency(Yii::app()->request->getQuery('min_price')))
                     //$q->applyMaxPrice($this->convertCurrency(Yii::app()->request->getQuery('max_price')))
-                    $query->applyManufacturers($m->id);
+                    $query->applyBrands($m->id);
 
                     if (Yii::$app->request->get('q') && Yii::$app->requestedRoute == 'shop/search/index') {
                         $query->applySearch(Yii::$app->request->get('q'));
@@ -257,12 +257,12 @@ class FiltersWidget extends Widget
                     $data['filters'][] = [
                         'title' => $m->name,
                         'count' => (int)$count,
-                        'key' => 'manufacturer',
+                        'key' => 'brand',
                         'queryParam' => $m->id,
                     ];
                     sort($data['filters']);
                 } else {
-                    die('err manufacturer');
+                    die('err brand');
                 }
             }
         }

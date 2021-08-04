@@ -128,10 +128,10 @@ echo \yii\helpers\Inflector::sentence($words);
                         <?php } ?>
 
         <ul class="list-group">
-            <?php if ($model->manufacturer_id) { ?>
+            <?php if ($model->brand_id) { ?>
                 <li class="list-group-item">
-                    <?= $model->getAttributeLabel('manufacturer_id'); ?>
-                    : <?= Html::a($model->manufacturer->name, $model->manufacturer->getUrl()); ?>
+                    <?= $model->getAttributeLabel('brand_id'); ?>
+                    : <?= Html::a($model->brand->name, $model->brand->getUrl()); ?>
                 </li>
 
             <?php } ?>

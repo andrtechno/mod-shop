@@ -5,6 +5,8 @@ namespace panix\mod\shop\controllers\admin;
 use panix\engine\CMS;
 use panix\mod\shop\components\EavBehavior;
 use panix\mod\shop\models\Category;
+use panix\mod\shop\models\Kit;
+use panix\mod\shop\models\ProductImage;
 use panix\mod\shop\models\TypeAttribute;
 use Yii;
 use yii\helpers\ArrayHelper;
@@ -42,6 +44,11 @@ class ProductController extends AdminController
             'switch' => [
                 'class' => 'panix\engine\actions\SwitchAction',
                 'modelClass' => Product::class,
+            ],
+            'image-delete' => [
+                'class' => 'panix\engine\actions\DeleteAction',
+                'modelClass' => ProductImage::class,
+                'successMassage' => 'Картинка удалена'
             ],
         ];
     }
@@ -172,7 +179,7 @@ class ProductController extends AdminController
 
         if ($model->load($post) && $model->validate() && $this->validateAttributes($model) && $this->validatePrices($model)) {
             $model->setRelatedProducts(Yii::$app->request->post('RelatedProductId', []));
-            $model->setKitProducts(Yii::$app->request->post('kitProductId', []));
+            //$model->setKitProducts(Yii::$app->request->post('kitProductId', []));
 
             if ($model->label)
                 $model->label = implode(",", $model->label);
@@ -191,6 +198,8 @@ class ProductController extends AdminController
 
              //   $model->images_data = json_encode($data);
             }*/
+
+
 
             if ($model->save()) {
                 //$model->processConfigurations(Yii::$app->request->post('ConfigurationsProduct', []));
@@ -217,11 +226,11 @@ class ProductController extends AdminController
                 }
 
                 $model->setCategories($categories, $mainCategoryId);
-				$model->processPrices((isset(Yii::$app->request->post('Product')['prices'])) ? (array)Yii::$app->request->post('Product')['prices'] : []);
+                $model->processPrices((isset(Yii::$app->request->post('Product')['prices'])) ? (array)Yii::$app->request->post('Product')['prices'] : []);
                 $this->processAttributes($model);
                 // Process variants
                 $this->processVariants($model);
-
+                $this->processKits($model);
                 $model->file = \yii\web\UploadedFile::getInstances($model, 'file');
                 if ($model->file) {
                     foreach ($model->file as $file) {
@@ -419,9 +428,60 @@ class ProductController extends AdminController
      * Save product variants
      * @param Product $model
      */
+    protected function processKits(Product $model)
+    {
+        $dontDelete = [];
+
+        if (!empty($_POST['kits'])) {
+
+            foreach ($_POST['kits'] as $product_id => $data) {
+                $i = 0;
+
+                // Try to load variant from DB
+                $kit = Kit::find()
+                    ->where(['owner_id' => $model->id, 'product_id' => $product_id])
+                    ->one();
+                // If not - create new.
+                if (!$kit)
+                    $kit = new Kit();
+
+                $kit->setAttributes([
+                    'owner_id' => $model->id,
+                    'product_id' => $product_id,
+                    'price' => $data['price'],
+
+                ], false);
+
+                $kit->save(false);
+                array_push($dontDelete, $kit->id);
+                $i++;
+
+            }
+        }
+
+        if (!empty($dontDelete)) {
+            //$cr = new CDbCriteria;
+            //$cr->addNotInCondition('id', $dontDelete);
+            //$cr->addCondition();
+            Kit::deleteAll(
+                ['AND', 'owner_id=:id', ['NOT IN', 'id', $dontDelete]], [':id' => $model->id]);
+            /* ProductVariant::find()->where(['NOT IN','id',$dontDelete])->deleteAll([
+              'product_id'=>$model->id
+              ]); */
+        } else {
+            //ProductVariant::find()->where(['product_id'=>$model->id])->deleteAll();
+            Kit::deleteAll(['owner_id' => $model->id]);
+        }
+
+    }
+
+    /**
+     * Save product variants
+     * @param Product $model
+     */
     protected function processVariants(Product $model)
     {
-        $dontDelete = array();
+        $dontDelete = [];
 
         if (!empty($_POST['variants'])) {
             foreach ($_POST['variants'] as $attribute_id => $values) {
@@ -437,7 +497,7 @@ class ProductController extends AdminController
                     if (!$variant)
                         $variant = new ProductVariant();
 
-                    $variant->setAttributes(array(
+                    $variant->setAttributes([
                         'attribute_id' => $attribute_id,
                         'option_id' => $option_id,
                         'product_id' => $model->id,
@@ -445,7 +505,7 @@ class ProductController extends AdminController
                         'price' => $values['price'][$i],
                         'price_type' => $values['price_type'][$i],
                         'sku' => $values['sku'][$i],
-                    ), false);
+                    ], false);
 
 
                     $diff = array_diff($variant->oldAttributes, $variant->attributes);
@@ -805,5 +865,34 @@ class ProductController extends AdminController
         } else {
             throw new ForbiddenHttpException(Yii::t('app/error', '304-5'));
         }
+    }
+
+
+    public function actionKitAdd()
+    {
+        $owner = Yii::$app->request->get('owner');
+        $product = Yii::$app->request->get('product_id');
+        $price = Yii::$app->request->post('price');
+
+
+        $kit = Kit::find()
+            ->where(['owner_id' => $owner, 'product_id' => $product])
+            ->one();
+        // If not - create new.
+        if (!$kit)
+            $kit = new Kit();
+
+        $kit->setAttributes([
+            'owner_id' => $owner,
+            'product_id' => $product,
+            'price' => $price,
+
+        ], false);
+
+        $kit->save(false);
+
+
+        $result['success'] = true;
+        return $this->asJson($result);
     }
 }

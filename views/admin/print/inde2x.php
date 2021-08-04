@@ -16,7 +16,7 @@ foreach ($pr as $p) {
                     <tr>
                         <td colspan="2" style="height:25mm;text-align: center;vertical-align: top">
                             <div style="margin: 4px 0">OOO "Panix"</div>
-                            <span style="font-size: 15px;"><?= $p->mainCategory->name; ?> <?= $p->manufacturer->name; ?></span>
+                            <span style="font-size: 15px;"><?= $p->mainCategory->name; ?> <?= $p->brand->name; ?></span>
 
                         </td>
                     </tr>
@@ -44,7 +44,7 @@ foreach ($pr as $p) {
                 <table style="width:100%;height: 100%" cellpadding="0" cellspacing="0">
                     <tr>
                         <td colspan="2" style="height:25mm;text-align: center;">
-                            <span style="font-size: 15px;"><?= $p->mainCategory->name; ?> <?= $p->manufacturer->name; ?> 1л.</span>
+                            <span style="font-size: 15px;"><?= $p->mainCategory->name; ?> <?= $p->brand->name; ?> 1л.</span>
 
                         </td>
                     </tr>
@@ -68,7 +68,7 @@ foreach ($pr as $p) {
                 <table style="width:100%;height: 100%" cellpadding="0" cellspacing="0">
                     <tr>
                         <td colspan="2" style="height:25mm;text-align: center;">
-                            <span style="font-size: 15px;"><?= $p->mainCategory->name; ?> <?= $p->manufacturer->name; ?></span>
+                            <span style="font-size: 15px;"><?= $p->mainCategory->name; ?> <?= $p->brand->name; ?></span>
 
                         </td>
                     </tr>

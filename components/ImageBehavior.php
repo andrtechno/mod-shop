@@ -1,0 +1,346 @@
+<?php
+
+namespace panix\mod\shop\components;
+
+use panix\engine\CMS;
+use panix\engine\components\ImageHandler;
+use panix\mod\shop\models\ProductImage;
+use Yii;
+use yii\base\Exception;
+use yii\db\ActiveRecord;
+use yii\db\Query;
+use yii\helpers\BaseFileHelper;
+use yii\helpers\FileHelper;
+use yii\httpclient\Client;
+
+class ImageBehavior extends \yii\base\Behavior
+{
+
+    public $savePath = '@uploads/store/product';
+    protected $_file;
+    private $imageQuery;
+
+    public function attach($owner)
+    {
+
+        parent::attach($owner);
+
+
+    }
+
+    public function events()
+    {
+        return [
+            ActiveRecord::EVENT_AFTER_INSERT => 'afterSave',
+            ActiveRecord::EVENT_AFTER_UPDATE => 'afterSave',
+            //ActiveRecord::EVENT_AFTER_FIND=>'test'
+            ActiveRecord::EVENT_BEFORE_UPDATE => 'beforeSave',
+            ActiveRecord::EVENT_AFTER_DELETE => 'afterDelete',
+        ];
+    }
+
+    public function beforeSave()
+    {
+        /** @var ActiveRecord $owner */
+        $owner = $this->owner;
+        $owner->file = \yii\web\UploadedFile::getInstances($owner, 'file');
+        //if (count($owner->file) > Yii::$app->params['plan'][Yii::$app->params['plan_id']]['product_upload_files']) {
+        //    throw new ForbiddenHttpException();
+        //}
+
+    }
+
+    public function afterSave()
+    {
+        if (!Yii::$app instanceof \yii\console\Application) {
+            $this->updateMainImage();
+            $this->updateImageTitles();
+        }
+    }
+
+    protected function updateMainImage()
+    {
+        $post = Yii::$app->request->post('AttachmentsMainId');
+        if ($post) {
+
+             //ProductImage::updateAll(['is_main' => 0], 'product_id=:pid', ['pid' => $this->owner->primaryKey]);
+
+            $currentMain = ProductImage::find()->where(['product_id' => $this->owner->primaryKey, 'is_main' => 1])->one();
+            $currentMainId = 0;
+            if ($currentMain) {
+                $currentMainId = $currentMain->id;
+                if ($currentMain->id != $post) {
+                    $currentMain->is_main = 0;
+                    $currentMain->update();
+                }
+            }
+
+
+            $customer = ProductImage::findOne($post);
+            if ($customer) {
+                if ($currentMainId != $post) {
+                    $customer->is_main = 1;
+                    $customer->update();
+                    $this->owner->main_image = $customer->filename;
+                    $this->owner->save(false);
+                }
+            }
+        }
+    }
+
+    protected function updateImageTitles()
+    {
+        if (sizeof(Yii::$app->request->post('attachment_image_titles', []))) {
+            foreach (Yii::$app->request->post('attachment_image_titles', []) as $id => $title) {
+                if (!empty($title)) {
+                    $customer = ProductImage::findOne($id);
+                    if ($customer) {
+                        $customer->alt_title = $title;
+                        $customer->update();
+                    }
+                }
+            }
+        }
+    }
+
+    public function downloadFile($url, $saveTo = '@runtime')
+    {
+        $filename = basename($url);
+        $savePath = Yii::getAlias($saveTo);
+        if (!file_exists($savePath)) {
+            FileHelper::createDirectory($savePath, $mode = 0775, $recursive = true);
+        }
+        $saveTo = $savePath . DIRECTORY_SEPARATOR . $filename;
+
+        //return file of exsts path
+        if (file_exists($saveTo)) {
+            return $saveTo;
+        }
+
+        $fh = fopen($saveTo, 'w');
+        $client = new Client([
+            'transport' => 'yii\httpclient\CurlTransport'
+        ]);
+        $response = $client->createRequest()
+            ->setMethod('GET')
+            ->setUrl($url)
+            ->setOutputFile($fh)
+            ->send();
+
+        if ($response->isOk) {
+            return $saveTo;
+        } else {
+            return false;
+        }
+    }
+
+
+    /**
+     *
+     * Method copies image file to module store and creates db record.
+     *
+     * @param $file |string UploadedFile Or absolute url
+     * @param bool $is_main
+     * @param string $alt
+     * @return bool|ProductImage
+     * @throws \Exception
+     */
+    public function attachImage($file, $is_main = false, $alt = '')
+    {
+        $isDownloaded = preg_match('/http(s?)\:\/\//i', $file);
+        if ($isDownloaded) {
+            $download = $this->downloadFile($file);
+            if ($download) {
+                $file = $download;
+            }
+        }
+        $uniqueName = \panix\engine\CMS::gen(10);
+
+
+        if (!$this->owner->primaryKey) {
+            throw new \Exception('Owner must have primaryKey when you attach image!');
+        }
+
+
+        if (!is_object($file)) {
+            $pictureFileName = $uniqueName . '.' . pathinfo($file, PATHINFO_EXTENSION);
+        } else {
+            $pictureFileName = $uniqueName . '.' . $file->extension;
+        }
+        $path = Yii::getAlias($this->savePath) . DIRECTORY_SEPARATOR . $this->owner->primaryKey;
+        $newAbsolutePath = $path . DIRECTORY_SEPARATOR . $pictureFileName;
+
+        BaseFileHelper::createDirectory($path, 0775, true);
+
+
+        $image = new ProductImage();
+        $image->product_id = $this->owner->primaryKey;
+        $image->filename = $pictureFileName;
+        $image->alt_title = $alt;
+        //$image->urlAlias = $this->getAlias($image);
+
+        if (!$image->save()) {
+            return false;
+        }
+
+        if (count($image->getErrors()) > 0) {
+
+            $ar = array_shift($image->getErrors());
+
+            unlink($newAbsolutePath);
+            throw new \Exception(array_shift($ar));
+        }
+        $img = $image->getImage();
+
+        //If main image not exists
+        if ($img == null || $is_main) {
+            $this->setMainImage($image);
+        }
+
+        /** @var ImageHandler $img */
+        if (is_object($file)) {
+            $file->saveAs($newAbsolutePath);
+        } else {
+            if (!@copy($file, $newAbsolutePath)) {
+                $image->delete();
+            }
+        }
+        if (!$isDownloaded) {
+            $img = Yii::$app->img->load($newAbsolutePath);
+            if ($img->getHeight() > Yii::$app->params['maxUploadImageSize']['height'] || $img->getWidth() > Yii::$app->params['maxUploadImageSize']['width']) {
+                $img->resize(Yii::$app->params['maxUploadImageSize']['width'], Yii::$app->params['maxUploadImageSize']['height']);
+            }
+            if ($img->save($newAbsolutePath)) {
+                //   unlink($runtimePath);
+            }
+        }
+        //remove download file
+        if ($isDownloaded) {
+            if (file_exists($download)) {
+                unlink($download);
+            }
+        }
+
+        return $image;
+    }
+
+
+
+    /**
+     * returns main model image
+     * @param $main
+     * @return array|null|ActiveRecord
+     */
+    public function getImage($main = 1)
+    {
+        $wheres['product_id'] = $this->owner->primaryKey;
+
+        if ($main)
+            $wheres['is_main'] = 1;
+        $query = ProductImage::find()->where($wheres);
+
+        //echo $query->createCommand()->rawSql;die;
+        $img = $query->one();
+
+        if (!$img) {
+            return NULL;
+        }
+
+
+        return $img;
+    }
+
+    public function getPathToOrigin($filePath)
+    {
+        //$base = Yii::$app->getModule('images')->getStorePath();
+
+        if (!file_exists($filePath)) {
+            // $this->existImage = false;
+            $filePath = Yii::$app->getModule('shop')->getNoImagePath();
+        }
+        return $filePath;
+    }
+
+    public function getExtension($path)
+    {
+        $ext = pathinfo($this->getPathToOrigin($path), PATHINFO_EXTENSION);
+        return $ext;
+    }
+
+
+    public function getMainImageObject($main=1)
+    {
+        $wheres['product_id'] = $this->owner->primaryKey;
+        $wheres['is_main'] = $main;
+        $query = ProductImage::find()->where($wheres);
+        //->cache(Yii::$app->db->queryCacheDuration);
+
+        //echo $query->createCommand()->rawSql;die;
+        /** @var ProductImage $img */
+        $img = $query->one();
+        if (!$img) {
+            $img = new ProductImage;
+            $img->product_id = $this->owner->primaryKey;
+
+        }
+
+        return $img;
+
+    }
+
+
+    /**
+     * Clear all images cache (and resized copies)
+     * @return bool
+     */
+    public function clearImagesCache()
+    {
+        $cachePath = Yii::$app->getModule('images')->getCachePath();
+        $subdir = Yii::$app->getModule('images')->getModelSubDir($this->owner);
+
+        $dirToRemove = $cachePath . '/' . $subdir;
+
+        if (preg_match('/' . preg_quote($cachePath, '/') . '/', $dirToRemove)) {
+            BaseFileHelper::removeDirectory($dirToRemove);
+            //exec('rm -rf ' . $dirToRemove);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Sets main image of model
+     * @param $img
+     * @throws \Exception
+     */
+    public function setMainImage($img)
+    {
+
+        if ($this->owner->primaryKey != $img->product_id) {
+            throw new \Exception('Image must belong to this model');
+        }
+        $counter = 1;
+        /* @var $img ProductImage */
+        $img->setMain(true);
+        $img->save();
+
+
+        $images = $this->owner->getImages()->all();
+        foreach ($images as $allImg) {
+
+            if ($allImg->id == $img->id) {
+                continue;
+            } else {
+                $counter++;
+            }
+
+            $allImg->setMain(false);
+            $allImg->save();
+        }
+        $this->owner->main_image = $img->filename;
+        $this->owner->save(false);
+        $this->clearImagesCache();
+    }
+
+}

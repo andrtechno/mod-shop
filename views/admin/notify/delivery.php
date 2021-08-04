@@ -5,9 +5,9 @@ use panix\engine\grid\GridView;
 ?>
 
 <?= Html::a(Yii::t('app/default', 'SEND'), ['/admin/shop/notify/delivery-send'], ['class' => 'btn btn-success btn-sm']) ?>
-        
-        
-        
+
+
+
 <?php
 
 Pjax::begin([
@@ -30,10 +30,10 @@ Pjax::begin([
 ?>
 <?php Pjax::end(); ?>
         <?php
-        
 
-        
-        
+
+
+
 /*
         $this->widget('ext.adminList.GridView', array(
             'dataProvider' => $dataProvider,
@@ -54,10 +54,10 @@ Pjax::begin([
                 ),
                 'price',
                 array(
-                    'name' => 'manufacturer_id',
+                    'name' => 'brand_id',
                     'type' => 'raw',
-                    'value' => '$data->manufacturer ? Html::encode($data->manufacturer->name) : ""',
-                    'filter' => Html::listData(ShopManufacturer::model()->orderByName()->findAll(), 'id', 'name')
+                    'value' => '$data->brand ? Html::encode($data->brand->name) : ""',
+                    'filter' => Html::listData(ShopBrand::model()->orderByName()->findAll(), 'id', 'name')
                 ),
                 array(
                     'name' => 'supplier_id',

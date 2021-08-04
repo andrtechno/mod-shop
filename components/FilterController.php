@@ -10,7 +10,7 @@ use yii\helpers\Url;
 use yii\web\Response;
 use panix\engine\Html;
 use panix\mod\shop\models\Attribute;
-use panix\mod\shop\models\Manufacturer;
+use panix\mod\shop\models\Brand;
 use panix\mod\shop\models\Product;
 use panix\engine\controllers\WebController;
 
@@ -87,10 +87,10 @@ class FilterController extends WebController
 
 
         if (Yii::$app->request->post('filter')){
-            if(isset(Yii::$app->request->post('filter')['manufacturer'])){
-                $query->applyManufacturers(Yii::$app->request->post('filter')['manufacturer']);
+            if(isset(Yii::$app->request->post('filter')['brand'])){
+                $query->applyBrands(Yii::$app->request->post('filter')['brand']);
             }
-            //unset(Yii::$app->request->post('filter')['manufacturer']);
+            //unset(Yii::$app->request->post('filter')['brand']);
             $query->getFindByEavAttributes2(Yii::$app->request->post('filter'));
         }
 
@@ -102,9 +102,9 @@ class FilterController extends WebController
         $filter = new Filter($query, $category);
         //print_r($f->getPostActiveAttributes());die;
         $attributes = $filter->getCategoryAttributesCallback();
-        $brands = $filter->getCategoryManufacturersCallback();
+        $brands = $filter->getCategoryBrandsCallback();
         $total = 0;
-        $results = ArrayHelper::merge($attributes, ['manufacturer' => $brands]);
+        $results = ArrayHelper::merge($attributes, ['brand' => $brands]);
         /*$firstItem = array_key_first(Yii::$app->request->post('filter'));
         foreach ($results as $att) {
             if ($att['filters']) {
@@ -116,14 +116,14 @@ if($filterName == $firstItem){
             }
         }*/
         $total = $query->count();
-//CMS::dump(ArrayHelper::merge($ss,['manufacturer'=>$f->getCategoryManufacturers()]));die;
+//CMS::dump(ArrayHelper::merge($ss,['brand'=>$f->getCategoryBrands()]));die;
         return $this->asJson([
             'first'=>array_key_first(Yii::$app->request->post('filter')),
             'textTotal'=>"Показать ".Yii::t('shop/default','PRODUCTS_COUNTER',$total),
             'totalCount' => $total,
             'filters' => $results
         ]);
-        // return $this->asJson(ArrayHelper::merge($ss, ['manufacturer' => $f->getCategoryManufacturers()]));
+        // return $this->asJson(ArrayHelper::merge($ss, ['brand' => $f->getCategoryBrands()]));
     }
 
     public function beforeAction($action)
@@ -237,8 +237,8 @@ if($filterName == $firstItem){
         // $queryCategoryTypes = $this->currentQuery;
         if ($this->dataModel instanceof Category) {
             $queryCategoryTypes->applyCategories($this->dataModel);
-        } elseif ($this->dataModel instanceof Manufacturer) {
-            $queryCategoryTypes->applyManufacturers($this->dataModel->id);
+        } elseif ($this->dataModel instanceof Brand) {
+            $queryCategoryTypes->applyBrands($this->dataModel->id);
         }
 
         //$queryCategoryTypes->published();
@@ -309,18 +309,18 @@ if($filterName == $firstItem){
     public function getActiveFilters()
     {
         $request = Yii::$app->request;
-        // Render links to cancel applied filters like prices, manufacturers, attributes.
+        // Render links to cancel applied filters like prices, brands, attributes.
         $menuItems = [];
 
 
         if ($this->route == 'shop/catalog/view' || $this->route == 'shop/search/index') {
-            $manufacturers = array_filter(explode(',', $request->getQueryParam('manufacturer')));
-            $manufacturers = Manufacturer::getDb()->cache(function ($db) use ($manufacturers) {
-                return Manufacturer::findAll($manufacturers);
+            $brands = array_filter(explode(',', $request->getQueryParam('brand')));
+            $brands = Brand::getDb()->cache(function ($db) use ($brands) {
+                return Brand::findAll($brands);
             }, 3600);
         }
 
-        //$manufacturersIds = array_filter(explode(',', $request->getQueryParam('manufacturer')));
+        //$brandsIds = array_filter(explode(',', $request->getQueryParam('brand')));
 
 
         if ($request->getQueryParam('price')) {
@@ -385,22 +385,22 @@ if($filterName == $firstItem){
         }*/
 
         if ($this->route == 'shop/catalog/view') {
-            if (!empty($manufacturers)) {
-                $menuItems['manufacturer'] = [
-                    'name' => 'manufacturer',
+            if (!empty($brands)) {
+                $menuItems['brand'] = [
+                    'name' => 'brand',
                     'label' => Yii::t('shop/default', 'FILTER_BY_MANUFACTURER') . ':',
-                    'itemOptions' => ['id' => 'current-filter-manufacturer']
+                    'itemOptions' => ['id' => 'current-filter-brand']
                 ];
-                foreach ($manufacturers as $id => $manufacturer) {
-                    $menuItems['manufacturer']['items'][] = [
-                        'value' => $manufacturer->id,
-                        'label' => $manufacturer->name,
+                foreach ($brands as $id => $brand) {
+                    $menuItems['brand']['items'][] = [
+                        'value' => $brand->id,
+                        'label' => $brand->name,
                         'options' => [
                             'class' => 'remove',
-                            'data-name' => 'manufacturer',
-                            'data-target' => '#filter_manufacturer_' . $manufacturer->id
+                            'data-name' => 'brand',
+                            'data-target' => '#filter_brand_' . $brand->id
                         ],
-                        'url' => Yii::$app->urlManager->removeUrlParam('/' . Yii::$app->requestedRoute, 'manufacturer', $manufacturer->id)
+                        'url' => Yii::$app->urlManager->removeUrlParam('/' . Yii::$app->requestedRoute, 'brand', $brand->id)
                     ];
                 }
             }
@@ -483,18 +483,18 @@ if($filterName == $firstItem){
         $name = '';
         $breadcrumbs = false;
         foreach ($filterData as $filterKey => $filterItems) {
-            if ($filterKey == 'manufacturer') {
-                $manufacturerNames = [];
+            if ($filterKey == 'brand') {
+                $brandNames = [];
 
                 if (isset($filterItems['items'])) {
                     $i = 0;
                     foreach ($filterItems['items'] as $mKey => $mItems) {
-                        $manufacturerNames[] = $mItems['label'];
+                        $brandNames[] = $mItems['label'];
                         if ($i == 3) break;
                         $i++;
                     }
-                    $sep = (count($manufacturerNames) > 2) ? ', ' : ' ' . Yii::t('shop/default', 'AND') . ' ';
-                    $name .= ' ' . implode($sep, $manufacturerNames);
+                    $sep = (count($brandNames) > 2) ? ', ' : ' ' . Yii::t('shop/default', 'AND') . ' ';
+                    $name .= ' ' . implode($sep, $brandNames);
                 }
             } else {
                 $attributesNames[$filterKey] = [];
@@ -506,7 +506,7 @@ if($filterName == $firstItem){
                         $i++;
                         //$attributesNames[$filterKey]['url'][]=$mItems['value'];
                     }
-                    $prefix = isset($filterData['manufacturer']) ? '; ' : ', ';
+                    $prefix = isset($filterData['brand']) ? '; ' : ', ';
 
                     $sep = (count($attributesNames[$filterKey]) > 2) ? ', ' : ' ' . Yii::t('shop/default', 'AND') . ' ';
                     $breadcrumbs .= ' ' . $filterItems['label'] . ' ' . implode($sep, $attributesNames[$filterKey]);
@@ -524,12 +524,13 @@ if($filterName == $firstItem){
     public function _render($view = '@shop/views/catalog/view')
     {
         $activeFilters = $this->filter->getActiveFilters();
-        $render = $this->renderPartial('@shop/views/catalog/listview', [
-            'provider' => $this->provider,
-            'itemView' => $this->itemView,
-            'filter' => $this->filter
-        ]);
+
         if (Yii::$app->request->isAjax) {
+            $render = $this->renderPartial('@shop/views/catalog/listview', [
+                'provider' => $this->provider,
+                'itemView' => $this->itemView,
+                'filter' => $this->filter
+            ]);
             if (Yii::$app->request->headers->has('filter-ajax')) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
                 $url = ($this->dataModel) ? $this->dataModel->getUrl() : ['/' . Yii::$app->requestedRoute];
