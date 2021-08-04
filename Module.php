@@ -349,7 +349,7 @@ class Module extends WebModule implements BootstrapInterface
                         'visible' => Yii::$app->user->can('/shop/admin/currency/index') || Yii::$app->user->can('/shop/admin/currency/*')
                     ],
                     [
-                        'label' => Yii::t('shop/admin', 'MANUFACTURER'),
+                        'label' => Yii::t('shop/admin', 'BRAND'),
                         "url" => ['/admin/shop/brand'],
                         'icon' => 'apple',
                         'visible' => Yii::$app->user->can('/shop/admin/brand/index') || Yii::$app->user->can('/shop/admin/brand/*')

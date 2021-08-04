@@ -173,7 +173,7 @@ class Brand extends ActiveRecord
     {
         if (Yii::$app->hasModule('csv')) {
             $external = new ExternalFinder('{{%csv}}');
-            $external->deleteObject(ExternalFinder::OBJECT_MANUFACTURER, $this->id);
+            $external->deleteObject(ExternalFinder::OBJECT_BRAND, $this->id);
         }
         parent::afterDelete();
     }

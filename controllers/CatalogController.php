@@ -52,8 +52,8 @@ class CatalogController extends FilterController
 
 
         //  $cr->with = array('brandActive');
-        // Скрывать товары если производитель скрыт.
-        //TODO: если у товара не выбран производитель то он тоже скрывается!! need fix
+        // Скрывать товары если бренд скрыт.
+        //TODO: если у товара не выбран бренд то он тоже скрывается!! need fix
         //$this->query->with(array('brand' => array(
         //        'scopes' => array('published')
         //)));

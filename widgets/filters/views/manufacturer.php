@@ -5,7 +5,7 @@ use yii\helpers\Html;
 <?php if($brands['filters']) { ?>
 <div class="card filter-block">
     <div class="card-header" data-toggle="collapse" data-target="#collapse-<?=md5('brand')?>" aria-expanded="true" aria-controls="collapse-<?=md5('brand')?>">
-        <h5><?= Yii::t('shop/default', 'FILTER_BY_MANUFACTURER') ?></h5>
+        <h5><?= Yii::t('shop/default', 'FILTER_BY_BRAND') ?></h5>
     </div>
     <div class="card-collapse collapse in" id="collapse-<?=md5('brand')?>">
     <div class="card-body">

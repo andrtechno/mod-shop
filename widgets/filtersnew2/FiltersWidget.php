@@ -212,7 +212,7 @@ class FiltersWidget extends Widget
         //$brands =$queryMan->all();
         //echo $q->createCommand()->rawSql;die;
         $data = [
-            'title' => Yii::t('shop/default', 'FILTER_BY_MANUFACTURER'),
+            'title' => Yii::t('shop/default', 'FILTER_BY_BRAND'),
             'selectMany' => true,
             'filters' => []
         ];

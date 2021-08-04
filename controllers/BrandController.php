@@ -19,7 +19,7 @@ class BrandController extends FilterController
     {
         $model = Brand::find()->published()->all();
         $this->currentUrl = '/';
-        $this->pageName = Yii::t('shop/default','MANUFACTURER');
+        $this->pageName = Yii::t('shop/default','BRAND');
         $this->view->params['breadcrumbs'][] = $this->pageName;
         return $this->render('index', ['model' => $model]);
     }
@@ -76,7 +76,7 @@ class BrandController extends FilterController
 
 
         $this->view->params['breadcrumbs'][] = [
-            'label' => Yii::t('shop/default', 'MANUFACTURERS'),
+            'label' => Yii::t('shop/default', 'BRANDS'),
             'url' => ['/brand']
         ];
         $this->view->params['breadcrumbs'][] = $this->pageName;

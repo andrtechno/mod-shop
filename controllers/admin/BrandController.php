@@ -36,12 +36,12 @@ class BrandController extends AdminController
 
     public function actionIndex()
     {
-        $this->pageName = Yii::t('shop/admin', 'MANUFACTURER');
+        $this->pageName = Yii::t('shop/admin', 'BRAND');
         if (Yii::$app->user->can("/{$this->module->id}/{$this->id}/*") || Yii::$app->user->can("/{$this->module->id}/{$this->id}/create")) {
             $this->buttons = [
                 [
                     'icon' => 'add',
-                    'label' => Yii::t('shop/admin', 'CREATE_MANUFACTURER'),
+                    'label' => Yii::t('shop/admin', 'CREATE_BRAND'),
                     'url' => ['create'],
                     'options' => ['class' => 'btn btn-success']
                 ]
@@ -68,12 +68,12 @@ class BrandController extends AdminController
         $model = Brand::findModel($id);
 
 
-        $this->pageName = Yii::t('shop/admin', 'MANUFACTURER');
+        $this->pageName = Yii::t('shop/admin', 'BRAND');
         if (Yii::$app->user->can("/{$this->module->id}/{$this->id}/*") || Yii::$app->user->can("/{$this->module->id}/{$this->id}/create")) {
             $this->buttons = [
                 [
                     'icon' => 'add',
-                    'label' => Yii::t('shop/admin', 'CREATE_MANUFACTURER'),
+                    'label' => Yii::t('shop/admin', 'CREATE_BRAND'),
                     'url' => ['create'],
                     'options' => ['class' => 'btn btn-success']
                 ]

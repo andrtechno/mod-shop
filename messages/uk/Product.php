@@ -40,7 +40,7 @@ return [
     'TEXT' => 'Опис товару',
     'UNIT' => 'Од. виміру ',
     'SUPPLIER_ID' => 'Постачальник',
-    'MANUFACTURER_ID' => 'Виробник',
+    'BRAND_ID' => 'Виробник',
     'MAIN_CATEGORY_ID' => 'Категорія',
     'DISCOUNT' => 'Знижка',
     'LENGTH' => 'Довжина',
@@ -77,6 +77,6 @@ return [
     'UNIT_METER' => 'метр.',
     'UNIT_BOX' => 'ящик.',
     'SELECT_SUPPLIER_ID' => '&mdash; Вибрати постачальника &mdash;',
-    'SELECT_MANUFACTURER_ID' => '&mdash; Вибрати виробника &mdash;',
+    'SELECT_BRAND_ID' => '&mdash; Вибрати виробника &mdash;',
     'SELECT_MAIN_CATEGORY_ID' => '&mdash; Уточнити за категорією &mdash;',
 ];

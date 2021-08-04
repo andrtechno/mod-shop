@@ -245,7 +245,7 @@ class FiltersWidget extends \panix\engine\data\Widget
         //$brands =$queryMan->all();
         //echo $q->createCommand()->rawSql;die;
         $data = array(
-            'title' => Yii::t('shop/default', 'FILTER_BY_MANUFACTURER'),
+            'title' => Yii::t('shop/default', 'FILTER_BY_BRAND'),
             'selectMany' => true,
             'filters' => array()
         );

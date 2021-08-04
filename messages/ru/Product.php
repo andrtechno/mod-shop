@@ -77,6 +77,6 @@ return [
     'UNIT_METER' => 'метр.',
     'UNIT_BOX' => 'ящик.',
     'SELECT_SUPPLIER_ID' => '&mdash; Выбрать поставщика &mdash;',
-    'SELECT_BREND_ID' => '&mdash; Выбрать бренд &mdash;',
+    'SELECT_BRAND_ID' => '&mdash; Выбрать бренд &mdash;',
     'SELECT_MAIN_CATEGORY_ID' => '&mdash; Выбрать категорию &mdash;',
 ];

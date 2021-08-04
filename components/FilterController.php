@@ -388,7 +388,7 @@ if($filterName == $firstItem){
             if (!empty($brands)) {
                 $menuItems['brand'] = [
                     'name' => 'brand',
-                    'label' => Yii::t('shop/default', 'FILTER_BY_MANUFACTURER') . ':',
+                    'label' => Yii::t('shop/default', 'FILTER_BY_BRAND') . ':',
                     'itemOptions' => ['id' => 'current-filter-brand']
                 ];
                 foreach ($brands as $id => $brand) {

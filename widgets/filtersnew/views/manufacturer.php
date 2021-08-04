@@ -7,7 +7,7 @@ use yii\helpers\Html;
     <div class="card filter-block mb-3">
         <a class="card-header h5" data-toggle="collapse" href="#collapse-<?= md5('brand') ?>"
            aria-expanded="true" aria-controls="collapse-<?= md5('brand') ?>">
-            <?= Yii::t('shop/default', 'FILTER_BY_MANUFACTURER') ?>
+            <?= Yii::t('shop/default', 'FILTER_BY_BRAND') ?>
         </a>
         <div class="card-collapse collapse in" id="collapse-<?= md5('brand') ?>">
             <?php if (count($brands['filters']) >= 20) { ?>

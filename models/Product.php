@@ -309,7 +309,7 @@ class Product extends ActiveRecord
      */
     public function renderGridImage($size = '50x50')
     {
-        $mainImage = $this->getMainImageResponse();
+        $mainImage = $this->getMainImageObject();
         $small = $mainImage->get($size);
         $big = $mainImage->get();
 

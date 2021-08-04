@@ -209,7 +209,7 @@ trait ProductTrait
                 ->addOrderBy(['name_' . Yii::$app->language => SORT_ASC])
                 // ->cache(3200, new DbDependency(['sql' => 'SELECT MAX(`updated_at`) FROM ' . Brand::tableName()]))
                 ->all(), 'id', 'name_' . Yii::$app->language),
-            'filterInputOptions' => ['class' => 'form-control', 'prompt' => html_entity_decode('&mdash; выберите производителя &mdash;')],
+            'filterInputOptions' => ['class' => 'form-control', 'prompt' => html_entity_decode('&mdash; выберите бренд &mdash;')],
             'value' => function ($model) {
                 return ($model->brand) ? $model->brand->name : NULL;
             }

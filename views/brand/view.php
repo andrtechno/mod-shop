@@ -20,7 +20,7 @@ $classCol_2 = ($eavAttributes) ? 'col-lg-9' : 'col-12';
     ]); ?>
 </div>
 <div class="<?= $classCol_2; ?>">
-    <h1><?= Html::encode(($this->h1) ? $this->h1 : Yii::t('shop/default', 'MANUFACTURER') . ' ' . $this->context->pageName); ?></h1>
+    <h1><?= Html::encode(($this->h1) ? $this->h1 : Yii::t('shop/default', 'BRAND') . ' ' . $this->context->pageName); ?></h1>
     <?php if (!empty($model->description)) { ?>
         <div>
             <?php echo $model->description ?>

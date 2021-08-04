@@ -24,7 +24,7 @@ $form->field($model, 'auto_decrease_quantity')->dropDownList([
     0 => Yii::t('app/default', 'NO'),
     1 => Yii::t('app/default', 'YES')
 ], [
-    //'prompt' => 'Укажите производителя'
+    //'prompt' => 'Укажите бренд'
 ])->hint($model::t('HINT_AUTO_DECREASE_QUANTITY'));
 ?>
 <?=
@@ -34,6 +34,6 @@ $form->field($model, 'is_condition')->dropDownList($model->getConditions());
 <?=
 
 $form->field($model, 'availability')->dropDownList($model::getAvailabilityItems(), [
-    //'prompt' => 'Укажите производителя'
+    //'prompt' => 'Укажите бренд'
 ]);
 ?>

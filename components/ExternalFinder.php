@@ -25,7 +25,7 @@ class ExternalFinder
     const OBJECT_CATEGORY = 1;
     const OBJECT_ATTRIBUTE = 2;
     const OBJECT_PRODUCT = 3;
-    const OBJECT_MANUFACTURER = 4;
+    const OBJECT_BRAND = 4;
     const OBJECT_ATTRIBUTE_OPTION = 5;
     const OBJECT_IMAGE = 6;
     const OBJECT_MAIN_CATEGORY = 7;
@@ -111,7 +111,7 @@ class ExternalFinder
                     return $data;
                     break;
 
-                case self::OBJECT_MANUFACTURER:
+                case self::OBJECT_BRAND:
                     $data = Brand::findOne($query['object_id']);
                     return $data;
                     break;

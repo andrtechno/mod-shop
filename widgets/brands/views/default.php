@@ -6,7 +6,7 @@ use panix\ext\owlcarousel\OwlCarouselWidget;
 ?>
 
 <?php if ($model) { ?>
-    <h3><?= Yii::t('shop/default', 'BLOCK_MANUFACTURER_TITLE'); ?></h3>
+    <h3><?= Yii::t('shop/default', 'BLOCK_BRAND_TITLE'); ?></h3>
     <?php OwlCarouselWidget::begin([
         'containerOptions' => ['class' => 'owl-brands'],
         'options' => [

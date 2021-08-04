@@ -77,7 +77,7 @@ class NotifyController extends AdminController
 
         $tables = '<table border="0" width="600px" cellspacing="1" cellpadding="5" style="border-spacing: 0;border-collapse: collapse;">'; //border-collapse:collapse;
         $tables .= '<tr>';
-        $tables .= '<th style="' . $thStyle . '">Изображение</th><th style="' . $thStyle . '">Товар</th><th style="' . $thStyle . '">Производитель</th><th style="' . $thStyle . '">Цена за шт.</th>';
+        $tables .= '<th style="' . $thStyle . '">Изображение</th><th style="' . $thStyle . '">Товар</th><th style="' . $thStyle . '">Бренд</th><th style="' . $thStyle . '">Цена за шт.</th>';
         $tables .= '</tr>';
         foreach ($data as $row) {
             $tables .= '<tr>

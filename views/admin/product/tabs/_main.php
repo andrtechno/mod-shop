@@ -30,7 +30,7 @@ echo $this->render('_prices', ['model' => $model, 'form' => $form]);
 <?=
 
 $form->field($model, 'brand_id')->dropDownList(ArrayHelper::map(Brand::find()->cache(3200, new DbDependency(['sql' => 'SELECT MAX(`updated_at`) FROM ' . Brand::tableName()]))->all(), 'id', 'name'), [
-    'prompt' => html_entity_decode($model::t('SELECT_MANUFACTURER_ID'))
+    'prompt' => html_entity_decode($model::t('SELECT_BRAND_ID'))
 ]);
 
 $model->label = $model->getLabel();
