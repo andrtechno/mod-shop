@@ -146,27 +146,12 @@ class Product extends ActiveRecord
         return $this->availability == self::STATUS_IN_STOCK;
     }
 
-    public function buy($value, array $options)
-    {
 
-        $configurable_id = 0;
-        if ($this->use_configurations) {
-            $configurable_id = $this->id;
-        }
-
-        $options['data'] = [
-            'product' => $this->id,
-            'configurable' => $configurable_id
-        ];
-
-        Html::addCssClass($options, 'btn-buy');
-        return Html::button($value, $options);
-    }
 
     public function beginCartForm()
     {
         $html = '';
-        $html .= Html::beginForm(['/cart/add'], 'post');
+        $html .= Html::beginForm(['/cart/add'], 'post',['csrf'=>false]);
         $html .= Html::hiddenInput('product_id', $this->id);
         //$html .= Html::hiddenInput('product_price', $this->price);
         //$html .= Html::hiddenInput('use_configurations', $this->use_configurations, ['id' => 'use_configurations-' . $this->id]);
@@ -286,7 +271,7 @@ class Product extends ActiveRecord
     public function getMainImage($size = false)
     {
         /** @var $image \panix\mod\shop\components\ImageBehavior|\panix\mod\shop\models\ProductImage */
-       // $image = $this->getImageData2($size);
+        // $image = $this->getImageData2($size);
         $mainImage = $this->getMainImageObject();
 
         $img = $mainImage->get($size);
@@ -313,8 +298,8 @@ class Product extends ActiveRecord
         $small = $mainImage->get($size);
         $big = $mainImage->get();
 
-       // $small = $this->getMainImage($size);
-      //  $big = $this->getMainImage();
+        // $small = $this->getMainImage($size);
+        //  $big = $this->getMainImage();
 
         return Html::a(Html::img($small, ['alt' => $mainImage->alt_title, 'class' => 'img-thumbnail']), $big, ['title' => $this->name, 'data-fancybox' => 'gallery']);
     }
@@ -394,10 +379,10 @@ class Product extends ActiveRecord
         $rules[] = ['price', 'commaToDot'];
         $rules[] = [['name', 'slug', 'video'], 'string', 'max' => 255];
         $rules[] = ['video', 'url'];
-       // $rules[] = [['image'], 'image'];
+        // $rules[] = [['image'], 'image'];
 
         $rules[] = [['name', 'slug'], 'trim'];
-        $rules[] = [['full_description', 'length', 'width', 'height', 'weight','main_image'], 'string'];
+        $rules[] = [['full_description', 'length', 'width', 'height', 'weight', 'main_image'], 'string'];
         $rules[] = ['use_configurations', 'boolean', 'on' => self::SCENARIO_INSERT];
         $rules[] = ['enable_comments', 'boolean'];
         $rules[] = [['unit'], 'default', 'value' => 1];
@@ -495,6 +480,7 @@ class Product extends ActiveRecord
     {
         return $this->hasMany(ProductReviews::class, ['product_id' => 'id'])->orderBy(['id' => SORT_DESC]);
     }
+
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -543,6 +529,7 @@ class Product extends ActiveRecord
     {
         return $this->hasOne(ProductType::class, ['type_id' => 'id']);
     }
+
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -556,7 +543,7 @@ class Product extends ActiveRecord
      */
     public function getMainImage2()
     {
-        return $this->hasOne(ProductImage::class, ['product_id' => 'id'])->where(['is_main'=>1]);
+        return $this->hasOne(ProductImage::class, ['product_id' => 'id'])->where(['is_main' => 1]);
     }
 
     /**
@@ -798,7 +785,8 @@ class Product extends ActiveRecord
 
         if ($this->_kit !== null) {
             //$this->clearKitProducts();
-CMS::dump($this->_kit);die;
+            CMS::dump($this->_kit);
+            die;
             foreach ($this->_kit as $id) {
                 $kit = new Kit;
                 $kit->owner_id = $this->id;
@@ -1182,7 +1170,7 @@ CMS::dump($this->_kit);die;
         }
         // if (Yii::$app->getModule('images'))
         $a['imagesBehavior'] = [
-           // 'class2' => '\panix\mod\images\behaviors\ImageBehavior',
+            // 'class2' => '\panix\mod\images\behaviors\ImageBehavior',
             'class' => '\panix\mod\shop\components\ImageBehavior',
             'savePath' => '@uploads/store/product'
         ];
