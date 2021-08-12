@@ -275,7 +275,7 @@ class Product extends ActiveRecord
             $sum = $this->discount;
             if ('%' === substr($sum, -1, 1)) {
                 $sum = $this->price * ((double)$sum) / 100;
-               // $this->discountParcent = round((($sum - $this->price) / $sum) * 100);
+               // $this->discountParcent = round((($sum - $this->price) / $sum) * 100);11
             } else {
 
             }
