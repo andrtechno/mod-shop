@@ -60,12 +60,23 @@ foreach ($attributes as $attrData) {
 
 
                                 } else {
-                                    //var_dump($checked);
-                                    echo '<div class="custom-control custom-checkbox">';
-                                    echo Html::checkBox('filter[' . $attrData['key'] . '][]', $checked, ['class' => 'custom-control-input', 'value' => $filter['queryParam'], 'id' => 'filter_' . $attrData['key'] . '_' . $filter['queryParam']]);
-                                    echo Html::label($filter['title'].$this->context->getCount($filter), 'filter_' . $attrData['key'] . '_' . $filter['queryParam'], ['class' => 'custom-control-label']);
 
-                                    echo '</div>';
+
+
+                                    if($attrData['selectMany']){
+                                        echo '<div class="custom-control custom-checkbox">';
+                                        echo Html::checkBox('filter[' . $attrData['key'] . '][]', $checked, ['class' => 'custom-control-input', 'value' => $filter['queryParam'], 'id' => 'filter_' . $attrData['key'] . '_' . $filter['queryParam']]);
+                                        echo Html::label($filter['title'].$this->context->getCount($filter), 'filter_' . $attrData['key'] . '_' . $filter['queryParam'], ['class' => 'custom-control-label']);
+                                        echo '</div>';
+                                    }else{
+                                        echo '<div class="radio">';
+                                        echo Html::label(Html::radio('filter[' . $attrData['key'] . '][]', $checked, ['class' => '', 'value' => $filter['queryParam'], 'id' => 'filter_' . $attrData['key'] . '_' . $filter['queryParam']]).$filter['title'].$this->context->getCount($filter), 'filter_' . $attrData['key'] . '_' . $filter['queryParam'], ['class' => '']);
+                                        echo '</div>';
+                                    }
+
+
+                                    //var_dump($checked);
+
                                    // echo $this->context->getCount($filter);
                                 }
 

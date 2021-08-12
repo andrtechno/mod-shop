@@ -70,6 +70,7 @@ class Filter extends BaseObject
     {
         $data = [];
         $sss = (Yii::$app->request->post('filter')) ? Yii::$app->request->post('filter') : $_GET;
+
         foreach (array_keys($sss) as $key) {
             if (array_key_exists($key, $this->_eavAttributes)) {
 
@@ -80,8 +81,9 @@ class Filter extends BaseObject
                 if ((boolean)$this->_eavAttributes[$key]->select_many === true) {
                     $data[$key] = (is_array($sss[$key])) ? $sss[$key] : explode(',', $sss[$key]);
                 } else {
-                    if (isset($params[$key]))
-                        $data[$key] = [$params[$key]];
+
+                    if (isset($sss[$key]))
+                        $data[$key] = [$sss[$key]];
                 }
             } else {
                 //  $this->error404(Yii::t('shop/default', 'NOFIND_CATEGORY1'));

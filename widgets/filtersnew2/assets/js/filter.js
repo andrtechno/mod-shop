@@ -190,7 +190,7 @@ function filter_ajax(e, objects) {
         headers: {
             "filter-ajax": true
         },
-        data: $('#filter-form input[type="checkbox"]').serialize(),
+        data: $('#filter-form input[type="checkbox"],#filter-form input[type="radio"]').serialize(),
         success: function (data) {
             ajaxSelector.html(data.items).toggleClass('loading');
             form.attr('action', data.currentUrl);
@@ -414,7 +414,7 @@ $(function () {
 
     });
 
-    $(document).on('filter:click:checkbox', '#filter-form input[type="checkbox"]', function (e, state) {
+    $(document).on('filter:click:checkbox', '#filter-form input[type="checkbox"],#filter-form input[type="radio"]', function (e, state) {
         this.checked = state;
         var id = $(this).attr('id');
         console.debug(e.type, id, state);
@@ -537,7 +537,7 @@ $(function () {
         e.preventDefault();
     });
 
-    $(document).on('change', '#filter-form input[type="checkbox"]', function (e) {
+    $(document).on('change', '#filter-form input[type="checkbox"],#filter-form input[type="radio"]', function (e) {
         $(this).trigger('filter:click:checkbox', this.checked);
     });
 
