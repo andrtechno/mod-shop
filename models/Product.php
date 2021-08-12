@@ -56,7 +56,7 @@ use panix\engine\db\ActiveRecord;
  * @property object|bool $hasMarkup See module markup
  * @property float $originalPrice See [[\panix\mod\discounts\components\DiscountBehavior]]
  * @property float $discountPrice
- * @property string discountPercent
+ * @property string $discountPercent
  * @property string $discountSum
  * @property integer $ordern Sorting drag-and-drop
  * @property boolean $isAvailable
