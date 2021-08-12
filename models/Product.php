@@ -56,6 +56,7 @@ use panix\engine\db\ActiveRecord;
  * @property object|bool $hasMarkup See module markup
  * @property float $originalPrice See [[\panix\mod\discounts\components\DiscountBehavior]]
  * @property float $discountPrice
+ * @property string discountPercent
  * @property string $discountSum
  * @property integer $ordern Sorting drag-and-drop
  * @property boolean $isAvailable
@@ -95,6 +96,7 @@ class Product extends ActiveRecord
     public $discountPrice;
     public $originalPrice;
     public $discountSum;
+    public $discountPercent;
 
     const route = '/admin/shop/default';
     const MODULE_ID = 'shop';
@@ -273,9 +275,13 @@ class Product extends ActiveRecord
             $sum = $this->discount;
             if ('%' === substr($sum, -1, 1)) {
                 $sum = $this->price * ((double)$sum) / 100;
+               // $this->discountParcent = round((($sum - $this->price) / $sum) * 100);
+            } else {
+
             }
             $this->discountSum = $this->discount;
             $this->discountPrice = $this->price - $sum;
+            $this->discountPercent = round( ($this->price-$this->discountPrice)/$this->price * 100);
             $this->originalPrice = $this->price;
             $this->hasDiscount = $this->discount;
         }
@@ -283,13 +289,13 @@ class Product extends ActiveRecord
         parent::afterFind();
     }
 
-    public function getMainImage($size = false)
+    public function getMainImage($size = false, array $options = [])
     {
         /** @var $image \panix\mod\shop\components\ImageBehavior|\panix\mod\shop\models\ProductImage */
-       // $image = $this->getImageData2($size);
+        // $image = $this->getImageData2($size);
         $mainImage = $this->getMainImageObject();
 
-        $img = $mainImage->get($size);
+        $img = $mainImage->get($size, $options);
         $result = [];
         if ($img) {
             $result['url'] = $img;
@@ -313,8 +319,8 @@ class Product extends ActiveRecord
         $small = $mainImage->get($size);
         $big = $mainImage->get();
 
-       // $small = $this->getMainImage($size);
-      //  $big = $this->getMainImage();
+        // $small = $this->getMainImage($size);
+        //  $big = $this->getMainImage();
 
         return Html::a(Html::img($small, ['alt' => $mainImage->alt_title, 'class' => 'img-thumbnail']), $big, ['title' => $this->name, 'data-fancybox' => 'gallery']);
     }
@@ -394,10 +400,10 @@ class Product extends ActiveRecord
         $rules[] = ['price', 'commaToDot'];
         $rules[] = [['name', 'slug', 'video'], 'string', 'max' => 255];
         $rules[] = ['video', 'url'];
-       // $rules[] = [['image'], 'image'];
+        // $rules[] = [['image'], 'image'];
 
         $rules[] = [['name', 'slug'], 'trim'];
-        $rules[] = [['full_description', 'length', 'width', 'height', 'weight','main_image'], 'string'];
+        $rules[] = [['full_description', 'length', 'width', 'height', 'weight', 'main_image'], 'string'];
         $rules[] = ['use_configurations', 'boolean', 'on' => self::SCENARIO_INSERT];
         $rules[] = ['enable_comments', 'boolean'];
         $rules[] = [['unit'], 'default', 'value' => 1];
@@ -495,6 +501,7 @@ class Product extends ActiveRecord
     {
         return $this->hasMany(ProductReviews::class, ['product_id' => 'id'])->orderBy(['id' => SORT_DESC]);
     }
+
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -543,6 +550,7 @@ class Product extends ActiveRecord
     {
         return $this->hasOne(ProductType::class, ['type_id' => 'id']);
     }
+
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -556,7 +564,7 @@ class Product extends ActiveRecord
      */
     public function getMainImage2()
     {
-        return $this->hasOne(ProductImage::class, ['product_id' => 'id'])->where(['is_main'=>1]);
+        return $this->hasOne(ProductImage::class, ['product_id' => 'id'])->where(['is_main' => 1]);
     }
 
     /**
@@ -798,7 +806,8 @@ class Product extends ActiveRecord
 
         if ($this->_kit !== null) {
             //$this->clearKitProducts();
-CMS::dump($this->_kit);die;
+            CMS::dump($this->_kit);
+            die;
             foreach ($this->_kit as $id) {
                 $kit = new Kit;
                 $kit->owner_id = $this->id;
@@ -1182,7 +1191,7 @@ CMS::dump($this->_kit);die;
         }
         // if (Yii::$app->getModule('images'))
         $a['imagesBehavior'] = [
-           // 'class2' => '\panix\mod\images\behaviors\ImageBehavior',
+            // 'class2' => '\panix\mod\images\behaviors\ImageBehavior',
             'class' => '\panix\mod\shop\components\ImageBehavior',
             'savePath' => '@uploads/store/product'
         ];
