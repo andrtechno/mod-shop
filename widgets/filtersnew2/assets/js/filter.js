@@ -69,7 +69,7 @@ var flagDeletePrices = false;
 var global_url;
 var newFunction = true;
 
-function filterCallback(e, objects,target) {
+function filterCallback(e, objects, target) {
     if (xhrCallback && xhrCallback.readyState !== 4) {
         xhrCallback.onreadystatechange = null;
         xhrCallback.abort();
@@ -89,11 +89,6 @@ function filterCallback(e, objects,target) {
         },
         data: objects,
         success: function (response) {
-
-
-
-
-
 
 
             /*form.find('[aria-describedby^="popover"]')
@@ -151,7 +146,7 @@ function filterCallback(e, objects,target) {
                         $('#filter_' + name + '_' + data.queryParam).parent('div').parent('li').removeClass('filter-disabled');
                     } else {
                         if (!selector.prop('checked')) {
-                           // console.log('set ' + name + '_' + data.queryParam);
+                            // console.log('set ' + name + '_' + data.queryParam);
                             // console.log(selector,true);
                             $('#filter_' + name + '_' + data.queryParam).attr('disabled', 'disabled');
 
@@ -199,9 +194,13 @@ function filter_ajax(e, objects) {
             //console.log('success filter_ajax');
             $('#summary').html(data.totalCount);
             $('h1').html(data.pageName);
-            var ias = jQuery.ias();
-            if (ias) {
-                ias.reinitialize();
+
+            if ((typeof $.fn.ias !== 'undefined')) {
+                var ias = jQuery.ias();
+                if (ias) {
+                    console.debug('ias plugin > reinitialize:', ias);
+                    ias.reinitialize();
+                }
             }
 
         },
@@ -334,7 +333,6 @@ $(function () {
         filter_ajax(e, objects);
 
 
-
     });
 
     var currentChackedByOpen = []; //Определение после открытие фильтра чекнутых елементов.
@@ -389,11 +387,6 @@ $(function () {
     });
 
 
-
-
-
-
-
     $(document).on('filter:open', '.sidebar', function (e) {
         console.debug('Event: ' + e.type, checkedAll);
         $(this).addClass('open');
@@ -421,22 +414,19 @@ $(function () {
         if (!isMobile) {
 
 
-
-
-
             var hovered = false;
 
             form.on({
-                'mouseenter': function(e) {
+                'mouseenter': function (e) {
                     hovered = true;
                 },
-                'mouseleave': function(e) {
+                'mouseleave': function (e) {
                     hovered = false;
 
                     $('[aria-describedby="' + $(this).attr('id') + '"]').popover('toggle');
                 }
-            }, '.popover').on('hide.bs.popover', '[aria-describedby^="popover"]', function(e) {
-                setTimeout(function(element) {
+            }, '.popover').on('hide.bs.popover', '[aria-describedby^="popover"]', function (e) {
+                setTimeout(function (element) {
                     $(element).show();
                 }, 0, e.target);
 
@@ -449,11 +439,11 @@ $(function () {
             console.debug('Dekstop', width, this);
             $(this).trigger('filter:apply');
 
-           /* if (newFunction){
-                var objects = getSerializeObjects();
-                var target = $(this);
-                filterCallback(e, objects,target);
-            }*/
+            /* if (newFunction){
+                 var objects = getSerializeObjects();
+                 var target = $(this);
+                 filterCallback(e, objects,target);
+             }*/
 
         } else {
             console.debug('Mobile', width, this);

@@ -152,12 +152,15 @@ class CategoryUrlRule extends BaseUrlRule
                         foreach ($paramsList as $k => $p) {
 
                             if (!isset($p[1])) {
+
                                 return false;
                             }
                             if (isset($p[1]) && isset($p[0])) {
+
                                 $_GET[$p[0]] = $p[1];
                                 $params[$p[0]] = $p[1];
                             }
+
                         }
                     }
                     return [$this->route, $params];

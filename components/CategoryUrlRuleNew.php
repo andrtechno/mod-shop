@@ -64,8 +64,10 @@ class CategoryUrlRuleNew extends UrlRule
                 $parts = explode('/', $filterPathInfo);
                 $paramsList = array_chunk($parts, 2);
                 foreach ($paramsList as $p) {
+
                     if (isset($p[1])) {
                         $params[$p[0]] = $p[1];
+                        $_GET[$p[0]] = $p[1];
                     } else {
                         return false;
                     }

@@ -559,6 +559,8 @@ class Product extends ActiveRecord
         return $this->hasMany(ProductImage::class, ['product_id' => 'id']);
     }
 
+
+
     /**
      * @return \yii\db\ActiveQuery
      */

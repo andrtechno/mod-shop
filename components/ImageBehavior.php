@@ -190,7 +190,8 @@ class ImageBehavior extends \yii\base\Behavior
             unlink($newAbsolutePath);
             throw new \Exception(array_shift($ar));
         }
-        $img = $image->getImage();
+
+        $img = $this->owner->getImage();
 
         //If main image not exists
         if ($img == null || $is_main) {
@@ -338,8 +339,8 @@ class ImageBehavior extends \yii\base\Behavior
             $allImg->setMain(false);
             $allImg->save();
         }
-        $this->owner->main_image = $img->filename;
-        $this->owner->save(false);
+        //$this->owner->main_image = $img->filename;
+        //$this->owner->save(false);
         $this->clearImagesCache();
     }
 
