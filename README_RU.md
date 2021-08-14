@@ -46,6 +46,22 @@ php composer require --prefer-dist panix/mod-shop "*"
 php yii migrate --migrationPath=vendor/panix/mod-shop/migrations
 ```
 
+
+
+### Роутинг и параметры
+- /catalog
+- /catalog/<category_slug>
+- /sales `$categories`
+- /sales/<category_slug> `$categories`
+- /new 
+
+| catalog   |      sales      |  new |
+|----------|:-------------:|------:|
+| col 1 is |  `$categories` | $1600 |
+| col 2 is |    centered   |   $12 |
+| col 3 is | right-aligned |    $1 |
+
+
 ### Автор и лицензия
 - [Автор](https://github.com/andrtechno)
 - [Лицензия](https://github.com/andrtechno/engine/blob/master/LICENSE.md)

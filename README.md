@@ -41,6 +41,14 @@ to the require section of your `composer.json` file.
 php yii migrate --migrationPath=vendor/panix/mod-shop/migrations
 ```
 
+
+### Роутинг и параметры
+- /catalog
+- /catalog/<category_slug>
+- /sales `$categories`
+- /sales/<category_slug> `$categories`
+- /new 
+
 ### Author & License
 - [Author](https://github.com/andrtechno)
 - [License](https://github.com/andrtechno/engine/blob/master/LICENSE.md)

@@ -54,6 +54,7 @@ class CategoryController extends AdminController
         /**
          * @var \panix\engine\behaviors\nestedsets\NestedSetsBehavior|Category $model
          */
+
         $model = Category::findModel(Yii::$app->request->get('id'));
         $isNew = $model->isNewRecord;
         if ($model->getIsNewRecord()) {
@@ -161,7 +162,7 @@ class CategoryController extends AdminController
         if ($model->validate()) {
             $model->saveNode();
 
-            $model2 = new Category;
+            /*$model2 = new Category;
             $model2->name = 'Category 1';
             $model2->slug = CMS::slug($model2->name);
             $model2->appendTo($model);
@@ -182,7 +183,7 @@ class CategoryController extends AdminController
             $model2 = new Category;
             $model2->name = 'Category 3';
             $model2->slug = CMS::slug($model2->name);
-            $model2->appendTo($model);
+            $model2->appendTo($model);*/
             return $this->redirect(['index']);
         } else {
             print_r($model->getErrors());

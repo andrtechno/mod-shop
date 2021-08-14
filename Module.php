@@ -18,6 +18,7 @@ class Module extends WebModule implements BootstrapInterface
     public $mailPath = '@shop/mail';
     public $searchAttribute = 'sku';
     public $filterViewCurrent = '@shop/widgets/filtersnew/views/current';
+
     public function getImage($dirtyAlias)
     {
         //Get params
@@ -26,7 +27,7 @@ class Module extends WebModule implements BootstrapInterface
         $alias = $params['alias'];
         $size = $params['size'];
 
-            $imageQuery = ProductImage::find();
+        $imageQuery = ProductImage::find();
 
         $image = $imageQuery
             ->where(['urlAlias' => $alias])
@@ -37,6 +38,7 @@ class Module extends WebModule implements BootstrapInterface
 
         return $image;
     }
+
     public function parseImageAlias($parameterized)
     {
         $params = explode('_', $parameterized);
@@ -100,6 +102,7 @@ class Module extends WebModule implements BootstrapInterface
 
         return $size;
     }
+
     /**
      * @inheritdoc
      */
@@ -119,7 +122,6 @@ class Module extends WebModule implements BootstrapInterface
         $rules['product/<id:\d+>/review-validate'] = 'shop/product/review-validate';
         $rules['product/<id:\d+>/<action:[0-9a-zA-Z_\-]+>'] = 'shop/product/<action>';
         $rules['product/image/<action:[0-9a-zA-Z_\-]+>/<dirtyAlias:\w.+>'] = 'shop/image/<action>';
-
 
 
         if ($app->id != 'console') {
@@ -156,27 +158,16 @@ class Module extends WebModule implements BootstrapInterface
                     'pattern' => "catalog/<alias:[0-9a-zA-Z_\-]+>", ///<alias:[\w]+>
                 ];
 
-                /* $rules[] = [
-                     'class' => 'panix\mod\shop\components\CategoryUrlRuleNew',
-                     'route' => 'shop/catalog/view',
-                     'defaults'=>['slug'=>$slug],
-                     'pattern'=>"catalog/<alias:[0-9a-zA-Z_\-]+>/<filter:[\w,\/]+>", //
-                     'encodeParams'=>false,
-                 ];*/
-                /* $rules[] = [
-                     'class' => 'panix\mod\shop\components\CategoryUrlRuleNew',
-                     'route' => 'shop/catalog/view',
-                     'pattern'=>"catalog/<slug:[0-9a-zA-Z_\/\-]+>/<filter:[\w,\/]+>", //<filter:[\w-,\/]+>
-                     'encodeParams'=>false,
-                     //'mode'         => \yii\web\UrlRule::PARSING_ONLY,
-                 ];*/
-                /*$rules[] = [
+
+                $rules[] = [
                     'class' => 'panix\mod\shop\components\CategoryUrlRuleNew',
-                    'route' => 'shop/catalog/view',
-                    'pattern'=>"catalog/<slug:{$slug}>",
-                    'encodeParams'=>false,
-                    //'mode'         => \yii\web\UrlRule::PARSING_ONLY,
-                ];*/
+                    'route' => 'shop/catalog/sales',
+                    'defaults' => ['slug' => $path],
+                    'index'=>'sales',
+                    //'suffix'=>'.html',
+                    'pattern' => "sales/<alias:[0-9a-zA-Z_\-]+>", ///<alias:[\w]+>
+                ];
+
 
             }
 
@@ -187,6 +178,7 @@ class Module extends WebModule implements BootstrapInterface
                 'pattern' => 'new'
             ];
 
+            /////////////////////////////////////////////
             $rules[] = [
                 'class' => 'panix\mod\shop\components\BaseTest2UrlRule',
                 'route' => '/shop/catalog/sales',

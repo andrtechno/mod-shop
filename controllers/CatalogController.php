@@ -335,12 +335,9 @@ class CatalogController extends FilterController
         /** @var Product $dataModel */
         $this->dataModel = Yii::$app->getModule('shop')->model('Product');
 
-        $this->pageName = Yii::t('shop/default', 'DISCOUNT');
-        $this->view->params['breadcrumbs'][] = $this->pageName;
 
-        $this->currentUrl = Url::to(['sales']);
-        $this->view->canonical = Url::to($this->currentUrl, true);
-        $this->view->registerJs("var current_url = '" . $this->currentUrl . "';", yii\web\View::POS_HEAD, 'current_url');
+
+
 
         // $this->query = $this->dataModel::find()->published()->isNotEmpty('discount');
 
@@ -385,12 +382,44 @@ class CatalogController extends FilterController
             $this->query->applyCategories(array_unique($categories), 'orWhere');
         }
 
+        $this->currentUrl = Url::to(['sales']);
+
+        $this->pageName = Yii::t('shop/default', 'DISCOUNT');
+        $categoriesIds=[];
+        $categories2222 = clone $this->query;
+        $categoriesResult =$categories2222->groupBy('main_category_id')->select(['main_category_id'])->asArray()->all();
+        foreach ($categoriesResult as $c){
+            $categoriesIds[]=$c['main_category_id'];
+        }
+        $categoriesResponse = Category::find()->where(['id'=>$categoriesIds])->all();
+        if(Yii::$app->request->getQueryParam('slug')){
+            $category = $this->findModel(Yii::$app->request->getQueryParam('slug'));
+            $this->query->applyCategories($category);
+            $this->currentUrl = Url::to($category->getUrl('sales'));
+            $this->view->params['breadcrumbs'][] = [
+                'url'=>['/shop/catalog/sales'],
+                'label'=>$this->pageName
+            ];
+
+            $this->pageName = $category->name;
+
+        }
+        $this->view->params['breadcrumbs'][] = $this->pageName;
+
+
+
+        $this->view->canonical = Url::to($this->currentUrl, true);
+        $this->view->registerJs("var current_url = '" . $this->currentUrl . "';", yii\web\View::POS_HEAD, 'current_url');
 
         $this->filter = new Filter($this->query, $this->dataModel);
 
 
         $this->filterQuery = clone $this->query;
         $this->currentQuery = clone $this->query;
+
+
+
+
 
         $this->query->applyAttributes($this->filter->activeAttributes);
         $this->query->applyRangePrices((isset($this->prices[0])) ? $this->prices[0] : 0, (isset($this->prices[1])) ? $this->prices[1] : 0);
@@ -415,7 +444,7 @@ class CatalogController extends FilterController
         // ),
 
 
-        return $this->_render();
+        return $this->_render('@shop/views/catalog/view',['categories'=>$categoriesResponse]);
 
     }
 

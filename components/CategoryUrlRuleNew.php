@@ -13,7 +13,7 @@ use yii\web\UrlRule;
  */
 class CategoryUrlRuleNew extends UrlRule
 {
-
+    public $index = 'catalog';
 
     public function parseRequest($manager, $request)
     {
@@ -49,9 +49,9 @@ class CategoryUrlRuleNew extends UrlRule
         }
         $params = $this->defaults;
 
-        if ($params['slug'] !== '' && strpos(str_replace('catalog/', '', $pathInfo), $params['slug']) === 0) {
+        if ($params['slug'] !== '' && strpos(str_replace($this->index.'/', '', $pathInfo), $params['slug']) === 0) {
 
-            $parts_slug = explode('/', 'catalog/' . $params['slug']);
+            $parts_slug = explode('/', $this->index.'/' . $params['slug']);
             $parts = explode('/', $pathInfo);
 
             $a = array_slice($parts, 0, count($parts_slug));
@@ -59,7 +59,7 @@ class CategoryUrlRuleNew extends UrlRule
                 return false;
             }
 
-            $filterPathInfo = ltrim(substr($pathInfo, strlen('catalog/' . $params['slug'])), '/');
+            $filterPathInfo = ltrim(substr($pathInfo, strlen($this->index.'/' . $params['slug'])), '/');
             if (!empty($filterPathInfo)) {
                 $parts = explode('/', $filterPathInfo);
                 $paramsList = array_chunk($parts, 2);
@@ -110,7 +110,7 @@ class CategoryUrlRuleNew extends UrlRule
                     $url .= '/' . implode('/', $parts);
             }
 
-            return 'catalog/' . $url . $this->suffix;
+            return $this->index.'/' . $url . $this->suffix;
             // return $url . $this->suffix;
         }
         return parent::createUrl($manager, $route, $params);

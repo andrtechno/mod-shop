@@ -242,7 +242,7 @@ class ProductImage extends ActiveRecord
             $options['watermark'] = $configApp->watermark_enable;
         }
         $sizes = explode('x', $size);
-
+//print_r($options);die;
         $isSaveFile = false;
         if (isset($sizes[0]) && isset($sizes[1])) {
             $imageAssetPath = Yii::getAlias('@app/web/assets/product') . DIRECTORY_SEPARATOR . $this->product_id . DIRECTORY_SEPARATOR . $size;
@@ -294,6 +294,7 @@ class ProductImage extends ActiveRecord
         if (isset($options['text'])) {
             $img->text($options['text'], Yii::getAlias('@vendor/panix/engine/assets/assets/fonts') . '/Exo2-Light.ttf', $img->getWidth() / 100 * 5, [114, 114, 114], $img::POS_CENTER_BOTTOM, 0, $img->getHeight() / 100 * 5, 0, 0);
         }
+
         if ($options['watermark'] && $this->existImage) {
 
             $offsetX = isset($configApp->attachment_wm_offsetx) ? $configApp->attachment_wm_offsetx : 10;

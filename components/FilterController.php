@@ -521,16 +521,16 @@ if($filterName == $firstItem){
     }
 
 
-    public function _render($view = '@shop/views/catalog/view')
+    public function _render($view = '@shop/views/catalog/view',array $params=[])
     {
         $activeFilters = $this->filter->getActiveFilters();
 
         if (Yii::$app->request->isAjax) {
-            $render = $this->renderPartial('@shop/views/catalog/listview', [
+            $render = $this->renderPartial('@shop/views/catalog/listview', ArrayHelper::merge([
                 'provider' => $this->provider,
                 'itemView' => $this->itemView,
                 'filter' => $this->filter
-            ]);
+            ],$params));
             if (Yii::$app->request->headers->has('filter-ajax')) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
                 $url = ($this->dataModel) ? $this->dataModel->getUrl() : ['/' . Yii::$app->requestedRoute];
@@ -552,12 +552,12 @@ if($filterName == $firstItem){
                 return $render;
             }
         }
-        return $this->render($view, [
+        return $this->render($view, ArrayHelper::merge([
             'provider' => $this->provider,
             'itemView' => $this->itemView,
             'filter' => $this->filter
 
-        ]);
+        ],$params));
     }
 
 
