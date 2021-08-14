@@ -74,6 +74,7 @@ class CatalogController extends FilterController
         $this->pageName = $this->dataModel->name;
         $this->view->setModel($this->dataModel);
         //$this->view->title = $this->pageName;
+        $this->refreshUrl= $this->dataModel->getUrl();
         $this->view->registerJs("var current_url = '" . Url::to($this->dataModel->getUrl()) . "';", yii\web\View::POS_HEAD, 'current_url');
 
 
@@ -382,7 +383,7 @@ class CatalogController extends FilterController
             $this->query->applyCategories(array_unique($categories), 'orWhere');
         }
 
-        $this->currentUrl = Url::to(['sales']);
+        $this->currentUrl = Url::to(['/shop/catalog/sales']);
 
         $this->pageName = Yii::t('shop/default', 'DISCOUNT');
         $categoriesIds=[];
@@ -396,6 +397,7 @@ class CatalogController extends FilterController
             $category = $this->findModel(Yii::$app->request->getQueryParam('slug'));
             $this->query->applyCategories($category);
             $this->currentUrl = Url::to($category->getUrl('sales'));
+
             $this->view->params['breadcrumbs'][] = [
                 'url'=>['/shop/catalog/sales'],
                 'label'=>$this->pageName
@@ -404,6 +406,7 @@ class CatalogController extends FilterController
             $this->pageName = $category->name;
 
         }
+        $this->refreshUrl= $this->currentUrl;
         $this->view->params['breadcrumbs'][] = $this->pageName;
 
 

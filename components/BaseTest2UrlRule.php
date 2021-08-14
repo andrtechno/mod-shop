@@ -24,7 +24,7 @@ class BaseTest2UrlRule extends UrlRule
     {
         if ($route === $this->route) {
             if (isset($params['slug'])) {
-                $url = trim($params['slug'], '/');
+                $url = '/'.trim($params['slug'], '/');
                 unset($params['slug']);
             } else {
                 $url = '';
@@ -38,6 +38,7 @@ class BaseTest2UrlRule extends UrlRule
                 }
                 $url .= '/' . implode('/', $parts);
             }
+
             return $this->index  . $url . $this->suffix;
         }
         return false;
@@ -47,17 +48,36 @@ class BaseTest2UrlRule extends UrlRule
     public function parseRequest($manager, $request)
     {
 
-        $params = [];
-        $pathInfo = $request->getPathInfo();
-
-        $basePathInfo = $pathInfo;
-        if (empty($pathInfo))
+        //original begin
+        if ($this->mode === self::CREATION_ONLY) {
             return false;
+        }
 
-        if ($this->suffix)
-            $pathInfo = strtr($pathInfo, [$this->suffix => '']);
+        if (!empty($this->verb) && !in_array($request->getMethod(), $this->verb, true)) {
+            return false;
+        }
 
+        $suffix = (string) ($this->suffix === null ? $manager->suffix : $this->suffix);
+        $pathInfo = $request->getPathInfo();
+        $normalized = false;
+        if ($this->hasNormalizer($manager)) {
+            $pathInfo = $this->getNormalizer($manager)->normalizePathInfo($pathInfo, $suffix, $normalized);
+        }
+        if ($suffix !== '' && $pathInfo !== '') {
+            $n = strlen($suffix);
+            if (substr_compare($pathInfo, $suffix, -$n, $n) === 0) {
+                $pathInfo = substr($pathInfo, 0, -$n);
+                if ($pathInfo === '') {
+                    // suffix alone is not allowed
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        }
+        //original end
 
+        $params=[];
         $pathInfoParse = str_replace($this->index . '/', '', $pathInfo);
         $parts = explode('/', $pathInfoParse);
         if ($this->index == mb_substr($pathInfo, 0,strlen($this->index))) {
@@ -78,8 +98,8 @@ class BaseTest2UrlRule extends UrlRule
                 return false;
             }*/
 
-          //  CMS::dump([$this->route, $params]);
-          //  die;
+          // CMS::dump([$this->route, $params]);
+           //die;
             return [$this->route, $params];
         }
         return false;

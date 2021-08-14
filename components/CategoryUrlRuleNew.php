@@ -94,11 +94,12 @@ class CategoryUrlRuleNew extends UrlRule
 
         if ($route === $this->route) {
             if (isset($params['slug'])) {
-                $url = trim($params['slug'], '/');
+                $url = '/'.trim($params['slug'], '/');
                 unset($params['slug']);
             } else {
                 $url = '';
             }
+            //echo $url;die;
             $parts = [];
             if (!empty($params)) {
                 foreach ($params as $key => $val) {
@@ -110,7 +111,7 @@ class CategoryUrlRuleNew extends UrlRule
                     $url .= '/' . implode('/', $parts);
             }
 
-            return $this->index.'/' . $url . $this->suffix;
+            return $this->index . $url . $this->suffix;
             // return $url . $this->suffix;
         }
         return parent::createUrl($manager, $route, $params);

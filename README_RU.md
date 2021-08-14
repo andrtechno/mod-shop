@@ -56,10 +56,9 @@ php yii migrate --migrationPath=vendor/panix/mod-shop/migrations
 - /new 
 
 | catalog   |      sales      |  new |
-|----------|:-------------:|------:|
-| col 1 is |  `$categories` | $1600 |
-| col 2 is |    centered   |   $12 |
-| col 3 is | right-aligned |    $1 |
+|-----------|:-------------:|------:|
+| ---       |`$categories`| --- |
+| ---       |    ---       |   --- |
 
 
 ### Автор и лицензия

@@ -10,6 +10,7 @@ use Yii;
 use panix\engine\WebModule;
 use yii\base\BootstrapInterface;
 use app\web\themes\dashboard\sidebar\BackendNav;
+use yii\web\UrlNormalizer;
 
 class Module extends WebModule implements BootstrapInterface
 {
@@ -170,21 +171,24 @@ class Module extends WebModule implements BootstrapInterface
 
 
             }
+            $rules[] = [
+                'class' => 'panix\mod\shop\components\BaseTest2UrlRule',
+                'route' => 'shop/catalog/sales',
+                'index' => 'sales',
+                'pattern' => 'sales',
+            ];
+
+
 
             $rules[] = [
                 'class' => 'panix\mod\shop\components\BaseTest2UrlRule',
-                'route' => '/shop/catalog/new',
+                'route' => 'shop/catalog/new',
                 'index' => 'new',
                 'pattern' => 'new'
             ];
 
             /////////////////////////////////////////////
-            $rules[] = [
-                'class' => 'panix\mod\shop\components\BaseTest2UrlRule',
-                'route' => '/shop/catalog/sales',
-                'index' => 'sales',
-                'pattern' => 'sales'
-            ];
+
             /*$rules[] = [
                 'class' => 'app\engine\BaseUrlRule',
                 'route' => 'shop/catalog/best',

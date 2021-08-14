@@ -15,7 +15,8 @@ use yii\helpers\Html;
             <?php
             echo Html::beginTag('div', ['id' => 'ajax_filter_current']);
             if (!empty($active)) {
-                $url = ($this->model) ? $this->model->getUrl() : ['/' . Yii::$app->requestedRoute];
+               // echo Yii::$app->controller->refreshUrl;
+                $url = Yii::$app->controller->refreshUrl;
                 echo $this->render(Yii::$app->getModule('shop')->filterViewCurrent, ['active' => $active, 'dataModel' => $this->context->model, 'url' => $url]);
             }
             echo Html::endTag('div');

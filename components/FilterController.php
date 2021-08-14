@@ -62,6 +62,7 @@ class FilterController extends WebController
     public $_maxPrice, $_minPrice;
 
     public $currentUrl;
+    public $refreshUrl;
     public $itemView = '_view_grid';
     public $per_page;
     public $filter;
