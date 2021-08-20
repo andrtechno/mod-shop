@@ -2,6 +2,7 @@
 
 namespace panix\mod\shop\controllers;
 
+use panix\engine\CMS;
 use panix\engine\Html;
 use panix\mod\shop\components\Filter;
 use Yii;
@@ -23,12 +24,12 @@ class SearchController extends FilterController
         $productModel = Yii::$app->getModule('shop')->model('Product');
         $this->query = $productModel::find();
         //$this->query->attachBehaviors((new $productModel)->behaviors());
-
+$q=Yii::$app->request->post('q');
 
 
         //fix for POST send form
         if (!Yii::$app->request->isPjax || !Yii::$app->request->isAjax) {
-            if (Yii::$app->request->post('q'))
+            if ($q)
                 return $this->redirect(['/shop/search/index', 'q' => Yii::$app->request->post('q')]);
         }
 
@@ -38,7 +39,14 @@ class SearchController extends FilterController
             $this->query->applyBrands($brands);
         }
         $this->query->groupBy(Product::tableName() . '.`id`');
-        $this->query->applySearch(Yii::$app->request->get('q'))->published();
+
+        //если пусто, делаем фейк запрос для "не чего не найдено"
+        $queryGet = Yii::$app->request->get('q');
+        if(empty($queryGet)){
+            $queryGet = CMS::gen(10);
+        }
+
+        $this->query->applySearch($queryGet)->published();
 
         $this->filter = new Filter($this->query);
 
@@ -63,8 +71,11 @@ class SearchController extends FilterController
                 'pageSize' => $this->per_page,
             ]
         ]);
+
+        $this->currentUrl = Url::to(['/shop/search/index', 'q' => Yii::$app->request->get('q')]);
+        $this->refreshUrl=$this->currentUrl;
         $this->view->canonical = Url::to(['/shop/search/index', 'q' => Yii::$app->request->get('q')], true);
-        $this->view->registerJs("var current_url = '" . Url::to(Yii::$app->request->getUrl()) . "';", yii\web\View::POS_HEAD, 'current_url');
+        $this->view->registerJs("var current_url = '" . $this->currentUrl . "';", yii\web\View::POS_HEAD, 'current_url');
 
         $this->pageName = Yii::t('shop/default', 'SEARCH_RESULT', [
             'query' => Html::encode(Yii::$app->request->get('q')),

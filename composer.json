@@ -19,7 +19,6 @@
     }
   ],
   "require": {
-    "panix/mod-images": "dev-master",
     "panix/wgt-jstree": "dev-master",
     "panix/wgt-fancybox": "dev-master",
     "panix/wgt-scroll-pager": "dev-master",

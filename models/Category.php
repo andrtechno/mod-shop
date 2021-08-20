@@ -131,6 +131,8 @@ class Category extends ActiveRecord
                 },
                 'dataClosure' => function ($model) {
                     /** @var self $model */
+
+
                     return [
                         'loc' => $model->getUrl(),
                         'lastmod' => $model->updated_at,

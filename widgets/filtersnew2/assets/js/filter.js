@@ -201,7 +201,16 @@ function filter_ajax(e, objects) {
                     console.debug('ias plugin > reinitialize:', ias);
                     ias.reinitialize();
                 }
+            }else{
+                // pjax.state = data.currentUrl;
+                if ($.pjax) {
+                    console.log('dsa');
+                   // $.pjax({url: url, container: '#pjax-catalog', timeout: false, state: data.currentUrl});
+                    // $.pjax.reload('#pjax-sales', {url: url,timeout:false,state:data.currentUrl})
+                }
             }
+
+
 
         },
         beforeSend: function () {

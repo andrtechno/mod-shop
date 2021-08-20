@@ -1,6 +1,6 @@
 <?php
 
-namespace panix\mod\shop\components;
+namespace panix\mod\shop\components\rules;
 
 use Yii;
 use yii\web\HttpException;

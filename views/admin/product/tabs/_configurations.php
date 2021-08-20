@@ -11,7 +11,7 @@ use panix\mod\shop\models\search\ProductSearch;
 use panix\engine\grid\GridView;
 use panix\engine\data\ActiveDataProvider;
 use panix\engine\widgets\Pjax;
-
+//Product::updateAll(['brand_id' => 1]);
 //use yii\widgets\Pjax;
 use panix\mod\shop\models\search\ProductConfigureSearch;
 
@@ -77,11 +77,11 @@ $columns[] = [
     'contentOptions' => ['class' => 'text-center'],
     'filter' => ArrayHelper::map(Brand::find()
         ->addOrderBy(['name_' . Yii::$app->language => SORT_ASC])
-        // ->cache(3200, new DbDependency(['sql' => 'SELECT MAX(`updated_at`) FROM ' . Brand::tableName()]))
+        ->cache(Yii::$app->db->queryCacheDuration, new \yii\caching\DbDependency(['sql' => 'SELECT MAX(`updated_at`) FROM ' . Brand::tableName()]))
         ->all(), 'id', 'name_' . Yii::$app->language),
     'filterInputOptions' => ['class' => 'form-control', 'prompt' => html_entity_decode('&mdash; выберите бренд &mdash;')],
     'value' => function ($model) {
-        return ($model->brand) ? $model->brand->name : NULL;
+        return ($model->brand_id) ? $model->brand->name : NULL;
     }
 ];
 $columns[] = [
@@ -130,26 +130,36 @@ foreach ($attributeModels as $attribute) {
 
 
         $columns[] = [
-            'attribute' => 'eav_' . $attribute->name . '.value',
+          //  'attribute' => 'eav_' . $attribute->name . '.value',
             'header' => $attribute->title,
             'contentOptions' => ['class' => 'eav text-center'],
 
-            'filter' => Html::dropDownList('eav[' . $attribute->name . ']', $selected, ArrayHelper::map($attribute->getOptions()->cache(86400), 'id', 'value'), [
+            'filter' => Html::dropDownList('eav[' . $attribute->name . ']', $selected, ArrayHelper::map($attribute->getOptions()->cache(Yii::$app->db->queryCacheDuration)->all(), 'id', 'value'), [
                 'prompt' => html_entity_decode($product::t('SELECT_ATTRIBUTE')),
                 'class' => 'custom-select w-auto'
-            ])
+            ]),
+            'value' => function ($model) use ($attribute) {
+            //print_r($model);die;
+                $query = new \yii\db\Query();
+
+                $query->from(\panix\mod\shop\models\AttributeOption::tableName())
+                    ->where(['id' => $model->getEav($attribute->name)])
+                    ->cache(Yii::$app->db->queryCacheDuration);
+                $item = $query->one();
+                return $item['value'];
+            }
         ];
     }
 }
 
 $searchModel = new ProductConfigureSearch();
 $searchModel->exclude[] = $product->id;
-$searchModel->eavAttributes = $eavAttributes;
+//$searchModel->eavAttributes = $eavAttributes;
 //print_r($product->getConfigurations());
 $configure = [];
 
 
-$dataProvider = $searchModel->search(Yii::$app->request->getQueryParams(), ['attribute_id' => $attribute_id,'confs'=>$product->getConfigurations()]);
+$dataProvider = $searchModel->search(Yii::$app->request->getQueryParams(), ['attribute_id' => $attribute_id, 'confs' => $product->getConfigurations()]);
 Pjax::begin([
     'id' => 'pjax-ConfigurationsProductGrid',
     'enablePushState' => false,

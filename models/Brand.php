@@ -5,6 +5,7 @@ namespace panix\mod\shop\models;
 use panix\engine\Html;
 use panix\mod\shop\components\ExternalFinder;
 use Yii;
+use yii\caching\TagDependency;
 use yii\helpers\ArrayHelper;
 use panix\engine\db\ActiveRecord;
 use panix\mod\shop\models\query\BrandQuery;
@@ -176,5 +177,10 @@ class Brand extends ActiveRecord
             $external->deleteObject(ExternalFinder::OBJECT_BRAND, $this->id);
         }
         parent::afterDelete();
+    }
+    public function afterSave($insert, $changedAttributes)
+    {
+        TagDependency::invalidate(Yii::$app->cache, 'brand-'.$this->id);
+        parent::afterSave($insert, $changedAttributes);
     }
 }

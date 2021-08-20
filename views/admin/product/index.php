@@ -27,6 +27,8 @@ if (!preg_match($pattern, $pathInfo, $matches)) {
 }
 CMS::dump($matches);die;
 */
+ProductIndex::register($this);
+Pjax::begin(['id'=>'pjax-grid-product']);
 ?>
 <div class="card">
     <div class="card-header">
@@ -53,8 +55,7 @@ CMS::dump($matches);die;
 
 <?php
 echo $this->render('_grid_filter', ['model' => $searchModel]);
-ProductIndex::register($this);
-Pjax::begin(['id'=>'pjax-grid-product']);
+
 
 echo GridView::widget([
     'id' => 'grid-product',
@@ -71,11 +72,12 @@ echo GridView::widget([
     'showFooter' => true,
     'pager'=>['options'=>['class'=>'pagination ml-auto mr-auto mr-lg-0 ml-lg-auto']]
 ]);
-Pjax::end();
+
 ?>
 
 </div>
-
+<?php
+Pjax::end();
 
 
 

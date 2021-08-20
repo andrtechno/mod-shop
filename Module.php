@@ -19,7 +19,8 @@ class Module extends WebModule implements BootstrapInterface
     public $mailPath = '@shop/mail';
     public $searchAttribute = 'sku';
     public $filterViewCurrent = '@shop/widgets/filtersnew/views/current';
-
+    public $reviewsCount = 0;
+    public $viewList = ['grid','list'];
     public function getImage($dirtyAlias)
     {
         //Get params
@@ -126,16 +127,16 @@ class Module extends WebModule implements BootstrapInterface
 
 
         if ($app->id != 'console') {
-
+            $this->reviewsCount = ProductReviews::find()->where(['status' => ProductReviews::STATUS_WAIT])->count();
             $rules[] = [
-                'class' => 'panix\mod\shop\components\SearchUrlRule',
+                'class' => 'panix\mod\shop\components\rules\SearchUrlRule',
                 //'pattern'=>'products/search',
                 'route' => 'shop/search/index',
                 'defaults' => ['q' => Yii::$app->request->get('q')]
             ];
 
             $rules[] = [
-                'class' => 'panix\mod\shop\components\BrandUrlRule',
+                'class' => 'panix\mod\shop\components\rules\BrandUrlRule',
                 'route' => 'shop/brand/view',
                 'index' => 'brand',
                 'pattern' => 'brand/<slug:[0-9a-zA-Z_\-]+>'
@@ -149,10 +150,12 @@ class Module extends WebModule implements BootstrapInterface
                  //  'pattern' => ''
              ];*/
 
+          // $rules['sales/page/<page:\d+>/per-page/<per-page:\d+>'] = 'shop/catalog/sales';
+
 
             foreach ($this->getAllPaths() as $path) {
                 $rules[] = [
-                    'class' => 'panix\mod\shop\components\CategoryUrlRuleNew',
+                    'class' => 'panix\mod\shop\components\rules\CategoryUrlRule',
                     'route' => 'shop/catalog/view',
                     'defaults' => ['slug' => $path],
                     //'suffix'=>'.html',
@@ -161,7 +164,7 @@ class Module extends WebModule implements BootstrapInterface
 
 
                 $rules[] = [
-                    'class' => 'panix\mod\shop\components\CategoryUrlRuleNew',
+                    'class' => 'panix\mod\shop\components\rules\CategoryUrlRule',
                     'route' => 'shop/catalog/sales',
                     'defaults' => ['slug' => $path],
                     'index'=>'sales',
@@ -172,16 +175,30 @@ class Module extends WebModule implements BootstrapInterface
 
             }
             $rules[] = [
-                'class' => 'panix\mod\shop\components\BaseTest2UrlRule',
+                'class' => 'panix\mod\shop\components\rules\BaseUrlRule',
+                'route' => 'shop/catalog/sales',
+                'index' => 'sales',
+                'pattern' => 'sales/page/<page:\d+>/per-page/<per-page:\d+>',
+            ];
+            $rules['sales/page/<page:\d+>'] = 'shop/catalog/sales';
+            $rules[] = [
+                'class' => 'panix\mod\shop\components\rules\BaseUrlRule',
                 'route' => 'shop/catalog/sales',
                 'index' => 'sales',
                 'pattern' => 'sales',
             ];
+          //  $rules['sales'] = 'shop/catalog/sales';
+
+
+
+
+
+
 
 
 
             $rules[] = [
-                'class' => 'panix\mod\shop\components\BaseTest2UrlRule',
+                'class' => 'panix\mod\shop\components\rules\BaseUrlRule',
                 'route' => 'shop/catalog/new',
                 'index' => 'new',
                 'pattern' => 'new'
@@ -215,6 +232,8 @@ class Module extends WebModule implements BootstrapInterface
         $app->setComponents([
             'currency' => ['class' => 'panix\mod\shop\components\CurrencyManager'],
         ]);
+
+
 
     }
 
@@ -280,7 +299,7 @@ class Module extends WebModule implements BootstrapInterface
 
     public function getAdminMenu()
     {
-        $reviewCount = ProductReviews::find()->where(['status' => ProductReviews::STATUS_WAIT])->count();
+
         return [
             'shop' => [
                 'label' => Yii::t('shop/default', 'MODULE_NAME'),
@@ -323,7 +342,7 @@ class Module extends WebModule implements BootstrapInterface
                         'label' => Yii::t('shop/admin', 'REVIEWS'),
                         "url" => ['/admin/shop/reviews'],
                         'icon' => 'comments',
-                        'badge' => ($reviewCount) ? $reviewCount : '',
+                        'badge' => ($this->reviewsCount) ? $this->reviewsCount : '',
                         'visible' => Yii::$app->user->can('/shop/admin/reviews/index') || Yii::$app->user->can('/shop/admin/reviews/*')
                     ],
                     [

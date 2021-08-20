@@ -9,7 +9,7 @@ $('.eavData:not(:first)').attr('disabled', 'disabled');
 $(document).on('change','.eavData',function () {
     $('#configurable_id').val(0);
     if ($(this).val() === '---' || $(this).val() === '0') {
-        recalculateProductPrice();
+        recalculateProductPrice(this);
         // If selected empty - reset all next dropdowns
         $('.eavData').nextAllData(this).each(function () {
             $(this).find('option:first').attr('selected', 'selected');
@@ -64,7 +64,7 @@ $('.eavData:last').change(function () {
         $('#configurable_id').val(productId);
     }
 
-    recalculateProductPrice();
+    recalculateProductPrice(this);
 });
 
 
@@ -111,7 +111,9 @@ function recalculateProductPrice2(el_clicked) {
  */
 function recalculateProductPrice(el_clicked) {
     var id = $(el_clicked).data('product_id');
-    var form = $('#form-add-cart-'+$(el_clicked).data('product_id'));
+    console.log(el_clicked);
+    var form = $(el_clicked).closest('form');
+    //var form = $('#form-add-cart-'+$(el_clicked).data('product_id'));
     var priceInput = form.find('input[name="product_price"]');
     var formData = form.serialize();
     var data = getFormData(form);

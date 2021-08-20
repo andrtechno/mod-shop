@@ -1,6 +1,6 @@
 <?php
 
-namespace panix\mod\shop\components;
+namespace panix\mod\shop\components\rules;
 
 use panix\engine\CMS;
 use Yii;
@@ -8,7 +8,7 @@ use yii\helpers\Url;
 use yii\web\HttpException;
 use yii\web\UrlRule;
 
-class BaseTest2UrlRule extends UrlRule
+class BaseUrlRule extends UrlRule
 {
 
     public $pattern = 'brand/<slug:[0-9a-zA-Z\-]+>';
@@ -31,6 +31,9 @@ class BaseTest2UrlRule extends UrlRule
             }
             $parts = [];
             if (!empty($params)) {
+                if(Yii::$app->request->isPjax){
+                    unset($params['_pjax']);
+                }
                 foreach ($params as $key => $val) {
                     if (!is_array($val)) {
                         $parts[] = $key . '/' . $val;
@@ -78,12 +81,16 @@ class BaseTest2UrlRule extends UrlRule
         //original end
 
         $params=[];
+
         $pathInfoParse = str_replace($this->index . '/', '', $pathInfo);
         $parts = explode('/', $pathInfoParse);
         if ($this->index == mb_substr($pathInfo, 0,strlen($this->index))) {
             $paramsList = array_chunk($parts, 2);
-            //CMS::dump($paramsList);die;
+
+
+
             foreach ($paramsList as $k => $p) {
+
                 if (isset($p[1]) && isset($p[0])) {
                     $_GET[$p[0]] = $p[1];
                     $params[$p[0]] = $p[1];

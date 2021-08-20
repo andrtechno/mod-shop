@@ -132,7 +132,7 @@ if($filterName == $firstItem){
 
         Url::remember();
         if (Yii::$app->request->get('view')) {
-            if (in_array(Yii::$app->request->get('view'), ['list', 'grid'])) {
+            if (in_array(Yii::$app->request->get('view'), Yii::$app->getModule('shop')->viewList)) {
                 $this->itemView = '_view_' . Yii::$app->request->get('view');
             }
         }
@@ -535,6 +535,7 @@ if($filterName == $firstItem){
             if (Yii::$app->request->headers->has('filter-ajax')) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
                 $url = ($this->dataModel) ? $this->dataModel->getUrl() : ['/' . Yii::$app->requestedRoute];
+
                 return [
                     //'currentFilters' => $filterData,
                     //'full_url' => Url::to($this->currentUrl),
@@ -546,7 +547,7 @@ if($filterName == $firstItem){
                     'currentFiltersData' => ($activeFilters) ? $this->renderPartial($this->module->filterViewCurrent, [ //'@shop/widgets/filtersnew/views/current', '@app/widgets/filters/current'
                         'dataModel' => $this->dataModel,
                         'active' => $activeFilters,
-                        'url' => $url
+                        'url' => $this->refreshUrl
                     ]) : null
                 ];
             } else {

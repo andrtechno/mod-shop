@@ -1,6 +1,6 @@
 <?php
 
-namespace panix\mod\shop\components;
+namespace panix\mod\shop\components\rules;
 
 use panix\mod\shop\models\Brand;
 use yii\web\NotFoundHttpException;

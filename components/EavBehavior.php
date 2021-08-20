@@ -8,6 +8,7 @@ use panix\mod\shop\models\AttributeOption;
 use panix\mod\shop\models\ProductAttributesEav;
 use Yii;
 use yii\base\Exception;
+use yii\caching\TagDependency;
 use yii\db\ActiveRecord;
 use yii\db\Query;
 
@@ -292,6 +293,7 @@ class EavBehavior extends \yii\base\Behavior
         // Load attributes for model.
         if ($this->preload) {
             if ($owner->getPrimaryKey()) {
+
                 $this->loadEavAttributes($this->getSafeAttributesArray());
             }
         }
@@ -342,7 +344,9 @@ class EavBehavior extends \yii\base\Behavior
      */
     public function loadEavAttributes($attributes)
     {
-        $data = $this->getLoadEavAttributesQuery($attributes)->all();
+        $data = $this->getLoadEavAttributesQuery($attributes)
+            //->cache(Yii::$app->db->queryCacheDuration,new TagDependency(['tags' => "attributes-{$this->owner->primaryKey}"]))
+            ->all();
         foreach ($data as $row) {
             $attribute = $this->stripPrefix($row[$this->attributeField]);
             $value = $row[$this->valueField];

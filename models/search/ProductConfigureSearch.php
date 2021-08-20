@@ -53,7 +53,7 @@ class ProductConfigureSearch extends Product
         $query = Product::find();
         $query->sort();
 
-        $query->joinWith(['categorization categories']); //, 'commentsCount'
+        //$query->joinWith(['categorization categories']); //, 'commentsCount'
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -122,8 +122,9 @@ class ProductConfigureSearch extends Product
         $query->andFilterWhere(['brand_id' => $this->brand_id]);
 
 
-        if ($this->eavAttributes)
-            $query->withEavAttributes($this->eavAttributes);
+        $eav = $this->eavAttributes;
+        if ($eav)
+            $query->withEavAttributes($eav);
 
 
         return $dataProvider;

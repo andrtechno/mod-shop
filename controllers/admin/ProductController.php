@@ -72,7 +72,13 @@ class ProductController extends AdminController
     {
 
         $searchModel = new ProductSearch();
+
+        $searchModel->preload = false;
         $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams());
+        //$searchModel->behaviors()['eav']['preload']=false;
+
+      // $searchModel->attachBehavior('eav',ArrayHelper::merge($searchModel->behaviors()['eav'],['preload'=>false]));
+       // CMS::dump($searchModel->behaviors['eav']);die;
 
         $this->pageName = Yii::t('shop/admin', 'PRODUCTS');
         if (Yii::$app->user->can("/{$this->module->id}/{$this->id}/*") || Yii::$app->user->can("/{$this->module->id}/{$this->id}/create")) {

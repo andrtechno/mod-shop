@@ -298,12 +298,12 @@ class CatalogController extends FilterController
         $this->view->registerJs("var current_url = '" . $this->currentUrl . "';", yii\web\View::POS_HEAD, 'current_url');
 
 
-        $this->query = $productModel::find()->published();
-        if ($config->label_expire_new) {
+        $this->query = $productModel::find()->published()->new();
+        /*if ($config->label_expire_new) {
             $this->query->int2between(time(), time() - (86400 * $config->label_expire_new));
         } else {
             $this->query->int2between(-1, -1);
-        }
+        }*/
 
         $this->filter = new Filter($this->query, $productModel);
 
@@ -344,8 +344,7 @@ class CatalogController extends FilterController
 
         $this->query = Product::find()->published();
 
-        $this->query->andWhere(['IS NOT', Product::tableName() . '.discount', null])
-            ->andWhere(['!=', Product::tableName() . '.discount', '']);
+        $this->query->sales();
 
         $brands = [];
         $categories = [];
@@ -392,6 +391,10 @@ class CatalogController extends FilterController
         foreach ($categoriesResult as $c){
             $categoriesIds[]=$c['main_category_id'];
         }
+
+
+        // $categoriesResponse = Category::find()->dataTree(1, null, ['switch' => 1,'id'=>$categoriesIds],CMS::gen(100));
+      //  CMS::dump($categoriesResponse);die;
         $categoriesResponse = Category::find()->where(['id'=>$categoriesIds])->all();
         if(Yii::$app->request->getQueryParam('slug')){
             $category = $this->findModel(Yii::$app->request->getQueryParam('slug'));
@@ -447,7 +450,7 @@ class CatalogController extends FilterController
         // ),
 
 
-        return $this->_render('@shop/views/catalog/view',['categories'=>$categoriesResponse]);
+        return $this->_render('@shop/views/catalog/view',['categories'=>$categoriesResponse,'categoriesIds'=>$categoriesIds]);
 
     }
 

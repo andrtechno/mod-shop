@@ -1,6 +1,6 @@
 <?php
 
-namespace panix\mod\shop\components;
+namespace panix\mod\shop\components\rules;
 
 use Yii;
 use panix\engine\CMS;
@@ -11,12 +11,13 @@ use yii\web\UrlRule;
  * Class CategoryUrlRule
  * @package panix\mod\shop\components
  */
-class CategoryUrlRuleNew extends UrlRule
+class CategoryUrlRule extends UrlRule
 {
     public $index = 'catalog';
 
     public function parseRequest($manager, $request)
     {
+
         if ($this->mode === self::CREATION_ONLY) {
             return false;
         }
@@ -49,22 +50,24 @@ class CategoryUrlRuleNew extends UrlRule
         }
         $params = $this->defaults;
 
-        if ($params['slug'] !== '' && strpos(str_replace($this->index.'/', '', $pathInfo), $params['slug']) === 0) {
 
-            $parts_slug = explode('/', $this->index.'/' . $params['slug']);
+        if ($params['slug'] !== '' && strpos(str_replace($this->index . '/', '', $pathInfo), $params['slug']) === 0) {
+
+            $parts_slug = explode('/', $this->index . '/' . $params['slug']);
             $parts = explode('/', $pathInfo);
 
             $a = array_slice($parts, 0, count($parts_slug));
             if (array_diff($parts_slug, $a)) {
+
                 return false;
             }
-
-            $filterPathInfo = ltrim(substr($pathInfo, strlen($this->index.'/' . $params['slug'])), '/');
+            $_GET['slug'] = $params['slug'];
+            $filterPathInfo = ltrim(substr($pathInfo, strlen($this->index . '/' . $params['slug'])), '/');
             if (!empty($filterPathInfo)) {
                 $parts = explode('/', $filterPathInfo);
                 $paramsList = array_chunk($parts, 2);
-                foreach ($paramsList as $p) {
 
+                foreach ($paramsList as $p) {
                     if (isset($p[1])) {
                         $params[$p[0]] = $p[1];
                         $_GET[$p[0]] = $p[1];
@@ -94,7 +97,7 @@ class CategoryUrlRuleNew extends UrlRule
 
         if ($route === $this->route) {
             if (isset($params['slug'])) {
-                $url = '/'.trim($params['slug'], '/');
+                $url = '/' . trim($params['slug'], '/');
                 unset($params['slug']);
             } else {
                 $url = '';
@@ -102,6 +105,9 @@ class CategoryUrlRuleNew extends UrlRule
             //echo $url;die;
             $parts = [];
             if (!empty($params)) {
+                if(Yii::$app->request->isPjax){
+                    unset($params['_pjax']);
+                }
                 foreach ($params as $key => $val) {
                     if (!is_array($val)) {
                         $parts[] = $key . '/' . $val;

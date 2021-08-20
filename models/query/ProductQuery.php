@@ -27,10 +27,23 @@ class ProductQuery extends ActiveQuery
         return $this;
     }
 
-    public function getSales(){
-        $this->published();
-        $this->andWhere(['IS NOT', Product::tableName() . '.discount', null])
-            ->andWhere(['!=', Product::tableName() . '.discount', '']);
+    public function sales()
+    {
+
+        $this->andWhere(['IS NOT', Product::tableName() . '.discount', null]);
+            //->andWhere(['!=', Product::tableName() . '.discount', '']);
+        return $this;
+    }
+
+    public function new()
+    {
+        $config = Yii::$app->settings->get('shop');
+        if ($config->label_expire_new) {
+            $this->int2between(time(), time() - (86400 * $config->label_expire_new));
+        } else {
+            $this->int2between(-1, -1);
+        }
+        $this->orderBy(['created_at'=>SORT_DESC]);
         return $this;
     }
 
@@ -40,7 +53,7 @@ class ProductQuery extends ActiveQuery
      * @param $whereType string
      * @return $this
      */
-    public function applyBrands($brands,$whereType = 'andWhere')
+    public function applyBrands($brands, $whereType = 'andWhere')
     {
         if (!is_array($brands))
             $brands = [$brands];
@@ -115,20 +128,20 @@ class ProductQuery extends ActiveQuery
         if ($q) {
             $modelClass = $this->modelClass;
             $tableName = $modelClass::tableName();
-            $this->andWhere(['LIKE', $tableName . '.'.Yii::$app->getModule('shop')->searchAttribute, $q]);
+            $this->andWhere(['LIKE', $tableName . '.' . Yii::$app->getModule('shop')->searchAttribute, $q]);
             $this->orWhere(['LIKE', $tableName . '.name_' . $language, $q]);
 
         }
         return $this;
     }
-
-    public function new($start, $end)
-    {
-        $modelClass = $this->modelClass;
-        $tableName = $modelClass::tableName();
-        $this->between($start, $end, 'created_at');
-        return $this;
-    }
+    /*
+        public function new($start, $end)
+        {
+            $modelClass = $this->modelClass;
+            $tableName = $modelClass::tableName();
+            $this->between($start, $end, 'created_at');
+            return $this;
+        }*/
 
 
     /**

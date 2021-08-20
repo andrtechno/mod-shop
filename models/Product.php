@@ -11,6 +11,7 @@ use Yii;
 use panix\engine\CMS;
 use panix\mod\shop\models\query\ProductQuery;
 use yii\caching\DbDependency;
+use yii\caching\TagDependency;
 use yii\db\Exception;
 use yii\db\Query;
 use yii\helpers\ArrayHelper;
@@ -168,7 +169,7 @@ class Product extends ActiveRecord
     public function beginCartForm()
     {
         $html = '';
-        $html .= Html::beginForm(['/cart/add'], 'post');
+        $html .= Html::beginForm(['/cart/add'], 'post', ['csrf' => false]);
         $html .= Html::hiddenInput('product_id', $this->id);
         //$html .= Html::hiddenInput('product_price', $this->price);
         //$html .= Html::hiddenInput('use_configurations', $this->use_configurations, ['id' => 'use_configurations-' . $this->id]);
@@ -275,13 +276,13 @@ class Product extends ActiveRecord
             $sum = $this->discount;
             if ('%' === substr($sum, -1, 1)) {
                 $sum = $this->price * ((double)$sum) / 100;
-               // $this->discountParcent = round((($sum - $this->price) / $sum) * 100);11
+                // $this->discountParcent = round((($sum - $this->price) / $sum) * 100);11
             } else {
 
             }
             $this->discountSum = $this->discount;
             $this->discountPrice = $this->price - $sum;
-            $this->discountPercent = round( ($this->price-$this->discountPrice)/$this->price * 100);
+            $this->discountPercent = round(($this->price - $this->discountPrice) / $this->price * 100);
             $this->originalPrice = $this->price;
             $this->hasDiscount = $this->discount;
         }
@@ -403,7 +404,7 @@ class Product extends ActiveRecord
         // $rules[] = [['image'], 'image'];
 
         $rules[] = [['name', 'slug'], 'trim'];
-        $rules[] = [['full_description', 'length', 'width', 'height', 'weight', 'main_image'], 'string'];
+        $rules[] = [['full_description', 'length', 'width', 'height', 'weight'], 'string'];
         $rules[] = ['use_configurations', 'boolean', 'on' => self::SCENARIO_INSERT];
         $rules[] = ['enable_comments', 'boolean'];
         $rules[] = [['unit'], 'default', 'value' => 1];
@@ -515,7 +516,7 @@ class Product extends ActiveRecord
      */
     public function getBrand()
     {
-        return $this->hasOne(Brand::class, ['id' => 'brand_id']);
+        return $this->hasOne(Brand::class, ['id' => 'brand_id'])->cache(self::getDb()->queryCacheDuration,new TagDependency(['tags' => 'brand-'.$this->brand_id]));
     }
 
     /**
@@ -558,7 +559,6 @@ class Product extends ActiveRecord
     {
         return $this->hasMany(ProductImage::class, ['product_id' => 'id']);
     }
-
 
 
     /**
@@ -1127,6 +1127,23 @@ class Product extends ActiveRecord
         return $this->_configurable_attributes;
     }
 
+    public function getEav($attribute)
+    {
+        if ($this->getIsNewRecord())
+            return null;
+
+        //$attribute = substr($name, 4);
+        /** @var \panix\mod\shop\components\EavBehavior $this */
+        $eavData = $this->getEavAttributes();
+
+        if (isset($eavData[$attribute]))
+            $value = $eavData[$attribute];
+        else
+            return null;
+
+        return $value;
+    }
+
     /**
      * @inheritdoc
      */
@@ -1140,29 +1157,43 @@ class Product extends ActiveRecord
             $dependency->sql = "SELECT MAX(updated_at) FROM {$table}";
 
 
-            if ($this->getIsNewRecord())
+            $value = $this->getEav($attribute = substr($name, 4));
+            /*if ($this->getIsNewRecord())
                 return null;
 
             $attribute = substr($name, 4);
-            /** @var \panix\mod\shop\components\EavBehavior $this */
+
             $eavData = $this->getEavAttributes();
 
             if (isset($eavData[$attribute]))
                 $value = $eavData[$attribute];
             else
-                return null;
+                return null;*/
 
 
-            $attributeModel = Attribute::getDb()->cache(function ($db) use ($attribute) {
-                $q = Attribute::find()->where(['name' => $attribute]);
+            //$attributeModel = Attribute::getDb()->cache(function ($db) use ($attribute) {
+            //   $q = Attribute::find()->where(['name' => $attribute]);
 
-                $result = $q->one();
-                return $result;
-            });
+            //   $attributeModel = $q->one();
+            //    return $result;
+            //});
 
+
+            /*$query = new \yii\db\Query();
+
+            $query->from(\panix\mod\shop\models\AttributeOption::tableName())
+                ->where(['id' =>$value]);
+               // ->cache(Yii::$app->db->queryCacheDuration);
+            $option = $query->one();*/
+            // return $attributeModel['value'];
+
+            $q = AttributeOption::find()->where(['id' => $value]);
+            $q->orderBy = false;
+            $o = $q->cache(self::getDb()->queryCacheDuration)->one();
 
             //$attributeModel = Attribute::find()->where(['name' => $attribute])->cache(3600 * 24, $dependency)->one();
-            return (object)['name' => $attributeModel->title, 'value' => $attributeModel->renderValue($value)];
+            //return (object)['name' => $attributeModel->title, 'value' => $attributeModel->renderValue($value)];
+            return $o;
             //return $attributeModel->renderValue($value);
         }
         return parent::__get($name);
@@ -1204,7 +1235,8 @@ class Product extends ActiveRecord
         ];
         $a['eav'] = [
             'class' => '\panix\mod\shop\components\EavBehavior',
-            'tableName' => ProductAttributesEav::tableName()
+            'tableName' => ProductAttributesEav::tableName(),
+            'preload'=>true
         ];
         $a['translate'] = [
             'class' => '\panix\mod\shop\components\TranslateBehavior',
