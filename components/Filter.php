@@ -279,7 +279,7 @@ class Filter extends BaseObject
     public function getCategoryAttributesCallback()
     {
         $data = [];
-
+        $active = $this->activeAttributes;
         foreach ($this->_eavAttributes as $attribute) {
             $data[$attribute->name] = [
                 'title' => $attribute->title,
@@ -290,13 +290,30 @@ class Filter extends BaseObject
             ];
             $totalCount = 0;
             $filtersCount = 0;
-            foreach ($attribute->getOptions()->cache($this->cacheDuration)->all() as $option) {
+            foreach ($attribute->getOptions()->all() as $option) {
                 $count = $this->countAttributeProductsCallback($attribute, $option);
                 //$count=1;
                 //if ($count > 1) {
+
+
+                $ss = array_key_first($active);
+                //print_r($ss);
+$countText = $count;
+if(isset($active[$attribute->name])){
+
+    //if($active[$attribute->name] != $attribute->name){
+    //    $countText = '+'.$count;
+    //}
+
+    if($ss == $attribute->name && $count){
+        $countText = '+'.$count;
+    }
+}
+
                 $data[$attribute->name]['filters'][] = [
                     'title' => $option->value,
                     'count' => (int)$count,
+                    'count_text' => $countText,
                     'data' => unserialize($option->data),
                     'abbreviation' => ($attribute->abbreviation) ? $attribute->abbreviation : null,
                     'key' => $attribute->name,
@@ -318,6 +335,9 @@ class Filter extends BaseObject
     public function getCategoryAttributes()
     {
         $data = [];
+        $active = $this->activeAttributes;
+
+        $first = array_key_first($active);
 
         foreach ($this->_eavAttributes as $attribute) {
             $data[$attribute->name] = [
@@ -332,10 +352,22 @@ class Filter extends BaseObject
             foreach ($attribute->getOptions()->cache($this->cacheDuration)->all() as $option) {
                 $count = $this->countAttributeProducts($attribute, $option);
                 //$count=1;
+
+
+                //print_r($ss);
+                $countText = $count;
+                if(isset($active[$attribute->name])){
+
+                   // if($first == $attribute->name){
+                        $countText = '+'.$count;
+                   // }
+                }
+
                 //if ($count > 1) {
                 $data[$attribute->name]['filters'][] = [
                     'title' => $option->value,
                     'count' => (int)$count,
+                    'count_text' => $countText,
                     'data' => unserialize($option->data),
                     'abbreviation' => ($attribute->abbreviation) ? $attribute->abbreviation : null,
                     'key' => $attribute->name,
@@ -367,19 +399,38 @@ class Filter extends BaseObject
 
         $model->select('COUNT(*)');
         $newData = [];
+
         $newData[$attribute->name][] = $option->id;
 
+        $newData2=[];
+        $ss = array_key_first($this->activeAttributes);
 
+        foreach ($this->activeAttributes as $key=>$p){
+            if($key!=$attribute->name) {
+                $newData[$key] = $p;
+
+            }
+        }
+
+
+
+//print_r($newData);die;
         //$newData = ArrayHelper::merge($newData,$this->activeAttributes);
 
         // echo $model->createCommand()->rawSql;
         // echo '<br><br><br>';
         /** @var EavQueryTrait|ActiveQuery $model */
-        //$model->withEavAttributes($newData);
-
+        // $model->withEavAttributes($newData);
+//print_r($newData);die;
         $model->getFindByEavAttributes2($newData);
+
+
+
+        //$model->applyAttributes($newData2);
+
         // echo $model->createCommand()->rawSql;die;
-        $model->groupBy = false;
+       // $model->groupBy(''.Product::tableName().'.`id`');
+       // $model->distinct(true);
         // $model->cache($this->cacheDuration);
         //$res->distinct(false);
         // print_r($newData);die;
@@ -395,7 +446,7 @@ class Filter extends BaseObject
         // $count = Attribute::getDb()->cache(function () use ($model) {
         //     return $model->count();
         // }, 1, $dependency);
-        if ($attribute->name == 'obem') {
+        if ($attribute->name == 'tip') {
             //echo $model->createCommand()->rawSql;die;
         }
         return $model->createCommand()->queryScalar();
@@ -411,19 +462,30 @@ class Filter extends BaseObject
         $model->select('COUNT(*)');
         $newData = [];
         $newData[$attribute->name][] = $option->id;
-        $firstItem = array_key_first($this->activeAttributes);
+     //   print_r($this->activeAttributes);die;
 
-        if ($attribute->name == $firstItem) {
-            $newData = ArrayHelper::merge($newData, $this->activeAttributes);
+        $newData2=[];
+        foreach ($this->activeAttributes as $key=>$p){
+            if($key!=$attribute->name) {
+                $newData[$key] = $p;
+            }
         }
 
-        /** @var EavQueryTrait|ActiveQuery $model */
-        //$model->withEavAttributes($newData);
-        $model->getFindByEavAttributes3($newData);
 
-        $model->groupBy = false;
-        $model->cache($this->cacheDuration);
-        //$res->distinct(false);
+
+
+        //$newData = ArrayHelper::merge($newData,$this->activeAttributes);
+
+        // echo $model->createCommand()->rawSql;
+        // echo '<br><br><br>';
+        /** @var EavQueryTrait|ActiveQuery $model */
+        // $model->withEavAttributes($newData);
+
+        $model->getFindByEavAttributes2($newData);
+
+      //  $model->groupBy = false;
+        //$model->cache($this->cacheDuration);
+       // $res->distinct(true);
         // print_r($newData);die;
 
 
@@ -437,8 +499,9 @@ class Filter extends BaseObject
         // $count = Attribute::getDb()->cache(function () use ($model) {
         //     return $model->count();
         // }, 1, $dependency);
-        if ($attribute->name == 'obem') {
-            //echo $model->createCommand()->rawSql;die;
+        Yii::info($model->createCommand()->rawSql);
+        if ($attribute->name == 'tip') {
+         //  echo $model->createCommand()->rawSql;die;
         }
         return $model->createCommand()->queryScalar();
     }

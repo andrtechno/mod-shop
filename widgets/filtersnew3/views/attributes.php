@@ -1,0 +1,94 @@
+<?php
+
+use yii\helpers\Html;
+use yii\helpers\Inflector;
+
+/**
+ * @var $attributes array
+ */
+
+foreach ($attributes as $attrData) {
+
+    if (count($attrData['filters']) > 1 && $attrData['totalCount'] > 1) {
+
+        ?>
+
+        <div class="card filter-block" id="filter-attributes-<?= $attrData['key']; ?>">
+            <a class="card-header collapsed h5" data-toggle="collapse"
+               href="#collapse-<?= $attrData['key']; ?>" aria-expanded="true"
+               aria-controls="collapse-<?= $attrData['key']; ?>">
+                <?= Html::encode($attrData['title']) ?>
+            </a>
+            <div class="card-collapse collapse in" id="collapse-<?= $attrData['key'] ?>">
+
+                <?php if ($this->context->searchItem > 0 && $attrData['filtersCount'] >= $this->context->searchItem && !in_array($attrData['type'],[\panix\mod\shop\models\Attribute::TYPE_COLOR])) { ?>
+                    <input type="text" name="search-filter"
+                           onkeyup="filterSearchInput(this,'filter-<?= $attrData['key']; ?>')" class="form-control" placeholder="<?=Yii::t('shop/default','SEARCH_BY', mb_strtolower($attrData['title']));?>">
+                <?php } ?>
+                <div class="card-body">
+                    <ul class="filter-list list-unstyled" id="filter-<?= $attrData['key']; ?>">
+                        <?php
+                        foreach ($attrData['filters'] as $filter) {
+
+
+                            if ($filter['count'] > 0) {
+                                $url = Yii::$app->urlManager->addUrlParam('/' . Yii::$app->requestedRoute, [$attrData['key'] => $filter['queryParam']], $attrData['selectMany']);
+                                //} else {
+                                //     $url = 'javascript:void(0)';
+                                //
+
+                                $queryData = explode(',', Yii::$app->request->getQueryParam($attrData['key']));
+
+                                echo Html::beginTag('li');
+                                // Filter link was selected.
+
+                                if (in_array($filter['queryParam'], $queryData)) {
+                                    $checked = true;
+                                    // Create link to clear current filter
+                                    $url = Yii::$app->urlManager->removeUrlParam('/' . Yii::$app->requestedRoute, $attrData['key'], $filter['queryParam']);
+                                    //echo Html::a($filter['title'], $url, array('class' => 'active'));
+                                } else {
+                                    $checked = false;
+                                    //echo Html::a($filter['title'], $url);
+                                }
+
+                                if ($attrData['type'] == \panix\mod\shop\models\Attribute::TYPE_COLOR) {
+                                    $css = $this->context->generateGradientCss($filter['data']);
+
+                                    $checkedHtml = ($checked) ? '<span class="filter-color-checked"></span>' : '<span></span>';
+                                    echo Html::label(Html::checkBox('filter[' . $attrData['key'] . '][]', $checked, ['class' => '', 'value' => $filter['queryParam'], 'id' => 'filter_' . $attrData['key'] . '_' . $filter['queryParam']]) . $checkedHtml, 'filter_' . $attrData['key'] . '_' . $filter['queryParam'], ['class' => 'filter-color', 'title' => $filter['title'] . ' (' . strip_tags($this->context->getCount($filter)) . ')', 'style' => $css]);
+
+
+                                } else {
+
+
+
+                                    if($attrData['selectMany']){
+                                        echo '<div class="custom-control custom-checkbox">';
+                                        echo Html::checkBox('filter[' . $attrData['key'] . '][]', $checked, ['class' => 'custom-control-input', 'value' => $filter['queryParam'], 'id' => 'filter_' . $attrData['key'] . '_' . $filter['queryParam']]);
+                                        echo Html::label($filter['title'].$this->context->getCount($filter), 'filter_' . $attrData['key'] . '_' . $filter['queryParam'], ['class' => 'custom-control-label']);
+                                        echo '</div>';
+                                    }else{
+                                        echo '<div class="radio">';
+                                        echo Html::label(Html::radio('filter[' . $attrData['key'] . '][]', $checked, ['class' => '', 'value' => $filter['queryParam'], 'id' => 'filter_' . $attrData['key'] . '_' . $filter['queryParam']]).$filter['title'].$this->context->getCount($filter), 'filter_' . $attrData['key'] . '_' . $filter['queryParam'], ['class' => '']);
+                                        echo '</div>';
+                                    }
+
+
+                                    //var_dump($checked);
+
+                                   // echo $this->context->getCount($filter);
+                                }
+
+                                echo Html::endTag('li');
+                            }
+                        }
+                        ?>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <?php
+    }
+}
+?>

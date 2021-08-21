@@ -21,8 +21,8 @@ trait EavQueryTrait
     {
         // If not set attributes, search models with anything attributes exists.
         //if (empty($attributes)) {
-       //     $attributes = $this->getSafeAttributesArray();
-       // }
+        //     $attributes = $this->getSafeAttributesArray();
+        // }
 
         // $attributes be array of elements: $attribute => $values
         return $this->getFindByEavAttributes2($attributes);
@@ -40,12 +40,12 @@ trait EavQueryTrait
         $loadQueue = new CList();
         foreach ($attributes as $attribute) {
             // Check is safe.
-           // if ($this->hasSafeAttribute($attribute)) {
-                $values[$attribute] = $attribute;
-                // If attribute not set and not load, prepare array for loaded.
-               // if (!$this->preload && $values[$attribute] === NULL) {
-               //     $loadQueue->add($attribute);
-               // }
+            // if ($this->hasSafeAttribute($attribute)) {
+            $values[$attribute] = $attribute;
+            // If attribute not set and not load, prepare array for loaded.
+            // if (!$this->preload && $values[$attribute] === NULL) {
+            //     $loadQueue->add($attribute);
+            // }
             //}
         }
         // If array for loaded not empty, load attributes.
@@ -93,7 +93,7 @@ trait EavQueryTrait
         }
 
         //$this->distinct(true);
-       $this->groupBy("{$pk}");
+        $this->groupBy("{$pk}");
         // echo $this->createCommand()->getRawSql();die;
         return $this;
     }
@@ -103,7 +103,7 @@ trait EavQueryTrait
         $class = $this->modelClass;
         $pk = $class::tableName() . '.`id`';
         $i = 0;
-       // echo $this->createCommand()->getRawSql();die;
+        // echo $this->createCommand()->getRawSql();die;
         foreach ($attributes as $attribute => $values) {
             // If search models with attribute name with specified values.
             if (is_string($attribute)) {
@@ -120,9 +120,13 @@ trait EavQueryTrait
                     $values = array_intersect($cache[$attribute], $values);
                 }
 
-                 $this->join('JOIN', ProductAttributesEav::tableName().' eavb' . $i, "$pk=`eavb$i`.`entity`");
-               // $this->join['eavb' . $i] = ['JOIN', '{{%shop__product_attribute_eav}} eavb' . $i, "$pk=`eavb$i`.`entity`"];
+
+               // $this->join['eavb' . $i] = ['JOIN', '{{%shop__product_filter}} eavb' . $i, "$pk=`eavb$i`.`product_id`"];
+               // $this->andwhere(['IN', "`eavb$i`.`option_id`", $values]);
+
+                $this->join['eavb' . $i] = ['JOIN', '{{%shop__product_attribute_eav}} eavb' . $i, "$pk=`eavb$i`.`entity`"];
                 $this->andwhere(['IN', "`eavb$i`.`value`", $values]);
+
                 $i++;
             } elseif (is_int($attribute)) { // If search models with attribute name with anything values.
                 $this->join('JOIN', ProductAttributesEav::tableName().' eavb' . $i, "$pk=`eavb$i`.`entity` AND eavb$i.attribute = '$values'");
@@ -132,11 +136,11 @@ trait EavQueryTrait
 
 
 
-       // $this->distinct(true);
+        // $this->distinct(true);
 
-        $this->groupBy("{$pk}");
+       // $this->groupBy("{$pk}");
         //$this->addGroupBy("{$pk}");
-    //  echo $this->createCommand()->getRawSql();die;
+       //  echo $this->createCommand()->getRawSql();die;
         return $this;
     }
 

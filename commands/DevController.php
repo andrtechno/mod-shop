@@ -7,8 +7,10 @@ use panix\mod\discounts\models\Discount;
 use panix\mod\shop\models\Currency;
 use panix\mod\shop\models\Product;
 use panix\mod\shop\models\ProductCategoryRef;
+use panix\mod\shop\models\ProductFilter;
 use Yii;
 use panix\engine\console\controllers\ConsoleController;
+use yii\base\Exception;
 use yii\helpers\Console;
 use yii\httpclient\Client;
 
@@ -138,7 +140,34 @@ class DevController extends ConsoleController
     }
 
 
+    public function actionNewFilter()
+    {
+        $products = Product::find()->all();
+        foreach ($products as $p) {
 
+            foreach ($p->getEavAttributes() as $eavName => $eavOption) {
+    $data[]=[
+        $p->id,
+        $eavOption
+    ];
+
+                /*$f = new ProductFilter();
+                $f->product_id = $p->id;
+                $f->option_id = $eavOption;
+                try {
+                    $f->save(false);
+                } catch (Exception $exception) {
+
+                }*/
+            }
+
+            //print_r($p->getEavAttributes());die;
+        }
+        ProductFilter::getDb()->createCommand()->batchInsert(ProductFilter::tableName(), [
+            'product_id',
+            'option_id',
+        ], $data)->execute();
+    }
 
     private function array_random(array $array, int $n = 1): array
     {

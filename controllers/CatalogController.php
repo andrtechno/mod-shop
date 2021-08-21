@@ -29,7 +29,10 @@ class CatalogController extends FilterController
 
     public $provider;
     public $currentUrl;
-
+    public function actionFilterCallback()
+    {
+        return $this->asJson(['ok' => true]);
+    }
     public function beforeAction($action)
     {
         if (Yii::$app->request->headers->has('filter-ajax')) {
@@ -49,6 +52,8 @@ class CatalogController extends FilterController
         $this->currentUrl = $this->dataModel->getUrl();
         $this->query = $productModel::find();
         $this->query->published();
+
+
 
 
         //  $cr->with = array('brandActive');

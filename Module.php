@@ -21,6 +21,8 @@ class Module extends WebModule implements BootstrapInterface
     public $filterViewCurrent = '@shop/widgets/filtersnew/views/current';
     public $reviewsCount = 0;
     public $viewList = ['grid','list'];
+
+    /*
     public function getImage($dirtyAlias)
     {
         //Get params
@@ -61,7 +63,7 @@ class Module extends WebModule implements BootstrapInterface
 
 
         return ['alias' => $alias, 'size' => $size];
-    }
+    }*/
 
 
     /**
@@ -71,7 +73,7 @@ class Module extends WebModule implements BootstrapInterface
      *
      * @param $notParsedSize
      * @return array|null
-     */
+
     public function parseSize($notParsedSize)
     {
         $sizeParts = explode('x', $notParsedSize);
@@ -103,14 +105,14 @@ class Module extends WebModule implements BootstrapInterface
         }
 
         return $size;
-    }
+    }*/
 
     /**
      * @inheritdoc
      */
     public function bootstrap($app)
     {
-
+        $rules['filter'] = 'shop/ajax/filter';
         $rules['catalog'] = 'shop/default/index';
         $rules['search/ajax'] = 'shop/search/ajax';
         $rules['notify/<id:\d+>'] = 'shop/notify/index';
