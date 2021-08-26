@@ -6,11 +6,17 @@ use yii\helpers\Html;
 <div id="filters">
     <?php
     echo Html::beginForm($currentUrl, 'GET', ['id' => 'filter-form','data-category_id'=>(isset($model->id))?$model->id:'']);
+    echo Html::hiddenInput('route',Yii::$app->controller->route);
+    if(isset($model->id) && in_array(Yii::$app->controller->route,['shop/catalog/view','shop/brand/view']))
+    echo Html::hiddenInput('param',$model->id);
+    if(Yii::$app->request->get('q')){
+        echo Html::hiddenInput('param',Yii::$app->request->get('q'));
+    }
     ?>
     <div id="scroll-sidebar-outer">
         <div id="scroll-sidebar">
             <div id="ocfilter-button" class="d-none">
-                <a href="#" class="btn btn-primary">Загрузка...</a>
+                <a href="#" class="btn btn-primary button-apply">Загрузка...</a>
             </div>
             <?php
             echo Html::beginTag('div', ['id' => 'ajax_filter_current']);
@@ -28,11 +34,12 @@ use yii\helpers\Html;
                 echo $this->render($this->context->priceView, [
                     'priceMin' => $priceMin,
                     'priceMax' => $priceMax,
-                    'currentPriceMin' => $currentPriceMin,
-                    'currentPriceMax' => $currentPriceMax,
+                    'currentPrice'=>$currentPrice,
+                    //'currentPriceMin' => $currentPriceMin,
+                    //'currentPriceMax' => $currentPriceMax,
                 ]);
 
-            if ($this->context->brandView)
+            if ($this->context->brandView && $brands)
                 echo $this->render($this->context->brandView, ['brands' => $brands]);
 
             if ($this->context->attributeView)

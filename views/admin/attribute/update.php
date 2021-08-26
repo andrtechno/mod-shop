@@ -19,6 +19,11 @@ echo \panix\engine\bootstrap\Alert::widget([
 ]);
 
 
+$types[1] = 'Стандартный';
+if (YII_DEBUG) {
+    $types[$model::TYPE_SLIDER] = 'Слайдер';
+    $types[$model::TYPE_COLOR] = 'Цвет';
+}
 if ($model->isNewRecord && !$model->type) {
 
     echo Html::beginForm('', 'GET');
@@ -32,7 +37,7 @@ if ($model->isNewRecord && !$model->type) {
             <div class="form-group row">
                 <div class="col-sm-4"><?= Html::activeLabel($model, 'type', ['class' => 'control-label']); ?></div>
                 <div class="col-sm-8">
-                    <?= Html::activeDropDownList($model, 'type', [1 => 'Стандартный', /*8 => 'Слайдер',*/ 9 => 'Цвет'], ['class' => 'form-control']); ?>
+                    <?= Html::activeDropDownList($model, 'type', $types, ['class' => 'form-control']); ?>
                 </div>
             </div>
 
@@ -72,18 +77,28 @@ if ($model->isNewRecord && !$model->type) {
 
             if ($model->type == $model::TYPE_COLOR) {
                 $tabs[] = [
-                    'label' => (isset($model->tab_errors['color'])) ? Html::icon('warning', ['class' => 'text-danger', 'title' => $model->tab_errors['color']]) . ' '.$model::t('TAB_COLOR') : $model::t('TAB_COLOR'),
+                    'label' => (isset($model->tab_errors['color'])) ? Html::icon('warning', ['class' => 'text-danger', 'title' => $model->tab_errors['color']]) . ' ' . $model::t('TAB_COLOR') : $model::t('TAB_COLOR'),
                     'encode' => false,
-                    'options'=>['id'=>'tab-color'],
+                    'options' => ['id' => 'tab-color'],
                     'content' => $this->render('tabs/_color', ['form' => $form, 'model' => $model]),
                     'headerOptions' => [],
 
                 ];
+            }elseif ($model->type == $model::TYPE_SLIDER) {
+                $tabs[] = [
+                    'label' => (isset($model->tab_errors['slider'])) ? Html::icon('warning', ['class' => 'text-danger', 'title' => $model->tab_errors['slider']]) . ' ' . $model::t('TAB_SLIDER') : $model::t('TAB_SLIDER'),
+                    'encode' => false,
+                    'options' => ['id' => 'tab-slider'],
+                    'content' => $this->render('tabs/_slider', ['form' => $form, 'model' => $model]),
+                    'headerOptions' => [],
+
+                ];
+
             } else {
                 $tabs[] = [
-                    'label' => (isset($model->tab_errors['options'])) ? Html::icon('warning', ['class' => 'text-danger', 'title' => $model->tab_errors['options']]) . ' '.$model::t('TAB_OPTIONS') : $model::t('TAB_OPTIONS'),
+                    'label' => (isset($model->tab_errors['options'])) ? Html::icon('warning', ['class' => 'text-danger', 'title' => $model->tab_errors['options']]) . ' ' . $model::t('TAB_OPTIONS') : $model::t('TAB_OPTIONS'),
                     'encode' => false,
-                    'options'=>['id'=>'tab-options'],
+                    'options' => ['id' => 'tab-options'],
                     'content' => $this->render('tabs/_options', ['form' => $form, 'model' => $model]),
                     'headerOptions' => [],
 

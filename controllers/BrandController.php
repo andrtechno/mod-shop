@@ -3,6 +3,9 @@
 namespace panix\mod\shop\controllers;
 
 
+use panix\engine\CMS;
+use panix\mod\shop\components\Filter;
+use panix\mod\shop\components\FilterV2;
 use Yii;
 use yii\helpers\Url;
 use yii\web\Response;
@@ -36,14 +39,16 @@ class BrandController extends FilterController
        // $this->currentUrl = Url::to($this->dataModel->getUrl());
         /** @var Product $productModel */
         $productModel = Yii::$app->getModule('shop')->model('Product');
-        $this->query = $productModel::find();
+        $this->query = $productModel::find()->published();
         //$this->query->attachBehaviors((new $productModel)->behaviors());
-        $this->query->published();
+
         $this->query->applyBrands($this->dataModel->id);
 
+        $this->filter = new FilterV2($this->query,['cacheKey'=>'filter_brand_'.$this->dataModel->id]);
+       // CMS::dump($this->filter,2);die;
         $this->filterQuery = clone $this->query;
         $this->currentQuery = clone $this->query;
-        $this->query->applyAttributes($this->activeAttributes);
+        //$this->query->applyAttributes($this->activeAttributes);
 
 
 
@@ -54,7 +59,7 @@ class BrandController extends FilterController
 
         $this->view->text = $this->dataModel->description;
 
-        $this->query->applyRangePrices((isset($this->prices[0])) ? $this->prices[0] : 0, (isset($this->prices[1])) ? $this->prices[1] : 0);
+       // $this->query->applyRangePrices((isset($this->prices[0])) ? $this->prices[0] : 0, (isset($this->prices[1])) ? $this->prices[1] : 0);
 
 
 
@@ -63,11 +68,11 @@ class BrandController extends FilterController
 
         $sort = explode(',',Yii::$app->request->get('sort'));
         if ($sort[0] == 'price' || $sort[0] == '-price') {
-            $this->query->aggregatePriceSelect(($sort[0] == 'price') ? SORT_ASC : SORT_DESC);
+            $this->filter->resultQuery->aggregatePriceSelect(($sort[0] == 'price') ? SORT_ASC : SORT_DESC);
         }
 
         $this->provider = new \panix\engine\data\ActiveDataProvider([
-            'query' => $this->query,
+            'query' => $this->filter->resultQuery,
             'id' => null,
             'pagination' => [
                 'pageSize' => $this->per_page,
@@ -80,7 +85,7 @@ class BrandController extends FilterController
             'url' => ['/brand']
         ];
         $this->view->params['breadcrumbs'][] = $this->pageName;
-        $filterData = $this->getActiveFilters();
+        $filterData = $this->filter->getActiveFilters();
 
 
 

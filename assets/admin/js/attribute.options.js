@@ -63,7 +63,7 @@ $(function () {
      * @param el
      */
     function toggleOptionsTab(el) {
-        var array = [3, 4, 5,6,9];
+        var array = [3, 4, 5,6,9,8];
         var optionsTab = $("#attributes-tabs li")[1];
         console.log($(el).val());
         // Show options tab when type is dropdown or select

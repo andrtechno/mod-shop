@@ -20,26 +20,38 @@ use yii\helpers\Html;
                     foreach ($brands['filters'] as $filter) {
                         $url = Yii::$app->urlManager->addUrlParam('/' . Yii::$app->requestedRoute, [$filter['key'] => $filter['queryParam']], $brands['selectMany']);
                         $queryData = explode(',', Yii::$app->request->getQueryParam($filter['key']));
-
-                        echo Html::beginTag('li');
-
-
                         // Filter link was selected.
+
+                        $checkBoxOptions=[];
+                        $checkBoxOptions['class'] = 'custom-control-input';
+                        $checkBoxOptions['value'] = $filter['queryParam'];
+                        $checkBoxOptions['id'] = 'filter_' . $filter['key'] . '_' . $filter['queryParam'];
+                        $disableClass='';
                         if (in_array($filter['queryParam'], $queryData)) {
                             // Create link to clear current filter
                             $checked = true;
+
                             $url = Yii::$app->urlManager->removeUrlParam('/' . Yii::$app->requestedRoute, $filter['key'], $filter['queryParam']);
                             //echo Html::a($filter['title'], $url, array('class' => 'active'));
                         } else {
+
                             $checked = false;
                             //echo Html::a($filter['title'], $url);
                         }
+                        if(!$filter['count']){
+                            $disableClass='disabled';
+                            $checkBoxOptions['disabled'] = 'disabled';
+                        }
+                        echo Html::beginTag('li',['class'=>$disableClass]);
+
+
+
                         echo '<div class="custom-control custom-checkbox">';
-                        echo Html::checkBox('filter[' . $filter['key'] . '][]', $checked, ['class' => 'custom-control-input', 'value' => $filter['queryParam'], 'id' => 'filter_' . $filter['key'] . '_' . $filter['queryParam']]);
-                        echo Html::label($filter['title'], 'filter_' . $filter['key'] . '_' . $filter['queryParam'],['class' => 'custom-control-label']);
+                        echo Html::checkBox('filter[' . $filter['key'] . '][]', $checked, $checkBoxOptions);
+                        echo Html::label($filter['title'].(($checked)?'':$this->context->getCount($filter)), 'filter_' . $filter['key'] . '_' . $filter['queryParam'],['class' => 'custom-control-label']);
 
 
-                        echo $this->context->getCount($filter);
+                       // echo $this->context->getCount($filter);
                         echo '</div>';
                         echo Html::endTag('li');
                     }

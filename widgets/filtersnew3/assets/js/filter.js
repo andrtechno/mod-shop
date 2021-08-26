@@ -68,6 +68,7 @@ var xhrCallback;
 var flagDeletePrices = false;
 var global_url;
 var newFunction = true;
+var resultUrl = '';
 
 function filterCallback(e, objects, target) {
     if (xhrCallback && xhrCallback.readyState !== 4) {
@@ -76,10 +77,19 @@ function filterCallback(e, objects, target) {
         //ajaxSelector.removeClass('loading');
     }
 
-    var url = formattedURL(e, objects);
+    delete objects['search-filter'];
 
-    objects = $.extend(objects, {test: '111'});
-    console.debug('FilterCallback: ', objects);
+
+    if (e.type == 'filter:click:checkbox') {
+        delete objects['slide[price][]'];
+    }
+    //delete objects.route;
+    //delete objects.category_id;
+    //objects = $.extend(objects, {});
+
+
+    objects = $.extend(objects, {'selected[slide][price]':1});
+    console.debug('FilterCallback: ', e);
     xhrCallback = $.ajax({
         dataType: "json",
         url: '/filter',
@@ -90,19 +100,20 @@ function filterCallback(e, objects, target) {
         data: objects,
         success: function (response) {
 
-
-            /*form.find('[aria-describedby^="popover"]')
-                //.not('[data-toggle="popover-price"]')
+            resultUrl = response.url;
+            form.find('[aria-describedby^="popover"]')
+                .not('[data-toggle="popover-price"]')
                 .not(target.parent())
-                .popover('destroy');*/
-
-            /*if (!target.parent().attr('aria-describedby')) {
+                .popover('destroy');
+            $('#ocfilter-button a').attr('href', response.url).html(response.textTotal);
+            if (!target.parent().attr('aria-describedby')) {
                 var options = {
                     placement: 'right',
                     selector: false,
-                    delay: {'show': 400, 'hide': 600},
+                    //delay: {'show': 100, 'hide': 100},
                     content: function () {
-                        return $('#ocfilter-button').html();
+                        return $($('#ocfilter-button').html());
+                        // return 'dsadsadsasdas';
                     },
                     container: target.parent(),
                     trigger: 'hover',
@@ -114,7 +125,7 @@ function filterCallback(e, objects, target) {
             } else {
                 console.log('replaceWith');
                 $('#' + target.parent().attr('aria-describedby') + ' button').replaceWith($('#ocfilter-button').html());
-            }*/
+            }
 
 
             /*ajaxSelector.html(data.items).toggleClass('loading');
@@ -128,7 +139,19 @@ function filterCallback(e, objects, target) {
             jQuery.ias().reinitialize();*/
 
             $('#ocfilter-button button').text(response.textTotal);
+            /*$.each(response.sliders, function (name, values) {
+                var slider = $("#slider-" + name);
+                //var min = slider.slider("option", "min");
+                //var max = slider.slider("option", "max");
+                //console.log(values.min, values.max);
+                //slider.slider("values", [values.min, values.max]);
+                $('#min_price').val(values.min);
+                $('#max_price').val(values.max);
+                slider.slider("option", "min", values.default.min);
+                slider.slider("option", "max", values.default.max);
 
+                slider.slider("option", "values", [values.min, values.max]);
+            });*/
             $.each(response.filters, function (name, filters) {
 
                 $('#filter-' + name + ' input[type="checkbox"]:not(:checked)').attr('disabled', 'disabled');
@@ -150,20 +173,29 @@ function filterCallback(e, objects, target) {
                             $('#filter-count-' + name + '-' + data.queryParam).html(data.count_text);
                         }
 
-                        $('#filter_' + name + '_' + data.queryParam).removeAttr('disabled');
-                        $('#filter_' + name + '_' + data.queryParam).closest('li').removeClass('disabled');
+                        selector.removeAttr('disabled');
+                        selector.closest('li').removeClass('disabled');
                         // $('#filter_' + name + '_' + data.queryParam).parent('div').parent('li').removeClass('filter-disabled');
                     } else {
                         if (!selector.prop('checked')) {
                             $('#filter-count-' + name + '-' + data.queryParam).html(data.count_text);
-                        }else{
-                            $('#filter_' + name + '_' + data.queryParam).closest('li').removeClass('disabled');
+                        } else {
+                            //Если 0 и чекнутый то Анчекаем и дизайблем.
+                            selector.closest('li').removeClass('disabled');
+
+
+                            //selector.prop('checked', false)
+                            //selector.closest('li').addClass('disabled');
+                            //selector.attr('disabled', 'disabled');
+                            //$('#filter_' + name + '_' + data.queryParam).closest('li').removeClass('disabled');
                             //$('#filter_' + name + '_' + data.queryParam).attr('disabled', 'disabled');
                         }
                     }
                 });
 
             });
+
+
             // $(target).removeAttr('disabled');
         },
         beforeSend: function () {
@@ -172,19 +204,27 @@ function filterCallback(e, objects, target) {
     });
 }
 
-function filter_ajax(e, objects) {
+function filter_ajax(e, objects,sort=false) {
     if (xhrFilters && xhrFilters.readyState !== 4) {
         xhrFilters.onreadystatechange = null;
         xhrFilters.abort();
         ajaxSelector.removeClass('loading');
     }
+   // console.log('filter_ajax', e);
+//delete objects['slide[price][]'];
 
+
+    delete objects.route;
+    delete objects.param;
+    delete objects['search-filter'];
+    delete objects['attributes[]'];
     //if (url === undefined) {
-    var url = formattedURL(e, objects);
+
+    var url = (sort) ?formattedURL(e, objects) : resultUrl;
     //var url = current_url;
     // }
 
-    console.debug('Event: ' + e.type, objects);
+   // console.debug('Event: ' + e.type, objects);
     xhrFilters = $.ajax({
         dataType: "json",
         url: url,
@@ -208,13 +248,13 @@ function filter_ajax(e, objects) {
                     console.debug('ias plugin > reinitialize:', ias);
                     ias.reinitialize();
                 }
-            } else {
+            } else if((typeof $.fn.pjax !== 'undefined')) {
                 // pjax.state = data.currentUrl;
-                if ($.pjax) {
-                    console.log('dsa');
+
+                    //console.log('PJAX!!!',$.fn.pjax);
                     // $.pjax({url: url, container: '#pjax-catalog', timeout: false, state: data.currentUrl});
                     // $.pjax.reload('#pjax-sales', {url: url,timeout:false,state:data.currentUrl})
-                }
+
             }
 
 
@@ -250,14 +290,13 @@ function filter_ajax(e, objects) {
  }
  */
 function getSerializeObjects() {
-
     var formObject = form.serializeObject();
     return $.extend(formObject, sortForm.serializeObject())
 }
 
 function getSerialize() {
-
-    return $.extend(form.serialize(), sortForm.serialize())
+    var form = form.serialize();
+    return $.extend(form, sortForm.serialize())
 }
 
 function formattedURL(e, objects) {
@@ -342,10 +381,9 @@ $(function () {
     var showApply = false;
 
     $(document).on('filter:apply', function (e) {
-        flagDeletePrices = true;
         var objects = getSerializeObjects();
         console.debug('Apply sending...', $('#filter-form').serializeArray());
-        filter_ajax(e, objects);
+        // filter_ajax(e, objects);
 
 
     });
@@ -422,6 +460,28 @@ $(function () {
 
     });
 
+
+    var hovered = false;
+
+    form.on({
+        'mouseenter': function (e) {
+            hovered = true;
+        },
+        'mouseleave': function (e) {
+            hovered = false;
+
+            $('[aria-describedby="' + $(this).attr('id') + '"]').popover('toggle');
+        }
+    }, '.popover').on('hide.bs.popover', '[aria-describedby^="popover"]', function (e) {
+        setTimeout(function (element) {
+            $(element).show();
+        }, 0, e.target);
+
+        if (hovered) {
+            e.preventDefault();
+        }
+    });
+
     $(document).on('filter:click:checkbox', '#filter-form input[type="checkbox"],#filter-form input[type="radio"]', function (e, state) {
         this.checked = state;
         var id = $(this).attr('id');
@@ -435,28 +495,6 @@ $(function () {
 
         console.debug(e.type, id, state);
         if (!isMobile) {
-
-
-            var hovered = false;
-
-            /*  form.on({
-                  'mouseenter': function (e) {
-                      hovered = true;
-                  },
-                  'mouseleave': function (e) {
-                      hovered = false;
-
-                      $('[aria-describedby="' + $(this).attr('id') + '"]').popover('toggle');
-                  }
-              }, '.popover').on('hide.bs.popover', '[aria-describedby^="popover"]', function (e) {
-                  setTimeout(function (element) {
-                      $(element).show();
-                  }, 0, e.target);
-
-                  if (hovered) {
-                      e.preventDefault();
-                  }
-              });*/
 
 
             console.debug('Dekstop', width, this);
@@ -555,11 +593,20 @@ $(function () {
     });
 
 
-    $("#slider-price").on("slidechange", function (e, ui) {
+    $("#slider-price").on("slidestop", function (e, ui) {
+        console.log(e, ui);
+
+        //return false;
         var flag = false;
         var objects = getSerializeObjects();
         if (!isMobile) {
-            filter_ajax(event, objects);
+
+            //filter_ajax(event, objects);
+            if (newFunction) {
+                var objects = getSerializeObjects();
+                var target = $(this);
+                filterCallback(e, objects, target);
+            }
         } else {
             console.debug(e.type, ui.values);
             if (ui.values[0] !== parseInt($('#min_price').data('default'))) {
@@ -578,6 +625,7 @@ $(function () {
 
     //for price inputs
     $(document).on('change', '#filter-form #max_price,#filter-form #min_price', function (e) {
+
         flagDeletePrices = false;
         var slider = $("#filters .ui-slider");
         var min = slider.slider("option", "min");
@@ -610,6 +658,7 @@ $(function () {
         slider.slider("values", [valueMin, valueMax]);
 
         filter_ajax(e, getSerializeObjects());
+
         if (e.cancelable) {
             e.preventDefault();
         }
@@ -617,6 +666,12 @@ $(function () {
         console.debug('change filter price input');
     });
 
+
+    $(document).on('click', '.button-apply', function (e) {
+        filter_ajax(e, getSerializeObjects());
+        e.preventDefault();
+        return false;
+    });
 
     $(document).on('click', '#sorting-form button2', function (e) {
         filter_ajax(e, getSerializeObjects());
@@ -633,7 +688,7 @@ $(function () {
     });
 
     $(document).on('change', '#sorting-form select', function (e) {
-        filter_ajax(e, getSerializeObjects());
+        filter_ajax(e, getSerializeObjects(),true);
         console.log('#sorting-form select');
         e.preventDefault();
         return false;
@@ -662,7 +717,20 @@ function filterSearchInput(that, listId) {
     // Loop through all list items, and hide those who don't match the search query
     for (i = 0; i < li.length; i++) {
         a = li[i].getElementsByTagName("label")[0];
-        txtValue = a.textContent || a.innerText;
+        txtValue = a.getAttribute("data-search");
+       // txtValue = a.textContent || a.innerText;
+    //'data-search'
+       //
+
+        //for (var i = 0; i < test.length; i++) {
+       //     console.log(i,test[i]); //second console output
+        //}
+
+       // test.forEach(function(currentValue, index, array) {
+            //console.log(currentValue,index,array);
+       // });
+      //  a.parentNode.removeChild(a.getElementsByTagName("*"));
+     //
         if (txtValue.toUpperCase().indexOf(value) > -1) {
             li[i].style.display = "";
         } else {

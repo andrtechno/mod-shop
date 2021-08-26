@@ -126,6 +126,7 @@ trait EavQueryTrait
 
                 $this->join['eavb' . $i] = ['JOIN', '{{%shop__product_attribute_eav}} eavb' . $i, "$pk=`eavb$i`.`entity`"];
                 $this->andwhere(['IN', "`eavb$i`.`value`", $values]);
+               // $this->andwhere(["`eavb$i`.`attribute`"=>$attribute]);
 
                 $i++;
             } elseif (is_int($attribute)) { // If search models with attribute name with anything values.

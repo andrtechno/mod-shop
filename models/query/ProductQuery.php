@@ -31,7 +31,7 @@ class ProductQuery extends ActiveQuery
     {
 
         $this->andWhere(['IS NOT', Product::tableName() . '.discount', null]);
-            //->andWhere(['!=', Product::tableName() . '.discount', '']);
+        //->andWhere(['!=', Product::tableName() . '.discount', '']);
         return $this;
     }
 
@@ -39,11 +39,11 @@ class ProductQuery extends ActiveQuery
     {
         $config = Yii::$app->settings->get('shop');
         if ($config->label_expire_new) {
-            $this->int2between(time(), time() - (86400 * $config->label_expire_new));
+            $this->int2between(time(), time() - (86400 * $config->label_expire_new * 300));
         } else {
             $this->int2between(-1, -1);
         }
-        $this->orderBy(['created_at'=>SORT_DESC]);
+        $this->orderBy([Product::tableName().'.created_at' => SORT_DESC]);
         return $this;
     }
 
@@ -88,20 +88,25 @@ class ProductQuery extends ActiveQuery
     /**
      * @param $categories array|int|object
      * @param $whereType string
+     * @param $ref boolean
      * @return $this
      */
-    public function applyCategories($categories, $whereType = 'andWhere')
+    public function applyCategories($categories, $whereType = 'andWhere', $ref = false)
     {
+
         if ($categories instanceof Category)
             $categories = [$categories->id];
         else {
             if (!is_array($categories))
                 $categories = [$categories];
         }
-        //  $tableName = ($this->modelClass)->tableName();
-        $this->leftJoin(ProductCategoryRef::tableName(), ProductCategoryRef::tableName() . '.`product`=' . $this->modelClass::tableName() . '.`id`');
-        $this->$whereType([ProductCategoryRef::tableName() . '.`category`' => $categories]);
-
+        if ($ref) {
+            $this->$whereType(['main_category_id' => $categories]);
+        } else {
+            //  $tableName = ($this->modelClass)->tableName();
+            $this->leftJoin(ProductCategoryRef::tableName(), ProductCategoryRef::tableName() . '.`product`=' . $this->modelClass::tableName() . '.`id`');
+            $this->$whereType([ProductCategoryRef::tableName() . '.`category`' => $categories]);
+        }
         return $this;
     }
 
@@ -128,8 +133,8 @@ class ProductQuery extends ActiveQuery
         if ($q) {
             $modelClass = $this->modelClass;
             $tableName = $modelClass::tableName();
-            $this->andWhere(['LIKE', $tableName . '.' . Yii::$app->getModule('shop')->searchAttribute, $q]);
-            $this->orWhere(['LIKE', $tableName . '.name_' . $language, $q]);
+            $this->andWhere(['LIKE', $tableName . '.' . Yii::$app->getModule('shop')->searchAttribute, $q])
+                ->orWhere(['LIKE', $tableName . '.name_' . $language, $q]);
 
         }
         return $this;

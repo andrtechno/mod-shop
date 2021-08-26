@@ -11,6 +11,7 @@ use panix\mod\shop\models\Product;
 use panix\mod\shop\models\ProductAttributesEav;
 use panix\mod\shop\models\traits\EavQueryTrait;
 use yii\base\BaseObject;
+use yii\base\Component;
 use yii\db\ActiveQuery;
 use panix\mod\shop\models\query\ProductQuery;
 use yii\db\ActiveRecord;
@@ -18,7 +19,7 @@ use Yii;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 
-class Filter extends BaseObject
+class FilterV2 extends Component
 {
 
     private $attributes;
@@ -26,7 +27,7 @@ class Filter extends BaseObject
     public $resultQuery;
     public $testQuery;
     public $cacheDuration = 86400;
-    private $model;
+
     public $controller;
     public $activeAttributes;
     public $price_min;
@@ -52,30 +53,7 @@ class Filter extends BaseObject
      */
     //public $_maxPrice, $_minPrice;
     public $prices;
-
-    /*
-        public function _getActiveAttributes()
-        {
-            $data = [];
-
-            foreach (array_keys($_GET) as $key) {
-                if (array_key_exists($key, $this->eavAttributes)) {
-
-                    if (empty($_GET[$key]) && isset($_GET[$key])) {
-                        //	 throw new CHttpException(404, Yii::t('shop/default', 'NOFIND_CATEGORY'));
-                    }
-
-                    if ((boolean)$this->eavAttributes[$key]->select_many === true) {
-                        $data[$key] = explode(',', $_GET[$key]);
-                    } else {
-                        $data[$key] = [$_GET[$key]];
-                    }
-                } else {
-                    //  $this->error404(Yii::t('shop/default', 'NOFIND_CATEGORY1'));
-                }
-            }
-            return $data;
-        }*/
+    public $route;
 
     public function getActiveAttributes()
     {
@@ -109,7 +87,8 @@ class Filter extends BaseObject
     {
         $data = [];
         $post = Yii::$app->request->post('filter');
-        if (!in_array($this->route[0], ['/shop/brand/view'])) {
+
+        if ($post && !in_array($this->route[0], ['/shop/brand/view'])) {
             $query = (isset($post['brand'])) ? $post['brand'] : Yii::$app->request->get('brand');
             if (is_array($query)) {
                 $data = $query;
@@ -119,21 +98,31 @@ class Filter extends BaseObject
             }
 
         }
+
         return $data;
     }
 
-    public $route;
+    protected $_route;
 
-    public function getActiveUrl()
+    public function setResultRoute($route)
     {
+        $this->_route = $route;
+    }
+
+    public function getResultRoute()
+    {
+        $this->_route = $this->route;
+        $this->_route[0] = '/' . $this->_route[0];
         $slides = Yii::$app->request->post('slide');
         $brands = $this->getActiveBrands();
         foreach ($this->getActiveAttributes() as $attribute => $values) {
-            if ($values)
-                $this->route[$attribute] = implode(',', $values);
+            if (is_array($values)){
+                $this->_route[$attribute] = implode(',', $values);
+            }
+
         }
         if ($brands) {
-            $this->route['brand'] = (is_array($brands)) ? implode(',', $brands) : $brands;
+            $this->_route['brand'] = (is_array($brands)) ? implode(',', $brands) : $brands;
         }
 
         if ($slides) {
@@ -144,40 +133,44 @@ class Filter extends BaseObject
                     $showRoute = false;
                 }
                 if ($showRoute)
-                    $this->route[$key] = implode('-', $values);
+                    $this->_route[$key] = implode('-', $values);
 
             }
         }
 
 
         if (Yii::$app->request->post('sort')) {
-            $this->route['sort'] = Yii::$app->request->post('sort');
+            $this->_route['sort'] = Yii::$app->request->post('sort');
         }
         if (Yii::$app->request->post('per-page')) {
-            $this->route['per-page'] = Yii::$app->request->post('per-page');
+            $this->_route['per-page'] = Yii::$app->request->post('per-page');
         }
         if (Yii::$app->request->post('view')) {
-            $this->route['view'] = Yii::$app->request->post('view');
+            $this->_route['view'] = Yii::$app->request->post('view');
         }
 
-        return Url::to($this->route);
+        return $this->_route;
     }
 
 
-    public function __construct(ProductQuery $query, ActiveRecord $model = null, $config = [])
+    public function __construct(ProductQuery $query, $config = [])
     {
+
         parent::__construct($config);
         $data = Yii::$app->request->post('filter');
         $slides = Yii::$app->request->post('slide');
-        $this->attributes = $this->getEavAttributes();
-        $this->activeAttributes = $this->getActiveAttributes();
-
         $this->resultQuery = clone $query;
-        $this->testQuery = clone $query;
         $this->query = clone $query;
-
+        $this->setResultRoute($this->route);
+        // $this->_route = $this->route;
+        // $this->route = $this->getResultRoute();
+        //  $this->setRoute($this->getActiveUrl());
+        //  $this->setRoute($this->getActiveUrl());
 
         //  echo $this->resultQuery->createCommand()->rawSql;die;
+
+        $this->attributes = $this->getEavAttributes();
+        $this->activeAttributes = $this->getActiveAttributes();
 
         //Apply attributes
         $this->resultQuery->applyAttributes($this->activeAttributes);
@@ -207,27 +200,23 @@ class Filter extends BaseObject
         $this->resultQuery->applyRangePrices((isset($this->prices[0])) ? $this->prices[0] : 0, (isset($this->prices[1])) ? $this->prices[1] : 0);
 
 
-        if ($model)
-            $this->model = $model;
+        // $this->getCurrentMinPrice();
+        // $this->getCurrentMaxPrice();
 
-
-        $this->getCurrentMinPrice();
-        $this->getCurrentMaxPrice();
-
-        $this->price_min = $this->getMinPrice();
-        $this->price_max = $this->getMaxPrice();
+        // $this->price_min = $this->getMinPrice();
+        // $this->price_max = $this->getMaxPrice();
 
     }
 
-    public function getRoute()
-    {
-        return $this->route;
-    }
+    // public function getRoute()
+    // {
+    //return $this->route;
+    // }
 
-    public function getResultQuery()
-    {
-        return $this->resultQuery;
-    }
+    //public function getResultQuery()
+    //{
+    //     return $this->resultQuery;
+    // }
 
     public function getActiveFilters()
     {
@@ -243,90 +232,31 @@ class Filter extends BaseObject
             }, 3600);
         }
 
-        //$brandsIds = array_filter(explode(',', $request->getQueryParam('brand')));
-
-
         if ($request->getQueryParam('price')) {
             $menuItems['price'] = [
                 'name' => 'price',
                 'label' => Yii::t('shop/default', 'FILTER_BY_PRICE') . ':',
                 'itemOptions' => ['id' => 'current-filter-prices']
             ];
-        }
-        /* if (isset(Yii::$app->controller->prices[0])) {
-             if ($this->price_min > 0) {
-                 $menuItems['price']['items'][] = [
-                     // 'name'=>'min_price',
-                     'value_url' => number_format($this->price_min, 0, '', ''),
-                     'value' => Yii::$app->currency->number_format($this->price_min),
-                     'label' => Html::decode(Yii::t('shop/default', 'FILTER_CURRENT_PRICE_MIN', ['value' => Yii::$app->currency->number_format($this->price_min), 'currency' => Yii::$app->currency->active['symbol']])),
-                     'linkOptions' => ['class' => 'remove', 'data-price' => 'min_price'],
-                     'url' => Yii::$app->urlManager->removeUrlParam('/' . Yii::$app->requestedRoute, 'price', Yii::$app->controller->prices[0])
-                 ];
-             }
-         }
-
-         if (isset(Yii::$app->controller->prices[1])) {
-             if ($this->price_max > 0) {
-                 $menuItems['price']['items'][] = [
-                     // 'name'=>'max_price',
-                     'value_url' => number_format($this->price_max, 0, '', ''),
-                     'value' => Yii::$app->currency->number_format($this->price_max),
-                     'label' => Yii::t('shop/default', 'FILTER_CURRENT_PRICE_MAX', ['value' => Yii::$app->currency->number_format($this->price_max), 'currency' => Yii::$app->currency->active['symbol']]),
-                     'linkOptions' => ['class' => 'remove', 'data-price' => 'max_price'],
-                     'url' => Yii::$app->urlManager->removeUrlParam('/' . Yii::$app->requestedRoute, 'price', Yii::$app->controller->prices[1])
-                 ];
-             }
-         }*/
-
-
-        if (isset(Yii::$app->controller->prices[0]) && isset(Yii::$app->controller->prices[1])) {
-            if ($this->price_min > 0 && $this->price_max) {
-                //  print_r($this->getCurrentMinPrice());die;
-                $menuItems['price']['items'][] = [
-                    // 'name'=>'min_price',
-                    'value_url' => number_format($this->price_min, 0, '', ''),
-                    'value' => Yii::$app->currency->number_format($this->getCurrentMinPrice()) . ' - ' . Yii::$app->currency->number_format($this->getCurrentMaxPrice()),
-                    'label' => Html::decode(Yii::t('shop/default', 'FILTER_CURRENT_PRICE_MIN', ['value' => Yii::$app->currency->number_format($this->getCurrentMinPrice()) . ' до ' . Yii::$app->currency->number_format($this->getCurrentMaxPrice()), 'currency' => Yii::$app->currency->active['symbol']])),
-                    'options' => ['class' => 'remove', 'data' => [
-                        'type' => 'slider',
-                        'slider-max' => round($this->price_max),
-                        'slider-min' => round($this->price_min),
-                        'slider-current-max' => $this->getCurrentMaxPrice(),
-                        'slider-current-min' => $this->getCurrentMinPrice(),
-                    ]],
-                    'url' => Yii::$app->urlManager->removeUrlParam('/' . Yii::$app->requestedRoute, 'price', $this->getCurrentMinPrice() . '-' . $this->getCurrentMaxPrice())
-                ];
-            }
-        }
-
-
-        /*if ($request->getQueryParam('min_price') || $request->getQueryParam('min_price')) {
-            $menuItems['price'] = [
-                'name' => 'price',
-                'label' => Yii::t('shop/default', 'FILTER_BY_PRICE') . ':',
-                'itemOptions' => ['id' => 'current-filter-prices']
-            ];
-        }
-        if ($request->getQueryParam('min_price')) {
+            //if ($this->price_min > 0 && $this->price_max) {
+            //  print_r($this->getCurrentMinPrice());die;
             $menuItems['price']['items'][] = [
                 // 'name'=>'min_price',
-                'value' => Yii::$app->currency->number_format($this->getCurrentMinPrice()),
-                'label' => Yii::t('shop/default', 'FILTER_CURRENT_PRICE_MIN', ['value' => Yii::$app->currency->number_format($this->getCurrentMinPrice()), 'currency' => Yii::$app->currency->active['symbol']]),
-                'linkOptions' => ['class' => 'remove', 'data-price' => 'min_price'],
-                'url' => Yii::$app->urlManager->removeUrlParam('/' . Yii::$app->requestedRoute, 'min_price')
+                'value_url' => number_format($this->price_min, 0, '', ''),
+                'value' => Yii::$app->currency->number_format($this->getCurrentMinPrice()) . ' - ' . Yii::$app->currency->number_format($this->getCurrentMaxPrice()),
+                'label' => Html::decode(Yii::t('shop/default', 'FILTER_CURRENT_PRICE_MIN', ['value' => Yii::$app->currency->number_format($this->getCurrentMinPrice()) . ' до ' . Yii::$app->currency->number_format($this->getCurrentMaxPrice()), 'currency' => Yii::$app->currency->active['symbol']])),
+                'options' => ['class' => 'remove', 'data' => [
+                    'type' => 'slider',
+                    'slider-max' => round($this->price_max),
+                    'slider-min' => round($this->price_min),
+                    'slider-current-max' => $this->getCurrentMaxPrice(),
+                    'slider-current-min' => $this->getCurrentMinPrice(),
+                ]],
+                'url' => Yii::$app->urlManager->removeUrlParam('/' . Yii::$app->requestedRoute, 'price', $this->getCurrentMinPrice() . '-' . $this->getCurrentMaxPrice())
             ];
+            // }
         }
 
-        if ($request->getQueryParam('max_price')) {
-            $menuItems['price']['items'][] = [
-                // 'name'=>'max_price',
-                'value' => Yii::$app->currency->number_format($this->getCurrentMaxPrice()),
-                'label' => Yii::t('shop/default', 'FILTER_CURRENT_PRICE_MAX', ['value' => Yii::$app->currency->number_format($this->getCurrentMaxPrice()), 'currency' => Yii::$app->currency->active['symbol']]),
-                'linkOptions' => array('class' => 'remove', 'data-price' => 'max_price'),
-                'url' => Yii::$app->urlManager->removeUrlParam('/' . Yii::$app->requestedRoute, 'max_price')
-            ];
-        }*/
 
         if (Yii::$app->controller->route == 'shop/catalog/view') {
             if (!empty($brands)) {
@@ -499,36 +429,36 @@ class Filter extends BaseObject
     {
 
         $attributes = $this->getRootCategoryAttributes();
-        if (Yii::$app->request->isAjax) {
-            die('ss');
-        }
+
         $data = [];
-        foreach ($attributes as $key => $attribute) {
+        if ($attributes) {
+            foreach ($attributes as $key => $attribute) {
 
-            $data[$key] = [
-                'title' => $attribute['title'],
-                'selectMany' => (boolean)$attribute['selectMany'],
-                'type' => (int)$attribute['type'],
-                'key' => $attribute['key'],
-                'filters' => []
-            ];
-            foreach ($attribute['filters'] as $option) {
-                //  print_r($option);die;
-                $count = $this->countAttributeProducts2($key, $option['queryParam']);
-                // $data[$key][$option['queryParam']]=$count;
-
-                $data[$key]['filters'][] = [
-                    'title' => $option['title'],
-                    'count' => (int)$count,
-                    'count_text' => $count,
-
-                    //  'abbreviation' => ($attribute->abbreviation) ? $attribute->abbreviation : null,
-                    'key' => $key,
-                    'queryParam' => $option['queryParam'],
+                $data[$key] = [
+                    'title' => $attribute['title'],
+                    'selectMany' => (boolean)$attribute['selectMany'],
+                    'type' => (int)$attribute['type'],
+                    'key' => $attribute['key'],
+                    'filters' => []
                 ];
+                foreach ($attribute['filters'] as $option) {
+                    //  print_r($option);die;
+                    $count = $this->countAttributeProducts2($key, $option['queryParam']);
+                    // $data[$key][$option['queryParam']]=$count;
+
+                    $data[$key]['filters'][] = [
+                        'title' => $option['title'],
+                        'count' => (int)$count,
+                        'count_text' => $count,
+
+                        //  'abbreviation' => ($attribute->abbreviation) ? $attribute->abbreviation : null,
+                        'key' => $key,
+                        'queryParam' => $option['queryParam'],
+                    ];
+                }
+                $data[$key]['totalCount'] = 11;
+                $data[$key]['filtersCount'] = count($data[$key]['filters']);
             }
-            $data[$key]['totalCount'] = 11;
-            $data[$key]['filtersCount'] = count($data[$key]['filters']);
         }
         // CMS::dump($data);die;
         return $data;
@@ -604,7 +534,7 @@ class Filter extends BaseObject
     {
 
         /** @var Product|ActiveQuery $model */
-        $model = clone $this->testQuery;
+        $model = clone $this->query;
 
         $model->groupBy = false;
         $model->select('COUNT(*)');
@@ -656,7 +586,7 @@ class Filter extends BaseObject
     {
 
         /** @var Product|ActiveQuery $model */
-        $model = clone $this->testQuery;
+        $model = clone $this->query;
 
         $model->groupBy = false;
         $model->select('COUNT(*)');
@@ -704,7 +634,7 @@ class Filter extends BaseObject
     public function countRootAttributeProducts($attribute, $option)
     {
         /** @var Product|ActiveQuery $model */
-        $model = clone $this->testQuery;
+        $model = clone $this->query;
 
         $model->groupBy = false;
         $model->select('COUNT(*)');
@@ -797,37 +727,23 @@ class Filter extends BaseObject
         if (is_array($this->_eavAttributes))
             return $this->_eavAttributes;
 
-        //CMS::dump($this->currentQuery);die;
-        // Find category types
-        $queryCategoryTypes = Product::find();
+
+        $queryCategoryTypes = clone $this->query; //Product::find();
         // $queryCategoryTypes = $this->currentQuery;
-        if ($this->model instanceof Category) {
-            $queryCategoryTypes->applyCategories($this->model);
-        } elseif ($this->model instanceof Brand) {
-            $queryCategoryTypes->applyBrands($this->model->id);
-        }
+        //if ($this->model instanceof Category) {
+        //     $queryCategoryTypes->applyCategories($this->model);
+        // } elseif ($this->model instanceof Brand) {
+        //     $queryCategoryTypes->applyBrands($this->model->id);
+        // }
 
         //$queryCategoryTypes->published();
         $queryCategoryTypes->select(Product::tableName() . '.type_id');
         $queryCategoryTypes->groupBy(Product::tableName() . '.type_id');
         $queryCategoryTypes->distinct(true);
-//echo $queryCategoryTypes->createCommand()->rawSql;die;
+
         $typesIds = $queryCategoryTypes->createCommand()->queryColumn();
 
-        // print_r($typesIds);die;
-        /*$typesIds = Product::getDb()->cache(function () use ($queryCategoryTypes) {
-            return $queryCategoryTypes->createCommand()->queryColumn();
-        }, 3600);*/
 
-        // Find attributes by type
-        /* $query = Attribute::getDb()->cache(function () use ($typesIds) {
-             return Attribute::find()
-                 ->andWhere(['IN', TypeAttribute::tableName() . '.type_id', $typesIds])
-                 ->useInFilter()
-                 ->addOrderBy(['ordern' => SORT_DESC])
-                 ->joinWith(['types', 'options'])
-                 ->all();
-         }, 3600);*/
         $query = Attribute::find()
             //->where(['IN', '`types`.`type_id`', $typesIds])
             ->where(['IN', '`type`.`type_id`', $typesIds])
@@ -842,12 +758,7 @@ class Filter extends BaseObject
 
         $this->_eavAttributes = [];
         foreach ($result as $attr) {
-
-            // if(in_array($attr->name,$this->accessAttributes)){
-//echo 'finder';die;
             $this->_eavAttributes[$attr->name] = $attr;
-            //  }
-
         }
         return $this->_eavAttributes;
     }
@@ -860,9 +771,9 @@ class Filter extends BaseObject
     {
         // if ($this->_minPrice !== null)
         //    return $this->_minPrice;
-
+        $res = clone $this->query;
         // if ($this->currentQuery) {
-        $result = $this->query->aggregatePrice('MIN')->asArray()->one();
+        $result = $res->aggregatePrice('MIN')->asArray()->one();
         // if (isset($result['aggregation_price'])) {
         return $result['aggregation_price'];
         // }
@@ -908,7 +819,9 @@ class Filter extends BaseObject
      */
     public function getMaxPrice()
     {
-        $result = $this->query->aggregatePrice('MAX')->asArray()->one();
+        $res = clone $this->query;
+
+        $result = $res->aggregatePrice('MAX')->asArray()->one();
         // if (isset($result['aggregation_price'])) {
         return $result['aggregation_price'];
         // }
@@ -946,7 +859,10 @@ class Filter extends BaseObject
     public function getCategoryBrands()
     {
 
-        $queryClone = clone $this->testQuery;
+        $queryClone = clone $this->query;
+
+        //    echo $queryClone->createCommand()->rawSql;die;
+
         $queryMan = $queryClone->addSelect(['brand_id', Product::tableName() . '.id']);
         $queryMan->joinWith([
             'brand' => function (\yii\db\ActiveQuery $query) {
@@ -986,13 +902,14 @@ class Filter extends BaseObject
                 $m = $m->brand;
 
                 if ($m) {
-                    $query = clone $this->testQuery;
+                    $query = clone $this->query;
+                    // echo $query->createCommand()->rawSql;die;
                     // $query = Product::find();
                     //  $query->published();
-                    if ($this->model) {
-                        // $query->applyCategories($this->model);
-                        //$query->andWhere([Product::tableName() . '.main_category_id' => $this->model->id]);
-                    }
+
+                    // $query->applyCategories($this->model);
+                    //$query->andWhere([Product::tableName() . '.main_category_id' => $this->model->id]);
+
 
                     //$q->applyMinPrice($this->convertCurrency(Yii::app()->request->getQuery('min_price')))
                     //$q->applyMaxPrice($this->convertCurrency(Yii::app()->request->getQuery('max_price')))
@@ -1053,10 +970,6 @@ class Filter extends BaseObject
 
         //echo $query->createCommand()->rawSql;die;
 
-        if ($this->model) {
-            // $query->applyCategories($this->model);
-            //$query->andWhere([Product::tableName() . '.main_category_id' => $this->model->id]);
-        }
 
         if (Yii::$app->request->get('q') && Yii::$app->requestedRoute == 'shop/search/index') {
             //$query->applySearch(Yii::$app->request->get('q'));
@@ -1064,7 +977,8 @@ class Filter extends BaseObject
         //  $query->published();
 
 
-        $queryClone = clone $query;
+        $queryClone = clone $this->query;
+
         $queryMan = $queryClone->addSelect(['brand_id', Product::tableName() . '.id']);
         $queryMan->joinWith([
             'brand' => function (\yii\db\ActiveQuery $query) {
@@ -1129,7 +1043,7 @@ class Filter extends BaseObject
                         return $query->count();
                     }, 3600 * 24, $dependency);*/
 
-                    $query = clone $this->testQuery; //resultQuery
+                    $query = clone $this->query; //resultQuery
                     $query->orderBy = false;
                     $s = false;
                     if (Yii::$app->request->get('brand')) {

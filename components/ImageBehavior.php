@@ -327,18 +327,25 @@ class ImageBehavior extends \yii\base\Behavior
     }
 
 
+    public function getModelSubDir($model)
+    {
+
+        $modelName = $this->getShortClass($model);
+        $modelDir = \yii\helpers\Inflector::pluralize($modelName) . '/' . $model->id;
+        return $modelDir;
+    }
     /**
      * Clear all images cache (and resized copies)
      * @return bool
      */
     public function clearImagesCache()
     {
-        $cachePath = Yii::$app->getModule('images')->getCachePath();
-        $subdir = Yii::$app->getModule('images')->getModelSubDir($this->owner);
 
-        $dirToRemove = $cachePath . '/' . $subdir;
+        $subdir = $this->getModelSubDir($this->owner);
 
-        if (preg_match('/' . preg_quote($cachePath, '/') . '/', $dirToRemove)) {
+        $dirToRemove = Yii::getAlias($this->savePath) . '/' . $subdir;
+
+        if (preg_match('/' . preg_quote(Yii::getAlias($this->savePath), '/') . '/', $dirToRemove)) {
             BaseFileHelper::removeDirectory($dirToRemove);
             //exec('rm -rf ' . $dirToRemove);
             return true;

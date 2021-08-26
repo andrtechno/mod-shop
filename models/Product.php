@@ -323,7 +323,7 @@ class Product extends ActiveRecord
         // $small = $this->getMainImage($size);
         //  $big = $this->getMainImage();
 
-        return Html::a(Html::img($small, ['alt' => $mainImage->alt_title, 'class' => 'img-thumbnail']), $big, ['title' => $this->name, 'data-fancybox' => 'gallery']);
+        return Html::a(Html::img($small, ['alt' => (isset($mainImage->alt_title))?$mainImage->alt_title:$this->name, 'class' => 'img-thumbnail']), $big, ['title' => $this->name, 'data-fancybox' => 'gallery']);
     }
 
 

@@ -42,12 +42,21 @@ php yii migrate --migrationPath=vendor/panix/mod-shop/migrations
 ```
 
 
-### Роутинг и параметры
-- /catalog
-- /catalog/<category_slug>
-- /sales `$categories`
-- /sales/<category_slug> `$categories`
-- /new 
+
+
+#### Роутинг и параметры
+| Props                     | View params       | Description                   |
+|---------------------------|:-----------------:|-------------------------------|
+| /catalog                  | -                 | Каталог                       |
+| /catalog/<category_slug>  | -                 | Каталог категории             |
+| /sales                    | `$categories`     | Скидки                        |
+| /sales/<category_slug>    | `$categories`     | Скидки категории              |
+| /new                      | -                 | Новинки                       |
+| /brand                    | -                 | Бренды                        |
+| /brand/<brand_slug>       | -                 | Бренд                         |
+| /search/q/<query>         | -                 | Поиск товаров                 |
+
+
 
 ### Author & License
 - [Author](https://github.com/andrtechno)

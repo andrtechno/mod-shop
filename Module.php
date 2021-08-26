@@ -20,7 +20,7 @@ class Module extends WebModule implements BootstrapInterface
     public $searchAttribute = 'sku';
     public $filterViewCurrent = '@shop/widgets/filtersnew/views/current';
     public $reviewsCount = 0;
-    public $viewList = ['grid','list'];
+    public $viewList = ['grid', 'list'];
 
     /*
     public function getImage($dirtyAlias)
@@ -73,39 +73,39 @@ class Module extends WebModule implements BootstrapInterface
      *
      * @param $notParsedSize
      * @return array|null
-
-    public function parseSize($notParsedSize)
-    {
-        $sizeParts = explode('x', $notParsedSize);
-        $part1 = (isset($sizeParts[0]) and $sizeParts[0] != '');
-        $part2 = (isset($sizeParts[1]) and $sizeParts[1] != '');
-        if ($part1 && $part2) {
-            if (intval($sizeParts[0]) > 0 &&
-                intval($sizeParts[1]) > 0
-            ) {
-                $size = [
-                    'width' => intval($sizeParts[0]),
-                    'height' => intval($sizeParts[1])
-                ];
-            } else {
-                $size = null;
-            }
-        } elseif ($part1 && !$part2) {
-            $size = [
-                'width' => intval($sizeParts[0]),
-                'height' => null
-            ];
-        } elseif (!$part1 && $part2) {
-            $size = [
-                'width' => null,
-                'height' => intval($sizeParts[1])
-            ];
-        } else {
-            throw new \Exception('Something bad with size, sorry!');
-        }
-
-        return $size;
-    }*/
+     *
+     * public function parseSize($notParsedSize)
+     * {
+     * $sizeParts = explode('x', $notParsedSize);
+     * $part1 = (isset($sizeParts[0]) and $sizeParts[0] != '');
+     * $part2 = (isset($sizeParts[1]) and $sizeParts[1] != '');
+     * if ($part1 && $part2) {
+     * if (intval($sizeParts[0]) > 0 &&
+     * intval($sizeParts[1]) > 0
+     * ) {
+     * $size = [
+     * 'width' => intval($sizeParts[0]),
+     * 'height' => intval($sizeParts[1])
+     * ];
+     * } else {
+     * $size = null;
+     * }
+     * } elseif ($part1 && !$part2) {
+     * $size = [
+     * 'width' => intval($sizeParts[0]),
+     * 'height' => null
+     * ];
+     * } elseif (!$part1 && $part2) {
+     * $size = [
+     * 'width' => null,
+     * 'height' => intval($sizeParts[1])
+     * ];
+     * } else {
+     * throw new \Exception('Something bad with size, sorry!');
+     * }
+     *
+     * return $size;
+     * }*/
 
     /**
      * @inheritdoc
@@ -152,30 +152,52 @@ class Module extends WebModule implements BootstrapInterface
                  //  'pattern' => ''
              ];*/
 
-          // $rules['sales/page/<page:\d+>/per-page/<per-page:\d+>'] = 'shop/catalog/sales';
+            // $rules['sales/page/<page:\d+>/per-page/<per-page:\d+>'] = 'shop/catalog/sales';
+
+
+
+
+
 
 
             foreach ($this->getAllPaths() as $path) {
+
+                $pattern = [];
+                $pathNew = explode('/', $path);
+
+                foreach ($pathNew as $pat) {
+                    $pattern[] = '[0-9a-zA-Z_\-]+';
+                }
+                $pattern = implode('\/', $pattern);
+
                 $rules[] = [
                     'class' => 'panix\mod\shop\components\rules\CategoryUrlRule',
                     'route' => 'shop/catalog/view',
                     'defaults' => ['slug' => $path],
                     //'suffix'=>'.html',
-                    'pattern' => "catalog/<alias:[0-9a-zA-Z_\-]+>", ///<alias:[\w]+>
+                    'pattern' => "catalog/<slug:[0-9a-zA-Z_\-]+>", ///<alias:[\w]+>
                 ];
 
 
-                $rules[] = [
+              /*  $rules[] = [
                     'class' => 'panix\mod\shop\components\rules\CategoryUrlRule',
                     'route' => 'shop/catalog/sales',
                     'defaults' => ['slug' => $path],
                     'index'=>'sales',
                     //'suffix'=>'.html',
-                    'pattern' => "sales/<alias:[0-9a-zA-Z_\-]+>", ///<alias:[\w]+>
-                ];
+                    'pattern' => "sales/<slug:$path>", ///<alias:[\w]+>
+                ];*/
 
 
             }
+
+            $rules[] = [
+                'class' => 'panix\mod\shop\components\rules\BaseUrlRule',
+                'route' => 'shop/catalog/sales',
+                'index' => 'sales',
+                'pattern' => 'sales/category/<category:\d+>',
+            ];
+
             $rules[] = [
                 'class' => 'panix\mod\shop\components\rules\BaseUrlRule',
                 'route' => 'shop/catalog/sales',
@@ -183,27 +205,37 @@ class Module extends WebModule implements BootstrapInterface
                 'pattern' => 'sales/page/<page:\d+>/per-page/<per-page:\d+>',
             ];
             $rules['sales/page/<page:\d+>'] = 'shop/catalog/sales';
+
             $rules[] = [
                 'class' => 'panix\mod\shop\components\rules\BaseUrlRule',
                 'route' => 'shop/catalog/sales',
                 'index' => 'sales',
                 'pattern' => 'sales',
             ];
-          //  $rules['sales'] = 'shop/catalog/sales';
 
+            //  $rules['sales'] = 'shop/catalog/sales';
 
-
-
-
-
-
-
+//new
+            $rules[] = [
+                'class' => 'panix\mod\shop\components\rules\BaseUrlRule',
+                'route' => 'shop/catalog/new',
+                'index' => 'new',
+                'pattern' => 'new/category/<category:\d+>',
+            ];
 
             $rules[] = [
                 'class' => 'panix\mod\shop\components\rules\BaseUrlRule',
                 'route' => 'shop/catalog/new',
                 'index' => 'new',
-                'pattern' => 'new'
+                'pattern' => 'new/page/<page:\d+>/per-page/<per-page:\d+>',
+            ];
+            $rules['new/page/<page:\d+>'] = 'shop/catalog/new';
+
+            $rules[] = [
+                'class' => 'panix\mod\shop\components\rules\BaseUrlRule',
+                'route' => 'shop/catalog/new',
+                'index' => 'new',
+                'pattern' => 'new',
             ];
 
             /////////////////////////////////////////////
@@ -236,8 +268,8 @@ class Module extends WebModule implements BootstrapInterface
         ]);
 
 
-
     }
+
 
     public function getAllPaths()
     {

@@ -56,9 +56,9 @@ class FiltersWidget extends Widget
     {
         $view = $this->getView();
 
-        $this->priceMax = $this->data->price_max;
-        $this->priceMin = $this->data->price_min;
-
+        $this->priceMax = ceil($this->data->getResultMaxPrice());
+        $this->priceMin = floor($this->data->getResultMinPrice());
+//CMS::dump($this->data->getResultMaxPrice());die;
         if (Yii::$app->request->get('price')) {
             $this->prices = explode('-', Yii::$app->request->get('price'));
         }
@@ -74,7 +74,7 @@ class FiltersWidget extends Widget
 
     public function run()
     {
-        $brands = $this->getCategoryBrands();
+      //  $brands = $this->data->getCategoryBrands();
 
 
         $active = $this->data->getActiveFilters();
@@ -107,18 +107,20 @@ class FiltersWidget extends Widget
         //   echo Html::endForm();
 //echo $this->data->getCurrentMinPrice();die;
         // echo Html::endTag('div');
-     //   print_r($this->model->id);die;
+   //   print_r($this->model);die;
+
         echo $this->render('default', [
             'model'=>$this->model,
             'currentUrl' => $this->view->context->currentUrl,
             'refreshUrl' => (($this->model) ? $this->model->getUrl() : ['/' . Yii::$app->requestedRoute]),
-            'priceMin' => $this->priceMin,
-            'priceMax' => $this->priceMax,
-            'currentPriceMin' => $this->data->getCurrentMinPrice(),
-            'currentPriceMax' => $this->data->getCurrentMaxPrice(),
+            'priceMin' => floor($this->priceMin),
+            'priceMax' => ceil($this->priceMax),
+            'currentPrice'=>$this->prices,
+           // 'currentPriceMin' => $this->data->getCurrentMinPrice(),
+          //  'currentPriceMax' => $this->data->getCurrentMaxPrice(),
             'active' => $active,
             'attributes' => $this->data->getCategoryAttributes(),
-            'brands' => $brands
+            'brands' =>  (Yii::$app->controller->route != 'shop/brand/view')?$this->data->getCategoryBrands():[]
         ]);
         // var category_id = {$this->model->id};
         $this->view->registerJs("
@@ -170,7 +172,7 @@ class FiltersWidget extends Widget
     }
 
 
-    public function getCategoryBrands()
+    public function _____getCategoryBrands()
     {
 
         $query = Product::find();
@@ -224,21 +226,28 @@ class FiltersWidget extends Widget
                 $m = $m->brand;
 
                 if ($m) {
-                    $query = Product::find();
-                    $query->published();
+                    $query = Product::find()->published();
                     if ($this->model) {
                         $query->applyCategories($this->model);
                         //$query->andWhere([Product::tableName() . '.main_category_id' => $this->model->id]);
                     }
-
+                    $brandsList[] = $m->id;
+                    $query->applyBrands($brandsList);
                     //$q->applyMinPrice($this->convertCurrency(Yii::app()->request->getQuery('min_price')))
                     //$q->applyMaxPrice($this->convertCurrency(Yii::app()->request->getQuery('max_price')))
-                    $query->applyBrands($m->id);
+                  //  $query->applyBrands($m->id);
 
                     if (Yii::$app->request->get('q') && Yii::$app->requestedRoute == 'shop/search/index') {
                         $query->applySearch(Yii::$app->request->get('q'));
                     }
 
+
+                    $query->applyRangePrices((isset($this->prices[0])) ? $this->prices[0] : 0, (isset($this->prices[1])) ? $this->prices[1] : 0);
+                    if (Yii::$app->request->get('brand')) {
+                        $brandsList = explode(',', Yii::$app->request->get('brand', ''));
+                        //$query->applyBrands($brands);
+                    }
+                   // print_r($brandsList);die;
 
                     /*$dependencyQuery = $query;
                     $dependencyQuery->select('COUNT(*)');
@@ -252,11 +261,13 @@ class FiltersWidget extends Widget
 
 
                     $query->orderBy = false;
-                    $count = $query->cache($this->cacheDuration)->count();
+                    //echo $query->createCommand()->rawSql;die;
+                    $count = $query->count();
 
                     $data['filters'][] = [
                         'title' => $m->name,
                         'count' => (int)$count,
+                        'count_text' => $count,
                         'key' => 'brand',
                         'queryParam' => $m->id,
                     ];
@@ -284,6 +295,7 @@ class FiltersWidget extends Widget
         if (isset($filter['key'])) {
             $this->tagCountOptions['id'] = 'filter-count-' . $filter['key'] . '-' . $filter['queryParam'];
         }
+
         $result = ($filter['count'] > 0) ? $filter['count_text'] : 0;
         return ($this->count) ? ' ' . Html::tag($this->tagCount, $result, $this->tagCountOptions) : '';
     }
