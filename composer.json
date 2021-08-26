@@ -40,5 +40,14 @@
     "classmap": [
       ""
     ]
+  },
+  "extra": {
+    "panix\\composer\\Installer\\Installer::postCreateProject": {
+      "copy": [
+        {
+          "messages": "messages_root"
+        }
+      ]
+    },
   }
 }
