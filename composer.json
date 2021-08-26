@@ -42,7 +42,7 @@
     ]
   },
   "extra": {
-      "widgets": "panix\\mod\\shop\\widgets",
-      "blocks": "panix\\mod\\shop\\blocks"
+      "widgets": ["panix\\mod\\shop\\widgets"],
+      "blocks": ["panix\\mod\\shop\\blocks\\popular\\PopularBlock"]
   }
 }
