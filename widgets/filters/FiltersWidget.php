@@ -119,7 +119,7 @@ class FiltersWidget extends Widget
            // 'currentPriceMin' => $this->data->getCurrentMinPrice(),
           //  'currentPriceMax' => $this->data->getCurrentMaxPrice(),
             'active' => $active,
-            'attributes' => $this->data->getCategoryAttributes(),
+            'attributes' => $this->data->getRootCategoryAttributes(),
             'brands' =>  (Yii::$app->controller->route != 'shop/brand/view')?$this->data->getCategoryBrands():[]
         ]);
         // var category_id = {$this->model->id};

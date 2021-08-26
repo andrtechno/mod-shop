@@ -116,7 +116,7 @@ class FilterV2 extends Component
         $slides = Yii::$app->request->post('slide');
         $brands = $this->getActiveBrands();
         foreach ($this->getActiveAttributes() as $attribute => $values) {
-            if (is_array($values)){
+            if (is_array($values)) {
                 $this->_route[$attribute] = implode(',', $values);
             }
 
@@ -288,10 +288,13 @@ class FilterV2 extends Component
             foreach ($activeAttributes as $attributeName => $value) {
                 if (isset($this->eavAttributes[$attributeName])) {
                     $attribute = $this->eavAttributes[$attributeName];
+
+
                     $menuItems[$attributeName] = [
                         'name' => $attribute->name,
                         'label' => $attribute->title . ':',
-                        'itemOptions' => ['id' => 'current-filter-' . $attribute->name]
+                        'itemOptions' => ['id' => 'current-filter-' . $attribute->name],
+                        'items' => []
                     ];
                     foreach ($attribute->options as $option) {
                         if (isset($activeAttributes[$attribute->name]) && in_array($option->id, $activeAttributes[$attribute->name])) {
@@ -309,6 +312,11 @@ class FilterV2 extends Component
                             sort($menuItems[$attributeName]['items']);
                         }
                     }
+                    //Если нет не одного итема, то делаем пустой пассив.
+                    if (!$menuItems[$attributeName]['items']) {
+                        $menuItems = [];
+                    }
+
                 }
             }
         }
@@ -383,10 +391,11 @@ class FilterV2 extends Component
     {
 
         //   print_r($this->cacheKey);die;
-        //  $data = [];
+          $data = [];
         $cacheData = [];
-        $data = Yii::$app->cache->get($this->cacheKey);
-        if ($data === false) {
+
+       // $data = Yii::$app->cache->get($this->cacheKey);
+        //if ($data === false) {
             $active = $this->activeAttributes;
 
             $first = array_key_first($active);
@@ -417,10 +426,12 @@ class FilterV2 extends Component
                         ];
                     }
                 }
+                $data[$attribute->name]['totalCount'] = 11;
+                $data[$attribute->name]['filtersCount'] = count($data[$attribute->name]['filters']);
             }
 
-            Yii::$app->cache->set($this->cacheKey, $data, Yii::$app->db->queryCacheDuration);
-        }
+            //Yii::$app->cache->set($this->cacheKey, $data, Yii::$app->db->queryCacheDuration);
+       // }
         //  CMS::dump($data);die;
         return $data;
     }
@@ -641,8 +652,19 @@ class FilterV2 extends Component
 
         $newData = [];
         $newData[$attribute->name][] = $option->id;
+
+        foreach ($this->activeAttributes as $key => $p) {
+            if ($key != $attribute->name) {
+                $newData[$key] = $p;
+            }
+        }
+
+        if ($attribute->name == 'strana_proizvoditela') {
+//echo $model->createCommand()->rawSql;die;
+        }
         if ($newData)
             $model->getFindByEavAttributes2($newData);
+
 
         return $model->createCommand()->queryScalar();
     }
@@ -740,6 +762,7 @@ class FilterV2 extends Component
         $queryCategoryTypes->select(Product::tableName() . '.type_id');
         $queryCategoryTypes->groupBy(Product::tableName() . '.type_id');
         $queryCategoryTypes->distinct(true);
+        $queryCategoryTypes->orderBy=false;
 
         $typesIds = $queryCategoryTypes->createCommand()->queryColumn();
 
@@ -751,6 +774,7 @@ class FilterV2 extends Component
             ->distinct(true)
             ->useInFilter()
             ->sort()
+            ->orderBy(null)
             ->joinWith(['types type', 'options']);
 
 

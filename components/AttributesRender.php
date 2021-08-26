@@ -63,10 +63,17 @@ class AttributesRender extends Widget
                     ];
                 }
             }
-            $data[$model->title] = $value;
+
+            $data[$model->name] = [
+                'id' => $this->_attributes[$model->name],
+                'type' => $model->type,
+                'hasUrl' => in_array($model->type, [Attribute::TYPE_CHECKBOX_LIST, Attribute::TYPE_SELECT_MANY, Attribute::TYPE_DROPDOWN]),
+                'title' => $model->title,
+                'value' => $value
+            ];
         }
 
-        return $this->render('@shop/views/product/'.$this->view, [
+        return $this->render('@shop/views/product/' . $this->view, [
             'data' => $data,
             'model' => $this->model,
             'groups' => $groups,

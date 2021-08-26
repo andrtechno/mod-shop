@@ -1,9 +1,10 @@
 <?php
+use yii\helpers\Html;
+
 /**
  * @var $groups \panix\mod\shop\models\AttributeGroup
+ * @var $this \yii\web\View
  */
-
-use yii\helpers\Html;
 
 ?>
 <div class="row">
@@ -34,7 +35,7 @@ use yii\helpers\Html;
                             </span>
                         </td>
                         <td class="text-right">
-                            <span class="font-weight-bold"><?= Html::encode($item['value']) ?></span>
+                            <span class="font-weight-bold"><?= Html::a(Html::encode($item['value']),[]); ?></span>
                         </td>
                     </tr>
                 <?php } ?>
