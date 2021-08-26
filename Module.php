@@ -163,14 +163,14 @@ class Module extends WebModule implements BootstrapInterface
                 ];
 
 
-                $rules[] = [
+                /*$rules[] = [
                     'class' => 'panix\mod\shop\components\rules\CategoryUrlRule',
                     'route' => 'shop/catalog/sales',
                     'defaults' => ['slug' => $path],
                     'index'=>'sales',
                     //'suffix'=>'.html',
                     'pattern' => "sales/<alias:[0-9a-zA-Z_\-]+>", ///<alias:[\w]+>
-                ];
+                ];*/
 
 
             }
@@ -178,9 +178,17 @@ class Module extends WebModule implements BootstrapInterface
                 'class' => 'panix\mod\shop\components\rules\BaseUrlRule',
                 'route' => 'shop/catalog/sales',
                 'index' => 'sales',
+                'pattern' => 'sales/category/<category:\d+>',
+            ];
+
+            $rules[] = [
+                'class' => 'panix\mod\shop\components\rules\BaseUrlRule',
+                'route' => 'shop/catalog/sales',
+                'index' => 'sales',
                 'pattern' => 'sales/page/<page:\d+>/per-page/<per-page:\d+>',
             ];
             $rules['sales/page/<page:\d+>'] = 'shop/catalog/sales';
+
             $rules[] = [
                 'class' => 'panix\mod\shop\components\rules\BaseUrlRule',
                 'route' => 'shop/catalog/sales',

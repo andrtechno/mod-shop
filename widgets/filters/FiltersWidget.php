@@ -1,21 +1,26 @@
 <?php
 
-namespace panix\mod\shop\widgets\filters;
+namespace panix\mod\shop\widgets\filtersnew2;
 
+use panix\engine\CMS;
 use panix\mod\shop\models\Attribute;
+use panix\mod\shop\models\traits\EavQueryTrait;
 use yii\caching\DbDependency;
-use yii\caching\DbQueryDependency;
 use yii\db\ActiveQuery;
-use yii\db\Query;
-use yii\db\QueryInterface;
 use yii\helpers\Html;
 use Yii;
+use panix\mod\shop\models\Category;
 use panix\mod\shop\models\Product;
 use panix\mod\shop\models\Brand;
+use panix\engine\data\Widget;
 
-class FiltersWidget extends \panix\engine\data\Widget
+/**
+ * Class FiltersWidget
+ * @package panix\mod\shop\widgets\filtersnew2
+ */
+class FiltersWidget extends Widget
 {
-
+    public $data;
     /**
      * @var array of Attribute models
      */
@@ -23,149 +28,101 @@ class FiltersWidget extends \panix\engine\data\Widget
     //public $countAttr = true;
     //public $countBrand = true;
     //public $prices = [];
+    public $count=false;
     public $tagCount = 'sup';
     public $tagCountOptions = ['class' => 'filter-count'];
     //public $showEmpty = false;
-
+    public $searchItem = 20;
 
     /**
-     * @var Query
+     * @var \panix\mod\shop\models\query\CategoryQuery
      */
     public $model;
+    public $priceView = 'price';
+    public $brandView = 'brand';
+    public $attributeView = 'attributes';
+    public $query;
+    public $cacheDuration = 86400;
+
 
     /**
-     * @var string min price in the query
+     * @var string min/max price in the query
      */
-    // private $_currentMinPrice, $_currentMaxPrice = null;
-    public $_maxprice, $_minprice;
+    protected $_currentPriceMin, $_currentPriceMax = null;
+    public $priceMin, $priceMax;
+    protected $prices = [];
 
     public function init()
     {
-
         $view = $this->getView();
-        $this->_maxprice = $view->context->maxprice;
-        $this->_minprice = $view->context->minprice;
+
+        $this->priceMax = $this->data->price_max;
+        $this->priceMin = $this->data->price_min;
+
+        if (Yii::$app->request->get('price')) {
+            $this->prices = explode('-', Yii::$app->request->get('price'));
+        }
+
+        FilterAsset::register($view);
     }
 
 
     /**
      * @return array of attributes used in category
      */
-    public function getCategoryAttributes()
-    {
-        $data = [];
 
-        foreach ($this->attributes as $attribute) {
-            $data[$attribute->name] = array(
-                'title' => $attribute->title,
-                'selectMany' => (boolean)$attribute->select_many,
-                'filters' => array()
-            );
-            foreach ($attribute->options as $option) {
-                $count = $this->countAttributeProducts($attribute, $option);
-                if ($count) {
-                    $data[$attribute->name]['filters'][] = array(
-                        'title' => $option->value,
-                        'count' => $count,
-                        'queryKey' => $attribute->name,
-                        'queryParam' => $option->id,
-                    );
-                }
-            }
-        }
-        return $data;
-    }
-
-    public function countAttributeProducts2($attribute, $option)
-    {
-        $model = Product::find();
-        //$model->attachBehaviors($model->behaviors());
-        $model->published();
-        //$model->applyCategories($this->model);
-        if ($this->model)
-            $model->andWhere([Product::tableName() . '.main_category_id' => $this->model->id]);
-        if (Yii::$app->request->get('min_price'))
-            $model->applyMinPrice($this->convertCurrency(Yii::$app->request->getQueryParam('min_price')));
-
-        if (Yii::$app->request->get('max_price'))
-            $model->applyMaxPrice($this->convertCurrency(Yii::$app->request->getQueryParam('max_price')));
-
-        if (Yii::$app->request->get('brand'))
-            $model->applyBrands(explode(',', Yii::$app->request->get('brand')));
-
-        //$data = array($attribute->name => $option->id);
-        $current = $this->view->context->activeAttributes;
-
-        $newData = [];
-
-        foreach ($current as $key => $row) {
-            if (!isset($newData[$key]))
-                $newData[$key] = array();
-            if (is_array($row)) {
-                foreach ($row as $v)
-                    $newData[$key][] = $v;
-            } else
-                $newData[$key][] = $row;
-        }
-        $newData[$attribute->name][] = $option->id;
-
-        //echo $q->createCommand()->getRawSql();die;
-        return $model->withEavAttributes($newData)->count();
-
-    }
-
-    public function countAttributeProducts($attribute, $option)
-    {
-        $model = Product::find();
-        //$model->attachBehaviors($model->behaviors());
-
-        if ($this->model) {
-            $model->applyCategories($this->model);
-            //$model->andWhere([Product::tableName() . '.main_category_id' => $this->model->id]);
-        }
-
-
-
-        if (Yii::$app->request->get('q') && Yii::$app->requestedRoute == 'shop/category/search') {
-            $model->applySearch(Yii::$app->request->get('q'));
-        }
-
-        $model->published();
-        $newData = [];
-        $newData[$attribute->name][] = $option->id;
-        $model->withEavAttributes($newData);
-
-
-        $dependencyQuery = $model;
-        $dependencyQuery->select('COUNT(*)');
-        $dependency = new DbDependency([
-            'sql' => $dependencyQuery->createCommand()->rawSql,
-        ]);
-
-
-        $count = Attribute::getDb()->cache(function () use ($model) {
-            return $model->count();
-        }, 3600 * 24, $dependency);
-
-        return $count;
-    }
 
     public function run()
     {
         $brands = $this->getCategoryBrands();
 
 
-        $active = $this->view->context->getActiveFilters();
+        $active = $this->data->getActiveFilters();
 
-        echo Html::beginTag('div',['id'=>'filters']);
+
+        //echo Html::beginTag('div', ['id' => 'filters']);
+        //  echo Html::beginForm($this->view->context->currentUrl, 'GET', ['id' => 'filter-form']);
+
+        /*echo Html::beginTag('div', ['id' => 'ajax_filter_current']);
         if (!empty($active)) {
-            echo $this->render('current', ['active' => $active]);
+            $url = ($this->model) ? $this->model->getUrl() : ['/' . Yii::$app->requestedRoute];
+            echo $this->render(Yii::$app->getModule('shop')->filterViewCurrent, ['active' => $active, 'dataModel' => $this->model, 'url' => $url]);
         }
-        echo $this->render('price');
-        echo $this->render('attributes', ['attributes' => $this->getCategoryAttributes()]);
-        echo $this->render('brand', ['brands' => $brands]);
-        echo Html::endTag('div');
+        echo Html::endTag('div');*/
+        /*if($this->priceView)
+            echo $this->render($this->priceView, [
+                'priceMin' => $this->priceMin,
+                'priceMax' => $this->priceMax,
+                'currentPriceMin'=>$this->data->getCurrentMinPrice(),
+                'currentPriceMax'=>$this->data->getCurrentMaxPrice(),
+            ]);
+        if($this->attributeView)
+            echo $this->render($this->attributeView, ['attributes' => $this->data->getCategoryAttributes()]);
+        if($this->brandView)
+            echo $this->render($this->brandView, ['brands' => $brands]);
+
+        echo Html::submitButton('Применить',['class'=>'btn btn-block btn-primary']);
+        echo Html::submitButton('Стросить',['class'=>'btn btn-block btn-secondary']);*/
+
+        //   echo Html::endForm();
+//echo $this->data->getCurrentMinPrice();die;
+        // echo Html::endTag('div');
+     //   print_r($this->model->id);die;
+        echo $this->render('default', [
+            'model'=>$this->model,
+            'currentUrl' => $this->view->context->currentUrl,
+            'refreshUrl' => (($this->model) ? $this->model->getUrl() : ['/' . Yii::$app->requestedRoute]),
+            'priceMin' => $this->priceMin,
+            'priceMax' => $this->priceMax,
+            'currentPriceMin' => $this->data->getCurrentMinPrice(),
+            'currentPriceMax' => $this->data->getCurrentMaxPrice(),
+            'active' => $active,
+            'attributes' => $this->data->getCategoryAttributes(),
+            'brands' => $brands
+        ]);
+        // var category_id = {$this->model->id};
         $this->view->registerJs("
+       
             $(function () {
                 var selector = $('.card .card-collapse');
                 selector.collapse({
@@ -174,15 +131,17 @@ class FiltersWidget extends \panix\engine\data\Widget
                 var panels = $.cookie();
             
                 for (var panel in panels) {
-                    //console.log(panel);
                     if (panel) {
                         var panelSelector = $('#' + panel);
                         if (panelSelector) {
+                            var header = panelSelector.parent().find('.card-header');
                             if (panelSelector.hasClass('card-collapse')) {
                                 if ($.cookie(panel) === '1') {
                                     panelSelector.collapse('show');
+                                    header.addClass('collapsed').attr('aria-expanded',true);
                                 } else {
                                     panelSelector.collapse('hide');
+                                    header.removeClass('collapsed').attr('aria-expanded',false);
                                 }
                             }
                         }
@@ -191,12 +150,17 @@ class FiltersWidget extends \panix\engine\data\Widget
             
                 selector.on('show.bs.collapse', function () {
                     var active = $(this).attr('id');
+                    $(this).parent().find('.card-header').addClass('collapsed');
+
+                    
                     $.cookie(active, '1');
             
                 });
             
                 selector.on('hide.bs.collapse', function () {
                     var active = $(this).attr('id');
+                    $(this).parent().find('.card-header').removeClass('collapsed');
+
                     $.cookie(active, null);
                 });
             });
@@ -211,12 +175,12 @@ class FiltersWidget extends \panix\engine\data\Widget
 
         $query = Product::find();
 
-        if ($this->model){
+        if ($this->model) {
             $query->applyCategories($this->model);
             //$query->andWhere([Product::tableName() . '.main_category_id' => $this->model->id]);
         }
 
-        if (Yii::$app->request->get('q') && Yii::$app->requestedRoute == 'shop/category/search') {
+        if (Yii::$app->request->get('q') && Yii::$app->requestedRoute == 'shop/search/index') {
             $query->applySearch(Yii::$app->request->get('q'));
         }
         $query->published();
@@ -238,17 +202,20 @@ class FiltersWidget extends \panix\engine\data\Widget
 
 
         $brands = Brand::getDb()->cache(function ($db) use ($queryMan) {
-            return $queryMan->all();
-        }, 3600);
+            return $queryMan
+                //->joinWith('translations as translate')
+                //->orderBy(['translate.name'=>SORT_ASC])
+                ->all();
+        }, $this->cacheDuration);
 
 
         //$brands =$queryMan->all();
         //echo $q->createCommand()->rawSql;die;
-        $data = array(
+        $data = [
             'title' => Yii::t('shop/default', 'FILTER_BY_BRAND'),
             'selectMany' => true,
-            'filters' => array()
-        );
+            'filters' => []
+        ];
 
         if ($brands) {
 
@@ -268,12 +235,12 @@ class FiltersWidget extends \panix\engine\data\Widget
                     //$q->applyMaxPrice($this->convertCurrency(Yii::app()->request->getQuery('max_price')))
                     $query->applyBrands($m->id);
 
-                    if (Yii::$app->request->get('q') && Yii::$app->requestedRoute == 'shop/category/search') {
+                    if (Yii::$app->request->get('q') && Yii::$app->requestedRoute == 'shop/search/index') {
                         $query->applySearch(Yii::$app->request->get('q'));
                     }
 
 
-                    $dependencyQuery = $query;
+                    /*$dependencyQuery = $query;
                     $dependencyQuery->select('COUNT(*)');
                     $dependency = new DbDependency([
                         'sql' => $dependencyQuery->createCommand()->rawSql,
@@ -281,17 +248,19 @@ class FiltersWidget extends \panix\engine\data\Widget
 
                     $count = Product::getDb()->cache(function () use ($query) {
                         return $query->count();
-                    }, 3600 * 24, $dependency);
+                    }, 3600 * 24, $dependency);*/
 
-                    $data['filters'][] = array(
+
+                    $query->orderBy = false;
+                    $count = $query->cache($this->cacheDuration)->count();
+
+                    $data['filters'][] = [
                         'title' => $m->name,
-                        'count' => $count,
-                        'queryKey' => 'brand',
+                        'count' => (int)$count,
+                        'key' => 'brand',
                         'queryParam' => $m->id,
-                    );
-                    //$this->_brand[$m->id] = array(
-                    //    'label' => $m->name,
-                    //);
+                    ];
+                    sort($data['filters']);
                 } else {
                     die('err brand');
                 }
@@ -304,15 +273,84 @@ class FiltersWidget extends \panix\engine\data\Widget
     public function convertCurrency($sum)
     {
         $cm = Yii::$app->currency;
-        if ($cm->active['id'] != $cm->main['id'])
+        if ($cm->active->id != $cm->main->id)
             return $cm->activeToMain($sum);
         return $sum;
     }
 
     public function getCount($filter)
     {
+        //$this->tagCountOptions=[];
+        if (isset($filter['key'])) {
+            $this->tagCountOptions['id'] = 'filter-count-' . $filter['key'] . '-' . $filter['queryParam'];
+        }
         $result = ($filter['count'] > 0) ? $filter['count'] : 0;
-        return Html::tag($this->tagCount, $result, $this->tagCountOptions);
+        return ($this->count) ? ' ' . Html::tag($this->tagCount, $result, $this->tagCountOptions) : '';
     }
 
+    public function generateGradientCss($data)
+    {
+        $css = '';
+        if ($data) {
+            $css .= "background: {$data[0]['color']};";
+            if (count($data) > 1) {
+
+                $res_data = [];
+                foreach ($data as $k => $color) {
+                    $res_data[] = $color['color'];
+                }
+                $res = implode(', ', $res_data);
+
+                if (count($data) == 2) {
+                    $value = "45deg, {$data[0]['color']} 50%, {$data[1]['color']} 50%";
+                    $css .= "background: -moz-linear-gradient({$value});";
+                    $css .= "background: -webkit-linear-gradient({$value});";
+                    $css .= "background: linear-gradient({$value});";
+                } elseif (count($data) == 3) {
+                    $value = "45deg, {$data[0]['color']} 0%, {$data[0]['color']} 33%, {$data[1]['color']} 33%, {$data[1]['color']} 66%, {$data[2]['color']} 66%, {$data[2]['color']} 100%";
+                    $css .= "background: -moz-linear-gradient({$value});";
+                    $css .= "background: -webkit-linear-gradient({$value});";
+                    $css .= "background: linear-gradient({$value});";
+                } elseif (count($data) == 4) {
+                    $value = "45deg, {$data[0]['color']} 0%, {$data[0]['color']} 25%, {$data[1]['color']} 25%, {$data[1]['color']} 50%, {$data[2]['color']} 50%, {$data[2]['color']} 75%, {$data[3]['color']} 75%, {$data[3]['color']} 100%";
+                    $css .= "background: -moz-linear-gradient({$value});";
+                    $css .= "background: -webkit-linear-gradient({$value});";
+                    $css .= "background: linear-gradient({$value});";
+                } elseif (count($data) >= 4) {
+                    $css .= "background: -moz-radial-gradient(farthest-corner at 0% 100%, {$res});";
+                    $css .= "background: -webkit-radial-gradient(farthest-corner at 0% 100%, {$res});";
+                    $css .= "background: radial-gradient(farthest-corner at 0% 100%, {$res});";
+                }
+                $css .= "filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='{$data[0]['color']}', endColorstr='{$data[1]['color']}',GradientType=1 );";
+            }
+        }
+        return $css;
+    }
+
+
+    /**
+     * @return mixed
+     */
+    public function getCurrentMinPrice()
+    {
+        if ($this->_currentPriceMin !== null)
+            return $this->_currentPriceMin;
+
+        $this->_currentPriceMin = (isset($this->prices[0])) ? $this->prices[0] : Yii::$app->currency->convert($this->priceMin);
+
+        return $this->_currentPriceMin;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCurrentMaxPrice()
+    {
+        if ($this->_currentPriceMax !== null)
+            return $this->_currentPriceMax;
+
+        $this->_currentPriceMax = (isset($this->prices[1])) ? $this->prices[1] : Yii::$app->currency->convert($this->priceMax);
+
+        return $this->_currentPriceMax;
+    }
 }

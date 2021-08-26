@@ -105,8 +105,8 @@ class BaseUrlRule extends UrlRule
                 return false;
             }*/
 
-          // CMS::dump([$this->route, $params]);
-           //die;
+           //  CMS::dump([$this->route, $params]);
+            //die;
             return [$this->route, $params];
         }
         return false;

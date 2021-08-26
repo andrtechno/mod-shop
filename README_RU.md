@@ -1,5 +1,4 @@
-
-# Модуль Интернет-магазина
+# Модуль Интернет-магазина v3
 [Description of English](README.md)
 
 Module for PIXELION CMS

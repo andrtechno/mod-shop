@@ -396,11 +396,11 @@ class CatalogController extends FilterController
         // $categoriesResponse = Category::find()->dataTree(1, null, ['switch' => 1,'id'=>$categoriesIds],CMS::gen(100));
       //  CMS::dump($categoriesResponse);die;
         $categoriesResponse = Category::find()->where(['id'=>$categoriesIds])->all();
-        if(Yii::$app->request->getQueryParam('slug')){
-            $category = $this->findModel(Yii::$app->request->getQueryParam('slug'));
+        if(Yii::$app->request->getQueryParam('category')){
+            $category = Category::findOne(Yii::$app->request->getQueryParam('category'));
             $this->query->applyCategories($category);
-            $this->currentUrl = Url::to($category->getUrl('sales'));
-
+           // $this->currentUrl = Url::to($category->getUrl('sales'));
+            $this->currentUrl = Url::to(['/shop/catalog/sales', 'category' => Yii::$app->request->getQueryParam('category')]);
             $this->view->params['breadcrumbs'][] = [
                 'url'=>['/shop/catalog/sales'],
                 'label'=>$this->pageName

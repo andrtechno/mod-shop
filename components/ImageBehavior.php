@@ -100,7 +100,7 @@ class ImageBehavior extends \yii\base\Behavior
         $post = Yii::$app->request->post('AttachmentsMainId');
         if ($post) {
 
-            //ProductImage::updateAll(['is_main' => 0], 'product_id=:pid', ['pid' => $this->owner->primaryKey]);
+             //ProductImage::updateAll(['is_main' => 0], 'product_id=:pid', ['pid' => $this->owner->primaryKey]);
 
             $currentMain = ProductImage::find()->where(['product_id' => $this->owner->primaryKey, 'is_main' => 1])->one();
             $currentMainId = 0;
@@ -119,7 +119,7 @@ class ImageBehavior extends \yii\base\Behavior
                     $customer->is_main = 1;
                     $customer->update();
                     //$this->owner->main_image = $customer->filename;
-                    // $this->owner->save(false);
+                   // $this->owner->save(false);
                 }
             }
         }
@@ -327,7 +327,7 @@ class ImageBehavior extends \yii\base\Behavior
     }
 
 
-    public function getModelSubDir($model)
+    public function __getModelSubDir($model)
     {
 
         $modelName = $this->getShortClass($model);
@@ -338,12 +338,12 @@ class ImageBehavior extends \yii\base\Behavior
      * Clear all images cache (and resized copies)
      * @return bool
      */
-    public function clearImagesCache()
+    public function ___clearImagesCache()
     {
 
-        $subdir = $this->getModelSubDir($this->owner);
+       // $subdir = $this->getModelSubDir($this->owner);
 
-        $dirToRemove = Yii::getAlias($this->savePath) . '/' . $subdir;
+        $dirToRemove = Yii::getAlias($this->savePath) . '/' . $this->owner->id;
 
         if (preg_match('/' . preg_quote(Yii::getAlias($this->savePath), '/') . '/', $dirToRemove)) {
             BaseFileHelper::removeDirectory($dirToRemove);
@@ -385,7 +385,7 @@ class ImageBehavior extends \yii\base\Behavior
         }
         //$this->owner->main_image = $img->filename;
         //$this->owner->save(false);
-        $this->clearImagesCache();
+       // $this->clearImagesCache();
     }
 
 }

@@ -1,4 +1,4 @@
-# Module shop
+# Module shop v3
 [Описание на Русском](README_RU.md)
 
 Module for PIXELION CMS
