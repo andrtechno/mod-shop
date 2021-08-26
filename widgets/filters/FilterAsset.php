@@ -1,6 +1,6 @@
 <?php
 
-namespace panix\mod\shop\widgets\filtersnew2;
+namespace panix\mod\shop\widgets\filters;
 
 use panix\engine\web\AssetBundle;
 
