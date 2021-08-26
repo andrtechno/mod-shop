@@ -62,11 +62,7 @@ class Category extends ActiveRecord
      */
     public function getUrl($action='view')
     {
-        if($action=='view'){
-            return ['/shop/catalog/'.$action, 'slug' => $this->full_path];
-        }else{
-            return ['/shop/catalog/'.$action, 'category' => $this->id];
-        }
+        return ['/shop/catalog/'.$action, 'slug' => $this->full_path];
     }
 
     /**

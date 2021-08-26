@@ -5,7 +5,6 @@ namespace panix\mod\shop\controllers;
 use panix\engine\CMS;
 use panix\engine\Html;
 use panix\mod\shop\components\Filter;
-use panix\mod\shop\components\FilterV2;
 use Yii;
 use yii\helpers\Url;
 use yii\web\Response;
@@ -35,10 +34,10 @@ $q=Yii::$app->request->post('q');
         }
 
         // Filter by brand
-        //if (Yii::$app->request->get('brand')) {
-        //    $brands = explode(',', Yii::$app->request->get('brand', ''));
-       //     $this->query->applyBrands($brands);
-      //  }
+        if (Yii::$app->request->get('brand')) {
+            $brands = explode(',', Yii::$app->request->get('brand', ''));
+            $this->query->applyBrands($brands);
+        }
         $this->query->groupBy(Product::tableName() . '.`id`');
 
         //если пусто, делаем фейк запрос для "не чего не найдено"
@@ -46,27 +45,27 @@ $q=Yii::$app->request->post('q');
         if(empty($queryGet)){
             $queryGet = CMS::gen(10);
         }
-        $this->query->applySearch($queryGet)->published();
-        //$this->query->applySearch($queryGet);
 
-        $this->filter = new FilterV2($this->query,['cacheKey'=>'filter_search_'.$queryGet]);
+        $this->query->applySearch($queryGet)->published();
+
+        $this->filter = new Filter($this->query);
 
         // Create clone of the current query to use later to get min and max prices.
         $this->filterQuery = clone $this->query;
         $this->currentQuery = clone $this->query;
-        $this->filter->resultQuery->sort();
-        //$this->query->applyAttributes($this->filter->activeAttributes);
+        $this->query->sort();
+        $this->query->applyAttributes($this->filter->activeAttributes);
 
         // Filter products by price range if we have min or max in request
         //$this->applyPricesFilter();
         $sort = explode(',', Yii::$app->request->get('sort'));
         if ($sort[0] == 'price' || $sort[0] == '-price') {
-            $this->filter->resultQuery->aggregatePriceSelect(($sort[0] == 'price') ? SORT_ASC : SORT_DESC);
+            $this->query->aggregatePriceSelect(($sort[0] == 'price') ? SORT_ASC : SORT_DESC);
         }
 
         //echo $this->query->createCommand()->rawSql;die;
         $this->provider = new \panix\engine\data\ActiveDataProvider([
-            'query' => $this->filter->resultQuery,
+            'query' => $this->query,
             'sort' => $productModel::getSort(),
             'pagination' => [
                 'pageSize' => $this->per_page,

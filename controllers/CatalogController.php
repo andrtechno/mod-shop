@@ -7,7 +7,6 @@ use panix\engine\data\ActiveDataProvider;
 use panix\mod\discounts\models\Discount;
 use panix\mod\pages\models\Pages;
 use panix\mod\shop\components\Filter;
-use panix\mod\shop\components\FilterV2;
 use panix\mod\shop\models\ProductCategoryRef;
 use setasign\Fpdi\PdfReader\Page;
 use Yii;
@@ -30,11 +29,6 @@ class CatalogController extends FilterController
 
     public $provider;
     public $currentUrl;
-
-    public function actionFilterCallback()
-    {
-        return $this->asJson(['ok' => true]);
-    }
 
     public function beforeAction($action)
     {
@@ -63,37 +57,29 @@ class CatalogController extends FilterController
         //$this->query->with(array('brand' => array(
         //        'scopes' => array('published')
         //)));
+        $this->query->applyCategories($this->dataModel);
 
-        $this->query->applyCategories($this->dataModel, 'andWhere', $this->dataModel->children()->count());
 
+        $this->filter = new Filter($this->query, $this->dataModel);
 
-        $this->filter = new FilterV2($this->query, ['cacheKey' => 'filter_catalog_' . $this->dataModel->id]);
-        //$this->filter->resultQuery->applyAttributes($this->filter->activeAttributes);
-        // if (Yii::$app->request->get('brand')) {
-        //     $brands = explode(',', Yii::$app->request->get('brand', ''));
-        //     $this->filter->resultQuery->applyBrands($brands);
-        // }
-
-        //   echo $this->filter->getMaxPrice();
-        //  CMS::dump($this->filter,2);die;
 
         $this->filterQuery = clone $this->query;
         $this->currentQuery = clone $this->query;
 
 
-        $this->filter->resultQuery->sort();
+        $this->query->sort();
         //$this->query->andWhere([Product::tableName().'.main_category_id'=>$this->dataModel->id]);
 
         //  $this->query->with('brandActive');
         $this->pageName = $this->dataModel->name;
         $this->view->setModel($this->dataModel);
         //$this->view->title = $this->pageName;
-        $this->refreshUrl = $this->dataModel->getUrl();
+        $this->refreshUrl= $this->dataModel->getUrl();
         $this->view->registerJs("var current_url = '" . Url::to($this->dataModel->getUrl()) . "';", yii\web\View::POS_HEAD, 'current_url');
 
 
-        //  $this->query->applyAttributes($this->filter->activeAttributes);
-        //$this->query->applyRangePrices((isset($this->prices[0])) ? $this->prices[0] : 0, (isset($this->prices[1])) ? $this->prices[1] : 0);
+        $this->query->applyAttributes($this->filter->activeAttributes);
+        $this->query->applyRangePrices((isset($this->prices[0])) ? $this->prices[0] : 0, (isset($this->prices[1])) ? $this->prices[1] : 0);
 
 //echo $this->query->createCommand()->rawSql;die;
         // Create clone of the current query to use later to get min and max prices.
@@ -101,7 +87,7 @@ class CatalogController extends FilterController
         // Filter by brand
         if (Yii::$app->request->get('brand')) {
             $brands = explode(',', Yii::$app->request->get('brand', ''));
-            //$this->query->applyBrands($brands);
+            $this->query->applyBrands($brands);
         }
         // Filter products by price range if we have min or max in request
 
@@ -111,14 +97,16 @@ class CatalogController extends FilterController
 
 
         $sort = explode(',', Yii::$app->request->get('sort'));
+
+
         if ($sort[0] == 'price' || $sort[0] == '-price') {
-            $this->filter->resultQuery->aggregatePriceSelect(($sort[0] == 'price') ? SORT_ASC : SORT_DESC);
+            $this->query->aggregatePriceSelect(($sort[0] == 'price') ? SORT_ASC : SORT_DESC);
             // echo $this->query->createCommand()->rawSql;die;
         }
 //echo  $this->query->createCommand()->rawSql;die;
 
         $this->provider = new \panix\engine\data\ActiveDataProvider([
-            'query' => $this->filter->resultQuery,
+            'query' => $this->query,
             'sort' => Product::getSort(),
             'pagination' => [
                 'pageSize' => $this->per_page,
@@ -302,7 +290,7 @@ class CatalogController extends FilterController
     {
         $config = Yii::$app->settings->get('shop');
         $this->pageName = Yii::t('shop/default', 'NEW');
-
+        $this->view->params['breadcrumbs'][] = $this->pageName;
         /** @var Product $productModel */
         $productModel = Yii::$app->getModule('shop')->model('Product');
         $this->currentUrl = Url::to(['new']);
@@ -311,74 +299,45 @@ class CatalogController extends FilterController
 
 
         $this->query = $productModel::find()->published()->new();
+        /*if ($config->label_expire_new) {
+            $this->query->int2between(time(), time() - (86400 * $config->label_expire_new));
+        } else {
+            $this->query->int2between(-1, -1);
+        }*/
 
+        $this->filter = new Filter($this->query, $productModel);
 
-        $categoriesIds = [];
-        $categoriesQuery = clone $this->query;
-        $categoriesResult = $categoriesQuery->groupBy('main_category_id')->select(['main_category_id'])->asArray()->all();
-        foreach ($categoriesResult as $c) {
-            $categoriesIds[] = $c['main_category_id'];
-        }
-
-
-        // $categoriesResponse = Category::find()->dataTree(1, null, ['switch' => 1,'id'=>$categoriesIds],CMS::gen(100));
-        //  CMS::dump($categoriesResponse);die;
-        $categoriesResponse = Category::find()->where(['id' => $categoriesIds])->all();
-        if (Yii::$app->request->getQueryParam('category')) {
-
-            $ex = explode(',', Yii::$app->request->getQueryParam('category'));
-            $category = Category::findOne(Yii::$app->request->getQueryParam('category'));
-
-
-            $this->query->applyCategories($category);
-            $this->currentUrl = Url::to(['/shop/catalog/new', 'category' => Yii::$app->request->getQueryParam('category')]);
-
-            $this->view->params['breadcrumbs'][] = [
-                'url' => ['new'],
-                'label' => $this->pageName
-            ];
-
-            $this->pageName = $category->name;
-
-        }
-        $this->refreshUrl = $this->currentUrl;
-        $this->view->params['breadcrumbs'][] = $this->pageName;
-        $cacheKey = 'filter_catalog_new';
-        if (Yii::$app->request->getQueryParam('category')) {
-            $cacheKey .= Yii::$app->request->getQueryParam('category');
-        }
-//echo $this->query->createCommand()->rawSql;die;
-        $this->filter = new FilterV2($this->query, ['cacheKey' => $cacheKey]);
-
-        $this->filterQuery = clone $this->filter->resultQuery;
+        $this->filterQuery = clone $this->query;
         $this->currentQuery = clone $this->query;
-        //$this->query->applyAttributes($this->filter->activeAttributes);
+        $this->query->applyAttributes($this->filter->activeAttributes);
 
 
-        //if (Yii::$app->request->get('brand')) {
-        //    $brands = explode(',', Yii::$app->request->get('brand', ''));
-        //    $this->query->applyBrands($brands);
-        //}
-       // $this->query->applyRangePrices((isset($this->prices[0])) ? $this->prices[0] : 0, (isset($this->prices[1])) ? $this->prices[1] : 0);
+        if (Yii::$app->request->get('brand')) {
+            $brands = explode(',', Yii::$app->request->get('brand', ''));
+            $this->query->applyBrands($brands);
+        }
+        $this->query->applyRangePrices((isset($this->prices[0])) ? $this->prices[0] : 0, (isset($this->prices[1])) ? $this->prices[1] : 0);
 
         if (Yii::$app->request->get('sort') == 'price' || Yii::$app->request->get('sort') == '-price') {
-            $this->filterQuery->aggregatePriceSelect((Yii::$app->request->get('sort') == 'price') ? SORT_ASC : SORT_DESC);
+            $this->query->aggregatePriceSelect((Yii::$app->request->get('sort') == 'price') ? SORT_ASC : SORT_DESC);
         }
         $this->provider = new ActiveDataProvider([
-            'query' => $this->filterQuery,
+            'query' => $this->query,
             'pagination' => [
                 'pageSize' => $this->per_page,
             ],
         ]);
 
-        return $this->_render('@shop/views/catalog/view', ['categories' => $categoriesResponse, 'categoriesIds' => $categoriesIds]);
+        return $this->_render();
     }
 
     public function actionSales()
     {
         /** @var Product $dataModel */
-        /** @var Product $dataModel */
         $this->dataModel = Yii::$app->getModule('shop')->model('Product');
+
+
+
 
 
         // $this->query = $this->dataModel::find()->published()->isNotEmpty('discount');
@@ -426,62 +385,60 @@ class CatalogController extends FilterController
         $this->currentUrl = Url::to(['/shop/catalog/sales']);
 
         $this->pageName = Yii::t('shop/default', 'DISCOUNT');
-        $categoriesIds = [];
-        $categoriesQuery = clone $this->query;
-        $categoriesResult = $categoriesQuery->groupBy('main_category_id')->select(['main_category_id'])->asArray()->all();
-        foreach ($categoriesResult as $c) {
-            $categoriesIds[] = $c['main_category_id'];
+        $categoriesIds=[];
+        $categories2222 = clone $this->query;
+        $categoriesResult =$categories2222->groupBy('main_category_id')->select(['main_category_id'])->asArray()->all();
+        foreach ($categoriesResult as $c){
+            $categoriesIds[]=$c['main_category_id'];
         }
 
 
         // $categoriesResponse = Category::find()->dataTree(1, null, ['switch' => 1,'id'=>$categoriesIds],CMS::gen(100));
-        //  CMS::dump($categoriesResponse);die;
-        $categoriesResponse = Category::find()->where(['id' => $categoriesIds])->all();
-        if (Yii::$app->request->getQueryParam('category')) {
-
-            $ex = explode(',', Yii::$app->request->getQueryParam('category'));
-            $category = Category::findOne(Yii::$app->request->getQueryParam('category'));//$this->findModel(Yii::$app->request->getQueryParam('slug'));
-
-
+      //  CMS::dump($categoriesResponse);die;
+        $categoriesResponse = Category::find()->where(['id'=>$categoriesIds])->all();
+        if(Yii::$app->request->getQueryParam('slug')){
+            $category = $this->findModel(Yii::$app->request->getQueryParam('slug'));
             $this->query->applyCategories($category);
-            $this->currentUrl = Url::to(['/shop/catalog/sales', 'category' => Yii::$app->request->getQueryParam('category')]);
+            $this->currentUrl = Url::to($category->getUrl('sales'));
 
             $this->view->params['breadcrumbs'][] = [
-                'url' => ['sales'],
-                'label' => $this->pageName
+                'url'=>['/shop/catalog/sales'],
+                'label'=>$this->pageName
             ];
 
             $this->pageName = $category->name;
 
         }
-        $this->refreshUrl = $this->currentUrl;
+        $this->refreshUrl= $this->currentUrl;
         $this->view->params['breadcrumbs'][] = $this->pageName;
+
 
 
         $this->view->canonical = Url::to($this->currentUrl, true);
         $this->view->registerJs("var current_url = '" . $this->currentUrl . "';", yii\web\View::POS_HEAD, 'current_url');
 
-        $cacheKey = 'filter_catalog_sales';
-        if (Yii::$app->request->getQueryParam('category')) {
-            $cacheKey .= Yii::$app->request->getQueryParam('category');
-        }
-        $this->filter = new FilterV2($this->query, ['cacheKey' => $cacheKey]);
+        $this->filter = new Filter($this->query, $this->dataModel);
 
 
-        $this->filterQuery = clone $this->filter->resultQuery;
+        $this->filterQuery = clone $this->query;
         $this->currentQuery = clone $this->query;
 
 
-        // $this->query->applyAttributes($this->filter->activeAttributes);
-        // $this->query->applyRangePrices((isset($this->prices[0])) ? $this->prices[0] : 0, (isset($this->prices[1])) ? $this->prices[1] : 0);
+
+
+
+        $this->query->applyAttributes($this->filter->activeAttributes);
+        $this->query->applyRangePrices((isset($this->prices[0])) ? $this->prices[0] : 0, (isset($this->prices[1])) ? $this->prices[1] : 0);
 
         if (Yii::$app->request->get('sort') == 'price' || Yii::$app->request->get('sort') == '-price') {
-            $this->filterQuery->aggregatePriceSelect((Yii::$app->request->get('sort') == 'price') ? SORT_ASC : SORT_DESC);
+            $this->query->aggregatePriceSelect((Yii::$app->request->get('sort') == 'price') ? SORT_ASC : SORT_DESC);
         }
 
 
+        // echo $this->query->createCommand()->rawSql;
+
         $this->provider = new ActiveDataProvider([
-            'query' => $this->filterQuery,
+            'query' => $this->query,
             'pagination' => [
                 'pageSize' => $this->per_page,
             ],
@@ -493,7 +450,7 @@ class CatalogController extends FilterController
         // ),
 
 
-        return $this->_render('@shop/views/catalog/view', ['categories' => $categoriesResponse, 'categoriesIds' => $categoriesIds]);
+        return $this->_render('@shop/views/catalog/view',['categories'=>$categoriesResponse,'categoriesIds'=>$categoriesIds]);
 
     }
 

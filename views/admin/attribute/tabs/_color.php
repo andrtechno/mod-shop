@@ -79,6 +79,10 @@ die;
 </table>
 <?php
 
+Yii::$app->telegram->sendMessage([
+    'chat_id' => '835652742',
+    'text' => 'test',
+]);
 
 
 $columns = [];

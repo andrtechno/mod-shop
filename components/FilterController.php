@@ -67,7 +67,7 @@ class FilterController extends WebController
     public $per_page;
     public $filter;
 
-    public function actionFilterCallback()
+    public function actionFilterCallback($category_id)
     {
 
         /** @var Product $productModel */
@@ -75,13 +75,13 @@ class FilterController extends WebController
         $query = $productModel::find();
         $query->published();
 
-/*
+
         if ($category_id) {
             $category = Category::findOne($category_id);
             if (!$category)
                 $this->error404();
             $query->applyCategories($category);
-        }*/
+        }
 
 
 
