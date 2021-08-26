@@ -19,6 +19,10 @@ $form = ActiveForm::begin();
                     'content' => $this->render('_global', ['form' => $form, 'model' => $model]),
                     'active' => true,
                 ],
+                [
+                    'label' => 'Изображение',
+                    'content' => $this->render('_images', ['form' => $form, 'model' => $model]),
+                ],
                /* [
                     'label' => 'SEO',
                     'items' => [

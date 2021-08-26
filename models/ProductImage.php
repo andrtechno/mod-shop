@@ -130,7 +130,7 @@ class ProductImage extends ActiveRecord
         //if(!$size){
         //    return "/uploads/store/product/{$this->product_id}/{$this->filename}";
         //}
-        $configApp = Yii::$app->settings->get('app');
+        $configApp = Yii::$app->settings->get('shop');
         if (!isset($options['watermark'])) {
             $options['watermark'] = $configApp->watermark_enable;
         }
@@ -237,7 +237,7 @@ class ProductImage extends ActiveRecord
         //if(!$size){
         //    return "/uploads/store/product/{$this->product_id}/{$this->filename}";
         //}
-        $configApp = Yii::$app->settings->get('app');
+        $configApp = Yii::$app->settings->get('shop');
         if (!isset($options['watermark'])) {
             $options['watermark'] = $configApp->watermark_enable;
         }

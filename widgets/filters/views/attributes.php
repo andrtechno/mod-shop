@@ -10,7 +10,7 @@ use yii\helpers\Inflector;
 foreach ($attributes as $attrData) {
 
     if (count($attrData['filters']) > 1 && $attrData['totalCount'] > 1) {
-
+        echo Html::hiddenInput('attributes[]',$attrData['key']);
         ?>
 
         <div class="card filter-block" id="filter-attributes-<?= $attrData['key']; ?>">
@@ -29,7 +29,14 @@ foreach ($attributes as $attrData) {
                     <ul class="filter-list list-unstyled" id="filter-<?= $attrData['key']; ?>">
                         <?php
                         foreach ($attrData['filters'] as $filter) {
-
+                            $queryData = explode(',', Yii::$app->request->getQueryParam($attrData['key']));
+                            $checkBoxOptions=[];
+                            $checkBoxOptions['value'] = $filter['queryParam'];
+                            $checkBoxOptions['class']='custom-control-input';
+                            $checkBoxOptions['id'] = 'filter_' . $attrData['key'] . '_' . $filter['queryParam'];
+                            if (!$filter['count'] && !in_array($filter['queryParam'], $queryData)) {
+                                $checkBoxOptions['disabled']='disabled';
+                            }
 
                             if ($filter['count'] > 0) {
                                 $url = Yii::$app->urlManager->addUrlParam('/' . Yii::$app->requestedRoute, [$attrData['key'] => $filter['queryParam']], $attrData['selectMany']);
@@ -37,7 +44,6 @@ foreach ($attributes as $attrData) {
                                 //     $url = 'javascript:void(0)';
                                 //
 
-                                $queryData = explode(',', Yii::$app->request->getQueryParam($attrData['key']));
 
                                 echo Html::beginTag('li');
                                 // Filter link was selected.
@@ -65,12 +71,12 @@ foreach ($attributes as $attrData) {
 
                                     if($attrData['selectMany']){
                                         echo '<div class="custom-control custom-checkbox">';
-                                        echo Html::checkBox('filter[' . $attrData['key'] . '][]', $checked, ['class' => 'custom-control-input', 'value' => $filter['queryParam'], 'id' => 'filter_' . $attrData['key'] . '_' . $filter['queryParam']]);
-                                        echo Html::label($filter['title'].$this->context->getCount($filter), 'filter_' . $attrData['key'] . '_' . $filter['queryParam'], ['class' => 'custom-control-label']);
+                                        echo Html::checkBox('filter[' . $attrData['key'] . '][]', $checked, $checkBoxOptions);
+                                        echo Html::label($filter['title'].(($checked)?'':$this->context->getCount($filter)), 'filter_' . $attrData['key'] . '_' . $filter['queryParam'], ['class' => 'custom-control-label','data-search'=>$filter['title']]);
                                         echo '</div>';
                                     }else{
                                         echo '<div class="radio">';
-                                        echo Html::label(Html::radio('filter[' . $attrData['key'] . '][]', $checked, ['class' => '', 'value' => $filter['queryParam'], 'id' => 'filter_' . $attrData['key'] . '_' . $filter['queryParam']]).$filter['title'].$this->context->getCount($filter), 'filter_' . $attrData['key'] . '_' . $filter['queryParam'], ['class' => '']);
+                                        echo Html::label(Html::radio('filter[' . $attrData['key'] . '][]', $checked, ['class' => '', 'value' => $filter['queryParam'], 'id' => 'filter_' . $attrData['key'] . '_' . $filter['queryParam']]).$filter['title'].(($checked)?'':$this->context->getCount($filter)), 'filter_' . $attrData['key'] . '_' . $filter['queryParam'], ['class' => '']);
                                         echo '</div>';
                                     }
 

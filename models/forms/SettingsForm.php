@@ -2,7 +2,10 @@
 
 namespace panix\mod\shop\models\forms;
 
+use Yii;
 use panix\engine\SettingsModel;
+use yii\helpers\Html;
+use yii\web\UploadedFile;
 
 class SettingsForm extends SettingsModel
 {
@@ -20,6 +23,12 @@ class SettingsForm extends SettingsModel
     public $added_to_cart_count;
     public $added_to_cart_period;
 
+    public $watermark_enable;
+    public $attachment_wm_path;
+    public $attachment_wm_corner;
+    public $attachment_wm_offsetx;
+    public $attachment_wm_offsety;
+    public static $extensionWatermark = ['png'];
     public function rules()
     {
         return [
@@ -28,6 +37,12 @@ class SettingsForm extends SettingsModel
             [['label_expire_new', 'added_to_cart_count'], 'integer'],
             [['email_notify_reviews'], '\panix\engine\validators\EmailListValidator'],
             [['added_to_cart_period'], 'string'],
+
+            [['watermark_enable'], 'boolean'],
+            [['attachment_wm_corner', 'attachment_wm_offsety', 'attachment_wm_offsetx'], 'integer'],
+            ['attachment_wm_path', 'validateWatermarkFile'],
+            [['attachment_wm_offsetx', 'attachment_wm_offsety', 'attachment_wm_corner'], "required"],
+            [['attachment_wm_path'], 'file', 'skipOnEmpty' => true, 'extensions' => self::$extensionWatermark],
         ];
     }
 
@@ -44,10 +59,42 @@ class SettingsForm extends SettingsModel
             'label_expire_new' => 7,
             'smart_bc' => true,
             'smart_title' => true,
-            'email_notify_reviews' => NULL
+            'email_notify_reviews' => NULL,
+            'attachment_wm_path' => 'watermark.png',
+            'attachment_wm_offsety' => 10,
+            'attachment_wm_offsetx' => 10,
+            'attachment_wm_corner' => 5,
         ];
     }
 
+    public function getWatermarkCorner()
+    {
+        return [
+            1 => self::t('WM_POS_LEFT_TOP'),
+            2 => self::t('WM_POS_RIGHT_TOP'),
+            3 => self::t('WM_POS_LEFT_BOTTOM'),
+            4 => self::t('WM_POS_RIGHT_BOTTOM'),
+            5 => self::t('WM_POS_CENTER'),
+            6 => self::t('WM_POS_CENTER_TOP'),
+            7 => self::t('WM_POS_CENTER_BOTTOM'),
+            8 => self::t('WM_POS_LEFT_CENTER'),
+            9 => self::t('WM_POS_RIGHT_CENTER'),
+            10 => self::t('WM_POS_REPEAT'),
+        ];
+    }
+    public function renderWatermarkImage()
+    {
+        $config = Yii::$app->settings->get('shop');
+        if (isset($config->attachment_wm_path) && file_exists(Yii::getAlias('@uploads') . DIRECTORY_SEPARATOR . $config->attachment_wm_path))
+            return Html::img("/uploads/{$config->attachment_wm_path}?" . time(), ['class' => 'img-fluid img-thumbnail mt-3']);
+    }
+    public function validateWatermarkFile($attribute)
+    {
+        $file = UploadedFile::getInstance($this, 'attachment_wm_path');
+        if ($file && !in_array($file->extension, self::$extensionWatermark))
+            $this->addError($attribute, self::t('ERROR_WM_NO_IMAGE'));
+
+    }
     public static function labelExpireNew()
     {
         return [
