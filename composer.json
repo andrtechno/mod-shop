@@ -42,12 +42,7 @@
     ]
   },
   "extra": {
-    "panix\\composer\\Installer\\Installer::postCreateProject": {
-      "copy": [
-        {
-          "messages": "messages_root"
-        }
-      ]
-    }
+      "widgets": "panix\\mod\\shop\\widgets",
+      "blocks": "panix\\mod\\shop\\blocks"
   }
 }
