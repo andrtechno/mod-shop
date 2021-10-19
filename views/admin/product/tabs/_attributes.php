@@ -64,34 +64,16 @@ echo \panix\engine\barcode\BarcodeGenerator::widget([
 
     } else {
 
-        foreach ($attributes as $a) {
-            if ($a->group_id) {
-                $result[$a->group->name][] = $a;
-            } else {
-                $result['Без группы'][] = $a;
-            }
 
-        }
-
-        foreach ($result as $group_name => $attributes) {
+        foreach ($eavList as $group_name => $attributes) {
             echo '<div class="col-sm-12 col-md-6 col-lg-6 col-xl-6"><h5 class="text-center mt-3">' . $group_name . '</h5>';
+
             foreach ($attributes as $a) {
-                /** @var Attribute|\panix\mod\shop\components\EavBehavior $a */
-                // Repopulate data from POST if exists
-                if (isset($_POST['Attribute'][$a->name])) {
-                    $value = $_POST['Attribute'][$a->name];
-                } else {
-
-                    $value = $model->getEavAttribute($a->name);
-                    // die('zz');
-                }
-
-                //$a->required ? $required = ' <span class="required">*</span>' : $required = null;
-
-                if ($a->type == Attribute::TYPE_DROPDOWN) {
+             //   \panix\engine\CMS::dump($a['attribute']);die;
+                if ($a['attribute']->type == Attribute::TYPE_DROPDOWN) {
                     $addOptionLink = Html::a(Html::icon('add'), '#', [
-                        'rel' => $a->id,
-                        'data-name' => $a->getIdByName(), //$a->getIdByName()
+                        'rel' => $a['attribute']->id,
+                        'data-name' => $a['attribute']->getIdByName(), //$a->getIdByName()
                         //'data-name' => Html::getInputName($a, $a->name),
                         'onclick' => 'js: return addNewOption($(this));',
                         'class' => 'btn btn-success', // btn-sm mt-2 float-right
@@ -102,24 +84,26 @@ echo \panix\engine\barcode\BarcodeGenerator::widget([
                 } else
                     $addOptionLink = null;
 
+
                 $error = '';
                 $inputClass = '';
 
-                if ($a->required && array_key_exists($a->name, $model->getErrors())) {
+                if ($a['attribute']->required && array_key_exists($a['attribute']->name, $model->getErrors())) {
                     $inputClass = 'is-invalid';
-                    $error = Html::error($a, $a->name);
+                    $error = Html::error($a, $a['attribute']->name);
                 }
+
                 ?>
-                <div class="form-group row <?= ($a->required ? 'required' : ''); ?>">
-                    <?= Html::label($a->title, $a->name, ['class' => 'col-sm-4 col-form-label']); ?>
+                <div class="form-group row <?= ($a['attribute']->required ? 'required' : ''); ?>">
+                    <?= Html::label($a['attribute']->title, $a['attribute']->name, ['class' => 'col-sm-4 col-form-label']); ?>
                     <div class="col-sm-8 rowInput eavInput">
-                        <div class="input-group<?= ($a->type == Attribute::TYPE_CHECKBOX_LIST) ? '1' : ''; ?>">
+                        <div class="input-group<?= ($a['attribute']->type == Attribute::TYPE_CHECKBOX_LIST) ? '1' : ''; ?>">
 
-                            <?= $a->renderField($value, $inputClass); ?>
+                            <?= $a['attribute']->renderField($a['value'], $inputClass); ?>
 
-                            <?php if ($a->abbreviation) { ?>
+                            <?php if ($a['attribute']->abbreviation) { ?>
                                 <div class="input-group-append">
-                                    <span class="input-group-text"><?= $a->abbreviation; ?></span>
+                                    <span class="input-group-text"><?= $a['attribute']->abbreviation; ?></span>
                                 </div>
                             <?php } ?>
 
@@ -132,21 +116,14 @@ echo \panix\engine\barcode\BarcodeGenerator::widget([
                         <?= $error; ?>
                     </div>
                 </div>
-
-                <?php
-                //echo Html::beginTag('div', ['class' => 'form-group row ' . ($a->required ? 'required' : '')]);
-                //echo Html::label($a->title, $a->name, ['class' => 'col-sm-4 col-form-label']);
-
-
-//. $error . $addOptionLink
-                //echo Html::endTag('div');
-
-            } // . Html::error($a, 'name', ['class' => 'text-danger'])
+    <?php
+            }
             echo '</div>';
         }
 
 
     }
+
     ?>
 </div>
 

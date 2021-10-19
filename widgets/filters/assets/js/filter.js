@@ -101,10 +101,17 @@ function filterCallback(e, objects, target) {
         success: function (response) {
 
             resultUrl = response.url;
-            form.find('[aria-describedby^="popover"]')
+            /*form.find('[aria-describedby^="popover"]')
+                .not('[data-toggle="popover-price"]')
+                .not(target.parent())
+                .popover('dispose');*/
+
+
+            form.find('[data-original-title]')
                 .not('[data-toggle="popover-price"]')
                 .not(target.parent())
                 .popover('destroy');
+
             $('#ocfilter-button a').attr('href', response.url).html(response.textTotal);
             if (!target.parent().attr('aria-describedby')) {
                 var options = {
@@ -122,11 +129,13 @@ function filterCallback(e, objects, target) {
 
                 target.parent().popover(options).popover('show');
                 $('#' + target.parent().attr('aria-describedby')).addClass('filter-option-popover');
+
             } else {
                 console.log('replaceWith');
                 $('#' + target.parent().attr('aria-describedby') + ' button').replaceWith($('#ocfilter-button').html());
             }
-
+            //$('.filter-buttons').show().css({opacity:1});
+            //form.append('<div>fasd</div>');
 
             /*ajaxSelector.html(data.items).toggleClass('loading');
             form.attr('action', data.currentUrl);

@@ -395,10 +395,10 @@ trait ProductTrait
         if ($this->currency_id && Yii::$app->currency->main['id'] != $this->currency_id) {
             if ($this->hasDiscount) {
 
-                $prices[Yii::$app->currency->main['id']]['value'] = $this->discountPrice * Yii::$app->currency->currencies[$this->currency_id]['rate'];
-                $prices[Yii::$app->currency->main['id']]['original_value'] = $this->price * Yii::$app->currency->currencies[$this->currency_id]['rate'];
+                $prices[Yii::$app->currency->main['id']]['value'] = $this->discountPrice * Yii::$app->currency->getById($this->currency_id)->rate;
+                $prices[Yii::$app->currency->main['id']]['original_value'] = $this->price * Yii::$app->currency->getById($this->currency_id)->rate;
             } else {
-                $prices[Yii::$app->currency->main['id']]['value'] = $this->price * Yii::$app->currency->currencies[$this->currency_id]['rate'];
+                $prices[Yii::$app->currency->main['id']]['value'] = $this->price * Yii::$app->currency->getById($this->currency_id)->rate;
             }
 
         }

@@ -714,6 +714,8 @@ class Filter extends BaseObject
         if ($newData)
             $model->getFindByEavAttributes2($newData);
 
+
+
         return $model->createCommand()->queryScalar();
     }
 

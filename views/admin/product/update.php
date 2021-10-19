@@ -16,7 +16,7 @@ use panix\mod\shop\models\ProductType;
 if (!$model->isNewRecord && Yii::$app->settings->get('shop', 'auto_gen_url')) {
     echo Yii::t('shop/admin', 'ENABLE_AUTOURL_MODE');
 }
-$model->attachImage('https://i.citrus.ua/uploads/shop/d/3/d3213e330652ed680735de55e8c51ca8.jpg');
+
 ?>
 
 <?php
@@ -149,7 +149,7 @@ if (count($typesList) > 0) {
                         $tabs[] = [
                             'label' => (isset($this->context->tab_errors['attributes'])) ? Html::icon('warning', ['class' => 'text-danger']) . ' Характеристики' : 'Характеристики',
                             'encode' => false,
-                            'content' => $this->render('tabs/_attributes', ['form' => $form, 'model' => $model]),
+                            'content' => $this->render('tabs/_attributes', ['form' => $form, 'model' => $model,'eavList'=>$eavList]),
                             'options' => ['class' => 'flex-sm-fill text-center nav-item'],
                         ];
 

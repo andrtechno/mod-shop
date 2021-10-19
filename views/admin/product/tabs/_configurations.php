@@ -146,7 +146,8 @@ foreach ($attributeModels as $attribute) {
                     ->where(['id' => $model->getEav($attribute->name)])
                     ->cache(Yii::$app->db->queryCacheDuration);
                 $item = $query->one();
-                return $item['value'];
+
+               // return ($item['data'])?\panix\engine\CMS::dump($item):null;
             }
         ];
     }

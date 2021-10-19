@@ -9,6 +9,7 @@ use panix\mod\shop\models\Kit;
 use panix\mod\shop\models\ProductImage;
 use panix\mod\shop\models\TypeAttribute;
 use Yii;
+use yii\caching\TagDependency;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Json;
@@ -77,8 +78,8 @@ class ProductController extends AdminController
         $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams());
         //$searchModel->behaviors()['eav']['preload']=false;
 
-      // $searchModel->attachBehavior('eav',ArrayHelper::merge($searchModel->behaviors()['eav'],['preload'=>false]));
-       // CMS::dump($searchModel->behaviors['eav']);die;
+        // $searchModel->attachBehavior('eav',ArrayHelper::merge($searchModel->behaviors()['eav'],['preload'=>false]));
+        // CMS::dump($searchModel->behaviors['eav']);die;
 
         $this->pageName = Yii::t('shop/admin', 'PRODUCTS');
         if (Yii::$app->user->can("/{$this->module->id}/{$this->id}/*") || Yii::$app->user->can("/{$this->module->id}/{$this->id}/create")) {
@@ -183,6 +184,40 @@ class ProductController extends AdminController
         }
 
 
+        $attributes = (isset($model->type->shopAttributes)) ? $model->type->shopAttributes : [];
+        foreach ($attributes as $a) {
+            if ($a->group_id) {
+                $result[$a->group->name][] = $a;
+            } else {
+                $result['Без группы'][] = $a;
+            }
+
+        }
+        $eavList = [];
+        foreach ($result as $group_name => $attributes) {
+            foreach ($attributes as $a) {
+                /** @var Attribute|\panix\mod\shop\components\EavBehavior $a */
+                // Repopulate data from POST if exists
+                if (isset($_POST['Attribute'][$a->name])) {
+                    $value = $_POST['Attribute'][$a->name];
+                } else {
+
+                    $value = $model->getEavAttribute($a->name);
+                    if ($a->select_many && in_array($a->type, [Attribute::TYPE_SELECT_MANY])) {
+                        $value = [$value];
+                    }
+
+                }
+                $model->_old_eav[$a->name] = $value;
+                $eavList[$group_name][] = [
+                    'attribute' => $a,
+                    'value' => $value
+                ];
+            }
+        }
+//CMS::dump($eavList);die;
+
+
         if ($model->load($post) && $model->validate() && $this->validateAttributes($model) && $this->validatePrices($model)) {
             $model->setRelatedProducts(Yii::$app->request->post('RelatedProductId', []));
             //$model->setKitProducts(Yii::$app->request->post('kitProductId', []));
@@ -204,7 +239,6 @@ class ProductController extends AdminController
 
              //   $model->images_data = json_encode($data);
             }*/
-
 
 
             if ($model->save()) {
@@ -258,6 +292,7 @@ class ProductController extends AdminController
 
         return $this->render('update', [
             'model' => $model,
+            'eavList' => $eavList
         ]);
     }
 
@@ -407,25 +442,55 @@ class ProductController extends AdminController
             }
         }*/
 
+
         $reAttributes = [];
         foreach ($attributes as $key => $val) {
 
             if (in_array($key, [Attribute::TYPE_TEXT, Attribute::TYPE_TEXTAREA, Attribute::TYPE_YESNO])) {
-                foreach ($val as $k => $v) {
-                    $reAttributes[$k] = '"' . $v . '"';
-                    if (is_string($v) && $v === '') {
+                foreach ($val as $k => $value) {
+                    $reAttributes[$k] = '"' . $value . '"';
+                    if (is_string($value) && $value === '') {
                         unset($reAttributes[$k]);
                     }
                 }
             } else {
-                foreach ($val as $k => $v) {
-                    $reAttributes[$k] = $v;
-                    if (is_string($v) && $v === '') {
+                foreach ($val as $k => $value) {
+                    //  if(!is_array($v)){
+                    $reAttributes[$k] = $value;
+                    //  }
+
+                    if (is_array($value)) {
+                        $diff = array_diff($model->_old_eav[$k], $reAttributes[$k]);
+                        if ($diff) {
+                            /* @todo need testing */
+                            foreach ($diff as $i){
+                                TagDependency::invalidate(Yii::$app->cache, $k.'-'.$i);
+                            }
+
+
+                        }
+
+                    } else {
+                        if ($model->_old_eav[$k] != $reAttributes[$k]) {
+                            //clear cache
+                            TagDependency::invalidate(Yii::$app->cache, $k.'-'.$model->_old_eav[$k]);
+                            TagDependency::invalidate(Yii::$app->cache, $k.'-'.$reAttributes[$k]);
+                        }
+                    }
+
+
+                    if (is_string($value) && $value === '') {
                         unset($reAttributes[$k]);
                     }
                 }
             }
         }
+
+
+        //CMS::dump($reAttributes);
+       // CMS::dump($model->_old_eav);
+       // die;
+
 
         return $model->setEavAttributes($reAttributes, true);
     }

@@ -22,7 +22,7 @@ class ProductImageSearch extends ProductImage
     {
         return [
             [['id'], 'integer'],
-            [['alt_title'], 'safe'],
+          ///  [['alt_title'], 'safe'],
         ];
     }
 
@@ -74,7 +74,7 @@ class ProductImageSearch extends ProductImage
             //}
         }
 
-        $query->andFilterWhere(['like', 'alt_title', $this->alt_title]);
+       // $query->andFilterWhere(['like', 'alt_title', $this->alt_title]);
 
        // echo $query->createCommand()->rawSql;die;
         return $dataProvider;

@@ -56,8 +56,8 @@ class FiltersWidget extends Widget
     {
         $view = $this->getView();
 
-        $this->priceMax = ceil($this->data->getResultMaxPrice());
-        $this->priceMin = floor($this->data->getResultMinPrice());
+        $this->priceMax = ceil($this->data->getMaxPrice());
+        $this->priceMin = floor($this->data->getMinPrice());
 //CMS::dump($this->data->getResultMaxPrice());die;
         if (Yii::$app->request->get('price')) {
             $this->prices = explode('-', Yii::$app->request->get('price'));

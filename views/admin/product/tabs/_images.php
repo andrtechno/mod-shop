@@ -148,14 +148,14 @@ echo panix\engine\grid\GridView::widget([
                 ]);
             },
         ],
-        [
+        /*[
             'attribute' => 'alt_title',
             'format' => 'raw',
             'contentOptions' => ['class' => 'text-center'],
             'value' => function ($model) {
                 return Html::textInput('attachment_image_titles[' . $model->id . ']', $model->alt_title, array('class' => 'form-control'));
             },
-        ],
+        ],*/
         [
             'class' => 'panix\engine\grid\columns\ActionColumn',
             'template' => '{resize} {settings} {delete}',

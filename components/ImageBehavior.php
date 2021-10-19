@@ -2,9 +2,6 @@
 
 namespace panix\mod\shop\components;
 
-use panix\engine\CMS;
-use panix\engine\components\ImageHandler;
-use panix\mod\shop\models\ProductImage;
 use Yii;
 use yii\base\Exception;
 use yii\db\ActiveRecord;
@@ -12,6 +9,9 @@ use yii\db\Query;
 use yii\helpers\BaseFileHelper;
 use yii\helpers\FileHelper;
 use yii\httpclient\Client;
+use panix\engine\CMS;
+use panix\engine\components\ImageHandler;
+use panix\mod\shop\models\ProductImage;
 
 class ImageBehavior extends \yii\base\Behavior
 {
@@ -58,6 +58,43 @@ class ImageBehavior extends \yii\base\Behavior
         }
     }
 
+    /**
+     * Remove all model images
+     */
+    public function afterDelete()
+    {
+        $images = $this->owner->getImages();
+        if ($images->count() < 1) {
+            return true;
+        } else {
+            foreach ($images->all() as $image) {
+                $this->removeImage($image);
+            }
+
+            $path = Yii::getAlias($this->savePath) . DIRECTORY_SEPARATOR . $this->owner->primaryKey;
+            BaseFileHelper::removeDirectory($path);
+        }
+    }
+
+    /**
+     * removes concrete model's image
+     * @param ProductImage $img
+     * @return bool
+     * @throws \Exception
+     */
+    public function removeImage(ProductImage $img)
+    {
+
+        $storePath = Yii::getAlias('@uploads/store');
+
+        $fileToRemove = Yii::getAlias($this->savePath);
+        if (preg_match('@\.@', $fileToRemove) and is_file($fileToRemove)) {
+            unlink($fileToRemove);
+        }
+        $img->delete();
+        return true;
+    }
+
     protected function updateMainImage()
     {
         $post = Yii::$app->request->post('AttachmentsMainId');
@@ -81,8 +118,8 @@ class ImageBehavior extends \yii\base\Behavior
                 if ($currentMainId != $post) {
                     $customer->is_main = 1;
                     $customer->update();
-                    $this->owner->main_image = $customer->filename;
-                    $this->owner->save(false);
+                    //$this->owner->main_image = $customer->filename;
+                   // $this->owner->save(false);
                 }
             }
         }
@@ -190,7 +227,8 @@ class ImageBehavior extends \yii\base\Behavior
             unlink($newAbsolutePath);
             throw new \Exception(array_shift($ar));
         }
-        $img = $image->getImage();
+
+        $img = $this->owner->getImage();
 
         //If main image not exists
         if ($img == null || $is_main) {
@@ -289,18 +327,25 @@ class ImageBehavior extends \yii\base\Behavior
     }
 
 
+    public function getModelSubDir($model)
+    {
+
+        $modelName = $this->getShortClass($model);
+        $modelDir = \yii\helpers\Inflector::pluralize($modelName) . '/' . $model->id;
+        return $modelDir;
+    }
     /**
      * Clear all images cache (and resized copies)
      * @return bool
      */
     public function clearImagesCache()
     {
-        $cachePath = Yii::$app->getModule('images')->getCachePath();
-        $subdir = Yii::$app->getModule('images')->getModelSubDir($this->owner);
 
-        $dirToRemove = $cachePath . '/' . $subdir;
+        $subdir = $this->getModelSubDir($this->owner);
 
-        if (preg_match('/' . preg_quote($cachePath, '/') . '/', $dirToRemove)) {
+        $dirToRemove = Yii::getAlias($this->savePath) . '/' . $subdir;
+
+        if (preg_match('/' . preg_quote(Yii::getAlias($this->savePath), '/') . '/', $dirToRemove)) {
             BaseFileHelper::removeDirectory($dirToRemove);
             //exec('rm -rf ' . $dirToRemove);
             return true;
@@ -338,8 +383,8 @@ class ImageBehavior extends \yii\base\Behavior
             $allImg->setMain(false);
             $allImg->save();
         }
-        $this->owner->main_image = $img->filename;
-        $this->owner->save(false);
+        //$this->owner->main_image = $img->filename;
+        //$this->owner->save(false);
         $this->clearImagesCache();
     }
 
