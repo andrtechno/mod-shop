@@ -18,8 +18,8 @@ class NotifyAsset extends AssetBundle
     ];
 
     public $depends = [
-        'panix\mod\cart\CartAsset',
-        'panix\mod\wishlist\WishListAsset',
+       // 'panix\mod\cart\CartAsset',
+       // 'panix\mod\wishlist\WishListAsset',
     ];
 
 }

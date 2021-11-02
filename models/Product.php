@@ -4,6 +4,7 @@ namespace panix\mod\shop\models;
 
 use panix\mod\images\models\Image;
 use panix\mod\shop\components\ExternalFinder;
+use panix\mod\shop\components\ImageBehavior;
 use panix\mod\shop\models\query\ProductReviewsQuery;
 use panix\mod\sitemap\behaviors\SitemapBehavior;
 use panix\mod\user\models\User;
@@ -190,17 +191,18 @@ class Product extends ActiveRecord
     public static function getSort()
     {
         return new \yii\data\Sort([
-            'defaultOrder' => [
-                'ordern' => SORT_DESC,
-            ],
+            'defaultOrder' => ['ordern' => SORT_DESC],
             'attributes' => [
                 // '*',
-                'price' => [
-                    'asc' => ['price' => SORT_ASC],
-                    'desc' => ['price' => SORT_DESC],
+               // 'availability',
+                //'price' => [
+                //    'asc' => ['availability' => SORT_ASC, 'price' => SORT_ASC],
+                //    'desc' => ['availability' => SORT_ASC, 'price' => SORT_DESC],
+                    //'asc' => ['price' => SORT_ASC],
+                    // 'desc' => ['price' => SORT_DESC],
                     //'default' => SORT_ASC,
                     //'label' => 'Цена1',
-                ],
+               // ],
                 'sku' => [
                     'asc' => ['sku' => SORT_ASC],
                     'desc' => ['sku' => SORT_DESC],
@@ -316,14 +318,18 @@ class Product extends ActiveRecord
      */
     public function renderGridImage($size = '50x50')
     {
+        /** @var ImageBehavior|ProductImage $mainImage */
         $mainImage = $this->getMainImageObject();
-        $small = $mainImage->get($size);
-        $big = $mainImage->get();
+        if ($mainImage) {
+            $small = $mainImage->get($size);
+            $big = $mainImage->get();
 
-        // $small = $this->getMainImage($size);
-        //  $big = $this->getMainImage();
+            // $small = $this->getMainImage($size);
+            //  $big = $this->getMainImage();
 
-        return Html::a(Html::img($small, ['alt' => (isset($mainImage->alt_title))?$mainImage->alt_title:$this->name, 'class' => 'img-thumbnail']), $big, ['title' => $this->name, 'data-fancybox' => 'gallery']);
+            return Html::a(Html::img($small, ['alt' => (isset($mainImage->alt_title)) ? $mainImage->alt_title : $this->name, 'class' => 'img-thumbnail']), $big, ['title' => $this->name, 'data-fancybox' => 'gallery']);
+        }
+
     }
 
 
@@ -478,7 +484,6 @@ class Product extends ActiveRecord
 
         $this->slug = CMS::slug($this->name);
 
-
         return parent::beforeValidate();
     }
 
@@ -516,7 +521,7 @@ class Product extends ActiveRecord
      */
     public function getBrand()
     {
-        return $this->hasOne(Brand::class, ['id' => 'brand_id'])->cache(self::getDb()->queryCacheDuration,new TagDependency(['tags' => 'brand-'.$this->brand_id]));
+        return $this->hasOne(Brand::class, ['id' => 'brand_id'])->cache(self::getDb()->queryCacheDuration, new TagDependency(['tags' => 'brand-' . $this->brand_id]));
     }
 
     /**
@@ -630,7 +635,8 @@ class Product extends ActiveRecord
     }
 
 //'variants' => array(self::HAS_MANY, 'ProductVariant', array('product_id'), 'with' => array('attribute', 'option'), 'order' => 'option.ordern'),
-public $_old_eav;
+    public $_old_eav;
+
     /**
      * @param array $prices
      */
@@ -1236,7 +1242,7 @@ public $_old_eav;
         $a['eav'] = [
             'class' => '\panix\mod\shop\components\EavBehavior',
             'tableName' => ProductAttributesEav::tableName(),
-            'preload'=>true
+            'preload' => true
         ];
         $a['translate'] = [
             'class' => '\panix\mod\shop\components\TranslateBehavior',

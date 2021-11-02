@@ -54,6 +54,8 @@ class CatalogController extends FilterController
         $productModel = Yii::$app->getModule('shop')->model('Product');
         $this->currentUrl = $this->dataModel->getUrl();
         $this->query = $productModel::find();
+        $this->query->andWhere(['!=',"{$productModel::tableName()}.availability", $productModel::STATUS_ARCHIVE]);
+        $this->query->sortAvailability();
         $this->query->published();
 
 
@@ -81,9 +83,8 @@ class CatalogController extends FilterController
         $this->currentQuery = clone $this->query;
 
 
-        $this->filter->resultQuery->sort();
+        $this->filter->resultQuery;//->sort()
         //$this->query->andWhere([Product::tableName().'.main_category_id'=>$this->dataModel->id]);
-
         //  $this->query->with('brandActive');
         $this->pageName = $this->dataModel->name;
         $this->view->setModel($this->dataModel);
@@ -113,9 +114,11 @@ class CatalogController extends FilterController
         $sort = explode(',', Yii::$app->request->get('sort'));
         if ($sort[0] == 'price' || $sort[0] == '-price') {
             $this->filter->resultQuery->aggregatePriceSelect(($sort[0] == 'price') ? SORT_ASC : SORT_DESC);
+
             // echo $this->query->createCommand()->rawSql;die;
         }
-//echo  $this->query->createCommand()->rawSql;die;
+
+      //  echo  $this->filter->resultQuery->createCommand()->rawSql;die;
 
         $this->provider = new \panix\engine\data\ActiveDataProvider([
             'query' => $this->filter->resultQuery,

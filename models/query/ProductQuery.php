@@ -27,6 +27,23 @@ class ProductQuery extends ActiveQuery
         return $this;
     }
 
+
+    /**
+     * Default sorting
+     */
+    public function sortAvailability()
+    {
+        /** @var \yii\db\ActiveRecord $modelClass */
+        $modelClass = $this->modelClass;
+        $tableName = $modelClass::tableName();
+
+        //$this->addOrderBy(["{$tableName}.availability"=>SORT_DESC]);
+
+        $this->orderBy("(CASE {$tableName}.availability WHEN " . $this->modelClass::STATUS_OUT_STOCK . " then -1 END) ASC");
+
+        parent::init();
+    }
+
     public function sales()
     {
 
@@ -43,7 +60,7 @@ class ProductQuery extends ActiveQuery
         } else {
             $this->int2between(-1, -1);
         }
-        $this->orderBy([Product::tableName().'.created_at' => SORT_DESC]);
+        $this->orderBy([Product::tableName() . '.created_at' => SORT_DESC]);
         return $this;
     }
 
