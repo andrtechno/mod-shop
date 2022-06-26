@@ -57,6 +57,11 @@ class CatalogController extends FilterController
         $this->query->andWhere(['!=',"{$productModel::tableName()}.availability", $productModel::STATUS_ARCHIVE]);
         $this->query->sortAvailability();
         $this->query->published();
+        //$amo = new \AmoCRM\Client('pixelion', 'andrew.panix@gmail.com', 'b58823639ceb496decfc9ec1ebfd4f963783bbf9');
+        //$account = $amo->account;
+
+        //CMS::dump($amo->lead->apiList([]));die;
+
 
 
         //  $cr->with = array('brandActive');
