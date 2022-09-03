@@ -76,7 +76,7 @@ class m180917_193213_shop_product extends Migration
         $this->createIndex('type_id', Product::tableName(), 'type_id');
         $this->createIndex('supplier_id', Product::tableName(), 'supplier_id');
         $this->createIndex('currency_id', Product::tableName(), 'currency_id');
-        $this->createIndex('slug', Product::tableName(), 'slug');
+        //$this->createIndex('slug', Product::tableName(), 'slug'); //не используем вроде.
         $this->createIndex('price', Product::tableName(), 'price');
         $this->createIndex('max_price', Product::tableName(), 'max_price');
         $this->createIndex('switch', Product::tableName(), 'switch');

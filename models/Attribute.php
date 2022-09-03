@@ -276,6 +276,7 @@ class Attribute extends ActiveRecord
                 return Html::textarea($name, $value, ['class' => 'form-control ' . $inputClass]);
                 break;
             case self::TYPE_DROPDOWN:
+                //$data = ArrayHelper::map($this->getOptions()->orderBy(['name'=>SORT_ASC])->all(), 'id', 'value');
                 $data = ArrayHelper::map($this->options, 'id', 'value');
 
                 return Select2::widget([

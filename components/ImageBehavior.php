@@ -100,7 +100,7 @@ class ImageBehavior extends \yii\base\Behavior
         $post = Yii::$app->request->post('AttachmentsMainId');
         if ($post) {
 
-             //ProductImage::updateAll(['is_main' => 0], 'product_id=:pid', ['pid' => $this->owner->primaryKey]);
+            //ProductImage::updateAll(['is_main' => 0], 'product_id=:pid', ['pid' => $this->owner->primaryKey]);
 
             $currentMain = ProductImage::find()->where(['product_id' => $this->owner->primaryKey, 'is_main' => 1])->one();
             $currentMainId = 0;
@@ -119,7 +119,7 @@ class ImageBehavior extends \yii\base\Behavior
                     $customer->is_main = 1;
                     $customer->update();
                     //$this->owner->main_image = $customer->filename;
-                   // $this->owner->save(false);
+                    // $this->owner->save(false);
                 }
             }
         }
@@ -151,26 +151,33 @@ class ImageBehavior extends \yii\base\Behavior
 
         //return file of exsts path
         if (file_exists($saveTo)) {
+            Yii::info($msg, 'img exist');
             return $saveTo;
         }
+        try {
 
-        $fh = fopen($saveTo, 'w');
-        $client = new Client([
-            'transport' => 'yii\httpclient\CurlTransport'
-        ]);
-        $response = $client->createRequest()
-            ->setMethod('GET')
-            ->setUrl($url)
-            ->setOutputFile($fh)
-            ->send();
+            $fh = fopen($saveTo, 'w');
+            $client = new Client([
+                'transport' => 'yii\httpclient\CurlTransport'
+            ]);
+            $response = $client->createRequest()
+                ->setMethod('GET')
+                ->setUrl(str_replace(" ", "%20", $url))
+                ->setOutputFile($fh)
+                ->send();
 
-        if ($response->isOk) {
-            return $saveTo;
-        } else {
+
+            if ($response->isOk) {
+                return $saveTo;
+            } else {
+                return false;
+                Yii::info($msg, 'img not ok');
+            }
+        } catch (\Exception $e) {
+            Yii::info($msg, 'img catch');
             return false;
         }
     }
-
 
     /**
      *
@@ -184,14 +191,20 @@ class ImageBehavior extends \yii\base\Behavior
      */
     public function attachImage($file, $is_main = false, $alt = '')
     {
+        $uniqueName = \panix\engine\CMS::gen(10);
         $isDownloaded = preg_match('/http(s?)\:\/\//i', $file);
         if ($isDownloaded) {
             $download = $this->downloadFile($file);
             if ($download) {
-                $file = $download;
+                // $file = $download;
+                $newfile = Yii::getAlias('@runtime/') . $uniqueName . '.' . pathinfo($download, PATHINFO_EXTENSION);
+                rename($download, $newfile);
+                $file = $newfile;
+            }else{
+                Yii::info($msg, 'img not download '.$file);
+                return false;
             }
         }
-        $uniqueName = \panix\engine\CMS::gen(10);
 
 
         if (!$this->owner->primaryKey) {
@@ -207,7 +220,7 @@ class ImageBehavior extends \yii\base\Behavior
         $path = Yii::getAlias($this->savePath) . DIRECTORY_SEPARATOR . $this->owner->primaryKey;
         $newAbsolutePath = $path . DIRECTORY_SEPARATOR . $pictureFileName;
 
-        BaseFileHelper::createDirectory($path, 0775, true);
+        $createDir = BaseFileHelper::createDirectory($path, 0775, true);
 
 
         $image = new ProductImage();
@@ -223,7 +236,6 @@ class ImageBehavior extends \yii\base\Behavior
         if (count($image->getErrors()) > 0) {
 
             $ar = array_shift($image->getErrors());
-
             unlink($newAbsolutePath);
             throw new \Exception(array_shift($ar));
         }
@@ -239,10 +251,9 @@ class ImageBehavior extends \yii\base\Behavior
         if (is_object($file)) {
             $file->saveAs($newAbsolutePath);
         } else {
-            if (!@copy($file, $newAbsolutePath)) {
-                $image->delete();
-            }
+            $copy = copy($file, $newAbsolutePath);
         }
+
         if (!$isDownloaded) {
             $img = Yii::$app->img->load($newAbsolutePath);
             if ($img->getHeight() > Yii::$app->params['maxUploadImageSize']['height'] || $img->getWidth() > Yii::$app->params['maxUploadImageSize']['width']) {
@@ -254,14 +265,13 @@ class ImageBehavior extends \yii\base\Behavior
         }
         //remove download file
         if ($isDownloaded) {
-            if (file_exists($download)) {
-                unlink($download);
+            if (file_exists($newfile)) {
+                unlink($newfile);
             }
         }
 
         return $image;
     }
-
 
 
     /**
@@ -306,7 +316,7 @@ class ImageBehavior extends \yii\base\Behavior
     }
 
 
-    public function getMainImageObject($main=1)
+    public function getMainImageObject($main = 1)
     {
         $wheres['product_id'] = $this->owner->primaryKey;
         $wheres['is_main'] = $main;
@@ -334,6 +344,7 @@ class ImageBehavior extends \yii\base\Behavior
         $modelDir = \yii\helpers\Inflector::pluralize($modelName) . '/' . $model->id;
         return $modelDir;
     }
+
     /**
      * Clear all images cache (and resized copies)
      * @return bool
@@ -341,7 +352,7 @@ class ImageBehavior extends \yii\base\Behavior
     public function clearImagesCache()
     {
 
-        $subdir = $this->getModelSubDir($this->owner);
+        $subdir = $this->owner->id; //$this->getModelSubDir($this->owner);
 
         $dirToRemove = Yii::getAlias($this->savePath) . '/' . $subdir;
 
@@ -385,7 +396,7 @@ class ImageBehavior extends \yii\base\Behavior
         }
         //$this->owner->main_image = $img->filename;
         //$this->owner->save(false);
-        $this->clearImagesCache();
+        // $this->clearImagesCache();
     }
 
 }

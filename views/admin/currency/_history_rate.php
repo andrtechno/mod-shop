@@ -8,7 +8,8 @@ $query = (new Query())->where(['currency_id' => $model->id])->orderBy(['created_
     ->from('{{%shop__currency_history}}');
 $currencies = $query->all();
 
-
+$categories=[];
+$series=[];
 foreach ($currencies as $k => $p) {
 
     $value = (double)$p['rate'];
@@ -40,7 +41,7 @@ foreach ($currencies as $k => $p) {
     $categories[] = \panix\engine\CMS::date($p['created_at'], false);
 }
 
-
+if($categories){
 echo Highcharts::widget([
     'scripts' => [
         // 'highcharts-more', // enables supplementary chart types (gauge, arearange, columnrange, etc.)
@@ -121,3 +122,4 @@ echo Highcharts::widget([
         ],
     ]
 ]);
+}

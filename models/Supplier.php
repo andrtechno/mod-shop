@@ -14,6 +14,7 @@ use panix\engine\Html;
  * @property string $name
  * @property string $address
  * @property string $phone
+ * @property string $email
  * @property Product $productsCount Counter
  *
  * @package panix\mod\shop\models
@@ -106,6 +107,11 @@ class Supplier extends ActiveRecord
             $external = new ExternalFinder('{{%csv}}');
             $external->deleteObject(ExternalFinder::OBJECT_SUPPLIER, $this->id);
         }
+        if (Yii::$app->hasModule('forsage')) {
+            $external = new ExternalFinder('{{%forsage_studio}}');
+            $external->deleteObject(ExternalFinder::OBJECT_SUPPLIER, $this->id);
+        }
+
         parent::afterDelete();
     }
 }

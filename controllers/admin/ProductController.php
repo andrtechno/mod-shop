@@ -183,7 +183,7 @@ class ProductController extends AdminController
             // $model->setScenario('configurable');
         }
 
-
+        $result= [];
         $attributes = (isset($model->type->shopAttributes)) ? $model->type->shopAttributes : [];
         foreach ($attributes as $a) {
             if ($a->group_id) {

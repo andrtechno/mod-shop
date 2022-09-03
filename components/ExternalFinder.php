@@ -89,6 +89,7 @@ class ExternalFinder
             switch ($type) {
                 case self::OBJECT_CATEGORY:
                     $data = Category::findOne($query['object_id']);
+                    echo 'category';
                     $this->cacheData[$type][$externalId] = $data;
                     return $data;
                     break;

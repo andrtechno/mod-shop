@@ -108,7 +108,7 @@ $q=Yii::$app->request->post('q');
             $productModel = Yii::$app->getModule('shop')->model('Product');
             $model = $productModel::find();
             $model->applySearch($q);
-            $model->published()->limit(5);
+            $model->published()->limit(16);
 
             $result = $model->all();
 
@@ -122,7 +122,7 @@ $q=Yii::$app->request->post('q');
                     'price' => $m->getFrontPrice(),
                     'currency' => Yii::$app->currency->active['symbol'],
                     'url' => Url::to($m->getUrl()),
-                    'image' => $m->getMainImage('50x50')->url,
+                    'image' => $m->getMainImage('80x80')->url,
                 ];
             }
 

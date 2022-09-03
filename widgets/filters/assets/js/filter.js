@@ -83,6 +83,7 @@ function filterCallback(e, objects, target) {
     if (e.type == 'filter:click:checkbox') {
         delete objects['slide[price][]'];
     }
+
     //delete objects.route;
     //delete objects.category_id;
     //objects = $.extend(objects, {});
@@ -107,33 +108,36 @@ function filterCallback(e, objects, target) {
                 .popover('dispose');*/
 
 
-            form.find('[data-original-title]')
+            /*form.find('[data-original-title]')
                 .not('[data-toggle="popover-price"]')
                 .not(target.parent())
-                .popover('destroy');
+                .popover('destroy');*/
 
             $('#ocfilter-button a').attr('href', response.url).html(response.textTotal);
-            if (!target.parent().attr('aria-describedby')) {
+
+            /*if (!target.closest('li').attr('aria-describedby')) {
                 var options = {
-                    placement: 'right',
+                    placement: 'left',
                     selector: false,
                     //delay: {'show': 100, 'hide': 100},
                     content: function () {
                         return $($('#ocfilter-button').html());
                         // return 'dsadsadsasdas';
                     },
-                    container: target.parent(),
-                    trigger: 'hover',
+                    container: target.closest('li'),
+                    //trigger: 'hover',
                     html: true
                 };
 
-                target.parent().popover(options).popover('show');
-                $('#' + target.parent().attr('aria-describedby')).addClass('filter-option-popover');
+                target.closest('li').popover(options).popover('show');
+                $(target.closest('li').attr('aria-describedby')).addClass('filter-option-popover');
 
             } else {
                 console.log('replaceWith');
-                $('#' + target.parent().attr('aria-describedby') + ' button').replaceWith($('#ocfilter-button').html());
-            }
+                $(target.closest('li').attr('aria-describedby') + ' button').replaceWith($('#ocfilter-button').html());
+            }*/
+
+
             //$('.filter-buttons').show().css({opacity:1});
             //form.append('<div>fasd</div>');
 
@@ -211,6 +215,7 @@ function filterCallback(e, objects, target) {
             //ajaxSelector.toggleClass('loading');
         }
     });
+
 }
 
 function filter_ajax(e, objects,sort=false) {
@@ -392,9 +397,8 @@ $(function () {
     $(document).on('filter:apply', function (e) {
         var objects = getSerializeObjects();
         console.debug('Apply sending...', $('#filter-form').serializeArray());
+
         // filter_ajax(e, objects);
-
-
     });
 
     var currentChackedByOpen = []; //Определение после открытие фильтра чекнутых елементов.
@@ -491,7 +495,7 @@ $(function () {
         }
     });
 
-    $(document).on('filter:click:checkbox', '#filter-form input[type="checkbox"],#filter-form input[type="radio"]', function (e, state) {
+    $(document).on('filter:click:checkbox', '#filter-form input[type="checkbox"], #filter-form input[type="radio"]', function (e, state) {
         this.checked = state;
         var id = $(this).attr('id');
         //  $('.tester').remove();
@@ -590,10 +594,13 @@ $(function () {
     }
 
     $(document).on('click', '#filter-apply', function (e) {
-        $('#filter-apply').hide();
-        showApply = true;  //not chika: set false
+        console.debug("click filter-apply");
+       // $('#filter-apply').hide();
+        showApply = false;  //not chika: set false
         $(this).trigger('filter:apply');
         $(this).trigger('filter:close');
+        $(".filter-to-left").toggleClass("active");
+        $(".bg-minicart").toggleClass("active");
         e.preventDefault();
     });
 
@@ -627,7 +634,12 @@ $(function () {
             }
 
             showApply = flag
-            $(".filter-buttons").trigger("filter:buttons:toggle");
+            //$(".filter-buttons").trigger("filter:buttons:toggle");
+            if (newFunction) {
+                var objects = getSerializeObjects();
+                var target = $(this);
+                filterCallback(e, objects, target);
+            }
 
         }
     });
@@ -666,7 +678,13 @@ $(function () {
 
         slider.slider("values", [valueMin, valueMax]);
 
-        filter_ajax(e, getSerializeObjects());
+        //filter_ajax(e, getSerializeObjects());
+
+
+        var objects = getSerializeObjects();
+        var target = $(this);
+        filterCallback(e, objects, target);
+
 
         if (e.cancelable) {
             e.preventDefault();
@@ -676,7 +694,7 @@ $(function () {
     });
 
 
-    $(document).on('click', '.button-apply', function (e) {
+    $(document).on('click', '.button-apply, #filter-apply', function (e) {
         filter_ajax(e, getSerializeObjects());
         e.preventDefault();
         return false;

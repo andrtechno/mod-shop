@@ -22,7 +22,7 @@ class BrandController extends FilterController
     {
         $model = Brand::find()->published()->all();
         $this->currentUrl = '/';
-        $this->pageName = Yii::t('shop/default','BRAND');
+        $this->pageName = Yii::t('shop/default','BRANDS');
         $this->view->params['breadcrumbs'][] = $this->pageName;
         return $this->render('index', ['model' => $model]);
     }
@@ -51,7 +51,6 @@ class BrandController extends FilterController
         //$this->query->applyAttributes($this->activeAttributes);
 
 
-
         //$this->applyPricesFilter();
         $this->pageName = $this->dataModel->name;
         $this->view->setModel($this->dataModel);
@@ -64,6 +63,8 @@ class BrandController extends FilterController
 
 
         $this->view->registerJs("var current_url = '" . Url::to($this->dataModel->getUrl()) . "';", yii\web\View::POS_HEAD, 'current_url');
+
+
 
 
         $sort = explode(',',Yii::$app->request->get('sort'));
@@ -92,7 +93,7 @@ class BrandController extends FilterController
 
         $currentUrl[] = '/shop/brand/view';
         $currentUrl['slug'] = $this->dataModel->slug;
-
+        $this->refreshUrl=$currentUrl;
         $this->view->canonical = Url::to($currentUrl, true);
         //  print_r($filterData);die;
         foreach ($filterData as $name => $filter) {

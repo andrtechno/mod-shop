@@ -423,6 +423,7 @@ class EavBehavior extends \yii\base\Behavior
         foreach ($attributes as $attribute => $value) {
             $this->attributes[$attribute] = $value;
             $this->changedAttributes[] = $attribute;
+            //TagDependency::invalidate(Yii::$app->cache, $attribute);
         }
         // Auto save if set.
         if ($save) {

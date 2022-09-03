@@ -1,41 +1,80 @@
 <?php
 
-namespace panix\mod\shop\controllers;
+namespace panix\mod\shop\api\v1\controllers;
 
+use panix\mod\shop\api\v1\models\Product;
+use panix\mod\shop\api\v1\Serializer;
 use panix\mod\shop\components\Filter;
 use panix\mod\shop\components\FilterV2;
 use panix\mod\shop\models\Brand;
 use panix\mod\shop\models\Category;
 use Yii;
+use yii\filters\AccessControl;
+use yii\filters\auth\QueryParamAuth;
+use yii\filters\ContentNegotiator;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
+use yii\rest\ActiveController;
 use yii\web\Controller;
+use yii\web\Response;
 
-class AjaxController extends Controller
+class FilterController extends Controller
 {
-    /**
-     * Set store currency
-     *
-     * @param int $id
-     * @return \yii\web\Response
-     */
-    public function actionCurrency($id)
+
+   // public $modelClass = 'panix\mod\shop\api\v1\models\Product';
+    public $serializer2 = [
+        'class' => Serializer::class,
+    ];
+    public function behaviors()
     {
-        if (Yii::$app->request->isAjax) {
-            Yii::$app->currency->setActive($id);
-        } else {
-            return $this->goHome();
-        }
+        return [
+            'contentNegotiator' => [
+                'class' => ContentNegotiator::class,
+                'formatParam' => 'format',
+                'formats' => [
+                    'json' => Response::FORMAT_JSON,
+                ]
+            ],
+            'corsFilter' => [
+                'class' => \yii\filters\Cors::class,
+            ],
+            'authenticator' => [
+                'class' => QueryParamAuth::class,
+                'tokenParam' => 'token',
+            ],
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['@']
+                    ]
+                ],
+            ]
+        ];
+    }
+    public function beforeAction($action)
+    {
+        $this->enableCsrfValidation = false;
+        parent::beforeAction($action);
     }
 
-
-    public function actionFilter()
+    public function actionIndex()
     {
-        $productModel = Yii::$app->getModule('shop')->model('Product');
-        $query = $productModel::find()->published();
-        $route = Yii::$app->request->post('route');
-        $param = Yii::$app->request->post('param');
-        $accessAttributes = Yii::$app->request->post('attributes');
+
+        //$query = Product::find()->published();
+        //$route = Yii::$app->request->post('route');
+        //$param = Yii::$app->request->post('param');
+        //$accessAttributes = Yii::$app->request->post('attributes');
+
+        return $this->asJson(['ok' => true]);
+        $requestParams = Yii::$app->getRequest()->getBodyParams();
+        $params = Yii::$app->getRequest()->bodyParams;
+        if (empty($requestParams)) {
+            $requestParams = Yii::$app->getRequest()->getQueryParams();
+        }
+        return $this->asJson(Yii::$app->getRequest()->getQueryParams());
+
         if ($route == 'shop/catalog/sales') {
             $query->sales();
             $url = [$route];
@@ -72,12 +111,11 @@ class AjaxController extends Controller
         }
 //echo $query->createCommand()->rawSql;die;
 
-        $filter = new FilterV2($query,['route'=>$url]);
-      //  echo $filter->activeUrl;
+        $filter = new FilterV2($query, ['route' => $url]);
+        //  echo $filter->activeUrl;
 
         //$filter->route = $url;
         $filter->accessAttributes = $accessAttributes;
-
 
 
         // $filter->resultQuery->applyAttributes($filter->activeAttributes);
@@ -98,7 +136,7 @@ class AjaxController extends Controller
         $total = $filter->resultQuery->count();
 //echo $filter->resultQuery->createCommand()->rawSql;die;
 
-        $sliders=[];
+        $sliders = [];
         $sliders2 = Yii::$app->request->post('slide');
         if ($sliders2) {
             if (isset($sliders2['price'])) {
@@ -116,8 +154,6 @@ class AjaxController extends Controller
                 ]
             ];
         }
-
-
 
 
         $results = ArrayHelper::merge($attributes, ['brand' => $brands]);

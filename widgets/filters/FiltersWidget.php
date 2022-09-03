@@ -33,7 +33,7 @@ class FiltersWidget extends Widget
     public $tagCountOptions = ['class' => 'filter-count'];
     //public $showEmpty = false;
     public $searchItem = 20;
-
+    public $skin = 'default';
     /**
      * @var \panix\mod\shop\models\query\CategoryQuery
      */
@@ -109,10 +109,11 @@ class FiltersWidget extends Widget
         // echo Html::endTag('div');
    //   print_r($this->model);die;
 
-        echo $this->render('default', [
+        echo $this->render($this->skin, [
             'model'=>$this->model,
             'currentUrl' => $this->view->context->currentUrl,
-            'refreshUrl' => (($this->model) ? $this->model->getUrl() : ['/' . Yii::$app->requestedRoute]),
+            //'refreshUrl' => (($this->model) ? $this->model->getUrl() : ['/' . Yii::$app->requestedRoute]),
+            'refreshUrl' => $this->view->context->refreshUrl,
             'priceMin' => floor($this->priceMin),
             'priceMax' => ceil($this->priceMax),
             'currentPrice'=>$this->prices,

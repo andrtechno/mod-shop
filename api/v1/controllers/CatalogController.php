@@ -9,7 +9,6 @@ use panix\mod\pages\models\Pages;
 use panix\mod\shop\components\Filter;
 use panix\mod\shop\components\FilterV2;
 use panix\mod\shop\models\ProductCategoryRef;
-use setasign\Fpdi\PdfReader\Page;
 use Yii;
 use yii\helpers\Url;
 use yii\web\Response;

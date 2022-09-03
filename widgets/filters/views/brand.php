@@ -48,7 +48,7 @@ use yii\helpers\Html;
 
                         echo '<div class="custom-control custom-checkbox">';
                         echo Html::checkBox('filter[' . $filter['key'] . '][]', $checked, $checkBoxOptions);
-                        echo Html::label($filter['title'].(($checked)?'':$this->context->getCount($filter)), 'filter_' . $filter['key'] . '_' . $filter['queryParam'],['class' => 'custom-control-label']);
+                        echo Html::label($filter['title'].(($checked)?'':$this->context->getCount($filter)), 'filter_' . $filter['key'] . '_' . $filter['queryParam'],['class' => 'custom-control-label', 'data-search' => $filter['title']]);
 
 
                        // echo $this->context->getCount($filter);

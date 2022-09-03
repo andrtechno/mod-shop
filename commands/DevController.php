@@ -44,10 +44,15 @@ class DevController extends ConsoleController
      */
     public function actionRefreshHotSale($days = 90)
     {
-        $aggregate = 86400 * (int)$days;
+        $config = Yii::$app->settings->get('shop');
+        //$aggregate = 86400 * (int)$days;
+        $aggregate = 86400 * (int)$config->added_to_cart_period;
+
         // $newDate = date('Y-m-d', strtotime('+3 month'));
 
-        $productQuery = Product::find()->where(['>=', 'added_to_cart_count', 10])->andWhere(['<=', 'added_to_cart_date', time() - $aggregate]);
+        $productQuery = Product::find()
+            ->where(['>=', 'added_to_cart_count', $config->added_to_cart_count])
+            ->andWhere(['<=', 'added_to_cart_date', time() - $aggregate]);
         //$productQuery->int2between(time(), time() - (86400),'added_to_cart_date');
         echo date('Y-m-d H:i', time() - $aggregate);
         $items = $productQuery->all();
@@ -55,7 +60,7 @@ class DevController extends ConsoleController
             /** @var Product $item */
             $item->added_to_cart_count = 0;
             $item->added_to_cart_date = NULL;
-            //$item->save(false);
+            $item->save(false);
         }
         // echo $productQuery->createCommand()->rawSql;
         // echo $productQuery->count();

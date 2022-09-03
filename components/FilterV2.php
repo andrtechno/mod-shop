@@ -805,7 +805,11 @@ class FilterV2 extends Component
         // if ($this->currentQuery) {
         $result = $res->aggregatePrice('MIN')->asArray()->one();
         // if (isset($result['aggregation_price'])) {
-        return $result['aggregation_price'];
+        if($result) {
+            return $result['aggregation_price'];
+        }else{
+            return 0;
+        }
         // }
         // }
 
@@ -837,7 +841,9 @@ class FilterV2 extends Component
         // if ($this->currentQuery) {
         $result = $res->aggregatePrice('MIN')->asArray()->one();
         // if (isset($result['aggregation_price'])) {
+
         return $result['aggregation_price'];
+
         // }
         // }
 
@@ -853,7 +859,11 @@ class FilterV2 extends Component
 
         $result = $res->aggregatePrice('MAX')->asArray()->one();
         // if (isset($result['aggregation_price'])) {
+if($result){
         return $result['aggregation_price'];
+}else{
+    return 0;
+}
         // }
         // return $this->_maxPrice;
     }

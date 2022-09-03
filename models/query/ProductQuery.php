@@ -27,14 +27,36 @@ class ProductQuery extends ActiveQuery
         return $this;
     }
 
+
+    /**
+     * Default sorting
+     */
+    public function sortAvailability()
+    {
+        /** @var \yii\db\ActiveRecord $modelClass */
+        $modelClass = $this->modelClass;
+        $tableName = $modelClass::tableName();
+
+        //$this->addOrderBy(["{$tableName}.availability"=>SORT_DESC]);
+
+        $this->orderBy("(CASE {$tableName}.availability WHEN " . $this->modelClass::STATUS_OUT_STOCK . " then -1 END) ASC");
+
+        parent::init();
+    }
+
     public function sales()
     {
 
-        $this->andWhere(['IS NOT', Product::tableName() . '.discount', null]);
-        //->andWhere(['!=', Product::tableName() . '.discount', '']);
+
+        $this->andWhere(['IS NOT', Product::tableName() . '.discount', null])
+            ->andWhere(['!=', Product::tableName() . '.discount', '']);
+
         return $this;
     }
 
+    /**
+     * @return $this
+     */
     public function new()
     {
         $config = Yii::$app->settings->get('shop');
@@ -43,10 +65,24 @@ class ProductQuery extends ActiveQuery
         } else {
             $this->int2between(-1, -1);
         }
-        $this->orderBy([Product::tableName().'.created_at' => SORT_DESC]);
+        $this->orderBy([Product::tableName() . '.created_at' => SORT_DESC]);
         return $this;
     }
 
+    /**
+     * @param int $offset
+     * @return $this
+     */
+    public function topSales($offset=30)
+    {
+        $config = Yii::$app->settings->get('shop');
+        if ($config->added_to_cart_count) {
+            //$this->where(['like', 'label', 'hit_sale'])
+            $this->int2between(time() - (86400 * $offset), time(), 'added_to_cart_date');
+            $this->orWhere(['>=', 'added_to_cart_count', $config->added_to_cart_count]);
+        }
+        return $this;
+    }
 
     /**
      * @param $brands array|int
@@ -100,7 +136,7 @@ class ProductQuery extends ActiveQuery
             if (!is_array($categories))
                 $categories = [$categories];
         }
-        if ($ref) {
+        if (!$ref) {
             $this->$whereType(['main_category_id' => $categories]);
         } else {
             //  $tableName = ($this->modelClass)->tableName();

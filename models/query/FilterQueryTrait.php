@@ -71,7 +71,7 @@ trait FilterQueryTrait
                         {$tableName}.`price`
                 END) AS aggregation_price"]);
 
-        $this->orderBy(["aggregation_price" => $order]);
+        $this->addOrderBy(["aggregation_price" => $order]); //i change to orderby to addorderby
 
         return $this;
     }

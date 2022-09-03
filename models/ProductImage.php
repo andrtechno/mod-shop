@@ -150,9 +150,9 @@ class ProductImage extends ActiveRecord
         }
 
         /** @var $img \panix\engine\components\ImageHandler */
-
         $img = Yii::$app->img;
         $img->load($imagePath);
+
         //echo basename($img->getFileName());
         $fileInfo = explode('.', basename($img->getFileName()));
         $filename = $fileInfo[0];
@@ -263,8 +263,13 @@ class ProductImage extends ActiveRecord
         // }
 
         /** @var $img \panix\engine\components\ImageHandler */
-        $img = Yii::$app->img;
-        $img->load($imagePath);
+        try{
+            $img = Yii::$app->img;
+            $img->load($imagePath);
+        }catch (\Exception $e){
+            return false;
+        }
+
         //echo basename($img->getFileName());
         $fileInfo = explode('.', basename($img->getFileName()));
         $filename = $fileInfo[0];
