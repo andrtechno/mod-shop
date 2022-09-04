@@ -61,11 +61,14 @@ class ProductQuery extends ActiveQuery
     {
         $config = Yii::$app->settings->get('shop');
         if ($config->label_expire_new) {
-            $this->int2between(time(), time() - (86400 * $config->label_expire_new * 300));
+            $modelClass = $this->modelClass;
+            $tableName = $modelClass::tableName();
+            //$this->int2between(time(), time() - (86400 * $config->label_expire_new * 300));
+            $this->andWhere(['>=', $tableName . '.created_at', strtotime(date('Y-m-d', time() - (86400 * $config->label_expire_new)))]);
         } else {
-            $this->int2between(-1, -1);
+            //$this->int2between(-1, -1);
         }
-        $this->orderBy([Product::tableName() . '.created_at' => SORT_DESC]);
+        //$this->orderBy([Product::tableName() . '.created_at' => SORT_DESC]);
         return $this;
     }
 

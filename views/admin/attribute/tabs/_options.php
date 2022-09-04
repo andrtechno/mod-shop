@@ -120,7 +120,7 @@ echo panix\engine\grid\GridView::widget([
     'enableLayout' => false,
     'layout' => '{items}',
     'columns' => $columns,
-    //  'filterModel' => true
+    'filterModel' => true
 ]);
 Pjax::end();
 ?>
