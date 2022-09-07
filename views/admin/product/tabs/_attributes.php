@@ -69,7 +69,7 @@ echo \panix\engine\barcode\BarcodeGenerator::widget([
             echo '<div class="col-sm-12 col-md-6 col-lg-6 col-xl-6"><h5 class="text-center mt-3">' . $group_name . '</h5>';
 
             foreach ($attributes as $a) {
-             //   \panix\engine\CMS::dump($a['attribute']);die;
+                //   \panix\engine\CMS::dump($a['attribute']);die;
                 if ($a['attribute']->type == Attribute::TYPE_DROPDOWN) {
                     $addOptionLink = Html::a(Html::icon('add'), '#', [
                         'rel' => $a['attribute']->id,
@@ -116,14 +116,11 @@ echo \panix\engine\barcode\BarcodeGenerator::widget([
                         <?= $error; ?>
                     </div>
                 </div>
-    <?php
+                <?php
             }
             echo '</div>';
         }
-
-
     }
-
     ?>
 </div>
 

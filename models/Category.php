@@ -130,17 +130,17 @@ class Category extends ActiveRecord
                 //'batchSize' => 100,
                 'scope' => function ($model) {
                     /** @var \yii\db\ActiveQuery $model */
-                    // $model->select(['full_path', 'updated_at']);
+                    $model->select(['full_path', 'updated_at']);
                     $model->andWhere(['switch' => 1])->andWhere(['!=', 'id', 1]);
                 },
                 'dataClosure' => function ($model) {
                     /** @var self $model */
 
-
                     return [
+                        //'loc' => ['/shop/catalog/view', 'slug' => $model->full_path],
                         'loc' => $model->getUrl(),
                         'lastmod' => $model->updated_at,
-                        'name' => $model->name,
+                        //'name' => $model->name,
                         'changefreq' => SitemapBehavior::CHANGEFREQ_DAILY,
                         'priority' => 0.8
                     ];

@@ -4,6 +4,7 @@ namespace panix\mod\shop\models;
 
 use panix\engine\Html;
 use panix\mod\shop\components\ExternalFinder;
+use panix\mod\sitemap\behaviors\SitemapBehavior;
 use Yii;
 use yii\caching\TagDependency;
 use yii\helpers\ArrayHelper;
@@ -150,7 +151,28 @@ class Brand extends ActiveRecord
                 'class' => '\panix\mod\seo\components\SeoBehavior',
                 'url' => $this->getUrl()
             ];
+        if (Yii::$app->getModule('sitemap')) {
+            $a['sitemap'] = [
+                'class' => SitemapBehavior::class,
+                //'batchSize' => 100,
+                'scope' => function ($model) {
+                    /** @var \yii\db\ActiveQuery $model */
+                    $model->select(['slug', 'updated_at']);
+                    $model->andWhere(['switch' => 1]);
+                },
+                'dataClosure' => function ($model) {
+                    /** @var self $model */
 
+                    return [
+                        'loc' => $model->getUrl(),
+                        'lastmod' => $model->updated_at,
+                        //'name' => $model->name,
+                        'changefreq' => SitemapBehavior::CHANGEFREQ_DAILY,
+                        'priority' => 0.8
+                    ];
+                }
+            ];
+        }
         $a['uploadFile'] = [
             'class' => 'panix\engine\behaviors\UploadFileBehavior',
             'files' => [

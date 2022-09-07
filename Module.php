@@ -127,9 +127,47 @@ class Module extends WebModule implements BootstrapInterface
         $rules['product/<id:\d+>/<action:[0-9a-zA-Z_\-]+>'] = 'shop/product/<action>';
         $rules['product/image/<action:[0-9a-zA-Z_\-]+>/<dirtyAlias:\w.+>'] = 'shop/image/<action>';
 
+        $rules[] = [
+            'class' => 'panix\mod\shop\components\rules\BrandUrlRule',
+            'route' => 'shop/brand/view',
+            'index' => 'brand',
+            'pattern' => 'brand/<slug:[0-9a-zA-Z_\-]+>'
+        ];
+
+        foreach ($this->getAllPaths() as $path) {
+
+            $pattern = [];
+            $pathNew = explode('/', $path);
+
+            foreach ($pathNew as $pat) {
+                $pattern[] = '[0-9a-zA-Z_\-]+';
+            }
+            $pattern = implode('\/', $pattern);
+
+            $rules[] = [
+                'class' => 'panix\mod\shop\components\rules\CategoryUrlRule',
+                'route' => 'shop/catalog/view',
+                'defaults' => ['slug' => $path],
+                //'suffix'=>'.html',
+                'pattern' => "catalog/<slug:[0-9a-zA-Z_\-]+>", ///<alias:[\w]+>
+            ];
+
+
+            /*  $rules[] = [
+                  'class' => 'panix\mod\shop\components\rules\CategoryUrlRule',
+                  'route' => 'shop/catalog/sales',
+                  'defaults' => ['slug' => $path],
+                  'index'=>'sales',
+                  //'suffix'=>'.html',
+                  'pattern' => "sales/<slug:$path>", ///<alias:[\w]+>
+              ];*/
+
+
+        }
 
         if ($app->id != 'console') {
             $this->reviewsCount = ProductReviews::find()->where(['status' => ProductReviews::STATUS_WAIT])->count();
+
             $rules[] = [
                 'class' => 'panix\mod\shop\components\rules\SearchUrlRule',
                 //'pattern'=>'products/search',
@@ -137,12 +175,6 @@ class Module extends WebModule implements BootstrapInterface
                 'defaults' => ['q' => Yii::$app->request->get('q')]
             ];
 
-            $rules[] = [
-                'class' => 'panix\mod\shop\components\rules\BrandUrlRule',
-                'route' => 'shop/brand/view',
-                'index' => 'brand',
-                'pattern' => 'brand/<slug:[0-9a-zA-Z_\-]+>'
-            ];
             /* $rules[] = [
                  'class' => 'panix\mod\shop\components\CategoryUrlRule',
                  'route' => 'shop/catalog/view',
@@ -160,36 +192,7 @@ class Module extends WebModule implements BootstrapInterface
 
 
 
-            foreach ($this->getAllPaths() as $path) {
 
-                $pattern = [];
-                $pathNew = explode('/', $path);
-
-                foreach ($pathNew as $pat) {
-                    $pattern[] = '[0-9a-zA-Z_\-]+';
-                }
-                $pattern = implode('\/', $pattern);
-
-                $rules[] = [
-                    'class' => 'panix\mod\shop\components\rules\CategoryUrlRule',
-                    'route' => 'shop/catalog/view',
-                    'defaults' => ['slug' => $path],
-                    //'suffix'=>'.html',
-                    'pattern' => "catalog/<slug:[0-9a-zA-Z_\-]+>", ///<alias:[\w]+>
-                ];
-
-
-              /*  $rules[] = [
-                    'class' => 'panix\mod\shop\components\rules\CategoryUrlRule',
-                    'route' => 'shop/catalog/sales',
-                    'defaults' => ['slug' => $path],
-                    'index'=>'sales',
-                    //'suffix'=>'.html',
-                    'pattern' => "sales/<slug:$path>", ///<alias:[\w]+>
-                ];*/
-
-
-            }
 
             $rules[] = [
                 'class' => 'panix\mod\shop\components\rules\BaseUrlRule',

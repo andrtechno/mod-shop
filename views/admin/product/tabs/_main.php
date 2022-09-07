@@ -27,11 +27,27 @@ echo $this->render('_prices', ['model' => $model, 'form' => $form]);
     'prompt' => html_entity_decode($model::t('SELECT_LABEL'))
 ]);*/
 ?>
-<?=
-
-$form->field($model, 'brand_id')->dropDownList(ArrayHelper::map(Brand::find()->cache(3200, new DbDependency(['sql' => 'SELECT MAX(`updated_at`) FROM ' . Brand::tableName()]))->all(), 'id', 'name'), [
+<?php
+/*
+echo $form->field($model, 'brand_id')->dropDownList(ArrayHelper::map(Brand::find()->cache(3200, new DbDependency(['sql' => 'SELECT MAX(`updated_at`) FROM ' . Brand::tableName()]))->orderBy(['name_' . Yii::$app->language => SORT_ASC])->all(), 'id', 'name'), [
     'prompt' => html_entity_decode($model::t('SELECT_BRAND_ID'))
+]);*/
+
+
+echo $form->field($model, 'brand_id')->widget(\panix\ext\select2\Select2::class,[
+    'items' => ArrayHelper::map(Brand::find()->cache(3200, new DbDependency(['sql' => 'SELECT MAX(`updated_at`) FROM ' . Brand::tableName()]))->orderBy(['name_' . Yii::$app->language => SORT_ASC])->all(), 'id', 'name'),
+    'options' => [
+        'prompt' => html_entity_decode($model::t('SELECT_BRAND_ID'))
+    ],
+    'clientOptions' => [
+        /// 'placeholder'=>Yii::t('app/default', 'EMPTY_LIST'),
+        'width' => '100%'
+    ]
 ]);
+
+
+
+
 
 $model->label = $model->getLabel();
 ?>

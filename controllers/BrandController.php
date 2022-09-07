@@ -43,13 +43,15 @@ class BrandController extends FilterController
         //$this->query->attachBehaviors((new $productModel)->behaviors());
 
         $this->query->applyBrands($this->dataModel->id);
+        $this->query->orderBy(['id'=>SORT_DESC]); //todo: сортировка распрастроняется и нафильтры fixme!!
 
         $this->filter = new FilterV2($this->query,['cacheKey'=>'filter_brand_'.$this->dataModel->id]);
        // CMS::dump($this->filter,2);die;
         $this->filterQuery = clone $this->query;
         $this->currentQuery = clone $this->query;
         //$this->query->applyAttributes($this->activeAttributes);
-
+        //$this->filterQuery->addorderBy(['created_at'=>SORT_DESC]);
+        //$this->currentQuery->orderBy(['created_at'=>SORT_DESC]);
 
         //$this->applyPricesFilter();
         $this->pageName = $this->dataModel->name;

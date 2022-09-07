@@ -18,6 +18,7 @@ use yii\db\Query;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use panix\engine\db\ActiveRecord;
+use yii\helpers\Url;
 
 /**
  * Class Product
@@ -1216,7 +1217,7 @@ class Product extends ActiveRecord
                 //'batchSize' => 100,
                 'scope' => function ($model) {
                     /** @var \yii\db\ActiveQuery $model */
-                    $model->select(['slug', 'updated_at']);
+                    $model->select(['slug', 'updated_at', 'id']);
                     $model->where(['switch' => 1]);
                 },
                 'dataClosure' => function ($model) {

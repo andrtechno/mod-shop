@@ -151,7 +151,7 @@ class ImageBehavior extends \yii\base\Behavior
 
         //return file of exsts path
         if (file_exists($saveTo)) {
-            Yii::info($msg, 'img exist');
+            Yii::info('img exist', 'forsage');
             return $saveTo;
         }
         try {
@@ -163,18 +163,23 @@ class ImageBehavior extends \yii\base\Behavior
             $response = $client->createRequest()
                 ->setMethod('GET')
                 ->setUrl(str_replace(" ", "%20", $url))
+                ->setOptions([
+                    'sslVerifyPeer' => false,
+                    'timeout' => 8888
+                ])
                 ->setOutputFile($fh)
                 ->send();
 
 
             if ($response->isOk) {
+                Yii::info('Save image '.$url, 'forsage');
                 return $saveTo;
             } else {
+                Yii::info( 'img not ok','forsage');
                 return false;
-                Yii::info($msg, 'img not ok');
             }
         } catch (\Exception $e) {
-            Yii::info($msg, 'img catch');
+            Yii::info('img catch','forsage');
             return false;
         }
     }
@@ -201,7 +206,7 @@ class ImageBehavior extends \yii\base\Behavior
                 rename($download, $newfile);
                 $file = $newfile;
             }else{
-                Yii::info($msg, 'img not download '.$file);
+                Yii::info( 'img not download '.$file,'forsage');
                 return false;
             }
         }
@@ -230,6 +235,7 @@ class ImageBehavior extends \yii\base\Behavior
         //$image->urlAlias = $this->getAlias($image);
 
         if (!$image->save()) {
+            Yii::info( 'img not save '.$file,'forsage');
             return false;
         }
 

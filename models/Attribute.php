@@ -276,8 +276,8 @@ class Attribute extends ActiveRecord
                 return Html::textarea($name, $value, ['class' => 'form-control ' . $inputClass]);
                 break;
             case self::TYPE_DROPDOWN:
-                //$data = ArrayHelper::map($this->getOptions()->orderBy(['name'=>SORT_ASC])->all(), 'id', 'value');
-                $data = ArrayHelper::map($this->options, 'id', 'value');
+                $data = ArrayHelper::map($this->getOptions()->orderBy(['value'=>SORT_ASC])->all(), 'id', 'value');
+                //$data = ArrayHelper::map($this->options, 'id', 'value');
 
                 return Select2::widget([
                     'id' => 'attribute-'.$this->name,
@@ -299,7 +299,8 @@ class Attribute extends ActiveRecord
 
                 break;
             case self::TYPE_SELECT_MANY:
-                $data = ArrayHelper::map($this->options, 'id', 'value');
+                $data = ArrayHelper::map($this->getOptions()->orderBy(['value'=>SORT_ASC])->all(), 'id', 'value');
+                //$data = ArrayHelper::map($this->options, 'id', 'value');
                 return Html::dropDownList($name . '[]', $value, $data, [
                     'class' => 'form-control ' . $inputClass,
                     'multiple' => 'multiple',
@@ -307,11 +308,13 @@ class Attribute extends ActiveRecord
                 ]);
                 break;
             case self::TYPE_RADIO_LIST:
-                $data = ArrayHelper::map($this->options, 'id', 'value');
+                $data = ArrayHelper::map($this->getOptions()->orderBy(['value'=>SORT_ASC])->all(), 'id', 'value');
+                //$data = ArrayHelper::map($this->options, 'id', 'value');
                 return Html::radioList($name, $value, $data, ['separator' => '<br/>']);
                 break;
             case self::TYPE_CHECKBOX_LIST:
-                $data = ArrayHelper::map($this->options, 'id', 'value');
+                $data = ArrayHelper::map($this->getOptions()->orderBy(['value'=>SORT_ASC])->all(), 'id', 'value');
+                //$data = ArrayHelper::map($this->options, 'id', 'value');
 
                 return Html::checkboxList($name . '[]', $value, $data, [
                     'separator' => '',
@@ -332,8 +335,8 @@ class Attribute extends ActiveRecord
                 return Html::dropDownList($name, $value, $data);
                 break;
             case self::TYPE_COLOR:
-
-                $data = ArrayHelper::map($this->options, 'id', 'value');
+                $data = ArrayHelper::map($this->getOptions()->orderBy(['value'=>SORT_ASC])->all(), 'id', 'value');
+                //$data = ArrayHelper::map($this->options, 'id', 'value');
                 return Html::dropDownList($name . '[]', $value, $data, [
                     'class' => 'form-control ' . $inputClass,
                     'prompt' => html_entity_decode(Yii::t('app/default', 'EMPTY_LIST'))
