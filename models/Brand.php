@@ -200,6 +200,10 @@ class Brand extends ActiveRecord
         }
         parent::afterDelete();
     }
+
+    /**
+     * @inheritdoc
+     */
     public function afterSave($insert, $changedAttributes)
     {
         TagDependency::invalidate(Yii::$app->cache, 'brand-'.$this->id);

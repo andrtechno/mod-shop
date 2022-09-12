@@ -119,17 +119,17 @@ trait ProductTrait
             'attribute' => 'sku',
             'contentOptions' => ['class' => 'text-center'],
         ];
-       /* $columns['type_id'] = [
-            'attribute' => 'type_id',
-            'format' => 'raw',
-            'contentOptions' => ['class' => 'text-center'],
-            'filter' => ArrayHelper::map(ProductType::find()
-                ->addOrderBy(['name' => SORT_ASC])
-                // ->cache(3200, new DbDependency(['sql' => 'SELECT MAX(`updated_at`) FROM ' . Brand::tableName()]))
-                ->all(), 'id', 'name'),
-            'filterInputOptions' => ['class' => 'form-control', 'prompt' => html_entity_decode('&mdash; выберите тип &mdash;')],
-            'value' => 'type.name'
-        ];*/
+        /* $columns['type_id'] = [
+             'attribute' => 'type_id',
+             'format' => 'raw',
+             'contentOptions' => ['class' => 'text-center'],
+             'filter' => ArrayHelper::map(ProductType::find()
+                 ->addOrderBy(['name' => SORT_ASC])
+                 // ->cache(3200, new DbDependency(['sql' => 'SELECT MAX(`updated_at`) FROM ' . Brand::tableName()]))
+                 ->all(), 'id', 'name'),
+             'filterInputOptions' => ['class' => 'form-control', 'prompt' => html_entity_decode('&mdash; выберите тип &mdash;')],
+             'value' => 'type.name'
+         ];*/
         /*$columns['rating'] = [
             'header' => 'Rating',
             'format' => 'raw',
@@ -200,7 +200,12 @@ trait ProductTrait
                 ->all(), 'id', 'name'),
             'filterInputOptions' => ['class' => 'form-control', 'prompt' => html_entity_decode('&mdash; выберите поставщика &mdash;')],
             'value' => function ($model) {
-                return ($model->supplier) ? $model->supplier->name : NULL;
+                if ($model->supplier_id) {
+                    if ($model->supplier) {
+                        return $model->supplier->name;
+                    }
+                }
+                return null;
             }
         ];
         $columns['brand_id'] = [
@@ -339,7 +344,7 @@ trait ProductTrait
                         'icon' => 'folder-open',
                         'linkOptions' => [
                             'onClick' => 'return showCategoryAssignWindow(this);',
-                           // 'data-confirm' => self::t('CONFIRM_CATEGORY'),
+                            // 'data-confirm' => self::t('CONFIRM_CATEGORY'),
                             'data-pjax' => 0
                         ],
                     ],
@@ -349,7 +354,7 @@ trait ProductTrait
                         'icon' => 'copy',
                         'linkOptions' => [
                             'onClick' => 'return showDuplicateProductsWindow(this);',
-                           // 'data-confirm' => self::t('CONFIRM_COPY'),
+                            // 'data-confirm' => self::t('CONFIRM_COPY'),
                             'data-pjax' => 0
                         ],
                     ],
@@ -359,7 +364,7 @@ trait ProductTrait
                         'icon' => 'currencies',
                         'linkOptions' => [
                             'onClick' => 'return setProductsPrice(this);',
-                          //  'data-confirm' => self::t('CONFIRM_PRICE'),
+                            //  'data-confirm' => self::t('CONFIRM_PRICE'),
                             'data-pjax' => 0
                         ],
                     ],
@@ -369,7 +374,7 @@ trait ProductTrait
                         'icon' => 'refresh',
                         'linkOptions' => [
                             'onClick' => 'return updateProductsViews(this);',
-                           // 'data-confirm' => self::t('CONFIRM_UPDATE_VIEWS'),
+                            // 'data-confirm' => self::t('CONFIRM_UPDATE_VIEWS'),
                             'data-pjax' => 0
                         ],
                     ]

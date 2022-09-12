@@ -85,6 +85,7 @@ class CatalogController extends FilterController
 
 
         $this->filter->resultQuery;//->sort()
+        //$this->filter->resultQuery->addOrderBy(['id'=>SORT_DESC]);
         //$this->query->andWhere([Product::tableName().'.main_category_id'=>$this->dataModel->id]);
         //  $this->query->with('brandActive');
         $this->pageName = $this->dataModel->name;
@@ -354,7 +355,7 @@ class CatalogController extends FilterController
 //echo $this->query->createCommand()->rawSql;die;
         $this->filter = new FilterV2($this->query, ['cacheKey' => $cacheKey]);
 
-        $this->filterQuery = clone $this->filter->resultQuery;
+        //$this->filterQuery = clone $this->filter->resultQuery;
         $this->currentQuery = clone $this->query;
         //$this->query->applyAttributes($this->filter->activeAttributes);
 
@@ -366,10 +367,12 @@ class CatalogController extends FilterController
        // $this->query->applyRangePrices((isset($this->prices[0])) ? $this->prices[0] : 0, (isset($this->prices[1])) ? $this->prices[1] : 0);
 
         if (Yii::$app->request->get('sort') == 'price' || Yii::$app->request->get('sort') == '-price') {
-            $this->filterQuery->aggregatePriceSelect((Yii::$app->request->get('sort') == 'price') ? SORT_ASC : SORT_DESC);
+            $this->filter->resultQuery->aggregatePriceSelect((Yii::$app->request->get('sort') == 'price') ? SORT_ASC : SORT_DESC);
+        }else{
+            $this->filter->resultQuery->orderBy(['created_at'=>SORT_DESC]);
         }
         $this->provider = new ActiveDataProvider([
-            'query' => $this->filterQuery,
+            'query' => $this->filter->resultQuery,
             'pagination' => [
                 'pageSize' => $this->per_page,
             ],

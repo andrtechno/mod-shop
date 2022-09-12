@@ -246,9 +246,11 @@ class Attribute extends ActiveRecord
         if (isset($post['options'])) {
             $opt = [];
             foreach ($post['options'] as $k => $v) {
-                $opt[] = $v[0];
+                $opt[] = $v[1];
             }
+//CMS::dump($opt);die;
 
+            return count($array) !== count(array_unique($array));
             if (CMS::hasDuplicates($opt)) {
                 $this->tab_errors[($this->type == self::TYPE_COLOR) ? 'color' : 'options'] = self::t('ERROR_DUPLICATE_OPTIONS');
                 $this->addError('name', self::t('ERROR_DUPLICATE_OPTIONS'));

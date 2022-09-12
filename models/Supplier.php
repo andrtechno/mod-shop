@@ -6,6 +6,7 @@ use panix\mod\shop\components\ExternalFinder;
 use Yii;
 use panix\engine\db\ActiveRecord;
 use panix\engine\Html;
+use yii\caching\TagDependency;
 
 /**
  * Class Supplier
@@ -113,5 +114,14 @@ class Supplier extends ActiveRecord
         }
 
         parent::afterDelete();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function afterSave($insert, $changedAttributes)
+    {
+        TagDependency::invalidate(Yii::$app->cache, 'supplier-' . $this->id);
+        parent::afterSave($insert, $changedAttributes);
     }
 }

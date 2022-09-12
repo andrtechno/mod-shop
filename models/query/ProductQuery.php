@@ -68,7 +68,6 @@ class ProductQuery extends ActiveQuery
         } else {
             //$this->int2between(-1, -1);
         }
-        $this->orderBy([Product::tableName() . '.created_at' => SORT_DESC]);
         return $this;
     }
 

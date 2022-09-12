@@ -151,7 +151,8 @@ class ImageBehavior extends \yii\base\Behavior
 
         //return file of exsts path
         if (file_exists($saveTo)) {
-            Yii::info('img exist', 'forsage');
+            Yii::info('img exist1 '.$saveTo, 'forsage');
+            Yii::info('img exist2 '.$url, 'forsage');
             return $saveTo;
         }
         try {
@@ -175,11 +176,11 @@ class ImageBehavior extends \yii\base\Behavior
                 Yii::info('Save image '.$url, 'forsage');
                 return $saveTo;
             } else {
-                Yii::info( 'img not ok','forsage');
+                Yii::info( 'img not ok '.$url,'forsage');
                 return false;
             }
         } catch (\Exception $e) {
-            Yii::info('img catch','forsage');
+            Yii::info('img catch '.$url,'forsage');
             return false;
         }
     }

@@ -92,17 +92,23 @@ class AttributeController extends AdminController
         if (isset(Yii::$app->request->get('Attribute')['type']))
             $model->type = Yii::$app->request->get('Attribute')['type'];
 
-
+        $result = false;
         if ($model->load($post)) {
 
             if ($model->validate()) {
-                $model->save();
-                if ($model->validateOptions())
-                    $this->saveOptions($model);
 
+                $model->save();
+                //if ($model->validateOptions()) {
+                    $this->saveOptions($model);
+                    $result = true;
+               // }else{
+                //    $result = false;
+               // }
+            }
+            if ($result) {
+                return $this->redirectPage($isNew, $post);
             }
 
-            return $this->redirectPage($isNew, $post);
         }
 
         return $this->render('update', ['model' => $model]);
@@ -127,7 +133,6 @@ class AttributeController extends AdminController
         if ($post) {
             foreach ($post as $id => $data) {
 
-
                 if (isset($data[0]) && $data[0] != '' && !empty($data[0])) {
                     $index = 0;
                     $attributeOption = AttributeOption::find()
@@ -151,17 +156,11 @@ class AttributeController extends AdminController
                     foreach (Yii::$app->languageManager->languages as $k => $l) {
                         $value = ($k == 'ru') ? 'value' : 'value_' . $l->code;
                         $attributeOption->{$value} = $data[$index];
-						++$index;
+                        ++$index;
 
-					}
+                    }
                     $attributeOption->save(false);
 
-
-                    //foreach (Yii::$app->languageManager->languages as $lang) {
-
-
-                   // ++$index;
-                    // }
                     array_push($dontDelete, $attributeOption->id);
                 }
             }

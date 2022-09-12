@@ -666,7 +666,7 @@ class FilterV2 extends Component
         if ($newData)
             $model->getFindByEavAttributes2($newData);
 
-        $model->cache(0,new TagDependency(['tags' => $attribute->name.'-'.$option->id]));
+        $model->cache(3600,new TagDependency(['tags' => $attribute->name.'-'.$option->id]));
         //TagDependency::invalidate(Yii::$app->cache, 'user-123');
         return $model->createCommand()->queryScalar();
     }
@@ -742,7 +742,7 @@ class FilterV2 extends Component
 
         }
 
-        $model->cache(0,new TagDependency(['tags' => $attribute->name.'-'.$option->id]));
+        $model->cache(3600,new TagDependency(['tags' => $attribute->name.'-'.$option->id]));
 
 
         //echo $model->createCommand()->rawSql;die;

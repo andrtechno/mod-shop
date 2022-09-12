@@ -15,7 +15,8 @@
         return o;
     };
 }(jQuery));
-
+var showReset = false;
+var showApply = false;
 $(function () {
     var selector = $('#filters .card-collapse');
     selector.collapse({
@@ -81,7 +82,7 @@ function filterCallback(e, objects, target) {
 
 
     if (e.type == 'filter:click:checkbox') {
-        delete objects['slide[price][]'];
+        //delete objects['slide[price][]'];
     }
 
     //delete objects.route;
@@ -208,11 +209,18 @@ function filterCallback(e, objects, target) {
 
             });
 
-
             // $(target).removeAttr('disabled');
+        },
+        complete:function(){
+            showApply = true;
+            showReset = true;
+            $('.filter-buttons').trigger('filter:buttons:toggle');
         },
         beforeSend: function () {
             //ajaxSelector.toggleClass('loading');
+            showApply = false;
+            showReset = true;
+            $('.filter-buttons').trigger('filter:buttons:toggle');
         }
     });
 
@@ -391,8 +399,7 @@ $(function () {
     var action;
     var width = $(window).width();
     var isMobile = (width < 768) ? true : false;
-    var showReset = false;
-    var showApply = false;
+
 
     $(document).on('filter:apply', function (e) {
         var objects = getSerializeObjects();
@@ -424,9 +431,9 @@ $(function () {
             if (!checkboxChacked.length) {
                 checkboxChacked = false;
             }
-        }
+        }*/
 
-        console.debug('TEST', showReset, showApply);*/
+        //console.debug('filter:buttons:toggle', showReset, showApply);
         if (showReset) { //checkedAll ||
             $('#filter-reset').show();
         } else {
@@ -440,12 +447,12 @@ $(function () {
         }
 
         if (showReset || showApply) { //if (checkboxChacked) {
-            $(this).addClass('show');
+            //$(this).addClass('show');
             $('.sidebar').addClass('submitted');
             console.debug(e.type, 'Show');
         } else {
             //showApply = false;
-            $(this).removeClass('show');
+            //$(this).removeClass('show');
             $('.sidebar').removeClass('submitted');
             console.debug(e.type, 'Hide');
         }
@@ -539,7 +546,14 @@ $(function () {
             //showReset = (checkedAll.length) ? true : false; //not for chika
             showReset = true; //for chika
             showApply = true;
+            if (newFunction) {
+                var objects = getSerializeObjects();
+                var target = $(this);
+                filterCallback(e, objects, target);
+            }
             $('.filter-buttons').trigger('filter:buttons:toggle');
+
+
         }
 
     });

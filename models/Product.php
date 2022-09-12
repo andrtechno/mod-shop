@@ -531,7 +531,7 @@ class Product extends ActiveRecord
      */
     public function getSupplier()
     {
-        return $this->hasOne(Supplier::class, ['id' => 'supplier_id']);
+        return $this->hasOne(Supplier::class, ['id' => 'supplier_id'])->cache(self::getDb()->queryCacheDuration, new TagDependency(['tags' => 'supplier-' . $this->supplier_id]));
     }
 
     /**
@@ -608,11 +608,12 @@ class Product extends ActiveRecord
     public function getCategorization()
     {
         return $this->hasMany(ProductCategoryRef::class, ['product' => 'id']);
+            //->cache(self::getDb()->queryCacheDuration, new TagDependency(['tags' => 'categories']));
     }
 
     public function getCategories()
     {
-        return $this->hasMany(Category::class, ['id' => 'category'])->via('categorization');
+        return $this->hasMany(Category::class, ['id' => 'category'])->cache(self::getDb()->queryCacheDuration, new TagDependency(['tags' => 'categories']))->via('categorization');
     }
 
     public function getPrices()

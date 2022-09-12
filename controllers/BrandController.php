@@ -43,12 +43,13 @@ class BrandController extends FilterController
         //$this->query->attachBehaviors((new $productModel)->behaviors());
 
         $this->query->applyBrands($this->dataModel->id);
-        $this->query->orderBy(['id'=>SORT_DESC]); //todo: сортировка распрастроняется и нафильтры fixme!!
+
 
         $this->filter = new FilterV2($this->query,['cacheKey'=>'filter_brand_'.$this->dataModel->id]);
        // CMS::dump($this->filter,2);die;
         $this->filterQuery = clone $this->query;
         $this->currentQuery = clone $this->query;
+        $this->filter->resultQuery->orderBy(['id'=>SORT_DESC]);
         //$this->query->applyAttributes($this->activeAttributes);
         //$this->filterQuery->addorderBy(['created_at'=>SORT_DESC]);
         //$this->currentQuery->orderBy(['created_at'=>SORT_DESC]);
@@ -63,16 +64,17 @@ class BrandController extends FilterController
        // $this->query->applyRangePrices((isset($this->prices[0])) ? $this->prices[0] : 0, (isset($this->prices[1])) ? $this->prices[1] : 0);
 
 
-
         $this->view->registerJs("var current_url = '" . Url::to($this->dataModel->getUrl()) . "';", yii\web\View::POS_HEAD, 'current_url');
-
-
-
 
         $sort = explode(',',Yii::$app->request->get('sort'));
         if ($sort[0] == 'price' || $sort[0] == '-price') {
             $this->filter->resultQuery->aggregatePriceSelect(($sort[0] == 'price') ? SORT_ASC : SORT_DESC);
         }
+        $this->filter->resultQuery->orderBy(['id'=>SORT_DESC]);
+
+
+
+
 
         $this->provider = new \panix\engine\data\ActiveDataProvider([
             'query' => $this->filter->resultQuery,
@@ -89,8 +91,6 @@ class BrandController extends FilterController
         ];
         $this->view->params['breadcrumbs'][] = $this->pageName;
         $filterData = $this->filter->getActiveFilters();
-
-
 
 
         $currentUrl[] = '/shop/brand/view';

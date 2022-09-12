@@ -6,6 +6,7 @@ namespace panix\mod\shop\models;
 use panix\mod\shop\components\ExternalFinder;
 use panix\mod\sitemap\behaviors\SitemapBehavior;
 use Yii;
+use yii\caching\TagDependency;
 use yii\helpers\ArrayHelper;
 use panix\engine\behaviors\nestedsets\NestedSetsBehavior;
 use panix\mod\shop\models\translate\CategoryTranslate;
@@ -253,7 +254,7 @@ class Category extends ActiveRecord
             if (!$external->getObject(ExternalFinder::OBJECT_CATEGORY, $this->path_hash))
                 $external->createExternalId(ExternalFinder::OBJECT_CATEGORY, $this->id, $this->path_hash);
         }
-
+        TagDependency::invalidate(Yii::$app->cache, 'categories');
         return parent::afterSave($insert, $changedAttributes);
     }
 
