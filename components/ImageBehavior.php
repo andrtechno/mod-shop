@@ -4,6 +4,7 @@ namespace panix\mod\shop\components;
 
 use Yii;
 use yii\base\Exception;
+use yii\caching\TagDependency;
 use yii\db\ActiveRecord;
 use yii\db\Query;
 use yii\helpers\BaseFileHelper;
@@ -152,8 +153,8 @@ class ImageBehavior extends \yii\base\Behavior
 
         //return file of exsts path
         if (file_exists($saveTo)) {
-            Yii::info('img exist1 '.$saveTo, 'forsage');
-            Yii::info('img exist2 '.$url, 'forsage');
+            Yii::info('img exist1 ' . $saveTo, 'forsage');
+            Yii::info('img exist2 ' . $url, 'forsage');
             return $saveTo;
         }
         try {
@@ -176,12 +177,12 @@ class ImageBehavior extends \yii\base\Behavior
             if ($response->isOk) {
                 return $saveTo;
             } else {
-                Yii::info( 'img not ok '.$url,'forsage');
-                Yii::info( 'img not ok '.$response->statusCode,'forsage');
+                Yii::info('img not ok ' . $url, 'forsage');
+                Yii::info('img not ok ' . $response->statusCode, 'forsage');
                 return false;
             }
         } catch (\Exception $e) {
-            Yii::info('img catch '.$url,'forsage');
+            Yii::info('img catch ' . $url, 'forsage');
             return false;
         }
     }
@@ -221,14 +222,14 @@ class ImageBehavior extends \yii\base\Behavior
         $path = Yii::getAlias($this->savePath) . DIRECTORY_SEPARATOR . $this->owner->primaryKey;
 
         if ($isDownloaded) {
-            $download = $this->downloadFile($file,$path, $uniqueName);
+            $download = $this->downloadFile($file, $path, $uniqueName);
             //echo $download;die;
             if ($download) {
                 $file = $download;
                 //rename($download, $newfile);
                 //$file = $newfile;
-            }else{
-                Yii::info( 'img not download '.$file,'forsage');
+            } else {
+                Yii::info('img not download ' . $file, 'forsage');
                 return false;
             }
         }
@@ -250,7 +251,7 @@ class ImageBehavior extends \yii\base\Behavior
         //$image->urlAlias = $this->getAlias($image);
 
         if (!$image->save()) {
-            Yii::info( 'img not save '.$file,'forsage');
+            Yii::info('img not save ' . $file, 'forsage');
             return false;
         }
 
@@ -266,13 +267,14 @@ class ImageBehavior extends \yii\base\Behavior
         //If main image not exists
         if ($img == null || $is_main) {
             $this->setMainImage($image);
+            $this->owner->image = $image->filename;
         }
 
         /** @var ImageHandler $img */
         if (is_object($file)) {
             $file->saveAs($newAbsolutePath);
         } else {
-           // $copy = copy($file, $newAbsolutePath);
+            // $copy = copy($file, $newAbsolutePath);
         }
 
         if (!$isDownloaded) {
@@ -342,7 +344,7 @@ class ImageBehavior extends \yii\base\Behavior
         $wheres['product_id'] = $this->owner->primaryKey;
         $wheres['is_main'] = $main;
         $query = ProductImage::find()->where($wheres);
-        //->cache(Yii::$app->db->queryCacheDuration);
+        $query->cache(Yii::$app->db->queryCacheDuration, new TagDependency(['tags' => 'product-' . $this->owner->primaryKey]));
 
         //echo $query->createCommand()->rawSql;die;
         /** @var ProductImage $img */

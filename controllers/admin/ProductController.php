@@ -242,7 +242,7 @@ class ProductController extends AdminController
 
             //$model->file = \yii\web\UploadedFile::getInstances($model, 'file');
 
-
+            $model->file = \yii\web\UploadedFile::getInstances($model, 'file');
             if ($model->save()) {
                 //$model->processConfigurations(Yii::$app->request->post('ConfigurationsProduct', []));
                 $mainCategoryId = 1;
@@ -273,12 +273,12 @@ class ProductController extends AdminController
                 // Process variants
                 $this->processVariants($model);
                 $this->processKits($model);
-                $model->file = \yii\web\UploadedFile::getInstances($model, 'file');
+                /*$model->file = \yii\web\UploadedFile::getInstances($model, 'file');
                 if ($model->file) {
                     foreach ($model->file as $file) {
                         $model->attachImage($file);
                     }
-                }
+                }*/
             }
 
 

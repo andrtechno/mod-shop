@@ -196,15 +196,15 @@ class Product extends ActiveRecord
             'defaultOrder' => ['ordern' => SORT_DESC],
             'attributes' => [
                 // '*',
-               // 'availability',
+                // 'availability',
                 //'price' => [
                 //    'asc' => ['availability' => SORT_ASC, 'price' => SORT_ASC],
                 //    'desc' => ['availability' => SORT_ASC, 'price' => SORT_DESC],
-                    //'asc' => ['price' => SORT_ASC],
-                    // 'desc' => ['price' => SORT_DESC],
-                    //'default' => SORT_ASC,
-                    //'label' => 'Цена1',
-               // ],
+                //'asc' => ['price' => SORT_ASC],
+                // 'desc' => ['price' => SORT_DESC],
+                //'default' => SORT_ASC,
+                //'label' => 'Цена1',
+                // ],
                 'sku' => [
                     'asc' => ['sku' => SORT_ASC],
                     'desc' => ['sku' => SORT_DESC],
@@ -297,7 +297,6 @@ class Product extends ActiveRecord
     public function getMainImage($size = false, array $options = [])
     {
         /** @var $image \panix\mod\shop\components\ImageBehavior|\panix\mod\shop\models\ProductImage */
-        // $image = $this->getImageData2($size);
         $mainImage = $this->getMainImageObject();
 
         $img = $mainImage->get($size, $options);
@@ -321,6 +320,7 @@ class Product extends ActiveRecord
     public function renderGridImage($size = '50x50')
     {
         /** @var ImageBehavior|ProductImage $mainImage */
+
         $mainImage = $this->getMainImageObject();
         if ($mainImage) {
             $small = $mainImage->get($size);
@@ -477,6 +477,7 @@ class Product extends ActiveRecord
         return $result;
     }
 
+
     public function beforeValidate()
     {
         // For configurable product set 0 price
@@ -564,7 +565,8 @@ class Product extends ActiveRecord
      */
     public function getImages()
     {
-        return $this->hasMany(ProductImage::class, ['product_id' => 'id']);
+        return $this->hasMany(ProductImage::class, ['product_id' => 'id'])
+            ->cache(Yii::$app->db->queryCacheDuration, new TagDependency(['tags' => 'product-' . $this->primaryKey]));
     }
 
 
@@ -608,7 +610,7 @@ class Product extends ActiveRecord
     public function getCategorization()
     {
         return $this->hasMany(ProductCategoryRef::class, ['product' => 'id']);
-            //->cache(self::getDb()->queryCacheDuration, new TagDependency(['tags' => 'categories']));
+        //->cache(self::getDb()->queryCacheDuration, new TagDependency(['tags' => 'categories']));
     }
 
     public function getCategories()
@@ -785,6 +787,16 @@ class Product extends ActiveRecord
         }
     }*/
 
+    public function beforeSave($insert)
+    {
+        if ($this->file) {
+            foreach ($this->file as $file) {
+                $this->attachImage($file);
+            }
+        }
+        return parent::beforeSave($insert);
+    }
+
     public function afterSave($insert, $changedAttributes)
     {
 
@@ -838,6 +850,7 @@ class Product extends ActiveRecord
                 ])->execute();
             }
         }
+
 
         // Process min and max price for configurable product
         // if ($this->use_configurations)
@@ -961,7 +974,7 @@ class Product extends ActiveRecord
             }
 
         }
-
+        TagDependency::invalidate(Yii::$app->cache, 'product-'.$this->id);
         parent::afterSave($insert, $changedAttributes);
     }
 
@@ -1351,7 +1364,7 @@ class Product extends ActiveRecord
             } else {
 
                 $box = $product->eav_kolicestvo_v_asike;
-                $in_box=0;
+                $in_box = 0;
                 if (isset($box)) {
                     $in_box = $box->value;
                 }
