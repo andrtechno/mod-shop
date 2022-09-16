@@ -44,13 +44,15 @@ trait ProductTrait
             // 'filter'=>true,
             'value' => function ($model) {
                 /** @var $model Product */
+                $reviewsCount = 0;
+                if ($model->votes) {
+                    $reviewsQuery = $model->getReviews()->status(1);
+                    $aggregate = $reviewsQuery->aggregateRate();
 
+                    $reviewsCount = $aggregate->count();
+                    $aggregate = $aggregate->one();
+                }
 
-                $reviewsQuery = $model->getReviews()->status(1);
-                $aggregate = $reviewsQuery->aggregateRate();
-
-                $reviewsCount = $aggregate->count();
-                $aggregate = $aggregate->one();
                 Yii::$app->view->registerCss("
                     .cancel-on-png, .cancel-off-png, .star-on-png, .star-off-png, .star-half-png{font-size:13px;}
                     .star-off-png{color:#dee2e6}
@@ -220,7 +222,7 @@ trait ProductTrait
             }
         ];
         $columns['categories'] = [
-            'header' => static::t('Категории'),
+            'header' => static::t('TAB_CATEGORIES'),
             'attribute' => 'main_category_id',
             'format' => 'html',
             'contentOptions' => ['style' => 'max-width:180px'],
@@ -232,17 +234,18 @@ trait ProductTrait
             ),
             'value' => function ($model) {
                 /** @var $model Product */
-                $result = '';
+                $result = NULL;
 
                 foreach ($model->categories as $category) {
                     $options = [];
-                    $options['data-pjax'] = '0';
                     $options['title'] = $category->name;
                     if ($category->id == $model->main_category_id) {
                         $options['class'] = 'badge badge-secondary';
                     } else {
                         $options['class'] = 'badge badge-light';
                     }
+                    $options['data-pjax'] = 0;
+                    $options['target'] = '_blank';
                     $result .= Html::a($category->name, $category->getUrl(), $options);
                 }
                 return $result;
@@ -256,8 +259,13 @@ trait ProductTrait
             'contentOptions' => ['class' => 'text-center'],
             'value' => function ($model) {
                 /** @var $model Product */
-                $options['data-pjax'] = 0;
-                return Html::a($model->getReviews()->count(), ['/admin/comments/default/index', 'CommentsSearch[object_id]' => $model->primaryKey], $options);
+                if ($model->votes) {
+                    $options['data-pjax'] = 0;
+                    return Html::a($model->getReviews()->count(), ['/admin/comments/default/index', 'CommentsSearch[object_id]' => $model->primaryKey], $options);
+                } else {
+                    return null;
+                }
+
             }
         ];
         $columns['created_at'] = [

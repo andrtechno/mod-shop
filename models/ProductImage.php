@@ -234,9 +234,9 @@ class ProductImage extends ActiveRecord
 
     public function get($size = false, array $options = [])
     {
-        //if(!$size){
-        //    return "/uploads/store/product/{$this->product_id}/{$this->filename}";
-        //}
+        if (!$size) {
+            return "/uploads/store/product/{$this->product_id}/{$this->filename}";
+        }
         $configApp = Yii::$app->settings->get('shop');
         if (!isset($options['watermark'])) {
             $options['watermark'] = $configApp->watermark_enable;
@@ -255,7 +255,7 @@ class ProductImage extends ActiveRecord
         $imagePath = Yii::getAlias("@uploads/store/product/{$this->product_id}") . DIRECTORY_SEPARATOR . $this->filename;
         if (!file_exists($imagePath) || !is_file($imagePath)) {
             $imagePath = $this->getNoImagePath();
-            $this->existImage=false;
+            $this->existImage = false;
         }
         //if (!file_exists($imagePath)) {
 
@@ -263,10 +263,10 @@ class ProductImage extends ActiveRecord
         // }
 
         /** @var $img \panix\engine\components\ImageHandler */
-        try{
+        try {
             $img = Yii::$app->img;
             $img->load($imagePath);
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             return false;
         }
 

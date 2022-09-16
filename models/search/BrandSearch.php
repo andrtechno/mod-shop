@@ -53,7 +53,7 @@ class BrandSearch extends Brand {
         }
 
         $query->andFilterWhere(['id' => $this->id]);
-        $query->andFilterWhere(['like', 'name', $this->name]);
+        $query->andFilterWhere(['like', 'name_' . Yii::$app->language, $this->name]);
 
         return $dataProvider;
     }

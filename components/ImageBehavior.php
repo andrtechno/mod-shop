@@ -140,9 +140,10 @@ class ImageBehavior extends \yii\base\Behavior
         }
     }
 
-    public function downloadFile($url, $saveTo = '@runtime')
+    public function downloadFile($url, $saveTo = '@runtime', $newfilename = 'downloadfile')
     {
-        $filename = basename($url);
+
+        $filename = $newfilename . '.' . pathinfo($url, PATHINFO_EXTENSION);
         $savePath = Yii::getAlias($saveTo);
         if (!file_exists($savePath)) {
             FileHelper::createDirectory($savePath, $mode = 0775, $recursive = true);
@@ -170,13 +171,13 @@ class ImageBehavior extends \yii\base\Behavior
                 ])
                 ->setOutputFile($fh)
                 ->send();
-
+            fclose($fh);
 
             if ($response->isOk) {
-                Yii::info('Save image '.$url, 'forsage');
                 return $saveTo;
             } else {
                 Yii::info( 'img not ok '.$url,'forsage');
+                Yii::info( 'img not ok '.$response->statusCode,'forsage');
                 return false;
             }
         } catch (\Exception $e) {
@@ -197,10 +198,11 @@ class ImageBehavior extends \yii\base\Behavior
      */
     public function attachImage($file, $is_main = false, $alt = '')
     {
-        $uniqueName = \panix\engine\CMS::gen(10);
+        $uniqueName = mb_strtolower(\panix\engine\CMS::gen(10));
         $isDownloaded = preg_match('/http(s?)\:\/\//i', $file);
-        if ($isDownloaded) {
+        /*if ($isDownloaded) {
             $download = $this->downloadFile($file);
+            //var_dump($download);die;
             if ($download) {
                 // $file = $download;
                 $newfile = Yii::getAlias('@runtime/') . $uniqueName . '.' . pathinfo($download, PATHINFO_EXTENSION);
@@ -210,20 +212,32 @@ class ImageBehavior extends \yii\base\Behavior
                 Yii::info( 'img not download '.$file,'forsage');
                 return false;
             }
-        }
+        }*/
 
 
         if (!$this->owner->primaryKey) {
             throw new \Exception('Owner must have primaryKey when you attach image!');
         }
+        $path = Yii::getAlias($this->savePath) . DIRECTORY_SEPARATOR . $this->owner->primaryKey;
 
-
+        if ($isDownloaded) {
+            $download = $this->downloadFile($file,$path, $uniqueName);
+            //echo $download;die;
+            if ($download) {
+                $file = $download;
+                //rename($download, $newfile);
+                //$file = $newfile;
+            }else{
+                Yii::info( 'img not download '.$file,'forsage');
+                return false;
+            }
+        }
         if (!is_object($file)) {
             $pictureFileName = $uniqueName . '.' . pathinfo($file, PATHINFO_EXTENSION);
         } else {
             $pictureFileName = $uniqueName . '.' . $file->extension;
         }
-        $path = Yii::getAlias($this->savePath) . DIRECTORY_SEPARATOR . $this->owner->primaryKey;
+
         $newAbsolutePath = $path . DIRECTORY_SEPARATOR . $pictureFileName;
 
         $createDir = BaseFileHelper::createDirectory($path, 0775, true);
@@ -258,7 +272,7 @@ class ImageBehavior extends \yii\base\Behavior
         if (is_object($file)) {
             $file->saveAs($newAbsolutePath);
         } else {
-            $copy = copy($file, $newAbsolutePath);
+           // $copy = copy($file, $newAbsolutePath);
         }
 
         if (!$isDownloaded) {
@@ -271,11 +285,11 @@ class ImageBehavior extends \yii\base\Behavior
             }
         }
         //remove download file
-        if ($isDownloaded) {
-            if (file_exists($newfile)) {
-                unlink($newfile);
+        /*if ($isDownloaded) {
+            if (file_exists($file)) {
+                unlink($file);
             }
-        }
+        }*/
 
         return $image;
     }

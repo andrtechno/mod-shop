@@ -240,6 +240,8 @@ class ProductController extends AdminController
              //   $model->images_data = json_encode($data);
             }*/
 
+            //$model->file = \yii\web\UploadedFile::getInstances($model, 'file');
+
 
             if ($model->save()) {
                 //$model->processConfigurations(Yii::$app->request->post('ConfigurationsProduct', []));

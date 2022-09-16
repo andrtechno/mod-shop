@@ -36,11 +36,7 @@ class ProductQuery extends ActiveQuery
         /** @var \yii\db\ActiveRecord $modelClass */
         $modelClass = $this->modelClass;
         $tableName = $modelClass::tableName();
-
-        //$this->addOrderBy(["{$tableName}.availability"=>SORT_DESC]);
-
         $this->orderBy("(CASE {$tableName}.availability WHEN " . $this->modelClass::STATUS_OUT_STOCK . " then -1 END) ASC");
-
         parent::init();
     }
 
@@ -75,13 +71,14 @@ class ProductQuery extends ActiveQuery
      * @param int $offset
      * @return $this
      */
-    public function topSales($offset=30)
+    public function topSales($offset = 30)
     {
         $config = Yii::$app->settings->get('shop');
         if ($config->added_to_cart_count) {
             //$this->where(['like', 'label', 'hit_sale'])
             $this->int2between(time() - (86400 * $offset), time(), 'added_to_cart_date');
             $this->orWhere(['>=', 'added_to_cart_count', $config->added_to_cart_count]);
+            $this->orderBy(['added_to_cart_count' => SORT_DESC]);
         }
         return $this;
     }

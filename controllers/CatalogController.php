@@ -31,11 +31,6 @@ class CatalogController extends FilterController
     public $provider;
     public $currentUrl;
 
-    public function actionFilterCallback()
-    {
-        return $this->asJson(['ok' => true]);
-    }
-
     public function beforeAction($action)
     {
         if (Yii::$app->request->headers->has('filter-ajax')) {
@@ -55,9 +50,9 @@ class CatalogController extends FilterController
         $this->currentUrl = $this->dataModel->getUrl();
         $this->query = $productModel::find();
         $this->query->andWhere(['!=',"{$productModel::tableName()}.availability", $productModel::STATUS_ARCHIVE]);
-        $this->query->sortAvailability();
-        $this->query->published();
 
+        $this->query->published();
+       // echo $this->query->createCommand()->rawSql;die;
 
         //  $cr->with = array('brandActive');
         // Скрывать товары если бренд скрыт.
@@ -71,6 +66,7 @@ class CatalogController extends FilterController
 //echo $this->dataModel->children()->count();
 
         $this->filter = new FilterV2($this->query, ['cacheKey' => 'filter_catalog_' . $this->dataModel->id]);
+
         //$this->filter->resultQuery->applyAttributes($this->filter->activeAttributes);
         // if (Yii::$app->request->get('brand')) {
         //     $brands = explode(',', Yii::$app->request->get('brand', ''));
@@ -82,9 +78,9 @@ class CatalogController extends FilterController
 
         $this->filterQuery = clone $this->query;
         $this->currentQuery = clone $this->query;
+        $this->filter->resultQuery->sortAvailability();
 
-
-        $this->filter->resultQuery;//->sort()
+      //  $this->filter->resultQuery;//->sort()
         //$this->filter->resultQuery->addOrderBy(['id'=>SORT_DESC]);
         //$this->query->andWhere([Product::tableName().'.main_category_id'=>$this->dataModel->id]);
         //  $this->query->with('brandActive');
@@ -481,6 +477,8 @@ class CatalogController extends FilterController
 
         if (Yii::$app->request->get('sort') == 'price' || Yii::$app->request->get('sort') == '-price') {
             $this->filterQuery->aggregatePriceSelect((Yii::$app->request->get('sort') == 'price') ? SORT_ASC : SORT_DESC);
+        }else{
+            $this->filterQuery->orderBy(['updated_at'=>SORT_DESC]);
         }
 
 

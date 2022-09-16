@@ -71,6 +71,7 @@ class m180917_193213_shop_product extends Migration
 
 
         $this->createIndex('user_id', Product::tableName(), 'user_id');
+        $this->createIndex('availability', Product::tableName(), 'availability');
         $this->createIndex('brand_id', Product::tableName(), 'brand_id');
         $this->createIndex('category_id', Product::tableName(), 'category_id');
         $this->createIndex('type_id', Product::tableName(), 'type_id');

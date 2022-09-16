@@ -51,7 +51,7 @@ class Brand extends ActiveRecord
                 'format' => 'html',
                 'contentOptions' => ['class' => 'text-left'],
                 'value' => function ($model) {
-                    return Html::a($model->name, $model->getUrl(), ['target' => '_blank']);
+                    return Html::a($model->name, $model->getUrl(), ['target' => '_blank','data-pjax'=>0]);
                 }
             ],
             'products' => [
@@ -206,6 +206,7 @@ class Brand extends ActiveRecord
      */
     public function afterSave($insert, $changedAttributes)
     {
+
         TagDependency::invalidate(Yii::$app->cache, 'brand-'.$this->id);
         parent::afterSave($insert, $changedAttributes);
     }

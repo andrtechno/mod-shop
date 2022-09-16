@@ -48,13 +48,16 @@ class FilterV2 extends Component
 
     private $_eavAttributes;
 
-
+    public $accessAttributes = [];
+    public $cacheKey;
     /**
      * @var string
      */
     //public $_maxPrice, $_minPrice;
     public $prices;
     public $route;
+
+    protected $_route;
 
     public function getActiveAttributes()
     {
@@ -103,7 +106,6 @@ class FilterV2 extends Component
         return $data;
     }
 
-    protected $_route;
 
     public function setResultRoute($route)
     {
@@ -385,54 +387,52 @@ class FilterV2 extends Component
         return $data;
     }
 
-    public $accessAttributes = [];
-    public $cacheKey;
 
     public function getRootCategoryAttributes()
     {
 
         //   print_r($this->cacheKey);die;
-          $data = [];
+        $data = [];
         $cacheData = [];
 
-       // $data = Yii::$app->cache->get($this->cacheKey);
+        // $data = Yii::$app->cache->get($this->cacheKey);
         //if ($data === false) {
-            $active = $this->activeAttributes;
+        $active = $this->activeAttributes;
 
-            $first = array_key_first($active);
+        $first = array_key_first($active);
 
-            foreach ($this->_eavAttributes as $attribute) {
-                $data[$attribute->name] = [
-                    'title' => $attribute->title,
-                    'selectMany' => (boolean)$attribute->select_many,
-                    'type' => (int)$attribute->type,
-                    'key' => $attribute->name,
-                    'filters' => []
-                ];
-                $totalCount = 0;
-                $filtersCount = 0;
-                foreach ($attribute->getOptions()->cache($this->cacheDuration)->all() as $option) {
-                    $count = $this->countRootAttributeProducts($attribute, $option);
+        foreach ($this->_eavAttributes as $attribute) {
+            $data[$attribute->name] = [
+                'title' => $attribute->title,
+                'selectMany' => (boolean)$attribute->select_many,
+                'type' => (int)$attribute->type,
+                'key' => $attribute->name,
+                'filters' => []
+            ];
+            $totalCount = 0;
+            $filtersCount = 0;
+            foreach ($attribute->getOptions()->cache($this->cacheDuration)->all() as $option) {
+                $count = $this->countRootAttributeProducts($attribute, $option);
 
 
-                    if ($count > 0) {
-                        $data[$attribute->name]['filters'][] = [
-                            'title' => $option->value,
-                            'count' => (int)$count,
-                            'count_text' => $count,
-                            'data' => unserialize($option->data),
-                            'abbreviation' => ($attribute->abbreviation) ? $attribute->abbreviation : null,
-                            'key' => $attribute->name,
-                            'queryParam' => (int)$option->id,
-                        ];
-                    }
+                if ($count > 0) {
+                    $data[$attribute->name]['filters'][] = [
+                        'title' => $option->value,
+                        'count' => (int)$count,
+                        'count_text' => $count,
+                        'data' => unserialize($option->data),
+                        'abbreviation' => ($attribute->abbreviation) ? $attribute->abbreviation : null,
+                        'key' => $attribute->name,
+                        'queryParam' => (int)$option->id,
+                    ];
                 }
-                $data[$attribute->name]['totalCount'] = 11;
-                $data[$attribute->name]['filtersCount'] = count($data[$attribute->name]['filters']);
             }
+            $data[$attribute->name]['totalCount'] = 11;
+            $data[$attribute->name]['filtersCount'] = count($data[$attribute->name]['filters']);
+        }
 
-            //Yii::$app->cache->set($this->cacheKey, $data, Yii::$app->db->queryCacheDuration);
-       // }
+        //Yii::$app->cache->set($this->cacheKey, $data, Yii::$app->db->queryCacheDuration);
+        // }
         //  CMS::dump($data);die;
         return $data;
     }
@@ -588,7 +588,7 @@ class FilterV2 extends Component
         if ($attribute->name == 'pol') {
 
         }
-        // echo $model->createCommand()->rawSql;       die;
+        //echo $model->createCommand()->rawSql;       die;
 
         return $model->createCommand()->queryScalar();
     }
@@ -629,8 +629,6 @@ class FilterV2 extends Component
 
         //$newData = ArrayHelper::merge($newData,$this->activeAttributes);
 
-        // echo $model->createCommand()->rawSql;
-        // echo '<br><br><br>';
         /** @var EavQueryTrait|ActiveQuery $model */
         // $model->withEavAttributes($newData);
 //print_r($newData);die;
@@ -661,12 +659,14 @@ class FilterV2 extends Component
         }
 
         if ($attribute->name == 'strana_proizvoditela') {
-//echo $model->createCommand()->rawSql;die;
+
         }
         if ($newData)
             $model->getFindByEavAttributes2($newData);
 
-        $model->cache(3600,new TagDependency(['tags' => $attribute->name.'-'.$option->id]));
+
+        // echo $model->createCommand()->rawSql;die;
+        $model->cache(3600, new TagDependency(['tags' => $attribute->name . '-' . $option->id]));
         //TagDependency::invalidate(Yii::$app->cache, 'user-123');
         return $model->createCommand()->queryScalar();
     }
@@ -742,8 +742,7 @@ class FilterV2 extends Component
 
         }
 
-        $model->cache(3600,new TagDependency(['tags' => $attribute->name.'-'.$option->id]));
-
+        $model->cache(3600, new TagDependency(['tags' => $attribute->name . '-' . $option->id]));
 
         //echo $model->createCommand()->rawSql;die;
         return $model->createCommand()->queryScalar();
@@ -768,7 +767,7 @@ class FilterV2 extends Component
         $queryCategoryTypes->select(Product::tableName() . '.type_id');
         $queryCategoryTypes->groupBy(Product::tableName() . '.type_id');
         $queryCategoryTypes->distinct(true);
-        $queryCategoryTypes->orderBy=false;
+        $queryCategoryTypes->orderBy = false;
 
         $typesIds = $queryCategoryTypes->createCommand()->queryColumn();
 
@@ -805,9 +804,9 @@ class FilterV2 extends Component
         // if ($this->currentQuery) {
         $result = $res->aggregatePrice('MIN')->asArray()->one();
         // if (isset($result['aggregation_price'])) {
-        if($result) {
+        if ($result) {
             return $result['aggregation_price'];
-        }else{
+        } else {
             return 0;
         }
         // }
@@ -859,11 +858,11 @@ class FilterV2 extends Component
 
         $result = $res->aggregatePrice('MAX')->asArray()->one();
         // if (isset($result['aggregation_price'])) {
-if($result){
-        return $result['aggregation_price'];
-}else{
-    return 0;
-}
+        if ($result) {
+            return $result['aggregation_price'];
+        } else {
+            return 0;
+        }
         // }
         // return $this->_maxPrice;
     }
@@ -928,7 +927,7 @@ if($result){
 
 
         //$brands =$queryMan->all();
-        //echo $q->createCommand()->rawSql;die;
+        //echo $queryMan->createCommand()->rawSql;die;
         $data = [
             'title' => Yii::t('shop/default', 'FILTER_BY_BRAND'),
             'selectMany' => true,
@@ -977,9 +976,14 @@ if($result){
 
 
                     $query->orderBy = false;
-                    if ($m->id == 89) {
-                        //echo $query->createCommand()->rawSql;die;
-                    }
+                    $query->cache($this->cacheDuration, new TagDependency([
+                        'tags' => [
+                            'brand-' . $m->id,
+                            'filter-brand-'.Yii::$app->request->get('slug').'-' . $m->id
+                        ]
+                    ]));
+                    //echo $query->createCommand()->rawSql;die;
+
                     $count = $query->count();
 
                     $data['filters'][] = [

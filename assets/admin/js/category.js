@@ -59,6 +59,7 @@ treeSelector.bind("delete_node.jstree", function (node, parent) {
         data: {
             "id": parent.node.id.replace('node_', '')
         },
+        dataType:"json",
         success: function (data) {
             if (data.success) {
                 common.notify(data.message, 'success');
