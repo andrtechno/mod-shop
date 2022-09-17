@@ -218,6 +218,16 @@ class Product extends ActiveRecord
                     'desc' => ['type_id' => SORT_DESC],
                     'label' => 'по типу'
                 ],
+                'supplier_id' => [
+                    'asc' => ['supplier_id' => SORT_ASC],
+                    'desc' => ['supplier_id' => SORT_DESC],
+                    //'label' => 'по дате изменения'
+                ],
+                'brand_id' => [
+                    'asc' => ['brand_id' => SORT_ASC],
+                    'desc' => ['brand_id' => SORT_DESC],
+                    //'label' => 'по дате изменения'
+                ],
                 'created_at' => [
                     'asc' => ['created_at' => SORT_ASC],
                     'desc' => ['created_at' => SORT_DESC],
@@ -565,8 +575,7 @@ class Product extends ActiveRecord
      */
     public function getImages()
     {
-        return $this->hasMany(ProductImage::class, ['product_id' => 'id'])
-            ->cache(Yii::$app->db->queryCacheDuration, new TagDependency(['tags' => 'product-' . $this->primaryKey]));
+        return $this->hasMany(ProductImage::class, ['product_id' => 'id']);
     }
 
 
@@ -789,11 +798,11 @@ class Product extends ActiveRecord
 
     public function beforeSave($insert)
     {
-        if ($this->file) {
+        /*if ($this->file) {
             foreach ($this->file as $file) {
                 $this->attachImage($file);
             }
-        }
+        }*/
         return parent::beforeSave($insert);
     }
 

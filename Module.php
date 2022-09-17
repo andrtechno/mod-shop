@@ -240,7 +240,6 @@ class Module extends WebModule implements BootstrapInterface
                 'index' => 'new',
                 'pattern' => 'new',
             ];
-
             /////////////////////////////////////////////
 
             /*$rules[] = [

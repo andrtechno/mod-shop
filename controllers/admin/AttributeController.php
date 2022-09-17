@@ -128,8 +128,7 @@ class AttributeController extends AdminController
     {
         $dontDelete = [];
         $post = Yii::$app->request->post('options');
-        //CMS::dump($post);
-        //die;
+        //CMS::dump($post);die;
         if ($post) {
             foreach ($post as $id => $data) {
 
@@ -175,8 +174,8 @@ class AttributeController extends AdminController
             // Clear all attribute options
             $optionsToDelete = AttributeOption::find()->where(['attribute_id' => $model->id])->all();
         }
-
-
+//echo count($optionsToDelete);
+//print_r($dontDelete);die;
         if (!empty($optionsToDelete)) {
             foreach ($optionsToDelete as $o) {
                 $o->delete();
@@ -258,9 +257,6 @@ class AttributeController extends AdminController
 
             if (!empty($model)) {
                 foreach ($model as $m) {
-                    // $count = Product::find()->withEavAttributes(array($m->name))->count();
-                    //if ($count)
-                    //    throw new \yii\web\HttpException(503, Yii::t('shop/admin', 'ERR_DEL_ATTR'));
                     $m->delete();
                 }
             }

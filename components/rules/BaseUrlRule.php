@@ -24,14 +24,14 @@ class BaseUrlRule extends UrlRule
     {
         if ($route === $this->route) {
             if (isset($params['slug'])) {
-                $url = '/'.trim($params['slug'], '/');
+                $url = '/' . trim($params['slug'], '/');
                 unset($params['slug']);
             } else {
                 $url = '';
             }
             $parts = [];
             if (!empty($params)) {
-                if(Yii::$app->request->isPjax){
+                if (Yii::$app->request->isPjax) {
                     unset($params['_pjax']);
                 }
                 foreach ($params as $key => $val) {
@@ -42,7 +42,7 @@ class BaseUrlRule extends UrlRule
                 $url .= '/' . implode('/', $parts);
             }
 
-            return $this->index  . $url . $this->suffix;
+            return $this->index . $url . $this->suffix;
         }
         return false;
     }
@@ -60,7 +60,7 @@ class BaseUrlRule extends UrlRule
             return false;
         }
 
-        $suffix = (string) ($this->suffix === null ? $manager->suffix : $this->suffix);
+        $suffix = (string)($this->suffix === null ? $manager->suffix : $this->suffix);
         $pathInfo = $request->getPathInfo();
         $normalized = false;
         if ($this->hasNormalizer($manager)) {
@@ -78,36 +78,39 @@ class BaseUrlRule extends UrlRule
                 return false;
             }
         }
+        if ($this->host !== null) {
+            $pathInfo = strtolower($request->getHostInfo()) . ($pathInfo === '' ? '' : '/' . $pathInfo);
+        }
         //original end
 
-        $params=[];
-
+        $params = [];
         $pathInfoParse = str_replace($this->index . '/', '', $pathInfo);
-        $parts = explode('/', $pathInfoParse);
-        if ($this->index == mb_substr($pathInfo, 0,strlen($this->index))) {
-            $paramsList = array_chunk($parts, 2);
 
+        $index = $this->index;
+        if (preg_match("/$index(\w+)/i", $pathInfo, $matches)) {
+            return false;
+        }
 
+        if ($this->index == mb_substr($pathInfo, 0, mb_strlen($this->index))) {
+            $pathInfoParse = str_replace($this->index, '', $pathInfoParse);
 
-            foreach ($paramsList as $k => $p) {
+            if (!empty($pathInfoParse)) {
+                $parts = explode('/', $pathInfoParse);
+                $paramsList = array_chunk($parts, 2);
 
-                if (isset($p[1]) && isset($p[0])) {
-                    $_GET[$p[0]] = $p[1];
-                    $params[$p[0]] = $p[1];
+                foreach ($paramsList as $k => $p) {
+                    if (!isset($p[1])) {
+                        return false;
+                    }
+                    if (isset($p[1], $p[0])) {
+                        $_GET[$p[0]] = $p[1];
+                        $params[$p[0]] = $p[1];
+                    }
                 }
+
             }
-
-            /*if (isset($params[$this->index])) {
-                $params['slug'] = $params[$this->index];
-                $_GET['slug'] = $params['slug'];
-                unset($params[$this->index]);
-            } else {
-                return false;
-            }*/
-
-           //  CMS::dump([$this->route, $params]);
-            //die;
             return [$this->route, $params];
+
         }
         return false;
     }

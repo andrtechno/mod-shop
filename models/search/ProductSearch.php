@@ -140,7 +140,7 @@ class ProductSearch extends Product
         //$query->andFilterWhere(['like', "DATE(CONVERT_TZ('date_update', 'UTC', '".Yii::$app->timezone."'))", $this->date_update.' 23:59:59']);
         //  $query->andFilterWhere(['like', "DATE(CONVERT_TZ('date_create', 'UTC', '".Yii::$app->timezone."'))", $this->date_create.]);
 
-
+        //$query->joinWith('brand brand');
         $query->andFilterWhere(['like', 'sku', $this->sku]);
         $query->andFilterWhere(['supplier_id' => $this->supplier_id]);
         $query->andFilterWhere(['type_id' => $this->type_id]);

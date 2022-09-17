@@ -34,6 +34,8 @@ class m180917_194311_shop_product_image extends Migration
 
         $this->createIndex('user_id', ProductImage::tableName(), 'user_id');
         $this->createIndex('ordern', ProductImage::tableName(), 'ordern');
+        $this->createIndex('product_id', ProductImage::tableName(), 'product_id');
+        $this->createIndex('is_main', ProductImage::tableName(), 'is_main');
     }
 
     /**

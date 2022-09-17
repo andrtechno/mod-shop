@@ -235,6 +235,10 @@ class ProductImage extends ActiveRecord
     public function get($size = false, array $options = [])
     {
         if (!$size) {
+            $path = Yii::getAlias("@uploads/store/product/{$this->product_id}/{$this->filename}");
+            if (!file_exists($path) || !is_file($path)) {
+                return $this->getNoImageUrl();
+            }
             return "/uploads/store/product/{$this->product_id}/{$this->filename}";
         }
         $configApp = Yii::$app->settings->get('shop');
@@ -242,7 +246,7 @@ class ProductImage extends ActiveRecord
             $options['watermark'] = $configApp->watermark_enable;
         }
         $sizes = explode('x', $size);
-//print_r($options);die;
+
         $isSaveFile = false;
         if (isset($sizes[0]) && isset($sizes[1])) {
             $imageAssetPath = Yii::getAlias('@app/web/assets/product') . DIRECTORY_SEPARATOR . $this->product_id . DIRECTORY_SEPARATOR . $size;

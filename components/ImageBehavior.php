@@ -344,7 +344,7 @@ class ImageBehavior extends \yii\base\Behavior
         $wheres['product_id'] = $this->owner->primaryKey;
         $wheres['is_main'] = $main;
         $query = ProductImage::find()->where($wheres);
-        $query->cache(Yii::$app->db->queryCacheDuration, new TagDependency(['tags' => 'product-' . $this->owner->primaryKey]));
+        //$query->cache(Yii::$app->db->queryCacheDuration, new TagDependency(['tags' => 'product-' . $this->owner->primaryKey]));
 
         //echo $query->createCommand()->rawSql;die;
         /** @var ProductImage $img */
