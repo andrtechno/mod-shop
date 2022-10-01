@@ -12,11 +12,10 @@ use panix\mod\shop\models\ProductImage;
 use yii\console\Controller;
 use Yii;
 use yii\helpers\BaseFileHelper;
-use Faker\Factory;
 
 /**
  * Class FakerController
- * @property $faker Factory
+ * @property $faker \Faker\Factory
  * @package panix\mod\shop\commands
  */
 class FakerController extends Controller
