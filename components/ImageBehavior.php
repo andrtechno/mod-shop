@@ -358,13 +358,13 @@ class ImageBehavior extends \yii\base\Behavior
     }
 
 
-    public function getModelSubDir($model)
+    /*public function getModelSubDir($model)
     {
 
         $modelName = $this->getShortClass($model);
         $modelDir = \yii\helpers\Inflector::pluralize($modelName) . '/' . $model->id;
         return $modelDir;
-    }
+    }*/
 
     /**
      * Clear all images cache (and resized copies)
