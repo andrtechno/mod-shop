@@ -7,6 +7,7 @@ use panix\ext\select2\Select2;
 use panix\mod\shop\components\ExternalFinder;
 use Yii;
 use yii\caching\DbDependency;
+use yii\caching\TagDependency;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use panix\mod\shop\models\query\AttributeQuery;
@@ -278,11 +279,11 @@ class Attribute extends ActiveRecord
                 return Html::textarea($name, $value, ['class' => 'form-control ' . $inputClass]);
                 break;
             case self::TYPE_DROPDOWN:
-                $data = ArrayHelper::map($this->getOptions()->orderBy(['value'=>SORT_ASC])->all(), 'id', 'value');
+                $data = ArrayHelper::map($this->getOptions()->orderBy(['value' => SORT_ASC])->all(), 'id', 'value');
                 //$data = ArrayHelper::map($this->options, 'id', 'value');
 
                 return Select2::widget([
-                    'id' => 'attribute-'.$this->name,
+                    'id' => 'attribute-' . $this->name,
                     'name' => $name,
                     'value' => $value,
                     'items' => $data,
@@ -301,7 +302,7 @@ class Attribute extends ActiveRecord
 
                 break;
             case self::TYPE_SELECT_MANY:
-                $data = ArrayHelper::map($this->getOptions()->orderBy(['value'=>SORT_ASC])->all(), 'id', 'value');
+                $data = ArrayHelper::map($this->getOptions()->orderBy(['value' => SORT_ASC])->all(), 'id', 'value');
                 //$data = ArrayHelper::map($this->options, 'id', 'value');
                 return Html::dropDownList($name . '[]', $value, $data, [
                     'class' => 'form-control ' . $inputClass,
@@ -310,12 +311,12 @@ class Attribute extends ActiveRecord
                 ]);
                 break;
             case self::TYPE_RADIO_LIST:
-                $data = ArrayHelper::map($this->getOptions()->orderBy(['value'=>SORT_ASC])->all(), 'id', 'value');
+                $data = ArrayHelper::map($this->getOptions()->orderBy(['value' => SORT_ASC])->all(), 'id', 'value');
                 //$data = ArrayHelper::map($this->options, 'id', 'value');
                 return Html::radioList($name, $value, $data, ['separator' => '<br/>']);
                 break;
             case self::TYPE_CHECKBOX_LIST:
-                $data = ArrayHelper::map($this->getOptions()->orderBy(['value'=>SORT_ASC])->all(), 'id', 'value');
+                $data = ArrayHelper::map($this->getOptions()->orderBy(['value' => SORT_ASC])->all(), 'id', 'value');
                 //$data = ArrayHelper::map($this->options, 'id', 'value');
 
                 return Html::checkboxList($name . '[]', $value, $data, [
@@ -337,7 +338,7 @@ class Attribute extends ActiveRecord
                 return Html::dropDownList($name, $value, $data);
                 break;
             case self::TYPE_COLOR:
-                $data = ArrayHelper::map($this->getOptions()->orderBy(['value'=>SORT_ASC])->all(), 'id', 'value');
+                $data = ArrayHelper::map($this->getOptions()->orderBy(['value' => SORT_ASC])->all(), 'id', 'value');
                 //$data = ArrayHelper::map($this->options, 'id', 'value');
                 return Html::dropDownList($name . '[]', $value, $data, [
                     'class' => 'form-control ' . $inputClass,
@@ -429,6 +430,12 @@ class Attribute extends ActiveRecord
         return parent::beforeSave($insert);
     }
 
+    public function afterSave($insert, $changedAttributes)
+    {
+
+        parent::afterSave($insert, $changedAttributes);
+        TagDependency::invalidate(Yii::$app->cache, 'attribute-' . $this->id);
+    }
 
     /**
      * @inheritdoc

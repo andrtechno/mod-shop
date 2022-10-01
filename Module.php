@@ -112,23 +112,27 @@ class Module extends WebModule implements BootstrapInterface
      */
     public function bootstrap($app)
     {
+
         $rules['filter'] = 'shop/ajax/filter';
         $rules['catalog'] = 'shop/default/index';
         $rules['search/ajax'] = 'shop/search/ajax';
         $rules['notify/<id:\d+>'] = 'shop/notify/index';
         $rules['shop/ajax/currency/<id:\d+>'] = 'shop/ajax/currency';
         $rules['brand'] = 'shop/brand/index';
-        //$rules['brand/<slug:[0-9a-zA-Z_\-]+>'] =  'shop/brand/view';
-
         $rules['product/<slug:[0-9a-zA-Z\-]+>-<id:\d+>'] = 'shop/product/view';
-        //$rules['product/<slug:[0-9a-zA-Z\-]+>'] = 'shop/product/view';
         $rules['product/<id:\d+>/review-add'] = 'shop/product/review-add';
         $rules['product/<id:\d+>/review-validate'] = 'shop/product/review-validate';
         $rules['product/<id:\d+>/<action:[0-9a-zA-Z_\-]+>'] = 'shop/product/<action>';
-        $rules['product/image/<action:[0-9a-zA-Z_\-]+>/<dirtyAlias:\w.+>'] = 'shop/image/<action>';
+
 
         $rules[] = [
-            'class' => 'panix\mod\shop\components\rules\BrandUrlRule',
+            'class' => 'panix\mod\shop\components\rules\BaseUrlRule',
+            'route' => 'shop/brand/view',
+            'index' => 'brand',
+            'pattern' => 'brand/<slug:[0-9a-zA-Z_\-]+>/<params:.*>'
+        ];
+        $rules[] = [
+            'class' => 'panix\mod\shop\components\rules\BaseUrlRule',
             'route' => 'shop/brand/view',
             'index' => 'brand',
             'pattern' => 'brand/<slug:[0-9a-zA-Z_\-]+>'
@@ -144,26 +148,29 @@ class Module extends WebModule implements BootstrapInterface
             }
             $pattern = implode('\/', $pattern);
 
+            /* $rules22[] = [
+                 'class' => 'panix\mod\shop\components\rules\CategoryUrlRule',
+                 'route' => 'shop/catalog/view',
+                 'defaults' => ['slug' => $path],
+                 //'suffix'=>'.html',
+                 'pattern' => "catalog/<slug:[0-9a-zA-Z_\-]+>",
+             ];*/
+
+            //testing now
             $rules[] = [
-                'class' => 'panix\mod\shop\components\rules\CategoryUrlRule',
+                'class' => 'panix\mod\shop\components\rules\BaseUrlRule',
                 'route' => 'shop/catalog/view',
-                'defaults' => ['slug' => $path],
-                //'suffix'=>'.html',
-                'pattern' => "catalog/<slug:[0-9a-zA-Z_\-]+>", ///<alias:[\w]+>
+                'index' => 'catalog',
+                'pattern' => 'catalog/<slug:' . $path . '>/<params:.*>'
             ];
-
-
-            /*  $rules[] = [
-                  'class' => 'panix\mod\shop\components\rules\CategoryUrlRule',
-                  'route' => 'shop/catalog/sales',
-                  'defaults' => ['slug' => $path],
-                  'index'=>'sales',
-                  //'suffix'=>'.html',
-                  'pattern' => "sales/<slug:$path>", ///<alias:[\w]+>
-              ];*/
-
-
+            $rules[] = [
+                'class' => 'panix\mod\shop\components\rules\BaseUrlRule',
+                'route' => 'shop/catalog/view',
+                'index' => 'catalog',
+                'pattern' => 'catalog/<slug:' . $path . '>'
+            ];
         }
+
 
         if ($app->id != 'console') {
             $this->reviewsCount = ProductReviews::find()->where(['status' => ProductReviews::STATUS_WAIT])->count();
@@ -175,90 +182,31 @@ class Module extends WebModule implements BootstrapInterface
                 'defaults' => ['q' => Yii::$app->request->get('q')]
             ];
 
-            /* $rules[] = [
-                 'class' => 'panix\mod\shop\components\CategoryUrlRule',
-                 'route' => 'shop/catalog/view',
-                 'index' => 'catalog',
-                 //'pattern'=>'catalog/<slug:[0-9a-zA-Z_\-]+>',
-                 'alias' => 'full_path',
-                 //  'pattern' => ''
-             ];*/
-
-            // $rules['sales/page/<page:\d+>/per-page/<per-page:\d+>'] = 'shop/catalog/sales';
-
-
-
-
-
-
-
-
-
             $rules[] = [
                 'class' => 'panix\mod\shop\components\rules\BaseUrlRule',
                 'route' => 'shop/catalog/sales',
                 'index' => 'sales',
-                'pattern' => 'sales/category/<category:\d+>',
+                'pattern' => 'sales/<params:.*>'
             ];
-
             $rules[] = [
                 'class' => 'panix\mod\shop\components\rules\BaseUrlRule',
                 'route' => 'shop/catalog/sales',
                 'index' => 'sales',
-                'pattern' => 'sales/page/<page:\d+>/per-page/<per-page:\d+>',
-            ];
-            $rules['sales/page/<page:\d+>'] = 'shop/catalog/sales';
-
-            $rules[] = [
-                'class' => 'panix\mod\shop\components\rules\BaseUrlRule',
-                'route' => 'shop/catalog/sales',
-                'index' => 'sales',
-                'pattern' => 'sales',
-            ];
-
-            //  $rules['sales'] = 'shop/catalog/sales';
-
-//new
-            $rules[] = [
-                'class' => 'panix\mod\shop\components\rules\BaseUrlRule',
-                'route' => 'shop/catalog/new',
-                'index' => 'new',
-                'pattern' => 'new/category/<category:\d+>',
+                'pattern' => 'sales'
             ];
 
             $rules[] = [
                 'class' => 'panix\mod\shop\components\rules\BaseUrlRule',
                 'route' => 'shop/catalog/new',
                 'index' => 'new',
-                'pattern' => 'new/page/<page:\d+>/per-page/<per-page:\d+>',
+                'pattern' => 'new/<params:.*>'
             ];
-            $rules['new/page/<page:\d+>'] = 'shop/catalog/new';
-
             $rules[] = [
                 'class' => 'panix\mod\shop\components\rules\BaseUrlRule',
                 'route' => 'shop/catalog/new',
                 'index' => 'new',
-                'pattern' => 'new',
+                'pattern' => 'new'
             ];
-            /////////////////////////////////////////////
-
-            /*$rules[] = [
-                'class' => 'app\engine\BaseUrlRule',
-                'route' => 'shop/catalog/best',
-                'index' => 'best',
-                'pattern' => 'best'
-            ];*/
-            /*$rules[] = [
-                'class' => 'app\engine\BaseUrlRule',
-                'route' => 'shop/catalog/discount',
-                'index' => 'discount',
-                'pattern' => 'discount'
-            ];*/
-
-            /*$rules[] = [
-                'class' => 'panix\mod\shop\components\CategoryUrlRule',
-            ];*/
-
         }
 
         $app->urlManager->addRules(

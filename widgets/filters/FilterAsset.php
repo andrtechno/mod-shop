@@ -16,7 +16,9 @@ class FilterAsset extends AssetBundle
     public $js = [
         'js/filter.js',
     ];
-
+    public $css = [
+        'css/filter.css',
+    ];
     public $depends = [
         'yii\web\JqueryAsset',
     ];

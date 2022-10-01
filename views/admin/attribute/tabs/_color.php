@@ -92,12 +92,12 @@ $test = [];
 foreach ($model->options as $k => $o) {
     //echo print_r($o->translations);
     $data2['delete'] = '<a href="#" class="delete-option-attribute btn btn-sm btn-outline-danger"><i class="icon-delete"></i></a>';
-    foreach (Yii::$app->languageManager->languages as $k => $l) {
+    //foreach (Yii::$app->languageManager->languages as $k => $l) {
 
-        $otest = AttributeOptionTranslate::find()->where([
+        /*$otest = AttributeOptionTranslate::find()->where([
             'object_id' => $o->id,
             'language_id' => $l->id])
-            ->one();
+            ->one();*/
 
 
         /*$otest = AttributeOption::find()
@@ -110,16 +110,19 @@ foreach ($model->options as $k => $o) {
             'value'=>($o->data)?Html::decode($o->data):'',
         ]).' '.Html::a('add','#',['']);*/
 
+//var_dump(\yii\helpers\Json::decode($o->data,true));die;
 
+$optionData = \yii\helpers\Json::decode($o->data,true);
         $data2['data'] = MultipleInput::widget([
-            'value' => unserialize($o->data),
+            'value' => isset($optionData['color'])?$optionData['color']:null,
             'name' => 'options[' . $o->id . '][data]',
             'min' => 1,
             'max'=>5,
             'allowEmptyList' => false,
             //'enableGuessTitle' => true,
             'sortable' => true,
-            'addButtonPosition' => MultipleInput::POS_ROW, // show add button in the header
+            //'addButtonPosition' => MultipleInput::POS_HEADER,
+            'addButtonPosition' => MultipleInput::POS_ROW,
             'columns' => [
                 [
                     'name' => 'color',
@@ -131,30 +134,37 @@ foreach ($model->options as $k => $o) {
                     ],
                     'enableError' => false,
                 ],
-
             ]
         ]);
 
-
-        if ($otest) {
+        foreach (Yii::$app->languageManager->languages as $k => $l) {
+            $value = ($k == 'ru') ? 'value' : 'value_' . $l->code;
+            $data2['name_' . $l->code] = Html::textInput('options[' . $o->id . '][]', $o->{$value}, ['class' => 'form-control input-lang', 'style' => 'background-image:url(/uploads/language/' . $k . '.png);']);
+            $columns[$l->code] = [
+                'header' => $l->name,
+                'attribute' => 'name_' . $l->code,
+                'format' => 'raw',
+            ];
+        }
+        /*if ($otest) {
             $data2['name' . $k] = Html::textInput('options[' . $o->id . '][]', Html::decode($otest->value), ['class' => 'form-control input-lang', 'style' => 'background-image:url(/uploads/language/' . $k . '.png);']);
         } else {
             $data2['name' . $k] = Html::textInput('options[' . $o->id . '][]', '', ['class' => 'form-control input-lang', 'style' => 'background-image:url(/uploads/language/' . $k . '.png);']);
-        }
+        }*/
         $data2['products'] = Html::a($o->productsCount, ['/admin/shop/product/index', 'ProductSearch[eav][' . $model->name . ']' => $o->id], ['target' => '_blank']);
         $data[$o->id] = (array)$data2;
-    }
+   // }
 }
 
 
 foreach (Yii::$app->languageManager->languages as $k => $l) {
 
-    $columns[] = [
+    /*$columns[] = [
         'header' => $l->name,
         'attribute' => 'name' . $k,
         'format' => 'raw',
         //  'value' => '$data->name'
-    ];
+    ];*/
     $sortAttributes[] = 'name' . $k;
 }
 

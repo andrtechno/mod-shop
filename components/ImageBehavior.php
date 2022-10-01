@@ -173,12 +173,10 @@ class ImageBehavior extends \yii\base\Behavior
                 ->setOutputFile($fh)
                 ->send();
             fclose($fh);
-
+//print_r($response->headers['last-modified']);die;
             if ($response->isOk) {
                 return $saveTo;
             } else {
-                Yii::info('img not ok ' . $url, 'forsage');
-                Yii::info('img not ok ' . $response->statusCode, 'forsage');
                 return false;
             }
         } catch (\Exception $e) {

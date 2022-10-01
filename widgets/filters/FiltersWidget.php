@@ -28,7 +28,7 @@ class FiltersWidget extends Widget
     //public $countAttr = true;
     //public $countBrand = true;
     //public $prices = [];
-    public $count=false;
+    public $count = false;
     public $tagCount = 'sup';
     public $tagCountOptions = ['class' => 'filter-count'];
     //public $showEmpty = false;
@@ -56,8 +56,8 @@ class FiltersWidget extends Widget
     {
         $view = $this->getView();
 
-        $this->priceMax = ceil($this->data->getMaxPrice());
-        $this->priceMin = floor($this->data->getMinPrice());
+        $this->priceMax = ceil($this->data->max);
+        $this->priceMin = floor($this->data->min);
 //CMS::dump($this->data->getResultMaxPrice());die;
         if (Yii::$app->request->get('price')) {
             $this->prices = explode('-', Yii::$app->request->get('price'));
@@ -74,7 +74,7 @@ class FiltersWidget extends Widget
 
     public function run()
     {
-      //  $brands = $this->data->getCategoryBrands();
+        //  $brands = $this->data->getCategoryBrands();
 
 
         $active = $this->data->getActiveFilters();
@@ -107,24 +107,24 @@ class FiltersWidget extends Widget
         //   echo Html::endForm();
 //echo $this->data->getCurrentMinPrice();die;
         // echo Html::endTag('div');
-   //   print_r($this->model);die;
+        //   print_r($this->model);die;
 
         echo $this->render($this->skin, [
-            'model'=>$this->model,
+            'model' => $this->model,
             'currentUrl' => $this->view->context->currentUrl,
             //'refreshUrl' => (($this->model) ? $this->model->getUrl() : ['/' . Yii::$app->requestedRoute]),
             'refreshUrl' => $this->view->context->refreshUrl,
             'priceMin' => floor($this->priceMin),
             'priceMax' => ceil($this->priceMax),
-            'currentPrice'=>$this->prices,
-           // 'currentPriceMin' => $this->data->getCurrentMinPrice(),
-          //  'currentPriceMax' => $this->data->getCurrentMaxPrice(),
+            'currentPrice' => $this->prices,
+            // 'currentPriceMin' => $this->data->getCurrentMinPrice(),
+            //  'currentPriceMax' => $this->data->getCurrentMaxPrice(),
             'active' => $active,
             'attributes' => $this->data->getRootCategoryAttributes(),
-            'brands' =>  (Yii::$app->controller->route != 'shop/brand/view')?$this->data->getCategoryBrands():[]
+            'brands' => (Yii::$app->controller->route != 'shop/brand/view') ? $this->data->getCategoryBrands() : []
         ]);
         // var category_id = {$this->model->id};
-        $this->view->registerJs("
+        /*$this->view->registerJs("
        
             $(function () {
                 var selector = $('.card .card-collapse');
@@ -167,7 +167,7 @@ class FiltersWidget extends Widget
                     $.cookie(active, null);
                 });
             });
-        ");
+        ");*/
 
 
     }
@@ -236,7 +236,7 @@ class FiltersWidget extends Widget
                     $query->applyBrands($brandsList);
                     //$q->applyMinPrice($this->convertCurrency(Yii::app()->request->getQuery('min_price')))
                     //$q->applyMaxPrice($this->convertCurrency(Yii::app()->request->getQuery('max_price')))
-                  //  $query->applyBrands($m->id);
+                    //  $query->applyBrands($m->id);
 
                     if (Yii::$app->request->get('q') && Yii::$app->requestedRoute == 'shop/search/index') {
                         $query->applySearch(Yii::$app->request->get('q'));
@@ -248,7 +248,7 @@ class FiltersWidget extends Widget
                         $brandsList = explode(',', Yii::$app->request->get('brand', ''));
                         //$query->applyBrands($brands);
                     }
-                   // print_r($brandsList);die;
+                    // print_r($brandsList);die;
 
                     /*$dependencyQuery = $query;
                     $dependencyQuery->select('COUNT(*)');
@@ -304,37 +304,40 @@ class FiltersWidget extends Widget
     public function generateGradientCss($data)
     {
         $css = '';
-        if ($data) {
-            $css .= "background: {$data[0]['color']};";
-            if (count($data) > 1) {
+        if (isset($data['color'])) {
+            //if(isset($data['color'][0]) && !empty($data['color'][0])){
+                $css .= "background: {$data['color'][0]};";
+            //}
+
+            if (count($data['color']) > 1) {
 
                 $res_data = [];
-                foreach ($data as $k => $color) {
-                    $res_data[] = $color['color'];
+                foreach ($data['color'] as $k => $color) {
+                    $res_data[] = $color;
                 }
                 $res = implode(', ', $res_data);
 
-                if (count($data) == 2) {
-                    $value = "45deg, {$data[0]['color']} 50%, {$data[1]['color']} 50%";
+                if (count($data['color']) == 2) {
+                    $value = "45deg, {$data['color'][0]} 50%, {$data['color'][1]} 50%";
                     $css .= "background: -moz-linear-gradient({$value});";
                     $css .= "background: -webkit-linear-gradient({$value});";
                     $css .= "background: linear-gradient({$value});";
-                } elseif (count($data) == 3) {
-                    $value = "45deg, {$data[0]['color']} 0%, {$data[0]['color']} 33%, {$data[1]['color']} 33%, {$data[1]['color']} 66%, {$data[2]['color']} 66%, {$data[2]['color']} 100%";
+                } elseif (count($data['color']) == 3) {
+                    $value = "45deg, {$data['color'][0]} 0%, {$data['color'][0]} 33%, {$data['color'][1]} 33%, {$data['color'][1]} 66%, {$data['color'][2]} 66%, {$data['color'][2]} 100%";
                     $css .= "background: -moz-linear-gradient({$value});";
                     $css .= "background: -webkit-linear-gradient({$value});";
                     $css .= "background: linear-gradient({$value});";
-                } elseif (count($data) == 4) {
-                    $value = "45deg, {$data[0]['color']} 0%, {$data[0]['color']} 25%, {$data[1]['color']} 25%, {$data[1]['color']} 50%, {$data[2]['color']} 50%, {$data[2]['color']} 75%, {$data[3]['color']} 75%, {$data[3]['color']} 100%";
+                } elseif (count($data['color']) == 4) {
+                    $value = "45deg, {$data['color'][0]} 0%, {$data['color'][0]} 25%, {$data['color'][1]} 25%, {$data['color'][1]} 50%, {$data['color'][2]} 50%, {$data['color'][2]} 75%, {$data['color'][3]} 75%, {$data['color'][3]} 100%";
                     $css .= "background: -moz-linear-gradient({$value});";
                     $css .= "background: -webkit-linear-gradient({$value});";
                     $css .= "background: linear-gradient({$value});";
-                } elseif (count($data) >= 4) {
+                } elseif (count($data['color']) >= 4) {
                     $css .= "background: -moz-radial-gradient(farthest-corner at 0% 100%, {$res});";
                     $css .= "background: -webkit-radial-gradient(farthest-corner at 0% 100%, {$res});";
                     $css .= "background: radial-gradient(farthest-corner at 0% 100%, {$res});";
                 }
-                $css .= "filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='{$data[0]['color']}', endColorstr='{$data[1]['color']}',GradientType=1 );";
+                $css .= "filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='{$data['color'][0]}', endColorstr='{$data['color'][1]}',GradientType=1 );";
             }
         }
         return $css;

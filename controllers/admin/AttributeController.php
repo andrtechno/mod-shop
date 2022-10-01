@@ -8,6 +8,7 @@ use panix\engine\controllers\AdminController;
 use panix\mod\shop\models\Attribute;
 use panix\mod\shop\models\search\AttributeSearch;
 use panix\mod\shop\models\AttributeOption;
+use yii\caching\TagDependency;
 use yii\web\Response;
 
 class AttributeController extends AdminController
@@ -142,16 +143,13 @@ class AttributeController extends AdminController
                         $attributeOption = new AttributeOption;
                         $attributeOption->attribute_id = $model->id;
                     }
+
                     if (isset($data['data']) && is_array($data['data'])) {
-                        foreach ($data['data'] as $k => $d) {
-                            if (!empty($d['color'])) {
-                                unset($data['data']['color'][$k]);
-                            }
-                        }
-                        $attributeOption->data = serialize($data['data']);
+                        $attributeOption->data = \yii\helpers\Json::encode($data['data']);
                     } else {
                         $attributeOption->data = NULL;
                     }
+
                     foreach (Yii::$app->languageManager->languages as $k => $l) {
                         $value = ($k == 'ru') ? 'value' : 'value_' . $l->code;
                         $attributeOption->{$value} = $data[$index];
@@ -159,7 +157,7 @@ class AttributeController extends AdminController
 
                     }
                     $attributeOption->save(false);
-
+                    TagDependency::invalidate(Yii::$app->cache, 'attribute-'.$model->id . '-' . $attributeOption->id);
                     array_push($dontDelete, $attributeOption->id);
                 }
             }
@@ -181,6 +179,7 @@ class AttributeController extends AdminController
                 $o->delete();
             }
         }
+
     }
 
     protected function saveOptions2($model)

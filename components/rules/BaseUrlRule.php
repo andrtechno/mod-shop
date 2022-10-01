@@ -2,26 +2,27 @@
 
 namespace panix\mod\shop\components\rules;
 
-use panix\engine\CMS;
-use Yii;
-use yii\helpers\Url;
-use yii\web\HttpException;
 use yii\web\UrlRule;
 
-class BaseUrlRule extends UrlRule
+/**
+ * Class BrandUrlRule
+ * @package panix\mod\shop\components
+ */
+class BaseUrlRule extends \yii\web\UrlRule
 {
 
-    public $pattern = 'brand/<slug:[0-9a-zA-Z\-]+>';
-    public $cacheDuration = 0;
     public $index = 'brand';
-    public $alias = 'slug';
-    public $query;
 
     /**
      * @inheritdoc
      */
     public function createUrl($manager, $route, $params)
     {
+        if ($this->mode === self::PARSING_ONLY) {
+            $this->createStatus = self::CREATE_STATUS_PARSING_ONLY;
+            return false;
+        }
+
         if ($route === $this->route) {
             if (isset($params['slug'])) {
                 $url = '/' . trim($params['slug'], '/');
@@ -30,19 +31,16 @@ class BaseUrlRule extends UrlRule
                 $url = '';
             }
             $parts = [];
-            if (!empty($params)) {
-                if (Yii::$app->request->isPjax) {
-                    unset($params['_pjax']);
-                }
+            if ($params) {
+                unset($params['_pjax']);
                 foreach ($params as $key => $val) {
-                    if (!is_array($val)) {
-                        $parts[] = $key . '/' . $val;
-                    }
+                    //if ($val)
+                    $parts[] = $key . '/' . $val;
                 }
                 $url .= '/' . implode('/', $parts);
             }
-
             return $this->index . $url . $this->suffix;
+
         }
         return false;
     }
@@ -81,38 +79,58 @@ class BaseUrlRule extends UrlRule
         if ($this->host !== null) {
             $pathInfo = strtolower($request->getHostInfo()) . ($pathInfo === '' ? '' : '/' . $pathInfo);
         }
-        //original end
 
-        $params = [];
-        $pathInfoParse = str_replace($this->index . '/', '', $pathInfo);
-
-        $index = $this->index;
-        if (preg_match("/$index(\w+)/i", $pathInfo, $matches)) {
+        if (!preg_match($this->pattern, $pathInfo, $matches)) {
             return false;
         }
 
-        if ($this->index == mb_substr($pathInfo, 0, mb_strlen($this->index))) {
-            $pathInfoParse = str_replace($this->index, '', $pathInfoParse);
+        $matches = $this->substitutePlaceholderNames($matches);
 
-            if (!empty($pathInfoParse)) {
-                $parts = explode('/', $pathInfoParse);
-                $paramsList = array_chunk($parts, 2);
-
-                foreach ($paramsList as $k => $p) {
-                    if (!isset($p[1])) {
-                        return false;
-                    }
-                    if (isset($p[1], $p[0])) {
-                        $_GET[$p[0]] = $p[1];
-                        $params[$p[0]] = $p[1];
-                    }
-                }
-
+        foreach ($this->defaults as $name => $value) {
+            if (!isset($matches[$name]) || $matches[$name] === '') {
+                $matches[$name] = $value;
             }
-            return [$this->route, $params];
-
         }
-        return false;
+        $params = $this->defaults;
+        $tr = [];
+        //original end
+        //foreach editing
+        foreach ($matches as $name => $value) {
+            //if (isset($this->_routeParams[$name])) {
+            //    $tr[$this->_routeParams[$name]] = $value;
+            //    unset($params[$name]);
+            if (isset($this->paramRules[$name])) {
+                if ($name == 'params') {
+                    $parts = explode('/', $value);
+                    $list = array_chunk($parts, 2);
+                    foreach ($list as $k => $p) {
+                        if(!isset($p[1])){
+                            return false;
+                        }
+                        if (isset($p[0], $p[1])) {
+                            $_GET[$p[0]] = $p[1];
+                            $params[$p[0]] = $p[1];
+                        }
+                    }
+                } else {
+                    $params[$name] = $value;
+                    $_GET[$name] = $value;
+                }
+            }
+        }
+        if ($this->route !== null) {
+            $route = strtr($this->route, $tr);
+        } else {
+            $route = $this->route;
+        }
+
+        if ($normalized) {
+            // pathInfo was changed by normalizer - we need also normalize route
+            return $this->getNormalizer($manager)->normalizeRoute([$route, $params]);
+        }
+
+        return [$route, $params];
     }
+
 
 }

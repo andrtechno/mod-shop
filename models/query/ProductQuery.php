@@ -97,7 +97,7 @@ class ProductQuery extends ActiveQuery
             return $this;
 
         sort($brands);
-
+        $brands = array_map('intval', $brands);
         $this->$whereType(['brand_id' => $brands]);
         return $this;
     }

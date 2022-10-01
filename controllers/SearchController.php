@@ -39,7 +39,10 @@ $q=Yii::$app->request->post('q');
         //    $brands = explode(',', Yii::$app->request->get('brand', ''));
        //     $this->query->applyBrands($brands);
       //  }
-        $this->query->groupBy(Product::tableName() . '.`id`');
+
+
+        //comment
+        //$this->query->groupBy(Product::tableName() . '.`id`');
 
         //если пусто, делаем фейк запрос для "не чего не найдено"
         $queryGet = Yii::$app->request->get('q');

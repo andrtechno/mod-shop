@@ -3,6 +3,7 @@
 namespace panix\mod\shop\models;
 
 use panix\mod\shop\components\ExternalFinder;
+use panix\mod\shop\components\SupplierDeleteEvent;
 use Yii;
 use panix\engine\db\ActiveRecord;
 use panix\engine\Html;
@@ -112,6 +113,7 @@ class Supplier extends ActiveRecord
             $external = new ExternalFinder('{{%forsage_studio}}');
             $external->deleteObject(ExternalFinder::OBJECT_SUPPLIER, $this->id);
         }
+
 
         parent::afterDelete();
     }

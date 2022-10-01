@@ -147,8 +147,8 @@ class FilterController extends Controller
                     'min' => floor($sliders2['price'][0]),
                     'max' => ceil($sliders2['price'][1]),
                     'default' => [
-                        'min' => floor($filter->getMinPrice()),
-                        'max' => ceil($filter->getMaxPrice())
+                        'min' => $filter->min,
+                        'max' => $filter->max
                     ],
 
                 ]

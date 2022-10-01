@@ -1,0 +1,32 @@
+.filter-color {
+    display: block;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    position: relative;
+    border: 1px solid #ccc;
+    float: left;
+}
+.filter-color input[type=checkbox]:checked ~ ::before {
+    color: #fff;
+    border-color: #007bff;
+    background-color: #007bff;
+}
+.filter-color input[type=checkbox] {
+    opacity: 0;
+    position: absolute;
+    z-index: -1;
+}
+.filter-color:before {
+    content: "";
+    border: 1px solid #ccc;
+    width: 34px;
+    height: 34px;
+    position: absolute;
+    border-radius: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    top: 50%;
+    transition: all .3s ease;
+    opacity: 0;
+}

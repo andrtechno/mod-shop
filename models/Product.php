@@ -534,7 +534,8 @@ class Product extends ActiveRecord
      */
     public function getBrand()
     {
-        return $this->hasOne(Brand::class, ['id' => 'brand_id'])->cache(self::getDb()->queryCacheDuration, new TagDependency(['tags' => 'brand-' . $this->brand_id]));
+        return $this->hasOne(Brand::class, ['id' => 'brand_id'])
+            ->cache(self::getDb()->queryCacheDuration, new TagDependency(['tags' => 'brand-' . $this->brand_id]));
     }
 
     /**
@@ -542,7 +543,8 @@ class Product extends ActiveRecord
      */
     public function getSupplier()
     {
-        return $this->hasOne(Supplier::class, ['id' => 'supplier_id'])->cache(self::getDb()->queryCacheDuration, new TagDependency(['tags' => 'supplier-' . $this->supplier_id]));
+        return $this->hasOne(Supplier::class, ['id' => 'supplier_id'])
+            ->cache(self::getDb()->queryCacheDuration, new TagDependency(['tags' => 'supplier-' . $this->supplier_id]));
     }
 
     /**
@@ -983,7 +985,7 @@ class Product extends ActiveRecord
             }
 
         }
-        TagDependency::invalidate(Yii::$app->cache, 'product-'.$this->id);
+
         parent::afterSave($insert, $changedAttributes);
     }
 

@@ -52,15 +52,7 @@ class CategoryUrlRule extends UrlRule
 
 
         $params = $this->defaults;
-
-        $repla = str_replace($this->index . '/', '', $pathInfo);
-
-        //if (preg_match("/$index(\w+)/i", $pathInfo, $matches)) {
-        //    return false;
-        //}
-
-        if ($params['slug'] !== '' && strpos($repla, $params['slug']) === 0) {
-
+        if ($params['slug'] !== '' && strpos(str_replace($this->index . '/', '', $pathInfo), $params['slug']) === 0) {
 
             $parts_slug = explode('/', $this->index . '/' . $params['slug']);
             $parts = explode('/', $pathInfo);
@@ -71,14 +63,11 @@ class CategoryUrlRule extends UrlRule
             }
             $_GET['slug'] = $params['slug'];
             $filterPathInfo = ltrim(substr($pathInfo, strlen($this->index . '/' . $params['slug'])), '/');
-
             if (!empty($filterPathInfo)) {
-
                 $parts = explode('/', $filterPathInfo);
                 $paramsList = array_chunk($parts, 2);
 
                 foreach ($paramsList as $p) {
-
                     if (isset($p[1])) {
                         $params[$p[0]] = $p[1];
                         $_GET[$p[0]] = $p[1];
@@ -88,13 +77,14 @@ class CategoryUrlRule extends UrlRule
                 }
             }
 
+
             $route = $this->route;
 
             if ($normalized) {
                 // pathInfo was changed by normalizer - we need also normalize route
                 return $this->getNormalizer($manager)->normalizeRoute([$route, $params]);
             }
-
+print_r([$route, $params]);die;
             return [$route, $params];
         }
         return false;

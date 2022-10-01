@@ -103,7 +103,6 @@ trait EavQueryTrait
         $class = $this->modelClass;
         $pk = $class::tableName() . '.`id`';
         $i = 0;
-        // echo $this->createCommand()->getRawSql();die;
         foreach ($attributes as $attribute => $values) {
             // If search models with attribute name with specified values.
             if (is_string($attribute)) {

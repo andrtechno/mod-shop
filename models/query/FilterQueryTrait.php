@@ -37,7 +37,7 @@ trait FilterQueryTrait
     public function applyPrice($value, $operator = '=')
     {
         if (!in_array($operator, ['=', '>=', '<='])) {
-            throw new Exception('error operator in ' . __FUNCTION__);
+            throw new Exception('applyPrice error operator in ' . __FUNCTION__);
         }
         $tableName = Product::tableName();
         $tableNameCur = Currency::tableName();

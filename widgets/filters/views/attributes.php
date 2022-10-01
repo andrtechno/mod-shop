@@ -62,7 +62,7 @@ foreach ($attributes as $attrData) {
                                     $css = $this->context->generateGradientCss($filter['data']);
 
                                     $checkedHtml = ($checked) ? '<span class="filter-color-checked"></span>' : '<span></span>';
-                                    echo Html::label(Html::checkBox('filter[' . $attrData['key'] . '][]', $checked, ['class' => '', 'value' => $filter['queryParam'], 'id' => 'filter_' . $attrData['key'] . '_' . $filter['queryParam']]) . $checkedHtml, 'filter_' . $attrData['key'] . '_' . $filter['queryParam'], ['class' => 'filter-color', 'title' => $filter['title'] . ' (' . strip_tags($this->context->getCount($filter)) . ')', 'style' => $css]);
+                                    echo Html::label(Html::checkBox('filter[' . $attrData['key'] . '][]', $checked, ['class' => '', 'value' => $filter['queryParam'], 'id' => 'filter_' . $attrData['key'] . '_' . $filter['queryParam']]) . $checkedHtml, 'filter_' . $attrData['key'] . '_' . $filter['queryParam'], ['class' => 'filter-color', 'title' => $filter['title'] . ' (' . trim(strip_tags($this->context->getCount($filter))) . ')', 'style' => $css]);
 
 
                                 } else {

@@ -212,4 +212,22 @@ class IndexController extends ConsoleController
         return $xml->saveXML(Yii::getAlias($path) . DIRECTORY_SEPARATOR . 'google-feed.xml');
     }
 
+    /**
+     * Delete products if not availability by period of days. Default is 90
+     * @param int $days
+     */
+    public function actionDeleteAv($days = 90)
+    {
+        echo 'DATE: '.date('Y-m-d H:i:s', time() - (86400 * $days)).PHP_EOL;
+        $products = Product::find()
+            ->where(['availability'=>0])
+            ->andWhere(['>', 'updated_at', strtotime(date('Y-m-d H:i:s', time() - (86400 * $days)))])
+       // echo $products->createCommand()->rawSql;die;
+            ->all();
+        foreach ($products as $product){
+            echo 'UPD : '.date('Y-m-d H:i:s',$product->updated_at).PHP_EOL;
+            echo $product->id.PHP_EOL;
+            //$product->delete();
+        }
+    }
 }

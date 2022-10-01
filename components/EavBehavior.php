@@ -97,7 +97,7 @@ class EavBehavior extends \yii\base\Behavior
      * @var boolean loaded attributes after find model.
      * @default TRUE
      */
-    public $preload = TRUE;
+    public $preload = true;
 
     public function events()
     {
@@ -143,8 +143,8 @@ class EavBehavior extends \yii\base\Behavior
     /**
      * Returns owner model FK name.
      * @access protected
-     * @throws \yii\base\UnknownPropertyException
      * @return string
+     * @throws \yii\base\UnknownPropertyException
      */
     protected function getModelTableFk()
     {
@@ -277,8 +277,9 @@ class EavBehavior extends \yii\base\Behavior
      * @return void
      */
     public function afterDelete()
-    {    // Delete all attributes.
-        $this->deleteEavAttributes([], TRUE);
+    {
+        // Delete all attributes.
+        $this->deleteEavAttributes([], true);
         // Call parent method for convenience.
     }
 
@@ -293,7 +294,6 @@ class EavBehavior extends \yii\base\Behavior
         // Load attributes for model.
         if ($this->preload) {
             if ($owner->getPrimaryKey()) {
-
                 $this->loadEavAttributes($this->getSafeAttributesArray());
             }
         }
@@ -308,11 +308,14 @@ class EavBehavior extends \yii\base\Behavior
         // Delete old attributes values from DB.
         $this->getDeleteCommand($attributes)->execute();
         // Process each attributes.
-
+        TagDependency::invalidate(Yii::$app->cache, ["product-attributes-" . $this->getModelId()]);
 
         foreach ($attributes as $attribute) {
             // Skip if null attributes.
+
+            //TagDependency::invalidate(Yii::$app->cache, "attribute-{$attribute}");
             $attr = (isset($this->attributes[$attribute])) ? $this->attributes[$attribute] : NULL;
+
             if (!is_null($values = $attr)) {
                 // Create array of values for convenience.
                 if (!is_array($values)) {
@@ -320,8 +323,10 @@ class EavBehavior extends \yii\base\Behavior
                 }
                 // Save each value of attribute into DB.
                 foreach ($values as $value) {
+
                     $this->getSaveEavAttributeCommand($this->attributesPrefix . $attribute, $value)->execute();
                 }
+
                 // Remove from changed list.
                 unset($this->changedAttributes[$attribute]);
             }
@@ -390,9 +395,8 @@ class EavBehavior extends \yii\base\Behavior
      * @param bool $save whether auto attributes.
      * @return ActiveRecord|\yii\base\Component
      */
-    public function deleteEavAttributes($attributes = [], $save = FALSE)
+    public function deleteEavAttributes($attributes = [], $save = false)
     {
-
 
         // If not set attributes for deleting, delete all.
         if (empty($attributes)) {
@@ -403,11 +407,15 @@ class EavBehavior extends \yii\base\Behavior
         foreach ($attributes as $attribute) {
             unset($this->attributes[$attribute]);
             $this->changedAttributes[] = $attribute;
+
         }
+
         // Auto save if set.
         if ($save) {
             $this->saveEavAttributes($attributes);
         }
+
+
         // Return model.
         return $this->owner;
     }
@@ -419,16 +427,15 @@ class EavBehavior extends \yii\base\Behavior
      */
     public function setEavAttributes($attributes, $save = false)
     {
-        // CMS::dump($this->attributes);die;
         foreach ($attributes as $attribute => $value) {
             $this->attributes[$attribute] = $value;
             $this->changedAttributes[] = $attribute;
-            //TagDependency::invalidate(Yii::$app->cache, $attribute);
         }
         // Auto save if set.
         if ($save) {
             $this->saveEavAttributes(array_keys($attributes));
         }
+
         // Return model.
         return $this->owner;
     }
@@ -460,8 +467,6 @@ class EavBehavior extends \yii\base\Behavior
         // Queue for load.
         $loadQueue = [];
         foreach ($attributes as $attribute) {
-
-
             // Check is safe.
             if ($this->hasSafeAttribute($attribute)) {
                 if (isset($this->attributes[$attribute])) {
@@ -496,8 +501,8 @@ class EavBehavior extends \yii\base\Behavior
      */
     public function getModels()
     {
-       // if (is_array($this->_models))
-      //      return $this->_models;
+        // if (is_array($this->_models))
+        //      return $this->_models;
 
         $_models = [];
 
@@ -515,7 +520,9 @@ class EavBehavior extends \yii\base\Behavior
 
         return $_models;
     }
-    public function getEavData(){
+
+    public function getEavData()
+    {
         $data = [];
         $groups = [];
         foreach ($this->getModels() as $model) {
@@ -539,10 +546,11 @@ class EavBehavior extends \yii\base\Behavior
 
         return [
             'data' => $data,
-          //  'model' => $this->model,
+            //  'model' => $this->model,
             'groups' => $groups,
         ];
     }
+
     public function getEavAttributesValue($attributes = [])
     {
 
@@ -616,7 +624,7 @@ class EavBehavior extends \yii\base\Behavior
                 }
                 foreach ($values as $value) {
                     //$value = $conn->quoteValue($value);
-                    $owner::find()->join('JOIN', ProductAttributesEav::tableName().' eavb' . $i, "$pk=eavb$i.`entity` AND eavb$i.`attribute` = '$attribute' AND eavb$i.`value` = '$value'");
+                    $owner::find()->join('JOIN', $this->tableName . ' eavb' . $i, "$pk=eavb$i.`entity` AND eavb$i.`attribute` = '$attribute' AND eavb$i.`value` = '$value'");
                     $owner::find()->andWhere(['IN', "`eavb$i`.`value`", $values]);
                     /* $criteria->join .= "\nJOIN {$this->tableName} eavb$i"
                       . "\nON t.{$pk} = eavb$i.{$this->entityField}"
@@ -628,7 +636,7 @@ class EavBehavior extends \yii\base\Behavior
                 }
             } // If search models with attribute name with anything values.
             elseif (is_int($attribute)) {
-                $owner::find()->join('JOIN', ProductAttributesEav::tableName().' eavb' . $i, "$pk=`eavb$i`.`entity` AND eavb$i.attribute = '$values'");
+                $owner::find()->join('JOIN', $this->tableName . ' eavb' . $i, "$pk=`eavb$i`.`entity` AND eavb$i.attribute = '$values'");
                 //$values = $conn->quoteValue($values);
                 /* $this->join .= "\nJOIN {{%shop__product_attribute_eav}} eavb$i"
                          . "\nON t.{$pk} = eavb$i.entity"
@@ -655,6 +663,7 @@ class EavBehavior extends \yii\base\Behavior
             $this->attributeField => $attribute,
             $this->valueField => $value,
         ];
+
         return Yii::$app->db->createCommand()->insert($this->tableName, $data);
         /* return $this->owner
           ->getCommandBuilder()
@@ -673,6 +682,7 @@ class EavBehavior extends \yii\base\Behavior
         if (!empty($attributes)) {
             $query->andWhere(['IN', $this->attributeField, $attributes]);
         }
+        $query->cache(Yii::$app->db->queryCacheDuration, new TagDependency(['tags' => ['product-attributes-' . $this->getModelId()]]));
         //echo $query->createCommand()->rawSql;die;
         return $query;
     }

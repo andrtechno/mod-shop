@@ -73,6 +73,7 @@ class AjaxController extends Controller
 //echo $query->createCommand()->rawSql;die;
 
         $filter = new FilterV2($query,['route'=>$url]);
+
       //  echo $filter->activeUrl;
 
         //$filter->route = $url;
@@ -88,49 +89,43 @@ class AjaxController extends Controller
 
         //  print_r($filter->resultQuery);die;
         //print_r($f->getPostActiveAttributes());die;
-        $attributes = $filter->getCategoryAttributesCallback();
+
+
         $brands = [];
         if (!in_array($route, ['shop/brand/view'])) {
             $brands = $filter->getCategoryBrandsCallback();
         }
+        $attributes = $filter->getCategoryAttributesCallback();
 
-//print_r($filter->getResultUrl());die;
         $total = $filter->resultQuery->count();
-//echo $filter->resultQuery->createCommand()->rawSql;die;
+
 
         $sliders=[];
         $sliders2 = Yii::$app->request->post('slide');
         if ($sliders2) {
-            if (isset($sliders2['price'])) {
-
-            }
             $sliders = [
                 'price' => [
                     'min' => floor($sliders2['price'][0]),
                     'max' => ceil($sliders2['price'][1]),
                     'default' => [
-                        'min' => floor($filter->getMinPrice()),
-                        'max' => ceil($filter->getMaxPrice())
+                        'min' => $filter->min,
+                        'max' => $filter->max
                     ],
 
                 ]
             ];
         }
 
-
-
-
         $results = ArrayHelper::merge($attributes, ['brand' => $brands]);
 
         $route = $filter->getResultRoute();
-//print_r($route);die;
-        //   $total = $filter->count();
+
         return $this->asJson([
             'textTotal' => "Показать " . Yii::t('shop/default', 'PRODUCTS_COUNTER', $total),
             'totalCount' => (int)$total,
             'filters' => $results,
             'sliders' => $sliders,
-            'url' => Url::to($filter->getResultRoute())
+            'url' => Url::to($route)
         ]);
     }
 }

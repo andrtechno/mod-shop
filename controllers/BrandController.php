@@ -18,13 +18,36 @@ class BrandController extends FilterController
 
     public $provider;
     public $currentUrl;
+
     public function actionIndex()
     {
         $model = Brand::find()->published()->all();
         $this->currentUrl = '/';
-        $this->pageName = Yii::t('shop/default','BRANDS');
+        $this->pageName = Yii::t('shop/default', 'BRANDS');
         $this->view->params['breadcrumbs'][] = $this->pageName;
-        return $this->render('index', ['model' => $model]);
+
+
+        $memory = NULL;
+        $sorting = [];
+
+        foreach ($model as $item) {
+            $productCount = $item->productsCount;
+            if ($productCount) {
+                $letter = mb_substr($item->name, 0, 1, 'utf-8');
+
+                if ($letter != $memory) {
+                    $memory = $letter;
+                }
+                if (is_numeric($letter)) {
+                    $memory = '0-9';
+                }
+
+                $sorting[$memory][] = ['item' => $item, 'count' => $productCount];
+            }
+        }
+        ksort($sorting);
+
+        return $this->render('index', ['items' => $sorting]);
     }
 
     /**
@@ -36,7 +59,7 @@ class BrandController extends FilterController
     {
 
         $this->findModel($slug);
-       // $this->currentUrl = Url::to($this->dataModel->getUrl());
+        // $this->currentUrl = Url::to($this->dataModel->getUrl());
         /** @var Product $productModel */
         $productModel = Yii::$app->getModule('shop')->model('Product');
         $this->query = $productModel::find()->published();
@@ -45,11 +68,11 @@ class BrandController extends FilterController
         $this->query->applyBrands($this->dataModel->id);
 
 
-        $this->filter = new FilterV2($this->query,['cacheKey'=>'filter_brand_'.$this->dataModel->id]);
-       // CMS::dump($this->filter,2);die;
+        $this->filter = new FilterV2($this->query, ['cacheKey' => 'filter_brand_' . $this->dataModel->id]);
+        // CMS::dump($this->filter,2);die;
         $this->filterQuery = clone $this->query;
         $this->currentQuery = clone $this->query;
-        $this->filter->resultQuery->orderBy(['id'=>SORT_DESC]);
+        $this->filter->resultQuery->orderBy(['id' => SORT_DESC]);
         //$this->query->applyAttributes($this->activeAttributes);
         //$this->filterQuery->addorderBy(['created_at'=>SORT_DESC]);
         //$this->currentQuery->orderBy(['created_at'=>SORT_DESC]);
@@ -61,19 +84,16 @@ class BrandController extends FilterController
 
         $this->view->text = $this->dataModel->description;
 
-       // $this->query->applyRangePrices((isset($this->prices[0])) ? $this->prices[0] : 0, (isset($this->prices[1])) ? $this->prices[1] : 0);
+        // $this->query->applyRangePrices((isset($this->prices[0])) ? $this->prices[0] : 0, (isset($this->prices[1])) ? $this->prices[1] : 0);
 
 
         $this->view->registerJs("var current_url = '" . Url::to($this->dataModel->getUrl()) . "';", yii\web\View::POS_HEAD, 'current_url');
 
-        $sort = explode(',',Yii::$app->request->get('sort'));
+        $sort = explode(',', Yii::$app->request->get('sort'));
         if ($sort[0] == 'price' || $sort[0] == '-price') {
             $this->filter->resultQuery->aggregatePriceSelect(($sort[0] == 'price') ? SORT_ASC : SORT_DESC);
         }
-        $this->filter->resultQuery->orderBy(['id'=>SORT_DESC]);
-
-
-
+        $this->filter->resultQuery->orderBy(['id' => SORT_DESC]);
 
 
         $this->provider = new \panix\engine\data\ActiveDataProvider([
@@ -95,7 +115,7 @@ class BrandController extends FilterController
 
         $currentUrl[] = '/shop/brand/view';
         $currentUrl['slug'] = $this->dataModel->slug;
-        $this->refreshUrl=$currentUrl;
+        $this->refreshUrl = $currentUrl;
         $this->view->canonical = Url::to($currentUrl, true);
         //  print_r($filterData);die;
         foreach ($filterData as $name => $filter) {
@@ -131,7 +151,7 @@ class BrandController extends FilterController
         if ($this->dataModel !== null) {
             return $this->dataModel;
         } else {
-            $this->error404('brand not found');
+            $this->error404();
         }
     }
 
