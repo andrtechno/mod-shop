@@ -29,7 +29,9 @@ class FakerController extends Controller
     public function init()
     {
         parent::init();
-        $this->faker = Factory::create('en_US');
+        if (class_exists('Faker\Factory')) {
+            $this->faker = \Faker\Factory::create('en_US');
+        }
         //$faker = \Faker\Factory::create('uk_UA');
     }
 
