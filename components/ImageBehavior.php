@@ -265,7 +265,7 @@ class ImageBehavior extends \yii\base\Behavior
         //If main image not exists
         if ($img == null || $is_main) {
             $this->setMainImage($image);
-            $this->owner->image = $image->filename;
+            //$this->owner->image = $image->filename; //To be continue
         }
 
         /** @var ImageHandler $img */
