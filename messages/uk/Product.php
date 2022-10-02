@@ -4,6 +4,7 @@ return [
     'SELECT_ATTRIBUTE' => '&mdash; Вибрати &mdash;',
     'LABEL' => 'Лейбли товару',
     'LABEL_NEW' => 'Новинка',
+    'LABEL_INSTOCK' => 'В наявності',
     'LABEL_SALE' => 'Розпродаж',
     'LABEL_DISCOUNT' => 'Знижка',
     'LABEL_TOP_SALE' => 'Топ продажів',
