@@ -12,11 +12,10 @@ use panix\mod\shop\models\ProductImage;
 use yii\console\Controller;
 use Yii;
 use yii\helpers\BaseFileHelper;
-use Faker\Factory;
 
 /**
  * Class FakerController
- * @property $faker Factory
+ * @property $faker \Faker\Factory
  * @package panix\mod\shop\commands
  */
 class FakerController extends Controller
@@ -29,7 +28,9 @@ class FakerController extends Controller
     public function init()
     {
         parent::init();
-        $this->faker = Factory::create('en_US');
+        if (class_exists('Faker\Factory')) {
+            $this->faker = \Faker\Factory::create('en_US');
+        }
         //$faker = \Faker\Factory::create('uk_UA');
     }
 

@@ -60,6 +60,7 @@ class SettingsForm extends SettingsModel
             'smart_bc' => true,
             'smart_title' => true,
             'email_notify_reviews' => NULL,
+            'watermark_enable' => false,
             'attachment_wm_path' => 'watermark.png',
             'attachment_wm_offsety' => 10,
             'attachment_wm_offsetx' => 10,
