@@ -149,6 +149,7 @@ class CatalogController extends FilterController
           }*/
         $min_price = $this->filter->price_min;
         $meta_params['{name}'] = $this->dataModel->name;
+        $meta_params['{h1}'] = (empty($this->dataModel->h1)) ? $this->dataModel->name : $this->dataModel->h1;
         $meta_params['{min_price}'] = ($min_price) ? Yii::$app->currency->number_format($min_price) : 0;
         $meta_params['{currency.symbol}'] = Yii::$app->currency->active['symbol'];
 
