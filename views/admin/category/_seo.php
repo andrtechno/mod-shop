@@ -16,6 +16,7 @@
     <div class="col-12">
         <h5>Шаблоны</h5>
         <div><code>{name}</code> &mdash; Название категории</div>
+        <div><code>{h1}</code> &mdash; H1, если пустой выведит Название категории</div>
         <div><code>{min_price}</code> &mdash; Минимальная цена</div>
         <div><code>{currency.symbol}</code> &mdash; Символ валюты</div>
 
