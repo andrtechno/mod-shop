@@ -21,8 +21,8 @@ echo \panix\engine\bootstrap\Alert::widget([
 
 $types[1] = 'Стандартный';
 if (YII_DEBUG) {
-    $types[$model::TYPE_SLIDER] = 'Слайдер';
-    $types[$model::TYPE_COLOR] = 'Цвет';
+    $types[$model::TYPE_SLIDER] = 'Слайдер (test)';
+    $types[$model::TYPE_COLOR] = 'Цвет (test)';
 }
 if ($model->isNewRecord && !$model->type) {
 

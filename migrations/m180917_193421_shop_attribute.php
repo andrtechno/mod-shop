@@ -19,7 +19,7 @@ class m180917_193421_shop_attribute extends Migration
         $this->createTable(Attribute::tableName(), [
             'id' => $this->primaryKey()->unsigned(),
             'group_id' => $this->integer(11)->null()->unsigned(),
-            'name' => $this->string(255)->notNull(),
+            'name' => $this->string(50)->notNull(),
             'type' => $this->string(10)->notNull(),
             'display_on_front' => $this->boolean()->defaultValue(true),
             'display_on_list' => $this->boolean()->defaultValue(false),

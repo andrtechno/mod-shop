@@ -18,6 +18,7 @@ class AttributeOptionsQuery extends ActiveQuery
 
     public function init()
     {
+        //@todo: не нужно в карточке товара!!!
         /** @var \yii\db\ActiveRecord $modelClass */
         $modelClass = $this->modelClass;
         $tableName = $modelClass::tableName();

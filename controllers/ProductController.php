@@ -70,16 +70,17 @@ class ProductController extends WebController
             throw new HttpException(404, 'There is no images');
         }
     }
+
     public function actionView($slug, $id)
     {
 
         $this->dataModel = $this->findModel($slug, $id);
-        $this->dataModel->preload=true;
+        $this->dataModel->preload = true;
         if (Yii::$app->settings->get('seo', 'google_tag_manager')) {
             $dataLayer['ecomm_pagetype'] = 'offerdetail';
-            $dataLayer['ecomm_totalvalue'] = (string) $this->dataModel->getFrontPrice();
+            $dataLayer['ecomm_totalvalue'] = (string)$this->dataModel->getFrontPrice();
             $dataLayer['ecomm_prodid'] = $id;
-            $this->view->params['gtm_ecomm']= $dataLayer;
+            $this->view->params['gtm_ecomm'] = $dataLayer;
         }
 
         $this->dataModel->updateCounters(['views' => 1]);
@@ -119,7 +120,7 @@ class ProductController extends WebController
                         'slug' => $category->full_path,
                         'brand' => $this->dataModel->brand->id
                     ])*/
-
+                    'class' => 'active',
                     'url' => Url::to([
                         '/catalog/' . $category->full_path . '/brand/' . $this->dataModel->brand->id,
                         // 'slug' => $category->full_path,
@@ -211,7 +212,7 @@ class ProductController extends WebController
         //$this->view->registerJsFile($this->module->assetsUrl . '/js/product.view.configurations.js', ['position'=>View::POS_END]);
 
 
-        return $this->render('view', ['model' => $this->dataModel,'mainImage'=>$mainImage]);
+        return $this->render('view', ['model' => $this->dataModel, 'mainImage' => $mainImage]);
     }
 
     /**

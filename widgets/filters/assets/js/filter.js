@@ -89,8 +89,9 @@ function filterCallback(e, objects, target) {
     //delete objects.category_id;
     //objects = $.extend(objects, {});
 
+    var responseData;
 
-    objects = $.extend(objects, {'selected[slide][price]':1});
+    objects = $.extend(objects, {'selected[slide][price]': 1});
     console.debug('FilterCallback: ', e);
     xhrCallback = $.ajax({
         dataType: "json",
@@ -208,31 +209,34 @@ function filterCallback(e, objects, target) {
                 });
 
             });
-
+            responseData = response;
+            $(document).trigger('filter:ajaxSuccess', {target: target, response: response});
             // $(target).removeAttr('disabled');
         },
-        complete:function(){
+        complete: function () {
             showApply = true;
             showReset = true;
-            $('.filter-buttons').trigger('filter:buttons:toggle');
+            $('.filter-buttons').trigger('filter:buttons:toggle', {response: responseData});
+            $('.sidebar').removeClass('loading');
         },
         beforeSend: function () {
             //ajaxSelector.toggleClass('loading');
             showApply = false;
             showReset = true;
-            $('.filter-buttons').trigger('filter:buttons:toggle');
+            $('.sidebar').addClass('loading');
+            //$('.filter-buttons').trigger('filter:buttons:toggle');
         }
     });
 
 }
 
-function filter_ajax(e, objects,sort=false) {
+function filter_ajax(e, objects, sort = false) {
     if (xhrFilters && xhrFilters.readyState !== 4) {
         xhrFilters.onreadystatechange = null;
         xhrFilters.abort();
         ajaxSelector.removeClass('loading');
     }
-   // console.log('filter_ajax', e);
+    // console.log('filter_ajax', e);
 //delete objects['slide[price][]'];
 
 
@@ -242,11 +246,11 @@ function filter_ajax(e, objects,sort=false) {
     delete objects['attributes[]'];
     //if (url === undefined) {
 
-    var url = (sort) ?formattedURL(e, objects) : resultUrl;
+    var url = (sort) ? formattedURL(e, objects) : resultUrl;
     //var url = current_url;
     // }
 
-   // console.debug('Event: ' + e.type, objects);
+    // console.debug('Event: ' + e.type, objects);
     xhrFilters = $.ajax({
         dataType: "json",
         url: url,
@@ -270,12 +274,12 @@ function filter_ajax(e, objects,sort=false) {
                     console.debug('ias plugin > reinitialize:', ias);
                     ias.reinitialize();
                 }
-            } else if((typeof $.fn.pjax !== 'undefined')) {
+            } else if ((typeof $.fn.pjax !== 'undefined')) {
                 // pjax.state = data.currentUrl;
 
-                    //console.log('PJAX!!!',$.fn.pjax);
-                    // $.pjax({url: url, container: '#pjax-catalog', timeout: false, state: data.currentUrl});
-                    // $.pjax.reload('#pjax-sales', {url: url,timeout:false,state:data.currentUrl})
+                //console.log('PJAX!!!',$.fn.pjax);
+                // $.pjax({url: url, container: '#pjax-catalog', timeout: false, state: data.currentUrl});
+                // $.pjax.reload('#pjax-sales', {url: url,timeout:false,state:data.currentUrl})
 
             }
 
@@ -462,7 +466,7 @@ $(function () {
 
     $(document).on('filter:open', '.sidebar', function (e) {
         console.debug('Event: ' + e.type, checkedAll);
-        $(this).addClass('open');
+        $(this).addClass('active');
         $('body').addClass('noscroll');
 
         if ($('#filter-current ul li').length) {
@@ -475,7 +479,7 @@ $(function () {
 
     $(document).on('filter:close', '.sidebar', function (e) {
         console.debug('Event: ' + e.type);
-        $(this).removeClass('open');
+        $(this).removeClass('active');
         $('body').removeClass('noscroll');
 
     });
@@ -609,7 +613,7 @@ $(function () {
 
     $(document).on('click', '#filter-apply', function (e) {
         console.debug("click filter-apply");
-       // $('#filter-apply').hide();
+        // $('#filter-apply').hide();
         showApply = false;  //not chika: set false
         $(this).trigger('filter:apply');
         $(this).trigger('filter:close');
@@ -729,12 +733,27 @@ $(function () {
     });
 
     $(document).on('change', '#sorting-form select', function (e) {
-        filter_ajax(e, getSerializeObjects(),true);
+        filter_ajax(e, getSerializeObjects(), true);
         console.log('#sorting-form select');
         e.preventDefault();
         return false;
     });
 
+    //currenct filter future
+    $(document).on('click', 'a[data-target222]', function (e) {
+        var data = $($(this).data('target'));
+
+        //e.preventDefault();
+        data.prop('checked', false);
+
+        var objects = getSerializeObjects();
+        var target = $(this);
+
+        filterCallback(e, objects, target);
+        filter_ajax(e, getSerializeObjects());
+        console.log('DATA', data);
+        return false;
+    });
 
     /*
      $('#sorting-form a').click(function (e) {
@@ -759,19 +778,19 @@ function filterSearchInput(that, listId) {
     for (i = 0; i < li.length; i++) {
         a = li[i].getElementsByTagName("label")[0];
         txtValue = a.getAttribute("data-search");
-       // txtValue = a.textContent || a.innerText;
-    //'data-search'
-       //
+        // txtValue = a.textContent || a.innerText;
+        //'data-search'
+        //
 
         //for (var i = 0; i < test.length; i++) {
-       //     console.log(i,test[i]); //second console output
+        //     console.log(i,test[i]); //second console output
         //}
 
-       // test.forEach(function(currentValue, index, array) {
-            //console.log(currentValue,index,array);
-       // });
-      //  a.parentNode.removeChild(a.getElementsByTagName("*"));
-     //
+        // test.forEach(function(currentValue, index, array) {
+        //console.log(currentValue,index,array);
+        // });
+        //  a.parentNode.removeChild(a.getElementsByTagName("*"));
+        //
         if (txtValue.toUpperCase().indexOf(value) > -1) {
             li[i].style.display = "";
         } else {

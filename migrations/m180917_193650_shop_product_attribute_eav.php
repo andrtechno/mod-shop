@@ -19,11 +19,11 @@ class m180917_193650_shop_product_attribute_eav extends Migration
     {
         $this->createTable(ProductAttributesEav::tableName(), [
             'entity' => $this->integer()->unsigned(),
-            'attribute' => $this->string(255)->null(),
-            'value' => $this->string(255),
+            'attribute' => $this->string(50)->null(),
+            'value' => $this->integer()->null(),
         ]);
 
-        $this->createIndex('entity', ProductAttributesEav::tableName(), 'entity');
+        $this->createIndex('entity', ProductAttributesEav::tableName(), ['entity','attribute']);
         $this->createIndex('attribute', ProductAttributesEav::tableName(), 'attribute');
         $this->createIndex('value', ProductAttributesEav::tableName(), 'value');
 

@@ -153,7 +153,8 @@ class Attribute extends ActiveRecord
                 'replacement' => '_',
                 'message' => self::t('ID_BUSY')
             ],
-            [['name', 'title', 'abbreviation'], 'string', 'max' => 255],
+            [['title', 'abbreviation'], 'string', 'max' => 255],
+            [['name'], 'string', 'max' => 50],
             [[
                 'required',
                 'use_in_compare',

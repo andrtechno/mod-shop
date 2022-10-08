@@ -126,6 +126,7 @@ $q=Yii::$app->request->post('q');
                     'currency' => Yii::$app->currency->active['symbol'],
                     'url' => Url::to($m->getUrl()),
                     'image' => $m->getMainImage('80x80')->url,
+                    'image_original' => $m->getMainImage()->url,
                 ];
             }
 

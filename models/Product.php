@@ -149,7 +149,7 @@ class Product extends ActiveRecord
 
     public function getIsAvailable()
     {
-        return $this->availability == self::STATUS_IN_STOCK;
+        return in_array($this->availability, [self::STATUS_IN_STOCK, self::STATUS_PREORDER]);
     }
 
     public function buy($value, array $options)
@@ -1374,7 +1374,7 @@ class Product extends ActiveRecord
                 //}
             } else {
 
-                $box = $product->eav_kolicestvo_v_asike;
+                $box = $product->eav_par_v_asike;
                 $in_box = 0;
                 if (isset($box)) {
                     $in_box = $box->value;

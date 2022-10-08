@@ -61,7 +61,7 @@ class CategoryUrlValidator extends UrlValidator
             'AttributeSlugId' => $inputId,
             'attributeCompareId' => Html::getInputId($model, $this->attributeCompare),
         ];
-        if (Yii::$app->language == Yii::$app->languageManager->default->code) {
+        if (Yii::$app->language == Yii::$app->languageManager->default->code && $model->isNewRecord) {
             $view->registerJs("init_translitter(" . json_encode($options, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ");");
         }
         /** @var \yii\db\ActiveRecord $model */

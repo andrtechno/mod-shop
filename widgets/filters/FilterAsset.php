@@ -6,7 +6,7 @@ use panix\engine\web\AssetBundle;
 
 /**
  * Class FilterAsset
- * @package panix\mod\shop\widgets\filtersnew\assets
+ * @package panix\mod\shop\widgets\filters\assets
  */
 class FilterAsset extends AssetBundle
 {

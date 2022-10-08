@@ -28,7 +28,7 @@ echo GridView::widget([
             'contentOptions' => ['class' => 'text-center'],
             'format' => 'raw',
             'value' => function ($model) {
-                return \panix\engine\Html::a($model->productsCount, ['/shop/admin/product', 'ProductSearch[type_id]' => $model->id], ['target' => '_blank']);
+                return \panix\engine\Html::a($model->productsCount, ['/admin/shop/product', 'ProductSearch[type_id]' => $model->id], ['target' => '_blank']);
             }
         ],
         [
