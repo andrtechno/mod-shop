@@ -17,6 +17,7 @@
 }(jQuery));
 var showReset = false;
 var showApply = false;
+var showButtons = true;
 $(function () {
     var selector = $('#filters .card-collapse');
     selector.collapse({
@@ -80,9 +81,37 @@ function filterCallback(e, objects, target) {
 
     delete objects['search-filter'];
 
+    var max = $("#slider-price").slider("option", "max");
+    var min = $("#slider-price").slider("option", "min");
+    var values = $("#slider-price").slider("option", "values");
+    //if($(e.currentTarget).data('type') == 'checkbox'){
+        if(min == values[0] && max == values[1]){
+            delete objects['slide[price][]'];
+        }
+    //}
+    if ($(e.currentTarget).data('type') == 'slider' || e.type == 'filter:click:checkbox') {
 
-    if (e.type == 'filter:click:checkbox') {
-        //delete objects['slide[price][]'];
+
+        //$("#slider-price").slider("option", "values", [min, max]);
+        $("#slider-price").slider("option", "max", max);
+        $("#slider-price").slider("option", "min", min);
+        console.log(min,max,values);
+        if(min != values[0] && max != values[1]){
+            //$('#min_price').val(min);
+            //$('#max_price').val(max);
+            delete objects['slide[price][]'];
+        }else{
+            if(e.type == 'click'){
+                $('#min_price').val(min);
+                $('#max_price').val(max);
+                $("#slider-price").slider("option", "values", [min, max]);
+                delete objects['slide[price][]'];
+            }
+        }
+        //if(min == values[0] && max == values[1]){
+        //    delete objects['slide[price][]'];
+        //}
+
     }
 
     //delete objects.route;
@@ -91,8 +120,8 @@ function filterCallback(e, objects, target) {
 
     var responseData;
 
-    objects = $.extend(objects, {'selected[slide][price]': 1});
-    //console.debug('FilterCallback: ', e);
+    //objects = $.extend(objects, {'selected[slide][price]': 1});
+
     xhrCallback = $.ajax({
         dataType: "json",
         url: '/filter',
@@ -217,7 +246,7 @@ function filterCallback(e, objects, target) {
         complete: function () {
             showApply = true;
             showReset = true;
-            if($(e.currentTarget).data('type') !== 'checkbox' || $(e.currentTarget).data('type') !== 'slider'){
+            if ($(e.currentTarget).data('type') !== 'checkbox' || $(e.currentTarget).data('type') !== 'slider') {
                 $('.filter-buttons').trigger('filter:buttons:toggle', {response: responseData});
             }
             $('.sidebar').removeClass('loading');
@@ -239,9 +268,6 @@ function filter_ajax(e, objects, sort = false) {
         xhrFilters.abort();
         ajaxSelector.removeClass('loading');
     }
-    // console.log('filter_ajax', e);
-//delete objects['slide[price][]'];
-
 
     delete objects.route;
     delete objects.param;
@@ -285,13 +311,12 @@ function filter_ajax(e, objects, sort = false) {
                 // $.pjax.reload('#pjax-sales', {url: url,timeout:false,state:data.currentUrl})
 
             }
-
-
         },
         beforeSend: function () {
             ajaxSelector.toggleClass('loading');
         }
     });
+    return xhrFilters;
 }
 
 
@@ -431,7 +456,9 @@ $(function () {
 
 
     $(document).on('filter:buttons:toggle', '.filter-buttons', function (e, btn_reset, btn_apply) {
-
+        if (!showButtons) {
+            return false;
+        }
         /*if (Array.isArray(checkboxChacked)) {
             if (!checkboxChacked.length) {
                 checkboxChacked = false;
@@ -482,7 +509,6 @@ $(function () {
         console.debug('Event: ' + e.type);
         $(this).removeClass('active');
         $('body').removeClass('noscroll');
-
     });
 
 
@@ -520,9 +546,6 @@ $(function () {
 
         console.debug(e.type, id, state);
         if (!isMobile) {
-
-
-            console.debug('Dekstop', width, this);
             $(this).trigger('filter:apply');
 
             if (newFunction) {
@@ -532,8 +555,6 @@ $(function () {
             }
 
         } else {
-            console.debug('Mobile', width, this);
-
             if (state) {
                 checkedAll.push(id);
             } else {
@@ -749,11 +770,14 @@ $(function () {
 
         var objects = getSerializeObjects();
         var target = $(this);
-
+        showButtons = false;
         var filter = filterCallback(e, objects, target);
-        filter.done(function(){
-            filter_ajax(e, getSerializeObjects());
+        filter.done(function () {
+            filter_ajax(e, getSerializeObjects()).done(function(){
+                showButtons = true;
+            });
         })
+
         return false;
     });
 
