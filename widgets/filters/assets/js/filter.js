@@ -92,7 +92,7 @@ function filterCallback(e, objects, target) {
     var responseData;
 
     objects = $.extend(objects, {'selected[slide][price]': 1});
-    console.debug('FilterCallback: ', e);
+    //console.debug('FilterCallback: ', e);
     xhrCallback = $.ajax({
         dataType: "json",
         url: '/filter',
@@ -104,6 +104,7 @@ function filterCallback(e, objects, target) {
         success: function (response) {
 
             resultUrl = response.url;
+            form.attr('action', resultUrl);
             /*form.find('[aria-describedby^="popover"]')
                 .not('[data-toggle="popover-price"]')
                 .not(target.parent())
@@ -115,7 +116,7 @@ function filterCallback(e, objects, target) {
                 .not(target.parent())
                 .popover('destroy');*/
 
-            $('#ocfilter-button a').attr('href', response.url).html(response.textTotal);
+            //$('#ocfilter-button a').attr('href', response.url).html(response.textTotal);
 
             /*if (!target.closest('li').attr('aria-describedby')) {
                 var options = {
@@ -153,7 +154,7 @@ function filterCallback(e, objects, target) {
 
             jQuery.ias().reinitialize();*/
 
-            $('#ocfilter-button button').text(response.textTotal);
+            //$('#ocfilter-button button').text(response.textTotal);
             /*$.each(response.sliders, function (name, values) {
                 var slider = $("#slider-" + name);
                 //var min = slider.slider("option", "min");
@@ -216,7 +217,9 @@ function filterCallback(e, objects, target) {
         complete: function () {
             showApply = true;
             showReset = true;
-            $('.filter-buttons').trigger('filter:buttons:toggle', {response: responseData});
+            if($(e.currentTarget).data('type') !== 'checkbox' || $(e.currentTarget).data('type') !== 'slider'){
+                $('.filter-buttons').trigger('filter:buttons:toggle', {response: responseData});
+            }
             $('.sidebar').removeClass('loading');
         },
         beforeSend: function () {
@@ -227,7 +230,7 @@ function filterCallback(e, objects, target) {
             //$('.filter-buttons').trigger('filter:buttons:toggle');
         }
     });
-
+    return xhrCallback;
 }
 
 function filter_ajax(e, objects, sort = false) {
@@ -389,8 +392,6 @@ function arrayRemove(arr, value) {
     });
 }
 
-console.debugging = true;
-
 console.debug = function () {
     if (!console.debugging) return;
     var mainArguments = Array.prototype.slice.call(arguments);
@@ -423,7 +424,7 @@ $(function () {
         actibeFilterLog.push($(checkbox).attr('id'));
     }
     console.debug('Active filter:', actibeFilterLog.join(', '));
-
+    //console.log('%c color text ', 'color: #0074cc');
 
     var changeItems = [];
     var oldcheckedAll = checkedAll;
@@ -622,7 +623,7 @@ $(function () {
         e.preventDefault();
     });
 
-    $(document).on('change', '#filter-form input[type="checkbox"],#filter-form input[type="radio"]', function (e) {
+    $(document).on('change', '#filter-form input[type="checkbox"], #filter-form input[type="radio"]', function (e) {
         $(this).trigger('filter:click:checkbox', this.checked);
     });
 
@@ -740,7 +741,7 @@ $(function () {
     });
 
     //currenct filter future
-    $(document).on('click', 'a[data-target222]', function (e) {
+    $(document).on('click', 'a[data-target]', function (e) {
         var data = $($(this).data('target'));
 
         //e.preventDefault();
@@ -749,9 +750,10 @@ $(function () {
         var objects = getSerializeObjects();
         var target = $(this);
 
-        filterCallback(e, objects, target);
-        filter_ajax(e, getSerializeObjects());
-        console.log('DATA', data);
+        var filter = filterCallback(e, objects, target);
+        filter.done(function(){
+            filter_ajax(e, getSerializeObjects());
+        })
         return false;
     });
 

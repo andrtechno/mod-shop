@@ -1,36 +1,8 @@
 <?php
 
 use yii\widgets\Pjax;
-use yii\widgets\ActiveForm;
-use panix\mod\shop\models\ProductReviews;
-use yii\helpers\Html;
-
-/**
- * @var \panix\engine\behaviors\nestedsets\NestedSetsQuery $model
- */
-$reviewModel = new ProductReviews;
-
-//echo $query->createCommand()->rawSql;die;
-
-$provider = new \panix\engine\data\ActiveDataProvider([
-    //'query' => $model->getReviews()->status(1),
-    'query' => $model->getReviews()->status(1)->roots(),
-    'pagination' => [
-        'pageSize' => 50,
-    ]
-]);
-
-
-echo \panix\ext\fancybox\Fancybox::widget([
-    'target' => '#review-button',
-    'options' => [
-        'touch' => false,
-        'beforeShow' => new \yii\web\JsExpression('function(instance, current ) {
-            //$(".fancybox-bg").css({"background":"transparent"});
-        }')
-    ]
-]);
-
+use yii\bootstrap4\ActiveForm;
+use panix\engine\Html;
 
 ?>
 
@@ -53,11 +25,11 @@ echo \panix\ext\fancybox\Fancybox::widget([
                 echo \panix\engine\widgets\ListView::widget([
                     'id' => 'reviews-product-list',
                     'dataProvider' => $provider,
-                    'itemView' => '_comment_item',
+                    'itemView' => $this->context->itemView,
                     'layout' => '{items}{pager}',
                     //'layout' => '{items}{pager}',
                     'emptyText' => 'Отзывов нет.',
-                    'options' => ['class' => 'list-view rev-box'],
+                    'options' => ['class' => 'list-view list-comment'],
                     'itemOptions' => ['class' => 'item'],
                     'emptyTextOptions' => ['class' => 'alert alert-info'],
                     //'sorter' => [
@@ -75,7 +47,10 @@ echo \panix\ext\fancybox\Fancybox::widget([
             </div>
         </div>
     </div>
+
 <?php
+
+
 $js = <<<JS
 var comment_xhr;
 $('#review-product-form').on('beforeSubmit', function(){
@@ -96,8 +71,6 @@ $('#review-product-form').on('beforeSubmit', function(){
 
         },
         success:function(response) {
-            //console.log(response);
-          // $('#submit-review').removeAttr('disabled');
             if(response.success){
                 
                // $('#review-modal').modal('hide');
@@ -113,7 +86,7 @@ $('#review-product-form').on('beforeSubmit', function(){
                 if(response.score){
                     $('#product-rating').raty('set', {score: response.score});
                     $('#product-rating').raty('reload');
-                    }
+                }
                 
               //  var instance = $.fancybox.getInstance();
                 $.fancybox.getInstance().close();
@@ -143,10 +116,7 @@ $(document).on('pjax:complete', function(xhr, options) {
 JS;
 
 $this->registerJs($js);
-
-
 ?>
-
 
     <div style="display: none" id="rev-modal">
         <?php $form = ActiveForm::begin([
@@ -194,18 +164,18 @@ $this->registerJs($js);
         </div>
         <?php //} ?>
 
-            <div class="row">
-                <div class="col-sm-6">
-                    <?= $form->field($reviewModel, 'user_name', [
-                        'template' => '{label}{input}{hint}{error}'
-                    ])->textInput(['maxlength' => 50]); ?>
-                </div>
-                <div class="col-sm-6">
-                    <?= $form->field($reviewModel, 'user_email', [
-                        'template' => '{label}{input}{hint}{error}'
-                    ])->textInput(['maxlength' => 50]); ?>
-                </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <?= $form->field($reviewModel, 'user_name', [
+                    'template' => '{label}{input}{hint}{error}'
+                ])->textInput(['maxlength' => 50]); ?>
             </div>
+            <div class="col-sm-6">
+                <?= $form->field($reviewModel, 'user_email', [
+                    'template' => '{label}{input}{hint}{error}'
+                ])->textInput(['maxlength' => 50]); ?>
+            </div>
+        </div>
 
         <div>
             <?= $form->field($reviewModel, 'text')->textarea(['rows' => 5]); ?>

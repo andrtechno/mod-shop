@@ -1,6 +1,6 @@
 <?php
 /**
- * @var \app\modules\reviews\models\Reviews $model
+ * @var \panix\mod\shop\models\ProductReviews $model
  */
 
 $hasAnswer = ($model->rgt > 2) ? true : false;
@@ -56,19 +56,39 @@ $hasAnswer = ($model->rgt > 2) ? true : false;
         </div>
     </div>
     <?php
-    // print_r($model->query);
+
 
     if ($hasAnswer) {
         $descendants = $model->children()->status(1)->all();
         ?>
         <div class="row">
             <div class="col-lg-11 offset-lg-1">
-                <?php
-                foreach ($descendants as $data) { ?>
-
-
-                    <?= $this->render('_comment_answer', ['model' => $data]); ?>
-
+                <?php foreach ($descendants as $data) { ?>
+                    <div class="answer mt-3">
+                        <div class="row">
+                            <div class="col-4 col-lg-2">
+                                <div class="review-info">
+                                    <div class="review-name">CHIKA</div>
+                                    <div class="review-date"><?= \panix\engine\CMS::date($data->created_at, false); ?></div>
+                                    <?php if ($data->user_id) { ?>
+                                        <?php if ($data->user) { ?>
+                                            <ul class="social clearfix">
+                                                <?php if ($data->user->facebook_url) { ?>
+                                                    <li><a class="fb" href="<?= $data->user->facebook_url; ?>"></a></li>
+                                                <?php } ?>
+                                                <?php if ($data->user->instagram_url) { ?>
+                                                    <li><a class="inst" href="<?= $data->user->instagram_url; ?>"></a></li>
+                                                <?php } ?>
+                                            </ul>
+                                        <?php } ?>
+                                    <?php } ?>
+                                </div>
+                            </div>
+                            <div class="col-8 col-lg-10">
+                                <p class="review-txt"><?= $data->text; ?></p>
+                            </div>
+                        </div>
+                    </div>
 
                 <?php } ?>
 

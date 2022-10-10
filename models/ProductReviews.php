@@ -142,7 +142,6 @@ class ProductReviews extends ActiveRecord
 
     public function afterSave($insert, $changedAttributes)
     {
-
         if ($insert) {
             if ($this->rate > 0) {
                 $product = Product::findOne($this->product_id);
@@ -160,7 +159,6 @@ class ProductReviews extends ActiveRecord
                     ->setSubject(Yii::t('shop/admin', 'MAIL_ADMIN_SUBJECT_REVIEW'))
                     ->send();
             }
-
         }
 
         parent::afterSave($insert, $changedAttributes);
@@ -168,7 +166,6 @@ class ProductReviews extends ActiveRecord
 
     public function afterDelete()
     {
-
         if ($this->rate > 0) {
             $product = Product::findOne($this->product_id);
             $product->rating -= $this->rate;
@@ -183,7 +180,6 @@ class ProductReviews extends ActiveRecord
     {
         return ($this->user_name) ? $this->user_name : $this->user->username;
     }
-
 
     public function getHasAnswer()
     {
