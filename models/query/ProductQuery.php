@@ -36,8 +36,8 @@ class ProductQuery extends ActiveQuery
         /** @var \yii\db\ActiveRecord $modelClass */
         $modelClass = $this->modelClass;
         $tableName = $modelClass::tableName();
-        $this->orderBy("(CASE {$tableName}.availability WHEN " . $this->modelClass::STATUS_OUT_STOCK . " then -1 END) ASC");
-        parent::init();
+        return $this->addorderBy("(CASE {$tableName}.availability WHEN " . $this->modelClass::STATUS_OUT_STOCK . " then -1 END) ASC");
+        //parent::init();
     }
 
     public function sales()

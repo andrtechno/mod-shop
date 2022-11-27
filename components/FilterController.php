@@ -75,29 +75,22 @@ class FilterController extends WebController
         $query = $productModel::find();
         $query->published();
 
-/*
-        if ($category_id) {
-            $category = Category::findOne($category_id);
-            if (!$category)
-                $this->error404();
-            $query->applyCategories($category);
-        }*/
+        /*
+                if ($category_id) {
+                    $category = Category::findOne($category_id);
+                    if (!$category)
+                        $this->error404();
+                    $query->applyCategories($category);
+                }*/
 
 
-
-
-
-        if (Yii::$app->request->post('filter')){
-            if(isset(Yii::$app->request->post('filter')['brand'])){
+        if (Yii::$app->request->post('filter')) {
+            if (isset(Yii::$app->request->post('filter')['brand'])) {
                 $query->applyBrands(Yii::$app->request->post('filter')['brand']);
             }
             //unset(Yii::$app->request->post('filter')['brand']);
             $query->getFindByEavAttributes2(Yii::$app->request->post('filter'));
         }
-
-
-
-
 
 
         $filter = new Filter($query, $category);
@@ -119,8 +112,8 @@ if($filterName == $firstItem){
         $total = $query->count();
 //CMS::dump(ArrayHelper::merge($ss,['brand'=>$f->getCategoryBrands()]));die;
         return $this->asJson([
-            'first'=>array_key_first(Yii::$app->request->post('filter')),
-            'textTotal'=>"Показать ".Yii::t('shop/default','PRODUCTS_COUNTER',$total),
+            'first' => array_key_first(Yii::$app->request->post('filter')),
+            'textTotal' => "Показать " . Yii::t('shop/default', 'PRODUCTS_COUNTER', $total),
             'totalCount' => $total,
             'filters' => $results
         ]);
@@ -162,146 +155,6 @@ if($filterName == $firstItem){
         var separator_hundredth = '" . Yii::$app->currency->active['separator_hundredth'] . "';
      ", yii\web\View::POS_HEAD, 'numberformat');
         return parent::beforeAction($action);
-    }
-
-
-    /**
-     * @return string min price
-     */
-    public function getMinPrice2()
-    {
-        if ($this->_minPrice !== null)
-            return $this->_minPrice;
-
-        // if ($this->currentQuery) {
-        $result = $this->currentQuery->aggregatePrice('MIN')->asArray()->one();
-        if (isset($result['aggregation_price'])) {
-            return $result['aggregation_price'];
-        }
-        // }
-
-        return $this->_minPrice;
-    }
-
-    /**
-     * @return string max price
-     */
-    public function getMaxPrice2()
-    {
-        $result = $this->currentQuery->aggregatePrice('MAX')->asArray()->one();
-        if (isset($result['aggregation_price'])) {
-            return $result['aggregation_price'];
-        }
-        return $this->_maxPrice;
-    }
-
-
-    /**
-     * @return mixed
-     */
-    public function getCurrentMinPrice2()
-    {
-        if ($this->_currentMinPrice !== null)
-            return $this->_currentMinPrice;
-
-        $this->_currentMinPrice = (isset($this->prices[0])) ? trim($this->prices[0]) : Yii::$app->currency->convert($this->getMinPrice());
-
-        return $this->_currentMinPrice;
-    }
-
-    /**
-     * @return mixed
-     */
-
-    /**
-     * @return string
-     */
-    public function getCurrentMaxPrice2()
-    {
-        if ($this->_currentMaxPrice !== null)
-            return $this->_currentMaxPrice;
-
-        $this->_currentMaxPrice = (isset($this->prices[1])) ? trim($this->prices[1]) : Yii::$app->currency->convert($this->getMaxPrice());
-        // $this->_currentMaxPrice = (isset($this->prices[1])) ? trim($this->prices[1]) : Yii::$app->currency->convert($this->_maxPrice);
-
-        return $this->_currentMaxPrice;
-    }
-
-    public function getEavAttributes2()
-    {
-        if (is_array($this->_eavAttributes))
-            return $this->_eavAttributes;
-
-        //CMS::dump($this->currentQuery);die;
-        // Find category types
-        $queryCategoryTypes = Product::find();
-        // $queryCategoryTypes = $this->currentQuery;
-        if ($this->dataModel instanceof Category) {
-            $queryCategoryTypes->applyCategories($this->dataModel);
-        } elseif ($this->dataModel instanceof Brand) {
-            $queryCategoryTypes->applyBrands($this->dataModel->id);
-        }
-
-        //$queryCategoryTypes->published();
-        $queryCategoryTypes->select(Product::tableName() . '.type_id');
-        $queryCategoryTypes->groupBy(Product::tableName() . '.type_id');
-        $queryCategoryTypes->distinct(true);
-//echo $queryCategoryTypes->createCommand()->rawSql;die;
-        $typesIds = $queryCategoryTypes->createCommand()->queryColumn();
-
-        // print_r($typesIds);die;
-        /*$typesIds = Product::getDb()->cache(function () use ($queryCategoryTypes) {
-            return $queryCategoryTypes->createCommand()->queryColumn();
-        }, 3600);*/
-
-        // Find attributes by type
-        /* $query = Attribute::getDb()->cache(function () use ($typesIds) {
-             return Attribute::find()
-                 ->andWhere(['IN', TypeAttribute::tableName() . '.type_id', $typesIds])
-                 ->useInFilter()
-                 ->addOrderBy(['ordern' => SORT_DESC])
-                 ->joinWith(['types', 'options'])
-                 ->all();
-         }, 3600);*/
-        $query = Attribute::find()
-            //->where(['IN', '`types`.`type_id`', $typesIds])
-            ->useInFilter()
-            ->sort()
-            ->andWhere(['IN', '`type`.`type_id`', $typesIds])
-            ->joinWith(['types type', 'options']);
-
-
-//echo $query->createCommand()->rawSql;die;
-        $result = $query->all();
-
-        $this->_eavAttributes = [];
-        foreach ($result as $attr)
-            $this->_eavAttributes[$attr->name] = $attr;
-        return $this->_eavAttributes;
-    }
-
-
-    public function getActiveAttributes2()
-    {
-        $data = [];
-        $sss = (Yii::$app->request->post('filter')) ? Yii::$app->request->post('filter') : $_GET;
-        foreach (array_keys($sss) as $key) {
-            if (array_key_exists($key, $this->eavAttributes)) {
-
-                // if (empty($_GET[$key]) && isset($_GET[$key])) {
-                //	 throw new CHttpException(404, Yii::t('shop/default', 'NOFIND_CATEGORY'));
-                // }
-
-                if ((boolean)$this->eavAttributes[$key]->select_many === true) {
-                    $data[$key] = (is_array($sss[$key])) ? $sss[$key] : explode(',', $sss[$key]);
-                } else {
-                    $data[$key] = [$params[$key]];
-                }
-            } else {
-                //  $this->error404(Yii::t('shop/default', 'NOFIND_CATEGORY1'));
-            }
-        }
-        return $data;
     }
 
     /**
@@ -522,7 +375,7 @@ if($filterName == $firstItem){
     }
 
 
-    public function _render($view = '@shop/views/catalog/view',array $params=[])
+    public function _render($view = '@shop/views/catalog/view', array $params = [])
     {
         $activeFilters = $this->filter->getActiveFilters();
 
@@ -530,8 +383,8 @@ if($filterName == $firstItem){
             $render = $this->renderPartial('@shop/views/catalog/listview', ArrayHelper::merge([
                 'provider' => $this->provider,
                 'itemView' => $this->itemView,
-                'filter' => $this->filter
-            ],$params));
+                'filter' => $this->filter,
+            ], $params));
             if (Yii::$app->request->headers->has('filter-ajax')) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
                 $url = ($this->dataModel) ? $this->dataModel->getUrl() : ['/' . Yii::$app->requestedRoute];
@@ -557,9 +410,8 @@ if($filterName == $firstItem){
         return $this->render($view, ArrayHelper::merge([
             'provider' => $this->provider,
             'itemView' => $this->itemView,
-            'filter' => $this->filter
-
-        ],$params));
+            'filter' => $this->filter,
+        ], $params));
     }
 
 

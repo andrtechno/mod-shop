@@ -77,6 +77,7 @@ class Category extends ActiveRecord
     {
         return [
             [['image'], 'file', 'skipOnEmpty' => true, 'extensions' => ['png', 'jpg', 'jpeg']],
+            [['icon'], 'file', 'skipOnEmpty' => true, 'extensions' => ['png']],
             ['slug', '\panix\mod\shop\components\CategoryUrlValidator', 'attributeCompare' => 'name'],
             ['slug', 'fullPathValidator'],
             ['slug', 'match',
@@ -86,9 +87,9 @@ class Category extends ActiveRecord
             [['name', 'slug'], 'trim'],
             [['name', 'slug'], 'required'],
             ['use_seo_parents', 'boolean'],
-            [['description', 'image'], 'default', 'value' => null],
+            [['description', 'image','icon'], 'default'],
             [['name', 'meta_title', 'h1'], 'string', 'max' => 255],
-            [['meta_description'], 'string'],
+            [['meta_description','name_main_uk'], 'string'],
             ['description', 'safe']
         ];
     }
@@ -119,10 +120,8 @@ class Category extends ActiveRecord
             'class' => UploadFileBehavior::class,
             'files' => [
                 'image' => '@uploads/categories',
+                'icon' => '@uploads/categories_icons',
             ],
-            //'options' => [
-            //    'watermark' => false
-            // ]
         ];
         if (Yii::$app->getModule('sitemap')) {
             $a['sitemap'] = [
@@ -224,7 +223,7 @@ class Category extends ActiveRecord
      */
     public function beforeSave($insert)
     {
-        $this->rebuildFullPath();
+        $this->rebuildFullPath($insert);
         return parent::beforeSave($insert);
     }
 
@@ -238,6 +237,7 @@ class Category extends ActiveRecord
         $childrens = $this->descendants()->all();
         if ($childrens) {
             foreach ($childrens as $children) {
+                $children->detachBehavior('uploadFile');
                 $children->full_path = $this->slug . '/' . $children->full_path;
                 $children->saveNode(false);
             }
@@ -258,7 +258,7 @@ class Category extends ActiveRecord
         return parent::afterSave($insert, $changedAttributes);
     }
 
-    public function rebuildFullPath()
+    public function rebuildFullPath($insert)
     {
         // Create category full path.
         $ancestors = $this->ancestors()
@@ -278,7 +278,11 @@ class Category extends ActiveRecord
             $parts[] = $this->slug;
             $partsName[] = $this->name_ru;
             $this->full_path = implode('/', array_filter($parts));
-            $this->path_hash = md5(mb_strtolower(implode('/', array_filter($partsName))));
+            if($insert)
+                $this->path_hash = md5(mb_strtolower(implode('/', array_filter($partsName))));
+
+           // echo mb_strtolower(implode('/', array_filter($partsName))).PHP_EOL;
+
         }
 
         return $this;

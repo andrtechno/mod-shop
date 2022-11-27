@@ -72,7 +72,7 @@ class BrandController extends FilterController
 
         $this->filterQuery = clone $this->query;
         $this->currentQuery = clone $this->query;
-        $this->filter->resultQuery->orderBy(['id' => SORT_DESC]);
+       // $this->filter->resultQuery->orderBy(['id' => SORT_DESC]);
         //$this->query->applyAttributes($this->activeAttributes);
         //$this->filterQuery->addorderBy(['created_at'=>SORT_DESC]);
         //$this->currentQuery->orderBy(['created_at'=>SORT_DESC]);
@@ -93,12 +93,13 @@ class BrandController extends FilterController
         if ($sort[0] == 'price' || $sort[0] == '-price') {
             $this->filter->resultQuery->aggregatePriceSelect(($sort[0] == 'price') ? SORT_ASC : SORT_DESC);
         }
-        $this->filter->resultQuery->orderBy(['id' => SORT_DESC]);
+        //$this->filter->resultQuery->orderBy(['id' => SORT_DESC]); //изза этого не работает сортировка
 
 
         $this->provider = new \panix\engine\data\ActiveDataProvider([
             'query' => $this->filter->resultQuery,
             'id' => null,
+            'sort' => Product::getSort(),
             'pagination' => [
                 'pageSize' => $this->per_page,
             ]

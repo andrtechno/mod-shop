@@ -987,6 +987,17 @@ class Product extends ActiveRecord
         }
 
         parent::afterSave($insert, $changedAttributes);
+
+        if (!$insert) {
+            if (isset($changedAttributes['brand_id'])) {
+                if ($changedAttributes['brand_id'] != $this->brand_id) {
+                    TagDependency::invalidate(Yii::$app->cache, [
+                        'brand-' . $this->brand_id,
+                        'brand-' . $changedAttributes['brand_id']
+                    ]);
+                }
+            }
+        }
     }
 
     public function getNotifications()
@@ -1124,7 +1135,7 @@ class Product extends ActiveRecord
         }
 
         ProductReviews::deleteAll(['product_id' => $this->id]);
-
+        TagDependency::invalidate(Yii::$app->cache, ['brand-' . $this->brand_id]);
         parent::afterDelete();
     }
 
@@ -1374,7 +1385,7 @@ class Product extends ActiveRecord
                 //}
             } else {
 
-                $box = $product->eav_par_v_asike;
+                $box = $product->eav_par_v_asiku;
                 $in_box = 0;
                 if (isset($box)) {
                     $in_box = $box->value;

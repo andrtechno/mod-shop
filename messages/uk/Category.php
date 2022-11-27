@@ -12,6 +12,7 @@ return [
     'UPDATE_TITLE' => 'Редагування {name}',
     'CREATE_TITLE' => 'Додавання',
     'IMAGE' => 'Зображення',
+    'ICON' => 'Значок',
     'SEO_PRODUCT_TITLE' => 'Шаблон Title для товара',
     'SEO_PRODUCT_DESCRIPTION' => 'Шаблон Description для товара',
     'TAB_MAIN' => 'Основні',
@@ -21,5 +22,6 @@ return [
     'USE_SEO_PARENTS' => 'Застосувати до всіх дочірнім категоріям',
     'META_TITLE' => 'Meta title',
     'META_DESCRIPTION' => 'Meta description',
-    'ADD_TO_PARENT' => 'Додавання в категорію: {0}'
+    'ADD_TO_PARENT' => 'Додавання в категорію: {0}',
+    'NAME_MAIN_UK'=>'Название для главной страницы.'
 ];

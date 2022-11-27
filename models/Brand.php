@@ -115,7 +115,9 @@ class Brand extends ActiveRecord
      */
     public function getProductsCount()
     {
-        return $this->hasOne(Product::class, ['brand_id' => 'id'])->count();
+        return $this->hasOne(Product::class, ['brand_id' => 'id'])
+            ->cache(self::getDb()->queryCacheDuration, new TagDependency(['tags' => 'brand-' . $this->id]))
+            ->count();
     }
 
     /**

@@ -13,7 +13,7 @@ use yii\rest\UrlRule;
  */
 class Module extends \yii\base\Module implements BootstrapInterface
 {
-    public $controllerNamespace = 'panix\mod\shop\api\v1\controllers';
+   // public $controllerNamespace = 'panix\mod\shop\api\v1\controllers';
 
     public function bootstrap($app)
     {

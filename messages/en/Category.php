@@ -1,0 +1,26 @@
+<?php
+return [
+    'NAME' => 'Category name',
+    'SLUG' => 'URL',
+    'DESCRIPTION' => 'Description',
+    'NODE_SWITCH_ON' => 'Category successfully hidden',
+    'NODE_SWITCH_OFF' => 'Category successfully shown',
+    'NODE_CREATE' => 'Category added successfully',
+    'NODE_RENAME_SUCCESS' => 'Category renamed successfully',
+    'NODE_RENAME_ERROR' => 'Unable to rename category',
+    'NODE_DELETE_SUCCESS' => 'Category deleted successfully',
+    'UPDATE_TITLE' => 'Editing {name}',
+    'CREATE_TITLE' => 'Adding',
+    'IMAGE' => 'Image',
+    'ICON' => 'Icon',
+    'SEO_PRODUCT_TITLE' => 'Product Title Template',
+    'SEO_PRODUCT_DESCRIPTION' => 'Product Description Template',
+    'TAB_MAIN' => 'Main',
+    'CURRENT_CURRENCY' => 'Current currency ({symbol}).',
+    'PRODUCT_NAME' => 'Product name',
+    'PRODUCT_PRICE' => 'Product price',
+    'USE_SEO_PARENTS' => 'Apply to all child categories',
+    'META_TITLE' => 'Meta title',
+    'META_DESCRIPTION' => 'Meta description',
+    'ADD_TO_PARENT' => 'Add to category: {0}'
+];

@@ -78,13 +78,15 @@ class CurrencyManager extends Component
         }
         return $this->_default;
     }
+
     public function getById($id)
     {
-            if (isset($this->_currencies[$id]))
-                return (object) $this->_currencies[$id];
+        if (isset($this->_currencies[$id]))
+            return (object)$this->_currencies[$id];
 
-        return (object) $this->_default;
+        return (object)$this->_default;
     }
+
     /**
      * @param int $id currency id
      */
@@ -97,6 +99,7 @@ class CurrencyManager extends Component
 
         //Todo need set session
         //Yii::$app->session['currency'] = $this->_active['id'];
+
     }
 
     /**
@@ -140,7 +143,7 @@ class CurrencyManager extends Component
             }
         }
 
-        return round($result,2);
+        return round($result, 2);
     }
 
     /**
@@ -150,7 +153,25 @@ class CurrencyManager extends Component
      * @param bool|string $hundredth
      * @return string
      */
-    public function number_format($sum, $decimals = 0, $thousandth = false, $hundredth = false)
+    public function number_format($sum, $id = null)
+    {
+        $active = $this->_active;
+        if ($id !== null && isset($this->_currencies[$id])) {
+            $active = $this->_currencies[$id];
+        }
+        $thousandth = $active['separator_thousandth'];
+        $hundredth = $active['separator_hundredth'];
+        $decimals = $active['penny'];
+
+        if (preg_match('/^([0-9\s\,\.]+\.00|\d+)$/', $sum, $match)) {
+            $format = number_format($sum, 0, $hundredth, $thousandth);
+        } else {
+            $format = number_format($sum, $decimals, $hundredth, $thousandth);
+        }
+        return $format;
+    }
+
+    public function number_formatOLD($sum, $decimals = 0, $thousandth = false, $hundredth = false)
     {
         if (!$thousandth)
             $thousandth = $this->_active['separator_thousandth'];
@@ -161,8 +182,7 @@ class CurrencyManager extends Component
         if (!$decimals)
             $decimals = $this->_active['penny'];
 
-
-        if (preg_match('/^(\d+\.00|\d+)$/', $sum, $match) && !$decimals) {
+        if (preg_match('/^([0-9\s\,\.]+\.00|\d+)$/', $sum, $match)) {
             $format = number_format($sum, 0, $hundredth, $thousandth);
         } else {
             $format = number_format($sum, $decimals, $hundredth, $thousandth);

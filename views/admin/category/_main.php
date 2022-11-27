@@ -19,10 +19,17 @@ if (Yii::$app->request->get('parent_id')) {
 ?>
 
 <?= $form->field($model, 'name')->textInput(['maxlength' => 255]) ?>
+<?= $form->field($model, 'name_main_uk')->textInput(['maxlength' => 255]) ?>
 <?= $form->field($model, 'slug')->textInput(['maxlength' => 255]) ?>
 <?= $form->field($model, 'image', [
     'parts' => [
         '{buttons}' => $model->getFileHtmlButton('image')
+    ],
+    'template' => '<div class="col-sm-4 col-lg-2">{label}</div>{beginWrapper}{input}{buttons}{error}{hint}{endWrapper}'
+])->fileInput() ?>
+<?= $form->field($model, 'icon', [
+    'parts' => [
+        '{buttons}' => $model->getFileHtmlButton('icon')
     ],
     'template' => '<div class="col-sm-4 col-lg-2">{label}</div>{beginWrapper}{input}{buttons}{error}{hint}{endWrapper}'
 ])->fileInput() ?>

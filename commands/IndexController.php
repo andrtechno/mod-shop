@@ -220,7 +220,7 @@ class IndexController extends ConsoleController
     {
         echo 'DATE: '.date('Y-m-d H:i:s', time() - (86400 * $days)).PHP_EOL;
         $products = Product::find()
-            ->where(['availability'=>0])
+            ->where(['availability'=>3])
             ->andWhere(['>', 'updated_at', strtotime(date('Y-m-d H:i:s', time() - (86400 * $days)))])
        // echo $products->createCommand()->rawSql;die;
             ->all();

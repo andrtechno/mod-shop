@@ -1,8 +1,9 @@
 <?php
 
-namespace panix\mod\shop\controllers;
+namespace panix\mod\shop\v1\controllers;
 
 use panix\engine\CMS;
+use panix\engine\controllers\WebController;
 use panix\engine\data\ActiveDataProvider;
 use panix\mod\discounts\models\Discount;
 use panix\mod\pages\models\Pages;
@@ -24,7 +25,7 @@ use panix\mod\shop\models\Category;
  *
  * @package panix\mod\shop\controllers
  */
-class CatalogController extends FilterController
+class CatalogController extends WebController
 {
 
     public $provider;

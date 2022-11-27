@@ -621,7 +621,12 @@ class FilterV2 extends Component
 
         $queryClone->andWhere('brand_id IS NOT NULL');
         $queryClone->groupBy('brand_id');
-        $queryClone->addSelect(['counter' => $sub_query, Brand::tableName() . '.`name_' . Yii::$app->language . '` as name']);
+        $queryClone->addSelect([
+            'counter' => $sub_query,
+            Brand::tableName() . '.`name_' . Yii::$app->language . '` as name',
+            Brand::tableName().'.slug',
+            Brand::tableName().'.image'
+        ]);
         $queryClone->cache($this->cacheDuration);
 
         $brands = $queryClone->createCommand()->queryAll();
@@ -638,7 +643,9 @@ class FilterV2 extends Component
                 'count' => (int)$m['counter'],
                 'count_text' => (int)$m['counter'],
                 'key' => 'brand',
-                'queryParam' => $m['brand_id'],
+                'queryParam' => (int)$m['brand_id'],
+                'slug' => $m['slug'],
+                'image' => $m['image'],
             ];
             sort($data['filters']);
         }

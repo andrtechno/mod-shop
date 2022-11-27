@@ -18,19 +18,19 @@ $form = ActiveForm::begin([
     <div class="card-body">
         <?php
         $tabs[]=[
-            'label' => 'Общие',
+            'label' => $model::t('TAB_GLOBAL'),
             'content' => $this->render('_global', ['form' => $form, 'model' => $model]),
             'active' => true,
             'options' => ['id' => 'global'],
         ];
         $tabs[]=[
-            'label' => 'Формат цены',
+            'label' => $model::t('TAB_FORMAT_PRICE'),
             'content' => $this->render('_price', ['form' => $form, 'model' => $model]),
             'options' => ['id' => 'price'],
         ];
         if(!$model->isNewRecord){
             $tabs[]=[
-                'label' => 'График курса',
+                'label' => $model::t('TAB_GRAPHIC'),
                 'content' => $this->render('_history_rate', ['form' => $form, 'model' => $model]),
                 'options' => ['id' => 'history_rate'],
             ];
