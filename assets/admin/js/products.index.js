@@ -151,7 +151,7 @@ function showCategoryAssignWindow(el_clicked) {
             uiDialog.position({my: 'center', at: 'center', of: window});
         });
 
-        $(dialogSelector).dialog({
+        var dialogWin = $(dialogSelector).dialog({
             dialogClass: 'assign-categories-modal',
             modal: true,
             resizable: false,
@@ -183,6 +183,12 @@ function showCategoryAssignWindow(el_clicked) {
                         //$('#alert-s').html('<div class="alert alert-warning">На выбрана \'главная\' категория. Кликните на название категории, чтобы сделать ее главной.</div>');
                         //return;
                     }
+                    var selected = $('#CategoryAssignTreeDialog').jstree('get_selected')[0];
+                    var main_category = 0;
+                    if(selected){
+                        main_category = selected.replace('node_', '');
+                    }
+
 
                     //if (confirm($(el_clicked).data('confirm'))) {
                     $.ajax(common.url('/admin/shop/product/assign-categories'), {
@@ -191,17 +197,25 @@ function showCategoryAssignWindow(el_clicked) {
                         data: {
                             _csrf: yii.getCsrfToken(),
                             category_ids: ids,
-                            main_category: checked.parent().attr('id').replace('node_', '').replace('_anchor', ''),
+                            //main_category: checked.parent().attr('id').replace('node_', '').replace('_anchor', ''),
+                            main_category: main_category,
                             product_ids: selection
                         },
                         success: function (data) {
-                            dialog.dialog('destroy').remove();
-                            $.pjax.reload(pjax, {timeout: false});
-                            common.notify(data.message, 'success');
+                            if(data.success){
+                                $('#alert-s').html('');
+                                $.pjax.reload(pjax, {timeout: false});
+                                common.notify(data.message, 'success');
+                                dialogWin.dialog('destroy').remove();
+                            }else{
+                                common.notify(data.message, 'error');
+                                $('#alert-s').html('<div class="alert alert-danger">'+data.message+'</div>');
+                            }
+
                         },
-                        error: function () {
-                            $('#alert-s').html('<div class="alert alert-danger">Ошибка</div>');
-                        }
+                        //error: function () {
+                        //    $('#alert-s').html('<div class="alert alert-danger">Ошибка</div>');
+                        //}
                     });
                     //}
                 },

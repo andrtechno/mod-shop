@@ -2,14 +2,15 @@
 
 namespace panix\mod\shop\models\query;
 
+
 use Yii;
 use yii\db\ActiveQuery;
 use panix\engine\traits\query\DefaultQueryTrait;
-use panix\engine\traits\query\TranslateQueryTrait;
 use panix\mod\shop\models\traits\EavQueryTrait;
 use panix\mod\shop\models\Category;
 use panix\mod\shop\models\Product;
 use panix\mod\shop\models\ProductCategoryRef;
+use panix\engine\taggable\TaggableQueryBehavior;
 
 class ProductQuery extends ActiveQuery
 {
@@ -27,7 +28,12 @@ class ProductQuery extends ActiveQuery
         return $this;
     }
 
-
+    public function behaviors()
+    {
+        return [
+            TaggableQueryBehavior::class,
+        ];
+    }
     /**
      * Default sorting
      */

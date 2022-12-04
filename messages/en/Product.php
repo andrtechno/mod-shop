@@ -13,6 +13,7 @@ return [
     'NAME' => 'Product name',
     'SLUG' => 'URL',
     'IMAGE' => 'Image',
+    'TAGVALUES'=>'Tags',
     'CREATED_AT' => 'Date of creation',
     'UPDATED_AT' => 'Update date',
     'SKU' => 'SKU',

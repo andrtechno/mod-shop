@@ -38,7 +38,7 @@ class Module extends WebModule implements BootstrapInterface
         $rules['product/<id:\d+>/review-add'] = 'shop/product/review-add';
         $rules['product/<id:\d+>/review-validate'] = 'shop/product/review-validate';
         $rules['product/<id:\d+>/<action:[0-9a-zA-Z_\-]+>'] = 'shop/product/<action>';
-
+        $rules['product/tag/<tag:[\w\d\s]+>'] = 'shop/tag/view';
 
         $rules[] = [
             'class' => 'panix\mod\shop\components\rules\BaseUrlRule',

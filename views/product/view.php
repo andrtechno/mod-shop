@@ -24,7 +24,25 @@ echo \yii\helpers\Inflector::ordinalize(15);
 $words = ['Spain', 'France', 'Украина'];
 echo \yii\helpers\Inflector::sentence($words);
 ?>
+<?php
+$tags = $model->tags;
+$tagList = [];
+if ($tags) {
+    ?>
+    <span>Теги</span>
+    <?php foreach ($tags as $tag) {
+        /** @var \panix\engine\taggable\Tag $tag */
+        $tagList[$tag->name] = $tag->frequency;
+    }
 
+    echo \panix\engine\taggable\TagWidget::widget([
+        'items' => $tagList,
+        'url' => ['/shop/tag/view'],
+        'urlParam' => 'tag',
+        'format' => 'inline'
+    ]);
+}
+?>
 <div id="info"></div>
 <div class="row">
     <div class="col-sm-6 col-xs-12">

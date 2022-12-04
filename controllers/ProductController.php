@@ -515,4 +515,33 @@ class ProductController extends WebController
         ];
     }
 
+    public function actionTags($tag)
+    {
+        if ($tag) {
+            /** @var Product $productModel */
+            $productModel = Yii::$app->getModule('shop')->model('Product');
+
+            $query = $productModel::find();
+            $query->andWhere(['!=', "{$productModel::tableName()}.availability", $productModel::STATUS_ARCHIVE]);
+            $query->published();
+
+
+            $query->anyTagValues($tag);
+        }
+
+        $provider = new \panix\engine\data\ActiveDataProvider([
+            'query' => $query,
+            'sort' => Product::getSort(),
+            'pagination' => [
+                'pageSize' => 12,
+                // 'defaultPageSize' =>(int)  $this->allowedPageLimit[0],
+                // 'pageSizeLimit' => $this->allowedPageLimit,
+            ]
+        ]);
+        return $this->render('@theme/modules/shop/views/catalog/view2', [
+            'provider' => $provider,
+            'itemView' => '_view_grid',
+        ]);
+
+    }
 }

@@ -27,6 +27,7 @@ echo $this->render('_prices', ['model' => $model, 'form' => $form]);
     'prompt' => html_entity_decode($model::t('SELECT_LABEL'))
 ]);*/
 ?>
+
 <?php
 /*
 echo $form->field($model, 'brand_id')->dropDownList(ArrayHelper::map(Brand::find()->cache(3200, new DbDependency(['sql' => 'SELECT MAX(`updated_at`) FROM ' . Brand::tableName()]))->orderBy(['name_' . Yii::$app->language => SORT_ASC])->all(), 'id', 'name'), [
@@ -66,3 +67,4 @@ $form->field($model, 'full_description')->widget(TinyMce::class, [
 ]);
 
 ?>
+<?php echo $form->field($model, 'tagValues')->widget(\panix\ext\taginput\TagInput::class); ?>

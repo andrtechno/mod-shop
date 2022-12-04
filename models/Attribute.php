@@ -435,7 +435,7 @@ class Attribute extends ActiveRecord
     {
 
         parent::afterSave($insert, $changedAttributes);
-        TagDependency::invalidate(Yii::$app->cache, 'attribute-' . $this->id);
+        TagDependency::invalidate(Yii::$app->cache, 'attribute-' . $this->name);
     }
 
     /**

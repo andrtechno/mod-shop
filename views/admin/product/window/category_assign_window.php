@@ -1,15 +1,28 @@
 <?php
+
 use panix\mod\shop\models\Category;
 
+/**
+ * @var \yii\web\View $this
+ */
+
+\yii\widgets\PjaxAsset::register($this);
+\panix\engine\assets\BootstrapNotifyAsset::register($this);
 ?>
 <div class="p-3">
+    <p>Для выбора основной категории необходимо выделить ее. Кликнув на категорию она должна подсветится синим
+        цветом.</p>
     <div id="alert-s"></div>
+    <div class="form-group mt-3">
+        <input class="form-control" placeholder="Поиск..." type="text"
+               onkeyup='$("#CategoryAssignTreeDialog").jstree(true).search($(this).val())'/>
+    </div>
     <?php
 
 
     echo \panix\ext\jstree\JsTree::widget([
         'id' => 'CategoryAssignTreeDialog',
-        'allOpen' => true,
+        'allOpen' => false,
         'data' => Category::find()->dataTree(1, null, ['switch' => 1]),
         'core' => [
             'strings' => [
@@ -25,12 +38,12 @@ use panix\mod\shop\models\Category;
                 // "icons" => true
             ],
         ],
-        'plugins' => ['search', 'checkbox'],
+        'plugins' => ['checkbox', 'search'],//"wholerow",
         'checkbox' => [
-            'three_state' => false,
+            'three_state' => false, // need set true
             'tie_selection' => false,
             'whole_node' => false,
-            "keep_selected_style" => true
+            "keep_selected_style" => true,
         ],
     ]);
     ?>

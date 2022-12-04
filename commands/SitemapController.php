@@ -2,6 +2,7 @@
 
 namespace panix\mod\shop\commands;
 
+use panix\engine\CMS;
 use panix\engine\console\controllers\ConsoleController;
 use panix\mod\shop\models\Product;
 use Yii;
@@ -75,42 +76,26 @@ class SitemapController extends ConsoleController
 
 
 
-    public function actionTest()
+    public function actionQueue()
     {
-
+        ini_set('memory_limit', '3096M');
         $file = Yii::getAlias($this->rootDir.'/'.$this->sitemapFile);
 
 
-        $this->stdout("Generate sitemap file.".PHP_EOL, Console::FG_PURPLE);
-        $this->stdout("Rendering sitemap...".PHP_EOL, Console::FG_PURPLE);
+        $this->stdout("Generate sitemap files.".PHP_EOL, Console::FG_PURPLE);
+        $sitemap = Yii::$app->sitemap->queue();
 
-
-        /*$rows = (new \yii\db\Query())
-            ->select(['slug'])
-            ->from(Product::tableName())
-            //->where(['last_name' => 'Smith'])
-            ->limit(10)
-            ->all();
-        echo 'sss';
-        print_r($rows);die;*/
-
-
-
-        $sitemap = Yii::$app->sitemap->render();
-
-        $xml = new \SimpleXMLElement($sitemap[0]['xml']);
-        $xml->preserveWhiteSpace = false;
-        $xml->formatOutput = true;
-        $this->stdout("Writing sitemap to $file".PHP_EOL, Console::FG_PURPLE);
+        $this->stdout("Generate sitemap to $file".PHP_EOL, Console::FG_PURPLE);
         file_put_contents($file, $sitemap[0]['xml']);
         $sitemap_count = count($sitemap);
         for ($i = 1; $i < $sitemap_count; $i++) {
             $file = Yii::getAlias($this->rootDir.'/'.trim($sitemap[$i]['file'], '/'));
-            $this->stdout("Writing sitemap to $file".PHP_EOL, Console::FG_PURPLE);
-            //print_r($dom);die;
-            file_put_contents($file, $sitemap[$i]['xml']);
+            $this->stdout("Generate sitemap file $file".PHP_EOL, Console::FG_PURPLE);
+            file_put_contents($file, "");
         }
-        $this->stdout("Done!".PHP_EOL, Console::FG_GREEN);
+        $this->stdout("Done! Memory_usage: ".memory_get_usage()."".PHP_EOL, Console::FG_GREEN);
+
+
         return ExitCode::OK;
     }
 }

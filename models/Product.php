@@ -2,6 +2,8 @@
 
 namespace panix\mod\shop\models;
 
+use panix\engine\taggable\Tag;
+use panix\engine\taggable\TagAssign;
 use panix\mod\images\models\Image;
 use panix\mod\shop\components\ExternalFinder;
 use panix\mod\shop\components\ImageBehavior;
@@ -73,6 +75,7 @@ use yii\helpers\Url;
  * @property ProductType $type
  * @property string $ratingScore
  * @property RelatedProduct[] $relatedProducts
+ * @property Tag $tags
  */
 class Product extends ActiveRecord
 {
@@ -413,7 +416,7 @@ class Product extends ActiveRecord
             $rules[] = [['name'], 'required']; //, 'slug'
         }
         $rules[] = [['main_category_id', 'price', 'unit'], 'required', 'on' => 'default'];
-
+        $rules[] = ['tagValues', 'safe'];
 
         //$rules[] = [['slug'], 'unique'];
         $rules[] = ['price', 'commaToDot'];
@@ -519,6 +522,15 @@ class Product extends ActiveRecord
     public function getReviews()
     {
         return $this->hasMany(ProductReviews::class, ['product_id' => 'id'])->orderBy(['id' => SORT_DESC]);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTags()
+    {
+        return $this->hasMany(Tag::class, ['id' => 'tag_id'])
+            ->viaTable(TagAssign::tableName(), ['post_id' => 'id']);
     }
 
     /**
@@ -1243,7 +1255,15 @@ class Product extends ActiveRecord
         }
         return parent::__get($name);
     }
-
+    /**
+     * @inheritDoc
+     */
+    public function attributeLabels()
+    {
+        return ArrayHelper::merge([
+            'tagValues' => self::t('TAGVALUES'),
+        ], parent::attributeLabels());
+    }
     public function behaviors()
     {
         $a = [];
@@ -1255,6 +1275,7 @@ class Product extends ActiveRecord
                     /** @var \yii\db\ActiveQuery $model */
                     $model->select(['slug', 'updated_at', 'id']);
                     $model->where(['switch' => 1]);
+                    $model->andWhere(['<>','availability', self::STATUS_OUT_STOCK]);
                 },
                 'dataClosure' => function ($model) {
                     /** @var self $model */
@@ -1267,6 +1288,13 @@ class Product extends ActiveRecord
                 }
             ];
         }
+        $a['taggable'] = [
+            'class' => '\panix\engine\taggable\TaggableBehavior',
+            // 'tagValuesAsArray' => false,
+            // 'tagRelation' => 'tags',
+            // 'tagValueAttribute' => 'name',
+            // 'tagFrequencyAttribute' => 'frequency',
+        ];
         // if (Yii::$app->getModule('images'))
         $a['imagesBehavior'] = [
             // 'class2' => '\panix\mod\images\behaviors\ImageBehavior',

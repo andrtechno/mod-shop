@@ -183,7 +183,7 @@ class ProductController extends AdminController
             // $model->setScenario('configurable');
         }
 
-        $result= [];
+        $result = [];
         $attributes = (isset($model->type->shopAttributes)) ? $model->type->shopAttributes : [];
         foreach ($attributes as $a) {
             if ($a->group_id) {
@@ -224,8 +224,6 @@ class ProductController extends AdminController
 
             if ($model->label)
                 $model->label = implode(",", $model->label);
-            //  CMS::dump($model->attributes);die;
-
 
             if ($model->save()) {
                 //$model->processConfigurations(Yii::$app->request->post('ConfigurationsProduct', []));
@@ -449,8 +447,8 @@ class ProductController extends AdminController
                         $diff = array_diff($model->_old_eav[$k], $reAttributes[$k]);
                         if ($diff) {
                             /* @todo need testing */
-                            foreach ($diff as $i){
-                                TagDependency::invalidate(Yii::$app->cache, $k.'-'.$i);
+                            foreach ($diff as $i) {
+                                TagDependency::invalidate(Yii::$app->cache, $k . '-' . $i);
                             }
 
 
@@ -459,8 +457,8 @@ class ProductController extends AdminController
                     } else {
                         if ($model->_old_eav[$k] != $reAttributes[$k]) {
                             //clear cache
-                            TagDependency::invalidate(Yii::$app->cache, $k.'-'.$model->_old_eav[$k]);
-                            TagDependency::invalidate(Yii::$app->cache, $k.'-'.$reAttributes[$k]);
+                            TagDependency::invalidate(Yii::$app->cache, $k . '-' . $model->_old_eav[$k]);
+                            TagDependency::invalidate(Yii::$app->cache, $k . '-' . $reAttributes[$k]);
                         }
                     }
 
@@ -474,8 +472,8 @@ class ProductController extends AdminController
 
 
         //CMS::dump($reAttributes);
-       // CMS::dump($model->_old_eav);
-       // die;
+        // CMS::dump($model->_old_eav);
+        // die;
 
 
         return $model->setEavAttributes($reAttributes, true);
@@ -757,19 +755,53 @@ class ProductController extends AdminController
     {
         //$this->enableCsrfValidation=false;
         if (Yii::$app->request->isAjax) {
-            $categories = Yii::$app->request->post('category_ids');
+            $json = [];
+            $json['success'] = true;
+            $json['message'] = 'Ошибка';
+
+            $categories_ids = Yii::$app->request->post('category_ids', []);
             $products = Yii::$app->request->post('product_ids');
-
-            if (empty($categories) || empty($products))
-                return false;
-
-            $products = Product::find()->where(['id' => $products])->all();
-
-            foreach ($products as $p) {
-                /** @var Product $p */
-                $p->setCategories($categories, Yii::$app->request->post('main_category'));
+            $main_category = (int)Yii::$app->request->post('main_category');
+            if (!$categories_ids) {
+                //    $categories = [];
             }
-            return $this->asJson(['message' => 'Выбранным товарам категории изменены']);
+            if (empty($products) || empty($main_category)) {
+                $json['success'] = false;
+            }
+            if (!$main_category) {
+                $json['success'] = false;
+                $json['message'] = 'Не выбрана основная категория';
+            }
+            if ($json['success']) {
+                $products = Product::find()->where(['id' => $products])->all();
+
+                foreach ($products as $p) {
+                    /** @var Product $p */
+                    if ($main_category) {
+                        //$p->main_category_id = $main_category;
+                        // $p->save(false);
+
+                    }
+                    //if($categories){
+                    //    $p->setCategories($categories, $main_category);
+                    //}
+
+                    $category = Category::findOne($main_category);
+                    $categories = [];
+                    if ($category) {
+                        $tes = $category->ancestors()->excludeRoot()->all();
+                        foreach ($tes as $cat) {
+                            $categories[] = $cat->id;
+                        }
+
+                    }
+                    $categories = ArrayHelper::merge($categories, $categories_ids);
+                    $p->setCategories($categories, $main_category);
+                }
+                $json['message'] = 'Выбранным товарам категории изменены';
+            }
+
+            return $this->asJson($json);
         } else {
             throw new ForbiddenHttpException();
         }
@@ -952,4 +984,5 @@ class ProductController extends AdminController
         $result['success'] = true;
         return $this->asJson($result);
     }
+
 }
