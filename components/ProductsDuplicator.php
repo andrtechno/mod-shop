@@ -2,9 +2,8 @@
 
 namespace panix\mod\shop\components;
 
-
-use panix\mod\images\models\Image;
 use panix\mod\shop\models\ProductAttributesEav;
+use panix\mod\shop\models\ProductImage;
 use Yii;
 use panix\mod\shop\models\Product;
 use panix\mod\shop\models\RelatedProduct;
@@ -71,13 +70,11 @@ class ProductsDuplicator extends \yii\base\Component
 
         $product = new Product;
         $product->attributes = $model->attributes;
-
+        $product->id = null;
         $behaviors = $model->behaviors();
-
-
-        foreach ($behaviors['translate']['translationAttributes'] as $attr)
+        foreach ($behaviors['translate']['translationAttributes'] as $attr) {
             $product->{$attr} = $model->{$attr};
-
+        }
         $product->name .= $this->getSuffix();
         $product->slug .= CMS::slug($this->getSuffix()) . '-' . time();
         $product->main_category_id = $model->mainCategory->id;
@@ -99,7 +96,7 @@ class ProductsDuplicator extends \yii\base\Component
                         $categories[] = $category->primaryKey;
                     }
                 }
-                $product->setCategories($categories, $model->mainCategory->id);
+                $product->setCategories($categories, $model->main_category_id);
                 return $product;
             } else {
                 die(__FUNCTION__ . ': Error save');
@@ -121,38 +118,40 @@ class ProductsDuplicator extends \yii\base\Component
     protected function copyImages(Product $original, Product $copy)
     {
 
-        $images = $original->getImages();
+        $images = $original->images;
 
         if (!empty($images)) {
-            /** @var Image $image */
+            /** @var ProductImage $image */
             foreach ($images as $image) {
 
 
                 $uniqueName = \panix\engine\CMS::gen(10);
 
-                $absolutePath = Yii::getAlias($image->path) . DIRECTORY_SEPARATOR . $original->primaryKey . DIRECTORY_SEPARATOR . $image->filePath;
+                $absolutePath = Yii::getAlias('@uploads/store/product') . DIRECTORY_SEPARATOR . $original->primaryKey . DIRECTORY_SEPARATOR . $image->filename;
                 $pictureFileName = $uniqueName . '.' . pathinfo($absolutePath, PATHINFO_EXTENSION);
 
-                $path = Yii::getAlias($image->path) . DIRECTORY_SEPARATOR . $copy->primaryKey;
+                $path = Yii::getAlias('@uploads/store/product') . DIRECTORY_SEPARATOR . $copy->primaryKey;
                 $newAbsolutePath = $path . DIRECTORY_SEPARATOR . $pictureFileName;
 
 
-                $image_copy = new Image();
+                $image_copy = new ProductImage();
 
-                $image_copy->object_id = $copy->id;
+                $image_copy->product_id = $copy->id;
                 $image_copy->alt_title = $image->alt_title;
                 $image_copy->is_main = $image->is_main;
-                $image_copy->filePath = $pictureFileName;
-                $image_copy->path = $image->path;
-                $image_copy->handler_class = '\\' . get_class($copy);
-                $image_copy->handler_hash = $copy->getHash();
-                $image_copy->urlAlias = $copy->getAlias();
+                $image_copy->filename = $pictureFileName;
 
                 if ($image_copy->validate()) {
                     if ($image_copy->save()) {
-                        BaseFileHelper::createDirectory($path, 0775, true);
-                        if (file_exists($absolutePath))
-                            copy($absolutePath, $newAbsolutePath);
+                        $created = BaseFileHelper::createDirectory($path, 0775, true);
+                        if ($created && file_exists($absolutePath)){
+                            if(!copy($absolutePath, $newAbsolutePath)){
+                                echo 'ERROR copy image';die;
+                            }
+                        }else{
+                            echo 'ERROR crated';die;
+                        }
+
                     }
                 } else {
                     print_r($image_copy->getErrors());

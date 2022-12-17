@@ -1,21 +1,21 @@
 <?php
 use panix\engine\Html;
-\app\web\themes\dashboard\AdminAsset::register($this);
-\panix\engine\widgets\PjaxAsset::register($this);
+//\app\web\themes\dashboard\AdminAsset::register($this);
+//\panix\engine\widgets\PjaxAsset::register($this);
 $this->registerJs("
     function checkAllDuplicateAttributes(el){
         if($(el).prev().attr('checked')){
-            $('#duplicate_products_dialog form input').attr('checked', false);
+            $('#ProductSetModal form input').attr('checked', false);
             $(el).prev().attr('checked', false);
         }else{
-            $('#duplicate_products_dialog form input').attr('checked', true);
+            $('#ProductSetModal form input').attr('checked', true);
             $(el).prev().attr('checked', true);
         }
     }
 ");
 ?>
 <div class="p-3">
-    <?= Html::beginForm('', 'POST', []); ?>
+    <?= Html::beginForm('', 'POST', ['csrf'=>false]); ?>
     <div class="form-group">
         <div class="custom-control custom-checkbox">
             <?= Html::checkbox('copy[]', true, ['value' => 'images', 'id' => 'images', 'class' => 'custom-control-input']); ?>

@@ -56,7 +56,7 @@ class ProductController extends AdminController
 
     public function beforeAction($action)
     {
-        if (in_array($action->id, ['render-products-price-window', 'set-products'])) {
+        if (in_array($action->id, ['set-products', 'assign-categories', 'duplicate-products'])) {
             $this->enableCsrfValidation = false;
         }
         /*if (in_array($action->id, ['create', 'update'])) {
@@ -727,16 +727,25 @@ class ProductController extends AdminController
         if ($request->isAjax) {
             $product_ids = $request->post('products', []);
             parse_str($request->post('data'), $price);
-            $products = Product::findAll($product_ids);
-            foreach ($products as $p) {
-                if (isset($p)) {
-                    if (!$p->currency_id || !$p->use_configurations) { //запрещаем редактирование товаров с привязанной ценой и/или концигурациями
-                        $p->price = $price['Product']['price'];
-                        $p->save(false);
-                        $result['success'] = true;
-                        $result['message'] = 'Цена успешно изменена';
+            if ($price) {
+                $products = Product::findAll($product_ids);
+                foreach ($products as $p) {
+                    if (isset($p)) {
+                        if (!$p->currency_id || !$p->use_configurations) { //запрещаем редактирование товаров с привязанной ценой и/или концигурациями
+                            if($price['Product']['price']){
+                                $p->price = $price['Product']['price'];
+                                $p->save(false);
+                                $result['success'] = true;
+                                $result['message'] = 'Цена успешно изменена';
+                            }else{
+                                $result['message'] = 'Цена указана не верна';
+                            }
+
+                        }
                     }
                 }
+            }else{
+                $result['message'] = 'Error 100';
             }
             return $this->asJson($result);
         } else {
@@ -778,9 +787,8 @@ class ProductController extends AdminController
                 foreach ($products as $p) {
                     /** @var Product $p */
                     if ($main_category) {
-                        //$p->main_category_id = $main_category;
-                        // $p->save(false);
-
+                        $p->main_category_id = $main_category;
+                        $p->save(false);
                     }
                     //if($categories){
                     //    $p->setCategories($categories, $main_category);

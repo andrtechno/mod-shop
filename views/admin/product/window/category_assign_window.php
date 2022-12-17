@@ -6,8 +6,11 @@ use panix\mod\shop\models\Category;
  * @var \yii\web\View $this
  */
 
-\yii\widgets\PjaxAsset::register($this);
-\panix\engine\assets\BootstrapNotifyAsset::register($this);
+//\yii\widgets\PjaxAsset::register($this);
+//\panix\engine\assets\BootstrapNotifyAsset::register($this);
+
+//for bootstrap modal window
+\yii\bootstrap4\BootstrapPluginAsset::register($this);
 ?>
 <div class="p-3">
     <p>Для выбора основной категории необходимо выделить ее. Кликнув на категорию она должна подсветится синим

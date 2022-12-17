@@ -15,10 +15,13 @@ use yii\web\HttpException;
 
 
 /**
- * Class Kit
+ * Class ProductImage
  * @property integer $id
  * @property integer $owner_id
  * @property integer $product_id
+ * @property string $alt_title
+ * @property boolean $is_main
+ * @property string $filename
  */
 class ProductImage extends ActiveRecord
 {
@@ -101,6 +104,8 @@ class ProductImage extends ActiveRecord
         return [
             [['product_id'], 'required'],
             [['product_id'], 'integer'],
+            [['alt_title'], 'string'],
+            [['is_main'], 'boolean'],
         ];
     }
 
