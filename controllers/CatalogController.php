@@ -335,7 +335,6 @@ if(YII_DEBUG){
 
         $this->query = $productModel::find()->published()->new();
 
-
         $categoriesIds = [];
         $categoriesQuery = clone $this->query;
         $categoriesResult = $categoriesQuery->groupBy('main_category_id')->select(['main_category_id'])->asArray()->all();

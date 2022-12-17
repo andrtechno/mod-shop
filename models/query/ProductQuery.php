@@ -42,7 +42,7 @@ class ProductQuery extends ActiveQuery
         /** @var \yii\db\ActiveRecord $modelClass */
         $modelClass = $this->modelClass;
         $tableName = $modelClass::tableName();
-        return $this->addorderBy("(CASE {$tableName}.availability WHEN " . $this->modelClass::STATUS_OUT_STOCK . " then -1 END) ASC");
+        return $this->addorderBy("(CASE {$tableName}.availability WHEN " . Product::STATUS_OUT_STOCK . " then -1 END) ASC");
         //parent::init();
     }
 
@@ -52,7 +52,7 @@ class ProductQuery extends ActiveQuery
 
         $this->andWhere(['IS NOT', Product::tableName() . '.discount', null])
             ->andWhere(['!=', Product::tableName() . '.discount', '']);
-
+        $this->andWhere(['!=', Product::tableName().".availability", Product::STATUS_OUT_STOCK]);
         return $this;
     }
 
@@ -65,6 +65,7 @@ class ProductQuery extends ActiveQuery
         if ($config->label_expire_new) {
             $modelClass = $this->modelClass;
             $tableName = $modelClass::tableName();
+            $this->andWhere(['!=', Product::tableName().".availability", Product::STATUS_OUT_STOCK]);
             //$this->int2between(time(), time() - (86400 * $config->label_expire_new * 300));
             $this->andWhere(['>=', $tableName . '.created_at', strtotime(date('Y-m-d', time() - (86400 * $config->label_expire_new)))]);
         } else {
@@ -85,6 +86,7 @@ class ProductQuery extends ActiveQuery
             $this->int2between(time() - (86400 * $offset), time(), 'added_to_cart_date');
             $this->orWhere(['>=', 'added_to_cart_count', $config->added_to_cart_count]);
             $this->orderBy(['added_to_cart_count' => SORT_DESC]);
+            $this->andWhere(['!=', Product::tableName().".availability", Product::STATUS_OUT_STOCK]);
         }
         return $this;
     }
