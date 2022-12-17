@@ -19,6 +19,7 @@ var grid = $('#grid-product');
 var pjax = '#pjax-grid-product';
 var uiDialog = $('.ui-dialog');
 var modal = $('#ProductSetModal');
+
 /**
  * Update selected comments status
  * @param status_id
@@ -26,19 +27,15 @@ var modal = $('#ProductSetModal');
  */
 function setProductsStatus(status_id, el) {
 
-    grid_selections = grid.yiiGridView('getSelectedRows');
-
-    if (grid_selections.length > 0) {
-
-
+    var selection = grid.yiiGridView('getSelectedRows');
+    if (checkSelected()) {
         yii.confirm($(el).data('confirm-info'), function () {
             $.ajax({
                 url: common.url('/admin/shop/product/update-is-active'),
                 type: 'POST',
                 dataType: 'json',
                 data: {
-                    _csrf: yii.getCsrfToken(),
-                    ids: grid_selections,
+                    ids: selection,
                     'switch': status_id
                 },
                 success: function (data) {
@@ -73,58 +70,72 @@ function setProductsStatus(status_id, el) {
         }, function () {
             return false;
         });
-    }else{
-        common.notify('Объект не выбран.','info');
     }
-
-    /*
-    $.ajax(common.url('/admin/shop/product/update-is-active'), {
-        type: "post",
-        dataType: "json",
-        data: {
-            _csrf: yii.getCsrfToken(),
-            ids: grid.yiiGridView('getSelectedRows'),
-            'switch': status_id
-        },
-        success: function (data) {
-            common.notify(data.message, 'success');
-            //grid.yiiGridView('applyFilter');
-            $.pjax.reload(pjax, {timeout: false});
-        },
-        error: function (XHR, textStatus, errorThrown) {
-            var err = '';
-            switch (textStatus) {
-                case 'timeout':
-                    err = 'The request timed out!';
-                    break;
-                case 'parsererror':
-                    err = 'Parser error!';
-                    break;
-                case 'error':
-                    if (XHR.status && !/^\s*$/.test(XHR.status))
-                        err = 'Error ' + XHR.status;
-                    else
-                        err = 'Error';
-                    if (XHR.responseText && !/^\s*$/.test(XHR.responseText))
-                        err = err + ': ' + XHR.responseText;
-                    break;
-            }
-            alert(err);
-        }
-    });*/
     return false;
 }
-function checkSelected(){
+
+
+function updateProductsViews(el) {
+
+    //var selection = grid.yiiGridView('getSelectedRows');
+    var selection = checkSelected();
+    if (selection) {
+        yii.confirm($(el).data('confirm-info'), function () {
+            $.ajax({
+                url: common.url('/admin/shop/product/update-views'),
+                type: 'POST',
+                dataType: 'json',
+                data: {ids: selection},
+                success: function (data) {
+                    if (data.success) {
+                        common.notify(data.message, 'success');
+                        $.pjax.reload(pjax, {timeout: false});
+                    } else {
+                        common.notify(data.message, 'error');
+                    }
+                },
+                error: function (XHR, textStatus, errorThrown) {
+                    var err = '';
+                    switch (textStatus) {
+                        case 'timeout':
+                            err = 'The request timed out!';
+                            break;
+                        case 'parsererror':
+                            err = 'Parser error!';
+                            break;
+                        case 'error':
+                            if (XHR.status && !/^\s*$/.test(XHR.status))
+                                err = 'Error ' + XHR.status;
+                            else
+                                err = 'Error';
+                            if (XHR.responseText && !/^\s*$/.test(XHR.responseText))
+                                err = err + ': ' + XHR.responseText;
+                            break;
+                    }
+                    alert(err);
+                }
+            });
+        }, function () {
+            return false;
+        });
+    }
+    return false;
+}
+
+
+function checkSelected() {
     var selection = grid.yiiGridView('getSelectedRows');
     if (!selection.length) {
         common.notify('Не выбрано не одного элемента!', 'warning');
         return false;
     }
-    return true;
+    return selection;
 }
+
 modal.on('hide.bs.modal', function (e) {
     $(this).find('.modal-body').html('');
 });
+
 /**
  * Display window with all categories list.
  *
@@ -161,7 +172,7 @@ function showCategoryAssignWindow(el_clicked) {
 
 }
 
-function ajax_save_set_categories(){
+function ajax_save_set_categories() {
     var selection = grid.yiiGridView('getSelectedRows');
     var checked = $("#CategoryAssignTreeDialog .jstree-checked");
     var ids = [];
@@ -174,7 +185,7 @@ function ajax_save_set_categories(){
 
     var selected = $('#CategoryAssignTreeDialog').jstree('get_selected')[0];
     var main_category = 0;
-    if(selected){
+    if (selected) {
         main_category = selected.replace('node_', '');
     }
     $.ajax(common.url('/admin/shop/product/assign-categories'), {
@@ -186,15 +197,15 @@ function ajax_save_set_categories(){
             product_ids: selection
         },
         success: function (data) {
-            if(data.success){
+            if (data.success) {
                 $('#alert-s').html('');
                 $.pjax.reload(pjax, {timeout: false});
                 common.notify(data.message, 'success');
                 modal.modal('hide');
 
-            }else{
+            } else {
                 common.notify(data.message, 'error');
-                $('#alert-s').html('<div class="alert alert-danger">'+data.message+'</div>');
+                $('#alert-s').html('<div class="alert alert-danger">' + data.message + '</div>');
             }
 
         }
@@ -202,8 +213,7 @@ function ajax_save_set_categories(){
 }
 
 
-
-function ajax_save_copy(){
+function ajax_save_copy() {
     var selection = grid.yiiGridView('getSelectedRows');
     var button = modal.find('.modal-footer button');
     $.ajax(common.url('/admin/shop/product/duplicate-products'), {
@@ -231,6 +241,7 @@ function ajax_save_copy(){
         }
     });
 }
+
 function showDuplicateProductsWindow(el_clicked) {
     var modalContainer = $('#ProductSetModal');
     var modalBody = modalContainer.find('.modal-body');
@@ -272,7 +283,7 @@ function setProductsPrice(el_clicked) {
             success: function (data) {
                 button.text('Установить');
                 button.bind({
-                    click: function() {
+                    click: function () {
                         ajax_save_set_prices();
                     }
                 });
@@ -288,7 +299,8 @@ function setProductsPrice(el_clicked) {
         });
     }
 }
-function ajax_save_set_prices(){
+
+function ajax_save_set_prices() {
     var selection = grid.yiiGridView('getSelectedRows');
     var button = modal.find('.modal-footer button');
     $.ajax(common.url('/admin/shop/product/set-products'), {
@@ -316,7 +328,6 @@ function ajax_save_set_prices(){
         }
     });
 }
-
 
 
 // Хак для отправки с диалогового окна формы через ENTER

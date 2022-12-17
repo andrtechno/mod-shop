@@ -56,7 +56,7 @@ class ProductController extends AdminController
 
     public function beforeAction($action)
     {
-        if (in_array($action->id, ['set-products', 'assign-categories', 'duplicate-products'])) {
+        if (in_array($action->id, ['set-products', 'assign-categories', 'duplicate-products', 'update-is-active','update-views'])) {
             $this->enableCsrfValidation = false;
         }
         /*if (in_array($action->id, ['create', 'update'])) {
@@ -732,19 +732,19 @@ class ProductController extends AdminController
                 foreach ($products as $p) {
                     if (isset($p)) {
                         if (!$p->currency_id || !$p->use_configurations) { //запрещаем редактирование товаров с привязанной ценой и/или концигурациями
-                            if($price['Product']['price']){
+                            if ($price['Product']['price']) {
                                 $p->price = $price['Product']['price'];
                                 $p->save(false);
                                 $result['success'] = true;
                                 $result['message'] = 'Цена успешно изменена';
-                            }else{
+                            } else {
                                 $result['message'] = 'Цена указана не верна';
                             }
 
                         }
                     }
                 }
-            }else{
+            } else {
                 $result['message'] = 'Error 100';
             }
             return $this->asJson($result);
@@ -839,15 +839,15 @@ class ProductController extends AdminController
     }
 
     /**
-     * @return array
+     * @return Response
      * @throws ForbiddenHttpException
      */
     public function actionUpdateViews()
     {
-
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $result['success'] = false;
         if (Yii::$app->request->isAjax) {
-            Yii::$app->response->format = Response::FORMAT_JSON;
-            $ids = Yii::$app->request->post('id');
+            $ids = Yii::$app->request->post('ids');
             $models = Product::find()->where(['id' => $ids])->all();
             foreach ($models as $product) {
                 /** @var Product $product */
@@ -856,8 +856,9 @@ class ProductController extends AdminController
                     $product->save(false);
                 }
             }
-
-            return ['message' => Product::t('SUCCESS_UPDATE_VIEWS')];
+            $result['success'] = true;
+            $result['message'] = Yii::t('shop/Product', 'SUCCESS_UPDATE_VIEWS');
+            return $this->asJson($result);
 
         } else {
             throw new ForbiddenHttpException(Yii::t('app/error', 403));

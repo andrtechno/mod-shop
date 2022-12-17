@@ -382,7 +382,7 @@ trait ProductTrait
                         'icon' => 'refresh',
                         'linkOptions' => [
                             'onClick' => 'return updateProductsViews(this);',
-                            // 'data-confirm' => self::t('CONFIRM_UPDATE_VIEWS'),
+                            'data-confirm-info' => self::t('CONFIRM_UPDATE_VIEWS'),
                             'data-pjax' => 0
                         ],
                     ]
