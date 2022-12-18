@@ -1,7 +1,6 @@
 <?php
 use panix\engine\Html;
-//\app\web\themes\dashboard\AdminAsset::register($this);
-//\panix\engine\widgets\PjaxAsset::register($this);
+\panix\engine\assets\BootstrapNotifyAsset::register($this);
 $this->registerJs("
     function checkAllDuplicateAttributes(el){
         if($(el).prev().attr('checked')){

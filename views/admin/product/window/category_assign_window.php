@@ -7,14 +7,14 @@ use panix\mod\shop\models\Category;
  */
 
 //\yii\widgets\PjaxAsset::register($this);
-//\panix\engine\assets\BootstrapNotifyAsset::register($this);
+\panix\engine\assets\BootstrapNotifyAsset::register($this);
 
 //for bootstrap modal window
-\yii\bootstrap4\BootstrapPluginAsset::register($this);
+//\yii\bootstrap4\BootstrapPluginAsset::register($this);
 ?>
 <div class="p-3">
-    <p>Для выбора основной категории необходимо выделить ее. Кликнув на категорию она должна подсветится синим
-        цветом.</p>
+    <div class="alert alert-info">Для выбора основной категории необходимо выделить ее. Кликнув на категорию она должна подсветится синим
+        цветом.</div>
     <div id="alert-s"></div>
     <div class="form-group mt-3">
         <input class="form-control" placeholder="Поиск..." type="text"

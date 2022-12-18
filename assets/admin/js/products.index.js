@@ -123,15 +123,6 @@ function updateProductsViews(el) {
 }
 
 
-function checkSelected() {
-    var selection = grid.yiiGridView('getSelectedRows');
-    if (!selection.length) {
-        common.notify('Не выбрано не одного элемента!', 'warning');
-        return false;
-    }
-    return selection;
-}
-
 modal.on('hide.bs.modal', function (e) {
     $(this).find('.modal-body').html('');
 });
@@ -150,15 +141,16 @@ function showCategoryAssignWindow(el_clicked) {
     if (checkSelected()) {
         $.ajax({
             url: common.url('/admin/shop/product/render-category-assign-window'),
+            dataType:'json',
             success: function (data) {
-                button.text('Назначить');
+                button.text(data.buttonText);
                 button.bind({
                     click: function () {
                         ajax_save_set_categories();
                         button.unbind('click');
                     }
                 });
-                modalBody.html(data);
+                modalBody.html(data.html);
                 modalContainer.modal('show');
             },
             beforeSend: function () {
@@ -251,15 +243,16 @@ function showDuplicateProductsWindow(el_clicked) {
     if (checkSelected()) {
         $.ajax({
             url: common.url('/admin/shop/product/render-duplicate-products-window'),
+            dataType:'json',
             success: function (data) {
-                button.text('Назначить');
+                button.text(data.buttonText);
                 button.bind({
                     click: function () {
                         ajax_save_copy();
                         button.unbind('click');
                     }
                 });
-                modalBody.html(data);
+                modalBody.html(data.html);
                 modalContainer.modal('show');
             },
             beforeSend: function () {
@@ -280,14 +273,15 @@ function setProductsPrice(el_clicked) {
     if (checkSelected()) {
         $.ajax({
             url: common.url('/admin/shop/product/render-products-price-window'),
+            dataType:'json',
             success: function (data) {
-                button.text('Установить');
+                button.text(data.buttonText);
                 button.bind({
                     click: function () {
                         ajax_save_set_prices();
                     }
                 });
-                modalBody.html(data);
+                modalBody.html(data.html);
                 modal.modal('show');
             },
             beforeSend: function () {
@@ -318,6 +312,7 @@ function ajax_save_set_prices() {
                 button.unbind('click');
                 modal.modal('hide');
                 $.pjax.reload(pjax, {timeout: false});
+
             } else {
                 common.notify(data.message, 'error');
             }

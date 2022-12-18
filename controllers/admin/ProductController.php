@@ -56,7 +56,7 @@ class ProductController extends AdminController
 
     public function beforeAction($action)
     {
-        if (in_array($action->id, ['set-products', 'assign-categories', 'duplicate-products', 'update-is-active','update-views'])) {
+        if (in_array($action->id, ['set-products', 'assign-categories', 'duplicate-products', 'update-is-active', 'update-views'])) {
             $this->enableCsrfValidation = false;
         }
         /*if (in_array($action->id, ['create', 'update'])) {
@@ -615,7 +615,11 @@ class ProductController extends AdminController
     public function actionRenderCategoryAssignWindow()
     {
         if (Yii::$app->request->isAjax) {
-            return $this->renderAjax('window/category_assign_window');
+            return $this->asJson([
+                'buttonText' => Product::t('GRID_OPTION_SETCATEGORY'),
+                'html' => $this->renderAjax('window/category_assign_window')
+            ]);
+            //return $this->renderAjax('window/category_assign_window');
         } else {
             throw new ForbiddenHttpException(Yii::t('app/error', '403'));
         }
@@ -662,7 +666,12 @@ class ProductController extends AdminController
     public function actionRenderDuplicateProductsWindow()
     {
         if (Yii::$app->request->isAjax) {
-            return $this->renderAjax('window/duplicate_products_window');
+
+            return $this->asJson([
+                'buttonText' => Product::t('GRID_OPTION_COPY'),
+                'html' => $this->renderAjax('window/duplicate_products_window')
+            ]);
+            //return $this->renderAjax('window/duplicate_products_window');
         } else {
             throw new ForbiddenHttpException(Yii::t('app/error', '403'));
         }
@@ -709,7 +718,12 @@ class ProductController extends AdminController
     {
         if (Yii::$app->request->isAjax) {
             $model = new Product;
-            return $this->render('window/products_price_window', ['model' => $model]);
+            Yii::$app->assetManager->bundles['yii\web\JqueryAsset'] = false;
+            return $this->asJson([
+                'buttonText' => Product::t('GRID_OPTION_SETPRICE'),
+                'html' => $this->render('window/products_price_window', ['model' => $model])
+            ]);
+
         } else {
             throw new ForbiddenHttpException(Yii::t('app/error', '403'));
         }

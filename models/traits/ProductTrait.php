@@ -42,6 +42,7 @@ trait ProductTrait
             'class' => 'panix\engine\grid\columns\ImageColumn',
             'attribute' => 'image',
             // 'filter'=>true,
+            'header' => 'Фото',
             'value' => function ($model) {
                 /** @var $model Product */
                 $reviewsCount = 0;
