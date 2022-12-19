@@ -1,78 +1,60 @@
 <?php
+$descendants = $model->children()->status(1)->orderBy(['created_at'=>SORT_DESC])->all();
 /**
- * @var \app\modules\reviews\models\Reviews $model
+ * @var $model \panix\mod\shop\models\ProductReviews
+ * @var $this \yii\web\View
  */
-
-$hasAnswer = ($model->rgt > 2) ? true : false;
 ?>
-<div class="review <?= $hasAnswer ? 'review-answer' : ''; ?>">
-    <div class="row">
-        <div class="col-4 col-lg-2">
-            <?php if ($model->user_id) { ?>
-                <div class="review-raiting">
-                    <?php
-                    echo \panix\ext\rating\RatingInput::widget([
-                        'model' => $model,
-                        'attribute' => 'rate',
-                        //'jsonld'=>false,
-                        'options' => [
-                            'readOnly' => true,
-                            'path' => $this->theme->asset[1] . '/images/',
-                            'starOff' => 'star-off.svg',
-                            'starOn' => 'star-on.svg',
-                            'hints' => [
-                                Yii::t('default', 'RATING_1'),
-                                Yii::t('default', 'RATING_2'),
-                                Yii::t('default', 'RATING_3'),
-                                Yii::t('default', 'RATING_4'),
-                                Yii::t('default', 'RATING_5'),
-                            ],
-                        ]
-                    ]);
-                    ?>
-                </div>
-            <?php } ?>
-            <div class="review-info">
-                <div class="review-name"><?= $model->getDisplayName(); ?></div>
-                <div class="review-date"><?= \panix\engine\CMS::date($model->created_at, false); ?></div>
-
-                <?php if ($model->user_id) { ?>
-                    <?php if ($model->user) { ?>
-                        <ul class="social clearfix">
-                            <?php if ($model->user->facebook_url) { ?>
-                                <li><a class="fb" href="<?= $model->user->facebook_url; ?>"></a></li>
-                            <?php } ?>
-                            <?php if ($model->user->instagram_url) { ?>
-                                <li><a class="inst" href="<?= $model->user->instagram_url; ?>"></a></li>
-                            <?php } ?>
-                        </ul>
-                    <?php } ?>
-                <?php } ?>
-
-            </div>
-        </div>
-        <div class="col-8 col-lg-10">
-            <p class="review-txt"><?= $model->text; ?></p>
-        </div>
-    </div>
-    <?php
-    // print_r($model->query);
-
-    if ($hasAnswer) {
-        $descendants = $model->children()->status(1)->all();
-        ?>
-        <div class="row">
-            <div class="col-lg-11 offset-lg-1">
+<div class="item-tab-content review">
+    <div class="row customer-review">
+        <div class="col-2">
+            <div class="customer">
+                <h5 class="name"><?= $model->getDisplayName(); ?></h5>
                 <?php
-                foreach ($descendants as $data) { ?>
+                if ($model->depth == 1) {
+                    if ($model->user_id) {
 
-
-                    <?= $this->render('_comment_answer', ['model' => $data]); ?>
-
-
-                <?php } ?>
-
+                        echo \panix\ext\rating\RatingInput::widget([
+                            'model' => $model,
+                            'attribute' => 'rate',
+                            'options' => [
+                                'readOnly' => true,
+                                'starType' => 'img',
+                                'path' => $this->theme->asset[1] . '/images/',
+                                'starOff' => 'star-off.svg',
+                                'starOn' => 'star-on.svg',
+                                'hints' => [
+                                    Yii::t('reviews/default', 'RATING_1'),
+                                    Yii::t('reviews/default', 'RATING_2'),
+                                    Yii::t('reviews/default', 'RATING_3'),
+                                    Yii::t('reviews/default', 'RATING_4'),
+                                    Yii::t('reviews/default', 'RATING_5'),
+                                ],
+                            ]
+                        ]);
+                    } else {
+                        echo '<span class="text-muted">' . Yii::t('app/default', 'GUEST') . '</span>';
+                    }
+                }
+                ?>
             </div>
         </div>
-    <?php } ?>
+        <div class="col-10">
+            <div class="customer-review review <?= ($descendants) ? 'review-answer' : ''; ?>">
+                <div class="review-content">
+                    <div class="date"><?= \panix\engine\CMS::date($model->created_at, false); ?></div>
+                    <div class="content review-txt"><?= $model->text; ?></div>
+                </div>
+            </div>
+        </div>
+        <?php if ($descendants) { ?>
+        <div class="col-lg-10 offset-2">
+            <?php
+            foreach ($descendants as $data) { ?>
+                <?= $this->render('_comment_item', ['model' => $data]); ?>
+            <?php } ?>
+        </div>
+        <?php } ?>
+
+    </div>
 </div>

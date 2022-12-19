@@ -19,4 +19,6 @@ return [
     'EMPTY_LIST' => 'There are no reviews.',
     'RATING_GUEST_PRODUCT' => 'You need to rate a store',
     'OR' => 'or',
+    'PUBLIC' => 'Review added successfully',
+    'PUBLIC_AFTER' => 'Review will be published after moderation',
 ];

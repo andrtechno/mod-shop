@@ -373,9 +373,9 @@ class ProductController extends WebController
 
                 if ($model->status) {
                     $response['published'] = true;
-                    $response['message'] = 'Отзыв успешно добавлен';
+                    $response['message'] = $model::t('PUBLIC');
                 } else {
-                    $response['message'] = 'Отзыв будет опубликован после модерации';
+                    $response['message'] = $model::t('PUBLIC_AFTER');
                 }
                 try {
 

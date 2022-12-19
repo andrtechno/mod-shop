@@ -17,9 +17,14 @@ use yii\helpers\HtmlPurifier;
  * Class ProductReviews
  * @property integer $id id
  * @property integer $product_id Product id
+ * @property integer $user_id
  * @property string $text
  * @property integer $rate
  * @property string $user_name
+ * @property integer $tree
+ * @property integer $depth
+ * @property integer $lft
+ * @property integer $rgt
  */
 class ProductReviews extends ActiveRecord
 {
@@ -36,6 +41,7 @@ class ProductReviews extends ActiveRecord
         return new ProductReviewsQuery(get_called_class());
     }
 
+
     public function init()
     {
         if (!Yii::$app->user->isGuest) {
@@ -45,7 +51,11 @@ class ProductReviews extends ActiveRecord
         }
         parent::init();
     }
+    public function isBuy()
+    {
+        return OrderProduct::find()->where(['product_id'=>$this->product_id,'user_id'=>$this->user_id])->count();
 
+    }
     /**
      * @inheritdoc
      */
@@ -165,7 +175,7 @@ class ProductReviews extends ActiveRecord
             }
 
             if (Yii::$app->settings->get('shop', 'email_notify_reviews')) {
-                $emails = explode(',',Yii::$app->settings->get('shop', 'email_notify_reviews'));
+                $emails = explode(',', Yii::$app->settings->get('shop', 'email_notify_reviews'));
                 $mailer = Yii::$app->mailer;
                 $mailer->htmlLayout = "@app/mail/layouts/html";
                 $mailer->compose(['html' => Yii::$app->getModule('shop')->mailPath . '/' . Yii::$app->language . '/product-review-notify'], ['model' => $this])

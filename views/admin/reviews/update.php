@@ -164,9 +164,7 @@ JS;
         </div>
         <div class="col-sm-5">
             <?= $this->render('_product', ['model' => $model]); ?>
-            <?php
-            echo $model->getDisplayName();
-            ?>
+
             <ul class="list-group">
                 <?php
                 $browser = new \panix\engine\components\Browser($model->user_agent);
