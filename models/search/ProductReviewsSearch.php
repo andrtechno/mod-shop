@@ -19,10 +19,14 @@ class ProductReviewsSearch extends ProductReviews
     public function rules()
     {
         return [
-            [['id', 'product_id','rate'], 'integer'],
-            [['text'], 'string'],
+            [['id', 'product_id', 'rate'], 'integer'],
+            [['text', 'user_name'], 'string'],
             [['text'], 'safe'],
         ];
+    }
+
+    public function init()
+    {
     }
 
     /**
@@ -43,7 +47,10 @@ class ProductReviewsSearch extends ProductReviews
      */
     public function search($params)
     {
-        $query = ProductReviews::find()->where(['depth' => 1])->orderBy(['status' => SORT_ASC, 'created_at' => SORT_DESC]);//->groupBy('product_id');
+        $query = ProductReviews::find()
+            ->where(['depth' => 1])
+            ->orderBy(['status' => SORT_ASC, 'created_at' => SORT_DESC]);//->groupBy('product_id');
+
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             // 'sort' => self::getSort()
@@ -60,6 +67,7 @@ class ProductReviewsSearch extends ProductReviews
         $query->andFilterWhere(['product_id' => $this->product_id]);
         $query->andFilterWhere(['like', 'text', $this->text]);
         $query->andFilterWhere(['like', 'rate', $this->rate]);
+        $query->andFilterWhere(['like', 'user_name', $this->user_name]);
 
         return $dataProvider;
     }

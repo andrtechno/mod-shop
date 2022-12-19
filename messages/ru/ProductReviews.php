@@ -14,5 +14,9 @@ return [
     'STATUS_SPAM' => 'Спам',
     'RATE' => 'Оценка',
     'IP_CREATE' => 'IP адрес',
-    'USER_AGENT' => 'User-агент'
+    'USER_AGENT' => 'User-агент',
+    'YOUR_RATING' => 'Ваша оценка',
+    'EMPTY_LIST' => 'Отзывов нет.',
+    'RATING_GUEST_PRODUCT' => 'Чтобы оценить магазин необходимо',
+    'OR' => 'или',
 ];

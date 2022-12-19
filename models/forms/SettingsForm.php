@@ -28,12 +28,15 @@ class SettingsForm extends SettingsModel
     public $attachment_wm_corner;
     public $attachment_wm_offsetx;
     public $attachment_wm_offsety;
+    public $enable_reviews;
+
     public static $extensionWatermark = ['png'];
+
     public function rules()
     {
         return [
             [['per_page'], "required"],
-            [['product_related_bilateral', 'group_attribute', 'smart_bc', 'smart_title'], 'boolean'],
+            [['product_related_bilateral', 'group_attribute', 'smart_bc', 'smart_title', 'enable_reviews'], 'boolean'],
             [['label_expire_new', 'added_to_cart_count'], 'integer'],
             [['email_notify_reviews'], '\panix\engine\validators\EmailListValidator'],
             [['added_to_cart_period'], 'string'],
@@ -65,6 +68,7 @@ class SettingsForm extends SettingsModel
             'attachment_wm_offsety' => 10,
             'attachment_wm_offsetx' => 10,
             'attachment_wm_corner' => 5,
+            'enable_reviews' => false
         ];
     }
 
@@ -83,12 +87,14 @@ class SettingsForm extends SettingsModel
             10 => self::t('WM_POS_REPEAT'),
         ];
     }
+
     public function renderWatermarkImage()
     {
         $config = Yii::$app->settings->get('shop');
         if (isset($config->attachment_wm_path) && file_exists(Yii::getAlias('@uploads') . DIRECTORY_SEPARATOR . $config->attachment_wm_path))
             return Html::img("/uploads/{$config->attachment_wm_path}?" . time(), ['class' => 'img-fluid img-thumbnail mt-3']);
     }
+
     public function validateWatermarkFile($attribute)
     {
         $file = UploadedFile::getInstance($this, 'attachment_wm_path');
@@ -96,6 +102,7 @@ class SettingsForm extends SettingsModel
             $this->addError($attribute, self::t('ERROR_WM_NO_IMAGE'));
 
     }
+
     public static function labelExpireNew()
     {
         return [

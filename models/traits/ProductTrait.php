@@ -45,29 +45,33 @@ trait ProductTrait
             'header' => 'Фото',
             'value' => function ($model) {
                 /** @var $model Product */
-                $reviewsCount = 0;
-                if ($model->votes) {
-                    $reviewsQuery = $model->getReviews()->status(1);
-                    $aggregate = $reviewsQuery->aggregateRate();
+                if (Yii::$app->settings->get('shop', 'enable_reviews')) {
+                    $reviewsCount = 0;
+                    if ($model->votes) {
+                        $reviewsQuery = $model->getReviews()->status(1);
+                        $aggregate = $reviewsQuery->aggregateRate();
 
-                    $reviewsCount = $aggregate->count();
-                    $aggregate = $aggregate->one();
-                }
+                        $reviewsCount = $aggregate->count();
+                        $aggregate = $aggregate->one();
+                    }
 
-                Yii::$app->view->registerCss("
+                    Yii::$app->view->registerCss("
                     .cancel-on-png, .cancel-off-png, .star-on-png, .star-off-png, .star-half-png{font-size:13px;}
                     .star-off-png{color:#dee2e6}
                     .star-on-png,.star-half-png{color:orange}
                     .raty img{width:13px;height:13px;}
                     ", [], 'rating');
-                $rating = \panix\ext\rating\RatingInput::widget([
-                    'name' => 'product-rating',
-                    'value' => ($reviewsCount > 0) ? round($aggregate->rate / $reviewsCount, 1) : 0,
-                    'options' => [
-                        'starType' => 'img',
-                        'readOnly' => true,
-                    ],
-                ]);
+                    $rating = \panix\ext\rating\RatingInput::widget([
+                        'name' => 'product-rating',
+                        'value' => ($reviewsCount > 0) ? round($aggregate->rate / $reviewsCount, 1) : 0,
+                        'options' => [
+                            'starType' => 'img',
+                            'readOnly' => true,
+                        ],
+                    ]);
+                } else {
+                    $rating = '';
+                }
 
 
                 return $model->renderGridImage() . $rating;

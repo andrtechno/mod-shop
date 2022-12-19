@@ -211,8 +211,14 @@ class ProductController extends WebController
         ProductConfigureAsset::register($this->view);
         //$this->view->registerJsFile($this->module->assetsUrl . '/js/product.view.configurations.js', ['position'=>View::POS_END]);
 
-
-        return $this->render('view', ['model' => $this->dataModel, 'mainImage' => $mainImage]);
+        if (Yii::$app->settings->get('shop', 'enable_reviews')) {
+            $reviewsQuery = $this->dataModel->getReviews()->status(1);
+            $reviewsCount = $reviewsQuery->roots()->count();
+        } else {
+            $reviewsCount = 0;
+        }
+       // var_dump($reviewsCount);die;
+        return $this->render('view', ['model' => $this->dataModel, 'mainImage' => $mainImage, 'reviewsCount' => $reviewsCount]);
     }
 
     /**

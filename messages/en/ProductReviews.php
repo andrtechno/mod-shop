@@ -14,5 +14,9 @@ return [
     'STATUS_SPAM' => 'Spam',
     'RATE' => 'Rate',
     'IP_CREATE' => 'IP address',
-    'USER_AGENT' => 'User-agent'
+    'USER_AGENT' => 'User-agent',
+    'YOUR_RATING' => 'Your rating',
+    'EMPTY_LIST' => 'There are no reviews.',
+    'RATING_GUEST_PRODUCT' => 'You need to rate a store',
+    'OR' => 'or',
 ];

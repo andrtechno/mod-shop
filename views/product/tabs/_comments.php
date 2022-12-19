@@ -7,6 +7,7 @@ use yii\helpers\Html;
 
 /**
  * @var \panix\engine\behaviors\nestedsets\NestedSetsQuery $model
+ * @var ProductReviews $reviewModel
  */
 $reviewModel = new ProductReviews;
 
@@ -35,8 +36,8 @@ echo \panix\ext\fancybox\Fancybox::widget([
 ?>
 
     <div class="container">
-        <div class="text-center mt-5">
-            <button type="button" id="review-button" class="btn btn-primary" data-fancybox
+        <div class="text-center mt-5 mb-5">
+            <button type="button" id="review-button" class="btn btn-buy" data-fancybox
                     data-src="#rev-modal">
                 <?= $reviewModel::t('BTN_SUBMIT'); ?>
             </button>
@@ -56,7 +57,7 @@ echo \panix\ext\fancybox\Fancybox::widget([
                     'itemView' => '_comment_item',
                     'layout' => '{items}{pager}',
                     //'layout' => '{items}{pager}',
-                    'emptyText' => 'Отзывов нет.',
+                    'emptyText' => $reviewModel::t('EMPTY_LIST'),
                     'options' => ['class' => 'list-view rev-box'],
                     'itemOptions' => ['class' => 'item'],
                     'emptyTextOptions' => ['class' => 'alert alert-info'],
@@ -136,6 +137,7 @@ $('#review-product-form').on('beforeSubmit', function(){
 
 $(document).on('pjax:beforeSend', function(xhr, options) {
   $(xhr.target).addClass('pjax-loading');
+  //console.log(xhr, options);
 });
 $(document).on('pjax:complete', function(xhr, options) {
     $(xhr.target).removeClass('pjax-loading');
@@ -165,16 +167,16 @@ $this->registerJs($js);
         <?php //if(!$reviewModel->checkUserRate()){ ?>
         <div class="d-flex align-items-center mb-4" id="review-rate">
             <?php if (Yii::$app->user->isGuest) { ?>
-                <span><?= Yii::t('default', 'RATING_GUEST_PRODUCT'); ?> <?= Html::a(Yii::t('user/default', 'REGISTRATION'), ['/user/default/reguster']); ?>
-                    <?= Yii::t('default', 'OR'); ?> <?= Html::a(Yii::t('user/default', 'LOGIN'), ['/user/default/login']); ?></span>
+                <div class="mr-3"><?= $reviewModel::t('RATING_GUEST_PRODUCT'); ?> <?= Html::a(Yii::t('user/default', 'REGISTRATION'), ['/user/default/sign']); ?>
+                    <?= $reviewModel::t( 'OR'); ?> <?= Html::a(Yii::t('user/default', 'LOGIN'), ['/user/default/sign']); ?></div>
             <?php } else { ?>
 
-                <span class="mr-2">Ваша оценка</span>
+                <div class="mr-3"><?= $reviewModel::t('YOUR_RATING'); ?></div>
                 <?php
-
                 echo \panix\ext\rating\RatingInput::widget([
                     'model' => $reviewModel,
                     'attribute' => 'rate',
+                    'value' => 5,
                     'options' => [
                         'path' => $this->theme->asset[1] . '/images/',
                         'starOff' => 'star-off.svg',
@@ -193,25 +195,25 @@ $this->registerJs($js);
 
         </div>
         <?php //} ?>
-
+        <div class="input-line">
             <div class="row">
                 <div class="col-sm-6">
-                    <?= $form->field($reviewModel, 'user_name', [
+                    <?php echo $form->field($reviewModel, 'user_name', [
                         'template' => '{label}{input}{hint}{error}'
                     ])->textInput(['maxlength' => 50]); ?>
                 </div>
                 <div class="col-sm-6">
-                    <?= $form->field($reviewModel, 'user_email', [
+                    <?php echo $form->field($reviewModel, 'user_email', [
                         'template' => '{label}{input}{hint}{error}'
                     ])->textInput(['maxlength' => 50]); ?>
                 </div>
             </div>
-
-        <div>
-            <?= $form->field($reviewModel, 'text')->textarea(['rows' => 5]); ?>
         </div>
-        <div class="text-center">
-            <?= Html::submitButton($reviewModel::t('BTN_SUBMIT'), ['id' => 'submit-review', 'class' => 'btn btn-primary', 'name' => 'submit', 'value' => 1]); ?>
+        <div class="textarea-line">
+            <?php echo $form->field($reviewModel, 'text')->textarea(['rows' => 5]); ?>
+        </div>
+        <div class="text-center mt-4">
+            <?php echo Html::submitButton($reviewModel::t('BTN_SUBMIT'), ['id' => 'submit-review', 'class' => 'btn btn-dark btn-buy', 'name' => 'submit', 'value' => 1]); ?>
         </div>
         <?php ActiveForm::end(); ?>
     </div>

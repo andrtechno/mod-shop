@@ -18,11 +18,13 @@ use yii\helpers\HtmlPurifier;
  * @property integer $id id
  * @property integer $product_id Product id
  * @property string $text
+ * @property integer $rate
+ * @property string $user_name
  */
 class ProductReviews extends ActiveRecord
 {
 
-    const route = '/admin/shop/default';
+    const route = '/admin/shop/reviews';
     const MODULE_ID = 'shop';
 
     const STATUS_WAIT = 0;
@@ -106,21 +108,33 @@ class ProductReviews extends ActiveRecord
         ];
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getUser()
     {
         return $this->hasOne(User::class, ['id' => 'user_id']);
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getProduct()
     {
         return $this->hasOne(Product::class, ['id' => 'product_id']);
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getBuy()
     {
         return $this->hasOne(OrderProduct::class, ['product_id' => 'product_id']);
     }
 
+    /**
+     * @return bool
+     */
     public function getHasBuy()
     {
         if ($this->user_id) {

@@ -122,12 +122,12 @@ if (count($typesList) > 0) {
                             'options' => ['class' => 'flex-sm-fill text-center nav-item'],
                         ];
                         $tabs[] = [
-                             'label' => $model::t('TAB_KIT'),
-                             'content' => $this->render('tabs/_kit', ['exclude' => $model->id, 'form' => $form, 'model' => $model]),
-                             'headerOptions' => [],
-                             'options' => ['class' => 'flex-sm-fill text-center nav-item'],
-                             'visible' => false,
-                         ];
+                            'label' => $model::t('TAB_KIT'),
+                            'content' => $this->render('tabs/_kit', ['exclude' => $model->id, 'form' => $form, 'model' => $model]),
+                            'headerOptions' => [],
+                            'options' => ['class' => 'flex-sm-fill text-center nav-item'],
+                            'visible' => false,
+                        ];
                         $tabs[] = [
                             'label' => $model::t('TAB_VARIANTS'),
                             'content' => $this->render('tabs/_variations', ['model' => $model]),
@@ -149,7 +149,7 @@ if (count($typesList) > 0) {
                         $tabs[] = [
                             'label' => (isset($this->context->tab_errors['attributes'])) ? Html::icon('warning', ['class' => 'text-danger']) . ' Характеристики' : 'Характеристики',
                             'encode' => false,
-                            'content' => $this->render('tabs/_attributes', ['form' => $form, 'model' => $model,'eavList'=>$eavList]),
+                            'content' => $this->render('tabs/_attributes', ['form' => $form, 'model' => $model, 'eavList' => $eavList]),
                             'options' => ['class' => 'flex-sm-fill text-center nav-item'],
                         ];
 
@@ -247,33 +247,36 @@ if (count($typesList) > 0) {
                             <div class="form-group row">
                                 <div class="col-sm-8 col-md-6">Применена наценка</div>
                                 <div class="col-sm-4 col-md-6">
-                                    <?= $model->hasMarkup->name; ?>: <span class="font-weight-bold"><?= $model->hasMarkup->sum; ?></span>
+                                    <?= $model->hasMarkup->name; ?>: <span
+                                            class="font-weight-bold"><?= $model->hasMarkup->sum; ?></span>
                                 </div>
                             </div>
                         <?php } ?>
 
-                        <div class="form-group row">
-                            <div class="col-sm-4 col-md-6"><?= Yii::t('shop/default', 'RATING_SCORE', $model->ratingScore); ?></div>
-                            <div class="col-sm-8 col-md-6">
-                                <?php
-                                echo \panix\ext\rating\RatingInput::widget([
-                                    'name' => 'product-rating',
-                                    //'id' => 'product-rating',
-                                    'value' => $model->ratingScore,
-                                    'options' => [
-                                        'hints' => [
-                                            Yii::t('shop/default', 'RATING_SCORE', $model->ratingScore),
-                                            Yii::t('shop/default', 'RATING_SCORE', $model->ratingScore),
-                                            Yii::t('shop/default', 'RATING_SCORE', $model->ratingScore),
-                                            Yii::t('shop/default', 'RATING_SCORE', $model->ratingScore),
-                                            Yii::t('shop/default', 'RATING_SCORE', $model->ratingScore),
-                                        ],
-                                        'readOnly' => true,
-                                    ]
-                                ]);
-                                ?>
+                        <?php if (Yii::$app->settings->get('shop', 'enable_reviews')) { ?>
+                            <div class="form-group row">
+                                <div class="col-sm-4 col-md-6"><?= Yii::t('shop/default', 'RATING_SCORE', $model->ratingScore); ?></div>
+                                <div class="col-sm-8 col-md-6">
+                                    <?php
+                                    echo \panix\ext\rating\RatingInput::widget([
+                                        'name' => 'product-rating',
+                                        //'id' => 'product-rating',
+                                        'value' => $model->ratingScore,
+                                        'options' => [
+                                            'hints' => [
+                                                Yii::t('shop/default', 'RATING_SCORE', $model->ratingScore),
+                                                Yii::t('shop/default', 'RATING_SCORE', $model->ratingScore),
+                                                Yii::t('shop/default', 'RATING_SCORE', $model->ratingScore),
+                                                Yii::t('shop/default', 'RATING_SCORE', $model->ratingScore),
+                                                Yii::t('shop/default', 'RATING_SCORE', $model->ratingScore),
+                                            ],
+                                            'readOnly' => true,
+                                        ]
+                                    ]);
+                                    ?>
+                                </div>
                             </div>
-                        </div>
+                        <?php } ?>
 
                     </div>
                 </div>

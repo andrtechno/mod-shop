@@ -28,4 +28,5 @@ return [
     'WM_POS_RIGHT_CENTER' => 'Center Right',
     'WM_POS_REPEAT' => 'Repeat on entire image',
     'ERROR_WM_NO_IMAGE' => 'Error. The watermark is not an image.',
+    'ENABLE_REVIEWS' => 'Activate product reviews',
 ];
