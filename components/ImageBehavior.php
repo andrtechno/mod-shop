@@ -334,9 +334,8 @@ class ImageBehavior extends \yii\base\Behavior
         $wheres['product_id'] = $this->owner->primaryKey;
         $wheres['is_main'] = $main;
         $query = ProductImage::find()->where($wheres);
-        //$query->cache(3600, new TagDependency(['tags' => 'product-' . $this->owner->primaryKey])); //Есть баги
+        //$query->cache(0, new TagDependency(['tags' => 'product-mainImage-' . $this->owner->primaryKey])); //Есть баги
 
-        //echo $query->createCommand()->rawSql;die;
         /** @var ProductImage $img */
         $img = $query->one();
         if (!$img) {
@@ -348,15 +347,6 @@ class ImageBehavior extends \yii\base\Behavior
         return $img;
 
     }
-
-
-    /*public function getModelSubDir($model)
-    {
-
-        $modelName = $this->getShortClass($model);
-        $modelDir = \yii\helpers\Inflector::pluralize($modelName) . '/' . $model->id;
-        return $modelDir;
-    }*/
 
     /**
      * Clear all images cache (and resized copies)
@@ -407,9 +397,6 @@ class ImageBehavior extends \yii\base\Behavior
             $allImg->setMain(false);
             $allImg->save();
         }
-        //$this->owner->main_image = $img->filename;
-        //$this->owner->save(false);
-        // $this->clearImagesCache();
     }
 
 }

@@ -369,7 +369,7 @@ if(YII_DEBUG){
         if (Yii::$app->request->getQueryParam('category')) {
             $cacheKey .= Yii::$app->request->getQueryParam('category');
         }
-//echo $this->query->createCommand()->rawSql;die;
+
         $this->filter = new FilterV2($this->query, ['cacheKey' => $cacheKey]);
 
         //$this->filterQuery = clone $this->filter->resultQuery;

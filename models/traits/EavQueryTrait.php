@@ -60,6 +60,7 @@ trait EavQueryTrait
         // Return values.
         return $values;
     }
+
     public function getFindByEavAttributes($attributes)
     {
         $class = $this->modelClass;
@@ -81,13 +82,13 @@ trait EavQueryTrait
                     $values = array_intersect($cache[$attribute], $values);
                 }
                 foreach ($values as $value) {
-                    $this->join('JOIN', ProductAttributesEav::tableName().' eavb' . $i, "{$pk}=`eavb{$i}`.`entity`");
+                    $this->join('JOIN', ProductAttributesEav::tableName() . ' eavb' . $i, "{$pk}=`eavb{$i}`.`entity`");
                     $this->andWhere(['IN', "`eavb$i`.`value`", $values]);
                     $i++;
                 }
             } // If search models with attribute name with anything values.
             elseif (is_int($attribute)) {
-                $this->join('JOIN', ProductAttributesEav::tableName().' eavb' . $i, "$pk=`eavb$i`.`entity` AND eavb$i.attribute = '$values'");
+                $this->join('JOIN', ProductAttributesEav::tableName() . ' eavb' . $i, "$pk=`eavb$i`.`entity` AND eavb$i.attribute = '$values'");
                 $i++;
             }
         }
@@ -103,44 +104,46 @@ trait EavQueryTrait
         $class = $this->modelClass;
         $pk = $class::tableName() . '.`id`';
         $i = 0;
+
         foreach ($attributes as $attribute => $values) {
+            // Get attribute compare operator
+            if (!is_array($values)) {
+                $values = [$values];
+            }
+
+            $values = array_unique($values);
+            sort($values);
+            $values = array_intersect($attributes[$attribute], $values); //anti d-dos убирает лишние значение с запроса.
             // If search models with attribute name with specified values.
             if (is_string($attribute)) {
-                // Get attribute compare operator
-                if (!is_array($values)) {
-                    $values = [$values];
-                }
-                $values = array_unique($values);
-                sort($values);
-
-                $cache = Yii::$app->cache->get("attribute_" . $attribute);
-                //anti d-dos убирает лишние значение с запроса.
-                if ($cache) {
-                    $values = array_intersect($cache[$attribute], $values);
-                }
-
-
-               // $this->join['eavb' . $i] = ['JOIN', '{{%shop__product_filter}} eavb' . $i, "$pk=`eavb$i`.`product_id`"];
-               // $this->andwhere(['IN', "`eavb$i`.`option_id`", $values]);
 
                 $this->join['eavb' . $i] = ['JOIN', '{{%shop__product_attribute_eav}} eavb' . $i, "$pk=`eavb$i`.`entity`"];
-                $this->andwhere(['IN', "`eavb$i`.`value`", $values]);
-               // $this->andwhere(["`eavb$i`.`attribute`"=>$attribute]);
+                if (count($values)) {
+                    $this->andwhere(['IN', "`eavb$i`.`value`", $values]);
+                } else {
+                    $this->andwhere(["`eavb$i`.`value`" => $values]);
+                }
 
-                $i++;
+
+                // $this->join['eavb'] = ['JOIN', '{{%shop__product_attribute_eav}} eavb', "$pk=`eavb`.`entity`"];
+                // $this->andwhere(['IN', "`eavb`.`value`", $values]);
+
             } elseif (is_int($attribute)) { // If search models with attribute name with anything values.
-                $this->join('JOIN', ProductAttributesEav::tableName().' eavb' . $i, "$pk=`eavb$i`.`entity` AND eavb$i.attribute = '$values'");
-                $i++;
-            }
-        }
+                $this->join('JOIN', ProductAttributesEav::tableName() . ' eavb' . $i, "$pk=`eavb$i`.`entity` AND eavb$i.attribute = '$values'");
+                //$this->join('JOIN', ProductAttributesEav::tableName().' eavb', "$pk=`eavb`.`entity` AND eavb.attribute = '$values'");
 
+            }
+            $i++;
+
+
+        }
 
 
         // $this->distinct(true);
 
-       // $this->groupBy("{$pk}");
+        // $this->groupBy("{$pk}");
         //$this->addGroupBy("{$pk}");
-       //  echo $this->createCommand()->getRawSql();die;
+        //  echo $this->createCommand()->getRawSql();die;
         return $this;
     }
 

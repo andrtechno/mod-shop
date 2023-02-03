@@ -304,17 +304,26 @@ class FilterV2 extends Component
         $active = $this->activeAttributes;
 
         foreach ($this->getRootCategoryAttributes() as $attribute) {
-            //print_r($attribute);die;
             $data[$attribute['key']] = [
                 'title' => $attribute['title'],
                 'selectMany' => (boolean)$attribute['selectMany'],
                 'type' => (int)$attribute['type'],
                 'key' => $attribute['key'],
+                'disable' => false,
                 'filters' => []
             ];
+
             $totalCount = 0;
             $filtersCount = 0;
             foreach ($attribute['filters'] as $option) {
+
+                //$count=0;
+                if (isset($active[$attribute['key']])) {
+                    if (in_array($option['queryParam'], $active[$attribute['key']])) {
+                        //$count = $this->countAttributeProductsCallback($attribute, $option);
+                    }
+
+                }
                 $count = $this->countAttributeProductsCallback($attribute, $option);
                 $first = array_key_first($active);
                 $countText = $count;
@@ -335,6 +344,7 @@ class FilterV2 extends Component
                     $filtersCount++;
 
                 $totalCount += $count;
+
             }
             $data[$attribute['key']]['totalCount'] = $totalCount;
             $data[$attribute['key']]['filtersCount'] = $filtersCount;
@@ -346,44 +356,49 @@ class FilterV2 extends Component
 
     public function getRootCategoryAttributes()
     {
-        $data = [];
-        foreach ($this->_eavAttributes as $attribute) {
-            $data[$attribute->name] = [
-                'title' => $attribute->title,
-                'selectMany' => (boolean)$attribute->select_many,
-                'type' => (int)$attribute->type,
-                'key' => $attribute->name,
-                'filters' => []
-            ];
-
-            $totalCount = 0;
-            $filtersCount = 0;
-            foreach ($attribute->getOptions()->cache($this->cacheDuration, new TagDependency(['tags' => 'attribute-' . $attribute->name]))->all() as $option) {
-                $count = $this->countRootAttributeProducts($attribute, $option);
 
 
-                if ($count > 0) {
-                    $totalCount += $count;
-                    $data[$attribute->name]['filters'][] = [
-                        'title' => (Yii::$app->language == 'uk') ? $option->value_uk : $option->value,
-                        'count' => (int)$count,
-                        'count_text' => $count,
-                        'data' => ($option->data) ? Json::decode($option->data) : [],
-                        'abbreviation' => ($attribute->abbreviation) ? $attribute->abbreviation : null,
-                        'key' => $attribute->name,
-                        'queryParam' => (int)$option->id,
-                    ];
+        $data = Yii::$app->cache->get($this->cacheKey . '-attrs');
+        if ($data === false) {
+            //$data = [];
+            foreach ($this->_eavAttributes as $attribute) {
+                $data[$attribute->name] = [
+                    'title' => $attribute->title,
+                    'selectMany' => (boolean)$attribute->select_many,
+                    'type' => (int)$attribute->type,
+                    'key' => $attribute->name,
+                    'filters' => []
+                ];
+
+                $totalCount = 0;
+                $filtersCount = 0;
+                foreach ($attribute->getOptions()->cache(0, new TagDependency(['tags' => 'attribute-' . $attribute->name]))->all() as $option) {
+                    $count = $this->countRootAttributeProducts($attribute, $option);
+
+
+                    if ($count > 0) {
+                        $totalCount += $count;
+                        $data[$attribute->name]['filters'][] = [
+                            'title' => (Yii::$app->language == 'uk') ? $option->value_uk : $option->value,
+                            'count' => (int)$count,
+                            'count_text' => $count,
+                            'data' => ($option->data) ? Json::decode($option->data) : [],
+                            'abbreviation' => ($attribute->abbreviation) ? $attribute->abbreviation : null,
+                            'key' => $attribute->name,
+                            'queryParam' => (int)$option->id,
+                        ];
+                    }
+                }
+                $data[$attribute->name]['totalCount'] = $totalCount;
+                $data[$attribute->name]['filtersCount'] = count($data[$attribute->name]['filters']);
+                if ($attribute->sort == SORT_ASC) {
+                    sort($data[$attribute->name]['filters']);
+                } elseif ($attribute->sort == SORT_DESC) {
+                    rsort($data[$attribute->name]['filters']);
                 }
             }
-            $data[$attribute->name]['totalCount'] = $totalCount;
-            $data[$attribute->name]['filtersCount'] = count($data[$attribute->name]['filters']);
-            if ($attribute->sort == SORT_ASC) {
-                sort($data[$attribute->name]['filters']);
-            } elseif ($attribute->sort == SORT_DESC) {
-                rsort($data[$attribute->name]['filters']);
-            }
+            Yii::$app->cache->set($this->cacheKey . '-attrs', $data, 3600*24*7);
         }
-
         return $data;
     }
 
@@ -396,7 +411,6 @@ class FilterV2 extends Component
         $model->select('COUNT(*)');
 
         $newData = [];
-        //echo $model->createCommand()->rawSql;die;
         $newData[$attribute->name][] = $option->id;
 
         $newData2 = [];
@@ -445,14 +459,18 @@ class FilterV2 extends Component
         if ($newData)
             $model->getFindByEavAttributes2($newData);
 
-        // echo $model->createCommand()->rawSql;die;
-        $model->cache(0, new TagDependency([
+        /*$model->cache(999999, new TagDependency([
             'tags' => [
                 'attribute-' . $attribute->name,
                 'attribute-' . $attribute->name . '-' . $option->id
             ]
-        ]));
-        return $model->createCommand()->queryScalar();
+        ]));*/
+        //echo $this->cacheKey;die;
+        //$model->cache(999999, new TagDependency(['tags'=>'attribute-' . $attribute->name]));
+        $data2 = Yii::$app->cache->getOrSet($this->cacheKey . '-' . $option->id, function () use ($model) {
+            return $model->createCommand()->queryScalar();
+        }, 0);
+        return $data2; //$model->createCommand()->queryScalar();
     }
 
 
@@ -493,7 +511,7 @@ class FilterV2 extends Component
 
         /** @var EavQueryTrait|ActiveQuery $model */
         $model->getFindByEavAttributes2($newData);
-        $model->cache($this->cacheDuration, new TagDependency(['tags' => 'attribute-' . $attribute['key'] . '-' . $option['queryParam']]));
+        $model->cache(0, new TagDependency(['tags' => 'attribute-' . $attribute['key'] . '-' . $option['queryParam']]));
         return $model->createCommand()->queryScalar();
     }
 
@@ -624,8 +642,8 @@ class FilterV2 extends Component
         $queryClone->addSelect([
             'counter' => $sub_query,
             Brand::tableName() . '.`name_' . Yii::$app->language . '` as name',
-            Brand::tableName().'.slug',
-            Brand::tableName().'.image'
+            Brand::tableName() . '.slug',
+            Brand::tableName() . '.image'
         ]);
         $queryClone->cache($this->cacheDuration);
 
@@ -685,7 +703,7 @@ class FilterV2 extends Component
         $queryClone->andWhere('brand_id IS NOT NULL');
         $queryClone->groupBy('brand_id');
         $queryClone->addSelect(['counter' => $sub_query, Brand::tableName() . '.`name_' . Yii::$app->language . '` as name']);
-        $queryClone->cache($this->cacheDuration);
+        //$queryClone->cache($this->cacheDuration);
 
         $brands = $queryClone->createCommand()->queryAll();
 

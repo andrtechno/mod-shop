@@ -108,7 +108,7 @@ class FiltersWidget extends Widget
 //echo $this->data->getCurrentMinPrice();die;
         // echo Html::endTag('div');
         //   print_r($this->model);die;
-
+        $attributes = $this->data->getRootCategoryAttributes();
         echo $this->render($this->skin, [
             'model' => $this->model,
             'currentUrl' => $this->view->context->currentUrl,
@@ -120,7 +120,7 @@ class FiltersWidget extends Widget
             // 'currentPriceMin' => $this->data->getCurrentMinPrice(),
             //  'currentPriceMax' => $this->data->getCurrentMaxPrice(),
             'active' => $active,
-            'attributes' => $this->data->getRootCategoryAttributes(),
+            'attributes' => ($attributes) ? $attributes : [],
             'brands' => (Yii::$app->controller->route != 'shop/brand/view') ? $this->data->getCategoryBrands() : []
         ]);
         // var category_id = {$this->model->id};
@@ -306,7 +306,7 @@ class FiltersWidget extends Widget
         $css = '';
         if (isset($data['color'])) {
             //if(isset($data['color'][0]) && !empty($data['color'][0])){
-                $css .= "background: {$data['color'][0]};";
+            $css .= "background: {$data['color'][0]};";
             //}
 
             if (count($data['color']) > 1) {

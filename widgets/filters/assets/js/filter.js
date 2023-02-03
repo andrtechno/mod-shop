@@ -200,7 +200,6 @@ function filterCallback(e, objects, target) {
             $.each(response.filters, function (name, filters) {
 
                 $('#filter-' + name + ' input[type="checkbox"]:not(:checked)').attr('disabled', 'disabled');
-
                 $('#filter-' + name + ' li').addClass('disabled');
 
                 $.each(filters.filters, function (index, data) {
@@ -209,9 +208,6 @@ function filterCallback(e, objects, target) {
 
 
                     if (data.count) {
-                        //if (!$('#filter_' + name + '_' + data.queryParam).is('checked')) {
-                        //    count = '+' + count;
-                        //}
                         if (selector.prop('checked')) {
                             $('#filter-count-' + name + '-' + data.queryParam).html('');
                         } else {
@@ -220,22 +216,15 @@ function filterCallback(e, objects, target) {
 
                         selector.removeAttr('disabled');
                         selector.closest('li').removeClass('disabled');
-                        // $('#filter_' + name + '_' + data.queryParam).parent('div').parent('li').removeClass('filter-disabled');
                     } else {
                         if (!selector.prop('checked')) {
                             $('#filter-count-' + name + '-' + data.queryParam).html(data.count_text);
                         } else {
                             //Если 0 и чекнутый то Анчекаем и дизайблем.
                             selector.closest('li').removeClass('disabled');
-
-
-                            //selector.prop('checked', false)
-                            //selector.closest('li').addClass('disabled');
-                            //selector.attr('disabled', 'disabled');
-                            //$('#filter_' + name + '_' + data.queryParam).closest('li').removeClass('disabled');
-                            //$('#filter_' + name + '_' + data.queryParam).attr('disabled', 'disabled');
                         }
                     }
+
                 });
 
             });
@@ -314,7 +303,8 @@ function filter_ajax(e, objects, sort = false) {
         },
         beforeSend: function () {
             ajaxSelector.toggleClass('loading');
-        }
+        },
+        //complete:function(){}
     });
     return xhrFilters;
 }

@@ -1250,7 +1250,12 @@ class Product extends ActiveRecord
 
             //$attributeModel = Attribute::find()->where(['name' => $attribute])->cache(3600 * 24, $dependency)->one();
             //return (object)['name' => $attributeModel->title, 'value' => $attributeModel->renderValue($value)];
-            return $o;
+            if($o){
+                return $o;
+            }else{
+                return (object)['value' => 0];
+            }
+
             //return $attributeModel->renderValue($value);
         }
         return parent::__get($name);

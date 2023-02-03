@@ -31,6 +31,7 @@ class AjaxController extends Controller
 
     public function actionFilter()
     {
+
         $productModel = Yii::$app->getModule('shop')->model('Product');
         $query = $productModel::find()->published();
         $route = Yii::$app->request->post('route');
