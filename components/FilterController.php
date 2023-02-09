@@ -66,7 +66,7 @@ class FilterController extends WebController
     public $itemView = '_view_grid';
     public $per_page;
     public $filter;
-    private $filterClass;
+    public $filterClass;
 
     public function __construct($id, $module, $config = [])
     {

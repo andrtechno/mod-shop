@@ -4,8 +4,6 @@ namespace panix\mod\shop\controllers;
 
 
 use panix\engine\CMS;
-use panix\mod\shop\components\Filter;
-use panix\mod\shop\components\FilterV2;
 use Yii;
 use yii\helpers\Url;
 use yii\web\Response;
@@ -68,7 +66,7 @@ class BrandController extends FilterController
         $this->query->applyBrands($this->dataModel->id);
 
 
-        $this->filter = new FilterV2($this->query, ['cacheKey' => 'filter_brand_' . $this->dataModel->id]);
+        $this->filter = new $this->filterClass($this->query, ['cacheKey' => 'filter_brand_' . $this->dataModel->id]);
 
         $this->filterQuery = clone $this->query;
         $this->currentQuery = clone $this->query;

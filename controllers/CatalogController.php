@@ -12,7 +12,7 @@ use panix\mod\shop\models\Category;
 use panix\engine\CMS;
 use panix\engine\data\ActiveDataProvider;
 use panix\mod\discounts\models\Discount;
-use panix\mod\shop\components\FilterV2;
+
 
 /**
  * Class CatalogController
@@ -95,7 +95,7 @@ class CatalogController extends FilterController
         $this->query->applyCategories($this->dataModel, 'andWhere', $this->dataModel->children()->count());
 //echo $this->dataModel->children()->count();
 
-        $this->filter = new FilterV2($this->query, ['cacheKey' => 'filter_catalog_' . $this->dataModel->id]);
+        $this->filter = new $this->filterClass($this->query, ['cacheKey' => 'filter_catalog_' . $this->dataModel->id]);
 if(YII_DEBUG){
    // CMS::dump( $this->filter->getCategoryBrands());
 }
@@ -370,7 +370,7 @@ if(YII_DEBUG){
             $cacheKey .= Yii::$app->request->getQueryParam('category');
         }
 
-        $this->filter = new FilterV2($this->query, ['cacheKey' => $cacheKey]);
+        $this->filter = new $this->filterClass($this->query, ['cacheKey' => $cacheKey]);
 
         //$this->filterQuery = clone $this->filter->resultQuery;
         $this->currentQuery = clone $this->query;
@@ -486,7 +486,7 @@ if(YII_DEBUG){
         if (Yii::$app->request->getQueryParam('category')) {
             $cacheKey .= Yii::$app->request->getQueryParam('category');
         }
-        $this->filter = new FilterV2($this->query, ['cacheKey' => $cacheKey]);
+        $this->filter = new $this->filterClass($this->query, ['cacheKey' => $cacheKey]);
         $this->filter->resultQuery->sortAvailability();
 
         $this->filterQuery = clone $this->filter->resultQuery;

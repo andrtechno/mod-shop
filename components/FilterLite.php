@@ -203,7 +203,7 @@ class FilterLite extends Component
         // Render links to cancel applied filters like prices, brands, attributes.
         $menuItems = [];
 
-        if (Yii::$app->controller->route == 'shop/catalog/view' || Yii::$app->controller->route == 'shop/search/index') {
+        if (in_array(Yii::$app->controller->route, ['shop/catalog/view', 'shop/catalog/sales', 'shop/catalog/new', 'shop/search/index'])) {
             $brands = array_filter(explode(',', $request->getQueryParam('brand')));
             $brands = Brand::getDb()->cache(function ($db) use ($brands) {
                 return Brand::findAll($brands);
@@ -232,7 +232,7 @@ class FilterLite extends Component
         }
 
 
-        if (Yii::$app->controller->route == 'shop/catalog/view') {
+        if (in_array(Yii::$app->controller->route, ['shop/catalog/view', 'shop/catalog/sales', 'shop/catalog/new', 'shop/search/index'])) {
             if (!empty($brands)) {
                 $menuItems['brand'] = [
                     'name' => 'brand',
@@ -310,7 +310,7 @@ class FilterLite extends Component
                 'type' => (int)$attribute['type'],
                 'key' => $attribute['key'],
                 'disable' => false,
-                'changeCount'=>false,
+                'changeCount' => false,
                 'filters' => []
             ];
 
@@ -318,7 +318,7 @@ class FilterLite extends Component
             $filtersCount = 0;
             foreach ($attribute['filters'] as $option) {
 
-                $count=0;
+                $count = 0;
                 if (isset($active[$attribute['key']])) {
                     if (in_array($option['queryParam'], $active[$attribute['key']])) {
                         $count = $this->countAttributeProductsCallback($attribute, $option);
@@ -398,7 +398,7 @@ class FilterLite extends Component
                     rsort($data[$attribute->name]['filters']);
                 }
             }
-            Yii::$app->cache->set($this->cacheKey . '-attrs', $data, 3600*24*7);
+            Yii::$app->cache->set($this->cacheKey . '-attrs', $data, 3600 * 24 * 7);
         }
         return $data;
     }

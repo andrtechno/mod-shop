@@ -12,7 +12,6 @@ use panix\mod\shop\models\Category;
 use panix\engine\CMS;
 use panix\engine\data\ActiveDataProvider;
 use panix\mod\discounts\models\Discount;
-use panix\mod\shop\components\FilterV2;
 
 /**
  * Class CatalogController
@@ -86,7 +85,7 @@ class TagController extends FilterController
             $cacheKey .= Yii::$app->request->getQueryParam('category');
         }
 
-        $this->filter = new FilterV2($this->query, ['cacheKey' => $cacheKey]);
+        $this->filter = new $this->filterClass($this->query, ['cacheKey' => $cacheKey]);
 
         $this->currentQuery = clone $this->query;
 
