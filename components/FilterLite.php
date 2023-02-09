@@ -21,7 +21,7 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
 use yii\helpers\Url;
 
-class FilterV2 extends Component
+class FilterLite extends Component
 {
 
     private $attributes;
@@ -310,6 +310,7 @@ class FilterV2 extends Component
                 'type' => (int)$attribute['type'],
                 'key' => $attribute['key'],
                 'disable' => false,
+                'changeCount'=>false,
                 'filters' => []
             ];
 
@@ -317,21 +318,21 @@ class FilterV2 extends Component
             $filtersCount = 0;
             foreach ($attribute['filters'] as $option) {
 
-                //$count=0;
+                $count=0;
                 if (isset($active[$attribute['key']])) {
                     if (in_array($option['queryParam'], $active[$attribute['key']])) {
-                        //$count = $this->countAttributeProductsCallback($attribute, $option);
+                        $count = $this->countAttributeProductsCallback($attribute, $option);
                     }
 
                 }
-                $count = $this->countAttributeProductsCallback($attribute, $option);
+                //$count = $this->countAttributeProductsCallback($attribute, $option);
                 $first = array_key_first($active);
                 $countText = $count;
-                if (isset($active[$attribute['key']])) {
-                    if ($first == $attribute['key'] && $count) {
-                        $countText = '+' . $count;
-                    }
-                }
+                //if (isset($active[$attribute['key']])) {
+                //    if ($first == $attribute['key'] && $count) {
+                ////        $countText = '+' . $count;
+                //    }
+                //}
 
                 $data[$attribute['key']]['filters'][] = [
                     'title' => $option['title'],

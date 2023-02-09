@@ -298,7 +298,7 @@ class FiltersWidget extends Widget
         }
 
         $result = ($filter['count'] > 0) ? $filter['count_text'] : 0;
-        return ($this->count) ? ' ' . Html::tag($this->tagCount, $result, $this->tagCountOptions) : '';
+        return '';//($this->count) ? ' ' . Html::tag($this->tagCount, $result, $this->tagCountOptions) : '';
     }
 
     public function generateGradientCss($data)

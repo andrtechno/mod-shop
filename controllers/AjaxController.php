@@ -3,6 +3,7 @@
 namespace panix\mod\shop\controllers;
 
 use panix\mod\shop\components\Filter;
+use panix\mod\shop\components\FilterLite;
 use panix\mod\shop\components\FilterV2;
 use panix\mod\shop\models\Brand;
 use panix\mod\shop\models\Category;
@@ -72,14 +73,13 @@ class AjaxController extends Controller
             // $query->getFindByEavAttributes3($filterPost);
         }
 //echo $query->createCommand()->rawSql;die;
+        $filterClass = Yii::$app->getModule('shop')->filterClass;
+        $filter = new $filterClass($query, ['route' => $url]);
 
-        $filter = new FilterV2($query,['route'=>$url]);
-
-      //  echo $filter->activeUrl;
+        //  echo $filter->activeUrl;
 
         //$filter->route = $url;
         $filter->accessAttributes = $accessAttributes;
-
 
 
         // $filter->resultQuery->applyAttributes($filter->activeAttributes);
@@ -91,17 +91,20 @@ class AjaxController extends Controller
         //  print_r($filter->resultQuery);die;
         //print_r($f->getPostActiveAttributes());die;
 
-
+        $attributes = [];
         $brands = [];
-        if (!in_array($route, ['shop/brand/view'])) {
-            $brands = $filter->getCategoryBrandsCallback();
+        if ($filterClass !== 'panix\mod\shop\components\FilterLite') {
+
+            if (!in_array($route, ['shop/brand/view'])) {
+                $brands = $filter->getCategoryBrandsCallback();
+            }
+            $attributes = $filter->getCategoryAttributesCallback();
         }
-        $attributes = $filter->getCategoryAttributesCallback();
 
         $total = $filter->resultQuery->count();
 
 
-        $sliders=[];
+        $sliders = [];
         $sliders2 = Yii::$app->request->post('slide');
         if ($sliders2) {
             $sliders = [

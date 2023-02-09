@@ -66,6 +66,13 @@ class FilterController extends WebController
     public $itemView = '_view_grid';
     public $per_page;
     public $filter;
+    private $filterClass;
+
+    public function __construct($id, $module, $config = [])
+    {
+        $this->filterClass = Yii::$app->getModule('shop')->filterClass;
+        parent::__construct($id, $module, $config);
+    }
 
     public function actionFilterCallback()
     {
@@ -93,7 +100,7 @@ class FilterController extends WebController
         }
 
 
-        $filter = new Filter($query, $category);
+        $filter = new $this->filterClass($query, $category);
         //print_r($f->getPostActiveAttributes());die;
         $attributes = $filter->getCategoryAttributesCallback();
         $brands = $filter->getCategoryBrandsCallback();

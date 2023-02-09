@@ -21,6 +21,7 @@ class Module extends WebModule implements BootstrapInterface
     public $filterViewCurrent = '@shop/widgets/filtersnew/views/current';
     public $reviewsCount = 0;
     public $viewList = ['grid', 'list'];
+    public $filterClass = 'panix\mod\shop\components\FilterLite';
 
     /**
      * @inheritdoc
@@ -242,7 +243,7 @@ class Module extends WebModule implements BootstrapInterface
                         "url" => ['/admin/shop/reviews'],
                         'icon' => 'comments',
                         'badge' => ($this->reviewsCount) ? $this->reviewsCount : '',
-                        'visible' => (Yii::$app->user->can('/shop/admin/reviews/index') || Yii::$app->user->can('/shop/admin/reviews/*')) && Yii::$app->settings->get('shop','enable_reviews')
+                        'visible' => (Yii::$app->user->can('/shop/admin/reviews/index') || Yii::$app->user->can('/shop/admin/reviews/*')) && Yii::$app->settings->get('shop', 'enable_reviews')
                     ],
                     [
                         'label' => Yii::t('shop/admin', 'TYPE_PRODUCTS'),

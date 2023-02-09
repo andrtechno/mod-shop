@@ -85,9 +85,9 @@ function filterCallback(e, objects, target) {
     var min = $("#slider-price").slider("option", "min");
     var values = $("#slider-price").slider("option", "values");
     //if($(e.currentTarget).data('type') == 'checkbox'){
-        if(min == values[0] && max == values[1]){
-            delete objects['slide[price][]'];
-        }
+    if (min == values[0] && max == values[1]) {
+        delete objects['slide[price][]'];
+    }
     //}
     if ($(e.currentTarget).data('type') == 'slider' || e.type == 'filter:click:checkbox') {
 
@@ -95,13 +95,13 @@ function filterCallback(e, objects, target) {
         //$("#slider-price").slider("option", "values", [min, max]);
         $("#slider-price").slider("option", "max", max);
         $("#slider-price").slider("option", "min", min);
-        console.log(min,max,values);
-        if(min != values[0] && max != values[1]){
+        console.log(min, max, values);
+        if (min != values[0] && max != values[1]) {
             //$('#min_price').val(min);
             //$('#max_price').val(max);
             delete objects['slide[price][]'];
-        }else{
-            if(e.type == 'click'){
+        } else {
+            if (e.type == 'click') {
                 $('#min_price').val(min);
                 $('#max_price').val(max);
                 $("#slider-price").slider("option", "values", [min, max]);
@@ -198,35 +198,34 @@ function filterCallback(e, objects, target) {
                 slider.slider("option", "values", [values.min, values.max]);
             });*/
             $.each(response.filters, function (name, filters) {
-
-                $('#filter-' + name + ' input[type="checkbox"]:not(:checked)').attr('disabled', 'disabled');
-                $('#filter-' + name + ' li').addClass('disabled');
-
+                if (filters.changeCount) {
+                    $('#filter-' + name + ' input[type="checkbox"]:not(:checked)').attr('disabled', 'disabled');
+                    $('#filter-' + name + ' li').addClass('disabled');
+                }
                 $.each(filters.filters, function (index, data) {
                     var count = data.count;
                     var selector = $('#filter_' + name + '_' + data.queryParam);
 
+                    if (filters.changeCount) {
+                        if (data.count) {
+                            if (selector.prop('checked')) {
+                                $('#filter-count-' + name + '-' + data.queryParam).html('');
+                            } else {
+                                $('#filter-count-' + name + '-' + data.queryParam).html(data.count_text);
+                            }
 
-                    if (data.count) {
-                        if (selector.prop('checked')) {
-                            $('#filter-count-' + name + '-' + data.queryParam).html('');
-                        } else {
-                            $('#filter-count-' + name + '-' + data.queryParam).html(data.count_text);
-                        }
-
-                        selector.removeAttr('disabled');
-                        selector.closest('li').removeClass('disabled');
-                    } else {
-                        if (!selector.prop('checked')) {
-                            $('#filter-count-' + name + '-' + data.queryParam).html(data.count_text);
-                        } else {
-                            //Если 0 и чекнутый то Анчекаем и дизайблем.
+                            selector.removeAttr('disabled');
                             selector.closest('li').removeClass('disabled');
+                        } else {
+                            if (!selector.prop('checked')) {
+                                $('#filter-count-' + name + '-' + data.queryParam).html(data.count_text);
+                            } else {
+                                //Если 0 и чекнутый то Анчекаем и дизайблем.
+                                selector.closest('li').removeClass('disabled');
+                            }
                         }
                     }
-
                 });
-
             });
             responseData = response;
             $(document).trigger('filter:ajaxSuccess', {target: target, response: response});
@@ -763,7 +762,7 @@ $(function () {
         showButtons = false;
         var filter = filterCallback(e, objects, target);
         filter.done(function () {
-            filter_ajax(e, getSerializeObjects()).done(function(){
+            filter_ajax(e, getSerializeObjects()).done(function () {
                 showButtons = true;
             });
         })
