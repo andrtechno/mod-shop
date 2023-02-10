@@ -753,7 +753,6 @@ $(function () {
     //currenct filter future
     $(document).on('click', 'a[data-target]', function (e) {
         var data = $($(this).data('target'));
-
         //e.preventDefault();
         data.prop('checked', false);
 

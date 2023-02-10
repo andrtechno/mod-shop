@@ -10,7 +10,7 @@ use yii\helpers\Inflector;
 foreach ($attributes as $attrData) {
 
     if (count($attrData['filters']) > 1 && $attrData['totalCount'] > 1) {
-        echo Html::hiddenInput('attributes[]',$attrData['key']);
+        echo Html::hiddenInput('attributes[]', $attrData['key']);
         ?>
 
         <div class="card filter-block" id="filter-attributes-<?= $attrData['key']; ?>">
@@ -21,21 +21,25 @@ foreach ($attributes as $attrData) {
             </a>
             <div class="card-collapse collapse in" id="collapse-<?= $attrData['key'] ?>">
 
-                <?php if ($this->context->searchItem > 0 && $attrData['filtersCount'] >= $this->context->searchItem && !in_array($attrData['type'],[\panix\mod\shop\models\Attribute::TYPE_COLOR])) { ?>
+                <?php if ($this->context->searchItem > 0 && $attrData['filtersCount'] >= $this->context->searchItem && !in_array($attrData['type'], [\panix\mod\shop\models\Attribute::TYPE_COLOR])) { ?>
                     <input type="text" name="search-filter"
-                           onkeyup="filterSearchInput(this,'filter-<?= $attrData['key']; ?>')" class="form-control" placeholder="<?=Yii::t('shop/default','SEARCH_BY', mb_strtolower($attrData['title']));?>">
+                           onkeyup="filterSearchInput(this,'filter-<?= $attrData['key']; ?>')" class="form-control"
+                           placeholder="<?= Yii::t('shop/default', 'SEARCH_BY', mb_strtolower($attrData['title'])); ?>">
                 <?php } ?>
                 <div class="card-body">
                     <ul class="filter-list list-unstyled" id="filter-<?= $attrData['key']; ?>">
                         <?php
                         foreach ($attrData['filters'] as $filter) {
-                            $queryData = explode(',', Yii::$app->request->getQueryParam($attrData['key']));
-                            $checkBoxOptions=[];
+                            $queryData = [];
+                            if (Yii::$app->request->getQueryParam($attrData['key'])) {
+                                $queryData = explode(',', Yii::$app->request->getQueryParam($attrData['key']));
+                            }
+                            $checkBoxOptions = [];
                             $checkBoxOptions['value'] = $filter['queryParam'];
-                            $checkBoxOptions['class']='custom-control-input';
+                            $checkBoxOptions['class'] = 'custom-control-input';
                             $checkBoxOptions['id'] = 'filter_' . $attrData['key'] . '_' . $filter['queryParam'];
                             if (!$filter['count'] && !in_array($filter['queryParam'], $queryData)) {
-                                $checkBoxOptions['disabled']='disabled';
+                                $checkBoxOptions['disabled'] = 'disabled';
                             }
 
                             if ($filter['count'] > 0) {
@@ -68,22 +72,21 @@ foreach ($attributes as $attrData) {
                                 } else {
 
 
-
-                                    if($attrData['selectMany']){
+                                    if ($attrData['selectMany']) {
                                         echo '<div class="custom-control custom-checkbox">';
                                         echo Html::checkBox('filter[' . $attrData['key'] . '][]', $checked, $checkBoxOptions);
-                                        echo Html::label($filter['title'].(($checked)?'':$this->context->getCount($filter)), 'filter_' . $attrData['key'] . '_' . $filter['queryParam'], ['class' => 'custom-control-label','data-search'=>$filter['title']]);
+                                        echo Html::label($filter['title'] . (($checked) ? '' : $this->context->getCount($filter)), 'filter_' . $attrData['key'] . '_' . $filter['queryParam'], ['class' => 'custom-control-label', 'data-search' => $filter['title']]);
                                         echo '</div>';
-                                    }else{
+                                    } else {
                                         echo '<div class="radio">';
-                                        echo Html::label(Html::radio('filter[' . $attrData['key'] . '][]', $checked, ['class' => '', 'value' => $filter['queryParam'], 'id' => 'filter_' . $attrData['key'] . '_' . $filter['queryParam']]).$filter['title'].(($checked)?'':$this->context->getCount($filter)), 'filter_' . $attrData['key'] . '_' . $filter['queryParam'], ['class' => '']);
+                                        echo Html::label(Html::radio('filter[' . $attrData['key'] . '][]', $checked, ['class' => '', 'value' => $filter['queryParam'], 'id' => 'filter_' . $attrData['key'] . '_' . $filter['queryParam']]) . $filter['title'] . (($checked) ? '' : $this->context->getCount($filter)), 'filter_' . $attrData['key'] . '_' . $filter['queryParam'], ['class' => '']);
                                         echo '</div>';
                                     }
 
 
                                     //var_dump($checked);
 
-                                   // echo $this->context->getCount($filter);
+                                    // echo $this->context->getCount($filter);
                                 }
 
                                 echo Html::endTag('li');

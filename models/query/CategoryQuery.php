@@ -52,7 +52,7 @@ class CategoryQuery extends ActiveQuery
      * @param bool $absoluteUrl
      * @return array
      */
-    public function prepareData($root = 0, $level = null, $absoluteUrl)
+    public function prepareData($root = 0, $level = null, $absoluteUrl = '')
     {
         $res = [];
         $totalCount = 0;
@@ -72,7 +72,7 @@ class CategoryQuery extends ActiveQuery
                 foreach ($root->children()->all() as $childRoot) {
                     $aux = $this->prepareData($childRoot, $level - 1, $absoluteUrl);
 
-                   // $res[$root->{$root->idAttribute}]['count'] = $childRoot->countItems;
+                    // $res[$root->{$root->idAttribute}]['count'] = $childRoot->countItems;
 
                     if (isset($res[$root->{$root->idAttribute}]['children']) && !empty($aux)) {
                         $res[$root->{$root->idAttribute}]['folder'] = true;
@@ -89,8 +89,8 @@ class CategoryQuery extends ActiveQuery
             } elseif (is_null($level)) {
                 $totalCount = 0;
                 foreach ($root->children()->all() as $childRoot) {
-                  //  $res[$root->{$root->idAttribute}]['count'] = $childRoot->countItems;
-                    $aux = $this->prepareData($childRoot, null,$absoluteUrl);
+                    //  $res[$root->{$root->idAttribute}]['count'] = $childRoot->countItems;
+                    $aux = $this->prepareData($childRoot, null, $absoluteUrl);
                     if (isset($res[$root->{$root->idAttribute}]['children']) && !empty($aux)) {
                         $res[$root->{$root->idAttribute}]['folder'] = true;
                         $res[$root->{$root->idAttribute}]['children'] += $aux;
@@ -99,11 +99,11 @@ class CategoryQuery extends ActiveQuery
                         $res[$root->{$root->idAttribute}]['folder'] = true;
                         $res[$root->{$root->idAttribute}]['children'] = $aux;
                     }
-                   // $totalCount += $res[$root->{$root->idAttribute}]['count'];
+                    // $totalCount += $res[$root->{$root->idAttribute}]['count'];
                 }
 
             }
-         //   $res[$root->{$root->idAttribute}]['totalCount'] = $root->countItems + $totalCount;
+            //   $res[$root->{$root->idAttribute}]['totalCount'] = $root->countItems + $totalCount;
             $res[$root->{$root->idAttribute}]['totalCount'] = 0;
         } elseif (is_scalar($root)) {
 

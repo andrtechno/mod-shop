@@ -49,8 +49,7 @@ class CatalogController extends FilterController
         $this->query->published();
 
 
-
-        if(true && $this->dataModel->children()->count()){
+        if (true && $this->dataModel->children()->count()) {
 
             $this->pageName = $this->dataModel->name;
             $ancestors = $this->dataModel->ancestors()->addOrderBy('depth')->excludeRoot()->cache(3600)->all();
@@ -79,7 +78,7 @@ class CatalogController extends FilterController
                 //'filter' => $this->filter
 
             ]);
-        }else{
+        } else {
 
         }
 
@@ -96,9 +95,9 @@ class CatalogController extends FilterController
 //echo $this->dataModel->children()->count();
 
         $this->filter = new $this->filterClass($this->query, ['cacheKey' => 'filter_catalog_' . $this->dataModel->id]);
-if(YII_DEBUG){
-   // CMS::dump( $this->filter->getCategoryBrands());
-}
+        if (YII_DEBUG) {
+            // CMS::dump( $this->filter->getCategoryBrands());
+        }
         //$this->filter->resultQuery->applyAttributes($this->filter->activeAttributes);
         // if (Yii::$app->request->get('brand')) {
         //     $brands = explode(',', Yii::$app->request->get('brand', ''));
@@ -134,11 +133,13 @@ if(YII_DEBUG){
         //$this->query->orderBy(['price'=>SORT_DESC]);
 
 
-        $sort = explode(',', Yii::$app->request->get('sort'));
-        if ($sort[0] == 'price' || $sort[0] == '-price') {
-            $this->filter->resultQuery->aggregatePriceSelect(($sort[0] == 'price') ? SORT_ASC : SORT_DESC);
+        if (Yii::$app->request->get('sort')) {
+            $sort = explode(',', Yii::$app->request->get('sort'));
+            if ($sort[0] == 'price' || $sort[0] == '-price') {
+                $this->filter->resultQuery->aggregatePriceSelect(($sort[0] == 'price') ? SORT_ASC : SORT_DESC);
 
-            // echo $this->query->createCommand()->rawSql;die;
+                // echo $this->query->createCommand()->rawSql;die;
+            }
         }
 
         //  echo  $this->filter->resultQuery->createCommand()->rawSql;die;

@@ -2,15 +2,12 @@
 
 namespace panix\mod\shop\controllers;
 
-use panix\mod\shop\components\Filter;
-use panix\mod\shop\components\FilterLite;
-use panix\mod\shop\components\FilterV2;
-use panix\mod\shop\models\Brand;
-use panix\mod\shop\models\Category;
 use Yii;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use yii\web\Controller;
+use panix\mod\shop\models\Brand;
+use panix\mod\shop\models\Category;
 
 class AjaxController extends Controller
 {
@@ -28,7 +25,10 @@ class AjaxController extends Controller
             return $this->goHome();
         }
     }
-
+    public function actionFilter2()
+    {
+        return $this->asJson(['ss'=>1]);
+    }
 
     public function actionFilter()
     {

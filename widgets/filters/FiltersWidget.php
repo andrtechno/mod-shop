@@ -16,7 +16,7 @@ use panix\engine\data\Widget;
 
 /**
  * Class FiltersWidget
- * @package panix\mod\shop\widgets\filtersnew2
+ * @package panix\mod\shop\widgets\filters
  */
 class FiltersWidget extends Widget
 {
@@ -80,34 +80,6 @@ class FiltersWidget extends Widget
         $active = $this->data->getActiveFilters();
 
 
-        //echo Html::beginTag('div', ['id' => 'filters']);
-        //  echo Html::beginForm($this->view->context->currentUrl, 'GET', ['id' => 'filter-form']);
-
-        /*echo Html::beginTag('div', ['id' => 'ajax_filter_current']);
-        if (!empty($active)) {
-            $url = ($this->model) ? $this->model->getUrl() : ['/' . Yii::$app->requestedRoute];
-            echo $this->render(Yii::$app->getModule('shop')->filterViewCurrent, ['active' => $active, 'dataModel' => $this->model, 'url' => $url]);
-        }
-        echo Html::endTag('div');*/
-        /*if($this->priceView)
-            echo $this->render($this->priceView, [
-                'priceMin' => $this->priceMin,
-                'priceMax' => $this->priceMax,
-                'currentPriceMin'=>$this->data->getCurrentMinPrice(),
-                'currentPriceMax'=>$this->data->getCurrentMaxPrice(),
-            ]);
-        if($this->attributeView)
-            echo $this->render($this->attributeView, ['attributes' => $this->data->getCategoryAttributes()]);
-        if($this->brandView)
-            echo $this->render($this->brandView, ['brands' => $brands]);
-
-        echo Html::submitButton('Применить',['class'=>'btn btn-block btn-primary']);
-        echo Html::submitButton('Стросить',['class'=>'btn btn-block btn-secondary']);*/
-
-        //   echo Html::endForm();
-//echo $this->data->getCurrentMinPrice();die;
-        // echo Html::endTag('div');
-        //   print_r($this->model);die;
         $attributes = $this->data->getRootCategoryAttributes();
         echo $this->render($this->skin, [
             'model' => $this->model,
