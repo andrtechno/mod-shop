@@ -7,27 +7,7 @@ use panix\mod\shop\bundles\admin\ProductIndex;
 use panix\engine\CMS;
 
 echo Fancybox::widget(['target' => '.image a']);
-//$filterCount = 0;
-/*array_push($this->context->buttons,[
-    'label' => \panix\engine\Html::icon('filter') . (($filterCount)?'<span class="badge badge-danger" style="font-size:75%">' . $filterCount . '</span>':''),
-    'url' => '#collapse-grid-filter',
-    'options' => [
-        'data-toggle' => "collapse",
-        'aria-expanded' => "false",
-        'aria-controls' => "collapse-grid-filter",
-        'class' => 'btn btn-sm btn-outline-secondary'
-    ]
-]);*/
 
-/*
-$pattern = '#^catalog/(?P<slug>[0-9a-zA-Z_\/\-]+)/(?P<filter>\/[\w,\/]+)$#u';
-
-$pathInfo = 'catalog/ukhod-dla-volos/kondicioner-dla-volos/filter/size/13,5/brand/1';
-if (!preg_match($pattern, $pathInfo, $matches)) {
-  //  return false;
-}
-CMS::dump($matches);die;
-*/
 ProductIndex::register($this);
 Pjax::begin(['id' => 'pjax-grid-product']);
 ?>
