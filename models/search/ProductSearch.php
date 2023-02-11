@@ -28,7 +28,7 @@ class ProductSearch extends Product
         return [
             [['price_min', 'price_max', 'supplier_id', 'brand_id', 'main_category_id', 'type_id', 'currency_id', 'availability'], 'integer'],
             // [['image'],'boolean'],
-            [['slug', 'sku', 'price', 'id', 'type_id'], 'safe'], //commentsCount
+            [['slug', 'sku', 'price', 'id', 'type_id'], 'safe'],
             [['name'], 'string'],
             [['switch', 'use_configurations'], 'boolean'],
             [['created_at', 'updated_at'], 'date', 'format' => 'php:Y-m-d']
@@ -133,11 +133,11 @@ class ProductSearch extends Product
             'date_update',
             $this->date_update
         ]);*/
+        if ($this->created_at)
+            $query->andFilterWhere(['between', 'created_at', strtotime($this->created_at . ' 00:00:00'), strtotime($this->created_at . ' 23:59:59')]);
+        if ($this->updated_at)
+            $query->andFilterWhere(['between', 'updated_at', strtotime($this->updated_at . ' 00:00:00'), strtotime($this->updated_at . ' 23:59:59')]);
 
-
-        // $query->andFilterWhere(['between', 'date_update', $this->start, $this->end]);
-        //$query->andFilterWhere(['like', "DATE(CONVERT_TZ('date_update', 'UTC', '".Yii::$app->timezone."'))", $this->date_update.' 23:59:59']);
-        //  $query->andFilterWhere(['like', "DATE(CONVERT_TZ('date_create', 'UTC', '".Yii::$app->timezone."'))", $this->date_create.]);
 
         //$query->joinWith('brand brand');
         $query->andFilterWhere(['like', 'sku', $this->sku]);
@@ -163,8 +163,6 @@ class ProductSearch extends Product
             $query->andFilterWhere(['availability' => $this->availability]);
         }
 
-
-        // echo $query->createCommand()->rawSql; die;
         return $dataProvider;
     }
 
