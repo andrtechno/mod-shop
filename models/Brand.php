@@ -43,7 +43,11 @@ class Brand extends ActiveRecord
                 'class' => 'panix\engine\grid\columns\ImageColumn',
                 'attribute' => 'image',
                 'value' => function ($model) {
-                    return Html::a(Html::img($model->getImageUrl('image', '50x50'), ['alt' => $model->name, 'class' => 'img-thumbnail_']), $model->getImageUrl('image'), ['title' => $model->name, 'data-fancybox' => 'gallery']);
+                    $img = $model->getImageUrl('image');
+                    if (!$img) {
+                        $img = '/uploads/no-image.jpg';
+                    }
+                    return Html::a(Html::img($img, ['alt' => $model->name, 'class' => 'img-thumbnail_', 'width' => 50]), $img, ['title' => $model->name, 'data-fancybox' => 'gallery']);
                 }
             ],
             'name' => [
@@ -51,7 +55,7 @@ class Brand extends ActiveRecord
                 'format' => 'html',
                 'contentOptions' => ['class' => 'text-left'],
                 'value' => function ($model) {
-                    return Html::a($model->name, $model->getUrl(), ['target' => '_blank','data-pjax'=>0]);
+                    return Html::a($model->name, $model->getUrl(), ['target' => '_blank', 'data-pjax' => 0]);
                 }
             ],
             'products' => [
@@ -209,7 +213,7 @@ class Brand extends ActiveRecord
     public function afterSave($insert, $changedAttributes)
     {
 
-        TagDependency::invalidate(Yii::$app->cache, 'brand-'.$this->id);
+        TagDependency::invalidate(Yii::$app->cache, 'brand-' . $this->id);
         parent::afterSave($insert, $changedAttributes);
     }
 }
