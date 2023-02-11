@@ -76,7 +76,7 @@ echo \panix\engine\barcode\BarcodeGenerator::widget([
                         'data-name' => $a['attribute']->getIdByName(), //$a->getIdByName()
                         //'data-name' => Html::getInputName($a, $a->name),
                         'onclick' => 'js: return addNewOption($(this));',
-                        'class' => 'btn btn-success', // btn-sm mt-2 float-right
+                        'class' => 'btn btn-sm btn-success', // btn-sm mt-2 float-right
                         'title' => Yii::t('shop/admin', 'ADD_OPTION')
                     ]);
 
@@ -97,21 +97,23 @@ echo \panix\engine\barcode\BarcodeGenerator::widget([
                 <div class="form-group row <?= ($a['attribute']->required ? 'required' : ''); ?>">
                     <?= Html::label($a['attribute']->title, $a['attribute']->name, ['class' => 'col-sm-4 col-form-label']); ?>
                     <div class="col-sm-8 rowInput eavInput">
-                        <div class="input-group<?= ($a['attribute']->type == Attribute::TYPE_CHECKBOX_LIST) ? '1' : ''; ?>">
+                        <div class="input-group2 <?= ($a['attribute']->type == Attribute::TYPE_CHECKBOX_LIST) ? '1' : ''; ?> row no-gutters">
+                            <div class="col-10">
+                                <?= $a['attribute']->renderField($a['value'], $inputClass); ?>
 
-                            <?= $a['attribute']->renderField($a['value'], $inputClass); ?>
-
-                            <?php if ($a['attribute']->abbreviation) { ?>
-                                <div class="input-group-append">
-                                    <span class="input-group-text"><?= $a['attribute']->abbreviation; ?></span>
-                                </div>
-                            <?php } ?>
+                                <?php if ($a['attribute']->abbreviation) { ?>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><?= $a['attribute']->abbreviation; ?></span>
+                                    </div>
+                                <?php } ?>
+                            </div>
 
                             <?php if ($addOptionLink) { ?>
-                                <div class="input-group-append">
+                                <div class="col-2 text-right">
                                     <?= $addOptionLink; ?>
                                 </div>
                             <?php } ?>
+
                         </div>
                         <?= $error; ?>
                     </div>
