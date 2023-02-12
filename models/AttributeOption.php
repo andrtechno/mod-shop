@@ -45,6 +45,7 @@ class AttributeOption extends ActiveRecord
         return [
             [['id', 'value', 'attribute_id', 'ordern'], 'safe'],
             [['data'], 'default'],
+            //[['attribute_id','value'], 'required'],
         ];
     }
 

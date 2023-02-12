@@ -19,7 +19,6 @@ class Module extends WebModule implements BootstrapInterface
     public $mailPath = '@shop/mail';
     public $searchAttribute = 'sku';
     public $filterViewCurrent = '@shop/widgets/filtersnew/views/current';
-    public $reviewsCount = 0;
     public $viewList = ['grid', 'list'];
     public $filterClass = 'panix\mod\shop\components\FilterLite';
 
@@ -89,8 +88,6 @@ class Module extends WebModule implements BootstrapInterface
 
 
         if ($app->id != 'console') {
-            $this->reviewsCount = ProductReviews::find()->where(['status' => ProductReviews::STATUS_WAIT])->count();
-
             $rules[] = [
                 'class' => 'panix\mod\shop\components\rules\SearchUrlRule',
                 //'pattern'=>'products/search',
@@ -196,6 +193,10 @@ class Module extends WebModule implements BootstrapInterface
         return $list;
     }
 
+    public function getReviewsCount()
+    {
+        return ProductReviews::find()->where(['status' => ProductReviews::STATUS_WAIT])->count();
+    }
 
     public function getAdminMenu()
     {

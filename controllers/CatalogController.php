@@ -94,10 +94,8 @@ class CatalogController extends FilterController
         $this->query->applyCategories($this->dataModel, 'andWhere', $this->dataModel->children()->count());
 //echo $this->dataModel->children()->count();
 
-        $this->filter = new $this->filterClass($this->query, ['cacheKey' => 'filter_catalog_' . $this->dataModel->id]);
-        if (YII_DEBUG) {
-            // CMS::dump( $this->filter->getCategoryBrands());
-        }
+        $this->filter = new $this->filterClass($this->query, ['cacheKey' => str_replace('/','-',Yii::$app->controller->route).'-' . $this->dataModel->id]);
+
         //$this->filter->resultQuery->applyAttributes($this->filter->activeAttributes);
         // if (Yii::$app->request->get('brand')) {
         //     $brands = explode(',', Yii::$app->request->get('brand', ''));
@@ -366,9 +364,9 @@ class CatalogController extends FilterController
         }
         $this->refreshUrl = $this->currentUrl;
         $this->view->params['breadcrumbs'][] = $this->pageName;
-        $cacheKey = 'filter_catalog_new';
+        $cacheKey = str_replace('/','-',Yii::$app->controller->route);
         if (Yii::$app->request->getQueryParam('category')) {
-            $cacheKey .= Yii::$app->request->getQueryParam('category');
+            $cacheKey .= '-'.Yii::$app->request->getQueryParam('category');
         }
 
         $this->filter = new $this->filterClass($this->query, ['cacheKey' => $cacheKey]);
@@ -483,9 +481,9 @@ class CatalogController extends FilterController
         $this->view->canonical = Url::to($this->currentUrl, true);
         $this->view->registerJs("var current_url = '" . $this->currentUrl . "';", yii\web\View::POS_HEAD, 'current_url');
 
-        $cacheKey = 'filter_catalog_sales';
+        $cacheKey = str_replace('/','-',Yii::$app->controller->route);
         if (Yii::$app->request->getQueryParam('category')) {
-            $cacheKey .= Yii::$app->request->getQueryParam('category');
+            $cacheKey .= '-'.Yii::$app->request->getQueryParam('category');
         }
         $this->filter = new $this->filterClass($this->query, ['cacheKey' => $cacheKey]);
         $this->filter->resultQuery->sortAvailability();

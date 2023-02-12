@@ -50,7 +50,7 @@ $q=Yii::$app->request->post('q');
         $this->query->applySearch($queryGet)->published();
         //$this->query->applySearch($queryGet);
 
-        $this->filter = new $this->filterClass($this->query,['cacheKey'=>'filter_search_'.$queryGet]);
+        $this->filter = new $this->filterClass($this->query,['cacheKey'=>str_replace('/','-',Yii::$app->controller->route).'-'.$queryGet]);
 
         // Create clone of the current query to use later to get min and max prices.
         $this->filterQuery = clone $this->query;

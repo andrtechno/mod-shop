@@ -66,7 +66,7 @@ class BrandController extends FilterController
         $this->query->applyBrands($this->dataModel->id);
 
 
-        $this->filter = new $this->filterClass($this->query, ['cacheKey' => 'filter_brand_' . $this->dataModel->id]);
+        $this->filter = new $this->filterClass($this->query, ['cacheKey' => str_replace('/','-',Yii::$app->controller->route).'-' . $this->dataModel->id]);
 
         $this->filterQuery = clone $this->query;
         $this->currentQuery = clone $this->query;

@@ -64,6 +64,7 @@ class AjaxController extends Controller
             $query->applyCategories($category, 'andWhere', $category->children()->count());
             $url = $category->getUrl();
         }
+
         $filterPost = Yii::$app->request->post('filter');
         if ($filterPost) {
             // if (isset($filterPost['brand'])) {
@@ -74,7 +75,10 @@ class AjaxController extends Controller
         }
 //echo $query->createCommand()->rawSql;die;
         $filterClass = Yii::$app->getModule('shop')->filterClass;
-        $filter = new $filterClass($query, ['route' => $url]);
+        $filter = new $filterClass($query, [
+            'route' => $url,
+            'cacheKey' => Yii::$app->request->post('cache')
+        ]);
 
         //  echo $filter->activeUrl;
 

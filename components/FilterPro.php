@@ -188,10 +188,12 @@ class FilterPro extends Component
                 // $this->error404();
             }
         }
-        $this->min = (int)floor($this->getMinPrice());
-        $this->max = (int)ceil($this->getMaxPrice());
-        if (($this->getCurrentMinPrice() != $this->min) || ($this->getCurrentMaxPrice() != $this->max)) {
-            $this->resultQuery->applyRangePrices($this->getCurrentMinPrice(), $this->getCurrentMaxPrice());
+        if ((!Yii::$app->request->headers->has('filter-callback-ajax') || isset($slides['price']))) { //NEW !!!!
+            $this->min = (int)floor($this->getMinPrice());
+            $this->max = (int)ceil($this->getMaxPrice());
+            if (($this->getCurrentMinPrice() != $this->min) || ($this->getCurrentMaxPrice() != $this->max)) {
+                $this->resultQuery->applyRangePrices($this->getCurrentMinPrice(), $this->getCurrentMaxPrice());
+            }
         }
 
 

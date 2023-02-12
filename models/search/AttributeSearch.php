@@ -8,7 +8,7 @@ use panix\engine\data\ActiveDataProvider;
 use panix\mod\shop\models\Attribute;
 
 /**
- * PagesSearch represents the model behind the search form about `app\modules\pages\models\Pages`.
+ * AttributeOption represents the model behind the search form about `panix\mod\shop\models\Attribute`.
  */
 class AttributeSearch extends Attribute {
 

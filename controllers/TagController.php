@@ -80,9 +80,9 @@ class TagController extends FilterController
         }
         $this->refreshUrl = $this->currentUrl;
         $this->view->params['breadcrumbs'][] = $this->pageName;
-        $cacheKey = 'filter_catalog_tag';
+        $cacheKey = str_replace('/','-',Yii::$app->controller->route);
         if (Yii::$app->request->getQueryParam('category')) {
-            $cacheKey .= Yii::$app->request->getQueryParam('category');
+            $cacheKey .= '-'.Yii::$app->request->getQueryParam('category');
         }
 
         $this->filter = new $this->filterClass($this->query, ['cacheKey' => $cacheKey]);

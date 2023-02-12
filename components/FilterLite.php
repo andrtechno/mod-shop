@@ -188,12 +188,14 @@ class FilterLite extends Component
                 // $this->error404();
             }
         }
-        $this->min = (int)floor($this->getMinPrice());
-        $this->max = (int)ceil($this->getMaxPrice());
-        if (($this->getCurrentMinPrice() != $this->min) || ($this->getCurrentMaxPrice() != $this->max)) {
-            $this->resultQuery->applyRangePrices($this->getCurrentMinPrice(), $this->getCurrentMaxPrice());
-        }
 
+        if ((!Yii::$app->request->headers->has('filter-callback-ajax') || isset($slides['price']))) {//NEW !!!!
+            $this->min = (int)floor($this->getMinPrice());
+            $this->max = (int)ceil($this->getMaxPrice());
+            if (($this->getCurrentMinPrice() != $this->min) || ($this->getCurrentMaxPrice() != $this->max)) {
+                $this->resultQuery->applyRangePrices($this->getCurrentMinPrice(), $this->getCurrentMaxPrice());
+            }
+        }
 
     }
 
@@ -525,32 +527,38 @@ class FilterLite extends Component
             return $this->_eavAttributes;
 
 
-        $queryCategoryTypes = clone $this->query; //Product::find();
-        $queryCategoryTypes->select(Product::tableName() . '.type_id');
-        $queryCategoryTypes->groupBy(Product::tableName() . '.type_id');
-        $queryCategoryTypes->distinct(true);
-        $queryCategoryTypes->orderBy = false;
+        $this->_eavAttributes = Yii::$app->cache->getOrSet($this->cacheKey . '-EavAttributes', function () {
+            $queryCategoryTypes = clone $this->query; //Product::find();
+            $queryCategoryTypes->select(Product::tableName() . '.type_id');
+            $queryCategoryTypes->groupBy(Product::tableName() . '.type_id');
+            $queryCategoryTypes->distinct(true);
+            $queryCategoryTypes->orderBy = false;
 
-        $typesIds = $queryCategoryTypes->createCommand()->queryColumn();
-
-
-        $query = Attribute::find()
-            //->where(['IN', '`types`.`type_id`', $typesIds])
-            ->where(['IN', '`type`.`type_id`', $typesIds])
-            ->andWhere(['IN', 'type', [Attribute::TYPE_DROPDOWN, Attribute::TYPE_SELECT_MANY, Attribute::TYPE_CHECKBOX_LIST, Attribute::TYPE_RADIO_LIST, Attribute::TYPE_COLOR]])
-            ->distinct(true)
-            ->useInFilter()
-            ->sort()
-            ->orderBy(null)
-            ->joinWith(['types type', 'options']);
+            $typesIds = $queryCategoryTypes->createCommand()->queryColumn();
 
 
-        $result = $query->all();
+            $query = Attribute::find()
+                ->where(['IN', '`type`.`type_id`', $typesIds])
+                ->andWhere(['IN', 'type', [Attribute::TYPE_DROPDOWN, Attribute::TYPE_SELECT_MANY, Attribute::TYPE_CHECKBOX_LIST, Attribute::TYPE_RADIO_LIST, Attribute::TYPE_COLOR]])
+                ->distinct(true)
+                ->useInFilter()
+                ->sort()
+                ->orderBy(null)
+                //->cache(0)
+                ->joinWith(['types type', 'options']);
 
-        $this->_eavAttributes = [];
-        foreach ($result as $attr) {
-            $this->_eavAttributes[$attr->name] = $attr;
-        }
+
+            $result = $query->all();
+
+            $this->_eavAttributes = [];
+            foreach ($result as $attr) {
+                $this->_eavAttributes[$attr->name] = $attr;
+            }
+            return $this->_eavAttributes;
+        }, 0);
+
+
+
         return $this->_eavAttributes;
     }
 
