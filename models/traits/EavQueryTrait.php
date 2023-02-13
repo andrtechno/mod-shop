@@ -9,7 +9,11 @@ use Yii;
 trait EavQueryTrait
 {
 
-
+public function applyRootAttributes(array $attributes){
+    if (empty($attributes))
+        return $this;
+    return $this->getFindByEavAttributesRoot($attributes);
+}
     public function applyAttributes(array $attributes)
     {
         if (empty($attributes))
@@ -130,6 +134,55 @@ trait EavQueryTrait
 
             } elseif (is_int($attribute)) { // If search models with attribute name with anything values.
                 $this->join('JOIN', ProductAttributesEav::tableName() . ' eavb' . $i, "$pk=`eavb$i`.`entity` AND eavb$i.attribute = '$values'");
+                //$this->join('JOIN', ProductAttributesEav::tableName().' eavb', "$pk=`eavb`.`entity` AND eavb.attribute = '$values'");
+
+            }
+            $i++;
+
+
+        }
+
+
+        // $this->distinct(true);
+
+        // $this->groupBy("{$pk}");
+        //$this->addGroupBy("{$pk}");
+        //  echo $this->createCommand()->getRawSql();die;
+        return $this;
+    }
+
+
+    public function getFindByEavAttributesRoot($attributes)
+    {
+        $class = $this->modelClass;
+        $pk = $class::tableName() . '.`id`';
+        $i = 0;
+
+        foreach ($attributes as $attribute => $values) {
+            // Get attribute compare operator
+            if (!is_array($values)) {
+                $values = [$values];
+            }
+
+            $values = array_unique($values);
+            sort($values);
+            $values = array_intersect($attributes[$attribute], $values); //anti d-dos убирает лишние значение с запроса.
+            // If search models with attribute name with specified values.
+            if (is_string($attribute)) {
+
+                $this->join['eavbroot' . $i] = ['JOIN', '{{%shop__product_attribute_eav}} eavbroot' . $i, "$pk=`eavbroot$i`.`entity`"];
+                if (count($values)) {
+                    $this->andwhere(['IN', "`eavbroot$i`.`value`", $values]);
+                } else {
+                    $this->andwhere(["`eavbroot$i`.`value`" => $values]);
+                }
+
+
+                // $this->join['eavb'] = ['JOIN', '{{%shop__product_attribute_eav}} eavb', "$pk=`eavb`.`entity`"];
+                // $this->andwhere(['IN', "`eavb`.`value`", $values]);
+
+            } elseif (is_int($attribute)) { // If search models with attribute name with anything values.
+                $this->join('JOIN', ProductAttributesEav::tableName() . ' eavbroot' . $i, "$pk=`eavbroot$i`.`entity` AND eavbroot$i.attribute = '$values'");
                 //$this->join('JOIN', ProductAttributesEav::tableName().' eavb', "$pk=`eavb`.`entity` AND eavb.attribute = '$values'");
 
             }

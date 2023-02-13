@@ -377,7 +377,9 @@ class FilterLite extends Component
 
                 $totalCount = 0;
                 $filtersCount = 0;
-                foreach ($attribute->getOptions()->cache(0, new TagDependency(['tags' => 'attribute-' . $attribute->name]))->all() as $option) {
+                foreach ($attribute->getOptions()
+                             ->cache(0, new TagDependency(['tags' => 'attribute-' . $attribute->name]))
+                             ->all() as $option) {
                     $count = $this->countRootAttributeProducts($attribute, $option);
 
 
@@ -448,6 +450,8 @@ class FilterLite extends Component
         /** @var Product|ActiveQuery $model */
         $model = clone $this->query;
 
+
+
         $model->groupBy = false;
         $model->orderBy = false;
         $model->select('COUNT(*)');
@@ -463,6 +467,9 @@ class FilterLite extends Component
 
         if ($newData)
             $model->getFindByEavAttributes2($newData);
+
+
+        //echo $model->createCommand()->rawSql;die;
 
         /*$model->cache(999999, new TagDependency([
             'tags' => [
@@ -632,9 +639,15 @@ class FilterLite extends Component
         return (int)$this->_currentMaxPrice;
     }
 
-    //быстрее работает.
+
+    //быстрее работает.??????
     public function getCategoryBrands()
     {
+        $data = [
+            'title' => Yii::t('shop/default', 'FILTER_BY_BRAND'),
+            'selectMany' => true,
+            'filters' => []
+        ];
         $this->query->orderBy = false;
         $queryClone = clone $this->query;
         $queryClone->addSelect(['brand_id', Product::tableName() . '.id']);
@@ -651,20 +664,14 @@ class FilterLite extends Component
         $queryClone->andWhere('brand_id IS NOT NULL');
         $queryClone->groupBy('brand_id');
         $queryClone->addSelect([
-            'counter' => $sub_query,
+            'counter' => $sub_query, //->noCache() ?????
             Brand::tableName() . '.`name_' . Yii::$app->language . '` as name',
             Brand::tableName() . '.slug',
             Brand::tableName() . '.image'
         ]);
-        $queryClone->cache($this->cacheDuration);
+        $queryClone->cache(0, new TagDependency(['tags' => $this->cacheKey.'-brands']));
 
         $brands = $queryClone->createCommand()->queryAll();
-
-        $data = [
-            'title' => Yii::t('shop/default', 'FILTER_BY_BRAND'),
-            'selectMany' => true,
-            'filters' => []
-        ];
 
         foreach ($brands as $m) {
             $data['filters'][] = [

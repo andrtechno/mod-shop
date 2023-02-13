@@ -1,11 +1,11 @@
 <?php
 
-namespace panix\mod\shop\api\v1\controllers;
+namespace panix\mod\shop\api\controllers;
 
-use panix\mod\shop\api\v1\models\Product;
-use panix\mod\shop\api\v1\Serializer;
-use panix\mod\shop\components\Filter;
-use panix\mod\shop\components\FilterV2;
+use panix\engine\CMS;
+use panix\mod\shop\api\models\Product;
+use panix\engine\api\Serializer;
+use panix\mod\shop\components\FilterLite;
 use panix\mod\shop\models\Brand;
 use panix\mod\shop\models\Category;
 use Yii;
@@ -15,16 +15,26 @@ use yii\filters\ContentNegotiator;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use yii\rest\ActiveController;
-use yii\web\Controller;
+use yii\rest\Controller;
+use yii\web\ForbiddenHttpException;
+use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
 class FilterController extends Controller
 {
 
-   // public $modelClass = 'panix\mod\shop\api\v1\models\Product';
-    public $serializer2 = [
+
+    public $modelClass = 'panix\mod\shop\api\models\Product';
+    public $serializer = [
         'class' => Serializer::class,
     ];
+
+    public function actionMain()
+    {
+
+        return $this->asJson(['sad' => 1]);
+    }
+
     public function behaviors()
     {
         return [
@@ -33,12 +43,13 @@ class FilterController extends Controller
                 'formatParam' => 'format',
                 'formats' => [
                     'json' => Response::FORMAT_JSON,
+                    //'xml' => Response::FORMAT_XML,
                 ]
             ],
             'corsFilter' => [
                 'class' => \yii\filters\Cors::class,
             ],
-            'authenticator' => [
+            /*'authenticator' => [
                 'class' => QueryParamAuth::class,
                 'tokenParam' => 'token',
             ],
@@ -50,31 +61,34 @@ class FilterController extends Controller
                         'roles' => ['@']
                     ]
                 ],
-            ]
+            ]*/
         ];
-    }
-    public function beforeAction($action)
-    {
-        $this->enableCsrfValidation = false;
-        parent::beforeAction($action);
     }
 
     public function actionIndex()
     {
+        $route = Yii::$app->request->post('route');
+        $param = Yii::$app->request->post('param');
+        $accessAttributes = Yii::$app->request->post('attributes');
 
-        //$query = Product::find()->published();
-        //$route = Yii::$app->request->post('route');
-        //$param = Yii::$app->request->post('param');
-        //$accessAttributes = Yii::$app->request->post('attributes');
+        //if (!Yii::$app->request->isAjax) {
+        //    throw new ForbiddenHttpException('Acesss denied.');
+        //}
+        //if (!$route) {
+        //    throw new ForbiddenHttpException('required POST route.');
+        //}
 
-        return $this->asJson(['ok' => true]);
-        $requestParams = Yii::$app->getRequest()->getBodyParams();
+        $productModel = Product::find();
+        $query = $productModel->published();
+
+        /*$requestParams = Yii::$app->getRequest()->getBodyParams();
         $params = Yii::$app->getRequest()->bodyParams;
         if (empty($requestParams)) {
             $requestParams = Yii::$app->getRequest()->getQueryParams();
-        }
-        return $this->asJson(Yii::$app->getRequest()->getQueryParams());
+        }*/
 
+
+        $url = [];
         if ($route == 'shop/catalog/sales') {
             $query->sales();
             $url = [$route];
@@ -102,39 +116,25 @@ class FilterController extends Controller
             $url = $category->getUrl();
         }
         $filterPost = Yii::$app->request->post('filter');
-        if ($filterPost) {
-            // if (isset($filterPost['brand'])) {
-            //    $query->applyBrands($filterPost['brand']);
-            //}
-            //unset(Yii::$app->request->post('filter')['brand']);
-            // $query->getFindByEavAttributes3($filterPost);
-        }
-//echo $query->createCommand()->rawSql;die;
 
-        $filter = new FilterV2($query, ['route' => $url]);
-        //  echo $filter->activeUrl;
+        $filter = new FilterLite($query, [
+            'route' => $url,
+            'cacheKey' => Yii::$app->request->post('cache')
+        ]);
 
-        //$filter->route = $url;
         $filter->accessAttributes = $accessAttributes;
 
-
-        // $filter->resultQuery->applyAttributes($filter->activeAttributes);
-        //if (Yii::$app->request->get('brand')) {
-        //     $brands = explode(',', Yii::$app->request->get('brand', ''));
-        //     $filter->resultQuery->applyBrands($brands);
-        // }
-
-        //  print_r($filter->resultQuery);die;
-        //print_r($f->getPostActiveAttributes());die;
-        $attributes = $filter->getCategoryAttributesCallback();
+        $attributes = [];
         $brands = [];
-        if (!in_array($route, ['shop/brand/view'])) {
-            $brands = $filter->getCategoryBrandsCallback();
-        }
+        //FOR PRO FILTER!!!!111
+        //$attributes = $filter->getCategoryAttributesCallback();
+        //if (!in_array($route, ['shop/brand/view'])) {
+        //    $brands = $filter->getCategoryBrandsCallback();
+        //}
 
-//print_r($filter->getResultUrl());die;
+
         $total = $filter->resultQuery->count();
-//echo $filter->resultQuery->createCommand()->rawSql;die;
+
 
         $sliders = [];
         $sliders2 = Yii::$app->request->post('slide');
@@ -150,7 +150,6 @@ class FilterController extends Controller
                         'min' => $filter->min,
                         'max' => $filter->max
                     ],
-
                 ]
             ];
         }
@@ -159,14 +158,40 @@ class FilterController extends Controller
         $results = ArrayHelper::merge($attributes, ['brand' => $brands]);
 
         $route = $filter->getResultRoute();
-//print_r($route);die;
-        //   $total = $filter->count();
+
         return $this->asJson([
-            'textTotal' => "Показать " . Yii::t('shop/default', 'PRODUCTS_COUNTER', $total),
+            'textTotal' => Yii::t('shop/default', 'FILTER_BUTTON_TEXT', $total),
             'totalCount' => (int)$total,
             'filters' => $results,
             'sliders' => $sliders,
-            'url' => Url::to($filter->getResultRoute())
+            'url' => str_replace(Yii::$app->request->baseUrl, '', Url::to($filter->getResultRoute()))
+        ]);
+    }
+
+    public function actionShow()
+    {
+        $productModel = Product::find();
+        $query = $productModel->published();
+
+        $category = Category::findOne(5);
+        $query->applyCategories($category, 'andWhere', $category->children()->count());
+        $url = $category->getUrl();
+
+        $filter = new FilterLite($query, [
+            'route' => [$url],
+            'cacheKey' => CMS::gen(5) //'sss1'
+        ]);
+
+        return $this->asJson([
+            'slides' => [
+                'price' => [
+                    'title' => 'Цена',
+                    'min' => 1,
+                    'max' => 100,
+                ]
+            ],
+            'brands' => $filter->getCategoryBrands(),
+            'attributes' => $filter->getRootCategoryAttributes(),
         ]);
     }
 }

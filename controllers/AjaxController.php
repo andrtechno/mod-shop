@@ -129,7 +129,7 @@ class AjaxController extends Controller
         $route = $filter->getResultRoute();
 
         return $this->asJson([
-            'textTotal' => "Показать " . Yii::t('shop/default', 'PRODUCTS_COUNTER', $total),
+            'textTotal' => Yii::t('shop/default', 'FILTER_BUTTON_TEXT', $total),
             'totalCount' => (int)$total,
             'filters' => $results,
             'sliders' => $sliders,

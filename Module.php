@@ -21,6 +21,7 @@ class Module extends WebModule implements BootstrapInterface
     public $filterViewCurrent = '@shop/widgets/filtersnew/views/current';
     public $viewList = ['grid', 'list'];
     public $filterClass = 'panix\mod\shop\components\FilterLite';
+    //public $filterClass = 'panix\mod\shop\components\FilterPro';
 
     /**
      * @inheritdoc

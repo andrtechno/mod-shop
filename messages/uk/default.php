@@ -29,6 +29,7 @@ return [
     'VIEWS_PRODUCTS' => 'Переглянуті товари',
     'RELATED_PRODUCTS' => 'Рекомендуємо',
     'PRODUCTS_COUNTER' => '{0, plural, =0{немає товару} =1{один товар} one{# товар} few{# товару} many{# товарів} other{# товар}}',
+    'FILTER_BUTTON_TEXT' => 'Показати {0, plural, =0{немає товару} =1{один товар} one{# товар} few{# товару} many{# товарів} other{# товар}}',
     'NOT_AVAILABLE' => 'Повідомити про наявність',
     'NOT_FOUND_PRODUCT' => 'Товар не знайдено',
     'AND' => 'і',

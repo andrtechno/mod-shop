@@ -1,6 +1,6 @@
 <?php
 
-namespace panix\mod\shop\v1\controllers;
+namespace panix\mod\shop\controllers;
 
 use panix\engine\CMS;
 use panix\engine\controllers\WebController;

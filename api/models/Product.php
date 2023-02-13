@@ -1,12 +1,13 @@
 <?php
 
-namespace panix\mod\shop\api\v1\models;
+namespace panix\mod\shop\api\models;
 
 
+use panix\engine\CMS;
 use panix\mod\shop\models\Attribute;
-use \panix\mod\shop\api\v1\models\Category;
 use panix\mod\shop\models\Product as BaseProduct;
 use yii\helpers\Url;
+use Yii;
 
 /**
  * Class Product
@@ -31,6 +32,7 @@ class Product extends BaseProduct
         $scenarios['api_update'] = ['name_ru', 'main_category_id', 'price'];
         return $scenarios;
     }
+
     public function getMainCategory()
     {
         return $this->hasOne(Category::class, ['id' => 'category'])
@@ -39,10 +41,12 @@ class Product extends BaseProduct
                 $query->where(['is_main' => 1]);
             });
     }
+
     public function getCategories()
     {
         return $this->hasMany(Category::class, ['id' => 'category'])->via('categorization');
     }
+
     public function fields()
     {
         $data = [];
@@ -51,14 +55,52 @@ class Product extends BaseProduct
             'type' => function ($model) {
                 return ['id' => $model->type_id, 'name' => $model->type->name];
             },
+            'slug',
+            'is_condition',
+            'views',
+            'video',
             'name_ru',
             'price',
             'sku',
             'switch',
-            'availability',
-            'created_at',
-            'updated_at',
-            'categories' => function ($model) {
+            'main_image' => function ($model) {
+                return $model->image;
+            },
+            'availability' => function ($model) {
+                return [
+                    'value' => $model->availability,
+                    'title' => self::getAvailabilityItems()[$model->availability]
+                ];
+            },
+            'rating' => function ($model) {
+                return [
+                    'rating' => $model->rating,
+                    'votes' => $model->votes,
+                    'score' => $model->ratingScore,
+                    'title' => Yii::t('shop/default', 'RATING_SCORE', $model->ratingScore),
+                ];
+            },
+            'enable_comments',
+            'created_at' => function ($model) {
+                if ($model->created_at) {
+                    return [
+                        'timestemp' => $model->created_at,
+                        'date' => CMS::date($model->created_at, false),
+                        'datetime' => CMS::date($model->created_at)
+                    ];
+                }
+            },
+            'updated_at' => function ($model) {
+                if ($model->updated_at) {
+                    return [
+                        'timestemp' => $model->updated_at,
+                        'date' => CMS::date($model->updated_at, false),
+                        'datetime' => CMS::date($model->updated_at)
+                    ];
+                }
+            },
+
+            /*'categories' => function ($model) {
                 return [
                     'main_category' => $model->mainCategory,
                     'categories' => $model->categories
@@ -66,11 +108,18 @@ class Product extends BaseProduct
             },
             'brand' => function ($model) {
                 if ($model->brand_id) {
-                    return ['id' => $model->brand_id, 'name' => $model->brand->name];
-                } else {
-                    return null;
+                    if ($model->brand) {
+                        return ['id' => $model->brand_id, 'name' => $model->brand->name];
+                    }
                 }
             },
+            'supplier' => function ($model) {
+                if ($model->supplier_id) {
+                    if ($model->supplier) {
+                        return ['id' => $model->supplier_id, 'name' => $model->supplier->name];
+                    }
+                }
+            },*/
             /*'images' => function ($model) {
                 $image = [];
                 foreach ($model->getImages() as $img) {
@@ -83,10 +132,13 @@ class Product extends BaseProduct
                 }
                 return $image;
             },*/
-            'currency_id' => function ($model) {
-                return ($model->currency_id) ? $model->currency_id : 'UAH';
+            'currency' => function ($model) {
+                if ($model->currency_id) {
+                    return $model->currency_id;
+                }
+                return 'UAH';
             },
-            'attributes' => function ($model) {
+            /*'attributes' => function ($model) {
                 $attributes = $model->getEavAttributes();
                 $data = [];
                 $query = Attribute::find()
@@ -96,7 +148,6 @@ class Product extends BaseProduct
 
 
                 foreach ($query as $attr) {
-                    /** @var Attribute $attr */
                     $value = $attr->renderValue($attributes[$attr->name]);
                     $data[] = [
                         'id' => $attr->id,
@@ -105,7 +156,7 @@ class Product extends BaseProduct
                     ];
                 }
                 return $data;
-            },
+            },*/
 
         ];
     }

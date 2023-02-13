@@ -257,7 +257,6 @@ class ImageBehavior extends \yii\base\Behavior
         //If main image not exists
         if ($img == null || $is_main) {
             $this->setMainImage($image);
-            //$this->owner->image = $image->filename; //To be continue
         }
 
         /** @var ImageHandler $img */
@@ -354,7 +353,6 @@ class ImageBehavior extends \yii\base\Behavior
      */
     public function clearImagesCache()
     {
-
         $subdir = $this->owner->id; //$this->getModelSubDir($this->owner);
 
         $dirToRemove = Yii::getAlias($this->savePath) . '/' . $subdir;
@@ -375,7 +373,6 @@ class ImageBehavior extends \yii\base\Behavior
      */
     public function setMainImage($img)
     {
-
         if ($this->owner->primaryKey != $img->product_id) {
             throw new \Exception('Image must belong to this model');
         }
@@ -383,7 +380,6 @@ class ImageBehavior extends \yii\base\Behavior
         /* @var $img ProductImage */
         $img->setMain(true);
         $img->save();
-
 
         $images = $this->owner->getImages()->all();
         foreach ($images as $allImg) {
@@ -397,6 +393,8 @@ class ImageBehavior extends \yii\base\Behavior
             $allImg->setMain(false);
             $allImg->save();
         }
+        $this->owner->image = $img->filename;
+        $this->owner->save(false);
     }
 
 }

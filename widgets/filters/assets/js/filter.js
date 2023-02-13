@@ -124,12 +124,16 @@ function filterCallback(e, objects, target) {
 
     xhrCallback = $.ajax({
         dataType: "json",
-        url: '/filter',
+        url: '/api/shop/filter',
         type: 'POST',
         headers: {
             "filter-callback-ajax": true
         },
         data: objects,
+        error:function(error){
+            $('.sidebar').removeClass('loading');
+            common.notify(error.statusText,'error');
+        },
         success: function (response) {
 
             resultUrl = response.url;

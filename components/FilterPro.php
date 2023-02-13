@@ -648,7 +648,7 @@ class FilterPro extends Component
             Brand::tableName() . '.slug',
             Brand::tableName() . '.image'
         ]);
-        $queryClone->cache($this->cacheDuration);
+        $queryClone->cache(0, new TagDependency(['tags' => $this->cacheKey.'-brands']));
 
         $brands = $queryClone->createCommand()->queryAll();
 

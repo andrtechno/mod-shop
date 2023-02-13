@@ -47,7 +47,7 @@ class CatalogController extends FilterController
         $this->query = $productModel::find();
         $this->query->andWhere(['!=', "{$productModel::tableName()}.availability", $productModel::STATUS_ARCHIVE]);
         $this->query->published();
-
+//$this->query->applyRootAttributes(['sezon'=>[20]]);
 
         if (true && $this->dataModel->children()->count()) {
 

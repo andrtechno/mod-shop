@@ -71,13 +71,15 @@ class FiltersWidget extends Widget
      * @return array of attributes used in category
      */
 
+    public $brands = [];
 
     public function run()
     {
-        //  $brands = $this->data->getCategoryBrands();
-
 
         $active = $this->data->getActiveFilters();
+        if(Yii::$app->controller->route != 'shop/brand/view'){
+            $this->brands = $this->data->categoryBrands;
+        }
 
 
         $attributes = $this->data->getRootCategoryAttributes();
@@ -93,7 +95,7 @@ class FiltersWidget extends Widget
             //  'currentPriceMax' => $this->data->getCurrentMaxPrice(),
             'active' => $active,
             'attributes' => ($attributes) ? $attributes : [],
-            'brands' => (Yii::$app->controller->route != 'shop/brand/view') ? $this->data->getCategoryBrands() : []
+            'brands' => $this->brands
         ]);
         // var category_id = {$this->model->id};
         /*$this->view->registerJs("
@@ -268,9 +270,14 @@ class FiltersWidget extends Widget
         if (isset($filter['key'])) {
             $this->tagCountOptions['id'] = 'filter-count-' . $filter['key'] . '-' . $filter['queryParam'];
         }
-
         $result = ($filter['count'] > 0) ? $filter['count_text'] : 0;
-        return '';//($this->count) ? ' ' . Html::tag($this->tagCount, $result, $this->tagCountOptions) : '';
+        if (Yii::$app->getModule('shop')->filterClass == 'panix\mod\shop\components\FilterPro') {
+            return ($this->count) ? ' ' . Html::tag($this->tagCount, $result, $this->tagCountOptions) : '';
+        } else {
+            return '';
+        }
+
+
     }
 
     public function generateGradientCss($data)

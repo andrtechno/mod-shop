@@ -310,18 +310,35 @@ class Product extends ActiveRecord
     public function getMainImage($size = false, array $options = [])
     {
         /** @var $image \panix\mod\shop\components\ImageBehavior|\panix\mod\shop\models\ProductImage */
-        $mainImage = $this->getMainImageObject();
 
-        $img = $mainImage->get($size, $options);
-        $result = [];
+        //if (YII_DEBUG) {
+        $test = new ProductImage();
+        $test->product_id = $this->id;
+        $test->filename = $this->image;
+        $img = $test->get($size, $options);
         if ($img) {
             $result['url'] = $img;
-            $result['title'] = (!empty($mainImage->alt_title)) ? $mainImage->alt_title : $this->name;
+            $result['title'] = $this->name;
         } else {
-
             $result['url'] = CMS::placeholderUrl(['size' => $size, 'bg' => 'c1c1c1']);
             $result['title'] = $this->name;
         }
+
+        /*} else {
+            $mainImage = $this->getMainImageObject();
+
+            $img = $mainImage->get($size, $options);
+            $result = [];
+            if ($img) {
+                $result['url'] = $img;
+                $result['title'] = (!empty($mainImage->alt_title)) ? $mainImage->alt_title : $this->name;
+            } else {
+
+                $result['url'] = CMS::placeholderUrl(['size' => $size, 'bg' => 'c1c1c1']);
+                $result['title'] = $this->name;
+            }
+        }*/
+
 
         return (object)$result;
     }
@@ -334,7 +351,7 @@ class Product extends ActiveRecord
     {
         /** @var ImageBehavior|ProductImage $mainImage */
 
-        $mainImage = $this->getMainImageObject();
+        /*$mainImage = $this->getMainImageObject();
         if ($mainImage) {
             $small = $mainImage->get($size);
             $big = $mainImage->get();
@@ -343,8 +360,18 @@ class Product extends ActiveRecord
             //  $big = $this->getMainImage();
 
             return Html::a(Html::img($small, ['alt' => (isset($mainImage->alt_title)) ? $mainImage->alt_title : $this->name, 'class' => 'img-thumbnail']), $big, ['title' => $this->name, 'data-fancybox' => 'gallery']);
-        }
+        }*/
+        $test = new ProductImage();
+        $test->product_id = $this->id;
+        $test->filename = $this->image;
+        $img = $test->get($size, []);
+        $img_big = $test->get();
 
+        $result['big_url'] = $img_big;
+        $result['url'] = $img;
+        $result['title'] = $this->name;
+
+        return Html::a(Html::img($result['url'], ['alt' => $this->name, 'class' => 'img-thumbnail']), $result['big_url'], ['title' => $this->name, 'data-fancybox' => 'gallery']);
     }
 
 
@@ -416,7 +443,7 @@ class Product extends ActiveRecord
             $rules[] = [['name'], 'required']; //, 'slug'
         }
         $rules[] = [['main_category_id', 'price', 'unit'], 'required', 'on' => 'default'];
-        $rules[] = ['tagValues', 'safe'];
+        $rules[] = [['tagValues','image'], 'safe'];
 
         //$rules[] = [['slug'], 'unique'];
         $rules[] = ['price', 'commaToDot'];
@@ -1250,9 +1277,9 @@ class Product extends ActiveRecord
 
             //$attributeModel = Attribute::find()->where(['name' => $attribute])->cache(3600 * 24, $dependency)->one();
             //return (object)['name' => $attributeModel->title, 'value' => $attributeModel->renderValue($value)];
-            if($o){
+            if ($o) {
                 return $o;
-            }else{
+            } else {
                 return (object)['value' => 0];
             }
 
@@ -1260,6 +1287,7 @@ class Product extends ActiveRecord
         }
         return parent::__get($name);
     }
+
     /**
      * @inheritDoc
      */
@@ -1269,6 +1297,7 @@ class Product extends ActiveRecord
             'tagValues' => self::t('TAGVALUES'),
         ], parent::attributeLabels());
     }
+
     public function behaviors()
     {
         $a = [];
@@ -1280,7 +1309,7 @@ class Product extends ActiveRecord
                     /** @var \yii\db\ActiveQuery $model */
                     $model->select(['slug', 'updated_at', 'id']);
                     $model->where(['switch' => 1]);
-                    $model->andWhere(['<>','availability', self::STATUS_OUT_STOCK]);
+                    $model->andWhere(['<>', 'availability', self::STATUS_OUT_STOCK]);
                 },
                 'dataClosure' => function ($model) {
                     /** @var self $model */

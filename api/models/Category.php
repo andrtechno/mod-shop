@@ -1,6 +1,6 @@
 <?php
 
-namespace panix\mod\shop\api\v1\models;
+namespace panix\mod\shop\api\models;
 
 
 use Yii;
