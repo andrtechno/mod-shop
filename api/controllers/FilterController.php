@@ -2,6 +2,7 @@
 
 namespace panix\mod\shop\api\controllers;
 
+use panix\engine\api\ApiHelpers;
 use panix\engine\CMS;
 use panix\mod\shop\api\models\Product;
 use panix\engine\api\Serializer;
@@ -164,7 +165,7 @@ class FilterController extends Controller
             'totalCount' => (int)$total,
             'filters' => $results,
             'sliders' => $sliders,
-            'url' => str_replace(Yii::$app->request->baseUrl, '', Url::to($filter->getResultRoute()))
+            'url' => ApiHelpers::url($filter->getResultRoute())
         ]);
     }
 

@@ -51,11 +51,13 @@ class ProductReviews extends ActiveRecord
         }
         parent::init();
     }
+
     public function isBuy()
     {
-        return OrderProduct::find()->where(['product_id'=>$this->product_id,'user_id'=>$this->user_id])->count();
+        return OrderProduct::find()->where(['product_id' => $this->product_id, 'user_id' => $this->user_id])->count();
 
     }
+
     /**
      * @inheritdoc
      */
@@ -153,6 +155,16 @@ class ProductReviews extends ActiveRecord
             }
         }
         return false;
+    }
+
+    /**
+     * @return array
+     */
+    public function fields()
+    {
+        $fields = parent::fields();
+        unset($fields['product_id'], $fields['user_email'], $fields['apply_points'], $fields['ip_create']);
+        return $fields;
     }
 
     public function getUserAvatar()

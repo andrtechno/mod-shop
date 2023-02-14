@@ -19,7 +19,7 @@ class Bootstrap implements BootstrapInterface
         $rules[] = [
             'class' => UrlRule::class,
             'controller' => 'shop/product',
-            //'pluralize' => false,
+            'pluralize' => false,
             'extraPatterns' => [
                 'GET /' => 'index',
                 'GET,HEAD <id>' => 'view',
@@ -36,8 +36,6 @@ class Bootstrap implements BootstrapInterface
             ],
 
         ];
-
-
 
 
         $rules[] = [
