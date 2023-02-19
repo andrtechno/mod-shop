@@ -292,21 +292,22 @@ class Product extends ActiveRecord
     public function afterFind()
     {
         // $this->discount();
-        if ($this->discount) {
-            $sum = $this->discount;
-            if ('%' === substr($sum, -1, 1)) {
-                $sum = $this->price * ((double)$sum) / 100;
-                // $this->discountParcent = round((($sum - $this->price) / $sum) * 100);11
-            } else {
 
+        //Выключить скидку если товара нет в наличие
+        if ($this->availability != static::STATUS_OUT_STOCK) {
+            if ($this->discount) {
+                $sum = $this->discount;
+                if ('%' === substr($sum, -1, 1)) {
+                    $sum = $this->price * ((double)$sum) / 100;
+                    // $this->discountParcent = round((($sum - $this->price) / $sum) * 100);11
+                }
+                $this->discountSum = $this->discount;
+                $this->discountPrice = $this->price - $sum;
+                $this->discountPercent = round(($this->price - $this->discountPrice) / $this->price * 100);
+                $this->originalPrice = $this->price;
+                $this->hasDiscount = $this->discount;
             }
-            $this->discountSum = $this->discount;
-            $this->discountPrice = $this->price - $sum;
-            $this->discountPercent = round(($this->price - $this->discountPrice) / $this->price * 100);
-            $this->originalPrice = $this->price;
-            $this->hasDiscount = $this->discount;
         }
-
         parent::afterFind();
     }
 
