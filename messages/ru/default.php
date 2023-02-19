@@ -29,7 +29,7 @@ return [
     'VIEWS_PRODUCTS' => 'Просмотренные товары',
     'RELATED_PRODUCTS' => 'Связанные товары',
     'PRODUCTS_COUNTER' => '{0, plural, =0{нет товара} =1{один товар} one{# товар} few{# товара} many{# товаров} other{# товар}}',
-    'FILTER_BUTTON_TEXT' => 'Показать {0, plural, =0{нет товара} =1{один товар} one{# товар} few{# товара} many{# товаров} other{# товар}}',
+    'FILTER_BUTTON_TEXT' => '{0, plural, =0{Нет товара} =1{Показать один товар} one{Показать # товар} few{Показать # товара} many{Показать # товаров} other{Показать # товар}}',
     'NOT_AVAILABLE' => 'Сообщить о наличии',
     'NOT_FOUND_PRODUCT' => 'Товар не найден',
     'AND' => 'и',

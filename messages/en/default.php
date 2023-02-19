@@ -28,7 +28,7 @@ return [
     'BRANDS' => 'Brands',
     'VIEWS_PRODUCTS' => 'Products Viewed',
     'RELATED_PRODUCTS' => 'Related Products',
-    'FILTER_BUTTON_TEXT' => 'Show {0, plural, =0{no product} =1{one item} one{# product} few{# goods} many{# goods} other{# product}}',
+    'FILTER_BUTTON_TEXT' => '{0, plural, =0{No products} =1{Show one item} one{Show # product} few{Show # goods} many{Show # goods} other{Show # product}}',
     'NOT_AVAILABLE' => 'Notify Availability',
     'NOT_FOUND_PRODUCT' => 'Product not found',
     'AND' => 'and',
