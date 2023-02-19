@@ -122,10 +122,13 @@ class Product extends ActiveRecord
     {
         $labelsList = [];
         /** @var \panix\mod\discounts\components\DiscountBehavior|self $this */
-        $new = Yii::$app->settings->get('shop', 'label_expire_new');
+        $new = (int)Yii::$app->settings->get('shop', 'label_expire_new');
+
+        $date_utc = new \DateTime("now", new \DateTimeZone("UTC"));
+        $now = $date_utc->getTimestamp();
 
         if ($new) {
-            if ((time() - 86400 * $new) <= $this->created_at) {
+            if (($now - (86400 * $new)) <= $this->created_at) {
                 $labelsList['new'] = [
                     //'class' => 'success',
                     'value' => self::t('LABEL_NEW'),
@@ -443,7 +446,7 @@ class Product extends ActiveRecord
             $rules[] = [['name'], 'required']; //, 'slug'
         }
         $rules[] = [['main_category_id', 'price', 'unit'], 'required', 'on' => 'default'];
-        $rules[] = [['tagValues','image'], 'safe'];
+        $rules[] = [['tagValues', 'image'], 'safe'];
 
         //$rules[] = [['slug'], 'unique'];
         $rules[] = ['price', 'commaToDot'];

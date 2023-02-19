@@ -63,11 +63,12 @@ class ProductQuery extends ActiveQuery
     {
         $config = Yii::$app->settings->get('shop');
         if ($config->label_expire_new) {
+            $date_utc = new \DateTime("now", new \DateTimeZone("UTC"));
+            $now =$date_utc->getTimestamp();
             $modelClass = $this->modelClass;
             $tableName = $modelClass::tableName();
             $this->andWhere(['!=', Product::tableName().".availability", Product::STATUS_OUT_STOCK]);
-            //$this->int2between(time(), time() - (86400 * $config->label_expire_new * 300));
-            $this->andWhere(['>=', $tableName . '.created_at', strtotime(date('Y-m-d', time() - (86400 * $config->label_expire_new)))]);
+            $this->andWhere(['>=', $tableName . '.created_at', ($date_utc->getTimestamp() - (86400 * $config->label_expire_new))]);
         } else {
             //$this->int2between(-1, -1);
         }
