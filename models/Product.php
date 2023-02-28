@@ -31,7 +31,7 @@ use yii\helpers\Url;
  * @property integer $currency_id Currency
  * @property Currency $currency
  * @property integer $use_configurations
- * @property string $slug
+ * @property string $slug Product slug
  * @property string $name Product name
  * @property string $short_description Product short_description
  * @property string $full_description Product full_description

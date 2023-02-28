@@ -9,6 +9,50 @@ use Yii;
 trait EavQueryTrait
 {
 
+    public function getFindByEavAttributesForViewTest($attributes)
+    {
+        $class = $this->modelClass;
+        $pk = $class::tableName() . '.`id`';
+        $i = 0;
+
+        foreach ($attributes as $attribute => $values) {
+            // Get attribute compare operator
+            if (!is_array($values)) {
+                $values = [$values];
+            }
+
+            $values = array_unique($values);
+            sort($values);
+            $values = array_intersect($attributes[$attribute], $values); //anti d-dos убирает лишние значение с запроса.
+            // If search models with attribute name with specified values.
+            if (is_string($attribute)) {
+
+                //$this->join['eavb' . $i] = ['JOIN', '{{%shop__product_attribute_eav}} eavb' . $i, "$pk=`eavb$i`.`entity`"];
+
+                    $this->andwhere(["$attribute" => $values]);
+
+
+
+                // $this->join['eavb'] = ['JOIN', '{{%shop__product_attribute_eav}} eavb', "$pk=`eavb`.`entity`"];
+                // $this->andwhere(['IN', "`eavb`.`value`", $values]);
+
+            } elseif (is_int($attribute)) { // If search models with attribute name with anything values.
+                //$this->join('JOIN', ProductAttributesEav::tableName() . ' eavb' . $i, "$pk=`eavb$i`.`entity` AND eavb$i.attribute = '$values'");
+
+            }
+            $i++;
+
+
+        }
+
+
+        // $this->distinct(true);
+
+         //$this->groupBy("{$pk}");
+        //$this->addGroupBy("{$pk}");
+         //echo $this->createCommand()->rawsql;die;
+        return $this;
+    }
 public function applyRootAttributes(array $attributes){
     if (empty($attributes))
         return $this;
@@ -70,6 +114,7 @@ public function applyRootAttributes(array $attributes){
         $class = $this->modelClass;
         $pk = $class::tableName() . '.id';
         $i = 0;
+
         foreach ($attributes as $attribute => $values) {
             // If search models with attribute name with specified values.
             if (is_string($attribute)) {
@@ -86,13 +131,13 @@ public function applyRootAttributes(array $attributes){
                     $values = array_intersect($cache[$attribute], $values);
                 }
                 foreach ($values as $value) {
-                    $this->join('JOIN', ProductAttributesEav::tableName() . ' eavb' . $i, "{$pk}=`eavb{$i}`.`entity`");
-                    $this->andWhere(['IN', "`eavb$i`.`value`", $values]);
+                    $this->join('JOIN', ProductAttributesEav::tableName() . ' eavbg' . $i, "{$pk}=`eavbg{$i}`.`entity`");
+                    $this->andWhere(['IN', "`eavbg$i`.`value`", $values]);
                     $i++;
                 }
             } // If search models with attribute name with anything values.
             elseif (is_int($attribute)) {
-                $this->join('JOIN', ProductAttributesEav::tableName() . ' eavb' . $i, "$pk=`eavb$i`.`entity` AND eavb$i.attribute = '$values'");
+                $this->join('JOIN', ProductAttributesEav::tableName() . ' eavbg' . $i, "$pk=`eavbg$i`.`entity` AND eavbg$i.attribute = '$values'");
                 $i++;
             }
         }
@@ -108,7 +153,7 @@ public function applyRootAttributes(array $attributes){
         $class = $this->modelClass;
         $pk = $class::tableName() . '.`id`';
         $i = 0;
-
+        unset($attributes['brand']);
         foreach ($attributes as $attribute => $values) {
             // Get attribute compare operator
             if (!is_array($values)) {
@@ -121,12 +166,32 @@ public function applyRootAttributes(array $attributes){
             // If search models with attribute name with specified values.
             if (is_string($attribute)) {
 
-                $this->join['eavb' . $i] = ['JOIN', '{{%shop__product_attribute_eav}} eavb' . $i, "$pk=`eavb$i`.`entity`"];
+                /*$this->join['eavbs' . $i] = ['JOIN', '{{%shop__product_attribute_eav}} eavbs' . $i, "$pk=`eavbs$i`.`entity`"];
                 if (count($values)) {
-                    $this->andwhere(['IN', "`eavb$i`.`value`", $values]);
+                    $this->andwhere(['IN', "`eavbs$i`.`value`", $values]);
+                    $this->andwhere(['IN', "`eavbs$i`.`value`", $values]);
                 } else {
-                    $this->andwhere(["`eavb$i`.`value`" => $values]);
+                    $this->andwhere(["`eavbs$i`.`value`" => $values]);
+                }*/
+
+                $this->join['eavb' . $i] = ['JOIN', '{{%shop__product_attribute_eav}} eavb' . $i, "$pk=`eavb$i`.`entity`"];
+                $this->andwhere(['IN', "`eavb$i`.`value`", $values]);
+
+
+
+                /*
+                $this->join['eavb'] = ['JOIN', '{{%shop__product_attribute_eav}} eavb', "$pk=`eavb`.`entity`"];
+                if(is_array($values)){
+                    foreach ($values as $v){
+
+                    }
+                    $this->andwhere(['NOT IN',"`eavb`.`value`", 177]);
+                }else{
+                    $this->andwhere(["`eavb`.`value`" => $values]);
                 }
+                //$this->andwhere(['IN', "`eavb`.`value`", $values]);*/
+
+
 
 
                 // $this->join['eavb'] = ['JOIN', '{{%shop__product_attribute_eav}} eavb', "$pk=`eavb`.`entity`"];
@@ -151,6 +216,48 @@ public function applyRootAttributes(array $attributes){
         return $this;
     }
 
+    public function getFindByEavAttributesFilterPro($attributes)
+    {
+        $class = $this->modelClass;
+        $pk = $class::tableName() . '.`id`';
+        $i = 0;
+
+        foreach ($attributes as $attribute => $values) {
+            // Get attribute compare operator
+            if (!is_array($values)) {
+                $values = [$values];
+            }
+
+            $values = array_unique($values);
+            sort($values);
+            $values = array_intersect($attributes[$attribute], $values); //anti d-dos убирает лишние значение с запроса.
+            // If search models with attribute name with specified values.
+            if (is_string($attribute)) {
+
+                $this->join['eavb'] = ['JOIN', '{{%shop__product_attribute_eav}} eavb', "$pk=`eavb`.`entity`"];
+                if (count($values)) {
+                    $this->andwhere(['IN', "`eavb`.`value`", $values]);
+                } else {
+                    $this->andwhere(["`eavb`.`value`" => $values]);
+                }
+
+
+                // $this->join['eavb'] = ['JOIN', '{{%shop__product_attribute_eav}} eavb', "$pk=`eavb`.`entity`"];
+                // $this->andwhere(['IN', "`eavb`.`value`", $values]);
+
+            } elseif (is_int($attribute)) { // If search models with attribute name with anything values.
+                $this->join('JOIN', ProductAttributesEav::tableName() . ' eavb' . $i, "$pk=`eavb$i`.`entity` AND eavb$i.attribute = '$values'");
+                //$this->join('JOIN', ProductAttributesEav::tableName().' eavb', "$pk=`eavb`.`entity` AND eavb.attribute = '$values'");
+
+            }
+            $i++;
+
+
+        }
+
+
+        return $this;
+    }
 
     public function getFindByEavAttributesRoot($attributes)
     {

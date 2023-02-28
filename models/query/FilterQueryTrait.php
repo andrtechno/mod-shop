@@ -13,17 +13,30 @@ trait FilterQueryTrait
     {
         $tableName = Product::tableName();
         $tableNameCur = Currency::tableName();
-        $this->select(["{$function}(CASE WHEN ({$tableName}.`currency_id`)
+        /*$this->select(["{$function}(CASE WHEN ({$tableName}.`currency_id`)
                     THEN
                         ({$tableName}.`price` * (SELECT rate FROM {$tableNameCur} WHERE {$tableNameCur}.`id`={$tableName}.`currency_id`))
                     ELSE
                         {$tableName}.`price`
+                END) AS aggregation_price"]);*/
+
+
+        $this->select(["{$function}(CASE WHEN ({$tableName}.`currency_id`)
+                    THEN
+                        (CASE WHEN ({$tableName}.`discount`) THEN
+                         ({$tableName}.`price` * ((SELECT rate FROM {$tableNameCur} WHERE {$tableNameCur}.`id`={$tableName}.`currency_id`) - {$tableName}.`discount`))
+                         ELSE
+                          ({$tableName}.`price` * (SELECT rate FROM {$tableNameCur} WHERE {$tableNameCur}.`id`={$tableName}.`currency_id`))
+                         END)
+                        
+                    ELSE
+                        (CASE WHEN ({$tableName}.`discount`) THEN ({$tableName}.`price` - {$tableName}.`discount`) ELSE {$tableName}.`price` END)
                 END) AS aggregation_price"]);
 
         //$this->orderBy(["aggregation_price" => ($function === 'MIN') ? SORT_ASC : SORT_DESC]);
         $this->distinct(false);
         $this->limit(1);
-        //echo $this->createCommand()->rawSql;die;
+       //echo $this->createCommand()->rawSql;die;
         return $this;
     }
 
@@ -39,6 +52,7 @@ trait FilterQueryTrait
         if (!in_array($operator, ['=', '>=', '<='])) {
             throw new Exception('applyPrice error operator in ' . __FUNCTION__);
         }
+        //$tableName = Product::tableName();
         $tableName = Product::tableName();
         $tableNameCur = Currency::tableName();
         if ($value) {

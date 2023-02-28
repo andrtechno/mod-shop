@@ -2,6 +2,7 @@
 
 namespace panix\mod\shop\models;
 
+use panix\engine\api\ApiHelpers;
 use panix\engine\Html;
 use panix\mod\shop\components\ExternalFinder;
 use panix\mod\sitemap\behaviors\SitemapBehavior;
@@ -34,6 +35,20 @@ class Brand extends ActiveRecord
     public static function find()
     {
         return new BrandQuery(get_called_class());
+    }
+    /**
+     * @return array
+     */
+    public function fields()
+    {
+
+        return [
+            'id',
+            'name',
+            'url' => function ($model) {
+                return ApiHelpers::url("/brand/" . $model->slug, true);
+            },
+        ];
     }
 
     public function getGridColumns()
