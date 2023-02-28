@@ -54,41 +54,42 @@ class Module extends WebModule implements BootstrapInterface
             'pattern' => 'brand/<slug:[0-9a-zA-Z_\-]+>'
         ];
 
-        foreach ($this->getAllPaths() as $path) {
-
-            $pattern = [];
-            $pathNew = explode('/', $path);
-
-            foreach ($pathNew as $pat) {
-                $pattern[] = '[0-9a-zA-Z_\-]+';
-            }
-            $pattern = implode('\/', $pattern);
-
-            /* $rules22[] = [
-                 'class' => 'panix\mod\shop\components\rules\CategoryUrlRule',
-                 'route' => 'shop/catalog/view',
-                 'defaults' => ['slug' => $path],
-                 //'suffix'=>'.html',
-                 'pattern' => "catalog/<slug:[0-9a-zA-Z_\-]+>",
-             ];*/
-
-            //testing now
-            $rules[] = [
-                'class' => 'panix\mod\shop\components\rules\BaseUrlRule',
-                'route' => 'shop/catalog/view',
-                'index' => 'catalog',
-                'pattern' => 'catalog/<slug:' . $path . '>/<params:.*>'
-            ];
-            $rules[] = [
-                'class' => 'panix\mod\shop\components\rules\BaseUrlRule',
-                'route' => 'shop/catalog/view',
-                'index' => 'catalog',
-                'pattern' => 'catalog/<slug:' . $path . '>'
-            ];
-        }
-
 
         if ($app->id != 'console') {
+
+            foreach ($this->getAllPaths() as $path) {
+
+                $pattern = [];
+                $pathNew = explode('/', $path);
+
+                foreach ($pathNew as $pat) {
+                    $pattern[] = '[0-9a-zA-Z_\-]+';
+                }
+                $pattern = implode('\/', $pattern);
+
+                /* $rules22[] = [
+                     'class' => 'panix\mod\shop\components\rules\CategoryUrlRule',
+                     'route' => 'shop/catalog/view',
+                     'defaults' => ['slug' => $path],
+                     //'suffix'=>'.html',
+                     'pattern' => "catalog/<slug:[0-9a-zA-Z_\-]+>",
+                 ];*/
+
+                //testing now
+                $rules[] = [
+                    'class' => 'panix\mod\shop\components\rules\BaseUrlRule',
+                    'route' => 'shop/catalog/view',
+                    'index' => 'catalog',
+                    'pattern' => 'catalog/<slug:' . $path . '>/<params:.*>'
+                ];
+                $rules[] = [
+                    'class' => 'panix\mod\shop\components\rules\BaseUrlRule',
+                    'route' => 'shop/catalog/view',
+                    'index' => 'catalog',
+                    'pattern' => 'catalog/<slug:' . $path . '>'
+                ];
+            }
+
             $rules[] = [
                 'class' => 'panix\mod\shop\components\rules\SearchUrlRule',
                 //'pattern'=>'products/search',
@@ -303,6 +304,7 @@ class Module extends WebModule implements BootstrapInterface
     {
         return [
             'Product' => '\panix\mod\shop\models\Product',
+            //'Product' => '\panix\mod\shop\models\ViewProduct',
             'Brand' => '\panix\mod\shop\models\Brand',
             'Category' => '\panix\mod\shop\models\Category',
             'ProductType' => '\panix\mod\shop\models\ProductType',
