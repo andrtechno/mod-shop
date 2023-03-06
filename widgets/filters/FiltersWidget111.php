@@ -20,14 +20,14 @@ use panix\engine\data\Widget;
  */
 class FiltersWidget extends Widget
 {
-    public $filter;
+    public $data;
     /**
      * @var array of Attribute models
      */
     public $attributes;
     //public $countAttr = true;
     //public $countBrand = true;
-
+    //public $prices = [];
     public $count = false;
     public $tagCount = 'sup';
     public $tagCountOptions = ['class' => 'filter-count'];
@@ -52,14 +52,12 @@ class FiltersWidget extends Widget
     public $priceMin, $priceMax;
     protected $prices = [];
 
-    //public $brands = [];
-    public $context;
     public function init()
     {
         $view = $this->getView();
 
-        $this->priceMax = ceil($this->filter->max);
-        $this->priceMin = floor($this->filter->min);
+        $this->priceMax = ceil($this->data->max);
+        $this->priceMin = floor($this->data->min);
 
         if (Yii::$app->request->get('price')) {
             $this->prices = explode('-', Yii::$app->request->get('price'));
@@ -68,16 +66,23 @@ class FiltersWidget extends Widget
         FilterAsset::register($view);
     }
 
+
+    /**
+     * @return array of attributes used in category
+     */
+
+    public $brands = [];
+    public $context;
     public function run()
     {
 
-        $active = $this->filter->getActiveFilters();
-        //if (Yii::$app->controller->route != 'shop/brand/view') {
-        //    $this->brands = $this->filter->categoryBrands;
-        //}
+        $active = $this->data->getActiveFilters();
+        if(Yii::$app->controller->route != 'shop/brand/view'){
+            $this->brands = $this->data->categoryBrands;
+        }
 
 
-        $attributes = $this->filter->getAttributes($this->filter->elasticQuery);
+        $attributes = $this->data->getAttributes();
         echo $this->render($this->skin, [
             'model' => $this->model,
             'currentUrl' => $this->view->context->currentUrl,
@@ -89,8 +94,8 @@ class FiltersWidget extends Widget
             // 'currentPriceMin' => $this->data->getCurrentMinPrice(),
             //  'currentPriceMax' => $this->data->getCurrentMaxPrice(),
             'active' => $active,
-            'attributes' => ($attributes['data']) ? $attributes['data'] : [],
-           // 'brands' => $this->brands
+            'attributes' => ($attributes) ? $attributes : [],
+            'brands' => $this->brands
         ]);
         // var category_id = {$this->model->id};
         /*$this->view->registerJs("
@@ -140,7 +145,6 @@ class FiltersWidget extends Widget
 
 
     }
-
     public function convertCurrency($sum)
     {
         $cm = Yii::$app->currency;
@@ -149,19 +153,17 @@ class FiltersWidget extends Widget
         return $sum;
     }
 
-    public function getCount($key = false, $filter)
+    public function getCount($key=false,$filter)
     {
         //$this->tagCountOptions=[];
         if ($key) {
             $this->tagCountOptions['id'] = 'filter-count-' . $key . '-' . $filter['id'];
         }
         $result = ($filter['count'] > 0) ? $filter['count'] : 0;
-
         if (Yii::$app->getModule('shop')->filterClass == 'panix\mod\shop\components\FilterElastic') {
-            //return ($this->count) ? ' ' . Html::tag($this->tagCount, $result, $this->tagCountOptions) : '';
-            return Html::tag($this->tagCount, $result, $this->tagCountOptions);
+            return ($this->count) ? ' ' . Html::tag($this->tagCount, $result, $this->tagCountOptions) : '';
         } else {
-            return 'aa';
+            return '';
         }
 
 
@@ -191,47 +193,5 @@ class FiltersWidget extends Widget
         $this->_currentPriceMax = (isset($this->prices[1])) ? $this->prices[1] : Yii::$app->currency->convert($this->priceMax);
 
         return $this->_currentPriceMax;
-    }
-
-    public function generateGradientCss($data)
-    {
-        $css = '';
-        if (isset($data['color'])) {
-            if(isset($data['color'][0]) && !empty($data['color'][0])){
-            $css .= "background: {$data['color'][0]};";
-            }
-
-            if (count($data['color']) > 1) {
-
-                $res_data = [];
-                foreach ($data['color'] as $k => $color) {
-                    $res_data[] = $color;
-                }
-                $res = implode(', ', $res_data);
-
-                if (count($data['color']) == 2) {
-                    $value = "90deg, {$data['color'][0]} 50%, {$data['color'][1]} 50%";
-                    $css .= "background: -moz-linear-gradient({$value});";
-                    $css .= "background: -webkit-linear-gradient({$value});";
-                    $css .= "background: linear-gradient({$value});";
-                } elseif (count($data['color']) == 3) {
-                    $value = "45deg, {$data['color'][0]} 0%, {$data['color'][0]} 33%, {$data['color'][1]} 33%, {$data['color'][1]} 66%, {$data['color'][2]} 66%, {$data['color'][2]} 100%";
-                    $css .= "background: -moz-linear-gradient({$value});";
-                    $css .= "background: -webkit-linear-gradient({$value});";
-                    $css .= "background: linear-gradient({$value});";
-                } elseif (count($data['color']) == 4) {
-                    $value = "45deg, {$data['color'][0]} 0%, {$data['color'][0]} 25%, {$data['color'][1]} 25%, {$data['color'][1]} 50%, {$data['color'][2]} 50%, {$data['color'][2]} 75%, {$data['color'][3]} 75%, {$data['color'][3]} 100%";
-                    $css .= "background: -moz-linear-gradient({$value});";
-                    $css .= "background: -webkit-linear-gradient({$value});";
-                    $css .= "background: linear-gradient({$value});";
-                } elseif (count($data['color']) >= 4) {
-                    $css .= "background: -moz-radial-gradient(farthest-corner at 0% 100%, {$res});";
-                    $css .= "background: -webkit-radial-gradient(farthest-corner at 0% 100%, {$res});";
-                    $css .= "background: radial-gradient(farthest-corner at 0% 100%, {$res});";
-                }
-                $css .= "filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='{$data['color'][0]}', endColorstr='{$data['color'][1]}',GradientType=1 );";
-            }
-        }
-        return $css;
     }
 }

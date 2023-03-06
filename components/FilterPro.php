@@ -20,6 +20,7 @@ use Yii;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
 use yii\helpers\Url;
+use yii\elasticsearch\Query as ElasticQuery;
 
 class FilterPro extends Component
 {
@@ -33,6 +34,8 @@ class FilterPro extends Component
     public $activeAttributes;
     public $price_min;
     public $price_max;
+    //public $selectedPriceMin;
+    //public $selectedPriceMax;
     public $cacheKey;
 
     public $min;
@@ -64,16 +67,21 @@ class FilterPro extends Component
     public function getActiveAttributes()
     {
         $data = [];
-        $filter = (Yii::$app->request->post('filter')) ? Yii::$app->request->post('filter') : $_GET;
+        $sss = (Yii::$app->request->post('filter')) ? Yii::$app->request->post('filter') : $_GET;
 
-        foreach (array_keys($filter) as $key) {
+        foreach (array_keys($sss) as $key) {
             if (array_key_exists($key, $this->_eavAttributes)) {
+
+                // if (empty($_GET[$key]) && isset($_GET[$key])) {
+                //	 throw new CHttpException(404, Yii::t('shop/default', 'NOFIND_CATEGORY'));
+                // }
+
                 if ((boolean)$this->_eavAttributes[$key]->select_many === true) {
-                    $data[$key] = (is_array($filter[$key])) ? $filter[$key] : explode(',', $filter[$key]);
+                    $data[$key] = (is_array($sss[$key])) ? $sss[$key] : explode(',', $sss[$key]);
                 } else {
 
-                    if (isset($filter[$key]))
-                        $data[$key] = [$filter[$key]];
+                    if (isset($sss[$key]))
+                        $data[$key] = [$sss[$key]];
                 }
             } else {
                 //  $this->error404(Yii::t('shop/default', 'NOFIND_CATEGORY1'));
@@ -160,6 +168,11 @@ class FilterPro extends Component
         $this->query = clone $query;
 
         $this->setResultRoute($this->route);
+        // $this->_route = $this->route;
+        // $this->route = $this->getResultRoute();
+        //  $this->setRoute($this->getActiveUrl());
+
+        //  echo $this->resultQuery->createCommand()->rawSql;die;
 
         $this->attributes = $this->getEavAttributes();
         $this->activeAttributes = $this->getActiveAttributes();
@@ -188,12 +201,10 @@ class FilterPro extends Component
                 // $this->error404();
             }
         }
-        if ((!Yii::$app->request->headers->has('filter-callback-ajax') || isset($slides['price']))) { //NEW !!!!
-            $this->min = (int)floor($this->getMinPrice());
-            $this->max = (int)ceil($this->getMaxPrice());
-            if (($this->getCurrentMinPrice() != $this->min) || ($this->getCurrentMaxPrice() != $this->max)) {
-                $this->resultQuery->applyRangePrices($this->getCurrentMinPrice(), $this->getCurrentMaxPrice());
-            }
+        $this->min = (int)floor($this->getMinPrice());
+        $this->max = (int)ceil($this->getMaxPrice());
+        if (($this->getCurrentMinPrice() != $this->min) || ($this->getCurrentMaxPrice() != $this->max)) {
+            $this->resultQuery->applyRangePrices($this->getCurrentMinPrice(), $this->getCurrentMaxPrice());
         }
 
 
@@ -205,7 +216,8 @@ class FilterPro extends Component
         // Render links to cancel applied filters like prices, brands, attributes.
         $menuItems = [];
 
-        if (in_array(Yii::$app->controller->route, ['shop/catalog/view', 'shop/catalog/sales', 'shop/catalog/new', 'shop/search/index'])) {
+
+        if (Yii::$app->controller->route == 'shop/catalog/view' || Yii::$app->controller->route == 'shop/search/index') {
             $brands = array_filter(explode(',', $request->getQueryParam('brand')));
             $brands = Brand::getDb()->cache(function ($db) use ($brands) {
                 return Brand::findAll($brands);
@@ -213,28 +225,35 @@ class FilterPro extends Component
         }
 
         if ($request->getQueryParam('price')) {
-            $menuItems['price'] = [
-                'name' => 'price',
-                'label' => Yii::t('shop/default', 'FILTER_BY_PRICE') . ':',
-                'itemOptions' => ['id' => 'current-filter-prices']
-            ];
-            $menuItems['price']['items'][] = [
-                // 'name'=>'min_price',
-                'value_url' => number_format($this->price_min, 0, '', ''),
-                'value' => Yii::$app->currency->number_format($this->getCurrentMinPrice()) . ' - ' . Yii::$app->currency->number_format($this->getCurrentMaxPrice()),
-                'label' => Html::decode(Yii::t('shop/default', 'FILTER_CURRENT_PRICE_MIN', ['value' => Yii::$app->currency->number_format($this->getCurrentMinPrice()) . ' до ' . Yii::$app->currency->number_format($this->getCurrentMaxPrice()), 'currency' => Yii::$app->currency->active['symbol']])),
-                'options' => ['class' => 'remove', 'data' => [
-                    'type' => 'slider',
-                    'slider-current-max' => $this->getCurrentMaxPrice(),
-                    'slider-current-min' => $this->getCurrentMinPrice(),
-                    'target' => 'price'
-                ]],
-                'url' => Yii::$app->urlManager->removeUrlParam('/' . Yii::$app->requestedRoute, 'price', $this->getCurrentMinPrice() . '-' . $this->getCurrentMaxPrice())
-            ];
+
+            if ($this->price_min && $this->price_max) {
+                $menuItems['price'] = [
+                    'name' => 'price',
+                    'label' => Yii::t('shop/default', 'FILTER_BY_PRICE') . ':',
+                    'itemOptions' => ['id' => 'current-filter-prices']
+                ];
+                //if ($this->price_min > 0 && $this->price_max) {
+                //  print_r($this->getCurrentMinPrice());die;
+                $menuItems['price']['items'][] = [
+                    // 'name'=>'min_price',
+                    'value_url' => number_format($this->price_min, 0, '', ''),
+                    'value' => Yii::$app->currency->number_format($this->getCurrentMinPrice()) . ' - ' . Yii::$app->currency->number_format($this->getCurrentMaxPrice()),
+                    'label' => Html::decode(Yii::t('shop/default', 'FILTER_CURRENT_PRICE_MIN', ['value' => Yii::$app->currency->number_format($this->getCurrentMinPrice()) . ' до ' . Yii::$app->currency->number_format($this->getCurrentMaxPrice()), 'currency' => Yii::$app->currency->active['symbol']])),
+                    'options' => ['class' => 'remove', 'data' => [
+                        'type' => 'slider',
+                        'slider-max' => round($this->price_max),
+                        'slider-min' => round($this->price_min),
+                        'slider-current-max' => $this->getCurrentMaxPrice(),
+                        'slider-current-min' => $this->getCurrentMinPrice(),
+                    ]],
+                    'url' => Yii::$app->urlManager->removeUrlParam('/' . Yii::$app->requestedRoute, 'price', $this->getCurrentMinPrice() . '-' . $this->getCurrentMaxPrice())
+                ];
+            }
+            // }
         }
 
 
-        if (in_array(Yii::$app->controller->route, ['shop/catalog/view', 'shop/catalog/sales', 'shop/catalog/new', 'shop/search/index'])) {
+        if (Yii::$app->controller->route == 'shop/catalog/view') {
             if (!empty($brands)) {
                 $menuItems['brand'] = [
                     'name' => 'brand',
@@ -302,32 +321,39 @@ class FilterPro extends Component
 
     public function getCategoryAttributesCallback()
     {
+
         $data = [];
         $active = $this->activeAttributes;
-
+        $ea=[];
+        if(Yii::$app->request->post('ea')){
+        $ea = explode(',',Yii::$app->request->post('ea'));
+        }
+        //print_r($ea);die;
         foreach ($this->getRootCategoryAttributes() as $attribute) {
+            //print_r($attribute);die;
             $data[$attribute['key']] = [
                 'title' => $attribute['title'],
                 'selectMany' => (boolean)$attribute['selectMany'],
                 'type' => (int)$attribute['type'],
                 'key' => $attribute['key'],
-                'disable' => false,
-                'changeCount' => true,
                 'filters' => []
             ];
-
             $totalCount = 0;
             $filtersCount = 0;
             foreach ($attribute['filters'] as $option) {
+                $ignore=true;
+if($ea && isset($option['id'])){
 
-                //$count=0;
-                if (isset($active[$attribute['key']])) {
-                    if (in_array($option['queryParam'], $active[$attribute['key']])) {
-                        //$count = $this->countAttributeProductsCallback($attribute, $option);
-                    }
+    if(in_array($option['id'],$ea)){
+       $ignore=false;
+    }
 
-                }
-                $count = $this->countAttributeProductsCallback($attribute, $option);
+}
+if($ignore){
+    $count = $this->countAttributeProductsCallback($attribute, $option);
+    $ignore=false;
+}
+
                 $first = array_key_first($active);
                 $countText = $count;
                 if (isset($active[$attribute['key']])) {
@@ -339,15 +365,17 @@ class FilterPro extends Component
                 $data[$attribute['key']]['filters'][] = [
                     'title' => $option['title'],
                     'count' => (int)$count,
+                    'ignore' => $ignore,
                     'count_text' => $countText,
+                    //'data' => ($option->data) ? Json::decode($option->data) : [],
+                    //'abbreviation' => ($attribute->abbreviation) ? $attribute->abbreviation : null,
                     'key' => $option['key'],
-                    'queryParam' => (int)$option['queryParam'],
+                    'id' => (int)$option['id'],
                 ];
                 if ($count > 0)
                     $filtersCount++;
 
                 $totalCount += $count;
-
             }
             $data[$attribute['key']]['totalCount'] = $totalCount;
             $data[$attribute['key']]['filtersCount'] = $filtersCount;
@@ -355,54 +383,167 @@ class FilterPro extends Component
 
 
         return $data;
+
+        /*  foreach ($this->_eavAttributes as $attribute) {
+              if (in_array($attribute->name, $this->accessAttributes)) {
+                  $data[$attribute->name] = [
+                      'title' => $attribute->title,
+                      'selectMany' => (boolean)$attribute->select_many,
+                      'type' => (int)$attribute->type,
+                      'key' => $attribute->name,
+                      'filters' => []
+                  ];
+                  $totalCount = 0;
+                  $filtersCount = 0;
+                  foreach ($attribute->getOptions()->all() as $option) {
+                      $count = $this->countAttributeProductsCallback($attribute, $option);
+                      //$count=1;
+                      //if ($count > 1) {
+
+
+                      $first = array_key_first($active);
+                      $countText = $count;
+                      if (isset($active[$attribute->name])) {
+
+                          //if($active[$attribute->name] != $attribute->name){
+                          //    $countText = '+'.$count;
+                          //}
+
+                          if ($first == $attribute->name && $count) {
+                              $countText = '+' . $count;
+                          }
+                      }
+
+                      $data[$attribute->name]['filters'][] = [
+                          'title' => $option->value,
+                          'count' => (int)$count,
+                          'count_text' => $countText,
+                          'data' => ($option->data) ? Json::decode($option->data) : [],
+                          'abbreviation' => ($attribute->abbreviation) ? $attribute->abbreviation : null,
+                          'key' => $attribute->name,
+                          'id' => (int)$option->id,
+                      ];
+                      if ($count > 0)
+                          $filtersCount++;
+
+                      $totalCount += $count;
+                      //}
+                  }
+
+                  $data[$attribute->name]['totalCount'] = $totalCount;
+                  $data[$attribute->name]['filtersCount'] = $filtersCount;
+              }
+          }
+          return $data;*/
     }
 
     public function getRootCategoryAttributes()
     {
+        $data = [];
+
+        //$active = $this->activeAttributes;
+        //$first = array_key_first($active);
+
+        //$data = Yii::$app->cache->get($this->cacheKey . '-attrs');
+        //if ($data === false) {
+        foreach ($this->_eavAttributes as $attribute) {
+            $data[$attribute->name] = [
+                'title' => $attribute->title,
+                'selectMany' => (boolean)$attribute->select_many,
+                'type' => (int)$attribute->type,
+                'key' => $attribute->name,
+                'filters' => []
+            ];
+
+            $totalCount = 0;
+            $filtersCount = 0;
+            foreach ($attribute->getOptions()->cache($this->cacheDuration, new TagDependency(['tags' => 'attribute-' . $attribute->name]))->all() as $option) {
+                //$count = $this->countRootAttributeProducts($attribute, $option);
 
 
-        $data = Yii::$app->cache->get($this->cacheKey . '-attrs');
-        if ($data === false) {
-            //$data = [];
-            foreach ($this->_eavAttributes as $attribute) {
-                $data[$attribute->name] = [
-                    'title' => $attribute->title,
-                    'selectMany' => (boolean)$attribute->select_many,
-                    'type' => (int)$attribute->type,
-                    'key' => $attribute->name,
-                    'filters' => []
+                $query = new ElasticQuery();
+                $query->from('product');
+                $query->query = [
+
+                    "bool" => [
+                        "must" => [
+                            [
+                                "terms" => [
+                                    "options" => [$option->id]
+                                ],
+                            ],
+                            [
+                                "term" => [
+                                    "categories" => 5
+                                ],
+                            ],
+                        ]
+                    ]
                 ];
+                $count = $query->count();
 
-                $totalCount = 0;
-                $filtersCount = 0;
-                foreach ($attribute->getOptions()->cache(0, new TagDependency(['tags' => 'attribute-' . $attribute->name]))->all() as $option) {
-                    $count = $this->countRootAttributeProducts($attribute, $option);
-
-
-                    if ($count > 0) {
-                        $totalCount += $count;
-                        $data[$attribute->name]['filters'][] = [
-                            'title' => (Yii::$app->language == 'uk') ? $option->value_uk : $option->value,
-                            'count' => (int)$count,
-                            'count_text' => $count,
-                            'data' => ($option->data) ? Json::decode($option->data) : [],
-                            'abbreviation' => ($attribute->abbreviation) ? $attribute->abbreviation : null,
-                            'key' => $attribute->name,
-                            'queryParam' => (int)$option->id,
-                        ];
-                    }
-                }
-                $data[$attribute->name]['totalCount'] = $totalCount;
-                $data[$attribute->name]['filtersCount'] = count($data[$attribute->name]['filters']);
-                if ($attribute->sort == SORT_ASC) {
-                    sort($data[$attribute->name]['filters']);
-                } elseif ($attribute->sort == SORT_DESC) {
-                    rsort($data[$attribute->name]['filters']);
+                if ($count > 0) {
+                    $totalCount += $count;
+                    $data[$attribute->name]['filters'][] = [
+                        'title' => $option->value,
+                        'count' => (int)$count,
+                        //'count_text' => $count,
+                        //'data' => ($option->data) ? Json::decode($option->data) : [],
+                        //'abbreviation' => ($attribute->abbreviation) ? $attribute->abbreviation : null,
+                        'key' => $attribute->name,
+                        'id' => (int)$option->id,
+                    ];
                 }
             }
-            Yii::$app->cache->set($this->cacheKey . '-attrs', $data, 3600 * 24 * 7);
+            $data[$attribute->name]['totalCount'] = $totalCount;
+            $data[$attribute->name]['filtersCount'] = count($data[$attribute->name]['filters']);
+            if ($attribute->sort == SORT_ASC) {
+                sort($data[$attribute->name]['filters']);
+            } elseif ($attribute->sort == SORT_DESC) {
+                rsort($data[$attribute->name]['filters']);
+            }
+        }
+
+            //Yii::$app->cache->set($this->cacheKey . '-attrs', $data, 3600 * 24 * 7);
+        //}
+        return (object)$data;
+    }
+
+    public function ___getCategoryAttributes()
+    {
+
+        $attributes = $this->getRootCategoryAttributes();
+
+        $data = [];
+        if ($attributes) {
+            foreach ($attributes as $key => $attribute) {
+
+                $data[$key] = [
+                    'title' => $attribute['title'],
+                    'selectMany' => (boolean)$attribute['selectMany'],
+                    'type' => (int)$attribute['type'],
+                    'key' => $attribute['key'],
+                    'filters' => []
+                ];
+                foreach ($attribute['filters'] as $option) {
+                    $count = $this->countAttributeProducts2($key, $option['id']);
+                    // $data[$key][$option['id']]=$count;
+
+                    $data[$key]['filters'][] = [
+                        'title' => $option['title'],
+                        'count' => (int)$count,
+                        'count_text' => $count,
+                        //  'abbreviation' => ($attribute->abbreviation) ? $attribute->abbreviation : null,
+                        'key' => $key,
+                        'id' => $option['id'],
+                    ];
+                }
+                $data[$key]['totalCount'] = 11;
+                $data[$key]['filtersCount'] = count($data[$key]['filters']);
+            }
         }
         return $data;
+
     }
 
     public function countAttributeProducts($attribute, $option)
@@ -414,6 +555,7 @@ class FilterPro extends Component
         $model->select('COUNT(*)');
 
         $newData = [];
+        //echo $model->createCommand()->rawSql;die;
         $newData[$attribute->name][] = $option->id;
 
         $newData2 = [];
@@ -434,9 +576,65 @@ class FilterPro extends Component
             $model->applyBrands($brands);
         }
 
+
+        //$newData = ArrayHelper::merge($newData,$this->activeAttributes);
+
+        // echo $model->createCommand()->rawSql;
+        // echo '<br><br><br>';
         /** @var EavQueryTrait|ActiveQuery $model */
+        // $model->withEavAttributes($newData);
+//print_r($newData);die;
         if ($newData)
             $model->getFindByEavAttributes2($newData);
+
+        //echo $model->createCommand()->rawSql;       die;
+
+        return $model->createCommand()->queryScalar();
+    }
+
+
+    public function ___countAttributeProducts2($attribute, $option)
+    {
+
+        /** @var Product|ActiveQuery $model */
+        $model = clone $this->query;
+
+        $model->groupBy = false;
+        $model->select('COUNT(*)');
+
+        $newData = [];
+        //echo $model->createCommand()->rawSql;die;
+        $newData[$attribute][] = $option;
+
+        $newData2 = [];
+        $first = array_key_first($this->activeAttributes);
+
+        // if ($attribute->type != Attribute::TYPE_SELECT_MANY) {
+        foreach ($this->activeAttributes as $key => $p) {
+            if ($key != $attribute) {
+                $newData[$key] = $p;
+
+            }
+        }
+        //  }
+
+        $model->applyRangePrices((isset($this->prices[0])) ? $this->prices[0] : 0, (isset($this->prices[1])) ? $this->prices[1] : 0);
+        if (Yii::$app->request->get('brand')) {
+            $brands = explode(',', Yii::$app->request->get('brand', ''));
+            $model->applyBrands($brands);
+        }
+
+
+        //$newData = ArrayHelper::merge($newData,$this->activeAttributes);
+
+        /** @var EavQueryTrait|ActiveQuery $model */
+        // $model->withEavAttributes($newData);
+//print_r($newData);die;
+        if ($newData)
+            $model->getFindByEavAttributes2($newData);
+
+
+        // echo $model->createCommand()->rawSql;       die;
 
         return $model->createCommand()->queryScalar();
     }
@@ -462,18 +660,14 @@ class FilterPro extends Component
         if ($newData)
             $model->getFindByEavAttributes2($newData);
 
-        /*$model->cache(999999, new TagDependency([
+        // echo $model->createCommand()->rawSql;die;
+        $model->cache(0, new TagDependency([
             'tags' => [
                 'attribute-' . $attribute->name,
                 'attribute-' . $attribute->name . '-' . $option->id
             ]
-        ]));*/
-        //echo $this->cacheKey;die;
-        //$model->cache(999999, new TagDependency(['tags'=>'attribute-' . $attribute->name]));
-        $data2 = Yii::$app->cache->getOrSet($this->cacheKey . '-' . $option->id, function () use ($model) {
-            return $model->createCommand()->queryScalar();
-        }, 0);
-        return $data2; //$model->createCommand()->queryScalar();
+        ]));
+        return $model->createCommand()->queryScalar();
     }
 
 
@@ -487,7 +681,7 @@ class FilterPro extends Component
 
         $newData = [];
         //$newData[$attribute->name][] = $option->id;
-        $newData[$attribute['key']][] = $option['queryParam'];
+        $newData[$attribute['key']][] = $option['id'];
         foreach ($this->activeAttributes as $key => $p) {
             if ($key != $attribute['key']) {
                 $newData[$key] = $p;
@@ -496,7 +690,7 @@ class FilterPro extends Component
         $filter = Yii::$app->request->post('filter');
         if ((isset($filter['brand']) || Yii::$app->request->get('brand')) && !in_array(Yii::$app->controller->route, ['shop/brand/view'])) {
             if (Yii::$app->request->get('brand')) {
-                die('___!!!');
+                die('test!!!');
                 $brands = explode(',', Yii::$app->request->get('brand'));
             } else {
                 $brands = Yii::$app->request->get('brand');
@@ -504,17 +698,36 @@ class FilterPro extends Component
             $model->applyBrands($filter['brand']);
         }
 
+        //$sliders = Yii::$app->request->post('slide');
+        //if ($sliders) {
+
+
         if (isset($this->prices[0], $this->prices[1])) {
             $min = (int)$this->prices[0];
             $max = (int)$this->prices[1];
             if ($this->min != $min || $this->max != $max) {
                 $model->applyRangePrices($min, $max);
             }
+
         }
+        //}
+
+
+        //$newData = ArrayHelper::merge($newData,$this->activeAttributes);
 
         /** @var EavQueryTrait|ActiveQuery $model */
+        // $model->withEavAttributes($newData);
+
         $model->getFindByEavAttributes2($newData);
-        $model->cache(0, new TagDependency(['tags' => 'attribute-' . $attribute['key'] . '-' . $option['queryParam']]));
+
+        //  $model->groupBy = false;
+        //$model->cache($this->cacheDuration);
+        // $res->distinct(true);
+
+        //echo $model->createCommand()->rawSql;die;
+        $model->cache($this->cacheDuration, new TagDependency(['tags' => 'attribute-' . $attribute['key'] . '-' . $option['id']]));
+
+
         return $model->createCommand()->queryScalar();
     }
 
@@ -526,6 +739,14 @@ class FilterPro extends Component
 
 
         $queryCategoryTypes = clone $this->query; //Product::find();
+        // $queryCategoryTypes = $this->currentQuery;
+        //if ($this->model instanceof Category) {
+        //     $queryCategoryTypes->applyCategories($this->model);
+        // } elseif ($this->model instanceof Brand) {
+        //     $queryCategoryTypes->applyBrands($this->model->id);
+        // }
+
+        //$queryCategoryTypes->published();
         $queryCategoryTypes->select(Product::tableName() . '.type_id');
         $queryCategoryTypes->groupBy(Product::tableName() . '.type_id');
         $queryCategoryTypes->distinct(true);
@@ -624,6 +845,84 @@ class FilterPro extends Component
         return (int)$this->_currentMaxPrice;
     }
 
+    public function getCategoryBrands2___()
+    {
+
+        $queryClone = clone $this->query;
+
+        //    echo $queryClone->createCommand()->rawSql;die;
+
+        $queryClone->addSelect(['brand_id', Product::tableName() . '.id']);
+        $queryClone->joinWith([
+            'brand' => function (\yii\db\ActiveQuery $query) {
+                $query->andWhere([Brand::tableName() . '.switch' => 1]);
+            },
+        ]);
+        //$queryMan->->applyMaxPrice($this->convertCurrency(Yii::$app->request->getQueryParam('max_price')))
+        //$queryMan->->applyMinPrice($this->convertCurrency(Yii::$app->request->getQueryParam('min_price')))
+
+        $queryClone->andWhere('brand_id IS NOT NULL');
+        $queryClone->groupBy('brand_id');
+        $queryClone->orderBy = false;
+
+        $queryClone->cache($this->cacheDuration);
+        $brands = $queryClone->all();
+
+        /*$brands = Brand::getDb()->cache(function ($db) use ($queryMan) {
+            return $queryMan
+                //->joinWith('translations as translate')
+                //->orderBy(['translate.name'=>SORT_ASC])
+                ->all();
+        }, $this->cacheDuration);*/
+
+
+        //echo $queryMan->createCommand()->rawSql;die;
+        $data = [
+            'title' => Yii::t('shop/default', 'FILTER_BY_BRAND'),
+            'selectMany' => true,
+            'filters' => []
+        ];
+
+        if ($brands) {
+            foreach ($brands as $m) {
+
+                $m = $m->brand;
+
+                if ($m) {
+                    $query = clone $this->query;
+
+                    //$q->applyMinPrice($this->convertCurrency(Yii::app()->request->getQuery('min_price')))
+                    //$q->applyMaxPrice($this->convertCurrency(Yii::app()->request->getQuery('max_price')))
+                    $query->applyBrands($m->id);
+
+                    $query->orderBy = false;
+                    $query->cache($this->cacheDuration, new TagDependency([
+                        'tags' => [
+                            'brand-' . $m->id,
+                            'filter-brand-' . Yii::$app->request->get('slug') . '-' . $m->id
+                        ]
+                    ]));
+                    //echo $query->createCommand()->rawSql;die;
+
+                    $count = $query->count();
+
+                    $data['filters'][] = [
+                        'title' => $m->name,
+                        'count' => (int)$count,
+                        'count_text' => $count,
+                        'key' => 'brand',
+                        'id' => $m->id,
+                    ];
+                    sort($data['filters']);
+                } else {
+                    die('err brand');
+                }
+            }
+        }
+
+        return $data;
+    }
+
     //быстрее работает.
     public function getCategoryBrands()
     {
@@ -645,12 +944,13 @@ class FilterPro extends Component
         $queryClone->addSelect([
             'counter' => $sub_query,
             Brand::tableName() . '.`name_' . Yii::$app->language . '` as name',
-            Brand::tableName() . '.slug',
-            Brand::tableName() . '.image'
+            Brand::tableName() . '.slug as slug',
+            Brand::tableName() . '.image as image'
         ]);
-        $queryClone->cache(0, new TagDependency(['tags' => $this->cacheKey.'-brands']));
+        $queryClone->cache($this->cacheDuration);
 
         $brands = $queryClone->createCommand()->queryAll();
+        // echo $queryClone->createCommand()->rawSql;die;
 
         $data = [
             'title' => Yii::t('shop/default', 'FILTER_BY_BRAND'),
@@ -664,7 +964,7 @@ class FilterPro extends Component
                 'count' => (int)$m['counter'],
                 'count_text' => (int)$m['counter'],
                 'key' => 'brand',
-                'queryParam' => (int)$m['brand_id'],
+                'id' => $m['brand_id'],
                 'slug' => $m['slug'],
                 'image' => $m['image'],
             ];
@@ -690,6 +990,13 @@ class FilterPro extends Component
         $sub_query = clone $this->query;
         $sub_query->andWhere('`brand_id`=' . Brand::tableName() . '.`id`');
         $sub_query->select(['count(*)']);
+        //$sub_query->distinct(true);
+
+
+        //if ($this->getActiveBrands()) {
+        //     $sub_query->applyBrands($this->getActiveBrands());
+        // }
+        //$sub_query->applyRangePrices((isset($this->prices[0])) ? $this->prices[0] : 0, (isset($this->prices[1])) ? $this->prices[1] : 0);
         $newData = [];
         foreach ($this->activeAttributes as $key => $p) {
             $newData[$key] = $p;
@@ -705,10 +1012,16 @@ class FilterPro extends Component
 
         $queryClone->andWhere('brand_id IS NOT NULL');
         $queryClone->groupBy('brand_id');
-        $queryClone->addSelect(['counter' => $sub_query, Brand::tableName() . '.`name_' . Yii::$app->language . '` as name']);
-        //$queryClone->cache($this->cacheDuration);
+        $queryClone->addSelect([
+            'counter' => $sub_query,
+            Brand::tableName() . '.`name_' . Yii::$app->language . '` as name',
+            Brand::tableName() . '.slug as slug',
+            Brand::tableName() . '.image as image'
+        ]);
+        $queryClone->cache($this->cacheDuration);
 
         $brands = $queryClone->createCommand()->queryAll();
+        // echo $queryClone->createCommand()->rawSql;die;
 
         $data = [
             'title' => Yii::t('shop/default', 'FILTER_BY_BRAND'),
@@ -722,7 +1035,9 @@ class FilterPro extends Component
                 'count' => (int)$m['counter'],
                 'count_text' => (int)$m['counter'],
                 'key' => 'brand',
-                'queryParam' => $m['brand_id'],
+                'id' => $m['brand_id'],
+                'slug' => $m['slug'],
+                'image' => $m['image'],
             ];
             sort($data['filters']);
         }
@@ -730,4 +1045,91 @@ class FilterPro extends Component
         return $data;
     }
 
+    public function getCategoryBrandsCallback222()
+    {
+        $this->query->orderBy = false;
+        $queryClone = clone $this->query;
+
+        $queryMan = $queryClone->addSelect(['brand_id', Product::tableName() . '.id']);
+        $queryMan->joinWith([
+            'brand' => function (\yii\db\ActiveQuery $query) {
+                $query->andWhere([Brand::tableName() . '.switch' => 1]);
+            },
+        ]);
+        //$queryMan->->applyMaxPrice($this->convertCurrency(Yii::$app->request->getQueryParam('max_price')))
+        //$queryMan->->applyMinPrice($this->convertCurrency(Yii::$app->request->getQueryParam('min_price')))
+
+        $queryMan->andWhere('`brand_id` IS NOT NULL');
+        $queryMan->groupBy('brand_id');
+        //echo $queryMan->createCommand()->rawSql;die;
+        $brands = $queryMan->cache($this->cacheDuration)->all();
+
+
+        $data = [
+            'title' => Yii::t('shop/default', 'FILTER_BY_BRAND'),
+            'selectMany' => true,
+            'filters' => []
+        ];
+
+        if ($brands) {
+
+            foreach ($brands as $m) {
+
+                $m = $m->brand;
+
+                if ($m) {
+
+                    $query = clone $this->query; //resultQuery
+                    $query->orderBy = false;
+                    $s = false;
+                    if (Yii::$app->request->get('brand')) {
+                        $bra = explode(',', Yii::$app->request->get('brand'));
+                        foreach ($bra as $b) {
+                            if ($m->id == $b) {
+                                $s = true;
+                            }
+                        }
+                    }
+                    if (!$s)
+                        $query->applyBrands($m->id);
+                    // $query->andWhere(['!=','brand_id',$m->id]);
+
+                    $query->applyRangePrices((isset($this->prices[0])) ? $this->prices[0] : 0, (isset($this->prices[1])) ? $this->prices[1] : 0);
+                    $newData = [];
+                    foreach ($this->activeAttributes as $key => $p) {
+                        $newData[$key] = $p;
+                    }
+
+                    /** @var EavQueryTrait|ActiveQuery $model */
+                    // $model->withEavAttributes($newData);
+                    $query->getFindByEavAttributes2($newData);
+
+                    $sliders = Yii::$app->request->post('slide');
+                    if ($sliders) {
+                        if (isset($sliders['price'])) {
+                            $query->applyRangePrices($sliders['price'][0], $sliders['price'][1]);
+                        }
+                    }
+
+                    echo $query->createCommand()->rawSql;
+                    die;
+                    //$query->cache($this->cacheDuration);
+                    $count = $query->count();
+
+                    $data['filters'][] = [
+                        'title' => $m->name,
+                        'count' => (int)$count,
+                        'count_text' => $count,
+                        'key' => 'brand',
+                        'id' => $m->id,
+                    ];
+                    sort($data['filters']);
+                } else {
+                    die('err brand');
+                }
+            }
+        }
+
+        return $data;
+    }
 }

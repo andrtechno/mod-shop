@@ -62,14 +62,23 @@ class BrandController extends FilterController
         $productModel = Yii::$app->getModule('shop')->model('Product');
         $this->query = $productModel::find()->published();
         //$this->query->attachBehaviors((new $productModel)->behaviors());
-
+        $this->query->andWhere(['!=', "{$productModel::tableName()}.availability", $productModel::STATUS_ARCHIVE]);
         $this->query->applyBrands($this->dataModel->id);
 
+        $q['bool']['must'][]=["term" => ["brand_id" => $this->dataModel->id]];
+        //$q['bool']['must'][]=["terms" => ["availability" => [Product::STATUS_PREORDER, Product::STATUS_IN_STOCK, Product::STATUS_OUT_STOCK]]];
+        $q['bool']['must_not'][]=["term" => ["availability" => Product::STATUS_ARCHIVE]];
+        $q['bool']['must'][]=["term" => ["switch" => 1]];
 
-        $this->filter = new $this->filterClass($this->query, ['cacheKey' => str_replace('/','-',Yii::$app->controller->route).'-' . $this->dataModel->id]);
+        $this->filter = new $this->filterClass($this->query, [
+            'cacheKey' => str_replace('/','-',Yii::$app->controller->route).'-' . $this->dataModel->id,
+            'elasticQuery'=>$q,
+            'route'=>$this->route
+        ]);
 
         $this->filterQuery = clone $this->query;
         $this->currentQuery = clone $this->query;
+		$this->filter->resultQuery->sortAvailability();
        // $this->filter->resultQuery->orderBy(['id' => SORT_DESC]);
         //$this->query->applyAttributes($this->activeAttributes);
         //$this->filterQuery->addorderBy(['created_at'=>SORT_DESC]);

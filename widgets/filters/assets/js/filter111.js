@@ -142,44 +142,34 @@ function filterCallback(e, objects, target) {
             form.attr('action', resultUrl);
 
             $.each(response.filters, function (name, filters) {
-                var hideCounter = 0;
-                $.each(filters.filters, function (index, data) {
 
+                $('#filter-' + name + ' input[type="checkbox"]:not(:checked)').attr('disabled', 'disabled');
+                $('#filter-' + name + ' li').addClass('disabled');
+
+                $.each(filters.filters, function (index, data) {
+                    var count = data.count;
                     var selector = $('#filter_' + name + '_' + data.id);
-                    $('#filter-count-' + name + '-' + data.id).html(data.count_text);
 
                     if (data.count) {
-                        $('#filter-' + name + ' #li-' + data.id + ' input[type="checkbox"]:not(:checked)').attr('disabled', false);
-                        $('#filter-' + name + ' #li-' + data.id).removeClass('disabled');
-                        $('#filter-' + name + ' #li-' + data.id).show();
-                        hideCounter++;
-                    } else {
-                        $('#filter-' + name + ' #li-' + data.id + ' input[type="checkbox"]:not(:checked)').attr('disabled', 'disabled');
-                        $('#filter-' + name + ' #li-' + data.id).addClass('disabled');
-                        if (!selector.prop('checked')) {
-                            $('#filter-' + name + ' #li-' + data.id).hide();
-                        }else{
-
-                            $('#filter-' + name + ' #li-' + data.id).show();
+                        //selector.closest('li').removeClass('d-none');
+                        if (selector.prop('checked')) {
+                            $('#filter-count-' + name + '-' + data.id).html('');
+                        } else {
+                            $('#filter-count-' + name + '-' + data.id).html(data.count_text);
                         }
 
-
-                    }
-
-                });
-                var container = $('#filter-container-' + name);
-
-                if(hideCounter == 0){
-                    container.hide();
-                }else{
-                    container.show();
-                    if (hideCounter < 10) {
-                        container.find('input[type="text"]').hide();
+                        selector.removeAttr('disabled');
+                        selector.closest('li').removeClass('disabled');
                     } else {
-                        container.find('input[type="text"]').show();
+                        //selector.closest('li').addClass('d-none');
+                        if (!selector.prop('checked')) {
+                            $('#filter-count-' + name + '-' + data.id).html(data.count_text);
+                        } else {
+                            //Если 0 и чекнутый то Анчекаем и дизайблем.
+                            selector.closest('li').removeClass('disabled');
+                        }
                     }
-                }
-
+                });
             });
             responseData = response;
 
@@ -194,7 +184,7 @@ function filterCallback(e, objects, target) {
                 $('.filter-buttons').trigger('filter:buttons:toggle', {response: responseData}); //показывать кнопку
 
             }
-            //$(document).trigger('filter:apply'); //сразу применять
+            $(this).trigger('filter:apply'); //сразу применять
             $('.sidebar').removeClass('loading');
         },
         beforeSend: function () {
@@ -494,6 +484,8 @@ $(function () {
 
         console.debug(e.type, id, state);
         if (!isMobile) {
+            $(this).trigger('filter:apply');
+
             if (newFunction) {
                 var objects = getSerializeObjects();
                 var target = $(this);
@@ -747,8 +739,6 @@ function filterSearchInput(that, listId) {
 
     // Loop through all list items, and hide those who don't match the search query
     for (i = 0; i < li.length; i++) {
-
-
         a = li[i].getElementsByTagName("label")[0];
         txtValue = a.getAttribute("data-search");
         // txtValue = a.textContent || a.innerText;
@@ -769,10 +759,5 @@ function filterSearchInput(that, listId) {
         } else {
             li[i].style.display = "none";
         }
-
-        if (li[i].classList.contains('disabled')) {
-            li[i].style.display = "none";
-        }
-
     }
 }

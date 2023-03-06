@@ -4,31 +4,34 @@ namespace panix\mod\shop\api\controllers;
 
 use panix\engine\api\ApiHelpers;
 use panix\engine\CMS;
+use panix\mod\plugins\components\View;
 use panix\mod\shop\api\models\Product;
-use panix\engine\api\Serializer;
 use panix\mod\shop\components\FilterLite;
+use panix\mod\shop\components\FilterPro;
+use panix\mod\shop\components\FilterView;
 use panix\mod\shop\models\Brand;
 use panix\mod\shop\models\Category;
+use panix\mod\shop\models\ViewProduct;
 use Yii;
-use yii\filters\AccessControl;
-use yii\filters\auth\QueryParamAuth;
-use yii\filters\ContentNegotiator;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
-use yii\rest\ActiveController;
-use yii\rest\Controller;
+use panix\engine\api\ApiController;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
-class FilterController extends Controller
+class FilterController extends ApiController
 {
 
-
-    public $modelClass = 'panix\mod\shop\api\models\Product';
-    public $serializer = [
-        'class' => Serializer::class,
-    ];
+    public function behaviors()
+    {
+        //$b = parent::behaviors();
+        $b['ajaxFilter'] = [
+            'class' => 'yii\filters\AjaxFilter',
+            'only' => ['index', 'show']
+        ];
+        return [];
+    }
 
     public function actionMain()
     {
@@ -36,40 +39,13 @@ class FilterController extends Controller
         return $this->asJson(['sad' => 1]);
     }
 
-    public function behaviors()
-    {
-        return [
-            'contentNegotiator' => [
-                'class' => ContentNegotiator::class,
-                'formatParam' => 'format',
-                'formats' => [
-                    'json' => Response::FORMAT_JSON,
-                    //'xml' => Response::FORMAT_XML,
-                ]
-            ],
-            'corsFilter' => [
-                'class' => \yii\filters\Cors::class,
-            ],
-            /*'authenticator' => [
-                'class' => QueryParamAuth::class,
-                'tokenParam' => 'token',
-            ],
-            'access' => [
-                'class' => AccessControl::class,
-                'rules' => [
-                    [
-                        'allow' => true,
-                        'roles' => ['@']
-                    ]
-                ],
-            ]*/
-        ];
-    }
 
     public function actionIndex()
     {
         $route = Yii::$app->request->post('route');
         $param = Yii::$app->request->post('param');
+        $ea = Yii::$app->request->post('ea');
+        $eb = Yii::$app->request->post('eb');
         $accessAttributes = Yii::$app->request->post('attributes');
 
         //if (!Yii::$app->request->isAjax) {
@@ -108,17 +84,21 @@ class FilterController extends Controller
             $url = $brand->getUrl();
         }
         $category = null;
-        if ($param && in_array($route, ['shop/catalog/new', 'shop/catalog/sales', 'shop/catalog/view'])) {
+        /*if ($param && in_array($route, ['shop/catalog/new', 'shop/catalog/sales', 'shop/catalog/view'])) {
             $category = Category::findOne($param);
-            // die('s');
             if (!$category)
                 $this->error404();
-            $query->applyCategories($category, 'andWhere', $category->children()->count());
+            $query->applyCategories($param, 'andWhere', $category->children()->count());
+            $url = $category->getUrl();
+        }*/
+        if ($param && in_array($route, ['shop/catalog/new', 'shop/catalog/sales', 'shop/catalog/view'])) {
+            $category = Category::findOne($param);
+            $query->applyCategories($param);
             $url = $category->getUrl();
         }
         $filterPost = Yii::$app->request->post('filter');
 
-        $filter = new FilterLite($query, [
+        $filter = new FilterView($query, [
             'route' => $url,
             'cacheKey' => Yii::$app->request->post('cache')
         ]);
@@ -128,10 +108,10 @@ class FilterController extends Controller
         $attributes = [];
         $brands = [];
         //FOR PRO FILTER!!!!111
-        //$attributes = $filter->getCategoryAttributesCallback();
-        //if (!in_array($route, ['shop/brand/view'])) {
-        //    $brands = $filter->getCategoryBrandsCallback();
-        //}
+        $attributes = $filter->getCategoryAttributesCallback();
+        if (!in_array($route, ['shop/brand/view'])) {
+            $brands = $filter->getCategoryBrandsCallback();
+        }
 
 
         $total = $filter->resultQuery->count();

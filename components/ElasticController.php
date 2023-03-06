@@ -26,9 +26,9 @@ use panix\engine\controllers\WebController;
  *
  * @package panix\mod\shop\components
  */
-class FilterController extends WebController
+class ElasticController extends WebController
 {
-
+    public $cacheKey = 'elastic-controller';
     public $filterQuery;
     /**
      * Sets page limits
@@ -68,64 +68,13 @@ class FilterController extends WebController
     public $per_page;
     public $filter;
     public $filterClass;
+    public $priceMin = 0;
+    public $priceMax = 0;
 
     public function __construct($id, $module, $config = [])
     {
         $this->filterClass = Yii::$app->getModule('shop')->filterClass;
         parent::__construct($id, $module, $config);
-    }
-
-    public function actionFilterCallback()
-    {
-
-        /** @var Product $productModel */
-        $productModel = Yii::$app->getModule('shop')->model('Product');
-        $query = $productModel::find();
-        $query->published();
-
-        /*
-                if ($category_id) {
-                    $category = Category::findOne($category_id);
-                    if (!$category)
-                        $this->error404();
-                    $query->applyCategories($category);
-                }*/
-
-
-        if (Yii::$app->request->post('filter')) {
-            if (isset(Yii::$app->request->post('filter')['brand'])) {
-                $query->applyBrands(Yii::$app->request->post('filter')['brand']);
-            }
-            //unset(Yii::$app->request->post('filter')['brand']);
-            $query->getFindByEavAttributes2(Yii::$app->request->post('filter'));
-        }
-
-
-        $filter = new $this->filterClass($query, $category);
-        //print_r($f->getPostActiveAttributes());die;
-        $attributes = $filter->getCategoryAttributesCallback();
-        $brands = $filter->getCategoryBrandsCallback();
-        $total = 0;
-        $results = ArrayHelper::merge($attributes, ['brand' => $brands]);
-        /*$firstItem = array_key_first(Yii::$app->request->post('filter'));
-        foreach ($results as $att) {
-            if ($att['filters']) {
-                foreach ($att['filters'] as $filterName => $filter) {
-if($filterName == $firstItem){
-                    $total += $filter['count'];
-}
-                }
-            }
-        }*/
-        $total = $query->count();
-//CMS::dump(ArrayHelper::merge($ss,['brand'=>$f->getCategoryBrands()]));die;
-        return $this->asJson([
-            'first' => array_key_first(Yii::$app->request->post('filter')),
-            'textTotal' => "Показать " . Yii::t('shop/default', 'PRODUCTS_COUNTER', $total),
-            'totalCount' => $total,
-            'filters' => $results
-        ]);
-        // return $this->asJson(ArrayHelper::merge($ss, ['brand' => $f->getCategoryBrands()]));
     }
 
     public function beforeAction($action)
@@ -192,13 +141,14 @@ if($filterName == $firstItem){
                 'itemOptions' => ['id' => 'current-filter-prices']
             ];
         }
+
         if (isset(Yii::$app->controller->prices[0])) {
-            if ($this->getCurrentMinPrice() > 0) {
+            if ($this->filter->getCurrentMinPrice() > 0) {
                 $menuItems['price']['items'][] = [
                     // 'name'=>'min_price',
-                    'value_url' => number_format($this->getCurrentMinPrice(), 0, '', ''),
-                    'value' => Yii::$app->currency->number_format($this->getCurrentMinPrice()),
-                    'label' => Html::decode(Yii::t('shop/default', 'FILTER_CURRENT_PRICE_MIN', ['value' => Yii::$app->currency->number_format($this->getCurrentMinPrice()), 'currency' => Yii::$app->currency->active['symbol']])),
+                    'value_url' => number_format($this->filter->getCurrentMinPrice(), 0, '', ''),
+                    'value' => Yii::$app->currency->number_format($this->filter->getCurrentMinPrice()),
+                    'label' => Html::decode(Yii::t('shop/default', 'FILTER_CURRENT_PRICE_MIN', ['value' => Yii::$app->currency->number_format($this->filter->getCurrentMinPrice()), 'currency' => Yii::$app->currency->active['symbol']])),
                     'linkOptions' => ['class' => 'remove', 'data-price' => 'min_price'],
                     'url' => Yii::$app->urlManager->removeUrlParam('/' . Yii::$app->requestedRoute, 'price', Yii::$app->controller->prices[0])
                 ];
@@ -206,12 +156,12 @@ if($filterName == $firstItem){
         }
 
         if (isset(Yii::$app->controller->prices[1])) {
-            if ($this->getCurrentMaxPrice() > 0) {
+            if ($this->filter->getCurrentMaxPrice() > 0) {
                 $menuItems['price']['items'][] = [
                     // 'name'=>'max_price',
-                    'value_url' => number_format($this->getCurrentMaxPrice(), 0, '', ''),
-                    'value' => Yii::$app->currency->number_format($this->getCurrentMaxPrice()),
-                    'label' => Yii::t('shop/default', 'FILTER_CURRENT_PRICE_MAX', ['value' => Yii::$app->currency->number_format($this->getCurrentMaxPrice()), 'currency' => Yii::$app->currency->active['symbol']]),
+                    'value_url' => number_format($this->filter->getCurrentMaxPrice(), 0, '', ''),
+                    'value' => Yii::$app->currency->number_format($this->filter->getCurrentMaxPrice()),
+                    'label' => Yii::t('shop/default', 'FILTER_CURRENT_PRICE_MAX', ['value' => Yii::$app->currency->number_format($this->filter->getCurrentMaxPrice()), 'currency' => Yii::$app->currency->active['symbol']]),
                     'linkOptions' => array('class' => 'remove', 'data-price' => 'max_price'),
                     'url' => Yii::$app->urlManager->removeUrlParam('/' . Yii::$app->requestedRoute, 'price', Yii::$app->controller->prices[1])
                 ];
@@ -340,7 +290,7 @@ if($filterName == $firstItem){
 
     public function smartNames()
     {
-       $filterData = $this->filter->getActiveFilters();
+        $filterData = $this->filter->getActiveFilters();
         unset($filterData['price']);
         $result = [];
         $name = '';
@@ -425,7 +375,7 @@ if($filterName == $firstItem){
 
     public function getActiveAttributes()
     {
-        $this->_eavAttributes=$this->getEavAttributes();
+        $this->_eavAttributes = $this->getEavAttributes();
         $data = [];
         $sss = (Yii::$app->request->post('filter')) ? Yii::$app->request->post('filter') : $_GET;
 
@@ -495,4 +445,28 @@ if($filterName == $firstItem){
         return $this->_eavAttributes;
     }
 
+    /**
+     * @return string min price
+     */
+    public function getPriceMin()
+    {
+        $q = clone $this->query;
+        $result = $q->aggregatePrice('MIN')->orderBy(false)->asArray()->one();
+        if ($result) {
+            return (int)floor($result['aggregation_price']);
+        }
+
+    }
+
+    /**
+     * @return string max price
+     */
+    public function getPriceMax()
+    {
+        $q = clone $this->query;
+        $result = $q->aggregatePrice('MAX')->orderBy(false)->asArray()->one();
+        if ($result) {
+            return (int)ceil($result['aggregation_price']);
+        }
+    }
 }

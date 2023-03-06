@@ -3,7 +3,6 @@
 namespace panix\mod\shop\controllers;
 
 use panix\engine\controllers\WebController;
-use panix\mod\shop\components\ElasticController;
 use Yii;
 use yii\helpers\Url;
 use yii\web\Response;
@@ -23,7 +22,7 @@ use panix\mod\discounts\models\Discount;
  *
  * @package panix\mod\shop\controllers
  */
-class CatalogController extends ElasticController
+class CatalogController extends FilterController
 {
 
     public $provider;
@@ -49,15 +48,7 @@ class CatalogController extends ElasticController
         $this->query->andWhere(['!=', "{$productModel::tableName()}.availability", $productModel::STATUS_ARCHIVE]);
         $this->query->published();
 
-
-        $q['bool']['must'][]=["terms" => ["categories" => [$this->dataModel->id]]];
-        //$q['bool']['must'][]=["terms" => ["availability" => [Product::STATUS_PREORDER, Product::STATUS_IN_STOCK, Product::STATUS_OUT_STOCK]]];
-        $q['bool']['must_not'][]=["term" => ["availability" => Product::STATUS_ARCHIVE]];
-        $q['bool']['must'][]=["term" => ["switch" => 1]];
-       // $attributes = $this->data->getAttributes($q);
-
-
-
+//$this->query->applyAttributes($this->activeAttributes);
 
         if (true && $this->dataModel->children()->count()) {
 
@@ -86,30 +77,42 @@ class CatalogController extends ElasticController
                 'provider' => $this->provider,
                 'itemView' => $this->itemView,
                 //'filter' => $this->filter
+
             ]);
         } else {
 
         }
 
+
+        //  $cr->with = array('brandActive');
+        // Скрывать товары если бренд скрыт.
+        //TODO: если у товара не выбран бренд то он тоже скрывается!! need fix
+        //$this->query->with(array('brand' => array(
+        //        'scopes' => array('published')
+        //)));
+        //$this->query->applyCategories($this->dataModel, 'andWhere', $this->dataModel->children()->count());
         $this->query->applyCategories($this->dataModel, 'andWhere', $this->dataModel->children()->count());
+//echo $this->dataModel->children()->count();
 
-
-        $this->cacheKey = str_replace('/','-',Yii::$app->controller->route).'-' . $this->dataModel->id;
-        $this->filter = new $this->filterClass($this->query, [
-            'elasticQuery'=>$q,
-            'cacheKey' => $this->cacheKey,
-            'route'=>$this->route
-        ]);
+        $this->filter = new $this->filterClass($this->query, ['cacheKey' => str_replace('/','-',Yii::$app->controller->route).'-' . $this->dataModel->id]);
+        //$this->filter->resultQuery->applyAttributes($this->filter->activeAttributes);
+        // if (Yii::$app->request->get('brand')) {
+        //     $brands = explode(',', Yii::$app->request->get('brand', ''));
+        //     $this->filter->resultQuery->applyBrands($brands);
+        // }
 
 
         $this->filterQuery = clone $this->query; //скорее всего не используется.
         $this->currentQuery = clone $this->query;
         $this->filter->resultQuery->sortAvailability();
 
-
+        //  $this->filter->resultQuery;//->sort()
+        //$this->filter->resultQuery->addOrderBy(['id'=>SORT_DESC]);
+        //$this->query->andWhere([Product::tableName().'.main_category_id'=>$this->dataModel->id]);
+        //  $this->query->with('brandActive');
         $this->pageName = $this->dataModel->name;
         $this->view->setModel($this->dataModel);
-
+        //$this->view->title = $this->pageName;
 
         $this->refreshUrl = $this->dataModel->getUrl();
         $this->view->registerJs("var current_url = '" . Url::to($this->dataModel->getUrl()) . "';", yii\web\View::POS_HEAD, 'current_url');
@@ -129,7 +132,6 @@ class CatalogController extends ElasticController
             }
         }
 
-        //echo $this->filter->resultQuery->createCommand()->rawsql;die;
 
         $this->provider = new \panix\engine\data\ActiveDataProvider([
            'query' => $this->filter->resultQuery,
@@ -142,7 +144,6 @@ class CatalogController extends ElasticController
         ]);
 
         $min_price = $this->filter->price_min;
-
         $meta_params['{name}'] = $this->dataModel->name;
         $meta_params['{h1}'] = (empty($this->dataModel->h1)) ? $this->dataModel->name : $this->dataModel->h1;
         $meta_params['{min_price}'] = ($min_price) ? Yii::$app->currency->number_format($min_price) : 0;

@@ -21,7 +21,7 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
 use yii\helpers\Url;
 
-class FilterLite extends Component
+class FilterProDEV extends Component
 {
 
     private $attributes;
@@ -188,14 +188,14 @@ class FilterLite extends Component
                 // $this->error404();
             }
         }
-
-        if ((!Yii::$app->request->headers->has('filter-callback-ajax') || isset($slides['price']))) {//NEW !!!!
+        if ((!Yii::$app->request->headers->has('filter-callback-ajax') || isset($slides['price']))) { //NEW !!!!
             $this->min = (int)floor($this->getMinPrice());
             $this->max = (int)ceil($this->getMaxPrice());
             if (($this->getCurrentMinPrice() != $this->min) || ($this->getCurrentMaxPrice() != $this->max)) {
                 $this->resultQuery->applyRangePrices($this->getCurrentMinPrice(), $this->getCurrentMaxPrice());
             }
         }
+
 
     }
 
@@ -206,12 +206,10 @@ class FilterLite extends Component
         $menuItems = [];
 
         if (in_array(Yii::$app->controller->route, ['shop/catalog/view', 'shop/catalog/sales', 'shop/catalog/new', 'shop/search/index'])) {
-            if ($request->getQueryParam('brand')) {
-                $brands = array_filter(explode(',', $request->getQueryParam('brand')));
-                $brands = Brand::getDb()->cache(function ($db) use ($brands) {
-                    return Brand::findAll($brands);
-                }, 3600);
-            }
+            $brands = array_filter(explode(',', $request->getQueryParam('brand')));
+            $brands = Brand::getDb()->cache(function ($db) use ($brands) {
+                return Brand::findAll($brands);
+            }, 3600);
         }
 
         if ($request->getQueryParam('price')) {
@@ -314,34 +312,41 @@ class FilterLite extends Component
                 'type' => (int)$attribute['type'],
                 'key' => $attribute['key'],
                 'disable' => false,
-                'changeCount' => false,
+                'changeCount' => true,
                 'filters' => []
             ];
 
             $totalCount = 0;
             $filtersCount = 0;
-            foreach ($attribute['filters'] as $option) {
+            foreach ($attribute['filters'] as $index=>$option) {
 
-                $count = 0;
-                if (isset($active[$attribute['key']])) {
-                    if (in_array($option['id'], $active[$attribute['key']])) {
-                        $count = $this->countAttributeProductsCallback($attribute, $option);
-                    }
+                $count=0;
+                $counterShow=true;
 
-                }
-                //$count = $this->countAttributeProductsCallback($attribute, $option);
+                //if (isset($active[$attribute['key']])) {
+                    //if (!in_array($option['id'], $active[$attribute['key']])) {
+                        $count2 = $this->countAttributeProductsCallback($attribute, $option);
+                $count = $count2->queryScalar();
+                        $counterShow=false;
+                    //}
+                //}
+
+                $sql = $count2->rawSql;
+
                 $first = array_key_first($active);
                 $countText = $count;
-                //if (isset($active[$attribute['key']])) {
-                //    if ($first == $attribute['key'] && $count) {
-                ////        $countText = '+' . $count;
-                //    }
-                //}
+                if (isset($active[$attribute['key']])) {
+                    if ($first == $attribute['key'] && $count) {
+                        $countText = '+' . $count;
+                    }
+                }
 
                 $data[$attribute['key']]['filters'][] = [
                     'title' => $option['title'],
                     'count' => (int)$count,
-                    //'count_text' => $countText,
+                    'sql' => $sql,
+                    'count_text' => $countText,
+                    'ccounterShow' => $counterShow,
                     'key' => $option['key'],
                     'id' => (int)$option['id'],
                 ];
@@ -349,11 +354,15 @@ class FilterLite extends Component
                     $filtersCount++;
 
                 $totalCount += $count;
+                //if($index >= 0){
+                //    break;
+                //}
 
             }
             $data[$attribute['key']]['totalCount'] = $totalCount;
             $data[$attribute['key']]['filtersCount'] = $filtersCount;
         }
+
 
 
         return $data;
@@ -362,23 +371,24 @@ class FilterLite extends Component
     public function getRootCategoryAttributes()
     {
 
-
+        //$data = [];
         $data = Yii::$app->cache->get($this->cacheKey . '-attrs');
         if ($data === false) {
-            //$data = [];
             foreach ($this->_eavAttributes as $attribute) {
                 $data[$attribute->name] = [
                     'title' => $attribute->title,
                     'selectMany' => (boolean)$attribute->select_many,
                     'type' => (int)$attribute->type,
                     'key' => $attribute->name,
-                    'filters' => []
+                    'filters' => [],
+                    'disable' => false,
+                    'changeCount' => true,
                 ];
 
                 $totalCount = 0;
                 $filtersCount = 0;
                 foreach ($attribute->getOptions()
-                             ->cache(0, new TagDependency(['tags' => 'attribute-' . $attribute->name]))
+                             //->cache(0, new TagDependency(['tags' => 'attribute-' . $attribute->name]))
                              ->all() as $option) {
                     $count = $this->countRootAttributeProducts($attribute, $option);
 
@@ -388,7 +398,7 @@ class FilterLite extends Component
                         $data[$attribute->name]['filters'][] = [
                             'title' => (Yii::$app->language == 'uk') ? $option->value_uk : $option->value,
                             'count' => (int)$count,
-                            //'count_text' => $count,
+                            'count_text' => $count,
                             //'data' => ($option->data) ? Json::decode($option->data) : [],
                             'abbreviation' => ($attribute->abbreviation) ? $attribute->abbreviation : null,
                             'key' => $attribute->name,
@@ -409,7 +419,7 @@ class FilterLite extends Component
         return $data;
     }
 
-    public function countAttributeProducts($attribute, $option)
+    public function ____countAttributeProducts($attribute, $option)
     {
 
         /** @var Product|ActiveQuery $model */
@@ -450,8 +460,6 @@ class FilterLite extends Component
         /** @var Product|ActiveQuery $model */
         $model = clone $this->query;
 
-
-
         $model->groupBy = false;
         $model->orderBy = false;
         $model->select('COUNT(*)');
@@ -468,9 +476,6 @@ class FilterLite extends Component
         if ($newData)
             $model->getFindByEavAttributes2($newData);
 
-
-        //echo $model->createCommand()->rawSql;die;
-
         /*$model->cache(999999, new TagDependency([
             'tags' => [
                 'attribute-' . $attribute->name,
@@ -479,10 +484,11 @@ class FilterLite extends Component
         ]));*/
         //echo $this->cacheKey;die;
         //$model->cache(999999, new TagDependency(['tags'=>'attribute-' . $attribute->name]));
-        $data2 = Yii::$app->cache->getOrSet($this->cacheKey . '-' . $option->id, function () use ($model) {
-            return $model->createCommand()->queryScalar();
-        }, 0);
-        return $data2; //$model->createCommand()->queryScalar();
+        //$data2 = Yii::$app->cache->getOrSet($this->cacheKey . '-' . $option->id, function () use ($model) {
+        //    return $model->createCommand()->queryScalar();
+        //}, 0);
+        //return $data2;
+        return $model->createCommand()->queryScalar();
     }
 
 
@@ -523,8 +529,9 @@ class FilterLite extends Component
 
         /** @var EavQueryTrait|ActiveQuery $model */
         $model->getFindByEavAttributes2($newData);
-        $model->cache(0, new TagDependency(['tags' => 'attribute-' . $attribute['key'] . '-' . $option['id']]));
-        return $model->createCommand()->queryScalar();
+        //$model->cache(0, new TagDependency(['tags' => 'attribute-' . $attribute['key'] . '-' . $option['id']]));
+
+        return $model->createCommand();
     }
 
 
@@ -534,38 +541,32 @@ class FilterLite extends Component
             return $this->_eavAttributes;
 
 
-        $this->_eavAttributes = Yii::$app->cache->getOrSet($this->cacheKey . '-EavAttributes', function () {
-            $queryCategoryTypes = clone $this->query; //Product::find();
-            $queryCategoryTypes->select(Product::tableName() . '.type_id');
-            $queryCategoryTypes->groupBy(Product::tableName() . '.type_id');
-            $queryCategoryTypes->distinct(true);
-            $queryCategoryTypes->orderBy = false;
+        $queryCategoryTypes = clone $this->query; //Product::find();
+        $queryCategoryTypes->select(Product::tableName() . '.type_id');
+        $queryCategoryTypes->groupBy(Product::tableName() . '.type_id');
+        $queryCategoryTypes->distinct(true);
+        $queryCategoryTypes->orderBy = false;
 
-            $typesIds = $queryCategoryTypes->createCommand()->queryColumn();
-
-
-            $query = Attribute::find()
-                ->where(['IN', '`type`.`type_id`', $typesIds])
-                ->andWhere(['IN', 'type', [Attribute::TYPE_DROPDOWN, Attribute::TYPE_SELECT_MANY, Attribute::TYPE_CHECKBOX_LIST, Attribute::TYPE_RADIO_LIST, Attribute::TYPE_COLOR]])
-                ->distinct(true)
-                ->useInFilter()
-                ->sort()
-                ->orderBy(null)
-                //->cache(0)
-                ->joinWith(['types type', 'options']);
+        $typesIds = $queryCategoryTypes->createCommand()->queryColumn();
 
 
-            $result = $query->all();
+        $query = Attribute::find()
+            //->where(['IN', '`types`.`type_id`', $typesIds])
+            ->where(['IN', '`type`.`type_id`', $typesIds])
+            ->andWhere(['IN', 'type', [Attribute::TYPE_DROPDOWN, Attribute::TYPE_SELECT_MANY, Attribute::TYPE_CHECKBOX_LIST, Attribute::TYPE_RADIO_LIST, Attribute::TYPE_COLOR]])
+            ->distinct(true)
+            ->useInFilter()
+            ->sort()
+            ->orderBy(null)
+            ->joinWith(['types type', 'options']);
 
-            $this->_eavAttributes = [];
-            foreach ($result as $attr) {
-                $this->_eavAttributes[$attr->name] = $attr;
-            }
-            return $this->_eavAttributes;
-        }, 0);
 
+        $result = $query->all();
 
-
+        $this->_eavAttributes = [];
+        foreach ($result as $attr) {
+            $this->_eavAttributes[$attr->name] = $attr;
+        }
         return $this->_eavAttributes;
     }
 
@@ -639,15 +640,9 @@ class FilterLite extends Component
         return (int)$this->_currentMaxPrice;
     }
 
-
-    //быстрее работает.??????
+    //быстрее работает.
     public function getCategoryBrands()
     {
-        $data = [
-            'title' => Yii::t('shop/default', 'FILTER_BY_BRAND'),
-            'selectMany' => true,
-            'filters' => []
-        ];
         $this->query->orderBy = false;
         $queryClone = clone $this->query;
         $queryClone->addSelect(['brand_id', Product::tableName() . '.id']);
@@ -664,7 +659,7 @@ class FilterLite extends Component
         $queryClone->andWhere('brand_id IS NOT NULL');
         $queryClone->groupBy('brand_id');
         $queryClone->addSelect([
-            'counter' => $sub_query, //->noCache() ?????
+            'counter' => $sub_query,
             Brand::tableName() . '.`name_' . Yii::$app->language . '` as name',
             Brand::tableName() . '.slug',
             Brand::tableName() . '.image'
@@ -673,11 +668,17 @@ class FilterLite extends Component
 
         $brands = $queryClone->createCommand()->queryAll();
 
+        $data = [
+            'title' => Yii::t('shop/default', 'FILTER_BY_BRAND'),
+            'selectMany' => true,
+            'filters' => []
+        ];
+
         foreach ($brands as $m) {
             $data['filters'][] = [
                 'title' => $m['name'],
                 'count' => (int)$m['counter'],
-                //'count_text' => (int)$m['counter'],
+                'count_text' => (int)$m['counter'],
                 'key' => 'brand',
                 'id' => (int)$m['brand_id'],
                 'slug' => $m['slug'],
@@ -735,7 +736,7 @@ class FilterLite extends Component
             $data['filters'][] = [
                 'title' => $m['name'],
                 'count' => (int)$m['counter'],
-                //'count_text' => (int)$m['counter'],
+                'count_text' => (int)$m['counter'],
                 'key' => 'brand',
                 'id' => $m['brand_id'],
             ];

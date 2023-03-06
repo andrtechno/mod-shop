@@ -49,7 +49,20 @@ class SearchController extends ElasticController
         }
         $this->query->applySearch($queryGet);
 
-        $this->filter = new $this->filterClass($this->query, ['cacheKey' => str_replace('/', '-', Yii::$app->controller->route) . '-' . $queryGet]);
+        //$q['bool']['must'][]=["terms" => ["categories" => [$this->dataModel->id]]];
+        //$q['bool']['must'][]=["terms" => ["availability" => [Product::STATUS_PREORDER, Product::STATUS_IN_STOCK, Product::STATUS_OUT_STOCK]]];
+        $q['bool']['must_not'][] = ["term" => ["availability" => Product::STATUS_ARCHIVE]];
+        $q['bool']['must'][] = ["term" => ["switch" => 1]];
+        $q['bool']['must'][] = ["match" => ["name" => 'крос']];
+
+
+        $this->filter = new $this->filterClass($this->query, [
+                'cacheKey' => str_replace('/', '-', Yii::$app->controller->route) . '-' . $queryGet,
+                'elasticQuery' => $q,
+                'route' => $this->route
+            ]
+
+        );
 
         // Create clone of the current query to use later to get min and max prices.
         //$this->filterQuery = clone $this->query;

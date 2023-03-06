@@ -14,11 +14,15 @@ use yii\helpers\ArrayHelper;
 class Module extends \yii\base\Module
 {
     //public $controllerNamespace = 'panix\mod\shop\api\controllers';
+    public $searchAttribute = 'sku';
+    public $host = false;
+    public $ips = false;
+    public $filterClass = 'panix\mod\shop\components\FilterLite';
 
     public function init()
     {
         parent::init();
-        $this->setAliases(['@' . $this->id => $this->basePath.'/../']);
+        $this->setAliases(['@' . $this->id => $this->basePath . '/../']);
         $this->registerTranslations($this->id);
     }
 

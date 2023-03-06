@@ -34,9 +34,17 @@ class Bootstrap implements BootstrapInterface
                 'GET,POST /' => 'index',
                 'GET,HEAD show' => 'show',
             ],
-
         ];
-
+        $rules[] = [
+            'class' => 'yii\rest\UrlRule',
+            'controller' => 'shop/elastic',
+            'pluralize' => false,
+            'extraPatterns' => [
+                'GET,POST /' => 'index',
+                'GET,HEAD show' => 'show',
+            ],
+        ];
+        $rules['shop/search'] = 'shop/default/search';
 
         $rules[] = [
             'class' => 'panix\mod\shop\components\rules\BaseUrlRule',

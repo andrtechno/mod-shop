@@ -57,17 +57,45 @@ class Product extends BaseProduct
                 return ['id' => $model->type_id, 'name' => $model->type->name];
             },
             'url' => function ($model) {
-                //return ApiHelpers::url($model->getUrl());
-                return '/product/' . $model->slug . '-' . $model->id;
+                return ApiHelpers::url("/product/" . $model->slug . '-' . $model->id, true);
             },
             'is_condition',
             'views',
             'video',
-            'name_ru',
+            'name',
             'price',
             'sku',
+            'discount',
             'main_image' => function ($model) {
-                return $model->image;
+                if (file_exists(Yii::getAlias("@uploads/store/product/{$model->id}/{$model->image}"))) {
+                    return ApiHelpers::url("/uploads/store/product/{$model->id}/" . $model->image, true);
+                } else {
+                    return ApiHelpers::url("/uploads/no-image.jpg", true);
+                }
+            },
+
+            /*'updated_at' => function ($model) {
+                if ($model->updated_at) {
+                    return [
+                        'timestemp' => $model->updated_at,
+                        'date' => CMS::date($model->updated_at, false),
+                        'datetime' => CMS::date($model->updated_at)
+                    ];
+                }
+            },*/
+
+            'categories' => function ($model) {
+                return [
+                    'main_category' => $model->mainCategory,
+                    'items' => $model->categories
+                ];
+            },
+
+            'brand' => function ($model) {
+                return $model->brand;
+            },
+            'supplier' => function ($model) {
+                return $model->supplier;
             },
             'availability' => function ($model) {
                 return [
@@ -90,36 +118,6 @@ class Product extends BaseProduct
                         'date' => CMS::date($model->created_at, false),
                         'datetime' => CMS::date($model->created_at)
                     ];
-                }
-            },
-            /*'updated_at' => function ($model) {
-                if ($model->updated_at) {
-                    return [
-                        'timestemp' => $model->updated_at,
-                        'date' => CMS::date($model->updated_at, false),
-                        'datetime' => CMS::date($model->updated_at)
-                    ];
-                }
-            },*/
-
-            'categories' => function ($model) {
-                return [
-                    'main_category' => $model->mainCategory,
-                    'categories' => $model->categories
-                ];
-            },
-            'brand' => function ($model) {
-                if ($model->brand_id) {
-                    if ($model->brand) {
-                        return ['id' => $model->brand_id, 'name' => $model->brand->name];
-                    }
-                }
-            },
-            'supplier' => function ($model) {
-                if ($model->supplier_id) {
-                    if ($model->supplier) {
-                        return ['id' => $model->supplier_id, 'name' => $model->supplier->name];
-                    }
                 }
             },
             /*'images' => function ($model) {
@@ -168,7 +166,7 @@ class Product extends BaseProduct
 
     public function extraFields()
     {
-        return ['prices', 'characteristics', 'reviews'];
+        return ['prices', 'characteristics', 'reviews', 'categories', 'brand'];
     }
 
     public function getCharacteristics()
