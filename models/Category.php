@@ -89,7 +89,7 @@ class Category extends ActiveRecord
             ['use_seo_parents', 'boolean'],
             [['description', 'image','icon'], 'default'],
             [['name', 'meta_title', 'h1'], 'string', 'max' => 255],
-            [['meta_description','name_main_uk'], 'string'],
+            [['meta_description'], 'string'], //,'name_main_uk'
             ['description', 'safe']
         ];
     }

@@ -27,6 +27,8 @@ return [
     'VIDEO' => 'Видео Youtube ссылка',
     'AUTO_DECREASE_QUANTITY' => 'Автоматически уменьшать количество',
     'QUANTITY' => 'Количество на складе',
+    'QUANTITY_MIN' => 'Минимальное количество единиц для покупки',
+    //'QUANTITY_STEP' => 'Шаг единиц для покупки',
     'AVAILABILITY' => 'Наличие',
     'AVAILABILITY_1' => 'Есть в наличии',
     'AVAILABILITY_2' => 'Под заказ',

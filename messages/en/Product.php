@@ -27,6 +27,8 @@ return [
     'VIDEO' => 'Youtube video link',
     'AUTO_DECREASE_QUANTITY' => 'Automatically reduce quantity',
     'QUANTITY' => 'Quantity in stock',
+    'QUANTITY_MIN' => 'Minimum number of units to buy',
+    //'QUANTITY_STEP' => 'Step units to buy',
     'AVAILABILITY' => 'Availability',
     'AVAILABILITY_1' => 'Available',
     'AVAILABILITY_2' => 'On order',

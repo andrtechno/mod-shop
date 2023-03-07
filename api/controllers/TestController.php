@@ -40,7 +40,7 @@ use yii\web\Response;
  * }
  * }
  */
-class ElasticController extends ApiController
+class TestController extends ApiController
 {
 
     public function behaviors()

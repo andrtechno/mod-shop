@@ -42,8 +42,8 @@ class DefaultController extends ApiController
         $json = [];
         if ($q) {
             $model = Product::find()->published()->limit(16);
-            $model->andWhere(["availability" => [Product::STATUS_IN_STOCK, Product::STATUS_PREORDER]]);
             $model->applySearch($q);
+            $model->andWhere(["availability" => [Product::STATUS_IN_STOCK, Product::STATUS_PREORDER]]);
 
             $result = $model->all();
             $json['data']['products'] = [];

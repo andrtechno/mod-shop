@@ -20,6 +20,7 @@ use yii\db\Query;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use panix\engine\db\ActiveRecord;
+use yii\helpers\Json;
 use yii\helpers\Url;
 
 /**
@@ -459,11 +460,11 @@ class Product extends ActiveRecord
         $rules[] = [['full_description', 'length', 'width', 'height', 'weight'], 'string'];
         $rules[] = ['use_configurations', 'boolean', 'on' => self::SCENARIO_INSERT];
         $rules[] = ['enable_comments', 'boolean'];
-        $rules[] = [['unit'], 'default', 'value' => 1];
+        $rules[] = [['unit', 'quantity_min', 'in_box'], 'default', 'value' => 1];
         // $rules[] = ['ConfigurationsProduct', 'each', 'rule' => ['integer']];
         $rules[] = [['sku', 'full_description', 'video', 'price_purchase', 'label', 'discount', 'markup'], 'default']; // установим ... как NULL, если они пустые
         $rules[] = [['price', 'price_purchase'], 'double'];
-        $rules[] = [['brand_id', 'type_id', 'quantity', 'views', 'availability', 'added_to_cart_count', 'ordern', 'category_id', 'currency_id', 'supplier_id', 'weight_class_id', 'length_class_id', 'is_condition'], 'integer'];
+        $rules[] = [['brand_id', 'type_id', 'quantity', 'quantity_min', 'in_box', 'views', 'availability', 'added_to_cart_count', 'ordern', 'category_id', 'currency_id', 'supplier_id', 'weight_class_id', 'length_class_id', 'is_condition'], 'integer'];
         $rules[] = [['id', 'name', 'slug', 'full_description', 'use_configurations', 'length', 'width', 'height', 'weight'], 'safe'];
 
         return $rules;
@@ -1040,6 +1041,35 @@ class Product extends ActiveRecord
                     ]);
                 }
             }
+        }
+        if (Yii::$app->get('elasticsearch')) {
+            $options = [];
+            $options['name'] = $this->name;
+            if($this->currency_id){
+                $currency = Currency::findOne($this->currency_id);
+                $options['price'] = (double)$this->price * $currency->rate;
+            }else{
+                $options['price'] = (double)$this->price;
+            }
+
+            $options['brand_id'] = $this->brand_id;
+            $options['slug'] = $this->slug;
+            $options['created_at'] = (int)$this->created_at;
+            $options['availability'] = (int)$this->availability;
+            $options['sku'] = $this->sku;
+            $options['switch'] = (int)$this->switch;
+            $eav = $this->getEavAttributes();
+            $options['options'] = array_values($eav);
+
+            $options['categories'] = [];
+            $options['mainCategory'] = $this->main_category_id;
+            array_push($options['categories'], $this->main_category_id);
+            foreach ($this->categorization as $category) {
+                array_push($options['categories'], $category->id);
+            }
+
+            $result = Yii::$app->elasticsearch->put('product/_doc/' . $this->id, [], Json::encode($options));
+            //print_r($result);die;
         }
     }
 

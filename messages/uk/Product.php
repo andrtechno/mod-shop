@@ -27,6 +27,8 @@ return [
     'VIDEO' => 'Відео Youtube посилання',
     'AUTO_DECREASE_QUANTITY' => 'Автоматично зменшувати кількість',
     'QUANTITY' => 'Кількість на складі',
+    'QUANTITY_MIN' => 'Мінімальна кількість одиниць для покупки',
+    //'QUANTITY_STEP' => 'Крок одиниць для покупки',
     'AVAILABILITY' => 'Наявність',
     'AVAILABILITY_1' => 'Є в наявності',
     'AVAILABILITY_2' => 'Під замовлення',
