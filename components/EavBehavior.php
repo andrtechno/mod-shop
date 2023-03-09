@@ -370,11 +370,12 @@ class EavBehavior extends \yii\base\Behavior
                 if (is_array($current)) {
                     $current[] = $value;
                     $value = $current;
-                } else
+                } else{
                     $value = [$current, $value];
+                }
             }
 
-            $this->attributes[$attribute] = $value;
+            $this->attributes[$attribute] = (int)$value;
 
 
         }
@@ -467,6 +468,7 @@ class EavBehavior extends \yii\base\Behavior
         $values = [];
         // Queue for load.
         $loadQueue = [];
+
         foreach ($attributes as $attribute) {
             // Check is safe.
             if ($this->hasSafeAttribute($attribute)) {

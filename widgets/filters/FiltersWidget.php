@@ -29,7 +29,7 @@ class FiltersWidget extends Widget
     //public $countBrand = true;
 
     public $count = false;
-    public $tagCount = 'sup';
+    public $tagCount = 'span';
     public $tagCountOptions = ['class' => 'filter-count'];
     //public $showEmpty = false;
     public $searchItem = 20;
@@ -78,6 +78,7 @@ class FiltersWidget extends Widget
 
 
         $attributes = $this->filter->getAttributes($this->filter->elasticQuery);
+       // CMS::dump($attributes);die;
         echo $this->render($this->skin, [
             'model' => $this->model,
             'currentUrl' => $this->view->context->currentUrl,
@@ -89,7 +90,7 @@ class FiltersWidget extends Widget
             // 'currentPriceMin' => $this->data->getCurrentMinPrice(),
             //  'currentPriceMax' => $this->data->getCurrentMaxPrice(),
             'active' => $active,
-            'attributes' => ($attributes['data']) ? $attributes['data'] : [],
+            'attributes' => (isset($attributes['data'])) ? $attributes['data'] : [],
            // 'brands' => $this->brands
         ]);
         // var category_id = {$this->model->id};
@@ -159,7 +160,7 @@ class FiltersWidget extends Widget
 
         if (Yii::$app->getModule('shop')->filterClass == 'panix\mod\shop\components\FilterElastic') {
             //return ($this->count) ? ' ' . Html::tag($this->tagCount, $result, $this->tagCountOptions) : '';
-            return Html::tag($this->tagCount, $result, $this->tagCountOptions);
+            return Html::tag($this->tagCount, '('.$result.')', $this->tagCountOptions);
         } else {
             return 'aa';
         }

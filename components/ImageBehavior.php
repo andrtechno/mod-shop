@@ -2,6 +2,7 @@
 
 namespace panix\mod\shop\components;
 
+use panix\mod\shop\models\Product;
 use Yii;
 use yii\base\Exception;
 use yii\caching\TagDependency;
@@ -393,8 +394,10 @@ class ImageBehavior extends \yii\base\Behavior
             $allImg->setMain(false);
             $allImg->save();
         }
-        $this->owner->image = $img->filename;
-        $this->owner->save(false);
+        //делаем именно так, потому что срабатывает 2 раза сохранение модели.
+        Yii::$app->db->createCommand()->update(Product::tableName(), ['image' => $img->filename], ['id'=>$this->owner->id])->execute();
+        //$this->owner->image = $img->filename;
+        //$this->owner->save(false);
     }
 
 }

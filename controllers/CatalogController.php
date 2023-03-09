@@ -50,8 +50,7 @@ class CatalogController extends ElasticController
         $this->query->published();
 
 
-        $q['bool']['must'][]=["terms" => ["categories" => [$this->dataModel->id]]];
-        //$q['bool']['must'][]=["terms" => ["availability" => [Product::STATUS_PREORDER, Product::STATUS_IN_STOCK, Product::STATUS_OUT_STOCK]]];
+        $q['bool']['must'][]=["term" => ["categories" => $this->dataModel->id]];
         $q['bool']['must_not'][]=["term" => ["availability" => Product::STATUS_ARCHIVE]];
         $q['bool']['must'][]=["term" => ["switch" => 1]];
        // $attributes = $this->data->getAttributes($q);
@@ -297,6 +296,8 @@ class CatalogController extends ElasticController
         $this->view->canonical = Url::to($this->currentUrl, true);
         $this->view->registerJs("var current_url = '" . $this->currentUrl . "';", yii\web\View::POS_HEAD, 'current_url');
 
+        $q['bool']['must_not'][]=["term" => ["availability" => Product::STATUS_ARCHIVE]];
+        $q['bool']['must'][]=["term" => ["switch" => 1]];
 
         $this->query = $productModel::find()->published()->new();
 
@@ -335,7 +336,11 @@ class CatalogController extends ElasticController
             $cacheKey .= '-'.Yii::$app->request->getQueryParam('category');
         }
 
-        $this->filter = new $this->filterClass($this->query, ['cacheKey' => $cacheKey]);
+        $this->filter = new $this->filterClass($this->query, [
+            'cacheKey' => $cacheKey,
+            'elasticQuery'=>$q,
+            'route'=>$this->route
+        ]);
 
         //$this->filterQuery = clone $this->filter->resultQuery;
         $this->currentQuery = clone $this->query;
@@ -369,7 +374,9 @@ class CatalogController extends ElasticController
         /** @var Product $dataModel */
         $this->dataModel = Yii::$app->getModule('shop')->model('Product');
 
-
+        $q['bool']['must_not'][]=["term" => ["availability" => Product::STATUS_ARCHIVE]];
+        $q['bool']['must'][]=["term" => ["switch" => 1]];
+        $q['bool']['must'][]=["term" => ["discount" => 1]];
         // $this->query = $this->dataModel::find()->published()->isNotEmpty('discount');
 
         $this->query = Product::find()->published()->sales();
@@ -451,7 +458,11 @@ class CatalogController extends ElasticController
         if (Yii::$app->request->getQueryParam('category')) {
             $cacheKey .= '-'.Yii::$app->request->getQueryParam('category');
         }
-        $this->filter = new $this->filterClass($this->query, ['cacheKey' => $cacheKey]);
+        $this->filter = new $this->filterClass($this->query, [
+            'cacheKey' => $cacheKey,
+            'elasticQuery'=>$q,
+            'route'=>$this->route
+        ]);
         $this->filter->resultQuery->sortAvailability();
 
         $this->filterQuery = clone $this->filter->resultQuery;
@@ -474,12 +485,6 @@ class CatalogController extends ElasticController
                 'pageSize' => $this->per_page,
             ],
         ]);
-
-
-        // 'criteria' => array(
-        //     'condition' => 'is_sale = 1 OR is_discount=1 && switch=1',
-        // ),
-
 
         return $this->_render('@shop/views/catalog/view', [
             'categories' => $categoriesResponse,

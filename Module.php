@@ -18,7 +18,7 @@ class Module extends WebModule implements BootstrapInterface
     public $icon = 'shopcart';
     public $mailPath = '@shop/mail';
     public $searchAttribute = 'sku';
-    public $filterViewCurrent = '@shop/widgets/filtersnew/views/current';
+    public $filterViewCurrent = '@shop/widgets/filters/views/current';
     public $viewList = ['grid', 'list'];
     public $filterClass = 'panix\mod\shop\components\FilterLite';
     //public $filterClass = 'panix\mod\shop\components\FilterPro';

@@ -22,7 +22,7 @@ use panix\mod\discounts\models\Discount;
  *
  * @package panix\mod\shop\controllers
  */
-class CatalogController extends FilterController
+class Catalog2Controller extends FilterController
 {
 
     public $provider;

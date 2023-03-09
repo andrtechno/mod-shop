@@ -93,7 +93,6 @@ class FilterElastic extends Component
     }
 
 
-
     public function __construct(ProductQuery $query = null, $config = [])
     {
 
@@ -101,7 +100,7 @@ class FilterElastic extends Component
         $data = Yii::$app->request->post('filter');
         $slides = Yii::$app->request->post('slide');
 
-
+       // var_dump($this->elasticQuery);die;
         if ($query) {
             $this->resultQuery = clone $query;
             $this->query = clone $query;
@@ -143,6 +142,7 @@ class FilterElastic extends Component
             }
 
         } else {
+
 
             /*$this->query = Product::find();
             $this->query->andWhere(['!=', "availability", Product::STATUS_ARCHIVE]);
@@ -270,7 +270,7 @@ class FilterElastic extends Component
         if ($this->route === 'shop/catalog/view') {
             $category = Category::findOne(['full_path' => Yii::$app->request->get('slug')]);
             $urlParams['slug'] = $category->full_path;
-        }elseif($this->route === 'shop/brand/view'){
+        } elseif ($this->route === 'shop/brand/view') {
             //$brand = Brand::findOne(['slug' => Yii::$app->request->get('slug')]);
             //$urlParams['slug'] = $brand->slug;
         }
@@ -290,30 +290,31 @@ class FilterElastic extends Component
 
 
         $this->getEavAttributes();
-        $brands = $this->getCategoryBrands();
 
-        if ($brands) {
-            $data['data']['brand'] = [
-                'title' => Yii::t('shop/default', 'FILTER_BY_BRAND'),
-                //'selectMany' => true,
-                'type' => 3,
-                'filters' => []
-            ];
-
-            foreach ($brands as $m) {
-                $data['data']['brand']['filters'][] = [
-                    'title' => $m['name'],
-                    'count' => (int)$m['counter'],
-                    'count_text' => (int)$m['counter'],
-                    'id' => $m['brand_id'],
-                    'slug' => $m['slug'],
-                    'image' => $m['image'],
+        if ($this->route != 'shop/brand/view') {
+            $brands = $this->getCategoryBrands();
+            if ($brands) {
+                $data['data']['brand'] = [
+                    'title' => Yii::t('shop/default', 'FILTER_BY_BRAND'),
+                    //'selectMany' => true,
+                    'type' => 3,
+                    'filters' => []
                 ];
-                sort($data['data']['brand']['filters']);
-            }
-            $data['data']['brand']['filtersCount'] = count($data['data']['brand']['filters']);
-        }
 
+                foreach ($brands as $m) {
+                    $data['data']['brand']['filters'][] = [
+                        'title' => $m['name'],
+                        'count' => (int)$m['counter'],
+                        'count_text' => (int)$m['counter'],
+                        'id' => $m['brand_id'],
+                        'slug' => $m['slug'],
+                        'image' => $m['image'],
+                    ];
+                    sort($data['data']['brand']['filters']);
+                }
+                $data['data']['brand']['filtersCount'] = count($data['data']['brand']['filters']);
+            }
+        }
 
         foreach ($this->_eavAttributes as $attribute) {
             $data['data'][$attribute->name] = [
@@ -376,12 +377,12 @@ class FilterElastic extends Component
         $search = $elasticQuery->search(null, ['size' => 0]);
 
         $opts = [];
-
-        foreach ($search['aggregations']['filtered']['buckets'] as $keys => $item) {
-            list($key, $id) = explode(':', $keys);
-            $opts[$key][$id] = $item['doc_count'];
+        if (isset($search['aggregations']['filtered']['buckets'])) {
+            foreach ($search['aggregations']['filtered']['buckets'] as $keys => $item) {
+                list($key, $id) = explode(':', $keys);
+                $opts[$key][$id] = $item['doc_count'];
+            }
         }
-
 
         $data['data']['brand'] = [
             'title' => 'brand',
@@ -455,7 +456,6 @@ class FilterElastic extends Component
         }
 
 
-
         $queryTotal = new ElasticQuery();
         $queryTotal->from('product');
         $queryTotal->query = $this->elasticQuery;
@@ -469,6 +469,7 @@ class FilterElastic extends Component
         $query = new ElasticQuery();
         $query->from('product');
 
+//print_r($this->elasticQuery);die;
         //$query->fields = ["price"];
         $query->query = $this->elasticQuery;
         $query->addAggregate('min_price', [
@@ -518,13 +519,14 @@ class FilterElastic extends Component
         $query = new ElasticQuery();
         $query->from('product');
         //$query->fields = ['*'];
+
         $query->query = $this->elasticQuery;
-        $query->addAggregate('min_price', [
+        /*$query->addAggregate('min_price', [
             'min' => ["field" => "price"],
         ]);
         $query->addAggregate('max_price', [
             'max' => ["field" => "price"],
-        ]);
+        ]);*/
 
         $filtered = [];
 
@@ -630,7 +632,7 @@ class FilterElastic extends Component
                 //'script' => 'emit(params._source[\'price\'] * '.$currency_value.')'
             ],
         ];*/
-
+//print_r($filtered);die;
         if ($filtered) {
             $query->addAggregate('filtered', $filtered);
         } else {
@@ -640,8 +642,7 @@ class FilterElastic extends Component
         //$query->addOrderBy(['created_at'=>SORT_ASC]);
         //$search = $query->search(null, ['size' => 10,'from'=>1]);
         $search = $query->search(null, ['size' => 0]);
-        //print_r($search);
-        //die;
+//print_r($search);die;
         return $query;
     }
 
@@ -756,6 +757,7 @@ class FilterElastic extends Component
     public function getCategoryBrands()
     {
         $this->query->orderBy = false;
+
         $queryClone = clone $this->query;
         $queryClone->addSelect(['brand_id', Product::tableName() . '.id']);
         $queryClone->joinWith([

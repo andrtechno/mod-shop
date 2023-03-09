@@ -151,16 +151,16 @@ function filterCallback(e, objects, target) {
                     if (data.count) {
                         $('#filter-' + name + ' #li-' + data.id + ' input[type="checkbox"]:not(:checked)').attr('disabled', false);
                         $('#filter-' + name + ' #li-' + data.id).removeClass('disabled');
-                        $('#filter-' + name + ' #li-' + data.id).show();
+                       // $('#filter-' + name + ' #li-' + data.id).show();
                         hideCounter++;
                     } else {
                         $('#filter-' + name + ' #li-' + data.id + ' input[type="checkbox"]:not(:checked)').attr('disabled', 'disabled');
                         $('#filter-' + name + ' #li-' + data.id).addClass('disabled');
                         if (!selector.prop('checked')) {
-                            $('#filter-' + name + ' #li-' + data.id).hide();
+                        //    $('#filter-' + name + ' #li-' + data.id).hide();
                         }else{
 
-                            $('#filter-' + name + ' #li-' + data.id).show();
+                        //    $('#filter-' + name + ' #li-' + data.id).show();
                         }
 
 
@@ -170,11 +170,11 @@ function filterCallback(e, objects, target) {
                 var container = $('#filter-container-' + name);
 
                 if(hideCounter == 0){
-                    container.hide();
+                    //container.hide();
                 }else{
                     container.show();
                     if (hideCounter < 10) {
-                        container.find('input[type="text"]').hide();
+                        //container.find('input[type="text"]').hide();
                     } else {
                         container.find('input[type="text"]').show();
                     }

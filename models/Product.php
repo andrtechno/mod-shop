@@ -459,7 +459,7 @@ class Product extends ActiveRecord
         $rules[] = [['name', 'slug'], 'trim'];
         $rules[] = [['full_description', 'length', 'width', 'height', 'weight'], 'string'];
         $rules[] = ['use_configurations', 'boolean', 'on' => self::SCENARIO_INSERT];
-        $rules[] = ['enable_comments', 'boolean'];
+        $rules[] = [['enable_comments','switch'], 'boolean'];
         $rules[] = [['unit', 'quantity_min', 'in_box'], 'default', 'value' => 1];
         // $rules[] = ['ConfigurationsProduct', 'each', 'rule' => ['integer']];
         $rules[] = [['sku', 'full_description', 'video', 'price_purchase', 'label', 'discount', 'markup'], 'default']; // установим ... как NULL, если они пустые
@@ -1030,6 +1030,38 @@ class Product extends ActiveRecord
 
         }
 
+        /*if (Yii::$app->get('elasticsearch')) {
+            $optionse = [];
+            $optionse['name'] = $this->name;
+            // $optionse['name_ru'] = $this->name_ru;
+            //$optionse['name_uk'] = $this->name_uk;
+            if($this->currency_id){
+                $currency = Currency::findOne($this->currency_id);
+                $optionse['price'] = (double)$this->price * $currency->rate;
+            }else{
+                $optionse['price'] = (double)$this->price;
+            }
+
+            $optionse['brand_id'] = $this->brand_id;
+            $optionse['slug'] = $this->slug;
+            $optionse['created_at'] = (int)$this->created_at;
+            $optionse['availability'] = (int)$this->availability;
+            $optionse['sku'] = $this->sku;
+            $optionse['switch'] = (int)$this->switch;
+            $eav = $this->getEavAttributes();
+            print_r($eav);die;
+            $optionse['options'] = array_values($eav);
+
+            $optionse['categories'] = [];
+            $optionse['mainCategory'] = $this->main_category_id;
+            array_push($optionse['categories'], $this->main_category_id);
+            foreach ($this->categorization as $category) {
+                array_push($optionse['categories'], $category->id);
+            }
+
+            $result = Yii::$app->elasticsearch->put('product/_doc/' . $this->id, [], Json::encode($optionse));
+        }*/
+
         parent::afterSave($insert, $changedAttributes);
 
         if (!$insert) {
@@ -1042,35 +1074,7 @@ class Product extends ActiveRecord
                 }
             }
         }
-        if (Yii::$app->get('elasticsearch')) {
-            $options = [];
-            $options['name'] = $this->name;
-            if($this->currency_id){
-                $currency = Currency::findOne($this->currency_id);
-                $options['price'] = (double)$this->price * $currency->rate;
-            }else{
-                $options['price'] = (double)$this->price;
-            }
 
-            $options['brand_id'] = $this->brand_id;
-            $options['slug'] = $this->slug;
-            $options['created_at'] = (int)$this->created_at;
-            $options['availability'] = (int)$this->availability;
-            $options['sku'] = $this->sku;
-            $options['switch'] = (int)$this->switch;
-            $eav = $this->getEavAttributes();
-            $options['options'] = array_values($eav);
-
-            $options['categories'] = [];
-            $options['mainCategory'] = $this->main_category_id;
-            array_push($options['categories'], $this->main_category_id);
-            foreach ($this->categorization as $category) {
-                array_push($options['categories'], $category->id);
-            }
-
-            $result = Yii::$app->elasticsearch->put('product/_doc/' . $this->id, [], Json::encode($options));
-            //print_r($result);die;
-        }
     }
 
     public function getNotifications()
@@ -1209,6 +1213,13 @@ class Product extends ActiveRecord
 
         ProductReviews::deleteAll(['product_id' => $this->id]);
         TagDependency::invalidate(Yii::$app->cache, ['brand-' . $this->brand_id]);
+
+
+        if (Yii::$app->get('elasticsearch')) {
+            $result = Yii::$app->elasticsearch->delete('product/_doc/' . $this->id);
+        }
+
+
         parent::afterDelete();
     }
 
