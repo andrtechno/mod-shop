@@ -65,7 +65,7 @@ class m180917_193213_shop_product extends Migration
             'discount' => $this->string(5)->comment('Скидка'),
             'markup' => $this->string(5)->comment('Наценка'),
             'video' => $this->text(),
-            'enable_comments' => $this->tinyInteger(1)->defaultValue(1)->unsigned(),
+            'enable_comments' => $this->boolean()->defaultValue(true)->unsigned(),
             'created_at' => $this->integer(),
             'updated_at' => $this->integer(),
             'switch' => $this->boolean()->defaultValue(true)->notNull(),
