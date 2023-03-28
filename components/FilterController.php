@@ -4,7 +4,6 @@ namespace panix\mod\shop\components;
 
 use panix\engine\CMS;
 use panix\mod\shop\models\Category;
-use panix\mod\shop\models\ViewProduct;
 use Yii;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;

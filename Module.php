@@ -30,7 +30,9 @@ class Module extends WebModule implements BootstrapInterface
     {
 
         $rules['filter'] = 'shop/ajax/filter';
-        $rules['catalog'] = 'shop/default/index';
+        $rules['nav'] = 'shop/ajax/test-nav';
+
+        //$rules['catalog'] = 'shop/default/index';
         $rules['search/ajax'] = 'shop/search/ajax';
         $rules['notify/<id:\d+>'] = 'shop/notify/index';
         $rules['shop/ajax/currency/<id:\d+>'] = 'shop/ajax/currency';

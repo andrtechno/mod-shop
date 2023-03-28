@@ -27,7 +27,7 @@ echo $form->field($model, 'price_purchase')->hint('Данная цена не г
                 ])
             ])
         ],
-        'template' => '<div class="col-sm-4 col-lg-2">{label}</div>
+        'template' => '{label}
 <div class="input-group col-sm-8 col-lg-10">{input}
 <span class="input-group-text">{label_currency}</span>{currency}
 <span class="input-group-text">{label_unit}</span>

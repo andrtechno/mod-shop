@@ -92,6 +92,7 @@ class FilterElastic extends Component
         $this->_route = $route;
     }
 
+    public $addAttributes = [];
 
     public function __construct(ProductQuery $query = null, $config = [])
     {
@@ -100,7 +101,7 @@ class FilterElastic extends Component
         $data = Yii::$app->request->post('filter');
         $slides = Yii::$app->request->post('slide');
 
-       // var_dump($this->elasticQuery);die;
+        // var_dump($this->elasticQuery);die;
         if ($query) {
             $this->resultQuery = clone $query;
             $this->query = clone $query;
@@ -263,7 +264,7 @@ class FilterElastic extends Component
     public function getAttributes()
     {
 
-        $this->getEavAttributes();
+        //$this->getEavAttributes();
         $active = $this->getActiveAttributes();
         $urlParams = [];
         //$this->route = 'shop/catalog/view';
@@ -296,7 +297,7 @@ class FilterElastic extends Component
             if ($brands) {
                 $data['data']['brand'] = [
                     'title' => Yii::t('shop/default', 'FILTER_BY_BRAND'),
-                    //'selectMany' => true,
+                    'key' => 'brand',
                     'type' => 3,
                     'filters' => []
                 ];
@@ -307,6 +308,7 @@ class FilterElastic extends Component
                         'count' => (int)$m['counter'],
                         'count_text' => (int)$m['counter'],
                         'id' => $m['brand_id'],
+                        //'key' => 'brand',
                         'slug' => $m['slug'],
                         'image' => $m['image'],
                     ];
@@ -317,10 +319,10 @@ class FilterElastic extends Component
         }
 
         foreach ($this->_eavAttributes as $attribute) {
-            $data['data'][$attribute->name] = [
+            $data['data'][$attribute->id] = [
                 'title' => $attribute->title,
                 'type' => (int)$attribute->type,
-                //'key' => $attribute->name,
+                'key' => $attribute->name,
                 'filters' => []
             ];
 
@@ -344,21 +346,23 @@ class FilterElastic extends Component
                 //if ($show) {
                 //if ($count > 0 && $show) {
                 //if(count($active)>1){
-                $data['data'][$attribute->name]['filters'][] = [
-                    'title' => $option->value,
+                $value = "value_" . Yii::$app->language;
+                $data['data'][$attribute->id]['filters'][] = [
+                    'title' => $option->$value,
                     'count_text' => $countText,
                     'count' => (int)$count,
+
                     'data' => ($option->data) ? Json::decode($option->data) : [],
-                    'key' => $attribute->name,
+                    // 'key' => $attribute->name, //neeed delete
                     'id' => (int)$option->id,
                 ];
                 // }
             }
-            $data['data'][$attribute->name]['filtersCount'] = count($data['data'][$attribute->name]['filters']);
+            $data['data'][$attribute->id]['filtersCount'] = count($data['data'][$attribute->id]['filters']);
             if ($attribute->sort == SORT_ASC) {
-                sort($data['data'][$attribute->name]['filters']);
+                sort($data['data'][$attribute->id]['filters']);
             } elseif ($attribute->sort == SORT_DESC) {
-                rsort($data['data'][$attribute->name]['filters']);
+                rsort($data['data'][$attribute->id]['filters']);
             }
         }
         $data['totalCount'] = $elasticQuery->count();
@@ -387,7 +391,7 @@ class FilterElastic extends Component
         $data['data']['brand'] = [
             'title' => 'brand',
             'type' => (int)3,
-            //'key' => $attribute->name,
+            'key' => 'brand',
             'filters' => []
         ];
 
@@ -402,7 +406,7 @@ class FilterElastic extends Component
                 //'title' => $option->value,
                 'count_text' => $countText,
                 'count' => (int)$count,
-                // 'key' => $attribute->name,
+                //'key' => 'brand',
                 'id' => (int)$brand['brand_id'],
             ];
 
@@ -413,7 +417,7 @@ class FilterElastic extends Component
             $data['data'][$attribute->name] = [
                 'title' => $attribute->title,
                 'type' => (int)$attribute->type,
-                //'key' => $attribute->name,
+                'key' => $attribute->name,
                 'filters' => []
             ];
             foreach ($attribute->getOptions()->all() as $option) {
@@ -423,11 +427,13 @@ class FilterElastic extends Component
 
                 }
                 $countText = $count;
+                $value = "value_" . Yii::$app->language;
                 $data['data'][$attribute->name]['filters'][] = [
-                    'title' => $option->value,
+                    'title' => $option->$value,
                     'count_text' => $countText,
                     'count' => (int)$count,
-                    'key' => $attribute->name,
+                    //'key' => $attribute->name,
+                    'lang' => Yii::$app->language,
                     'id' => (int)$option->id,
                 ];
             }
@@ -660,16 +666,20 @@ class FilterElastic extends Component
 
         $typesIds = $queryCategoryTypes->createCommand()->queryColumn();
 
+        //$attributeId
+        $query = Attribute::find();
+        //->where(['IN', '`types`.`type_id`', $typesIds])
+        $query->where(['IN', 'type.type_id', $typesIds]);
 
-        $query = Attribute::find()
-            //->where(['IN', '`types`.`type_id`', $typesIds])
-            ->where(['IN', '`type`.`type_id`', $typesIds])
-            ->andWhere(['IN', 'type', [Attribute::TYPE_DROPDOWN, Attribute::TYPE_SELECT_MANY, Attribute::TYPE_CHECKBOX_LIST, Attribute::TYPE_RADIO_LIST, Attribute::TYPE_COLOR]])
-            ->distinct(true)
-            ->useInFilter()
-            ->sort()
-            ->orderBy(null)
-            ->joinWith(['types type', 'options']);
+        $query->andWhere(['IN', 'type', [Attribute::TYPE_DROPDOWN, Attribute::TYPE_SELECT_MANY, Attribute::TYPE_CHECKBOX_LIST, Attribute::TYPE_RADIO_LIST, Attribute::TYPE_COLOR]]);
+        if ($this->addAttributes) {
+            $query->andWhere([Attribute::tableName() . '.id' => $this->addAttributes]);
+        }
+        $query->distinct(true);
+        $query->useInFilter();
+        $query->sort();
+        $query->orderBy(null);
+        $query->joinWith(['types type', 'options']);
 
 
         $result = $query->all();

@@ -757,7 +757,7 @@ if($ignore){
 
         $query = Attribute::find()
             //->where(['IN', '`types`.`type_id`', $typesIds])
-            ->where(['IN', '`type`.`type_id`', $typesIds])
+            ->where(['IN', 'type.type_id', $typesIds])
             ->andWhere(['IN', 'type', [Attribute::TYPE_DROPDOWN, Attribute::TYPE_SELECT_MANY, Attribute::TYPE_CHECKBOX_LIST, Attribute::TYPE_RADIO_LIST, Attribute::TYPE_COLOR]])
             ->distinct(true)
             ->useInFilter()
@@ -931,19 +931,19 @@ if($ignore){
         $queryClone->addSelect(['brand_id', Product::tableName() . '.id']);
         $queryClone->joinWith([
             'brand' => function (\yii\db\ActiveQuery $query) {
-                $query->andWhere([Brand::tableName() . '.switch' => 1]);
+                $query->andWhere([Brand::tableName() . '.switch' => true]);
             },
         ]);
 
         $sub_query = clone $this->query;
-        $sub_query->andwhere('`brand_id`=' . Brand::tableName() . '.`id`');
+        $sub_query->andwhere('brand_id=' . Brand::tableName() . '.id');
         $sub_query->select(['count(*)']);
 
         $queryClone->andWhere('brand_id IS NOT NULL');
         $queryClone->groupBy('brand_id');
         $queryClone->addSelect([
             'counter' => $sub_query,
-            Brand::tableName() . '.`name_' . Yii::$app->language . '` as name',
+            Brand::tableName() . '.name_' . Yii::$app->language . ' as name',
             Brand::tableName() . '.slug as slug',
             Brand::tableName() . '.image as image'
         ]);
@@ -983,12 +983,12 @@ if($ignore){
         $queryClone->addSelect(['brand_id', Product::tableName() . '.id']);
         $queryClone->joinWith([
             'brand' => function (\yii\db\ActiveQuery $query) {
-                $query->andWhere([Brand::tableName() . '.switch' => 1]);
+                $query->andWhere([Brand::tableName() . '.switch' => true]);
             },
         ]);
 
         $sub_query = clone $this->query;
-        $sub_query->andWhere('`brand_id`=' . Brand::tableName() . '.`id`');
+        $sub_query->andWhere('brand_id=' . Brand::tableName() . '.id');
         $sub_query->select(['count(*)']);
         //$sub_query->distinct(true);
 
@@ -1014,7 +1014,7 @@ if($ignore){
         $queryClone->groupBy('brand_id');
         $queryClone->addSelect([
             'counter' => $sub_query,
-            Brand::tableName() . '.`name_' . Yii::$app->language . '` as name',
+            Brand::tableName() . '.name_' . Yii::$app->language . ' as name',
             Brand::tableName() . '.slug as slug',
             Brand::tableName() . '.image as image'
         ]);

@@ -126,7 +126,9 @@ function filterCallback(e, objects, target) {
 
     xhrCallback = $.ajax({
         dataType: "json",
-        url: '/api/shop/elastic',
+        //url: common.url('/api/shop/elastic'),
+        url: '/api/shop/elastic?lang='+common.language,
+        //url: '/api/shop/elastic',
         type: 'POST',
         headers: {
             "filter-callback-ajax": true
@@ -141,21 +143,20 @@ function filterCallback(e, objects, target) {
             resultUrl = response.url;
             form.attr('action', resultUrl);
 
-            $.each(response.filters, function (name, filters) {
+            $.each(response.filters, function (name, filter) {
                 var hideCounter = 0;
-                $.each(filters.filters, function (index, data) {
-
-                    var selector = $('#filter_' + name + '_' + data.id);
-                    $('#filter-count-' + name + '-' + data.id).html(data.count_text);
+                $.each(filter.filters, function (index, data) {
+                    var selector = $('#filter_' + filter.key + '_' + data.id);
+                    $('#filter-count-' + filter.key + '-' + data.id).html(data.count_text);
 
                     if (data.count) {
-                        $('#filter-' + name + ' #li-' + data.id + ' input[type="checkbox"]:not(:checked)').attr('disabled', false);
-                        $('#filter-' + name + ' #li-' + data.id).removeClass('disabled');
+                        $('#filter-' + filter.key + ' #li-' + data.id + ' input[type="checkbox"]:not(:checked)').attr('disabled', false);
+                        $('#filter-' + filter.key + ' #li-' + data.id).removeClass('disabled');
                        // $('#filter-' + name + ' #li-' + data.id).show();
                         hideCounter++;
                     } else {
-                        $('#filter-' + name + ' #li-' + data.id + ' input[type="checkbox"]:not(:checked)').attr('disabled', 'disabled');
-                        $('#filter-' + name + ' #li-' + data.id).addClass('disabled');
+                        $('#filter-' + filter.key + ' #li-' + data.id + ' input[type="checkbox"]:not(:checked)').attr('disabled', 'disabled');
+                        $('#filter-' + filter.key + ' #li-' + data.id).addClass('disabled');
                         if (!selector.prop('checked')) {
                         //    $('#filter-' + name + ' #li-' + data.id).hide();
                         }else{
@@ -167,7 +168,7 @@ function filterCallback(e, objects, target) {
                     }
 
                 });
-                var container = $('#filter-container-' + name);
+                var container = $('#filter-container-' + filter.key);
 
                 if(hideCounter == 0){
                     //container.hide();
@@ -429,22 +430,21 @@ $(function () {
         if (showReset || showApply) { //if (checkboxChacked) {
             //$(this).addClass('show');
             $('.sidebar').addClass('submitted');
-            console.debug(e.type, 'Show');
+            //console.debug(e.type, 'Show');
         } else {
             //showApply = false;
             //$(this).removeClass('show');
             $('.sidebar').removeClass('submitted');
-            console.debug(e.type, 'Hide');
+            //console.debug(e.type, 'Hide');
         }
 
     });
 
 
-    $(document).on('filter:open', '.sidebar', function (e) {
-        console.debug('Event: ' + e.type, checkedAll);
+    $('.sidebar').on('filter:open', function (e) {
+        console.debug('Event: ' + e.type);
         $(this).addClass('active');
         $('body').addClass('noscroll');
-
         if ($('#filter-current ul li').length) {
             showReset = true;
             showApply = true; //not chika: set false
@@ -453,7 +453,7 @@ $(function () {
 
     });
 
-    $(document).on('filter:close', '.sidebar', function (e) {
+    $('.sidebar').on('filter:close', function (e) {
         console.debug('Event: ' + e.type);
         $(this).removeClass('active');
         $('body').removeClass('noscroll');
@@ -584,7 +584,7 @@ $(function () {
         // $('#filter-apply').hide();
         showApply = false;  //not chika: set false
         $(this).trigger('filter:apply');
-        $(this).trigger('filter:close');
+        $(document).trigger('filter:close');
         $(".filter-to-left").toggleClass("active");
         $(".bg-minicart").toggleClass("active");
         e.preventDefault();

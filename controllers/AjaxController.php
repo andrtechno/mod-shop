@@ -2,7 +2,10 @@
 
 namespace panix\mod\shop\controllers;
 
+use panix\mod\shop\components\FilterElastic;
+use panix\mod\shop\models\Product;
 use Yii;
+use yii\debug\components\search\Filter;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use yii\web\Controller;
@@ -25,9 +28,49 @@ class AjaxController extends Controller
             return $this->goHome();
         }
     }
-    public function actionFilter2()
+
+    public function actionTestNav()
     {
-        return $this->asJson(['ss'=>1]);
+        $action = Yii::$app->request->post('action');
+        $categoryId = Yii::$app->request->post('categoryId');
+        $attribute = Yii::$app->request->post('attribute');
+        $json['success'] = false;
+        if ($action == 'catalog') {
+            $json['success'] = true;
+        } elseif ($action == 'new') {
+            $json['success'] = true;
+        }
+        /** @var Product $productModel */
+        $productModel = Yii::$app->getModule('shop')->model('Product');
+        $query = $productModel::find();
+        $query->andWhere(['!=', "{$productModel::tableName()}.availability", $productModel::STATUS_ARCHIVE]);
+        $query->published();
+
+        $category = Category::findOne($categoryId);
+
+        $query->applyCategories($categoryId);
+
+
+        $filter = new FilterElastic($query, [
+            'elasticQuery' => [],
+            //'cacheKey' => str_replace('/', '-', Yii::$app->controller->route) . '-' . $category->id,
+            'route' => 'shop/brand/view', //for not load brands,
+            'addAttributes' => [$attribute]
+        ]);
+
+        $data = $filter->getAttributes();
+        $json['items'] = [];
+
+        if (isset($data['data'][$attribute])) {
+
+            foreach ($data['data'][$attribute]['filters'] as $item) {
+                $json['items'][] = [
+                    'title' => $item['title'],
+                    'url' => Url::to(['/shop/catalog/view', 'slug'=>$category->full_path,$data['data'][$attribute]['key'] => $item['id']]),
+                ];
+            }
+        }
+        return $this->asJson($json);
     }
 
     public function actionFilter()

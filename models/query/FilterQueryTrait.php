@@ -21,16 +21,16 @@ trait FilterQueryTrait
                 END) AS aggregation_price"]);*/
 
 
-        $this->select(["{$function}(CASE WHEN ({$tableName}.`currency_id`)
+        $this->select(["{$function}(CASE WHEN ({$tableName}.currency_id IS NOT NULL)
                     THEN
-                        (CASE WHEN ({$tableName}.`discount`) THEN
-                         ({$tableName}.`price` * ((SELECT rate FROM {$tableNameCur} WHERE {$tableNameCur}.`id`={$tableName}.`currency_id`) - {$tableName}.`discount`))
+                        (CASE WHEN ({$tableName}.discount) THEN
+                         ({$tableName}.price * ((SELECT rate FROM {$tableNameCur} WHERE {$tableNameCur}.id={$tableName}.currency_id) - {$tableName}.discount))
                          ELSE
-                          ({$tableName}.`price` * (SELECT rate FROM {$tableNameCur} WHERE {$tableNameCur}.`id`={$tableName}.`currency_id`))
+                          ({$tableName}.price * (SELECT rate FROM {$tableNameCur} WHERE {$tableNameCur}.id={$tableName}.currency_id))
                          END)
                         
                     ELSE
-                        (CASE WHEN ({$tableName}.`discount`) THEN ({$tableName}.`price` - {$tableName}.`discount`) ELSE {$tableName}.`price` END)
+                        (CASE WHEN ({$tableName}.discount) THEN ({$tableName}.price - {$tableName}.discount) ELSE {$tableName}.price END)
                 END) AS aggregation_price"]);
 
         //$this->orderBy(["aggregation_price" => ($function === 'MIN') ? SORT_ASC : SORT_DESC]);

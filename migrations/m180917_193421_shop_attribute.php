@@ -20,7 +20,7 @@ class m180917_193421_shop_attribute extends Migration
             'id' => $this->primaryKey()->unsigned(),
             'group_id' => $this->integer(11)->null()->unsigned(),
             'name' => $this->string(50)->notNull(),
-            'type' => $this->string(10)->notNull(),
+            'type' => $this->smallInteger(2)->notNull(),
             'display_on_front' => $this->boolean()->defaultValue(true),
             'display_on_list' => $this->boolean()->defaultValue(false),
             'display_on_cart' => $this->boolean()->defaultValue(false),

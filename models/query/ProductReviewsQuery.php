@@ -25,7 +25,7 @@ class ProductReviewsQuery extends ActiveQuery
     {
         $modelClass = $this->modelClass;
         $tableName = $modelClass::tableName();
-        $this->andWhere([$tableName . '.`status`' => $status]);
+        $this->andWhere([$tableName . '.status' => $status]);
         return $this;
     }
 
