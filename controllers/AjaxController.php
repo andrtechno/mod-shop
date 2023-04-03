@@ -54,11 +54,12 @@ class AjaxController extends Controller
         $filter = new FilterElastic($query, [
             'elasticQuery' => [],
             //'cacheKey' => str_replace('/', '-', Yii::$app->controller->route) . '-' . $category->id,
-            'route' => 'shop/brand/view', //for not load brands,
+            'route' => 'shop/brand/view', //for not load brands, life hack
             'addAttributes' => [$attribute]
         ]);
 
         $data = $filter->getAttributes();
+
         $json['items'] = [];
 
         if (isset($data['data'][$attribute])) {
@@ -72,7 +73,10 @@ class AjaxController extends Controller
         }
         return $this->asJson($json);
     }
-
+    public function actionSwitchView()
+    {
+        Yii::$app->session->set('product_grid_view',1);
+    }
     public function actionFilter()
     {
 

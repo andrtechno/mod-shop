@@ -668,20 +668,24 @@ class FilterElastic extends Component
 
         //$attributeId
         $query = Attribute::find();
-        //->where(['IN', '`types`.`type_id`', $typesIds])
-        $query->where(['IN', 'type.type_id', $typesIds]);
+        //->where(['IN', '`types`.`type_id`', $typesIds])\
+        $query->where(['type' => [Attribute::TYPE_DROPDOWN, Attribute::TYPE_SELECT_MANY, Attribute::TYPE_CHECKBOX_LIST, Attribute::TYPE_RADIO_LIST, Attribute::TYPE_COLOR]]);
 
-        $query->andWhere(['IN', 'type', [Attribute::TYPE_DROPDOWN, Attribute::TYPE_SELECT_MANY, Attribute::TYPE_CHECKBOX_LIST, Attribute::TYPE_RADIO_LIST, Attribute::TYPE_COLOR]]);
+        if ($typesIds) {
+            $query->andWhere(['type.type_id' => $typesIds]);
+        }
         if ($this->addAttributes) {
             $query->andWhere([Attribute::tableName() . '.id' => $this->addAttributes]);
         }
         $query->distinct(true);
         $query->useInFilter();
         $query->sort();
-        $query->orderBy(null);
+        $query->orderBy(false);
+
         $query->joinWith(['types type', 'options']);
 
-
+       // echo $query->createCommand()->rawSql;
+       // die;
         $result = $query->all();
 
         $this->_eavAttributes = [];

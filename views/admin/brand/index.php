@@ -4,9 +4,10 @@ use panix\engine\widgets\Pjax;
 use panix\engine\grid\GridView;
 
 echo \panix\ext\fancybox\Fancybox::widget(['target' => '.image a']);
+Pjax::begin(['dataProvider' => $dataProvider, 'id' => 'pjax-grid-brands']);
 
-Pjax::begin(['dataProvider'=>$dataProvider]);
 echo GridView::widget([
+    'id' => 'grid-brands',
     'tableOptions' => ['class' => 'table table-striped'],
     'dataProvider' => $dataProvider,
     'filterModel' => $searchModel,

@@ -3,6 +3,8 @@
 namespace panix\mod\shop\models;
 
 use panix\engine\db\ActiveRecord;
+use panix\mod\shop\models\ProductTypeTranslate;
+use panix\mod\shop\models\query\ProductTypeQuery;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -21,6 +23,7 @@ class ProductType extends ActiveRecord
 {
 
     const MODULE_ID = 'shop';
+    public $translationClass = ProductTypeTranslate::class;
 
     public static function getCSort()
     {
@@ -36,6 +39,10 @@ class ProductType extends ActiveRecord
         return $sort;
     }
 
+    public static function find()
+    {
+        return new ProductTypeQuery(get_called_class());
+    }
 
     /**
      * @inheritdoc

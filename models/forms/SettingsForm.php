@@ -68,6 +68,7 @@ class SettingsForm extends SettingsModel
             'attachment_wm_offsety' => 10,
             'attachment_wm_offsetx' => 10,
             'attachment_wm_corner' => 5,
+            'added_to_cart_count' => 50,
             'enable_reviews' => false
         ];
     }
