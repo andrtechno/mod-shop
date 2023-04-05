@@ -29,50 +29,7 @@ class AjaxController extends Controller
         }
     }
 
-    public function actionTestNav()
-    {
-        $action = Yii::$app->request->post('action');
-        $categoryId = Yii::$app->request->post('categoryId');
-        $attribute = Yii::$app->request->post('attribute');
-        $json['success'] = false;
-        if ($action == 'catalog') {
-            $json['success'] = true;
-        } elseif ($action == 'new') {
-            $json['success'] = true;
-        }
-        /** @var Product $productModel */
-        $productModel = Yii::$app->getModule('shop')->model('Product');
-        $query = $productModel::find();
-        $query->andWhere(['!=', "{$productModel::tableName()}.availability", $productModel::STATUS_ARCHIVE]);
-        $query->published();
 
-        $category = Category::findOne($categoryId);
-
-        $query->applyCategories($categoryId);
-
-
-        $filter = new FilterElastic($query, [
-            'elasticQuery' => [],
-            //'cacheKey' => str_replace('/', '-', Yii::$app->controller->route) . '-' . $category->id,
-            'route' => 'shop/brand/view', //for not load brands, life hack
-            'addAttributes' => [$attribute]
-        ]);
-
-        $data = $filter->getAttributes();
-
-        $json['items'] = [];
-
-        if (isset($data['data'][$attribute])) {
-
-            foreach ($data['data'][$attribute]['filters'] as $item) {
-                $json['items'][] = [
-                    'title' => $item['title'],
-                    'url' => Url::to(['/shop/catalog/view', 'slug'=>$category->full_path,$data['data'][$attribute]['key'] => $item['id']]),
-                ];
-            }
-        }
-        return $this->asJson($json);
-    }
     public function actionSwitchView()
     {
         Yii::$app->session->set('product_grid_view',1);

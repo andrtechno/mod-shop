@@ -23,6 +23,7 @@ trait EavQueryTrait
 
             $values = array_unique($values);
             sort($values);
+
             $values = array_intersect($attributes[$attribute], $values); //anti d-dos убирает лишние значение с запроса.
             // If search models with attribute name with specified values.
             if (is_string($attribute)) {
@@ -162,6 +163,7 @@ public function applyRootAttributes(array $attributes){
 
             $values = array_unique($values);
             sort($values);
+
             $values = array_intersect($attributes[$attribute], $values); //anti d-dos убирает лишние значение с запроса.
             // If search models with attribute name with specified values.
             if (is_string($attribute)) {

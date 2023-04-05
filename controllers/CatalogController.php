@@ -53,6 +53,11 @@ class CatalogController extends ElasticController
         $q['bool']['must'][]=["term" => ["categories" => $this->dataModel->id]];
         $q['bool']['must_not'][]=["term" => ["availability" => Product::STATUS_ARCHIVE]];
         $q['bool']['must'][]=["term" => ["switch" => 1]];
+
+        //TEST!!!! kvartal
+        if(Yii::$app->request->get('tip_vzutta')){
+        //$q['bool']['must'][]=["term" => ["options" => Yii::$app->request->get('tip_vzutta')]];
+        }
        // $attributes = $this->data->getAttributes($q);
 
 
@@ -97,7 +102,8 @@ class CatalogController extends ElasticController
         $this->filter = new $this->filterClass($this->query, [
             'elasticQuery'=>$q,
             'cacheKey' => $this->cacheKey,
-            'route'=>$this->route
+            'route'=>$this->route,
+            //'applyAttributes'=>['tip_vzutta'=>[569]]
         ]);
 
 

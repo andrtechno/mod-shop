@@ -93,6 +93,7 @@ class FilterElastic extends Component
     }
 
     public $addAttributes = [];
+    //public $applyAttributes = [];
 
     public function __construct(ProductQuery $query = null, $config = [])
     {
@@ -110,6 +111,7 @@ class FilterElastic extends Component
 
             $this->attributes = $this->getEavAttributes();
             $this->activeAttributes = $this->getActiveAttributes();
+
 
             //Apply attributes
             $this->resultQuery->applyAttributes($this->activeAttributes);
@@ -176,6 +178,7 @@ class FilterElastic extends Component
                     'label' => Yii::t('shop/default', 'FILTER_BY_PRICE') . ':',
                     'itemOptions' => ['id' => 'current-filter-prices']
                 ];
+
                 $menuItems['price']['items'][] = [
                     // 'name'=>'min_price',
                     'value_url' => number_format($this->prices[0], 0, '', ''),
@@ -234,9 +237,16 @@ class FilterElastic extends Component
                     ];
                     foreach ($attribute->options as $option) {
                         if (isset($activeAttributes[$attribute->name]) && in_array($option->id, $activeAttributes[$attribute->name])) {
+
+                            if (Yii::$app->language == 'ru') {
+                                $value = "value";
+                            } else {
+                                $value = "value_" . Yii::$app->language;
+                            }
+
                             $menuItems[$attributeName]['items'][] = [
                                 'value' => $option->id,
-                                'label' => $option->value . (($attribute->abbreviation) ? ' ' . $attribute->abbreviation : ''),
+                                'label' => $option->$value . (($attribute->abbreviation) ? ' ' . $attribute->abbreviation : ''),
                                 'options' => [
                                     'class' => 'remove',
                                     'data-type' => 'checkbox',
@@ -343,10 +353,13 @@ class FilterElastic extends Component
                         $first = $attribute->name;
                     }
                 }
-                //if ($show) {
-                //if ($count > 0 && $show) {
-                //if(count($active)>1){
-                $value = "value_" . Yii::$app->language;
+
+                if (Yii::$app->language == 'ru') {
+                    $value = "value";
+                } else {
+                    $value = "value_" . Yii::$app->language;
+                }
+
                 $data['data'][$attribute->id]['filters'][] = [
                     'title' => $option->$value,
                     'count_text' => $countText,
@@ -684,8 +697,8 @@ class FilterElastic extends Component
 
         $query->joinWith(['types type', 'options']);
 
-       // echo $query->createCommand()->rawSql;
-       // die;
+        // echo $query->createCommand()->rawSql;
+        // die;
         $result = $query->all();
 
         $this->_eavAttributes = [];
@@ -792,7 +805,7 @@ class FilterElastic extends Component
             Brand::tableName() . '.slug as slug',
             Brand::tableName() . '.image as image'
         ]);
-        $queryClone->cache($this->cacheDuration);
+        //$queryClone->cache($this->cacheDuration);
 
         $brands = $queryClone->createCommand()->queryAll();
         // echo $queryClone->createCommand()->rawSql;die;
