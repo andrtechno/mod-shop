@@ -34,6 +34,7 @@ class ProductQuery extends ActiveQuery
             TaggableQueryBehavior::class,
         ];
     }
+
     /**
      * Default sorting
      */
@@ -43,16 +44,13 @@ class ProductQuery extends ActiveQuery
         $modelClass = $this->modelClass;
         $tableName = $modelClass::tableName();
         return $this->addorderBy("(CASE {$tableName}.availability WHEN " . Product::STATUS_OUT_STOCK . " then -1 END) ASC");
-        //parent::init();
     }
 
     public function sales()
     {
-
-
-        $this->andWhere(['IS NOT', Product::tableName() . '.discount', null])
-            ->andWhere(['!=', Product::tableName() . '.discount', '']);
-        $this->andWhere(['!=', Product::tableName().".availability", Product::STATUS_OUT_STOCK]);
+        $this->andWhere(['IS NOT', Product::tableName() . '.discount', null]);
+        $this->andWhere(['!=', Product::tableName() . '.discount', '']);
+        $this->andWhere(['!=', Product::tableName() . ".availability", Product::STATUS_OUT_STOCK]);
         return $this;
     }
 
@@ -64,10 +62,10 @@ class ProductQuery extends ActiveQuery
         $config = Yii::$app->settings->get('shop');
         if ($config->label_expire_new) {
             $date_utc = new \DateTime("now", new \DateTimeZone("UTC"));
-            $now =$date_utc->getTimestamp();
+            $now = $date_utc->getTimestamp();
             $modelClass = $this->modelClass;
             $tableName = $modelClass::tableName();
-            $this->andWhere(['!=', Product::tableName().".availability", Product::STATUS_OUT_STOCK]);
+            $this->andWhere(['!=', Product::tableName() . ".availability", Product::STATUS_OUT_STOCK]);
             $this->andWhere(['>=', $tableName . '.created_at', ($date_utc->getTimestamp() - (86400 * $config->label_expire_new))]);
         } else {
             //$this->int2between(-1, -1);
@@ -76,18 +74,18 @@ class ProductQuery extends ActiveQuery
     }
 
     /**
-     * @param int $offset
+     * @param int $days
      * @return $this
      */
-    public function topSales($offset = 30)
+    public function topSales($days = 30)
     {
         $config = Yii::$app->settings->get('shop');
         if ($config->added_to_cart_count) {
             //$this->where(['like', 'label', 'hit_sale'])
-            $this->int2between(time() - (86400 * $offset), time(), 'added_to_cart_date');
+            $this->int2between(time() - (86400 * $days), time(), 'added_to_cart_date');
             $this->orWhere(['>=', 'added_to_cart_count', $config->added_to_cart_count]);
             $this->orderBy(['added_to_cart_count' => SORT_DESC]);
-            $this->andWhere(['!=', Product::tableName().".availability", Product::STATUS_OUT_STOCK]);
+            $this->andWhere(['!=', Product::tableName() . ".availability", Product::STATUS_OUT_STOCK]);
         }
         return $this;
     }
@@ -137,6 +135,9 @@ class ProductQuery extends ActiveQuery
      */
     public function applyCategories($categories, $whereType = 'andWhere', $ref = false)
     {
+        if (!in_array($whereType, ['where', 'andWhere'])) {
+            $whereType = 'andWhere';
+        }
 
         if ($categories instanceof Category)
             $categories = [$categories->id];
@@ -239,5 +240,22 @@ class ProductQuery extends ActiveQuery
         return $this;
     }
 
+    /**
+     * @param int $current_id
+     * @return $this
+     */
+    public function views($current_id = 0)
+    {
+        $session = Yii::$app->session->get('views');
+        if (!empty($session)) {
+            $ids = array_unique($session);
+            if ($current_id) {
+                $key = array_search($current_id, $ids);
+                unset($ids[$key]);
+            }
+            $this->andWhere(['id' => $ids]);
+        }
+        return $this;
+    }
 
 }

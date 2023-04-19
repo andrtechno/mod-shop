@@ -53,7 +53,8 @@ class Bootstrap implements BootstrapInterface
             'extraPatterns' => [
                 'GET categories' => 'categories',
                 'GET filter/<id>' => 'filter',
-                'POST nav' => 'test-nav',
+                'GET,POST nav' => 'test-nav',
+                'GET search' => 'search',
                 // 'GET,HEAD show' => 'show',
             ],
             'tokens' => ['{id}' => '<id:\\w+>']

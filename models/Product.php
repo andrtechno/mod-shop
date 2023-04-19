@@ -492,12 +492,13 @@ class Product extends ActiveRecord
         ];
     }
 
-    public function getUnits()
+    public static function unitsList()
     {
         return [
-            1 => self::t('UNIT_THING'),
-            2 => self::t('UNIT_METER'),
-            3 => self::t('UNIT_BOX'),
+            1 => self::t('UNITS',['n'=>1]),
+            2 => self::t('UNITS',['n'=>2]),
+            3 => self::t('UNITS',['n'=>3]),
+            4 => self::t('UNITS',['n'=>4]),
         ];
     }
 

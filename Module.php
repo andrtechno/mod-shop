@@ -57,7 +57,7 @@ class Module extends WebModule implements BootstrapInterface
         ];
 
 
-        if ($app->id != 'console') {
+
 
             foreach ($this->getAllPaths() as $path) {
 
@@ -76,14 +76,15 @@ class Module extends WebModule implements BootstrapInterface
                      //'suffix'=>'.html',
                      'pattern' => "catalog/<slug:[0-9a-zA-Z_\-]+>",
                  ];*/
-
-                //testing now
-                $rules[] = [
-                    'class' => 'panix\mod\shop\components\rules\BaseUrlRule',
-                    'route' => 'shop/catalog/view',
-                    'index' => 'catalog',
-                    'pattern' => 'catalog/<slug:' . $path . '>/<params:.*>'
-                ];
+                if ($app->id != 'console') {
+                    //testing now
+                    $rules[] = [
+                        'class' => 'panix\mod\shop\components\rules\BaseUrlRule',
+                        'route' => 'shop/catalog/view',
+                        'index' => 'catalog',
+                        'pattern' => 'catalog/<slug:' . $path . '>/<params:.*>'
+                    ];
+                }
                 $rules[] = [
                     'class' => 'panix\mod\shop\components\rules\BaseUrlRule',
                     'route' => 'shop/catalog/view',
@@ -91,7 +92,7 @@ class Module extends WebModule implements BootstrapInterface
                     'pattern' => 'catalog/<slug:' . $path . '>'
                 ];
             }
-
+        if ($app->id != 'console') {
             $rules[] = [
                 'class' => 'panix\mod\shop\components\rules\SearchUrlRule',
                 //'pattern'=>'products/search',

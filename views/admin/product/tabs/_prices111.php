@@ -16,7 +16,7 @@ if ($model->use_configurations) {
     echo $form->field($model, 'price', [
         'parts' => [
             '{label_unit}' => Html::activeLabel($model, 'unit'),
-            '{unit}' => Html::activeDropDownList($model, 'unit', $model->getUnits(), ['class' => 'custom-select']),
+            '{unit}' => Html::activeDropDownList($model, 'unit', $model::unitsList(), ['class' => 'custom-select']),
             '{label_currency}' => Html::activeLabel($model, 'currency_id'),
             '{currency}' => Html::activeDropDownList($model, 'currency_id', ArrayHelper::map(Currency::find()->andWhere(['!=', 'id', Yii::$app->currency->main['id']])->all(), 'id', 'name'), [
                 'class' => 'custom-select',

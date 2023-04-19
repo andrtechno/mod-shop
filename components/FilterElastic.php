@@ -293,7 +293,7 @@ class FilterElastic extends Component
 
         $elasticQuery = $this->getElasticQuery();
         $search = $elasticQuery->search();
-
+//print_r($search);die;
         $opts = [];
         foreach ($search['aggregations']['options']['buckets'] as $opt) {
             $opts[$opt['key']] = $opt['doc_count'];

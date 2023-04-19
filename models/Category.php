@@ -61,12 +61,12 @@ class Category extends ActiveRecord
     /**
      * @return array
      */
-    public function getUrl($action='view')
+    public function getUrl($action = 'view')
     {
-        if($action=='view'){
-            return ['/shop/catalog/'.$action, 'slug' => $this->full_path];
-        }else{
-            return ['/shop/catalog/'.$action, 'category' => $this->id];
+        if ($action == 'view') {
+            return ['/shop/catalog/' . $action, 'slug' => $this->full_path];
+        } else {
+            return ['/shop/catalog/' . $action, 'category' => $this->id];
         }
     }
 
@@ -87,7 +87,7 @@ class Category extends ActiveRecord
             [['name', 'slug'], 'trim'],
             [['name', 'slug'], 'required'],
             ['use_seo_parents', 'boolean'],
-            [['description', 'image','icon'], 'default'],
+            [['description', 'image', 'icon'], 'default'],
             [['name', 'meta_title', 'h1'], 'string', 'max' => 255],
             [['meta_description'], 'string'], //,'name_main_uk'
             ['description', 'safe']
@@ -171,7 +171,7 @@ class Category extends ActiveRecord
     {
         $result = [];
         $categories = Category::find()->orderBy(['lft' => SORT_ASC])->excludeRoot()->all();
-      //  array_shift($categories);
+        //  array_shift($categories);
 
         foreach ($categories as $c) {
             /**
@@ -277,11 +277,40 @@ class Category extends ActiveRecord
 
             $parts[] = $this->slug;
             $partsName[] = $this->name_ru;
+            $partsName[0] = $parts[0];
             $this->full_path = implode('/', array_filter($parts));
-            if($insert)
+            if ($insert)
                 $this->path_hash = md5(mb_strtolower(implode('/', array_filter($partsName))));
 
-           // echo mb_strtolower(implode('/', array_filter($partsName))).PHP_EOL;
+        }
+
+        return $this;
+    }
+
+    public function rebuildFullPath_old($insert)
+    {
+        // Create category full path.
+        $ancestors = $this->ancestors()
+            //->orderBy('depth')
+            ->all();
+        if ($ancestors) {
+            // Remove root category from path
+            unset($ancestors[0]);
+
+            $parts = [];
+            $partsName = [];
+            foreach ($ancestors as $ancestor) {
+                $parts[] = $ancestor->slug;
+                $partsName[] = $ancestor->name_ru;
+            }
+
+            $parts[] = $this->slug;
+            $partsName[] = $this->name_ru;
+            $this->full_path = implode('/', array_filter($parts));
+            if ($insert)
+                $this->path_hash = md5(mb_strtolower(implode('/', array_filter($partsName))));
+
+            // echo mb_strtolower(implode('/', array_filter($partsName))).PHP_EOL;
 
         }
 
@@ -292,7 +321,7 @@ class Category extends ActiveRecord
      * @param array $params
      * @return mixed
      */
-    public function h1($params=array())
+    public function h1($params = array())
     {
         if (!empty($this->h1)) {
             $value = $this->h1;
@@ -302,11 +331,12 @@ class Category extends ActiveRecord
 
         return $this->replaceMeta($value, $params);
     }
+
     /**
      * @param array $params
      * @return mixed
      */
-    public function title($params=array())
+    public function title($params = array())
     {
         if (!empty($this->meta_title)) {
             $value = $this->meta_title;
@@ -321,7 +351,7 @@ class Category extends ActiveRecord
      * @param array $params
      * @return mixed
      */
-    public function description($params=array())
+    public function description($params = array())
     {
         if (!empty($this->meta_description)) {
             $value = $this->meta_description;
@@ -336,7 +366,7 @@ class Category extends ActiveRecord
     {
 
         //$replace = [
-       //     "{name}" => $name,
+        //     "{name}" => $name,
         //    "{currency.symbol}" => Yii::$app->currency->active['symbol'],
         //];
         return CMS::textReplace($text, $params);
