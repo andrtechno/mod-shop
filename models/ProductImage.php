@@ -115,6 +115,11 @@ class ProductImage extends ActiveRecord
 
         $fileToRemove = $this->getPathToOrigin();
 
+        $ftp = Yii::$app->getModule('shop')->ftpClient;
+        if ($ftp) {
+            $deleted = $ftp->delete(Yii::$app->getModule('shop')->ftp['path'] . "/uploads/store/product/{$this->product_id}/{$this->filename}");
+        }
+
         if (preg_match('@\.@', $fileToRemove) and is_file($fileToRemove)) {
             unlink($fileToRemove);
             if (file_exists(Yii::getAlias("@app/web/assets/product/{$this->product_id}"))) {
@@ -238,7 +243,12 @@ class ProductImage extends ActiveRecord
 
     public function get($size = false, array $options = [])
     {
+        $ftp = Yii::$app->getModule('shop')->ftpClient;
+
         if (!$size) {
+            if ($ftp) {
+                return "http://testftp.loc/uploads/store/product/{$this->product_id}/{$this->filename}";
+            }
             $path = Yii::getAlias("@uploads/store/product/{$this->product_id}/{$this->filename}");
             if (!file_exists($path) || !is_file($path)) {
                 return $this->getNoImageUrl();
@@ -253,14 +263,14 @@ class ProductImage extends ActiveRecord
 
         $isSaveFile = false;
         if (isset($sizes[0]) && isset($sizes[1])) {
-            $imageAssetPath = Yii::getAlias('@app/web/assets/product') . DIRECTORY_SEPARATOR . $this->product_id . DIRECTORY_SEPARATOR . $size;
+            $imageAssetPath = Yii::getAlias("@app/web/assets/product/{$this->product_id}/{$size}");
             $assetPath = "/assets/product/{$this->product_id}/{$size}";
 
         } else {
-            $imageAssetPath = Yii::getAlias('@app/web/assets/product') . DIRECTORY_SEPARATOR . $this->product_id;
+            $imageAssetPath = Yii::getAlias("@app/web/assets/product/{$this->product_id}");
             $assetPath = '/assets/product/' . $this->product_id;
         }
-        $imagePath = Yii::getAlias("@uploads/store/product/{$this->product_id}") . DIRECTORY_SEPARATOR . $this->filename;
+        $imagePath = Yii::getAlias("@uploads/store/product/{$this->product_id}/{$this->filename}");
         if (!file_exists($imagePath) || !is_file($imagePath)) {
             $imagePath = $this->getNoImagePath();
             $this->existImage = false;
@@ -273,7 +283,18 @@ class ProductImage extends ActiveRecord
         /** @var $img \panix\engine\components\ImageHandler */
         try {
             $img = Yii::$app->img;
-            $img->load($imagePath);
+
+            if ($ftp) {
+                //upload version to ftp server
+                ////$ftp->connect(Yii::$app->getModule('shop')->ftp['server']);
+                //$ftp->login(Yii::$app->getModule('shop')->ftp['login'], Yii::$app->getModule('shop')->ftp['password']);
+                //$ftp->pasv(true);
+                $imagePath = "http://testftp.loc/uploads/store/product/{$this->product_id}/{$this->filename}";
+
+
+
+            }
+                $img->load($imagePath);
         } catch (\Exception $e) {
             return false;
         }
@@ -349,8 +370,32 @@ class ProductImage extends ActiveRecord
                 $filename .= '_'.md5(serialize($options));
             }
             $extension = $fileInfo[1];*/
+            if ($ftp) {
+                //upload version to ftp server
+                $ftp->connect(Yii::$app->getModule('shop')->ftp['server']);
+                $ftp->login(Yii::$app->getModule('shop')->ftp['login'], Yii::$app->getModule('shop')->ftp['password']);
+                $ftp->pasv(true);
 
-            $img->save($imageAssetPath . DIRECTORY_SEPARATOR . $filename . '.' . $extension);
+                //$handle = fopen($imagePath, 'r');
+                $ftpPath = Yii::$app->getModule('shop')->ftp['path'] . "/assets/product/{$this->product_id}/{$size}";
+
+                if (!$ftp->mkdir($ftpPath)) {
+                   // echo "Не удалось создать директорию";
+                }
+
+
+                echo $ftpPath . "/" . $filename . '.' . $extension;
+//var_dump($img->getImage());die;
+                $upload = $ftp->fput($ftpPath . "/" . $filename . '.' . $extension, $img->getImage(), FTP_IMAGE);
+                if (!$upload) {
+                    echo "При загрузке произошла проблема";
+                }
+               die;
+                return "http://testftp.loc/uploads/store/product/{$this->product_id}/{$this->filename}";
+            }else{
+                $img->save($imageAssetPath . DIRECTORY_SEPARATOR . $filename . '.' . $extension);
+            }
+
 
         }
         return $assetPath . '/' . basename($img->getFileName());

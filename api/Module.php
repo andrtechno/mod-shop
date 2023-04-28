@@ -18,10 +18,14 @@ class Module extends \yii\base\Module
     public $host = false;
     public $ips = false;
     public $filterClass = 'panix\mod\shop\components\FilterLite';
-
+    public $ftpClient;
+    public $ftp = false;
     public function init()
     {
         parent::init();
+        if ($this->ftp) {
+            $this->ftpClient = new \FtpClient\FtpClient();
+        }
         $this->setAliases(['@' . $this->id => $this->basePath . '/../']);
         $this->registerTranslations($this->id);
     }

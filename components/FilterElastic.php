@@ -274,7 +274,6 @@ class FilterElastic extends Component
     public function getAttributes()
     {
 
-        //$this->getEavAttributes();
         $active = $this->getActiveAttributes();
         $urlParams = [];
         //$this->route = 'shop/catalog/view';
@@ -292,8 +291,9 @@ class FilterElastic extends Component
 
 
         $elasticQuery = $this->getElasticQuery();
+       // CMS::dump($this->elasticQuery);die;
         $search = $elasticQuery->search();
-//print_r($search);die;
+//CMS::dump($search);die;
         $opts = [];
         foreach ($search['aggregations']['options']['buckets'] as $opt) {
             $opts[$opt['key']] = $opt['doc_count'];
@@ -344,7 +344,6 @@ class FilterElastic extends Component
                     $count = $opts[$option->id];
                     $show = true;
                 }
-
 
                 $countText = $count;
 
@@ -488,8 +487,12 @@ class FilterElastic extends Component
         $query = new ElasticQuery();
         $query->from('product');
 
-//print_r($this->elasticQuery);die;
+
         //$query->fields = ["price"];
+
+
+
+//CMS::dump($this->elasticQuery);die;
         $query->query = $this->elasticQuery;
         $query->addAggregate('min_price', [
             'min' => ["field" => "price"],
@@ -538,7 +541,7 @@ class FilterElastic extends Component
         $query = new ElasticQuery();
         $query->from('product');
         //$query->fields = ['*'];
-
+//CMS::dump($this->elasticQuery);die;
         $query->query = $this->elasticQuery;
         /*$query->addAggregate('min_price', [
             'min' => ["field" => "price"],

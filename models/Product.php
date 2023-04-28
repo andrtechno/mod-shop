@@ -290,6 +290,7 @@ class Product extends ActiveRecord
         }
     }*/
 
+
     public function afterFind()
     {
         // $this->discount();
@@ -459,7 +460,7 @@ class Product extends ActiveRecord
         $rules[] = [['name', 'slug'], 'trim'];
         $rules[] = [['full_description', 'length', 'width', 'height', 'weight'], 'string'];
         $rules[] = ['use_configurations', 'boolean', 'on' => self::SCENARIO_INSERT];
-        $rules[] = [['enable_comments','switch'], 'boolean'];
+        $rules[] = [['enable_comments', 'switch'], 'boolean'];
         $rules[] = [['unit', 'quantity_min', 'in_box'], 'default', 'value' => 1];
         // $rules[] = ['ConfigurationsProduct', 'each', 'rule' => ['integer']];
         $rules[] = [['sku', 'full_description', 'video', 'price_purchase', 'label', 'discount', 'markup'], 'default']; // установим ... как NULL, если они пустые
@@ -495,10 +496,10 @@ class Product extends ActiveRecord
     public static function unitsList()
     {
         return [
-            1 => self::t('UNITS',['n'=>1]),
-            2 => self::t('UNITS',['n'=>2]),
-            3 => self::t('UNITS',['n'=>3]),
-            4 => self::t('UNITS',['n'=>4]),
+            1 => self::t('UNITS', ['n' => 1]),
+            2 => self::t('UNITS', ['n' => 2]),
+            3 => self::t('UNITS', ['n' => 3]),
+            4 => self::t('UNITS', ['n' => 4]),
         ];
     }
 
@@ -1031,37 +1032,6 @@ class Product extends ActiveRecord
 
         }
 
-        /*if (Yii::$app->get('elasticsearch')) {
-            $optionse = [];
-            $optionse['name'] = $this->name;
-            // $optionse['name_ru'] = $this->name_ru;
-            //$optionse['name_uk'] = $this->name_uk;
-            if($this->currency_id){
-                $currency = Currency::findOne($this->currency_id);
-                $optionse['price'] = (double)$this->price * $currency->rate;
-            }else{
-                $optionse['price'] = (double)$this->price;
-            }
-
-            $optionse['brand_id'] = $this->brand_id;
-            $optionse['slug'] = $this->slug;
-            $optionse['created_at'] = (int)$this->created_at;
-            $optionse['availability'] = (int)$this->availability;
-            $optionse['sku'] = $this->sku;
-            $optionse['switch'] = (int)$this->switch;
-            $eav = $this->getEavAttributes();
-            print_r($eav);die;
-            $optionse['options'] = array_values($eav);
-
-            $optionse['categories'] = [];
-            $optionse['mainCategory'] = $this->main_category_id;
-            array_push($optionse['categories'], $this->main_category_id);
-            foreach ($this->categorization as $category) {
-                array_push($optionse['categories'], $category->id);
-            }
-
-            $result = Yii::$app->elasticsearch->put('product/_doc/' . $this->id, [], Json::encode($optionse));
-        }*/
 
         parent::afterSave($insert, $changedAttributes);
 
@@ -1074,6 +1044,43 @@ class Product extends ActiveRecord
                     ]);
                 }
             }
+        }
+
+        if (Yii::$app->has('elasticsearch')) {
+            $optionse = [];
+            $optionse['name'] = $this->name;
+            // $optionse['name_ru'] = $this->name_ru;
+            //$optionse['name_uk'] = $this->name_uk;
+            if ($this->currency_id) {
+                $currency = Currency::findOne($this->currency_id);
+                $optionse['price'] = (double)$this->price * $currency->rate;
+            } else {
+                $optionse['price'] = (double)$this->price;
+            }
+
+            $optionse['brand_id'] = $this->brand_id;
+            $optionse['slug'] = $this->slug;
+            $optionse['created_at'] = (int)$this->created_at;
+            $optionse['availability'] = (int)$this->availability;
+            $optionse['sku'] = $this->sku;
+            $optionse['switch'] = (int)$this->switch;
+            $optionse['discount'] = (int)$this->discount;
+            $optionse['leather'] = (int)$this->leather;
+            $optionse['ukraine'] = (int)$this->ukraine;
+            $eav = $this->getEavAttributes();
+            //Yii::info('elastic save');
+            //print_r(array_values($eav));die;
+            $optionse['options'] = array_values($eav);
+
+
+            $optionse['categories'][] = (int)$this->main_category_id;
+            foreach ($this->categorization as $category) {
+                $optionse['categories'][] = (int)$category->category;
+            }
+            $optionse['categories'] = array_unique($optionse['categories']);
+            //$result = Yii::$app->elasticsearch->put('product/_doc/' . $this->id, [], Json::encode($optionse));
+            $result = Yii::$app->elasticsearch->post('product/_doc/' . $this->id, [], Json::encode($optionse));
+            // var_dump($result);die;
         }
 
     }

@@ -304,7 +304,11 @@ class CatalogController extends ElasticController
 
         $q['bool']['must_not'][]=["term" => ["availability" => Product::STATUS_ARCHIVE]];
         $q['bool']['must'][]=["term" => ["switch" => 1]];
-
+        $q['bool']['must'][] = [
+            'range' => [
+                'timestamp' => ['gte' => "now-1d/d", 'lt' => "now/d"]
+            ]
+        ];
         $this->query = $productModel::find()->published()->new();
 
         $categoriesIds = [];

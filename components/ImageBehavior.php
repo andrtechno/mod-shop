@@ -2,6 +2,7 @@
 
 namespace panix\mod\shop\components;
 
+
 use panix\mod\shop\models\Product;
 use Yii;
 use yii\base\Exception;
@@ -14,6 +15,7 @@ use yii\httpclient\Client;
 use panix\engine\CMS;
 use panix\engine\components\ImageHandler;
 use panix\mod\shop\models\ProductImage;
+use yii\web\UploadedFile;
 
 class ImageBehavior extends \yii\base\Behavior
 {
@@ -41,7 +43,6 @@ class ImageBehavior extends \yii\base\Behavior
         //if (count($owner->file) > Yii::$app->params['plan'][Yii::$app->params['plan_id']]['product_upload_files']) {
         //    throw new ForbiddenHttpException();
         //}
-
     }
 
     public function afterSave()
@@ -136,53 +137,84 @@ class ImageBehavior extends \yii\base\Behavior
 
     public function downloadFile($url, $saveTo = '@runtime', $newfilename = 'downloadfile')
     {
+        $url = str_replace(" ", "%20", $url);
 
         $filename = $newfilename . '.' . pathinfo($url, PATHINFO_EXTENSION);
         $savePath = Yii::getAlias($saveTo);
-        if (!file_exists($savePath)) {
-            FileHelper::createDirectory($savePath, $mode = 0775, $recursive = true);
-        }
-        $saveTo = $savePath . DIRECTORY_SEPARATOR . $filename;
 
+
+        $saveTo = $savePath . DIRECTORY_SEPARATOR . $filename;
         //return file of exsts path
         if (file_exists($saveTo)) {
-            Yii::info('img exist1 ' . $saveTo, 'forsage');
-            Yii::info('img exist2 ' . $url, 'forsage');
             return $saveTo;
         }
-        try {
 
-            $fh = fopen($saveTo, 'w');
-            $client = new Client([
-                'transport' => 'yii\httpclient\CurlTransport'
-            ]);
-            $response = $client->createRequest()
-                ->setMethod('GET')
-                ->setUrl(str_replace(" ", "%20", $url))
-                ->setOptions([
-                    'sslVerifyPeer' => false,
-                    'timeout' => 8888
-                ])
-                ->setOutputFile($fh)
-                ->send();
-            fclose($fh);
-//print_r($response->headers['last-modified']);die;
-            if ($response->isOk) {
+        //$ftp = Yii::$app->getModule('shop')->ftpClient;
+
+        try {
+            $ftp = Yii::$app->getModule('shop')->ftpClient;
+            if ($ftp) {
+                $ftpPath = Yii::$app->getModule('shop')->ftp['path'] . "/uploads/store/product/{$this->owner->id}";
+                if (!$ftp->mkdir($ftpPath)) {
+                    echo "Не удалось создать директорию";
+                }
+                $handle = fopen($url, 'r');
+                $upload = $ftp->fput($ftpPath . "/" . $filename, $handle, FTP_IMAGE);
+                if (!$upload) {
+                    echo "При загрузке произошла проблема";
+                }
+                fclose($handle);
                 return $saveTo;
             } else {
-                return false;
+                if (!file_exists($savePath)) {
+                    FileHelper::createDirectory($savePath, $mode = 0775, $recursive = true);
+                }
+                $handle = fopen($saveTo, 'w');
+                $client = new Client([
+                    'transport' => 'yii\httpclient\CurlTransport'
+                ]);
+                $response = $client->createRequest()
+                    ->setMethod('GET')
+                    ->setUrl($url)
+                    ->setOptions([
+                        'sslVerifyPeer' => false,
+                        'timeout' => 8888
+                    ])
+                    ->setOutputFile($handle)
+                    ->send();
+                fclose($handle);
+                //var_dump($ftp);die;
+                /*if ($ftp) {
+                    if ($ftp->alloc(filesize($saveTo), $result)) {
+                        echo "Место ".CMS::fileSize(filesize($saveTo))." на сервере успешно зарезервировано.";
+                        $upload = $ftp->put("testftp.loc/uploads/store/product/{$this->owner->id}/" . basename($saveTo), $saveTo, FTP_IMAGE);
+                        if ($upload) {
+                            echo "Файл успешно загружен\n";
+                            unlink($saveTo); //remove from site server
+                        } else {
+                            echo "При загрузке произошла проблема\n";
+                        }
+                    } else {
+                        echo "Не удалось зарезервировать место на сервере. Ответ сервера: $result\n";
+                    }
+                    return $saveTo;
+                }*/
+
+                if ($response->isOk) {
+                    return $saveTo;
+                }
             }
         } catch (\Exception $e) {
             Yii::info('img catch ' . $url, 'forsage');
-            return false;
         }
+        return false;
     }
 
     /**
      *
      * Method copies image file to module store and creates db record.
      *
-     * @param $file |string UploadedFile Or absolute url
+     * @param string|UploadedFile $file Or absolute url
      * @param bool $is_main
      * @param string $alt
      * @return bool|ProductImage
@@ -192,20 +224,6 @@ class ImageBehavior extends \yii\base\Behavior
     {
         $uniqueName = mb_strtolower(\panix\engine\CMS::gen(10));
         $isDownloaded = preg_match('/http(s?)\:\/\//i', $file);
-        /*if ($isDownloaded) {
-            $download = $this->downloadFile($file);
-            //var_dump($download);die;
-            if ($download) {
-                // $file = $download;
-                $newfile = Yii::getAlias('@runtime/') . $uniqueName . '.' . pathinfo($download, PATHINFO_EXTENSION);
-                rename($download, $newfile);
-                $file = $newfile;
-            }else{
-                Yii::info( 'img not download '.$file,'forsage');
-                return false;
-            }
-        }*/
-
 
         if (!$this->owner->primaryKey) {
             throw new \Exception('Owner must have primaryKey when you attach image!');
@@ -231,8 +249,6 @@ class ImageBehavior extends \yii\base\Behavior
         }
 
         $newAbsolutePath = $path . DIRECTORY_SEPARATOR . $pictureFileName;
-
-        $createDir = BaseFileHelper::createDirectory($path, 0775, true);
 
 
         $image = new ProductImage();
@@ -260,6 +276,26 @@ class ImageBehavior extends \yii\base\Behavior
             $this->setMainImage($image);
         }
 
+
+        $ftp = Yii::$app->getModule('shop')->ftpClient;
+
+        if ($ftp) {
+            if (is_object($file)) {
+                $target = fopen($file->tempName, 'r');
+                $upload = $ftp->fput("testftp.loc/uploads/store/product/{$image->product_id}/" . $pictureFileName, $target, FTP_IMAGE);
+                @fclose($target);
+                if ($upload) {
+                    echo "Файл успешно загружен\n";
+                } else {
+                    echo "При загрузке произошла проблема\n";
+                }
+
+                return $image;
+            }
+        }
+
+        $createDir = BaseFileHelper::createDirectory($path, 0775, true);
+
         /** @var ImageHandler $img */
         if (is_object($file)) {
             $file->saveAs($newAbsolutePath);
@@ -285,7 +321,6 @@ class ImageBehavior extends \yii\base\Behavior
 
         return $image;
     }
-
 
     /**
      * returns main model image
@@ -395,7 +430,7 @@ class ImageBehavior extends \yii\base\Behavior
             $allImg->save();
         }
         //делаем именно так, потому что срабатывает 2 раза сохранение модели.
-        Yii::$app->db->createCommand()->update(Product::tableName(), ['image' => $img->filename], ['id'=>$this->owner->id])->execute();
+        Yii::$app->db->createCommand()->update(Product::tableName(), ['image' => $img->filename], ['id' => $this->owner->id])->execute();
         //$this->owner->image = $img->filename;
         //$this->owner->save(false);
     }

@@ -9,6 +9,7 @@ use panix\mod\shop\models\Category;
 $root = Category::findOne(1);
 
 $categories = $root->children()->all();
+
 ?>
 <div class="row">
     <div class="container">

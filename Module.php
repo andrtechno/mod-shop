@@ -20,8 +20,11 @@ class Module extends WebModule implements BootstrapInterface
     public $searchAttribute = 'sku';
     public $filterViewCurrent = '@shop/widgets/filters/views/current';
     public $viewList = ['grid', 'list'];
+    public $ftp = false;
     public $filterClass = 'panix\mod\shop\components\FilterLite';
+
     //public $filterClass = 'panix\mod\shop\components\FilterPro';
+
 
     /**
      * @inheritdoc
@@ -57,41 +60,39 @@ class Module extends WebModule implements BootstrapInterface
         ];
 
 
+        foreach ($this->getAllPaths() as $path) {
 
+            $pattern = [];
+            $pathNew = explode('/', $path);
 
-            foreach ($this->getAllPaths() as $path) {
+            foreach ($pathNew as $pat) {
+                $pattern[] = '[0-9a-zA-Z_\-]+';
+            }
+            $pattern = implode('\/', $pattern);
 
-                $pattern = [];
-                $pathNew = explode('/', $path);
-
-                foreach ($pathNew as $pat) {
-                    $pattern[] = '[0-9a-zA-Z_\-]+';
-                }
-                $pattern = implode('\/', $pattern);
-
-                /* $rules22[] = [
-                     'class' => 'panix\mod\shop\components\rules\CategoryUrlRule',
-                     'route' => 'shop/catalog/view',
-                     'defaults' => ['slug' => $path],
-                     //'suffix'=>'.html',
-                     'pattern' => "catalog/<slug:[0-9a-zA-Z_\-]+>",
-                 ];*/
-                if ($app->id != 'console') {
-                    //testing now
-                    $rules[] = [
-                        'class' => 'panix\mod\shop\components\rules\BaseUrlRule',
-                        'route' => 'shop/catalog/view',
-                        'index' => 'catalog',
-                        'pattern' => 'catalog/<slug:' . $path . '>/<params:.*>'
-                    ];
-                }
+            /* $rules22[] = [
+                 'class' => 'panix\mod\shop\components\rules\CategoryUrlRule',
+                 'route' => 'shop/catalog/view',
+                 'defaults' => ['slug' => $path],
+                 //'suffix'=>'.html',
+                 'pattern' => "catalog/<slug:[0-9a-zA-Z_\-]+>",
+             ];*/
+            if ($app->id != 'console') {
+                //testing now
                 $rules[] = [
                     'class' => 'panix\mod\shop\components\rules\BaseUrlRule',
                     'route' => 'shop/catalog/view',
                     'index' => 'catalog',
-                    'pattern' => 'catalog/<slug:' . $path . '>'
+                    'pattern' => 'catalog/<slug:' . $path . '>/<params:.*>'
                 ];
             }
+            $rules[] = [
+                'class' => 'panix\mod\shop\components\rules\BaseUrlRule',
+                'route' => 'shop/catalog/view',
+                'index' => 'catalog',
+                'pattern' => 'catalog/<slug:' . $path . '>'
+            ];
+        }
         if ($app->id != 'console') {
             $rules[] = [
                 'class' => 'panix\mod\shop\components\rules\SearchUrlRule',
@@ -167,13 +168,24 @@ class Module extends WebModule implements BootstrapInterface
         return $allPaths;
     }
 
+
+
+    /**
+     * package nicolab/php-ftp-client
+     */
+    public $ftpClient;
+
     public function init()
     {
+
         if (Yii::$app->id == 'console') {
             $this->controllerNamespace = 'panix\mod\shop\commands';
         }
         if (!(Yii::$app instanceof \yii\console\Application)) {
             parent::init();
+        }
+        if ($this->ftp) {
+            $this->ftpClient = new \FtpClient\FtpClient();
         }
     }
 
