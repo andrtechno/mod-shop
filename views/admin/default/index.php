@@ -2,8 +2,8 @@
 //nicolab/php-ftp-client
 use yii\web\UploadedFile;
 use FtpClient\FtpClient;
-
-
+use panix\engine\Html;
+/*
 $ftp = new FtpClient;
 //$ftp->connect('optikon.com.ua');
 //$ftp->login('optikonc', 'pH5yZ2aA3v');
@@ -34,6 +34,21 @@ $list  = $ftp->nlist('testftp.loc');
 
 $ftp->close();
 fclose($handle);
-\panix\engine\CMS::dump($list);
+\panix\engine\CMS::dump($list);*/
+?>
 
+<div class="row">
+    <?php foreach ($items as $item) { ?>
+        <?php if (isset($item['visible']) && $item['visible'] == true) { ?>
+            <?php if (isset($item['url'])) { ?>
+            <div class="col-sm-3">
+                <div class="img-thumbnail text-center mb-4">
+                    <?=  Html::icon($item['icon'],['style'=>'font-size:40px']); ?>
+                    <h4><?= Html::a($item['label'],$item['url']); ?></h4>
+                </div>
+            </div>
+    <?php } ?>
+        <?php } ?>
+    <?php } ?>
+</div>
 

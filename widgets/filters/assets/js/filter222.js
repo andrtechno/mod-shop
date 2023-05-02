@@ -79,93 +79,6 @@ var global_url;
 var newFunction = true;
 var resultUrl = '';
 
-
-function filterCallbackAjax(e, objects, target) {
-
-    xhrCallback = $.ajax({
-        dataType: "json",
-        //url: common.url('/api/shop/elastic'),
-        url: '/api/shop/elastic?lang='+common.language,
-        //url: '/api/shop/elastic',
-        type: 'POST',
-        headers: {
-            "filter-callback-ajax": true
-        },
-        data: objects,
-        error: function (error) {
-            $('.sidebar').removeClass('loading');
-            common.notify(error.statusText, 'error');
-        },
-        success: function (response) {
-
-            resultUrl = response.url;
-            form.attr('action', resultUrl);
-
-            $.each(response.filters, function (name, filter) {
-                var hideCounter = 0;
-                $.each(filter.filters, function (index, data) {
-                    var selector = $('#filter_' + filter.key + '_' + data.id);
-                    $('#filter-count-' + filter.key + '-' + data.id).html(data.count_text);
-
-                    if (data.count) {
-                        $('#filter-' + filter.key + ' #li-' + data.id + ' input[type="checkbox"]:not(:checked)').attr('disabled', false);
-                        $('#filter-' + filter.key + ' #li-' + data.id).removeClass('disabled');
-                        // $('#filter-' + name + ' #li-' + data.id).show();
-                        hideCounter++;
-                    } else {
-                        $('#filter-' + filter.key + ' #li-' + data.id + ' input[type="checkbox"]:not(:checked)').attr('disabled', 'disabled');
-                        $('#filter-' + filter.key + ' #li-' + data.id).addClass('disabled');
-                        if (!selector.prop('checked')) {
-                            //    $('#filter-' + name + ' #li-' + data.id).hide();
-                        }else{
-
-                            //    $('#filter-' + name + ' #li-' + data.id).show();
-                        }
-                    }
-                });
-                var container = $('#filter-container-' + filter.key);
-
-                if(hideCounter == 0){
-                    //container.hide();
-                }else{
-                    container.show();
-                    if (hideCounter < 10) {
-                        //container.find('input[type="text"]').hide();
-                    } else {
-                        container.find('input[type="text"]').show();
-                    }
-                }
-
-            });
-            responseData = response;
-
-            $(document).trigger('filter:ajaxSuccess', {target: target, response: response});
-        },
-        complete: function () {
-            showApply = true;
-            showReset = true;
-            if ($(e.currentTarget).data('type') !== 'checkbox' || $(e.currentTarget).data('type') !== 'slider') {
-                $('.filter-buttons').trigger('filter:buttons:toggle', {response: responseData}); //показывать кнопку
-
-            }
-
-            if(e.type === 'slidestop'){
-                $(document).trigger('filter:apply'); //сразу применять
-            }
-
-            $('.sidebar').removeClass('loading');
-        },
-        beforeSend: function () {
-            //ajaxSelector.toggleClass('loading');
-            showApply = false;
-            showReset = true;
-            $('.sidebar').addClass('loading');
-            //$('.filter-buttons').trigger('filter:buttons:toggle');
-        }
-    });
-    return xhrCallback;
-
-}
 function filterCallback(e, objects, target) {
     if (xhrCallback && xhrCallback.readyState !== 4) {
         xhrCallback.onreadystatechange = null;
@@ -217,9 +130,93 @@ function filterCallback(e, objects, target) {
     //objects = $.extend(objects, {'selected[slide][price]': 1});
 
 
+    xhrCallback = $.ajax({
+        dataType: "json",
+        //url: common.url('/api/shop/elastic'),
+        url: '/api/shop/elastic?lang='+common.language,
+        //url: '/api/shop/elastic',
+        type: 'POST',
+        headers: {
+            "filter-callback-ajax": true
+        },
+        data: objects,
+        error: function (error) {
+            $('.sidebar').removeClass('loading');
+            common.notify(error.statusText, 'error');
+        },
+        success: function (response) {
 
-    return filterCallbackAjax(e,objects,target);
+            resultUrl = response.url;
+            form.attr('action', resultUrl);
 
+            $.each(response.filters, function (name, filter) {
+                var hideCounter = 0;
+                $.each(filter.filters, function (index, data) {
+                    var selector = $('#filter_' + filter.key + '_' + data.id);
+                    $('#filter-count-' + filter.key + '-' + data.id).html(data.count_text);
+
+                    if (data.count) {
+                        $('#filter-' + filter.key + ' #li-' + data.id + ' input[type="checkbox"]:not(:checked)').attr('disabled', false);
+                        $('#filter-' + filter.key + ' #li-' + data.id).removeClass('disabled');
+                       // $('#filter-' + name + ' #li-' + data.id).show();
+                        hideCounter++;
+                    } else {
+                        $('#filter-' + filter.key + ' #li-' + data.id + ' input[type="checkbox"]:not(:checked)').attr('disabled', 'disabled');
+                        $('#filter-' + filter.key + ' #li-' + data.id).addClass('disabled');
+                        if (!selector.prop('checked')) {
+                        //    $('#filter-' + name + ' #li-' + data.id).hide();
+                        }else{
+
+                        //    $('#filter-' + name + ' #li-' + data.id).show();
+                        }
+
+
+                    }
+
+                });
+                var container = $('#filter-container-' + filter.key);
+
+                if(hideCounter == 0){
+                    //container.hide();
+                }else{
+                    container.show();
+                    if (hideCounter < 10) {
+                        //container.find('input[type="text"]').hide();
+                    } else {
+                        container.find('input[type="text"]').show();
+                    }
+                }
+
+            });
+            responseData = response;
+
+            $(document).trigger('filter:ajaxSuccess', {target: target, response: response});
+
+
+        },
+        complete: function () {
+            showApply = true;
+            showReset = true;
+            if ($(e.currentTarget).data('type') !== 'checkbox' || $(e.currentTarget).data('type') !== 'slider') {
+                $('.filter-buttons').trigger('filter:buttons:toggle', {response: responseData}); //показывать кнопку
+
+            }
+
+            if(e.type === 'slidestop'){
+                $(document).trigger('filter:apply'); //сразу применять
+            }
+
+            $('.sidebar').removeClass('loading');
+        },
+        beforeSend: function () {
+            //ajaxSelector.toggleClass('loading');
+            showApply = false;
+            showReset = true;
+            $('.sidebar').addClass('loading');
+            //$('.filter-buttons').trigger('filter:buttons:toggle');
+        }
+    });
+    return xhrCallback;
 }
 
 function filter_ajax(e, objects, sort = false) {
@@ -452,19 +449,31 @@ $(function () {
     var checkedAll = [];
     var markedCheckbox = document.querySelectorAll('#filter-form input[type="checkbox"]:checked');
     var actibeFilterLog = [];
+    //console.log(markedCheckbox[0]);
     for (var checkbox of markedCheckbox) {
         checkedAll.push($(checkbox).attr('id'));
         currentChackedByOpen.push($(checkbox).attr('id'));
         actibeFilterLog.push($(checkbox).attr('id'));
+
+        console.log('#'+$(checkbox).attr('id'));
+       // $('#'+$(checkbox).trigger('filter:click:checkbox', true);
+        //$('#'+$(checkbox).attr('id')).click();
+        //$('#'+$(checkbox).attr('id')).click();
+        //var objects = getSerializeObjects();
+        //var target = checkbox;
+        //var event = {type:'filter:click:checkbox'};
+        //filterCallback(event, objects, target);
+
+        //$('#filter-form #filter_tip_odagu_276').trigger('filter:click:checkbox', true);
     }
     console.debug('Active filter:', actibeFilterLog.join(', '));
     //console.log('%c color text ', 'color: #0074cc');
 
-    var objects = getSerializeObjects();
-    var target = $(markedCheckbox[0]);
-    var event = {type:'filter:click:checkbox'};
-    filterCallbackAjax(event,objects,target);
-    showButtons=false;
+
+
+
+    //$('#filter_tip_odagu_276').prop('checked', true);
+    //$('#filter_tip_odagu_276').trigger('filter:click:checkbox', true);
 
 
     var changeItems = [];
@@ -611,7 +620,6 @@ $(function () {
     });
 
     $(document).on('change', '#filter-form input[type="checkbox"], #filter-form input[type="radio"]', function (e) {
-        showButtons=true;
         $(this).trigger('filter:click:checkbox', this.checked);
     });
 
@@ -755,8 +763,6 @@ $(function () {
      console.log('click #sorting-form a');
      });
      */
-
-
 });
 
 

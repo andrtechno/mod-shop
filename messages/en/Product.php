@@ -82,4 +82,5 @@ return [
     'SELECT_SUPPLIER_ID' => '&mdash; Select provider &mdash;',
     'SELECT_BRAND_ID' => '&mdash; Select brand &mdash;',
     'SELECT_MAIN_CATEGORY_ID' => '&mdash; Select category &mdash;',
+    'IN_BOX' => 'In box',
 ];

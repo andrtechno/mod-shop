@@ -82,4 +82,5 @@ return [
     'SELECT_SUPPLIER_ID' => '&mdash; Вибрати постачальника &mdash;',
     'SELECT_BRAND_ID' => '&mdash; Вибрати виробника &mdash;',
     'SELECT_MAIN_CATEGORY_ID' => '&mdash; Уточнити за категорією &mdash;',
+    'IN_BOX' => 'В ящику',
 ];

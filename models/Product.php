@@ -1046,6 +1046,11 @@ class Product extends ActiveRecord
             }
         }
 
+
+    }
+
+    public function elastic(array $eav = [])
+    {
         if (Yii::$app->has('elasticsearch')) {
             $optionse = [];
             $optionse['name'] = $this->name;
@@ -1067,31 +1072,43 @@ class Product extends ActiveRecord
             $optionse['discount'] = (int)$this->discount;
             $optionse['leather'] = (int)$this->leather;
             $optionse['ukraine'] = (int)$this->ukraine;
-            $eav = $this->getEavAttributes();
-            //Yii::info('elastic save');
-            //print_r(array_values($eav));die;
+            $optionse['options'] = [];
+            /*$eav = $this->getEavAttributes();
+            print_r($eav);die;
+            if (!$eav) {
+                $attributes = Yii::$app->request->post('Attribute', []);
+                if ($attributes) {
+                    foreach ($attributes as $val) {
+                        foreach ($val as $k => $value) {
+                            if (is_string($value) && $value !== '') {
+                                $optionse['options'][] = (int)$value;
+                            }
+
+                        }
+                    }
+                }
+                // print_r(array_values($attributes));die;
+            }else{
+                $optionse['options'] = array_values($eav);
+            }*/
             $optionse['options'] = array_values($eav);
-
-
+            //Yii::info('elastic save','forsage');
+            //print_r(array_values($eav));die;
             $optionse['categories'][] = (int)$this->main_category_id;
             foreach ($this->categorization as $category) {
                 $optionse['categories'][] = (int)$category->category;
             }
-            $optionse['categories'] = array_unique($optionse['categories']);
+            $optionse['categories'] = array_values(array_unique($optionse['categories']));
             //$result = Yii::$app->elasticsearch->put('product/_doc/' . $this->id, [], Json::encode($optionse));
-            $result = Yii::$app->elasticsearch->post('product/_doc/' . $this->id, [], Json::encode($optionse));
-            // var_dump($result);die;
+            $result = Yii::$app->elasticsearch->put('product/_doc/' . $this->id, [], Json::encode($optionse));
         }
-
     }
+
 
     public function getNotifications()
     {
         return $this->hasMany(ProductNotifications::class, ['product_id' => 'id']);
     }
-
-
-//
 
     /**
      * Update price and max_price for configurable product

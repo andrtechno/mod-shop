@@ -68,7 +68,9 @@ class FilterElastic extends Component
     {
         $data = [];
         $filters = (Yii::$app->request->post('filter')) ? Yii::$app->request->post('filter') : $_GET;
-
+        if (isset($_GET['lang'])) {
+            unset($_GET['lang']);
+        }
         foreach (array_keys($filters) as $key) {
             if (array_key_exists($key, $this->_eavAttributes)) {
                 if ((boolean)$this->_eavAttributes[$key]->select_many === true) {
@@ -93,6 +95,7 @@ class FilterElastic extends Component
     }
 
     public $addAttributes = [];
+
     //public $applyAttributes = [];
 
     public function __construct(ProductQuery $query = null, $config = [])
@@ -285,15 +288,25 @@ class FilterElastic extends Component
             //$urlParams['slug'] = $brand->slug;
         }
 
+        $first = array_key_first($active);
         foreach ($active as $key => $p) {
             $urlParams[$key] = implode(',', $p);
+
+            /*if ($key == 'brand') {
+                $this->elasticQuery['bool']['must'][] = ["terms" => ["brand_id" => $p]];
+            } else {
+                if ($first != $key) {
+                    $this->elasticQuery['bool']['must'][] = ["terms" => ["options" => $p]];
+                }
+            }*/
+
         }
 
 
         $elasticQuery = $this->getElasticQuery();
-       // CMS::dump($this->elasticQuery);die;
+        // CMS::dump($this->elasticQuery);die;
         $search = $elasticQuery->search();
-//CMS::dump($search);die;
+        //CMS::dump($search);die;
         $opts = [];
         foreach ($search['aggregations']['options']['buckets'] as $opt) {
             $opts[$opt['key']] = $opt['doc_count'];
@@ -378,8 +391,8 @@ class FilterElastic extends Component
             }
         }
         $data['totalCount'] = $elasticQuery->count();
-
-        $data['url'] = ApiHelpers::url(Yii::$app->urlManager->addUrlParam('/' . $this->route, $urlParams));
+        //var_dump($this->route);die;
+        $data['url'] = 'asd';//ApiHelpers::url(Yii::$app->urlManager->addUrlParam('/' . $this->route, $urlParams));
         return $data;
     }
 
@@ -487,9 +500,7 @@ class FilterElastic extends Component
         $query = new ElasticQuery();
         $query->from('product');
 
-
         //$query->fields = ["price"];
-
 
 
 //CMS::dump($this->elasticQuery);die;
@@ -511,7 +522,6 @@ class FilterElastic extends Component
                 "min_doc_count" => $min,
                 'size' => 9999
             ],
-
         ]);
         $query->addAggregate('brands', [
             'terms' => [

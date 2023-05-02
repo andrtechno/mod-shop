@@ -93,7 +93,7 @@ class ProductType extends ActiveRecord
     public function getShopAttributes()
     {
         return $this->hasMany(Attribute::class, ['id' => 'attribute_id'])
-            ->via('attributeRelation');
+            ->via('attributeRelation')->sort();
     }
 
     public function getShopConfigurableAttributes()

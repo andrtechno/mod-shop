@@ -140,6 +140,7 @@ class CatalogController extends ApiActiveController
         $action = Yii::$app->request->get('action');
         $categoryId = Yii::$app->request->get('category');
         $attribute = Yii::$app->request->get('attribute');
+        $options = Yii::$app->request->get('options');
         $json['success'] = false;
         $q = [];
         ///** @var Product $productModel */
@@ -150,19 +151,27 @@ class CatalogController extends ApiActiveController
         if ($categoryId) {
             $category = Category::findOne($categoryId);
             $query->applyCategories($categoryId);
-            $q['bool']['must'][] = ["term" => ["categories" => $categoryId]];
+            $q['bool']['must'][] = ["term" => ["categories" => (int)$categoryId]];
         }
         $q['bool']['must_not'][] = ["term" => ["availability" => Product::STATUS_ARCHIVE]];
         $q['bool']['must'][] = ["term" => ["switch" => 1]];
         $urlParams = [];
+        $urlParams[] = '/shop/catalog/view';
         if ($action == 'catalog') {
-            $urlParams[] = '/shop/catalog/view';
+            //$urlParams[] = '/shop/catalog/view';
             $urlParams['slug'] = $category->full_path;
         } elseif ($action == 'discount') {
             $urlParams[0] = '/shop/catalog/sales';
             $urlParams['category'] = $category->id;
             $query->sales();
-            $q['bool']['must'][]=["term" => ["discount" => 40]];
+            //$q['bool']['must'][] = ["term" => ["discount" => 40]];
+
+            $q['bool']['must'][] = [
+                'range' => [
+                    'discount' => ['gte' => 1]
+                ]
+            ];
+
             $q2['bool']['should'][] = ["query_string" => [
                 "query" => "discount:>=1111",
                 // "default_field" => "discount",
@@ -176,7 +185,6 @@ class CatalogController extends ApiActiveController
                     ]
                 ]
             ];
-
             $q2['bool']["should"][] = [
                 "match" => [
                     "discount" => 40
@@ -192,6 +200,19 @@ class CatalogController extends ApiActiveController
 
         } elseif ($action == 'new') {
             $urlParams[0] = '/shop/catalog/new';
+            //$urlParams['category'] = $category->id;
+            $query->new();
+            $date_utc = new \DateTime("now", new \DateTimeZone("UTC"));
+            //$now = $date_utc->getTimestamp();
+
+            $config = Yii::$app->settings->get('shop');
+            $q['bool']['must'][] = [
+                'range' => [
+                    'created_at' => ['gte' => ($date_utc->getTimestamp() - (86400 * $config->label_expire_new))]
+                ]
+            ];
+        } elseif ($action == 'new_leather') {
+            $urlParams[0] = '/shop/catalog/new';
             $urlParams['category'] = $category->id;
             $query->new();
 
@@ -201,15 +222,21 @@ class CatalogController extends ApiActiveController
                 ]
             ];
         } elseif ($action == 'ukraine') {
-            $urlParams[0] = '/shop/catalog/ukraine';
+            $urlParams[0] = '/shop/catalog/view';
+            $urlParams['slug'] = $category->full_path;
             $query->andWhere(['ukraine' => 1]);
             //$q['bool']['must'][] = ["term" => ["ukraine" => 1]];
             $q['bool']['must'][] = ["term" => ["options" => 211]];
 
+        } elseif ($action == 'discount_ukraine') {
+
+
         } elseif ($action == 'leather') {
             $query->andWhere(['leather' => 1]);
-            $urlParams[0] = '/shop/catalog/leather';
-            $q['bool']['must'][] = ["term" => ["leather" => 1]];
+            $urlParams[0] = '/shop/catalog/view';
+            $urlParams['slug'] = $category->full_path;
+            //$q2['bool']['must'][] = ["term" => ["leather" => 1]];
+            $q['bool']['must'][] = ["term" => ["options" => 59]];
         }
 
 //CMS::dump($q);die;
@@ -217,7 +244,8 @@ class CatalogController extends ApiActiveController
             'elasticQuery' => $q,
             //'cacheKey' => str_replace('/', '-', Yii::$app->controller->route) . '-' . $category->id,
             'route' => 'shop/brand/view', //for not load brands, life hack
-            'addAttributes' => [$attribute]
+            //'addAttributes' => [$attribute, 9]
+            'addAttributes' => $attribute
         ]);
 
         $data = $filter->getAttributes();
@@ -225,7 +253,30 @@ class CatalogController extends ApiActiveController
         $json['items'] = [];
 
 
-        if (isset($data['data'][$attribute])) {
+        $firstAttribute = $attribute[0];
+        if (isset($data['data'][$firstAttribute])) {
+            //$urlParams[$data['data'][9]['key']] = 211;
+            if ($options) {
+                unset($attribute[0]);
+                foreach ($attribute as $attr) {
+                    $urlParams[$data['data'][$attr]['key']] = implode(',', $options);
+                }
+            }
+            foreach ($data['data'][$firstAttribute]['filters'] as $item) {
+                if ($item['count']) {
+                    $urlParams[$data['data'][$firstAttribute]['key']] = $item['id'];
+
+                    $json['items'][] = [
+                        'title' => $item['title'],
+                        'url' => ApiHelpers::url($urlParams),
+                        //'url' => $urlParams,
+                    ];
+                }
+            }
+        }
+
+
+        /*if (isset($data['data'][$attribute])) {
             foreach ($data['data'][$attribute]['filters'] as $item) {
                 if ($item['count']) {
                     $urlParams[$data['data'][$attribute]['key']] = $item['id'];
@@ -236,8 +287,10 @@ class CatalogController extends ApiActiveController
                     ];
                 }
             }
-        }
-
+        }*/
+if(!$json['items']){
+    $json['message'] = Yii::t('app/default','NO_INFO');
+}
         $json['success'] = true;
         return $this->asJson($json);
     }

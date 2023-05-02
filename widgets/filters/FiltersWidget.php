@@ -152,15 +152,15 @@ class FiltersWidget extends Widget
 
     public function getCount($key = false, $filter)
     {
-        //$this->tagCountOptions=[];
+        $options=[];
         if ($key) {
-            $this->tagCountOptions['id'] = 'filter-count-' . $key . '-' . $filter['id'];
+            $options['id'] = 'filter-count-' . $key . '-' . $filter['id'];
         }
         $result = ($filter['count'] > 0) ? $filter['count'] : 0;
 
         if (Yii::$app->getModule('shop')->filterClass == 'panix\mod\shop\components\FilterElastic') {
             //return ($this->count) ? ' ' . Html::tag($this->tagCount, $result, $this->tagCountOptions) : '';
-            return Html::tag($this->tagCount, '('.$result.')', $this->tagCountOptions);
+            return Html::tag($this->tagCount, '('.Html::tag($this->tagCount, $result, $options).')', $this->tagCountOptions);
         } else {
             return 'aa';
         }

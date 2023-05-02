@@ -245,7 +245,6 @@ class ProductController extends AdminController
                     }
                     $categories = ArrayHelper::merge($categories, Yii::$app->request->post('categories', []));
                 } else {
-
                     $categories = Yii::$app->request->post('categories', []);
                 }
 
@@ -261,6 +260,17 @@ class ProductController extends AdminController
                         $model->attachImage($file);
                     }
                 }
+
+                $eav = $model->getEavAttributes();
+                $eavkeys = [];
+                foreach ($eav as $e) {
+                    foreach ($e as $o) {
+                        $eavkeys[] = $o;
+                    }
+                }
+
+
+                $model->elastic($eavkeys);
             }
 
 
