@@ -268,8 +268,6 @@ class ProductController extends AdminController
                         $eavkeys[] = $o;
                     }
                 }
-
-
                 $model->elastic($eavkeys);
             }
 

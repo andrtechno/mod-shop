@@ -18,7 +18,7 @@
 var showReset = false;
 var showApply = false;
 var showButtons = true;
-
+var deferreds = [];
 
 //const url = new URL('/catalog/clothes/tip_odagu/276', 'http://example.com');
 
@@ -162,7 +162,9 @@ function filterCallbackAjax(e, objects, target) {
             $('.sidebar').addClass('loading');
             //$('.filter-buttons').trigger('filter:buttons:toggle');
         }
+
     });
+    deferreds.push(xhrCallback);
     return xhrCallback;
 
 }
@@ -690,7 +692,14 @@ $(function () {
 
         var objects = getSerializeObjects();
         var target = $(this);
+
         filterCallback(e, objects, target);
+
+        $.when.apply($, deferreds).done(function () {
+            filter_ajax(e, objects);
+        });
+
+
 
 
         if (e.cancelable) {
@@ -698,6 +707,7 @@ $(function () {
         }
         e.preventDefault();
         console.debug('change filter price input');
+
     });
 
 
