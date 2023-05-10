@@ -264,9 +264,7 @@ class ProductController extends AdminController
                 $eav = $model->getEavAttributes();
                 $eavkeys = [];
                 foreach ($eav as $e) {
-                    foreach ($e as $o) {
-                        $eavkeys[] = $o;
-                    }
+                    $eavkeys[] = (int)$e;
                 }
                 $model->elastic($eavkeys);
             }

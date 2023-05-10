@@ -50,17 +50,15 @@ class CatalogController extends ElasticController
         $this->query->published();
 
 
-        $q['bool']['must'][]=["term" => ["categories" => $this->dataModel->id]];
-        $q['bool']['must_not'][]=["term" => ["availability" => Product::STATUS_ARCHIVE]];
-        $q['bool']['must'][]=["term" => ["switch" => 1]];
+        $q['bool']['must'][] = ["term" => ["categories" => $this->dataModel->id]];
+        $q['bool']['must_not'][] = ["term" => ["availability" => Product::STATUS_ARCHIVE]];
+        $q['bool']['must'][] = ["term" => ["switch" => 1]];
 
         //TEST!!!! kvartal
-        if(Yii::$app->request->get('tip_vzutta')){
-        //$q['bool']['must'][]=["term" => ["options" => Yii::$app->request->get('tip_vzutta')]];
+        if (Yii::$app->request->get('tip_vzutta')) {
+            //$q['bool']['must'][]=["term" => ["options" => Yii::$app->request->get('tip_vzutta')]];
         }
-       // $attributes = $this->data->getAttributes($q);
-
-
+        // $attributes = $this->data->getAttributes($q);
 
 
         if (true && $this->dataModel->children()->count()) {
@@ -98,11 +96,11 @@ class CatalogController extends ElasticController
         $this->query->applyCategories($this->dataModel, 'andWhere', $this->dataModel->children()->count());
 
 
-        $this->cacheKey = str_replace('/','-',Yii::$app->controller->route).'-' . $this->dataModel->id;
+        $this->cacheKey = str_replace('/', '-', Yii::$app->controller->route) . '-' . $this->dataModel->id;
         $this->filter = new $this->filterClass($this->query, [
-            'elasticQuery'=>$q,
+            'elasticQuery' => $q,
             'cacheKey' => $this->cacheKey,
-            'route'=>$this->route,
+            'route' => $this->route,
             //'applyAttributes'=>['tip_vzutta'=>[569]]
         ]);
 
@@ -137,7 +135,7 @@ class CatalogController extends ElasticController
         //echo $this->filter->resultQuery->createCommand()->rawsql;die;
 
         $this->provider = new \panix\engine\data\ActiveDataProvider([
-           'query' => $this->filter->resultQuery,
+            'query' => $this->filter->resultQuery,
             'sort' => Product::getSort(),
             'pagination' => [
                 'pageSize' => $this->per_page,
@@ -302,13 +300,22 @@ class CatalogController extends ElasticController
         $this->view->canonical = Url::to($this->currentUrl, true);
         $this->view->registerJs("var current_url = '" . $this->currentUrl . "';", yii\web\View::POS_HEAD, 'current_url');
 
-        $q['bool']['must_not'][]=["term" => ["availability" => Product::STATUS_ARCHIVE]];
-        $q['bool']['must'][]=["term" => ["switch" => 1]];
-        $q['bool']['must'][] = [
+        $q['bool']['must_not'][] = ["term" => ["availability" => Product::STATUS_ARCHIVE]];
+        $q['bool']['must'][] = ["term" => ["switch" => 1]];
+        $q2['bool']['must'][] = [
             'range' => [
                 'timestamp' => ['gte' => "now-1d/d", 'lt' => "now/d"]
             ]
         ];
+
+        $date_utc = new \DateTime("now", new \DateTimeZone("UTC"));
+        $config = Yii::$app->settings->get('shop');
+        $q['bool']['must'][] = [
+            'range' => [
+                'created_at' => ['gte' => ($date_utc->getTimestamp() - (86400 * $config->label_expire_new))]
+            ]
+        ];
+
         $this->query = $productModel::find()->published()->new();
 
         $categoriesIds = [];
@@ -341,15 +348,15 @@ class CatalogController extends ElasticController
         }
         $this->refreshUrl = $this->currentUrl;
         $this->view->params['breadcrumbs'][] = $this->pageName;
-        $cacheKey = str_replace('/','-',Yii::$app->controller->route);
+        $cacheKey = str_replace('/', '-', Yii::$app->controller->route);
         if (Yii::$app->request->getQueryParam('category')) {
-            $cacheKey .= '-'.Yii::$app->request->getQueryParam('category');
+            $cacheKey .= '-' . Yii::$app->request->getQueryParam('category');
         }
 
         $this->filter = new $this->filterClass($this->query, [
             'cacheKey' => $cacheKey,
-            'elasticQuery'=>$q,
-            'route'=>$this->route
+            'elasticQuery' => $q,
+            'route' => $this->route
         ]);
 
         //$this->filterQuery = clone $this->filter->resultQuery;
@@ -384,9 +391,9 @@ class CatalogController extends ElasticController
         /** @var Product $dataModel */
         $this->dataModel = Yii::$app->getModule('shop')->model('Product');
 
-        $q['bool']['must_not'][]=["term" => ["availability" => Product::STATUS_ARCHIVE]];
-        $q['bool']['must'][]=["term" => ["switch" => 1]];
-        $q['bool']['must'][]=["term" => ["discount" => 1]];
+        $q['bool']['must_not'][] = ["term" => ["availability" => Product::STATUS_ARCHIVE]];
+        $q['bool']['must'][] = ["term" => ["switch" => 1]];
+        $q['bool']['must'][] = ["term" => ["discount" => 1]];
         // $this->query = $this->dataModel::find()->published()->isNotEmpty('discount');
 
         $this->query = Product::find()->published()->sales();
@@ -464,14 +471,14 @@ class CatalogController extends ElasticController
         $this->view->canonical = Url::to($this->currentUrl, true);
         $this->view->registerJs("var current_url = '" . $this->currentUrl . "';", yii\web\View::POS_HEAD, 'current_url');
 
-        $cacheKey = str_replace('/','-',Yii::$app->controller->route);
+        $cacheKey = str_replace('/', '-', Yii::$app->controller->route);
         if (Yii::$app->request->getQueryParam('category')) {
-            $cacheKey .= '-'.Yii::$app->request->getQueryParam('category');
+            $cacheKey .= '-' . Yii::$app->request->getQueryParam('category');
         }
         $this->filter = new $this->filterClass($this->query, [
             'cacheKey' => $cacheKey,
-            'elasticQuery'=>$q,
-            'route'=>$this->route
+            'elasticQuery' => $q,
+            'route' => $this->route
         ]);
         $this->filter->resultQuery->sortAvailability();
 

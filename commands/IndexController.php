@@ -216,18 +216,23 @@ class IndexController extends ConsoleController
      * Delete products if not availability by period of days. Default is 90
      * @param int $days
      */
-    public function actionDeleteAv($days = 90)
+    public function actionDeleteAv($days = 60)
     {
-        echo 'DATE: '.date('Y-m-d H:i:s', time() - (86400 * $days)).PHP_EOL;
+
+        $time = date('Y-m-d H:i:s', time() - (86400 * $days));
+        echo 'DATE: ' . $time . ': ' . strtotime($time) . PHP_EOL;
+
         $products = Product::find()
-            ->where(['availability'=>3])
-            ->andWhere(['>', 'updated_at', strtotime(date('Y-m-d H:i:s', time() - (86400 * $days)))])
-       // echo $products->createCommand()->rawSql;die;
+            ->where(['availability' => Product::STATUS_OUT_STOCK])
+            ->andWhere(['<', 'updated_at', strtotime($time)])
+            ->orderBy('updated_at')
+            ->limit(1000)
             ->all();
-        foreach ($products as $product){
-            echo 'UPD : '.date('Y-m-d H:i:s',$product->updated_at).PHP_EOL;
-            echo $product->id.PHP_EOL;
-            //$product->delete();
+
+        //echo count($products);
+        foreach ($products as $product) {
+            //echo 'UPD : ' . $product->forsage_id . ' ' . date('Y-m-d H:i:s', $product->updated_at) . PHP_EOL;
+            $product->delete();
         }
     }
 }

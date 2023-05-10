@@ -165,8 +165,7 @@ class FilterElastic extends Component
         // Render links to cancel applied filters like prices, brands, attributes.
         $menuItems = [];
 
-
-        if (Yii::$app->controller->route == 'shop/catalog/view' || Yii::$app->controller->route == 'shop/search/index') {
+        if (in_array(Yii::$app->controller->route, ['shop/catalog/view', 'shop/search/index'])) {
             $brands = array_filter(explode(',', $request->getQueryParam('brand')));
             $brands = Brand::getDb()->cache(function ($db) use ($brands) {
                 return Brand::findAll($brands);
@@ -200,7 +199,7 @@ class FilterElastic extends Component
         }
 
 
-        if (Yii::$app->controller->route == 'shop/catalog/view') {
+        if (in_array(Yii::$app->controller->route, ['shop/catalog/view', 'shop/search/index'])) {
             if (!empty($brands)) {
                 $menuItems['brand'] = [
                     'name' => 'brand',
@@ -286,6 +285,8 @@ class FilterElastic extends Component
         } elseif ($this->route === 'shop/brand/view') {
             //$brand = Brand::findOne(['slug' => Yii::$app->request->get('slug')]);
             //$urlParams['slug'] = $brand->slug;
+        } elseif ($this->route === 'shop/search/index') {
+
         }
 
         $first = array_key_first($active);

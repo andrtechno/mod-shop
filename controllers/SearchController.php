@@ -50,12 +50,23 @@ class SearchController extends ElasticController
         $this->query->applySearch($queryGet);
 
         //$q['bool']['must'][]=["terms" => ["categories" => [$this->dataModel->id]]];
-        //$q['bool']['must'][]=["terms" => ["availability" => [Product::STATUS_PREORDER, Product::STATUS_IN_STOCK, Product::STATUS_OUT_STOCK]]];
+
         $q['bool']['must_not'][] = ["term" => ["availability" => Product::STATUS_ARCHIVE]];
         $q['bool']['must'][] = ["term" => ["switch" => 1]];
-        $q['bool']['must'][] = ["match" => ["name" => 'крос']];
-
-
+        if (Yii::$app->language == 'ru') {
+            // $q['bool']['must'][] = ["match" => ["name_ru" => $queryGet]];
+        } else {
+            // $q['bool']['must'][] = ["match" => ["name_uk" => $queryGet]];
+        }
+        if ($queryGet) {
+            $q['bool']['must'][] = ["simple_query_string" => [
+                "query" => "({$queryGet}* | *{$queryGet}~)",
+                "fields" => ["name_uk"],
+                //'auto_generate_synonyms_phrase_query' => false,
+                //"default_operator" => "AND",
+                // "flags"=> "OR|AND|PREFIX"
+            ]];
+        }
         $this->filter = new $this->filterClass($this->query, [
                 'cacheKey' => str_replace('/', '-', Yii::$app->controller->route) . '-' . $queryGet,
                 'elasticQuery' => $q,

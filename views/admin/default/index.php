@@ -3,6 +3,7 @@
 use yii\web\UploadedFile;
 use FtpClient\FtpClient;
 use panix\engine\Html;
+
 /*
 $ftp = new FtpClient;
 //$ftp->connect('optikon.com.ua');
@@ -35,19 +36,32 @@ $list  = $ftp->nlist('testftp.loc');
 $ftp->close();
 fclose($handle);
 \panix\engine\CMS::dump($list);*/
+
+/*
+$data = Yii::$app->cache->get('catalog-3');
+var_dump($data);
+
+                                                            $cacheData = Yii::$app->cache->get(Yii::$app->language.'-'.'catalog-' . $data['key']);
+                                                            if ($cacheData) {
+                                                                foreach ($cacheData as $item) {
+                                                                   <div class="nav-item"><?= Html::a($item['title'], $item['url']); ?></div>
+
+                                                                }
+                                                            }
+*/
 ?>
 
 <div class="row">
     <?php foreach ($items as $item) { ?>
         <?php if (isset($item['visible']) && $item['visible'] == true) { ?>
             <?php if (isset($item['url'])) { ?>
-            <div class="col-sm-3">
-                <div class="img-thumbnail text-center mb-4">
-                    <?=  Html::icon($item['icon'],['style'=>'font-size:40px']); ?>
-                    <h4><?= Html::a($item['label'],$item['url']); ?></h4>
+                <div class="col-sm-3">
+                    <div class="img-thumbnail text-center mb-4">
+                        <?= Html::icon($item['icon'], ['style' => 'font-size:40px']); ?>
+                        <h4><?= Html::a($item['label'], $item['url']); ?></h4>
+                    </div>
                 </div>
-            </div>
-    <?php } ?>
+            <?php } ?>
         <?php } ?>
     <?php } ?>
 </div>

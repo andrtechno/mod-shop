@@ -68,7 +68,8 @@ class CatalogController extends ApiActiveController
             $model = Product::find()->published()->limit(16);
             $model->applySearch($q);
             $model->andWhere(["availability" => [Product::STATUS_IN_STOCK, Product::STATUS_PREORDER]]);
-
+            $model->sort(SORT_DESC);
+            //echo $model->createCommand()->rawSql;die;
             $result = $model->all();
             $json['data']['products'] = [];
             foreach ($result as $m) {
@@ -208,17 +209,23 @@ class CatalogController extends ApiActiveController
             $config = Yii::$app->settings->get('shop');
             $q['bool']['must'][] = [
                 'range' => [
-                    'created_at' => ['gte' => ($date_utc->getTimestamp() - (86400 * $config->label_expire_new))]
+                    'created_at' => [
+                        'gte' => ($date_utc->getTimestamp() - (86400 * $config->label_expire_new)),
+                        //'lte' => $date_utc->getTimestamp()
+                    ]
                 ]
             ];
         } elseif ($action == 'new_leather') {
             $urlParams[0] = '/shop/catalog/new';
             $urlParams['category'] = $category->id;
             $query->new();
+            $date_utc = new \DateTime("now", new \DateTimeZone("UTC"));
+            //$now = $date_utc->getTimestamp();
 
+            $config = Yii::$app->settings->get('shop');
             $q['bool']['must'][] = [
                 'range' => [
-                    'timestamp' => ['gte' => "now-1d/d", 'lt' => "now/d"]
+                    'created_at' => ['gte' => ($date_utc->getTimestamp() - (86400 * $config->label_expire_new))]
                 ]
             ];
         } elseif ($action == 'ukraine') {
@@ -251,6 +258,8 @@ class CatalogController extends ApiActiveController
         $data = $filter->getAttributes();
         //return $this->asJson($data);
         $json['items'] = [];
+
+
 
 
         $firstAttribute = $attribute[0];
@@ -288,9 +297,18 @@ class CatalogController extends ApiActiveController
                 }
             }
         }*/
-if(!$json['items']){
-    $json['message'] = Yii::t('app/default','NO_INFO');
-}
+
+        $data2 = Yii::$app->cache->get(Yii::$app->language.'-'.$action.'-'.$categoryId);
+
+        if ($data2 === false) {
+            // store $data in cache so that it can be retrieved next time
+            Yii::$app->cache->set(Yii::$app->language.'-'.$action.'-'.$categoryId, $json['items'],3600);
+        }
+
+
+        if (!$json['items']) {
+            $json['message'] = Yii::t('app/default', 'NO_INFO');
+        }
         $json['success'] = true;
         return $this->asJson($json);
     }

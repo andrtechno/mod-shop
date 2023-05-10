@@ -1054,8 +1054,8 @@ class Product extends ActiveRecord
         if (Yii::$app->has('elasticsearch')) {
             $optionse = [];
             $optionse['name'] = $this->name;
-            // $optionse['name_ru'] = $this->name_ru;
-            //$optionse['name_uk'] = $this->name_uk;
+            $optionse['name_ru'] = $this->name_ru;
+            $optionse['name_uk'] = $this->name_uk;
             if ($this->currency_id) {
                 $currency = Currency::findOne($this->currency_id);
                 $optionse['price'] = (double)$this->price * $currency->rate;

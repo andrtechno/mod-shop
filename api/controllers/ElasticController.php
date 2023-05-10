@@ -46,7 +46,6 @@ class ElasticController extends ApiController
     public $route;
 
 
-
     public function actionIndex()
     {
         $route = Yii::$app->request->post('route');
@@ -66,11 +65,26 @@ class ElasticController extends ApiController
             $elasticQuery['bool']['must'][] = ["term" => ["categories" => $param]];
             $query1->applyCategories([$param]);
         } elseif ($route == 'shop/search/index') {
-            $elasticQuery['bool']['must'][] = ["match" => ["name" => $param]];
+            $elasticQuery['bool']['must'][] = ["simple_query_string" => [
+                //"query" => '('.$param.'* | *'.$param.'~)',
+                "query" => "({$param}* | *{$param}~)",
+                "fields" => ["name_uk"],
+                //"flags"=> "OR|AND|PREFIX"
+                //'auto_generate_synonyms_phrase_query' => false,
+                //"default_operator" => "OR"
+            ]];
             $query1->applySearch($param);
         } elseif ($route == 'shop/brand/view') {
             $elasticQuery['bool']['must'][] = ["term" => ["brand_id" => $param]];
             $query1->applyBrands($param);
+        } elseif ($route == 'shop/catalog/new') {
+            $date_utc = new \DateTime("now", new \DateTimeZone("UTC"));
+            $config = Yii::$app->settings->get('shop');
+            $elasticQuery['bool']['must'][] = [
+                'range' => [
+                    'created_at' => ['gte' => ($date_utc->getTimestamp() - (86400 * $config->label_expire_new))]
+                ]
+            ];
         }
 
 
@@ -122,9 +136,11 @@ class ElasticController extends ApiController
         if ($route == 'shop/catalog/view') {
             $category = Category::findOne($param);
             $urlParams['slug'] = $category->full_path;
-        }elseif($route == 'shop/brand/view'){
+        } elseif ($route == 'shop/brand/view') {
             $brand = Brand::findOne($param);
             $urlParams['slug'] = $brand->slug;
+        } elseif ($route == 'shop/search/index') {
+            $urlParams['q'] = $param;
         }
 
         foreach ($active as $key => $p) {
@@ -406,6 +422,7 @@ class ElasticController extends ApiController
 
         return $this->_eavAttributes;
     }
+
     public function getActiveAttributes()
     {
         $data = [];
