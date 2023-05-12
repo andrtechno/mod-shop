@@ -47,6 +47,7 @@ class FilterController extends ApiController
         $ea = Yii::$app->request->post('ea');
         $eb = Yii::$app->request->post('eb');
         $accessAttributes = Yii::$app->request->post('attributes');
+        $sort = Yii::$app->request->post('sort');
 
         //if (!Yii::$app->request->isAjax) {
         //    throw new ForbiddenHttpException('Acesss denied.');

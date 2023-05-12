@@ -142,6 +142,7 @@ class CatalogController extends ApiActiveController
         $categoryId = Yii::$app->request->get('category');
         $attribute = Yii::$app->request->get('attribute');
         $options = Yii::$app->request->get('options');
+        $sort = Yii::$app->request->get('sort');
         $json['success'] = false;
         $q = [];
         ///** @var Product $productModel */
@@ -245,7 +246,9 @@ class CatalogController extends ApiActiveController
             //$q2['bool']['must'][] = ["term" => ["leather" => 1]];
             $q['bool']['must'][] = ["term" => ["options" => 59]];
         }
-
+if($sort){
+    //$urlParams['sort'] = $sort;
+}
 //CMS::dump($q);die;
         $filter = new FilterElastic($query, [
             'elasticQuery' => $q,

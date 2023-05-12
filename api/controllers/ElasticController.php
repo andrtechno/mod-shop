@@ -51,6 +51,8 @@ class ElasticController extends ApiController
         $route = Yii::$app->request->post('route');
         $param = Yii::$app->request->post('param');
         $slides = Yii::$app->request->post('slide');
+        $sort = Yii::$app->request->post('sort');
+
         $elasticQuery = [];
         $urlParams = [];
         $query1 = Product::find();
@@ -152,6 +154,9 @@ class ElasticController extends ApiController
                     $urlParams[$slide_key] = $slide[0] . '-' . $slide[1];
                 }
             }
+        }
+        if($sort){
+            $urlParams['sort'] = $sort;
         }
         $url = ApiHelpers::url(Yii::$app->urlManager->addUrlParam('/' . $route, $urlParams));
 

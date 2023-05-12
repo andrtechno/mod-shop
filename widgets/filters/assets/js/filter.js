@@ -250,7 +250,7 @@ function filter_ajax(e, objects, sort = false) {
         headers: {
             "filter-ajax": true
         },
-        data: $('#filter-form input[type="checkbox"],#filter-form input[type="radio"]').serialize(),
+        data: $('#filter-form input[type="checkbox"], #filter-form input[type="radio"], #sorting-form select').serialize(),
         success: function (data) {
             ajaxSelector.html(data.items).toggleClass('loading');
             form.attr('action', data.currentUrl);
@@ -654,7 +654,7 @@ $(function () {
     });
 
     //for price inputs
-    $(document).on('change', '#filter-form #max_price,#filter-form #min_price', function (e) {
+    $(document).on('change', '#filter-form #max_price, #filter-form #min_price', function (e) {
 
         flagDeletePrices = false;
         var slider = $("#filters .ui-slider");
@@ -698,9 +698,6 @@ $(function () {
         $.when.apply($, deferreds).done(function () {
             filter_ajax(e, objects);
         });
-
-
-
 
         if (e.cancelable) {
             e.preventDefault();
