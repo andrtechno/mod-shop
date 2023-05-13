@@ -20,8 +20,20 @@ trait FilterQueryTrait
                         {$tableName}.`price`
                 END) AS aggregation_price"]);*/
 
-
-        $this->select(["{$function}(CASE WHEN ({$tableName}.currency_id IS NOT NULL)
+        if (Yii::$app->db->driverName === 'pgsql') {
+            $this->select(["{$function}(CASE WHEN ({$tableName}.currency_id IS NOT NULL)
+                    THEN
+                        (CASE WHEN ({$tableName}.discount::boolean) THEN
+                         ({$tableName}.price * ((SELECT rate::numeric FROM {$tableNameCur} WHERE id=currency_id) - discount::numeric))
+                         ELSE
+                          ({$tableName}.price * (SELECT rate::numeric FROM {$tableNameCur} WHERE id=currency_id))
+                         END)
+                        
+                    ELSE
+                        (CASE WHEN ({$tableName}.discount::boolean) THEN (({$tableName}.price::numeric - {$tableName}.discount::numeric)) ELSE {$tableName}.price::numeric END)
+                END) AS aggregation_price"]);
+        }else{
+            $this->select(["{$function}(CASE WHEN ({$tableName}.currency_id IS NOT NULL)
                     THEN
                         (CASE WHEN ({$tableName}.discount) THEN
                          ({$tableName}.price * ((SELECT rate FROM {$tableNameCur} WHERE {$tableNameCur}.id={$tableName}.currency_id) - {$tableName}.discount))
@@ -32,11 +44,13 @@ trait FilterQueryTrait
                     ELSE
                         (CASE WHEN ({$tableName}.discount) THEN ({$tableName}.price - {$tableName}.discount) ELSE {$tableName}.price END)
                 END) AS aggregation_price"]);
+        }
+
 
         //$this->orderBy(["aggregation_price" => ($function === 'MIN') ? SORT_ASC : SORT_DESC]);
         $this->distinct(false);
         $this->limit(1);
-       //echo $this->createCommand()->rawSql;die;
+        //echo $this->createCommand()->rawSql;die;
         return $this;
     }
 

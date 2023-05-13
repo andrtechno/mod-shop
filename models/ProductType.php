@@ -99,7 +99,7 @@ class ProductType extends ActiveRecord
     public function getShopConfigurableAttributes()
     {
         return $this->hasMany(Attribute::class, ['id' => 'attribute_id'])
-            ->andWhere('use_in_variants=1')
+            ->andWhere(['use_in_variants'=>true])
             ->via('attributeRelation');
     }
 
