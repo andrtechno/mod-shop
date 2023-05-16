@@ -20,8 +20,14 @@ class Module extends WebModule implements BootstrapInterface
     public $searchAttribute = 'sku';
     public $filterViewCurrent = '@shop/widgets/filtersnew/views/current';
     public $viewList = ['grid', 'list'];
-    public $filterClass = 'panix\mod\shop\components\FilterLite';
+    public $filterClass = 'panix\mod\shop\components\FilterPro';
     //public $filterClass = 'panix\mod\shop\components\FilterPro';
+    public $ftp = false;
+
+    /**
+     * package nicolab/php-ftp-client
+     */
+    public $ftpClient;
 
     /**
      * @inheritdoc

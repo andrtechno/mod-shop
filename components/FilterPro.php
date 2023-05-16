@@ -361,7 +361,7 @@ class FilterPro extends Component
     {
 
 
-        $data = Yii::$app->cache->get($this->cacheKey . '-attrs');
+        $data = Yii::$app->cache->get($this->cacheKey . '-attrs-'.Yii::$app->language);
         if ($data === false) {
             //$data = [];
             foreach ($this->_eavAttributes as $attribute) {
@@ -375,7 +375,9 @@ class FilterPro extends Component
 
                 $totalCount = 0;
                 $filtersCount = 0;
-                foreach ($attribute->getOptions()->cache(0, new TagDependency(['tags' => 'attribute-' . $attribute->name]))->all() as $option) {
+                foreach ($attribute->getOptions()
+                             ->cache(0, new TagDependency(['tags' => 'attribute-' . $attribute->name]))
+                             ->all() as $option) {
                     $count = $this->countRootAttributeProducts($attribute, $option);
 
 
