@@ -69,6 +69,8 @@ class m180917_193213_shop_product extends Migration
             'enable_comments' => $this->boolean()->defaultValue(true),
             'created_at' => $this->integer(),
             'updated_at' => $this->integer(),
+            'in_box' => $this->integer()->unsigned()->defaultValue(1),
+            'quantity_min' => $this->integer()->unsigned()->defaultValue(1),
             'switch' => $this->boolean()->defaultValue(true)->notNull(),
             'ordern' => $this->integer()->unsigned(),
         ]);
