@@ -4,7 +4,6 @@ namespace panix\mod\shop\controllers;
 
 use panix\engine\CMS;
 use panix\engine\Html;
-use panix\mod\shop\components\ElasticController;
 use Yii;
 use yii\helpers\Url;
 use yii\web\Response;
@@ -12,7 +11,7 @@ use panix\mod\shop\components\FilterController;
 use panix\mod\shop\models\Product;
 use panix\mod\shop\models\Category;
 
-class SearchController extends ElasticController
+class SearchController extends FilterController
 {
 
     public $provider;
