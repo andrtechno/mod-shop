@@ -67,6 +67,7 @@ class AttributesRender extends Widget
             $data[$model->name] = [
                 'id' => $this->_attributes[$model->name],
                 'type' => $model->type,
+                'use_in_filter' => $model->use_in_filter,
                 'hasUrl' => in_array($model->type, [Attribute::TYPE_CHECKBOX_LIST, Attribute::TYPE_SELECT_MANY, Attribute::TYPE_DROPDOWN]),
                 'title' => $model->title,
                 'value' => $value
