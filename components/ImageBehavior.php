@@ -187,10 +187,12 @@ class ImageBehavior extends \yii\base\Behavior
      * @return bool|ProductImage
      * @throws \Exception
      */
-    public function attachImage($file, $is_main = false, $alt = '')
+    public function attachImage($file, $is_main = false, $alt = '', $download = true)
     {
         $uniqueName = mb_strtolower(\panix\engine\CMS::gen(10));
         $isDownloaded = preg_match('/http(s?)\:\/\//i', $file);
+
+
         /*if ($isDownloaded) {
             $download = $this->downloadFile($file);
             //var_dump($download);die;
@@ -212,17 +214,21 @@ class ImageBehavior extends \yii\base\Behavior
         $path = Yii::getAlias($this->savePath) . DIRECTORY_SEPARATOR . $this->owner->primaryKey;
 
         if ($isDownloaded) {
-            $download = $this->downloadFile($file, $path, $uniqueName);
-            //echo $download;die;
             if ($download) {
-                $file = $download;
-                //rename($download, $newfile);
-                //$file = $newfile;
-            } else {
-                Yii::info('img not download ' . $file, 'forsage');
-                return false;
+                $downloaded = $this->downloadFile($file, $path, $uniqueName);
+                //echo $download;die;
+                if ($downloaded) {
+                    $file = $downloaded;
+                    //rename($download, $newfile);
+                    //$file = $newfile;
+                } else {
+                    Yii::info('img not download ' . $file, 'forsage');
+                    return false;
+                }
             }
+
         }
+
         if (!is_object($file)) {
             $pictureFileName = $uniqueName . '.' . pathinfo($file, PATHINFO_EXTENSION);
         } else {
@@ -233,11 +239,12 @@ class ImageBehavior extends \yii\base\Behavior
 
         $createDir = BaseFileHelper::createDirectory($path, 0775, true);
 
-
         $image = new ProductImage();
         $image->product_id = $this->owner->primaryKey;
         $image->filename = $pictureFileName;
         $image->alt_title = $alt;
+        $image->file_url = $file;
+
         //$image->urlAlias = $this->getAlias($image);
 
         if (!$image->save()) {
@@ -394,6 +401,7 @@ class ImageBehavior extends \yii\base\Behavior
             $allImg->save();
         }
         $this->owner->image = $img->filename;
+        $this->owner->image_url = $img->file_url;
         $this->owner->save(false);
     }
 

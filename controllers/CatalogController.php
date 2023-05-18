@@ -49,7 +49,7 @@ class CatalogController extends FilterController
         $this->query->published();
 //$this->query->applyRootAttributes(['sezon'=>[20]]);
 
-        if (true && $this->dataModel->children()->count()) {
+        if (false && $this->dataModel->children()->count()) {
 
             $this->pageName = $this->dataModel->name;
             $ancestors = $this->dataModel->ancestors()->addOrderBy('depth')->excludeRoot()->cache(3600)->all();
@@ -78,8 +78,6 @@ class CatalogController extends FilterController
                 //'filter' => $this->filter
 
             ]);
-        } else {
-
         }
 
 

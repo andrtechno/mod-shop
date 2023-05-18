@@ -29,7 +29,7 @@ class ProductImage extends ActiveRecord
     const MODULE_ID = 'shop';
     private $existImage = true;
 
-    public function afterSave($insert, $changedAttributes)
+    public function afterSave2($insert, $changedAttributes)
     {
         //print_r($changedAttributes);
         parent::afterSave($insert, $changedAttributes);
@@ -95,7 +95,7 @@ class ProductImage extends ActiveRecord
         return [
             [['product_id'], 'required'],
             [['product_id'], 'integer'],
-            [['alt_title'], 'string'],
+            [['alt_title', 'file_url'], 'string'],
             [['is_main'], 'boolean'],
         ];
     }
@@ -113,13 +113,14 @@ class ProductImage extends ActiveRecord
     public function afterDelete()
     {
 
-        $fileToRemove = $this->getPathToOrigin();
+        $fileToRemove = FileHelper::normalizePath($this->getPathToOrigin());
 
         if (preg_match('@\.@', $fileToRemove) and is_file($fileToRemove)) {
-            unlink($fileToRemove);
-            if (file_exists(Yii::getAlias("@app/web/assets/product/{$this->product_id}"))) {
-                FileHelper::removeDirectory(Yii::getAlias("@app/web/assets/product/{$this->product_id}"));
-            }
+            FileHelper::unlink($fileToRemove);
+        }
+        $assetPath = FileHelper::normalizePath(Yii::getAlias("@app/web/assets/product/{$this->product_id}"));
+        if (file_exists($assetPath)) {
+            FileHelper::removeDirectory($assetPath, ['traverseSymlinks' => true]);
         }
         if (Yii::$app->hasModule('csv')) {
             $external = new ExternalFinder('{{%csv}}');
@@ -238,12 +239,18 @@ class ProductImage extends ActiveRecord
 
     public function get($size = false, array $options = [])
     {
+
         if (!$size) {
-            $path = Yii::getAlias("@uploads/store/product/{$this->product_id}/{$this->filename}");
-            if (!file_exists($path) || !is_file($path)) {
-                return $this->getNoImageUrl();
+            if ($this->file_url) {
+                return $this->file_url;
+            } else {
+                $path = Yii::getAlias("@uploads/store/product/{$this->product_id}/{$this->filename}");
+                if (!file_exists($path) || !is_file($path)) {
+                    return $this->getNoImageUrl();
+                }
+                return "/uploads/store/product/{$this->product_id}/{$this->filename}";
             }
-            return "/uploads/store/product/{$this->product_id}/{$this->filename}";
+
         }
         $configApp = Yii::$app->settings->get('shop');
         if (!isset($options['watermark'])) {
@@ -271,9 +278,18 @@ class ProductImage extends ActiveRecord
         // }
 
         /** @var $img \panix\engine\components\ImageHandler */
+
+        //return $this->file_url;
         try {
+
+            if ($this->file_url) {
+                //echo file_get_contents($this->file_url);die;
+                $imagePath = CMS::downloadFile($this->file_url, '@runtime', $this->filename);
+            }
+
             $img = Yii::$app->img;
             $img->load($imagePath);
+
         } catch (\Exception $e) {
             return false;
         }
@@ -352,6 +368,9 @@ class ProductImage extends ActiveRecord
 
             $img->save($imageAssetPath . DIRECTORY_SEPARATOR . $filename . '.' . $extension);
 
+        }
+        if ($this->file_url) {
+            FileHelper::unlink(FileHelper::normalizePath(Yii::getAlias('@runtime/') . $this->filename));
         }
         return $assetPath . '/' . basename($img->getFileName());
         // return $img;

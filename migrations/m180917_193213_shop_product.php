@@ -38,6 +38,7 @@ class m180917_193213_shop_product extends Migration
             'full_description_ru' => $this->text()->null(),
             'full_description_uk' => $this->text()->null(),
             'image' => $this->string(50)->null(),
+            'image_url'=>$this->text(),
             'use_configurations' => $this->boolean()->defaultValue(false),
             'slug' => $this->string(255)->null(),
             'price' => $this->money(10, 2),
