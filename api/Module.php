@@ -14,6 +14,8 @@ use yii\helpers\ArrayHelper;
 class Module extends \yii\base\Module
 {
     //public $controllerNamespace = 'panix\mod\shop\api\controllers';
+    public $host = false;
+    public $ips = false;
 
     public function init()
     {

@@ -239,5 +239,21 @@ class ProductQuery extends ActiveQuery
         return $this;
     }
 
-
+    /**
+     * @param int $current_id
+     * @return $this
+     */
+    public function views($current_id = 0)
+    {
+        $session = Yii::$app->session->get('views');
+        if (!empty($session)) {
+            $ids = array_unique($session);
+            if ($current_id) {
+                $key = array_search($current_id, $ids);
+                unset($ids[$key]);
+            }
+            $this->andWhere(['id' => $ids]);
+        }
+        return $this;
+    }
 }
