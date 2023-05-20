@@ -1,5 +1,6 @@
 <?php
 //nicolab/php-ftp-client
+use yii\helpers\Json;
 use yii\web\UploadedFile;
 use FtpClient\FtpClient;
 use panix\engine\Html;
@@ -49,6 +50,54 @@ var_dump($data);
                                                                 }
                                                             }
 */
+
+
+
+//$result2 = Yii::$app->elasticsearch->get('_cat/indices/'.Yii::$app->getModule('shop')->elasticIndex.'?v=true&s=index', '','');
+
+//$result = Yii::$app->elasticsearch->get('_cat/indices?v=true&s=index', '','');
+$result = Yii::$app->elasticsearch->get('_cat/indices/'.Yii::$app->getModule('shop')->elasticIndex, '','');
+if($result){
+    $explode = explode(' ',$result[0]); ?>
+    <h1>Elastic index "<?= Yii::$app->getModule('shop')->elasticIndex; ?>" indicate</h1>
+    <table class="table table-striped">
+        <tr>
+            <th>health</th>
+            <th>status</th>
+            <th>index</th>
+            <th>uuid</th>
+            <th>primary shards</th>
+            <th>replics</th>
+
+            <th>docs count</th>
+            <th>docs deleted</th>
+            <th>store size</th>
+            <th>primary store size</th>
+        </tr>
+        <tr>
+    <?php
+    foreach ($explode as $key=>$server){
+        if($key ==0){
+            if($server =='yellow'){
+                $class='bg-warning';
+            }elseif($server =='red'){
+                $class='bg-danger';
+            }else{
+                $class='bg-success';
+            }
+            $server = '<span class="badge '.$class.'" style="text-indent: -9999px;width:10px;height:10px;border-radius:50%"> </span>';
+        }
+         ?>
+
+            <td><?= $server; ?></td>
+
+        <?php } ?>
+        </tr>
+        </table>
+            <?php
+
+}
+
 ?>
 
 <div class="row">
