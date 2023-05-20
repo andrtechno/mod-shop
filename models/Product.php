@@ -1099,8 +1099,7 @@ class Product extends ActiveRecord
                 $optionse['categories'][] = (int)$category->category;
             }
             $optionse['categories'] = array_values(array_unique($optionse['categories']));
-            //$result = Yii::$app->elasticsearch->put('product/_doc/' . $this->id, [], Json::encode($optionse));
-            $result = Yii::$app->elasticsearch->put('product/_doc/' . $this->id, [], Json::encode($optionse));
+            $result = Yii::$app->elasticsearch->put(Yii::$app->getModule('shop')->elasticIndex.'/_doc/' . $this->id, [], Json::encode($optionse));
         }
     }
 
@@ -1241,7 +1240,7 @@ class Product extends ActiveRecord
 
 
         if (Yii::$app->get('elasticsearch')) {
-            $result = Yii::$app->elasticsearch->delete('product/_doc/' . $this->id);
+            $result = Yii::$app->elasticsearch->delete(Yii::$app->getModule('shop')->elasticIndex.'/_doc/' . $this->id);
         }
 
 

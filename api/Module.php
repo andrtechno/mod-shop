@@ -20,6 +20,8 @@ class Module extends \yii\base\Module
     public $filterClass = 'panix\mod\shop\components\FilterLite';
     public $ftpClient;
     public $ftp = false;
+    public $elasticIndex = 'product';
+
     public function init()
     {
         parent::init();

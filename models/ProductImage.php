@@ -113,7 +113,7 @@ class ProductImage extends ActiveRecord
     public function afterDelete()
     {
 
-        $fileToRemove = $this->getPathToOrigin();
+        $fileToRemove = FileHelper::normalizePath($this->getPathToOrigin());
 
         $ftp = Yii::$app->getModule('shop')->ftpClient;
         if ($ftp) {
@@ -121,10 +121,11 @@ class ProductImage extends ActiveRecord
         }
 
         if (preg_match('@\.@', $fileToRemove) and is_file($fileToRemove)) {
-            unlink($fileToRemove);
-            if (file_exists(Yii::getAlias("@app/web/assets/product/{$this->product_id}"))) {
-                FileHelper::removeDirectory(Yii::getAlias("@app/web/assets/product/{$this->product_id}"));
-            }
+            FileHelper::unlink($fileToRemove);
+        }
+        $assetPath = FileHelper::normalizePath(Yii::getAlias("@app/web/assets/product/{$this->product_id}"));
+        if (file_exists($assetPath)) {
+            FileHelper::removeDirectory($assetPath, ['traverseSymlinks' => true]);
         }
         if (Yii::$app->hasModule('csv')) {
             $external = new ExternalFinder('{{%csv}}');

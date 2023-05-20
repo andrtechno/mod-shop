@@ -22,7 +22,7 @@ class Module extends WebModule implements BootstrapInterface
     public $viewList = ['grid', 'list'];
     public $ftp = false;
     public $filterClass = 'panix\mod\shop\components\FilterLite';
-
+    public $elasticIndex = 'product';
     //public $filterClass = 'panix\mod\shop\components\FilterPro';
 
 

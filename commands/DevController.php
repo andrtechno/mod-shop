@@ -180,4 +180,50 @@ class DevController extends ConsoleController
     }
 
 
+
+    public function actionCreateIndex()
+    {
+        $command = Yii::$app->elasticsearch->createCommand();
+        $mappings = [];
+        $mappings['properties'] = [];
+
+        $mappings['properties']["name"] = ["type" => "text"];
+        $mappings['properties']["name_ru"] = ["type" => "text"];
+        $mappings['properties']["name_uk"] = ["type" => "text"];
+        $mappings['properties']["slug"] = ["type" => "text"];
+        $mappings['properties']["sku"] = ["type" => "text"];
+        $mappings['properties']["price"] = ["type" => "double"];
+        $mappings['properties']["options"] = ["type" => "keyword"];
+        $mappings['properties']["categories"] = ["type" => "keyword"];
+        $mappings['properties']["brand_id"] = ["type" => "integer"];
+        $mappings['properties']["created_at"] = ["type" => "integer"];
+        $mappings['properties']["availability"] = ["type" => "integer"];
+        $mappings['properties']["switch"] = ["type" => "integer"];
+        $mappings['properties']["currency_id"] = ["type" => "integer"];
+        $mappings['properties']["discount"] = ["type" => "integer"];
+        $mappings['properties']["ukraine"] = ["type" => "integer"];
+        $mappings['properties']["leather"] = ["type" => "integer"];
+
+        $mappings['properties']["price_calc"] = ["type" => "integer_range"];
+
+        $command->createIndex($this->module->elasticIndex, [
+            //'aliases' => [],
+            'mappings' => $mappings,
+            'settings' => [
+                //For total hits
+                "index" => [
+                    "number_of_shards" => 1,
+                    "number_of_replicas" => 0
+                ]
+            ],
+        ]);
+        //print_r($command);
+    }
+
+    public function actionDeleteIndex()
+    {
+        $res = Yii::$app->elasticsearch->delete($this->module->elasticIndex);
+        print_r($res);
+    }
+
 }
