@@ -401,7 +401,7 @@ class ImageBehavior extends \yii\base\Behavior
             $allImg->save();
         }
         $this->owner->image = $img->filename;
-        $this->owner->image_url = $img->file_url;
+        //$this->owner->image_url = $img->file_url;
         $this->owner->save(false);
     }
 

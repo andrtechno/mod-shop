@@ -319,7 +319,7 @@ class Product extends ActiveRecord
         $test = new ProductImage();
         $test->product_id = $this->id;
         $test->filename = $this->image;
-        $test->file_url = $this->image_url;
+        //$test->file_url = $this->image_url;
 
         $img = $test->get($size, $options);
 
