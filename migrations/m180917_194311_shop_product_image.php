@@ -24,7 +24,7 @@ class m180917_194311_shop_product_image extends Migration
             'user_id' => $this->integer()->unsigned(),
             'product_id' => $this->integer()->unsigned(),
             'filename' => $this->string(255),
-            'file_url'=>$this->text(),
+            //'file_url'=>$this->text(),
             'alt_title' => $this->string(255),
             'urlAlias' => $this->string(255),
             'is_main' => $this->boolean()->defaultValue(false),

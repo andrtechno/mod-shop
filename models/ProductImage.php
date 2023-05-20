@@ -95,7 +95,7 @@ class ProductImage extends ActiveRecord
         return [
             [['product_id'], 'required'],
             [['product_id'], 'integer'],
-            [['alt_title', 'file_url'], 'string'],
+            [['alt_title'], 'string'], //, 'file_url'
             [['is_main'], 'boolean'],
         ];
     }
@@ -241,15 +241,15 @@ class ProductImage extends ActiveRecord
     {
 
         if (!$size) {
-            if ($this->file_url) {
-                return $this->file_url;
-            } else {
+            //if ($this->file_url) {
+            //    return $this->file_url;
+            //} else {
                 $path = Yii::getAlias("@uploads/store/product/{$this->product_id}/{$this->filename}");
                 if (!file_exists($path) || !is_file($path)) {
                     return $this->getNoImageUrl();
                 }
                 return "/uploads/store/product/{$this->product_id}/{$this->filename}";
-            }
+            //}
 
         }
         $configApp = Yii::$app->settings->get('shop');
@@ -282,10 +282,10 @@ class ProductImage extends ActiveRecord
         //return $this->file_url;
         try {
 
-            if ($this->file_url) {
+            //if ($this->file_url) {
                 //echo file_get_contents($this->file_url);die;
-                $imagePath = CMS::downloadFile($this->file_url, '@runtime', $this->filename);
-            }
+            //    $imagePath = CMS::downloadFile($this->file_url, '@runtime', $this->filename);
+            //}
 
             $img = Yii::$app->img;
             $img->load($imagePath);
@@ -369,9 +369,9 @@ class ProductImage extends ActiveRecord
             $img->save($imageAssetPath . DIRECTORY_SEPARATOR . $filename . '.' . $extension);
 
         }
-        if ($this->file_url) {
-            FileHelper::unlink(FileHelper::normalizePath(Yii::getAlias('@runtime/') . $this->filename));
-        }
+        //if ($this->file_url) {
+        //    FileHelper::unlink(FileHelper::normalizePath(Yii::getAlias('@runtime/') . $this->filename));
+        //}
         return $assetPath . '/' . basename($img->getFileName());
         // return $img;
 
