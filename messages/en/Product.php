@@ -40,6 +40,8 @@ return [
     'GRID_OPTION_UPDATE_VIEWS' => 'Update Views',
     'SELECT_CURRENCY' => '{currency} (default)',
     'TEXT' => 'Product description',
+    'UNITS' => '{n,selectordinal,=1{thing} =2{meter} =3{box} =4{package} other{unknow unit.}}',
+    'UNITS_CUT' => '{n,selectordinal,=1{tng.} =2{meter} =3{box} =4{pack.} other{unknow unit.}}',
     'UNIT' => 'Unit measurements',
     'SUPPLIER_ID' => 'Supplier',
     'BRAND_ID' => 'Brand',

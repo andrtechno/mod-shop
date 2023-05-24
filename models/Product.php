@@ -1122,7 +1122,15 @@ class Product extends ActiveRecord
         }
         return $price;
     }
-
+    public static function unitsList()
+    {
+        return [
+            1 => self::t('UNITS', ['n' => 1]),
+            2 => self::t('UNITS', ['n' => 2]),
+            3 => self::t('UNITS', ['n' => 3]),
+            4 => self::t('UNITS', ['n' => 4]),
+        ];
+    }
     public function priceRange()
     {
         $price = $this->getFrontPrice();

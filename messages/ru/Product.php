@@ -40,6 +40,8 @@ return [
     'GRID_OPTION_UPDATE_VIEWS' => 'Обновить просмотры',
     'SELECT_CURRENCY' => '{currency} (по умолчанию)',
     'TEXT' => 'Описание товара',
+    'UNITS' => '{n,selectordinal,=1{штука} =2{метр} =3{ящик} =4{упаковка} other{unknow unit.}}',
+    'UNITS_CUT' => '{n,selectordinal,=1{шт.} =2{метр} =3{ящ.} =4{у.} other{unknow unit.}}',
     'UNIT' => 'Ед. измерения',
     'SUPPLIER_ID' => 'Поставщик',
     'BRAND_ID' => 'Бренд',
