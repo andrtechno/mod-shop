@@ -3,7 +3,7 @@
 /**
  * Generation migrate by PIXELION CMS
  * @author PIXELION CMS development team <dev@pixelion.com.ua>
- * 
+ *
  * Class m180917_193505_shop_category
  */
 
@@ -11,7 +11,8 @@ use panix\engine\db\Migration;
 use panix\mod\shop\models\Category;
 
 
-class m180917_193505_shop_category extends Migration {
+class m180917_193505_shop_category extends Migration
+{
 
     public function up()
     {
@@ -38,7 +39,7 @@ class m180917_193505_shop_category extends Migration {
             'h1_uk' => $this->string(255)->null(),
             'created_at' => $this->integer(),
             'updated_at' => $this->integer(),
-            'use_seo_parents'=>$this->boolean()->defaultValue(false),
+            'use_seo_parents' => $this->boolean()->defaultValue(false),
             'switch' => $this->boolean()->defaultValue(true),
         ]);
 
@@ -48,7 +49,9 @@ class m180917_193505_shop_category extends Migration {
         $this->createIndex('depth', Category::tableName(), 'depth');
         $this->createIndex('full_path', Category::tableName(), 'full_path');
         $this->createIndex('switch', Category::tableName(), 'switch');
-
+        $this->batchInsert(Category::tableName(), ['lft', 'rgt', 'depth', 'slug', 'name_ru', 'name_uk', 'created_at', 'updated_at'], [
+            [1, 2, 1, 'root', 'Каталог продукции', 'Каталог продукції', time(), time()],
+        ]);
     }
 
     public function down()
