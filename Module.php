@@ -10,6 +10,7 @@ use Yii;
 use panix\engine\WebModule;
 use yii\base\BootstrapInterface;
 use app\web\themes\dashboard\sidebar\BackendNav;
+use yii\base\Exception;
 use yii\web\UrlNormalizer;
 
 class Module extends WebModule implements BootstrapInterface
@@ -143,29 +144,33 @@ class Module extends WebModule implements BootstrapInterface
     public function getAllPaths()
     {
 
-        $tableName = Category::tableName();
-        $dependency = new \yii\caching\DbDependency(['sql' => "SELECT MAX(updated_at) FROM {$tableName}"]);
-        $allPaths = \Yii::$app->cache->get('CategoryUrlRule');
-        if ($allPaths === false) {
-            $items = (new \yii\db\Query())
-                ->select(['id', 'full_path'])
-                ->andWhere('id!=:id', [':id' => 1])
-                ->from($tableName)
-                ->all();
+        try{
+            $tableName = Category::tableName();
+            $dependency = new \yii\caching\DbDependency(['sql' => "SELECT MAX(updated_at) FROM {$tableName}"]);
+            $allPaths = \Yii::$app->cache->get('CategoryUrlRule');
+            if ($allPaths === false) {
+                $items = (new \yii\db\Query())
+                    ->select(['id', 'full_path'])
+                    ->andWhere('id!=:id', [':id' => 1])
+                    ->from($tableName)
+                    ->all();
 
-            $allPaths = [];
-            foreach ($items as $item) {
-                $allPaths[$item['id']] = $item['full_path'];
+                $allPaths = [];
+                foreach ($items as $item) {
+                    $allPaths[$item['id']] = $item['full_path'];
+                }
+                // Sort paths by length.
+                uasort($allPaths, function ($a, $b) {
+                    return strlen($b) - strlen($a);
+                });
+
+                \Yii::$app->cache->set('CategoryUrlRule', $allPaths, Yii::$app->db->queryCacheDuration, $dependency);
             }
-            // Sort paths by length.
-            uasort($allPaths, function ($a, $b) {
-                return strlen($b) - strlen($a);
-            });
 
-            \Yii::$app->cache->set('CategoryUrlRule', $allPaths, Yii::$app->db->queryCacheDuration, $dependency);
+            return $allPaths;
+        }catch (Exception $exception){
+            return [];
         }
-
-        return $allPaths;
     }
 
 
