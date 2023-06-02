@@ -95,12 +95,13 @@ class FilterElastic extends Component
     }
 
     public $addAttributes = [];
+    public $elasticIndex;
 
     //public $applyAttributes = [];
 
     public function __construct(ProductQuery $query = null, $config = [])
     {
-
+        $this->elasticIndex = Yii::$app->getModule('shop')->elasticIndex;
         parent::__construct($config);
         $data = Yii::$app->request->post('filter');
         $slides = Yii::$app->request->post('slide');
@@ -489,7 +490,7 @@ class FilterElastic extends Component
 
 
         $queryTotal = new ElasticQuery();
-        $queryTotal->from('product');
+        $queryTotal->from($this->elasticIndex);
         $queryTotal->query = $this->elasticQuery;
         $data['totalCount'] = $queryTotal->count();
 
@@ -499,7 +500,7 @@ class FilterElastic extends Component
     public function getElasticQuery($min = 1)
     {
         $query = new ElasticQuery();
-        $query->from('product');
+        $query->from($this->elasticIndex);
 
         $query->source('*');
         /*$query->runtimeMappings = [
@@ -581,7 +582,7 @@ class FilterElastic extends Component
         $active = $this->getActiveAttributes();
 
         $query = new ElasticQuery();
-        $query->from('product');
+        $query->from($this->elasticIndex);
         //$query->fields = ['*'];
 //CMS::dump($this->elasticQuery);die;
         $query->query = $this->elasticQuery;

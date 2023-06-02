@@ -180,7 +180,9 @@ class DevController extends ConsoleController
     }
 
 
-
+    /**
+     * Create Elasticsearch index
+     */
     public function actionCreateIndex()
     {
         $command = Yii::$app->elasticsearch->createCommand();
@@ -220,6 +222,9 @@ class DevController extends ConsoleController
         //print_r($command);
     }
 
+    /**
+     * Delete Elasticsearch index
+     */
     public function actionDeleteIndex()
     {
         $res = Yii::$app->elasticsearch->delete($this->module->elasticIndex);
