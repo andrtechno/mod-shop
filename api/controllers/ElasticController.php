@@ -21,23 +21,6 @@ use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
-
-/**
- * {
- * "mappings": {
- * "properties": {
- * "full_text": { "type": "text" },
- * "name": { "type": "text" },
- * "slug": { "type": "text" },
- * "price": { "type": "double" },
- * "options": { "type": "keyword" },
- * "categories": { "type": "keyword" },
- * "created_at": { "type": "integer" },
- * "switch": { "type": "boolean" }
- * }
- * }
- * }
- */
 class ElasticController extends ApiController
 {
 

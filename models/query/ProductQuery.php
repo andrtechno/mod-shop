@@ -146,7 +146,7 @@ class ProductQuery extends ActiveQuery
                 $categories = [$categories];
         }
         if (!$ref) {
-            $this->$whereType(['main_category_id' => $categories]);
+            $this->$whereType([Product::tableName().'.main_category_id' => $categories]);
         } else {
             //  $tableName = ($this->modelClass)->tableName();
             $this->leftJoin(ProductCategoryRef::tableName(), ProductCategoryRef::tableName() . '.`product`=' . $this->modelClass::tableName() . '.`id`');

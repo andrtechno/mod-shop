@@ -501,10 +501,39 @@ class FilterElastic extends Component
         $query = new ElasticQuery();
         $query->from('product');
 
-        //$query->fields = ["price"];
+        $query->source('*');
+        /*$query->runtimeMappings = [
+            'price2' => [
+                "type" => "double",
+                "script" => [
+                    "lang" => "painless",
+                    "source" => "emit(doc['price'].value);",
+                    "params" => [
+                        "multiplier" => 2
+                    ]
+                ]
+            ]
+        ];*/
 
 
-//CMS::dump($this->elasticQuery);die;
+        //$query->fields = ['price', 'name', 'switch'];
+        // ID=>RATE
+        $currencies = [0 => 10, 1 => 20, 2 => 20];
+
+        //see documentaton for add script to DB and show by ID !!! https://www.youtube.com/watch?v=a3OgrYj3ja0&ab_channel=Codetuber
+        /*$query->scriptFields = [
+            "price_with_currency" => [
+                "script" => [
+                    'lang'=>'painless',
+                    //"source" => "doc['price'].value * params.get('multiplier')['2'];",
+                    "source" => "doc['price'].value * params.get('multiplier')[params._source.switch];",
+                    "params" => [
+                        "multiplier" => $currencies
+                    ]
+                ]
+            ]
+        ];*/
+
         $query->query = $this->elasticQuery;
         $query->addAggregate('min_price', [
             'min' => ["field" => "price"],
@@ -540,6 +569,8 @@ class FilterElastic extends Component
             ]
         ]);*/
 
+        //CMS::dump($query->search());
+        //die;
         return $query;
     }
 
