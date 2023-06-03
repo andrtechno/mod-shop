@@ -195,17 +195,18 @@ class DevController extends ConsoleController
         $mappings['properties']["slug"] = ["type" => "text"];
         $mappings['properties']["sku"] = ["type" => "text"];
         $mappings['properties']["price"] = ["type" => "double"];
-        $mappings['properties']["options"] = ["type" => "keyword"];
-        $mappings['properties']["categories"] = ["type" => "keyword"];
+        $mappings['properties']["currency_id"] = ["type" => "integer"];
+        $mappings['properties']["type_id"] = ["type" => "integer"];
         $mappings['properties']["brand_id"] = ["type" => "integer"];
+        $mappings['properties']["supplier_id"] = ["type" => "integer"];
         $mappings['properties']["created_at"] = ["type" => "integer"];
         $mappings['properties']["availability"] = ["type" => "integer"];
         $mappings['properties']["switch"] = ["type" => "integer"];
-        $mappings['properties']["currency_id"] = ["type" => "integer"];
+        $mappings['properties']["options"] = ["type" => "keyword"];
+        $mappings['properties']["categories"] = ["type" => "keyword"];
         $mappings['properties']["discount"] = ["type" => "integer"];
         $mappings['properties']["ukraine"] = ["type" => "integer"];
         $mappings['properties']["leather"] = ["type" => "integer"];
-
         $mappings['properties']["price_calc"] = ["type" => "integer_range"];
 
         $command->createIndex($this->module->elasticIndex, [

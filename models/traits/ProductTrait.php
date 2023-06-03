@@ -3,6 +3,7 @@
 namespace panix\mod\shop\models\traits;
 
 use Yii;
+use yii\elasticsearch\Query as ElasticQuery;
 use yii\helpers\ArrayHelper;
 use yii\caching\DbDependency;
 use panix\mod\shop\models\Category;
@@ -14,6 +15,7 @@ use panix\engine\Html;
 use panix\engine\CMS;
 use panix\mod\shop\models\Attribute;
 use panix\mod\shop\models\Product;
+use yii\helpers\Json;
 
 /**
  * Trait ProductTrait
@@ -73,8 +75,9 @@ trait ProductTrait
                     $rating = '';
                 }
 
+                //$result2 = Yii::$app->elasticsearch->get(Yii::$app->getModule('shop')->elasticIndex.'/_doc/' . $model->id);
 
-                return $model->renderGridImage() . $rating;
+                return $model->renderGridImage() . $rating;//.$result2['_id'];
             },
         ];
         $columns['id'] = [
