@@ -73,13 +73,13 @@ class ElasticController extends ApiController
         }
 
 
-
         $filter = new FilterElastic($query1, [
             'route' => $this->route,
             'elasticQuery' => $elasticQuery
 
         ]);
         $eav = $filter->getEavAttributes();
+        // $eav = $filter->attributes;
         $active = $filter->getActiveAttributes();
 
 
@@ -138,7 +138,7 @@ class ElasticController extends ApiController
                 }
             }
         }
-        if($sort){
+        if ($sort) {
             $urlParams['sort'] = $sort;
         }
         $url = ApiHelpers::url(Yii::$app->urlManager->addUrlParam('/' . $route, $urlParams));
@@ -149,6 +149,7 @@ class ElasticController extends ApiController
             'filters' => $result['data'],
             'url' => $url
         ]);
+
     }
 
     public function getRootCategoryAttributes()

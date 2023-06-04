@@ -713,6 +713,7 @@ class FilterElastic extends Component
 
     public function getEavAttributes()
     {
+        Yii::info(__METHOD__,'elastic');
         if (is_array($this->_eavAttributes))
             return $this->_eavAttributes;
 
@@ -829,6 +830,7 @@ class FilterElastic extends Component
     //быстрее работает.
     public function getCategoryBrands()
     {
+        Yii::info(__METHOD__,'elastic');
         $this->query->orderBy = false;
 
         $queryClone = clone $this->query;
@@ -851,9 +853,8 @@ class FilterElastic extends Component
             Brand::tableName() . '.slug as slug',
             Brand::tableName() . '.image as image'
         ]);
-        //$queryClone->cache($this->cacheDuration);
-
-        $brands = $queryClone->createCommand()->queryAll();
+        //@Todo если не кешировать очень долгий запрос получается"!!!!!!!
+        $brands = $queryClone->cache($this->cacheDuration*7)->createCommand()->queryAll();
         // echo $queryClone->createCommand()->rawSql;die;
 
 
