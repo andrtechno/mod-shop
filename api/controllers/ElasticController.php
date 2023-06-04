@@ -28,9 +28,9 @@ class ElasticController extends ApiController
     private $_eavAttributes;
     public $route;
 
-
     public function actionIndex()
     {
+
         $route = Yii::$app->request->post('route');
         $param = Yii::$app->request->post('param');
         $slides = Yii::$app->request->post('slide');
@@ -78,8 +78,8 @@ class ElasticController extends ApiController
             'elasticQuery' => $elasticQuery
 
         ]);
-        $eav = $filter->getEavAttributes();
-        // $eav = $filter->attributes;
+         $eav = $filter->getEavAttributes();
+         //$eav = $filter->attributes;
         $active = $filter->getActiveAttributes();
 
 
@@ -100,7 +100,11 @@ class ElasticController extends ApiController
             foreach ($brands as $brand) {
                 if (isset($result2[$brand['brand_id']])) {
                     if ($result2[$brand['brand_id']]) {
-                        $data['brand'][$brand['brand_id']] = $brand['counter'];
+                        $count = 0;
+                        if (isset($result2[$brand['brand_id']])) {
+                            $count = $result2[$brand['brand_id']];
+                        }
+                        $data['brand'][$brand['brand_id']] = $count;//$brand['counter'];
                     }
                 }
             }

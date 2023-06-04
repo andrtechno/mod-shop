@@ -56,7 +56,8 @@ var_dump($data);
 //$result2 = Yii::$app->elasticsearch->get('_cat/indices/'.Yii::$app->getModule('shop')->elasticIndex.'?v=true&s=index', '','');
 
 //$result = Yii::$app->elasticsearch->get('_cat/indices?v=true&s=index', '','');
-$result = Yii::$app->elasticsearch->get('_cat/indices/'.Yii::$app->getModule('shop')->elasticIndex, '','');
+//$result = Yii::$app->elasticsearch->get('_cat/indices/'.Yii::$app->getModule('shop')->elasticIndex, '','');
+$result = false;
 if($result){
     $explode = explode(' ',$result[0]); ?>
     <h1>Elastic index "<?= Yii::$app->getModule('shop')->elasticIndex; ?>" indicate</h1>
@@ -97,6 +98,7 @@ if($result){
             <?php
 
 }
+
 
 ?>
 

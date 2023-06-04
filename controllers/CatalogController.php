@@ -49,7 +49,6 @@ class CatalogController extends ElasticController
         $this->query->andWhere(['!=', "{$productModel::tableName()}.availability", $productModel::STATUS_ARCHIVE]);
         $this->query->published();
 
-
         $q['bool']['must'][] = ["term" => ["categories" => $this->dataModel->id]];
         $q['bool']['must_not'][] = ["term" => ["availability" => Product::STATUS_ARCHIVE]];
         $q['bool']['must'][] = ["term" => ["switch" => 1]];
@@ -262,6 +261,7 @@ class CatalogController extends ElasticController
                 'url' => $this->dataModel->getUrl()
             ];
         }*/
+
         if (Yii::$app->settings->get('shop', 'smart_bc')) {
             $smartData = $this->smartNames();
             $this->view->params['breadcrumbs'][] = [
@@ -284,7 +284,6 @@ class CatalogController extends ElasticController
             }
 
         }
-
 
         return $this->_render();
     }

@@ -101,6 +101,7 @@ class FilterElastic extends Component
 
     public function __construct(ProductQuery $query = null, $config = [])
     {
+        Yii::info(__METHOD__,'elastic');
         $this->elasticIndex = Yii::$app->getModule('shop')->elasticIndex;
         parent::__construct($config);
         $data = Yii::$app->request->post('filter');
@@ -228,8 +229,8 @@ class FilterElastic extends Component
 
         if (!empty($activeAttributes)) {
             foreach ($activeAttributes as $attributeName => $value) {
-                if (isset($this->eavAttributes[$attributeName])) {
-                    $attribute = $this->eavAttributes[$attributeName];
+                if (isset($this->attributes[$attributeName])) { //changed from eavAttributes to attributes, else eavAttributes many load getEavAttributes function
+                    $attribute = $this->attributes[$attributeName];
 
 
                     $menuItems[$attributeName] = [
@@ -314,12 +315,17 @@ class FilterElastic extends Component
             $opts[$opt['key']] = $opt['doc_count'];
         }
 
-
-        $this->getEavAttributes();
+//CMS::dump($search['aggregations']);die;
+        //for test
+        //$this->getEavAttributes();
 
         if ($this->route != 'shop/brand/view') {
             $brands = $this->getCategoryBrands();
             if ($brands) {
+                $optsBrands = [];
+                foreach ($search['aggregations']['brands']['buckets'] as $brnd) {
+                    $optsBrands[$brnd['key']] = $brnd['doc_count'];
+                }
                 $data['data']['brand'] = [
                     'title' => Yii::t('shop/default', 'FILTER_BY_BRAND'),
                     'key' => 'brand',
@@ -328,10 +334,15 @@ class FilterElastic extends Component
                 ];
 
                 foreach ($brands as $m) {
+
+                    $countBrand = (isset($optsBrands[$m['brand_id']])) ? $optsBrands[$m['brand_id']] : 0;
+
                     $data['data']['brand']['filters'][] = [
                         'title' => $m['name'],
-                        'count' => (int)$m['counter'],
-                        'count_text' => (int)$m['counter'],
+                        //'count' => (int)$m['counter'],
+                        //'count_text' => (int)$m['counter'],
+                        'count' => (int)$countBrand,
+                        'count_text' => (int)$countBrand,
                         'id' => $m['brand_id'],
                         //'key' => 'brand',
                         'slug' => $m['slug'],
@@ -401,7 +412,8 @@ class FilterElastic extends Component
     public function getAttributesCallback($test = [])
     {
 
-        $this->getEavAttributes();
+        //for test
+        //$this->getEavAttributes();
         $actives = $this->getActiveAttributes();
 
         $elasticQuery = $this->getElasticQueryCallback($test);
@@ -554,15 +566,16 @@ class FilterElastic extends Component
                 'size' => 9999
             ],
         ]);
-        $query->addAggregate('brands', [
-            'terms' => [
-                "field" => "brand_id",
-                "min_doc_count" => $min,
-                'size' => 9999
-            ],
+        if ($this->route != 'shop/brand/view') {
+            $query->addAggregate('brands', [
+                'terms' => [
+                    "field" => "brand_id",
+                    "min_doc_count" => $min,
+                    'size' => 9999
+                ],
 
-        ]);
-
+            ]);
+        }
         /*$query->addSuggester('my_suggest', [
             'text' => 'крос',
             'term' => [
@@ -717,7 +730,7 @@ class FilterElastic extends Component
         if (is_array($this->_eavAttributes))
             return $this->_eavAttributes;
 
-
+if($this->query){
         $queryCategoryTypes = clone $this->query; //Product::find();
         $queryCategoryTypes->select(Product::tableName() . '.type_id');
         $queryCategoryTypes->groupBy(Product::tableName() . '.type_id');
@@ -752,6 +765,7 @@ class FilterElastic extends Component
         foreach ($result as $attr) {
             $this->_eavAttributes[$attr->name] = $attr;
         }
+}
         return $this->_eavAttributes;
     }
 
@@ -841,6 +855,41 @@ class FilterElastic extends Component
             },
         ]);
 
+        /*$sub_query = clone $this->query;
+        $sub_query->andwhere('`brand_id`=' . Brand::tableName() . '.`id`');
+        $sub_query->select(['count(*)']);*/
+
+        $queryClone->andWhere('brand_id IS NOT NULL');
+        $queryClone->groupBy('brand_id');
+        $queryClone->addSelect([
+
+            Brand::tableName() . '.`name_' . Yii::$app->language . '` as name',
+            Brand::tableName() . '.slug as slug',
+            Brand::tableName() . '.image as image'
+        ]);
+        //@Todo если не кешировать очень долгий запрос получается"!!!!!!!
+        $brands = $queryClone
+            //->cache($this->cacheDuration*7)
+            ->createCommand()->queryAll();
+        // echo $queryClone->createCommand()->rawSql;die;
+        //print_r($brands);die;
+
+        return $brands;
+    }
+
+    public function getCategoryBrands_old()
+    {
+        Yii::info(__METHOD__,'elastic');
+        $this->query->orderBy = false;
+
+        $queryClone = clone $this->query;
+        $queryClone->addSelect(['brand_id', Product::tableName() . '.id']);
+        $queryClone->joinWith([
+            'brand' => function (\yii\db\ActiveQuery $query) {
+                $query->andWhere([Brand::tableName() . '.switch' => 1]);
+            },
+        ]);
+
         $sub_query = clone $this->query;
         $sub_query->andwhere('`brand_id`=' . Brand::tableName() . '.`id`');
         $sub_query->select(['count(*)']);
@@ -854,9 +903,11 @@ class FilterElastic extends Component
             Brand::tableName() . '.image as image'
         ]);
         //@Todo если не кешировать очень долгий запрос получается"!!!!!!!
-        $brands = $queryClone->cache($this->cacheDuration*7)->createCommand()->queryAll();
+        $brands = $queryClone
+            //->cache($this->cacheDuration*7)
+            ->createCommand()->queryAll();
         // echo $queryClone->createCommand()->rawSql;die;
-
+       // print_r($brands);die;
 
         return $brands;
     }
