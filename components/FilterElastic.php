@@ -26,7 +26,7 @@ use yii\elasticsearch\Query as ElasticQuery;
 class FilterElastic extends Component
 {
 
-    private $attributes;
+    private $attributesList;
     public $query;
     public $resultQuery;
     public $cacheDuration = 86400;
@@ -101,7 +101,8 @@ class FilterElastic extends Component
 
     public function __construct(ProductQuery $query = null, $config = [])
     {
-        Yii::info(__METHOD__,'elastic');
+
+        Yii::info(__METHOD__, 'elastic');
         $this->elasticIndex = Yii::$app->getModule('shop')->elasticIndex;
         parent::__construct($config);
         $data = Yii::$app->request->post('filter');
@@ -114,7 +115,7 @@ class FilterElastic extends Component
 
             $this->setResultRoute($this->route);
 
-            $this->attributes = $this->getEavAttributes();
+            $this->attributesList = $this->getEavAttributes();
             $this->activeAttributes = $this->getActiveAttributes();
 
 
@@ -229,8 +230,8 @@ class FilterElastic extends Component
 
         if (!empty($activeAttributes)) {
             foreach ($activeAttributes as $attributeName => $value) {
-                if (isset($this->attributes[$attributeName])) { //changed from eavAttributes to attributes, else eavAttributes many load getEavAttributes function
-                    $attribute = $this->attributes[$attributeName];
+                if (isset($this->attributesList[$attributeName])) { //changed from eavAttributes to attributes, else eavAttributes many load getEavAttributes function
+                    $attribute = $this->attributesList[$attributeName];
 
 
                     $menuItems[$attributeName] = [
@@ -404,8 +405,10 @@ class FilterElastic extends Component
             }
         }
         $data['totalCount'] = $elasticQuery->count();
+
+        //CMS::dump($data);die;
         //var_dump($this->route);die;
-        $data['url'] = 'asd';//ApiHelpers::url(Yii::$app->urlManager->addUrlParam('/' . $this->route, $urlParams));
+        //$data['url'] = 'asd';//ApiHelpers::url(Yii::$app->urlManager->addUrlParam('/' . $this->route, $urlParams));
         return $data;
     }
 
@@ -460,11 +463,8 @@ class FilterElastic extends Component
                 'filters' => []
             ];
             foreach ($attribute->getOptions()->all() as $option) {
-                $count = 0;
-                if (isset($opts[$attribute->name][$option->id])) {
-                    $count = $opts[$attribute->name][$option->id];
+                $count = (isset($opts[$attribute->name][$option->id])) ? $opts[$attribute->name][$option->id] : 0;
 
-                }
                 $countText = $count;
                 $value = "value_" . Yii::$app->language;
                 $data['data'][$attribute->name]['filters'][] = [
@@ -472,7 +472,7 @@ class FilterElastic extends Component
                     'count_text' => $countText,
                     'count' => (int)$count,
                     //'key' => $attribute->name,
-                    'lang' => Yii::$app->language,
+                    //'lang' => Yii::$app->language,
                     'id' => (int)$option->id,
                 ];
             }
@@ -513,8 +513,8 @@ class FilterElastic extends Component
     {
         $query = new ElasticQuery();
         $query->from($this->elasticIndex);
-
         $query->source('*');
+        $query->query = $this->elasticQuery;
         /*$query->runtimeMappings = [
             'price2' => [
                 "type" => "double",
@@ -547,7 +547,7 @@ class FilterElastic extends Component
             ]
         ];*/
 
-        $query->query = $this->elasticQuery;
+
         $query->addAggregate('min_price', [
             'min' => ["field" => "price"],
         ]);
@@ -611,7 +611,8 @@ class FilterElastic extends Component
 
         $slides = Yii::$app->request->post('slide');
         $filter = Yii::$app->request->post('filter');
-
+        $priceMax = $this->getMaxPrice();
+        $priceMin = $this->getMinPrice();
         //Отделяем бренд от общих рахактеристик
         $brands = [];
         if (isset($start['brand'])) {
@@ -660,15 +661,28 @@ class FilterElastic extends Component
                 if ($slides) {
                     foreach ($slides as $slide_key => $slide) {
                         if (isset($slide[0], $slide[1])) {
-
-                            $filtered['filters']['filters'][$attribute_key . ':' . $key]['bool']['filter'][] = [
-                                'range' => [
-                                    'price' => [
-                                        'gte' => (double)$slide[0],
-                                        'lte' => (double)$slide[1],
+                            if($slide_key == 'price'){
+                                if($slide[0] != $priceMin || $slide[1] != $priceMax){
+                                    $filtered['filters']['filters'][$attribute_key . ':' . $key]['bool']['filter'][] = [
+                                        'range' => [
+                                            'price' => [
+                                                'gte' => (double)$slide[0],
+                                                'lte' => (double)$slide[1],
+                                            ]
+                                        ]
+                                    ];
+                                }
+                            }else{
+                                $filtered['filters']['filters'][$attribute_key . ':' . $key]['bool']['filter'][] = [
+                                    'range' => [
+                                        'price' => [
+                                            'gte' => (double)$slide[0],
+                                            'lte' => (double)$slide[1],
+                                        ]
                                     ]
-                                ]
-                            ];
+                                ];
+                            }
+
                         }
                     }
                 }
@@ -710,6 +724,7 @@ class FilterElastic extends Component
                 //'script' => 'emit(params._source[\'price\'] * '.$currency_value.')'
             ],
         ];*/
+
 //print_r($filtered);die;
         if ($filtered) {
             $query->addAggregate('filtered', $filtered);
@@ -726,46 +741,48 @@ class FilterElastic extends Component
 
     public function getEavAttributes()
     {
-        Yii::info(__METHOD__,'elastic');
+        Yii::info(__METHOD__, 'elastic');
         if (is_array($this->_eavAttributes))
             return $this->_eavAttributes;
 
-if($this->query){
-        $queryCategoryTypes = clone $this->query; //Product::find();
-        $queryCategoryTypes->select(Product::tableName() . '.type_id');
-        $queryCategoryTypes->groupBy(Product::tableName() . '.type_id');
-        $queryCategoryTypes->distinct(true);
-        $queryCategoryTypes->orderBy = false;
+        if ($this->query) {
 
-        $typesIds = $queryCategoryTypes->createCommand()->queryColumn();
+            $queryCategoryTypes = clone $this->query; //Product::find();
+            $queryCategoryTypes->select(Product::tableName() . '.type_id');
+            $queryCategoryTypes->groupBy(Product::tableName() . '.type_id');
+            $queryCategoryTypes->distinct(true);
+            $queryCategoryTypes->orderBy = false;
 
-        //$attributeId
-        $query = Attribute::find();
-        //->where(['IN', '`types`.`type_id`', $typesIds])\
-        $query->where(['type' => [Attribute::TYPE_DROPDOWN, Attribute::TYPE_SELECT_MANY, Attribute::TYPE_CHECKBOX_LIST, Attribute::TYPE_RADIO_LIST, Attribute::TYPE_COLOR]]);
+            $typesIds = $queryCategoryTypes->createCommand()->queryColumn();
 
-        if ($typesIds) {
-            $query->andWhere(['type.type_id' => $typesIds]);
+            //$attributeId
+            $query = Attribute::find();
+            //->where(['IN', '`types`.`type_id`', $typesIds])\
+            $query->where(['type' => [Attribute::TYPE_DROPDOWN, Attribute::TYPE_SELECT_MANY, Attribute::TYPE_CHECKBOX_LIST, Attribute::TYPE_RADIO_LIST, Attribute::TYPE_COLOR]]);
+
+            if ($typesIds) {
+                $query->andWhere(['type.type_id' => $typesIds]);
+            }
+            if ($this->addAttributes) {
+                $query->andWhere([Attribute::tableName() . '.id' => $this->addAttributes]);
+            }
+            $query->distinct(true);
+            $query->useInFilter();
+            $query->sort();
+            $query->orderBy(false);
+
+            $query->joinWith(['types type', 'options']);
+
+            // echo $query->createCommand()->rawSql;
+            // die;
+            $result = $query->all();
+
+            $this->_eavAttributes = [];
+            foreach ($result as $attr) {
+                $this->_eavAttributes[$attr->name] = $attr;
+            }
         }
-        if ($this->addAttributes) {
-            $query->andWhere([Attribute::tableName() . '.id' => $this->addAttributes]);
-        }
-        $query->distinct(true);
-        $query->useInFilter();
-        $query->sort();
-        $query->orderBy(false);
 
-        $query->joinWith(['types type', 'options']);
-
-        // echo $query->createCommand()->rawSql;
-        // die;
-        $result = $query->all();
-
-        $this->_eavAttributes = [];
-        foreach ($result as $attr) {
-            $this->_eavAttributes[$attr->name] = $attr;
-        }
-}
         return $this->_eavAttributes;
     }
 
@@ -844,7 +861,7 @@ if($this->query){
     //быстрее работает.
     public function getCategoryBrands()
     {
-        Yii::info(__METHOD__,'elastic');
+        Yii::info(__METHOD__, 'elastic');
         $this->query->orderBy = false;
 
         $queryClone = clone $this->query;
@@ -879,7 +896,7 @@ if($this->query){
 
     public function getCategoryBrands_old()
     {
-        Yii::info(__METHOD__,'elastic');
+        Yii::info(__METHOD__, 'elastic');
         $this->query->orderBy = false;
 
         $queryClone = clone $this->query;
@@ -907,7 +924,7 @@ if($this->query){
             //->cache($this->cacheDuration*7)
             ->createCommand()->queryAll();
         // echo $queryClone->createCommand()->rawSql;die;
-       // print_r($brands);die;
+        // print_r($brands);die;
 
         return $brands;
     }

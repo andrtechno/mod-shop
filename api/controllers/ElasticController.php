@@ -70,40 +70,48 @@ class ElasticController extends ApiController
                     'created_at' => ['gte' => ($date_utc->getTimestamp() - (86400 * $config->label_expire_new))]
                 ]
             ];
+        } elseif ($route == 'shop/catalog/sales') {
+            //$elasticQuery['bool']['must'][] = ["term" => ["categories" => $param]];
+            //$query1->applyCategories([$param]);
+
+            $query1->sales();
+            $elasticQuery['bool']['must'][] = [
+                'range' => [
+                    'discount' => ['gt' => 0]
+                ]
+            ];
         }
 
-
+//print_r($elasticQuery);
         $filter = new FilterElastic($query1, [
             'route' => $this->route,
             'elasticQuery' => $elasticQuery
-
         ]);
-         $eav = $filter->getEavAttributes();
-         //$eav = $filter->attributes;
+        //$eav = $filter->getEavAttributes();
+
+        $eav2 = $filter->getAttributes();
+
         $active = $filter->getActiveAttributes();
 
 
-        $qw = $filter->getElasticQuery(1);
-        $startResult = $qw->search(null, ['size' => 0]);
+        //$qw = $filter->getElasticQuery(1);
+        //$startResult = $qw->search(null, ['size' => 0]);
         $data = [];
-        $result = [];
-        foreach ($startResult['aggregations']['options']['buckets'] as $i) {
-            $result[$i['key']] = $i['doc_count'];
+        $opts = [];
+        /*foreach ($startResult['aggregations']['options']['buckets'] as $i) {
+            $opts[$i['key']] = $i['doc_count'];
         }
         if ($route != 'shop/brand/view') {
             $brands = $filter->getCategoryBrands();
-            $result2 = [];
+            $optsBrands = [];
             foreach ($startResult['aggregations']['brands']['buckets'] as $i2) {
-                $result2[$i2['key']] = $i2['doc_count'];
+                $optsBrands[$i2['key']] = $i2['doc_count'];
             }
 
             foreach ($brands as $brand) {
-                if (isset($result2[$brand['brand_id']])) {
-                    if ($result2[$brand['brand_id']]) {
-                        $count = 0;
-                        if (isset($result2[$brand['brand_id']])) {
-                            $count = $result2[$brand['brand_id']];
-                        }
+                if (isset($optsBrands[$brand['brand_id']])) {
+                    if ($optsBrands[$brand['brand_id']]) {
+                        $count = (isset($optsBrands[$brand['brand_id']])) ? $optsBrands[$brand['brand_id']] : 0;
                         $data['brand'][$brand['brand_id']] = $count;//$brand['counter'];
                     }
                 }
@@ -111,14 +119,32 @@ class ElasticController extends ApiController
         }
         foreach ($eav as $attribute) {
             foreach ($attribute->getOptions()->all() as $option) {
-                if (isset($result[$option->id])) {
-                    if ($result[$option->id]) {
-                        $data[$attribute->name][$option->id] = $result[$option->id];
+                if (isset($opts[$option->id])) {
+                    //if ($opts[$option->id]) {
+                    $data[$attribute->name][$option->id] = $opts[$option->id];
+                    //}
+                }
+            }
+        }*/
+        //return $this->asJson($data);
+        if (isset($eav2['data'])) {
+            /*foreach ($eav2['data'] as $attribute) {
+                foreach ($attribute['filters'] as $option) {
+                    if (isset($opts[$option['id']])) {
+                        //if ($opts[$option->id]) {
+                        //$data[$attribute['key']][$option['id']] = $opts[$option['id']];
+                        //}
                     }
                 }
-
+            }*/
+            foreach ($eav2['data'] as $key_attribute => $attribute) {
+                foreach ($attribute['filters'] as $option) {
+                    $data[$attribute['key']][$option['id']] = $option['count'];
+                }
             }
+            //return $this->asJson($eav2['data']);
         }
+
 
         $result = $filter->getAttributesCallback($data);
 
@@ -130,6 +156,8 @@ class ElasticController extends ApiController
             $urlParams['slug'] = $brand->slug;
         } elseif ($route == 'shop/search/index') {
             $urlParams['q'] = $param;
+        } elseif ($route == 'shop/search/sales') {
+            //$urlParams['q'] = $param;
         }
 
         foreach ($active as $key => $p) {

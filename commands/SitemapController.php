@@ -93,7 +93,7 @@ class SitemapController extends ConsoleController
             $this->stdout("Generate sitemap file $file".PHP_EOL, Console::FG_PURPLE);
             file_put_contents($file, "");
         }
-        $this->stdout("Done! Memory_usage: ".memory_get_usage()."".PHP_EOL, Console::FG_GREEN);
+        $this->stdout("Done! Memory_usage: ".CMS::fileSize(memory_get_usage())."".PHP_EOL, Console::FG_GREEN);
 
 
         return ExitCode::OK;

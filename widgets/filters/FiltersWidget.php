@@ -95,14 +95,14 @@ class FiltersWidget extends Widget
         ]);
         // var category_id = {$this->model->id};
         /*$this->view->registerJs("
-       
+
             $(function () {
                 var selector = $('.card .card-collapse');
                 selector.collapse({
                     toggle: false
                 });
                 var panels = $.cookie();
-            
+
                 for (var panel in panels) {
                     if (panel) {
                         var panelSelector = $('#' + panel);
@@ -120,16 +120,16 @@ class FiltersWidget extends Widget
                         }
                     }
                 }
-            
+
                 selector.on('show.bs.collapse', function () {
                     var active = $(this).attr('id');
                     $(this).parent().find('.card-header').addClass('collapsed');
 
-                    
+
                     $.cookie(active, '1');
-            
+
                 });
-            
+
                 selector.on('hide.bs.collapse', function () {
                     var active = $(this).attr('id');
                     $(this).parent().find('.card-header').removeClass('collapsed');

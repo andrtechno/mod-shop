@@ -392,10 +392,10 @@ class CatalogController extends ElasticController
 
         $q['bool']['must_not'][] = ["term" => ["availability" => Product::STATUS_ARCHIVE]];
         $q['bool']['must'][] = ["term" => ["switch" => 1]];
-        $q['bool']['must'][] = ["term" => ["discount" => 1]];
+        $q['bool']['must'][] = ['range' => ['discount' => ['gt' => 0]]];
         // $this->query = $this->dataModel::find()->published()->isNotEmpty('discount');
 
-        $this->query = Product::find()->published()->sales();
+        $this->query = Product::find()->published()->andWhere(['!=', Product::tableName().".availability", Product::STATUS_ARCHIVE])->sales();
 
 
         $brands = [];

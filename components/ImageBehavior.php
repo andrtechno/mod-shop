@@ -142,14 +142,12 @@ class ImageBehavior extends \yii\base\Behavior
         $filename = $newfilename . '.' . pathinfo($url, PATHINFO_EXTENSION);
         $savePath = Yii::getAlias($saveTo);
 
-
         $saveTo = $savePath . DIRECTORY_SEPARATOR . $filename;
+
         //return file of exsts path
         if (file_exists($saveTo)) {
             return $saveTo;
         }
-
-        //$ftp = Yii::$app->getModule('shop')->ftpClient;
 
         try {
             $ftp = Yii::$app->getModule('shop')->ftpClient;
@@ -157,10 +155,12 @@ class ImageBehavior extends \yii\base\Behavior
                 $ftpPath = Yii::$app->getModule('shop')->ftp['path'] . "/uploads/store/product/{$this->owner->id}";
                 if (!$ftp->mkdir($ftpPath)) {
                     echo "Не удалось создать директорию";
+                    Yii::info('FTP: Не удалось создать директорию', 'forsage');
                 }
                 $handle = fopen($url, 'r');
                 $upload = $ftp->fput($ftpPath . "/" . $filename, $handle, FTP_IMAGE);
                 if (!$upload) {
+                    Yii::info('FTP: При загрузке произошла проблема', 'forsage');
                     echo "При загрузке произошла проблема";
                 }
                 fclose($handle);
@@ -178,7 +178,7 @@ class ImageBehavior extends \yii\base\Behavior
                     ->setUrl($url)
                     ->setOptions([
                         'sslVerifyPeer' => false,
-                        'timeout' => 8888
+                        'timeout' => 10000
                     ])
                     ->setOutputFile($handle)
                     ->send();
@@ -206,6 +206,7 @@ class ImageBehavior extends \yii\base\Behavior
             }
         } catch (\Exception $e) {
             Yii::info('img catch ' . $url, 'forsage');
+            return false;
         }
         return false;
     }

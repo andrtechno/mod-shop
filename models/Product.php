@@ -1378,7 +1378,7 @@ class Product extends ActiveRecord
                     /** @var \yii\db\ActiveQuery $model */
                     $model->select(['slug', 'updated_at', 'id']);
                     $model->where(['switch' => 1]);
-                    $model->andWhere(['<>', 'availability', self::STATUS_OUT_STOCK]);
+                    $model->andWhere(['<>', 'availability', self::STATUS_OUT_STOCK])->limit(1000);
                 },
                 'dataClosure' => function ($model) {
                     /** @var self $model */
@@ -1517,9 +1517,9 @@ class Product extends ActiveRecord
                     $result = ($product->hasDiscount) ? $product->discountPrice * $product->in_box : $product->price * $product->in_box;
                 }*/
                 if ($product->currency_id) {
-                    $result = Yii::$app->currency->convert($product->hasDiscount ? $product->discountPrice : $product->price, $product->currency_id);
+                    $result = Yii::$app->currency->convert($product->hasDiscount ? $product->discountPrice * $quantity : $product->price * $quantity, $product->currency_id);
                 } else {
-                    $result = ($product->hasDiscount) ? $product->discountPrice : $product->price;
+                    $result = ($product->hasDiscount) ? $product->discountPrice * $quantity : $product->price * $quantity;
                 }
             }
         }
