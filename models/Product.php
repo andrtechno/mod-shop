@@ -1378,7 +1378,7 @@ class Product extends ActiveRecord
                     /** @var \yii\db\ActiveQuery $model */
                     $model->select(['slug', 'updated_at', 'id']);
                     $model->where(['switch' => 1]);
-                    $model->andWhere(['<>', 'availability', self::STATUS_OUT_STOCK])->limit(1000);
+                    $model->andWhere(['<>', 'availability', self::STATUS_OUT_STOCK]);
                 },
                 'dataClosure' => function ($model) {
                     /** @var self $model */
