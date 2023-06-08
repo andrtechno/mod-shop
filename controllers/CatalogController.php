@@ -301,11 +301,6 @@ class CatalogController extends ElasticController
 
         $q['bool']['must_not'][] = ["term" => ["availability" => Product::STATUS_ARCHIVE]];
         $q['bool']['must'][] = ["term" => ["switch" => 1]];
-        $q2['bool']['must'][] = [
-            'range' => [
-                'timestamp' => ['gte' => "now-1d/d", 'lt' => "now/d"]
-            ]
-        ];
 
         $date_utc = new \DateTime("now", new \DateTimeZone("UTC"));
         $config = Yii::$app->settings->get('shop');
@@ -326,13 +321,14 @@ class CatalogController extends ElasticController
 
 
         // $categoriesResponse = Category::find()->dataTree(1, null, ['switch' => 1,'id'=>$categoriesIds],CMS::gen(100));
-        //  CMS::dump($categoriesResponse);die;
         $categoriesResponse = Category::find()->where(['id' => $categoriesIds])->all();
         if (Yii::$app->request->getQueryParam('category')) {
 
             $ex = explode(',', Yii::$app->request->getQueryParam('category'));
             $category = Category::findOne(Yii::$app->request->getQueryParam('category'));
 
+
+            $q['bool']['must'][] = ['term' => ['categories' => (int)Yii::$app->request->getQueryParam('category')]];
 
             $this->query->applyCategories($category);
             $this->currentUrl = Url::to(['/shop/catalog/new', 'category' => Yii::$app->request->getQueryParam('category')]);
@@ -359,7 +355,7 @@ class CatalogController extends ElasticController
         ]);
 
         //$this->filterQuery = clone $this->filter->resultQuery;
-        $this->currentQuery = clone $this->query;
+        //$this->currentQuery = clone $this->query;
         //$this->query->applyAttributes($this->filter->activeAttributes);
 
 
@@ -424,14 +420,19 @@ class CatalogController extends ElasticController
 
         }
 
+        if(Yii::$app->request->get('category')){
+            $q['bool']['must'][] = ['term' => ['categories' => Yii::$app->request->get('category')]];
+        }
 
         if ($brands || Yii::$app->request->get('brand')) {
             if (!$brands)
                 $brands = explode(',', Yii::$app->request->get('brand', ''));
             $this->query->applyBrands(array_unique($brands), 'orWhere');
         }
+
         if ($categories) {
             $this->query->applyCategories(array_unique($categories), 'orWhere');
+            $q['bool']['must'][] = ['terms' => ['categories' => array_unique($categories)]];
         }
 
         $this->currentUrl = Url::to(['/shop/catalog/sales']);
@@ -482,7 +483,7 @@ class CatalogController extends ElasticController
         $this->filter->resultQuery->sortAvailability();
 
         $this->filterQuery = clone $this->filter->resultQuery;
-        $this->currentQuery = clone $this->query;
+       // $this->currentQuery = clone $this->query;
 
 
         // $this->query->applyAttributes($this->filter->activeAttributes);

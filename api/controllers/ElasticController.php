@@ -70,18 +70,23 @@ class ElasticController extends ApiController
                     'created_at' => ['gte' => ($date_utc->getTimestamp() - (86400 * $config->label_expire_new))]
                 ]
             ];
+            if(Yii::$app->request->post('category')){
+                $query1->applyCategories([Yii::$app->request->post('category')]);
+                $elasticQuery['bool']['must'][] = ["term" => ["categories" => (int)Yii::$app->request->post('category')]];
+            }
         } elseif ($route == 'shop/catalog/sales') {
-            //$elasticQuery['bool']['must'][] = ["term" => ["categories" => $param]];
-            //$query1->applyCategories([$param]);
-
             $query1->sales();
+            if(Yii::$app->request->post('category')){
+                $query1->applyCategories([Yii::$app->request->post('category')]);
+                $elasticQuery['bool']['must'][] = ["term" => ["categories" => (int)Yii::$app->request->post('category')]];
+            }
             $elasticQuery['bool']['must'][] = [
                 'range' => [
                     'discount' => ['gt' => 0]
                 ]
             ];
         }
-
+//return 1;
 //print_r($elasticQuery);
         $filter = new FilterElastic($query1, [
             'route' => $this->route,
@@ -156,8 +161,15 @@ class ElasticController extends ApiController
             $urlParams['slug'] = $brand->slug;
         } elseif ($route == 'shop/search/index') {
             $urlParams['q'] = $param;
-        } elseif ($route == 'shop/search/sales') {
-            //$urlParams['q'] = $param;
+        } elseif ($route == 'shop/catalog/new') {
+            if(Yii::$app->request->post('category')){
+                $urlParams['category'] = Yii::$app->request->post('category');
+            }
+        } elseif ($route == 'shop/catalog/sales') {
+
+            if(Yii::$app->request->post('category')){
+                $urlParams['category'] = Yii::$app->request->post('category');
+            }
         }
 
         foreach ($active as $key => $p) {

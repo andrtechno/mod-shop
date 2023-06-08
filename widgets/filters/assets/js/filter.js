@@ -609,8 +609,8 @@ $(function () {
         showApply = false;  //not chika: set false
         $(this).trigger('filter:apply');
         $('.sidebar').trigger('filter:close');
-        $(".filter-to-left").toggleClass("active");
-        $(".bg-minicart").toggleClass("active");
+        //$(".filter-to-left").toggleClass("active");
+        //$(".bg-minicart").toggleClass("active");
         e.preventDefault();
     });
 

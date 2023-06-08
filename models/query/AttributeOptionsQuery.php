@@ -2,6 +2,7 @@
 
 namespace panix\mod\shop\models\query;
 
+use Yii;
 use panix\engine\traits\query\TranslateQueryTrait;
 use yii\db\ActiveQuery;
 use panix\engine\traits\query\DefaultQueryTrait;
@@ -26,5 +27,18 @@ class AttributeOptionsQuery extends ActiveQuery
             $this->addOrderBy(["{$tableName}.ordern" => SORT_DESC]);
         }
         parent::init();
+    }
+
+
+    public function sort($sort)
+    {
+        /** @var \yii\db\ActiveRecord $modelClass */
+        $modelClass = $this->modelClass;
+        $tableName = $modelClass::tableName();
+        if ($sort) {
+            $value = (Yii::$app->language == 'ru') ? "value" : "value_" . Yii::$app->language;
+            $this->orderBy([$value => $sort]);
+        }
+        return $this;
     }
 }

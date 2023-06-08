@@ -80,7 +80,7 @@ class SitemapController extends ConsoleController
     {
         ini_set('memory_limit', '3096M');
         $file = Yii::getAlias($this->rootDir.'/'.$this->sitemapFile);
-
+Yii::$app->db->createCommand('SET GLOBAL max_allowed_packet=134217728;')->execute();
 
         $this->stdout("Generate sitemap files.".PHP_EOL, Console::FG_PURPLE);
         $sitemap = Yii::$app->sitemap->queue();

@@ -152,10 +152,15 @@ class ImageBehavior extends \yii\base\Behavior
         try {
             $ftp = Yii::$app->getModule('shop')->ftpClient;
             if ($ftp) {
-                $ftpPath = Yii::$app->getModule('shop')->ftp['path'] . "/uploads/store/product/{$this->owner->id}";
-                if (!$ftp->mkdir($ftpPath)) {
-                    echo "Не удалось создать директорию";
-                    Yii::info('FTP: Не удалось создать директорию', 'forsage');
+                $ftpPath = Yii::$app->getModule('shop')->ftp['path'] . "/kvobuv/uploads/product/{$this->owner->id}";
+
+                $check = $ftp->mlsd($ftpPath);
+                if (!$check) {
+                    $createFolder = $ftp->mkdir($ftpPath);
+                    if (!$createFolder) {
+                        echo "Не удалось создать директорию";
+                        Yii::info('FTP: Не удалось создать директорию', 'forsage');
+                    }
                 }
                 $handle = fopen($url, 'r');
                 $upload = $ftp->fput($ftpPath . "/" . $filename, $handle, FTP_IMAGE);
@@ -165,6 +170,7 @@ class ImageBehavior extends \yii\base\Behavior
                 }
                 fclose($handle);
                 return $saveTo;
+
             } else {
                 if (!file_exists($savePath)) {
                     FileHelper::createDirectory($savePath, $mode = 0775, $recursive = true);

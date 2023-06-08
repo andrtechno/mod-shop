@@ -205,9 +205,8 @@ class DevController extends ConsoleController
         $mappings['properties']["options"] = ["type" => "keyword"];
         $mappings['properties']["categories"] = ["type" => "keyword"];
         $mappings['properties']["discount"] = ["type" => "integer"];
-        $mappings['properties']["ukraine"] = ["type" => "integer"];
-        $mappings['properties']["leather"] = ["type" => "integer"];
-        $mappings['properties']["price_calc"] = ["type" => "integer_range"];
+        //$mappings['properties']["price_calc"] = ["type" => "integer_range"];
+        $mappings['properties']["price_calc"] = ["type" => "double"];
 
         $command->createIndex($this->module->elasticIndex, [
             //'aliases' => [],

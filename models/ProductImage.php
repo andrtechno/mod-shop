@@ -248,7 +248,7 @@ class ProductImage extends ActiveRecord
 
         if (!$size) {
             if ($ftp) {
-                return "http://testftp.loc/uploads/store/product/{$this->product_id}/{$this->filename}";
+                return "http://testftp.loc/kvobuv/uploads/product/{$this->product_id}/{$this->filename}";
             }
             $path = Yii::getAlias("@uploads/store/product/{$this->product_id}/{$this->filename}");
             if (!file_exists($path) || !is_file($path)) {
