@@ -26,7 +26,9 @@ class Module extends WebModule implements BootstrapInterface
     public $elasticIndex = 'product';
     //public $filterClass = 'panix\mod\shop\components\FilterPro';
 
-
+    public $imgSizeMedium = '250x250'; //cart
+    public $imgSizeSmall = '50x50'; //admin panel
+    public $imgSizePreview = '400x400'; //catalog grid
     /**
      * @inheritdoc
      */

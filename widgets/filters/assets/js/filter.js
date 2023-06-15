@@ -20,11 +20,6 @@ var showApply = false;
 var showButtons = true;
 var deferreds = [];
 
-//const url = new URL('/catalog/clothes/tip_odagu/276', 'http://example.com');
-
-//console.log(url.searchParams.get('tip_odagu'));
-
-
 $(function () {
     var selector = $('#filters .card-collapse');
     selector.collapse({
@@ -116,10 +111,9 @@ function filterCallbackAjax(e, objects, target) {
                         $('#filter-' + filter.key + ' #li-' + data.id + ' input[type="checkbox"]:not(:checked)').attr('disabled', 'disabled');
                         $('#filter-' + filter.key + ' #li-' + data.id).addClass('disabled');
                         if (!selector.prop('checked')) {
-                            //    $('#filter-' + name + ' #li-' + data.id).hide();
+                            //$('#filter-' + name + ' #li-' + data.id).hide();
                         }else{
-
-                            //    $('#filter-' + name + ' #li-' + data.id).show();
+                            //$('#filter-' + name + ' #li-' + data.id).show();
                         }
                     }
                 });

@@ -244,6 +244,15 @@ class ProductImage extends ActiveRecord
 
     public function get($size = false, array $options = [])
     {
+
+        /*if ($size = 'preview') {
+            $size = Yii::$app->getModule('shop')->imgSizePreview;
+        } elseif ($size = 'medium') {
+            $size = Yii::$app->getModule('shop')->imgSizeMedium;
+        } elseif ($size = 'small') {
+            $size = Yii::$app->getModule('shop')->imgSizeSmall;
+        }*/
+
         $ftp = Yii::$app->getModule('shop')->ftpClient;
 
         if (!$size) {
@@ -293,9 +302,8 @@ class ProductImage extends ActiveRecord
                 $imagePath = "http://testftp.loc/uploads/store/product/{$this->product_id}/{$this->filename}";
 
 
-
             }
-                $img->load($imagePath);
+            $img->load($imagePath);
         } catch (\Exception $e) {
             return false;
         }
@@ -381,7 +389,7 @@ class ProductImage extends ActiveRecord
                 $ftpPath = Yii::$app->getModule('shop')->ftp['path'] . "/assets/product/{$this->product_id}/{$size}";
 
                 if (!$ftp->mkdir($ftpPath)) {
-                   // echo "Не удалось создать директорию";
+                    // echo "Не удалось создать директорию";
                 }
 
 
@@ -391,9 +399,9 @@ class ProductImage extends ActiveRecord
                 if (!$upload) {
                     echo "При загрузке произошла проблема";
                 }
-               die;
+                die;
                 return "http://testftp.loc/uploads/store/product/{$this->product_id}/{$this->filename}";
-            }else{
+            } else {
                 $img->save($imageAssetPath . DIRECTORY_SEPARATOR . $filename . '.' . $extension);
             }
 

@@ -110,17 +110,40 @@ class FilterElastic extends Component
 
         // var_dump($this->elasticQuery);die;
         if ($query) {
+
+
             $this->resultQuery = clone $query;
             $this->query = clone $query;
 
             $this->setResultRoute($this->route);
-
             $this->attributesList = $this->getEavAttributes();
             $this->activeAttributes = $this->getActiveAttributes();
 
-
             //Apply attributes
             $this->resultQuery->applyAttributes($this->activeAttributes);
+
+
+            //TEST!!!!!!! no stable.. Apply params active
+            /*if ($this->activeAttributes) {
+                $opsA = [];
+                $opsB = [];
+                foreach ($this->activeAttributes as $key=>$as) {
+                    if($key == 'brand'){
+                        foreach ($as as $o) {
+                            $opsB[] = $o;
+                        }
+                    }else{
+                        foreach ($as as $o) {
+                            $opsA[] = $o;
+                        }
+                    }
+                }
+                if($opsA)
+                    $this->elasticQuery['bool']['must'][] = ["terms" => ["options" => $opsA]];
+                if($opsB)
+                    $this->elasticQuery['bool']['must'][] = ["terms" => ["brand_id" => $opsB]];
+            }*/
+
 
             //Apply Brand's
             //$this->resultQuery->applyBrands($this->getActiveBrands());
@@ -279,7 +302,9 @@ class FilterElastic extends Component
     public function getAttributes()
     {
 
-        $active = $this->getActiveAttributes();
+        //$active = $this->getActiveAttributes();
+        $active = $this->activeAttributes;
+
         $urlParams = [];
         //$this->route = 'shop/catalog/view';
         if ($this->route === 'shop/catalog/view') {
@@ -341,9 +366,7 @@ class FilterElastic extends Component
                 ];
 
                 foreach ($brands as $m) {
-
                     $countBrand = (isset($optsBrands[$m['brand_id']])) ? $optsBrands[$m['brand_id']] : 0;
-
                     $data['data']['brand']['filters'][] = [
                         'title' => $m['name'],
                         //'count' => (int)$m['counter'],
@@ -355,6 +378,7 @@ class FilterElastic extends Component
                         'slug' => $m['slug'],
                         'image' => $m['image'],
                     ];
+
                     sort($data['data']['brand']['filters']);
                 }
                 $data['data']['brand']['filtersCount'] = count($data['data']['brand']['filters']);
@@ -392,6 +416,8 @@ class FilterElastic extends Component
                     $value = "value_" . Yii::$app->language;
                 }
 
+
+
                 $data['data'][$attribute->id]['filters'][] = [
                     'title' => $option->$value,
                     'count_text' => $countText,
@@ -401,7 +427,7 @@ class FilterElastic extends Component
                     // 'key' => $attribute->name, //neeed delete
                     'id' => (int)$option->id,
                 ];
-                // }
+
             }
 
 
@@ -427,7 +453,8 @@ class FilterElastic extends Component
 
         //for test
         //$this->getEavAttributes();
-        $actives = $this->getActiveAttributes();
+        //$actives = $this->getActiveAttributes();
+        $actives = $this->activeAttributes;
 
         $elasticQuery = $this->getElasticQueryCallback($test);
         $search = $elasticQuery->search(null, ['size' => 0]);
@@ -602,7 +629,8 @@ class FilterElastic extends Component
     public function getElasticQueryCallback(array $start = [])
     {
 
-        $active = $this->getActiveAttributes();
+        //$active = $this->getActiveAttributes();
+        $active = $this->activeAttributes;
 
         $query = new ElasticQuery();
         $query->from($this->elasticIndex);
@@ -890,9 +918,10 @@ class FilterElastic extends Component
             Brand::tableName() . '.image as image'
         ]);
         //@Todo если не кешировать очень долгий запрос получается"!!!!!!!
-        $brands = $queryClone
+
             //->cache($this->cacheDuration*7)
-            ->createCommand()->queryAll();
+         //->applyAttributes($this->activeAttributes)
+        $brands = $queryClone->createCommand()->queryAll();
         // echo $queryClone->createCommand()->rawSql;die;
         //print_r($brands);die;
 
