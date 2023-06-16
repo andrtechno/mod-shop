@@ -150,17 +150,18 @@ class ImageBehavior extends \yii\base\Behavior
         }
 
         try {
-            $ftp = Yii::$app->getModule('shop')->ftpClient;
+            //$ftp = Yii::$app->getModule('shop')->ftpClient;
+            $ftp=false;
             if ($ftp) {
-                $ftpPath = Yii::$app->getModule('shop')->ftp['path'] . "/kvobuv/uploads/product/{$this->owner->id}";
+                $ftpPath = Yii::$app->getModule('shop')->ftp['path'] . "/uploads/product/{$this->owner->id}";
 
                 $check = $ftp->mlsd($ftpPath);
                 if (!$check) {
                     $createFolder = $ftp->mkdir($ftpPath);
-                    if (!$createFolder) {
-                        echo "Не удалось создать директорию";
-                        Yii::info('FTP: Не удалось создать директорию', 'forsage');
-                    }
+                    //if (!$createFolder) {
+                    //    echo "Не удалось создать директорию!!";
+                    //    Yii::info('FTP: Не удалось создать директорию', 'forsage');
+                    //}
                 }
                 $handle = fopen($url, 'r');
                 $upload = $ftp->fput($ftpPath . "/" . $filename, $handle, FTP_IMAGE);
@@ -189,24 +190,31 @@ class ImageBehavior extends \yii\base\Behavior
                     ->setOutputFile($handle)
                     ->send();
                 fclose($handle);
-                //var_dump($ftp);die;
-                /*if ($ftp) {
-                    if ($ftp->alloc(filesize($saveTo), $result)) {
-                        echo "Место ".CMS::fileSize(filesize($saveTo))." на сервере успешно зарезервировано.";
-                        $upload = $ftp->put("testftp.loc/uploads/store/product/{$this->owner->id}/" . basename($saveTo), $saveTo, FTP_IMAGE);
-                        if ($upload) {
-                            echo "Файл успешно загружен\n";
-                            unlink($saveTo); //remove from site server
-                        } else {
-                            echo "При загрузке произошла проблема\n";
-                        }
-                    } else {
-                        echo "Не удалось зарезервировать место на сервере. Ответ сервера: $result\n";
-                    }
-                    return $saveTo;
-                }*/
 
                 if ($response->isOk) {
+
+                    $ftp = Yii::$app->getModule('shop')->ftpClient;
+                    if ($ftp) {
+                        $ftpPath = Yii::$app->getModule('shop')->ftp['path'] . "/uploads/product/{$this->owner->id}";
+
+                        $check = $ftp->mlsd($ftpPath);
+                        if (!$check) {
+                            $createFolder = $ftp->mkdir($ftpPath);
+                            //if (!$createFolder) {
+                            //    echo "Не удалось создать директорию!!";
+                            //    Yii::info('FTP: Не удалось создать директорию', 'forsage');
+                            //}
+                        }
+                        $handle = fopen($url, 'r');
+                        $upload = $ftp->fput($ftpPath . "/" . $filename, $handle, FTP_IMAGE);
+                        if (!$upload) {
+                            Yii::info('FTP: При загрузке произошла проблема', 'forsage');
+                            echo "При загрузке произошла проблема";
+                        }
+                        fclose($handle);
+                       // return $saveTo;
+                    }
+
                     return $saveTo;
                 }
             }
@@ -284,12 +292,11 @@ class ImageBehavior extends \yii\base\Behavior
         }
 
 
-        $ftp = Yii::$app->getModule('shop')->ftpClient;
-
+        /*$ftp = Yii::$app->getModule('shop')->ftpClient;
         if ($ftp) {
             if (is_object($file)) {
                 $target = fopen($file->tempName, 'r');
-                $upload = $ftp->fput("testftp.loc/uploads/store/product/{$image->product_id}/" . $pictureFileName, $target, FTP_IMAGE);
+                $upload = $ftp->fput(Yii::$app->getModule('shop')->ftp['host']."/".Yii::$app->getModule('shop')->ftp['path']."/uploads/product/{$image->product_id}/" . $pictureFileName, $target, FTP_IMAGE);
                 @fclose($target);
                 if ($upload) {
                     echo "Файл успешно загружен\n";
@@ -299,7 +306,7 @@ class ImageBehavior extends \yii\base\Behavior
 
                 return $image;
             }
-        }
+        }*/
 
         $createDir = BaseFileHelper::createDirectory($path, 0775, true);
 
@@ -319,6 +326,34 @@ class ImageBehavior extends \yii\base\Behavior
                 //   unlink($runtimePath);
             }
         }
+
+
+        /*$ftp = Yii::$app->getModule('shop')->ftpClient;
+        if ($ftp) {
+            //if (is_object($file)) {
+          //  $target = fopen($newAbsolutePath, 'r');
+            $target = $newAbsolutePath;
+var_dump($img->getImage());
+            try {
+                $upload = $ftp->put(Yii::$app->getModule('shop')->ftp['host']."/".Yii::$app->getModule('shop')->ftp['path']."/uploads/product/{$image->product_id}/" . $pictureFileName, $target, FTP_IMAGE);
+                //@fclose($target);
+                var_dump($upload);
+                if ($upload) {
+                    echo "Файл успешно загружен\n";
+                    // FileHelper::unlink($newAbsolutePath);
+                } else {
+                    echo "При загрузке произошла проблема\n";
+                }
+                //FileHelper::unlink($newAbsolutePath);
+                return $image;
+                //}
+            }catch (Exception $e){
+                print_r($e);die;
+            }
+
+        }*/
+
+
         //remove download file
         /*if ($isDownloaded) {
             if (file_exists($file)) {

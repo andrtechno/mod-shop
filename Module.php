@@ -21,13 +21,20 @@ class Module extends WebModule implements BootstrapInterface
     public $searchAttribute = 'sku';
     public $filterViewCurrent = '@shop/widgets/filters/views/current';
     public $viewList = ['grid', 'list'];
+
+
+    /**
+     * package nicolab/php-ftp-client
+     */
+    public $ftpClient;
     public $ftp = false;
+
     public $filterClass = 'panix\mod\shop\components\FilterLite';
     public $elasticIndex = 'product';
     //public $filterClass = 'panix\mod\shop\components\FilterPro';
 
-    public $imgSizeMedium = '250x250'; //cart
-    public $imgSizeSmall = '50x50'; //admin panel
+    public $imgSizeMedium = '250x250'; //goods list gallery,
+    public $imgSizeSmall = '100x100'; //admin panel, cart email
     public $imgSizePreview = '400x400'; //catalog grid
     /**
      * @inheritdoc
@@ -177,10 +184,6 @@ class Module extends WebModule implements BootstrapInterface
 
 
 
-    /**
-     * package nicolab/php-ftp-client
-     */
-    public $ftpClient;
 
     public function init()
     {
@@ -193,6 +196,10 @@ class Module extends WebModule implements BootstrapInterface
         }
         if ($this->ftp) {
             $this->ftpClient = new \FtpClient\FtpClient();
+            $this->ftpClient->connect($this->ftp['server']);
+            $this->ftpClient->login($this->ftp['login'], $this->ftp['password']);
+            $this->ftpClient->pasv(true);
+            //Yii::info('ftp login','info');
         }
     }
 
