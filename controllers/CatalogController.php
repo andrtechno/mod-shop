@@ -53,6 +53,10 @@ class CatalogController extends ElasticController
         $q['bool']['must_not'][] = ["term" => ["availability" => Product::STATUS_ARCHIVE]];
         $q['bool']['must'][] = ["term" => ["switch" => 1]];
 
+        //fix for jquery-ias
+        if(Yii::$app->request->isPjax){
+            Yii::$app->assetManager->bundles['yii\web\JqueryAsset'] = false;
+        }
         //TEST!!!! kvartal
         if (Yii::$app->request->get('tip_vzutta')) {
             //$q['bool']['must'][]=["term" => ["options" => Yii::$app->request->get('tip_vzutta')]];
@@ -314,7 +318,12 @@ class CatalogController extends ElasticController
 
         $categoriesIds = [];
         $categoriesQuery = clone $this->query;
-        $categoriesResult = $categoriesQuery->groupBy('main_category_id')->select(['main_category_id'])->asArray()->all();
+        $categoriesResult = $categoriesQuery
+            //->groupBy('main_category_id') //Explain Using filesort;
+            ->distinct(true) //REMOVE Explain Using filesort;
+            ->select(['main_category_id'])
+            ->asArray()
+            ->all();
         foreach ($categoriesResult as $c) {
             $categoriesIds[] = $c['main_category_id'];
         }
@@ -440,7 +449,12 @@ class CatalogController extends ElasticController
         $this->pageName = Yii::t('shop/default', 'DISCOUNT');
         $categoriesIds = [];
         $categoriesQuery = clone $this->query;
-        $categoriesResult = $categoriesQuery->groupBy('main_category_id')->select(['main_category_id'])->asArray()->all();
+        $categoriesResult = $categoriesQuery
+            //->groupBy('main_category_id') //Explain Using filesort;
+            ->distinct(true) //REMOVE Explain Using filesort;
+            ->select(['main_category_id'])
+            ->asArray()
+            ->all();
         foreach ($categoriesResult as $c) {
             $categoriesIds[] = $c['main_category_id'];
         }
