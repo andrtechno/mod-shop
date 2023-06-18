@@ -494,14 +494,6 @@ class Product extends ActiveRecord
         ];
     }
 
-    public function getUnits()
-    {
-        return [
-            1 => self::t('UNIT_THING'),
-            2 => self::t('UNIT_METER'),
-            3 => self::t('UNIT_BOX'),
-        ];
-    }
 
     public function getConditions()
     {
@@ -1122,6 +1114,7 @@ class Product extends ActiveRecord
         }
         return $price;
     }
+
     public static function unitsList()
     {
         return [
@@ -1131,6 +1124,7 @@ class Product extends ActiveRecord
             4 => self::t('UNITS', ['n' => 4]),
         ];
     }
+
     public function priceRange()
     {
         $price = $this->getFrontPrice();

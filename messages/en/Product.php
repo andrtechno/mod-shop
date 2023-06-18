@@ -23,6 +23,8 @@ return [
     'CONDITION_USED' => 'Used',
     'PRICE' => 'Price',
     'PRICE_PURCHASE' => 'Purchase price',
+    'IN_BOX' => 'In box',
+    'QUANTITY_MIN' => 'Minimum number of units to buy',
     'COMMENTS_COUNT' => 'Comments',
     'VIDEO' => 'Youtube video link',
     'AUTO_DECREASE_QUANTITY' => 'Automatically reduce quantity',

@@ -23,6 +23,8 @@ return [
     'CONDITION_USED' => 'Б/У',
     'PRICE' => 'Цена',
     'PRICE_PURCHASE' => 'Цена закупки',
+    'QUANTITY_MIN' => 'Минимальное количество единиц для покупки',
+    'IN_BOX' => 'В яшике',
     'COMMENTS_COUNT' => 'Комментариев',
     'VIDEO' => 'Видео Youtube ссылка',
     'AUTO_DECREASE_QUANTITY' => 'Автоматически уменьшать количество',

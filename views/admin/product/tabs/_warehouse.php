@@ -13,7 +13,8 @@ $form->field($model, 'supplier_id')->dropDownList(ArrayHelper::map(Supplier::fin
     'prompt' => html_entity_decode($model::t('SELECT_SUPPLIER_ID'))
 ]);
 ?>
-
+<?= $form->field($model, 'quantity_min')->textInput(['maxlength' => 255]) ?>
+<?= $form->field($model, 'in_box')->textInput(['maxlength' => 255]) ?>
 <?= $form->field($model, 'quantity')->textInput(['maxlength' => 255]) ?>
 <?= $form->field($model, 'discount')->textInput(['maxlength' => 255])->hint($model::t('HINT_DISCOUNT')) ?>
 <?php //echo $form->field($model, 'archive')->checkbox() ?>
