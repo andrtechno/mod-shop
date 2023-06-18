@@ -43,7 +43,7 @@ return [
     'SELECT_CURRENCY' => '{currency} (за замовчуванням)',
     'TEXT' => 'Опис товару',
     'UNITS' => '{n,selectordinal,=1{штука} =2{метр} =3{ящик} =4{упаковка} other{unknow unit.}}',
-    'UNITS_CUT' => '{n,selectordinal,=1{шт.} =2{метр} =3{ящ.} =4{у.} other{unknow unit.}}',
+    'UNITS_CUT' => '{n,selectordinal,=1{шт.} =2{метр} =3{ящ.} =4{уп.} other{unknow unit.}}',
     'UNIT' => 'Од. виміру ',
     'SUPPLIER_ID' => 'Постачальник',
     'BRAND_ID' => 'Виробник',

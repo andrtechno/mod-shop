@@ -53,6 +53,7 @@ class m180917_193213_shop_product extends Migration
             'width' => $this->decimal(15, 4),
             'height' => $this->decimal(15, 4),
             'quantity' => $this->smallInteger(2)->unsigned()->defaultValue(1),
+            'quantity_min' => $this->smallInteger(2)->unsigned()->defaultValue(1),
             'archive' => $this->boolean()->defaultValue(false),
             'availability' => $this->tinyInteger(1)->unsigned()->defaultValue(1),
             'auto_decrease_quantity' => $this->smallInteger(2)->unsigned()->defaultValue(0),
@@ -64,11 +65,13 @@ class m180917_193213_shop_product extends Migration
             'discount' => $this->string(5)->comment('Скидка'),
             'markup' => $this->string(5)->comment('Наценка'),
             'video' => $this->text(),
+            'in_box' => $this->integer()->unsigned()->defaultValue(1),
             'enable_comments' => $this->tinyInteger(1)->defaultValue(1)->unsigned(),
             'created_at' => $this->integer(),
             'updated_at' => $this->integer(),
             'switch' => $this->boolean()->defaultValue(true)->notNull(),
             'ordern' => $this->integer()->unsigned(),
+
         ]);
 
 
