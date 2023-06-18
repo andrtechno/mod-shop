@@ -6,6 +6,7 @@ use panix\engine\CMS;
 use panix\mod\shop\components\ExternalFinder;
 use Yii;
 use panix\engine\db\ActiveRecord;
+use yii\base\Exception;
 use yii\caching\TagDependency;
 use yii\db\ActiveQuery;
 use yii\helpers\ArrayHelper;
@@ -117,15 +118,22 @@ class ProductImage extends ActiveRecord
 
         $ftp = Yii::$app->getModule('shop')->ftpClient;
         if ($ftp) {
-            $ftp->connect(Yii::$app->getModule('shop')->ftp['server']);
-            $ftp->login(Yii::$app->getModule('shop')->ftp['login'], Yii::$app->getModule('shop')->ftp['password']);
-            $ftp->pasv(true);
+            try {
+                $ftp->connect(Yii::$app->getModule('shop')->ftp['server']);
+                $ftp->login(Yii::$app->getModule('shop')->ftp['login'], Yii::$app->getModule('shop')->ftp['password']);
+                $ftp->pasv(true);
 
-            $deleted = $ftp->delete(Yii::$app->getModule('shop')->ftp['path'] . "/uploads/product/{$this->product_id}/{$this->filename}");
+                $deleted = $ftp->delete("/uploads/product/{$this->product_id}/{$this->filename}");
 
-            $assetsList = $ftp->nlist(Yii::$app->getModule('shop')->ftp['path'] . "/assets/product/{$this->product_id}");
-            foreach ($assetsList as $folder) {
-                $deleted = $ftp->delete("{$folder}/{$this->filename}");
+                $assetsList = @$ftp->nlist("/assets/product/{$this->product_id}");
+                if ($assetsList) {
+                    unset($assetsList[0], $assetsList[1]); //remove list ".."
+                    foreach ($assetsList as $folder) {
+                        $deleted = $ftp->delete("{$folder}/{$this->filename}");
+                    }
+                }
+            } catch (Exception $e) {
+
             }
         }
 
@@ -164,21 +172,23 @@ class ProductImage extends ActiveRecord
         }
 
 
-
         if (!$size) {
             if ($ftp) {
-                return $module->ftp['host'] . "/" . $module->ftp['path'] . "/uploads/product/{$this->product_id}/{$this->filename}";
+                return $module->ftp['host'] . "/uploads/product/{$this->product_id}/{$this->filename}";
             }
             $path = Yii::getAlias("@uploads/store/product/{$this->product_id}/{$this->filename}");
             if (!file_exists($path) || !is_file($path)) {
                 return $this->getNoImageUrl();
             }
             return "/uploads/store/product/{$this->product_id}/{$this->filename}";
-        }else{
+        } else {
             if ($ftp) {
-                return $module->ftp['host'] . "/" . $module->ftp['path'] . "/assets/product/{$this->product_id}/{$size}/{$this->filename}";
+                return $module->ftp['host'] . "/assets/product/{$this->product_id}/{$size}/{$this->filename}";
             }
         }
+
+        return $this->createVersion($size, $options);
+
         $configApp = Yii::$app->settings->get('shop');
         if (!isset($options['watermark'])) {
             $options['watermark'] = $configApp->watermark_enable;
@@ -299,7 +309,7 @@ class ProductImage extends ActiveRecord
 //var_dump($img->getImage());die;
                 $upload = $ftp->fput($ftpPath . "/" . $filename . '.' . $extension, $img->getImage(), FTP_IMAGE);
                 if (!$upload) {
-                    echo "При загрузке произошла проблема";
+                    echo "При загрузке произошла проблема22222";
                 }
 
                 return "http://testftp.loc/uploads/store/product/{$this->product_id}/{$this->filename}";
@@ -330,4 +340,138 @@ class ProductImage extends ActiveRecord
 
     }
 
+
+    public function createVersion($size = false, array $options = [])
+    {
+        $module = Yii::$app->getModule('shop');
+        $ftp = $module->ftpClient;
+
+        /*$url = '';
+        if(in_array($size,['small','medium','preview'])){
+            $url = Yii::$app->getModule('shop')->ftp['host'] . "/" . Yii::$app->getModule('shop')->ftp['path'] . "/uploads/product/{$this->product_id}/{$this->filename}";
+            if ($ftp) {
+                return $url;
+            }
+        }*/
+        //$prefix = '';
+        if ($size == 'preview') {
+            //$prefix = 'preview_';
+            $size = $module->imgSizePreview;
+        } elseif ($size == 'medium') {
+            //$prefix = 'medium_';
+            $size = $module->imgSizeMedium;
+        } elseif ($size == 'small') {
+            //$prefix = 'small_';
+            $size = $module->imgSizeSmall;
+        }
+
+
+        $configApp = Yii::$app->settings->get('shop');
+        if (!isset($options['watermark'])) {
+            $options['watermark'] = $configApp->watermark_enable;
+        }
+        $sizes = explode('x', $size);
+
+        $isSaveFile = false;
+        if (isset($sizes[0]) && isset($sizes[1])) {
+            $imageAssetPath = Yii::getAlias("@app/web/assets/product/{$this->product_id}/{$size}");
+            $assetPath = "/assets/product/{$this->product_id}/{$size}";
+
+        } else {
+            $imageAssetPath = Yii::getAlias("@app/web/assets/product/{$this->product_id}");
+            $assetPath = '/assets/product/' . $this->product_id;
+        }
+        $imagePath = Yii::getAlias("@uploads/store/product/{$this->product_id}/{$this->filename}");
+        if (!file_exists($imagePath) || !is_file($imagePath)) {
+            $imagePath = $this->getNoImagePath();
+            $this->existImage = false;
+        }
+
+        /** @var $img \panix\engine\components\ImageHandler */
+        try {
+            $img = Yii::$app->img;
+            // echo $imagePath;die;
+            $img->load($imagePath);
+        } catch (\Exception $e) {
+            return false;
+        }
+
+        //echo basename($img->getFileName());
+        $fileInfo = explode('.', basename($img->getFileName()));
+        $filename = $fileInfo[0];
+        if (isset($options['prefix'])) {
+            $filename .= '_' . md5(serialize($options));
+        }
+        $extension = $fileInfo[1];
+
+        if (!file_exists($imageAssetPath . DIRECTORY_SEPARATOR . $filename . '.' . $extension)) {
+            $isSaveFile = true;
+            FileHelper::createDirectory($imageAssetPath, 0777);
+        } else {
+            return $assetPath . '/' . $filename . '.' . $extension;
+        }
+
+
+        if ($sizes) {
+            $img->resize((!empty($sizes[0])) ? $sizes[0] : 0, (!empty($sizes[1])) ? $sizes[1] : 0);
+        }
+        if (in_array(mb_strtolower($this->getExtension()), ['png', 'svg']) || !$this->existImage) {
+            $options['watermark'] = false;
+        }
+        if (isset($options['grayscale'])) {
+            $img->grayscale();
+        }
+        if (isset($options['text'])) {
+            $img->text($options['text'], Yii::getAlias('@vendor/panix/engine/assets/assets/fonts') . '/Exo2-Light.ttf', $img->getWidth() / 100 * 5, [114, 114, 114], $img::POS_CENTER_BOTTOM, 0, $img->getHeight() / 100 * 5, 0, 0);
+        }
+
+        if ($options['watermark'] && $this->existImage) {
+
+            $offsetX = isset($configApp->attachment_wm_offsetx) ? $configApp->attachment_wm_offsetx : 10;
+            $offsetY = isset($configApp->attachment_wm_offsety) ? $configApp->attachment_wm_offsety : 10;
+            $corner = isset($configApp->attachment_wm_corner) ? $configApp->attachment_wm_corner : 4;
+            $path = Yii::getAlias('@uploads') . DIRECTORY_SEPARATOR . $configApp->attachment_wm_path;
+
+            $wm_width = 0;
+            $wm_height = 0;
+            if (file_exists($path)) {
+                if ($imageInfo = @getimagesize($path)) {
+                    $wm_width = (float)$imageInfo[0] + $offsetX;
+                    $wm_height = (float)$imageInfo[1] + $offsetY;
+                }
+
+                $toWidth = min($img->getWidth(), $wm_width);
+
+                if ($wm_width > $img->getWidth() || $wm_height > $img->getHeight()) {
+                    $wm_zoom = round($toWidth / $wm_width / 3, 1);
+                } else {
+                    $wm_zoom = false;
+                }
+
+                if (!($img->getWidth() <= $wm_width) || !($img->getHeight() <= $wm_height) || ($corner != 10)) {
+                    $img->watermark($path, $offsetX, $offsetY, $corner, $wm_zoom);
+                }
+
+            }
+        }
+
+        if ($isSaveFile) {
+            $versionPath = $imageAssetPath . DIRECTORY_SEPARATOR . $this->filename;
+            $img->save($versionPath);
+            if ($ftp) {
+                $ftpPath = "/assets/product/{$this->product_id}";
+                if (!$ftp->mkdir($ftpPath)) {
+                    //echo "Не удалось создать директорию";
+                }
+                $ftpPath = "/assets/product/{$this->product_id}/{$size}";
+                if (!$ftp->mkdir($ftpPath)) {
+                    //echo "Не удалось создать директорию";
+                }
+                $upload = $ftp->put("$ftpPath/{$this->filename}", $versionPath, FTP_IMAGE);
+            }
+        }
+        return $assetPath . '/' . basename($img->getFileName());
+        // return $img;
+
+    }
 }

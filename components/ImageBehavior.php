@@ -151,7 +151,7 @@ class ImageBehavior extends \yii\base\Behavior
 
         try {
             //$ftp = Yii::$app->getModule('shop')->ftpClient;
-            $ftp=false;
+            $ftp = false;
             if ($ftp) {
                 $ftpPath = Yii::$app->getModule('shop')->ftp['path'] . "/uploads/product/{$this->owner->id}";
 
@@ -167,7 +167,7 @@ class ImageBehavior extends \yii\base\Behavior
                 $upload = $ftp->fput($ftpPath . "/" . $filename, $handle, FTP_IMAGE);
                 if (!$upload) {
                     Yii::info('FTP: При загрузке произошла проблема', 'forsage');
-                    echo "При загрузке произошла проблема";
+                    echo "При загрузке произошла проблема3333";
                 }
                 fclose($handle);
                 return $saveTo;
@@ -195,24 +195,25 @@ class ImageBehavior extends \yii\base\Behavior
 
                     $ftp = Yii::$app->getModule('shop')->ftpClient;
                     if ($ftp) {
-                        $ftpPath = Yii::$app->getModule('shop')->ftp['path'] . "/uploads/product/{$this->owner->id}";
+                        $ftpPath = "/uploads/product/{$this->owner->id}";
 
                         $check = $ftp->mlsd($ftpPath);
                         if (!$check) {
                             $createFolder = $ftp->mkdir($ftpPath);
-                            //if (!$createFolder) {
-                            //    echo "Не удалось создать директорию!!";
-                            //    Yii::info('FTP: Не удалось создать директорию', 'forsage');
-                            //}
+
+                            if (!$createFolder) {
+                                echo "Не удалось создать директорию!!";
+                            }
                         }
+                        //echo $ftpPath;die;
                         $handle = fopen($url, 'r');
                         $upload = $ftp->fput($ftpPath . "/" . $filename, $handle, FTP_IMAGE);
                         if (!$upload) {
                             Yii::info('FTP: При загрузке произошла проблема', 'forsage');
-                            echo "При загрузке произошла проблема";
+                            echo "При загрузке произошла проблема4444";
                         }
                         fclose($handle);
-                       // return $saveTo;
+                        // return $saveTo;
                     }
 
                     return $saveTo;
@@ -277,6 +278,7 @@ class ImageBehavior extends \yii\base\Behavior
             return false;
         }
 
+
         if (count($image->getErrors()) > 0) {
 
             $ar = array_shift($image->getErrors());
@@ -309,7 +311,7 @@ class ImageBehavior extends \yii\base\Behavior
         }*/
 
         $createDir = BaseFileHelper::createDirectory($path, 0775, true);
-
+        $ftp = Yii::$app->getModule('shop')->ftpClient;
         /** @var ImageHandler $img */
         if (is_object($file)) {
             $file->saveAs($newAbsolutePath);
@@ -324,6 +326,23 @@ class ImageBehavior extends \yii\base\Behavior
             }
             if ($img->save($newAbsolutePath)) {
                 //   unlink($runtimePath);
+
+
+                if ($ftp) {
+
+                    $ftpPath = "/uploads/product/{$image->product_id}";
+                    if (!$ftp->mkdir($ftpPath)) {
+                        //echo "Не удалось создать директорию";
+                    }
+                    $upload = $ftp->put("$ftpPath/{$image->filename}", $newAbsolutePath, FTP_IMAGE);
+
+
+                    $original2 = $image->createVersion('small', ['watermark' => false]);
+                    $original3 = $image->createVersion('medium', ['watermark' => false]);
+                    $original3 = $image->createVersion('preview', ['watermark' => false]);
+                    FileHelper::unlink($newAbsolutePath);
+                }
+
             }
         }
 
@@ -383,7 +402,6 @@ var_dump($img->getImage());
         if (!$img) {
             return NULL;
         }
-
 
         return $img;
     }

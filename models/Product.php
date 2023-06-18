@@ -1246,8 +1246,10 @@ class Product extends ActiveRecord
 
         $ftp = Yii::$app->getModule('shop')->ftpClient;
         if($ftp){
-            $deleted2 = $ftp->rmdir(Yii::$app->getModule('shop')->ftp['path'] . "/uploads/product/{$this->id}");
-            $deleted2 = $ftp->rmdir(Yii::$app->getModule('shop')->ftp['path'] . "/assets/product/{$this->id}");
+            //$list  = $ftp->nlist('');
+            //var_dump($list);die;
+            $deleted2 = $ftp->rmdir("/uploads/product/{$this->id}");
+            $deleted2 = $ftp->rmdir("/assets/product/{$this->id}");
         }
         parent::afterDelete();
     }
