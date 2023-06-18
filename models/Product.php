@@ -1456,15 +1456,10 @@ class Product extends ActiveRecord
                 //}
             } else {
 
-                $box = $product->eav_par_v_asiku;
-                $in_box = 0;
-                if (isset($box)) {
-                    $in_box = $box->value;
-                }
                 if ($product->currency_id) {
-                    $result = Yii::$app->currency->convert($product->hasDiscount ? $product->discountPrice * $in_box : $product->price * $in_box, $product->currency_id);
+                    $result = Yii::$app->currency->convert($product->hasDiscount ? $product->discountPrice : $product->price, $product->currency_id);
                 } else {
-                    $result = ($product->hasDiscount) ? $product->discountPrice * $in_box : $product->price * $in_box;
+                    $result = ($product->hasDiscount) ? $product->discountPrice : $product->price;
                 }
 
             }
