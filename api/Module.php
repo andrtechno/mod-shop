@@ -16,7 +16,8 @@ class Module extends \yii\base\Module
     //public $controllerNamespace = 'panix\mod\shop\api\controllers';
     public $host = false;
     public $ips = false;
-
+    public $filterClass = 'panix\mod\shop\components\FilterPro';
+    
     public function init()
     {
         parent::init();
