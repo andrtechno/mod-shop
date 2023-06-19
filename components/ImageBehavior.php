@@ -243,7 +243,6 @@ class ImageBehavior extends \yii\base\Behavior
         $image->product_id = $this->owner->primaryKey;
         $image->filename = $pictureFileName;
         $image->alt_title = $alt;
-        $image->file_url = $file;
 
         //$image->urlAlias = $this->getAlias($image);
 
@@ -401,7 +400,6 @@ class ImageBehavior extends \yii\base\Behavior
             $allImg->save();
         }
         $this->owner->image = $img->filename;
-        //$this->owner->image_url = $img->file_url;
         $this->owner->save(false);
     }
 

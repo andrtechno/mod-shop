@@ -21,13 +21,16 @@ class Module extends WebModule implements BootstrapInterface
     public $filterViewCurrent = '@shop/widgets/filtersnew/views/current';
     public $viewList = ['grid', 'list'];
     public $filterClass = 'panix\mod\shop\components\FilterPro';
-    //public $filterClass = 'panix\mod\shop\components\FilterPro';
-    public $ftp = false;
 
     /**
      * package nicolab/php-ftp-client
      */
     public $ftpClient;
+    public $ftp = false;
+
+    public $imgSizeMedium = '300x300'; //goods list gallery,
+    public $imgSizeSmall = '100x100'; //admin panel, cart email
+    public $imgSizePreview = '400x400'; //catalog grid
 
     /**
      * @inheritdoc
@@ -144,30 +147,34 @@ class Module extends WebModule implements BootstrapInterface
 
     public function getAllPaths()
     {
+        try {
+            $tableName = Category::tableName();
+            $dependency = new \yii\caching\DbDependency(['sql' => "SELECT MAX(updated_at) FROM {$tableName}"]);
+            $allPaths = \Yii::$app->cache->get('CategoryUrlRule');
+            if ($allPaths === false) {
+                $items = (new \yii\db\Query())
+                    ->select(['id', 'full_path'])
+                    ->andWhere('id!=:id', [':id' => 1])
+                    ->from($tableName)
+                    ->all();
 
-        $tableName = Category::tableName();
-        $dependency = new \yii\caching\DbDependency(['sql' => "SELECT MAX(updated_at) FROM {$tableName}"]);
-        $allPaths = \Yii::$app->cache->get('CategoryUrlRule');
-        if ($allPaths === false) {
-            $items = (new \yii\db\Query())
-                ->select(['id', 'full_path'])
-                ->andWhere('id!=:id', [':id' => 1])
-                ->from($tableName)
-                ->all();
+                $allPaths = [];
+                foreach ($items as $item) {
+                    $allPaths[$item['id']] = $item['full_path'];
+                }
+                // Sort paths by length.
+                uasort($allPaths, function ($a, $b) {
+                    return strlen($b) - strlen($a);
+                });
 
-            $allPaths = [];
-            foreach ($items as $item) {
-                $allPaths[$item['id']] = $item['full_path'];
+                \Yii::$app->cache->set('CategoryUrlRule', $allPaths, Yii::$app->db->queryCacheDuration, $dependency);
+
             }
-            // Sort paths by length.
-            uasort($allPaths, function ($a, $b) {
-                return strlen($b) - strlen($a);
-            });
-
-            \Yii::$app->cache->set('CategoryUrlRule', $allPaths, Yii::$app->db->queryCacheDuration, $dependency);
+            return $allPaths;
+        } catch (Exception $exception) {
+            return [];
         }
 
-        return $allPaths;
     }
 
     public function init()
@@ -177,6 +184,13 @@ class Module extends WebModule implements BootstrapInterface
         }
         if (!(Yii::$app instanceof \yii\console\Application)) {
             parent::init();
+        }
+        if ($this->ftp) {
+            $this->ftpClient = new \FtpClient\FtpClient();
+            $this->ftpClient->connect($this->ftp['server']);
+            $this->ftpClient->login($this->ftp['login'], $this->ftp['password']);
+            $this->ftpClient->pasv(true);
+            //Yii::info('ftp login','info');
         }
     }
 

@@ -354,7 +354,7 @@ class Product extends ActiveRecord
      * @param string $size Default value 50x50.
      * @return string
      */
-    public function renderGridImage($size = '50x50')
+    public function renderGridImage($size = 'small')
     {
         /** @var ImageBehavior|ProductImage $mainImage */
 
@@ -378,7 +378,7 @@ class Product extends ActiveRecord
         $result['url'] = $img;
         $result['title'] = $this->name;
 
-        return Html::a(Html::img($result['url'], ['alt' => $this->name, 'class' => 'img-thumbnail']), $result['big_url'], ['title' => $this->name, 'data-fancybox' => 'gallery']);
+        return Html::a(Html::img($result['url'], ['alt' => $this->name, 'class' => 'img-thumbnail','style'=>'max-width:50px']), $result['big_url'], ['title' => $this->name, 'data-fancybox' => 'gallery']);
     }
 
 
