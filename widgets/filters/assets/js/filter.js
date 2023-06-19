@@ -208,21 +208,21 @@ function filterCallback(e, objects, target) {
                 }
                 $.each(filters.filters, function (index, data) {
                     var count = data.count;
-                    var selector = $('#filter_' + name + '_' + data.queryParam);
+                    var selector = $('#filter_' + name + '_' + data.id);
 
                     if (filters.changeCount) {
                         if (data.count) {
                             if (selector.prop('checked')) {
-                                $('#filter-count-' + name + '-' + data.queryParam).html('');
+                                $('#filter-count-' + name + '-' + data.id).html('');
                             } else {
-                                $('#filter-count-' + name + '-' + data.queryParam).html(data.count_text);
+                                $('#filter-count-' + name + '-' + data.id).html(data.count);
                             }
 
                             selector.removeAttr('disabled');
                             selector.closest('li').removeClass('disabled');
                         } else {
                             if (!selector.prop('checked')) {
-                                $('#filter-count-' + name + '-' + data.queryParam).html(data.count_text);
+                                $('#filter-count-' + name + '-' + data.id).html(data.count);
                             } else {
                                 //Если 0 и чекнутый то Анчекаем и дизайблем.
                                 selector.closest('li').removeClass('disabled');
@@ -263,6 +263,7 @@ function filter_ajax(e, objects, sort = false) {
 
     delete objects.route;
     delete objects.param;
+	delete objects.cache;
     delete objects['search-filter'];
     delete objects['attributes[]'];
     //if (url === undefined) {
@@ -485,9 +486,9 @@ $(function () {
     });
 
 
-    $(document).on('filter:open', '.sidebar', function (e) {
+    $('.sidebar').on('filter:open', function (e) {
         console.debug('Event: ' + e.type, checkedAll);
-        $(this).addClass('active');
+        $(this).toggleClass('active');
         $('body').addClass('noscroll');
 
         if ($('#filter-current ul li').length) {
@@ -498,9 +499,9 @@ $(function () {
 
     });
 
-    $(document).on('filter:close', '.sidebar', function (e) {
+    $('.sidebar').on('filter:close', function (e) {
         console.debug('Event: ' + e.type);
-        $(this).removeClass('active');
+        $(this).toggleClass('active');
         $('body').removeClass('noscroll');
     });
 
@@ -631,7 +632,7 @@ $(function () {
         // $('#filter-apply').hide();
         showApply = false;  //not chika: set false
         $(this).trigger('filter:apply');
-        $(this).trigger('filter:close');
+        $('.sidebar').trigger('filter:close');
         $(".filter-to-left").toggleClass("active");
         $(".bg-minicart").toggleClass("active");
         e.preventDefault();

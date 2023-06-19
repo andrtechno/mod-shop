@@ -322,7 +322,7 @@ class FilterPro extends Component
 
                 //$count=0;
                 if (isset($active[$attribute['key']])) {
-                    if (in_array($option['queryParam'], $active[$attribute['key']])) {
+                    if (in_array($option['id'], $active[$attribute['key']])) {
                         //$count = $this->countAttributeProductsCallback($attribute, $option);
                     }
 
@@ -341,7 +341,7 @@ class FilterPro extends Component
                     'count' => (int)$count,
                     'count_text' => $countText,
                     'key' => $option['key'],
-                    'queryParam' => (int)$option['queryParam'],
+                    'id' => (int)$option['id'],
                 ];
                 if ($count > 0)
                     $filtersCount++;
@@ -361,7 +361,7 @@ class FilterPro extends Component
     {
 
 
-        $data = Yii::$app->cache->get($this->cacheKey . '-attrs-'.Yii::$app->language);
+        $data = Yii::$app->cache->get($this->cacheKey . '-attrs');
         if ($data === false) {
             //$data = [];
             foreach ($this->_eavAttributes as $attribute) {
@@ -375,9 +375,7 @@ class FilterPro extends Component
 
                 $totalCount = 0;
                 $filtersCount = 0;
-                foreach ($attribute->getOptions()
-                             ->cache(0, new TagDependency(['tags' => 'attribute-' . $attribute->name]))
-                             ->all() as $option) {
+                foreach ($attribute->getOptions()->cache(0, new TagDependency(['tags' => 'attribute-' . $attribute->name]))->all() as $option) {
                     $count = $this->countRootAttributeProducts($attribute, $option);
 
 
@@ -390,7 +388,7 @@ class FilterPro extends Component
                             'data' => ($option->data) ? Json::decode($option->data) : [],
                             'abbreviation' => ($attribute->abbreviation) ? $attribute->abbreviation : null,
                             'key' => $attribute->name,
-                            'queryParam' => (int)$option->id,
+                            'id' => (int)$option->id,
                         ];
                     }
                 }
@@ -489,7 +487,7 @@ class FilterPro extends Component
 
         $newData = [];
         //$newData[$attribute->name][] = $option->id;
-        $newData[$attribute['key']][] = $option['queryParam'];
+        $newData[$attribute['key']][] = $option['id'];
         foreach ($this->activeAttributes as $key => $p) {
             if ($key != $attribute['key']) {
                 $newData[$key] = $p;
@@ -516,7 +514,7 @@ class FilterPro extends Component
 
         /** @var EavQueryTrait|ActiveQuery $model */
         $model->getFindByEavAttributes2($newData);
-        $model->cache(0, new TagDependency(['tags' => 'attribute-' . $attribute['key'] . '-' . $option['queryParam']]));
+        $model->cache(0, new TagDependency(['tags' => 'attribute-' . $attribute['key'] . '-' . $option['id']]));
         return $model->createCommand()->queryScalar();
     }
 
@@ -666,7 +664,7 @@ class FilterPro extends Component
                 'count' => (int)$m['counter'],
                 'count_text' => (int)$m['counter'],
                 'key' => 'brand',
-                'queryParam' => (int)$m['brand_id'],
+                'id' => (int)$m['brand_id'],
                 'slug' => $m['slug'],
                 'image' => $m['image'],
             ];
@@ -724,7 +722,7 @@ class FilterPro extends Component
                 'count' => (int)$m['counter'],
                 'count_text' => (int)$m['counter'],
                 'key' => 'brand',
-                'queryParam' => $m['brand_id'],
+                'id' => $m['brand_id'],
             ];
             sort($data['filters']);
         }

@@ -77,7 +77,7 @@ class FiltersWidget extends Widget
     {
 
         $active = $this->data->getActiveFilters();
-        if(Yii::$app->controller->route != 'shop/brand/view'){
+        if (Yii::$app->controller->route != 'shop/brand/view') {
             $this->brands = $this->data->categoryBrands;
         }
 
@@ -242,9 +242,9 @@ class FiltersWidget extends Widget
                     $data['filters'][] = [
                         'title' => $m->name,
                         'count' => (int)$count,
-                        'count_text' => $count,
+                        //'count_text' => $count,
                         'key' => 'brand',
-                        'queryParam' => $m->id,
+                        'id' => $m->id,
                     ];
                     sort($data['filters']);
                 } else {
@@ -264,19 +264,24 @@ class FiltersWidget extends Widget
         return $sum;
     }
 
-    public function getCount($filter)
+    public function getCount($key = false, $filter)
     {
         //$this->tagCountOptions=[];
-        if (isset($filter['key'])) {
-            $this->tagCountOptions['id'] = 'filter-count-' . $filter['key'] . '-' . $filter['queryParam'];
+        if ($key) {
+            $this->tagCountOptions['id'] = 'filter-count-' . $key . '-' . $filter['id'];
         }
-        $result = ($filter['count'] > 0) ? $filter['count_text'] : 0;
-        if (Yii::$app->getModule('shop')->filterClass == 'panix\mod\shop\components\FilterPro') {
-            return ($this->count) ? ' ' . Html::tag($this->tagCount, $result, $this->tagCountOptions) : '';
+        $result = ($filter['count'] > 0) ? $filter['count'] : 0;
+        if ($this->count) {
+            if (Yii::$app->getModule('shop')->filterClass == 'panix\mod\shop\components\FilterElastic') {
+                return Html::tag($this->tagCount, '(' . $result . ')', $this->tagCountOptions);
+            } elseif (Yii::$app->getModule('shop')->filterClass == 'panix\mod\shop\components\FilterPro') {
+                return Html::tag($this->tagCount, '(' . $result . ')', $this->tagCountOptions);
+            } else {
+                return '';
+            }
         } else {
             return '';
         }
-
 
     }
 
