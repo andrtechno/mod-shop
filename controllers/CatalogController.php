@@ -49,37 +49,43 @@ class CatalogController extends FilterController
         $this->query->published();
 //$this->query->applyRootAttributes(['sezon'=>[20]]);
 
-        if (false && $this->dataModel->children()->count()) {
 
-            $this->pageName = $this->dataModel->name;
-            $ancestors = $this->dataModel->ancestors()->addOrderBy('depth')->excludeRoot()->cache(3600)->all();
-            if ($ancestors) {
-                foreach ($ancestors as $category) {
-                    $this->view->params['breadcrumbs'][] = [
-                        'label' => $category->name,
-                        'url' => $category->getUrl()
-                    ];
+        //$this->query->applyCategories($this->dataModel, 'andWhere', $this->dataModel->children()->count());
+        $this->query->applyCategories($this->dataModel, 'andWhere', $this->dataModel->children()->count());
+//echo $this->dataModel->children()->count();
+
+        if (file_exists(Yii::getAlias('@theme/modules/shop/views/catalog/view2.php'))) {
+            if ($this->dataModel->children()->count()) {
+
+                $this->pageName = $this->dataModel->name;
+                $ancestors = $this->dataModel->ancestors()->addOrderBy('depth')->excludeRoot()->cache(3600)->all();
+                if ($ancestors) {
+                    foreach ($ancestors as $category) {
+                        $this->view->params['breadcrumbs'][] = [
+                            'label' => $category->name,
+                            'url' => $category->getUrl()
+                        ];
+                    }
                 }
+
+                $this->view->params['breadcrumbs'][] = $this->pageName;
+                $this->provider = new \panix\engine\data\ActiveDataProvider([
+                    'query' => $this->query,
+                    'sort' => Product::getSort(),
+                    'pagination' => [
+                        'pageSize' => $this->per_page,
+                        // 'defaultPageSize' =>(int)  $this->allowedPageLimit[0],
+                        // 'pageSizeLimit' => $this->allowedPageLimit,
+                    ]
+                ]);
+                return $this->render('view2', [
+                    'provider' => $this->provider,
+                    'itemView' => $this->itemView,
+                    //'filter' => $this->filter
+
+                ]);
             }
-            $this->query->applyCategories($this->dataModel, 'andWhere', $this->dataModel->children()->count());
-            $this->view->params['breadcrumbs'][] = $this->pageName;
-            $this->provider = new \panix\engine\data\ActiveDataProvider([
-                'query' => $this->query,
-                'sort' => Product::getSort(),
-                'pagination' => [
-                    'pageSize' => $this->per_page,
-                    // 'defaultPageSize' =>(int)  $this->allowedPageLimit[0],
-                    // 'pageSizeLimit' => $this->allowedPageLimit,
-                ]
-            ]);
-            return $this->render('view2', [
-                'provider' => $this->provider,
-                'itemView' => $this->itemView,
-                //'filter' => $this->filter
-
-            ]);
         }
-
 
         //  $cr->with = array('brandActive');
         // Скрывать товары если бренд скрыт.
@@ -88,11 +94,8 @@ class CatalogController extends FilterController
         //        'scopes' => array('published')
         //)));
 
-        //$this->query->applyCategories($this->dataModel, 'andWhere', $this->dataModel->children()->count());
-        $this->query->applyCategories($this->dataModel, 'andWhere', $this->dataModel->children()->count());
-//echo $this->dataModel->children()->count();
 
-        $this->filter = new $this->filterClass($this->query, ['cacheKey' => str_replace('/','-',Yii::$app->controller->route).'-' . $this->dataModel->id]);
+        $this->filter = new $this->filterClass($this->query, ['cacheKey' => str_replace('/', '-', Yii::$app->controller->route) . '-' . $this->dataModel->id]);
 
         //$this->filter->resultQuery->applyAttributes($this->filter->activeAttributes);
         // if (Yii::$app->request->get('brand')) {
@@ -362,9 +365,9 @@ class CatalogController extends FilterController
         }
         $this->refreshUrl = $this->currentUrl;
         $this->view->params['breadcrumbs'][] = $this->pageName;
-        $cacheKey = str_replace('/','-',Yii::$app->controller->route);
+        $cacheKey = str_replace('/', '-', Yii::$app->controller->route);
         if (Yii::$app->request->getQueryParam('category')) {
-            $cacheKey .= '-'.Yii::$app->request->getQueryParam('category');
+            $cacheKey .= '-' . Yii::$app->request->getQueryParam('category');
         }
 
         $this->filter = new $this->filterClass($this->query, ['cacheKey' => $cacheKey]);
@@ -479,9 +482,9 @@ class CatalogController extends FilterController
         $this->view->canonical = Url::to($this->currentUrl, true);
         $this->view->registerJs("var current_url = '" . $this->currentUrl . "';", yii\web\View::POS_HEAD, 'current_url');
 
-        $cacheKey = str_replace('/','-',Yii::$app->controller->route);
+        $cacheKey = str_replace('/', '-', Yii::$app->controller->route);
         if (Yii::$app->request->getQueryParam('category')) {
-            $cacheKey .= '-'.Yii::$app->request->getQueryParam('category');
+            $cacheKey .= '-' . Yii::$app->request->getQueryParam('category');
         }
         $this->filter = new $this->filterClass($this->query, ['cacheKey' => $cacheKey]);
         $this->filter->resultQuery->sortAvailability();
