@@ -621,7 +621,6 @@ $(function () {
         var flag = false;
         var objects = getSerializeObjects();
         if (!isMobile) {
-
             //filter_ajax(event, objects);
             if (newFunction) {
                 var objects = getSerializeObjects();
@@ -637,13 +636,15 @@ $(function () {
             if (ui.values[1] !== parseInt($('#max_price').data('default'))) {
                 flag = true;
             }
-
-            showApply = flag
+            showApply = flag;
+            showButtons=true;
             //$(".filter-buttons").trigger("filter:buttons:toggle");
+
             if (newFunction) {
                 var objects = getSerializeObjects();
                 var target = $(this);
-                filterCallback(e, objects, target);
+                filterCallbackAjax(e, objects, target);
+                //filterCallback(e, objects, target);
             }
 
         }
@@ -689,7 +690,13 @@ $(function () {
         var objects = getSerializeObjects();
         var target = $(this);
 
-        filterCallback(e, objects, target);
+        if (!isMobile) {
+            filterCallback(e, objects, target);
+        }else{
+            showButtons=true;
+            filterCallbackAjax(e, objects, target);
+        }
+
 
         $.when.apply($, deferreds).done(function () {
             filter_ajax(e, objects);
