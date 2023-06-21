@@ -23,6 +23,7 @@
     "panix/wgt-fancybox": "dev-master",
     "panix/wgt-scroll-pager": "dev-master",
     "panix/wgt-telinput": "dev-master",
+    "panix/wgt-select": "*",
 	"panix/wgt-rating": "dev-main"
   },
   "suggest": {
