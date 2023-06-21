@@ -2,6 +2,7 @@
 
 namespace panix\mod\shop\components;
 
+use panix\mod\shop\models\Product;
 use Yii;
 use yii\base\Exception;
 use yii\caching\TagDependency;
@@ -111,6 +112,8 @@ class ImageBehavior extends \yii\base\Behavior
                 if ($currentMainId != $post) {
                     $customer->is_main = 1;
                     $customer->update();
+
+                    Yii::$app->db->createCommand()->update(Product::tableName(), ['image' => $customer->filename], ['id' => $customer->product_id])->execute();
                     //$this->owner->main_image = $customer->filename;
                     // $this->owner->save(false);
                 }
@@ -235,7 +238,7 @@ class ImageBehavior extends \yii\base\Behavior
             $pictureFileName = $uniqueName . '.' . $file->extension;
         }
 
-        $newAbsolutePath = $path . DIRECTORY_SEPARATOR . $pictureFileName;
+        $newAbsolutePath = BaseFileHelper::normalizePath($path . DIRECTORY_SEPARATOR . $pictureFileName);
 
         $createDir = BaseFileHelper::createDirectory($path, 0775, true);
 
@@ -281,6 +284,30 @@ class ImageBehavior extends \yii\base\Behavior
                 //   unlink($runtimePath);
             }
         }
+
+
+        $module = Yii::$app->getModule('shop');
+        if ($module->ftp && YII_DEBUG) {
+            $ftpClient = ftp_connect($module->ftp['server']);
+            ftp_login($ftpClient, $module->ftp['login'], $module->ftp['password']);
+            ftp_pasv($ftpClient, true);
+
+            $image->ftp = $ftpClient;
+            $ftpPath = "/uploads/product/{$image->product_id}";
+            if (!@ftp_mkdir($ftpClient, $ftpPath)) {
+                //echo "Не удалось создать директорию";
+            }
+            //$versionPath = Yii::getAlias("@uploads/store/product/{$image->product_id}/{$image->filename}");
+            $upload = ftp_put($ftpClient, "$ftpPath/{$image->filename}", $newAbsolutePath, FTP_BINARY);
+
+
+            $original2 = $image->createVersionFtp('small', ['watermark' => false]);
+            $original3 = $image->createVersionFtp('medium', ['watermark' => false]);
+            $original4 = $image->createVersionFtp('preview', ['watermark' => false]);
+            ftp_close($ftpClient);
+        }
+
+
         //remove download file
         /*if ($isDownloaded) {
             if (file_exists($file)) {
@@ -399,8 +426,11 @@ class ImageBehavior extends \yii\base\Behavior
             $allImg->setMain(false);
             $allImg->save();
         }
-        $this->owner->image = $img->filename;
-        $this->owner->save(false);
+        //$this->owner->image = $img->filename;
+        //$this->owner->save(false);
+        //делаем именно так, потому что срабатывает 2 раза сохранение модели.
+        //echo $img->filename;die;
+        Yii::$app->db->createCommand()->update(Product::tableName(), ['image' => $img->filename], ['id' => $this->owner->id])->execute();
     }
 
 }

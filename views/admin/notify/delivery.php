@@ -45,7 +45,7 @@ Pjax::begin([
                     'type' => 'html',
                     'name' => 'image',
                     'htmlOptions' => array('class' => 'text-center image'),
-                    'value' => 'Html::link(Html::image($data->getMainImageUrl("50x50"),$data->name))',
+                    'value' => 'Html::link(Html::image($data->getMainImageUrl("small"),$data->name))',
                 ),
                 array(
                     'name' => 'name',

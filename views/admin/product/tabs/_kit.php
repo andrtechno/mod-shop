@@ -23,7 +23,7 @@ use panix\engine\grid\GridView;
     foreach ($model->kitProducts as $data) { ?>
         <tr>
             <input type="hidden" value="<?= $data->id ?>" name="kitProductId[]">
-            <td class="image text-center kitProductLine<?= $data->id ?>"><?= $data->renderGridImage('50x50'); ?></td>
+            <td class="image text-center kitProductLine<?= $data->id ?>"><?= $data->renderGridImage('small'); ?></td>
             <td>
                 <?= Html::a($data->name, ['/admin/shop/product/update', 'id' => $data->id], [
                     'target' => '_blank'
@@ -78,7 +78,7 @@ echo GridView::widget([
             'format' => 'raw',
             'contentOptions' => ['class' => 'text-center image'],
             'value' => function ($model) {
-                return $model->renderGridImage('50x50');
+                return $model->renderGridImage('small');
             },
         ],
         [

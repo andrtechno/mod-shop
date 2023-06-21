@@ -21,14 +21,14 @@ echo GridView::widget([
             'format' => 'raw',
             'contentOptions' => ['class' => 'text-center image'],
             'value' => function ($model) {
-                return $model->product->renderGridImage('50x50');
+                return $model->product->renderGridImage('small');
             },
         ],
         [
             'attribute' => 'name',
             'format' => 'raw',
             'value' => function ($model) {
-                return Html::a($model->product->name, $model->product->getUrl()); //$model->renderGridImage('50x50');
+                return Html::a($model->product->name, $model->product->getUrl());
             },
         ],
         [
@@ -42,7 +42,7 @@ echo GridView::widget([
                 } elseif ($model->product->availability == 2) {
                     $class = 'badge-danger';
                 }
-                return Html::tag('span', $model->product->availabilityItems[$model->product->availability], ['class' => 'badge ' . $class]); //$model->renderGridImage('50x50');
+                return Html::tag('span', $model->product->availabilityItems[$model->product->availability], ['class' => 'badge ' . $class]);
             },
         ],
         [

@@ -18,7 +18,7 @@ $searchModel = new panix\mod\shop\models\search\ProductRelatedSearch();
         ?>
         <tr>
             <input type="hidden" value="<?= $related->id ?>" name="RelatedProductId[]">
-            <td class="image text-center relatedProductLine<?= $related->id ?>"><?= $related->renderGridImage('50x50'); ?></td>
+            <td class="image text-center relatedProductLine<?= $related->id ?>"><?= $related->renderGridImage('small'); ?></td>
             <td>
                 <?= Html::a($related->name, ['/admin/shop/products/update', 'id' => $related->id], [
                     'target' => '_blank'
@@ -68,7 +68,7 @@ echo \panix\engine\grid\GridView::widget([
             'format' => 'raw',
             'contentOptions' => ['class' => 'text-center image'],
             'value' => function ($model) {
-                return $model->renderGridImage('50x50');
+                return $model->renderGridImage('small');
             },
         ],
         [

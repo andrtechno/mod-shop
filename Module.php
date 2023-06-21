@@ -25,10 +25,10 @@ class Module extends WebModule implements BootstrapInterface
     /**
      * package nicolab/php-ftp-client
      */
-    public $ftpClient;
+    protected $_ftpClient;
     public $ftp = false;
 
-    public $imgSizeMedium = '300x300'; //goods list gallery,
+    public $imgSizeMedium = '400x400'; //goods list gallery,
     public $imgSizeSmall = '100x100'; //admin panel, cart email
     public $imgSizePreview = '400x400'; //catalog grid
 
@@ -185,15 +185,31 @@ class Module extends WebModule implements BootstrapInterface
         if (!(Yii::$app instanceof \yii\console\Application)) {
             parent::init();
         }
-        if ($this->ftp) {
+        /*if ($this->ftp) {
             $this->ftpClient = new \FtpClient\FtpClient();
             $this->ftpClient->connect($this->ftp['server']);
             $this->ftpClient->login($this->ftp['login'], $this->ftp['password']);
             $this->ftpClient->pasv(true);
-            //Yii::info('ftp login','info');
-        }
+        }*/
     }
 
+    public function getFtpClient()
+    {
+        $this->_ftpClient = new \FtpClient\FtpClient();
+        $this->_ftpClient->connect($this->ftp['server']);
+        $this->_ftpClient->login($this->ftp['login'], $this->ftp['password']);
+        $this->_ftpClient->pasv(true);
+        return $this->_ftpClient;
+    }
+
+    public function getFtpClient2()
+    {
+
+        $this->_ftpClient = ftp_connect($this->ftp['server']);
+        ftp_login($this->_ftpClient,$this->ftp['login'], $this->ftp['password']);
+        ftp_pasv($this->_ftpClient,true);
+        return $this->_ftpClient;
+    }
     /**
      * @param bool|int $current_id
      * @return array|\panix\mod\shop\models\Product[]

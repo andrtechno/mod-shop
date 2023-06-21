@@ -16,6 +16,7 @@ use panix\mod\shop\models\query\ProductQuery;
 use yii\caching\DbDependency;
 use yii\caching\TagDependency;
 use yii\db\Exception;
+use yii\db\Expression;
 use yii\db\Query;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
@@ -1184,7 +1185,20 @@ class Product extends ActiveRecord
 
         ProductReviews::deleteAll(['product_id' => $this->id]);
         TagDependency::invalidate(Yii::$app->cache, ['brand-' . $this->brand_id]);
+
+
         parent::afterDelete();
+        $module = Yii::$app->getModule('shop');
+        if ($module->ftp && YII_DEBUG) {
+            //try {
+            $ftpClient = ftp_connect($module->ftp['server']);
+            ftp_login($ftpClient, $module->ftp['login'], $module->ftp['password']);
+            ftp_pasv($ftpClient, true);
+            $deleted = @ftp_rmdir($ftpClient, "/uploads/product/{$this->id}");
+
+            $deletedAsset = @ftp_rmdir($ftpClient, "/assets/product/{$this->id}");
+            ftp_close($ftpClient);
+        }
     }
 
     public function setConfigurable_attributes(array $ids)
