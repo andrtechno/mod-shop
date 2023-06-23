@@ -2,6 +2,7 @@
 
 namespace panix\mod\shop\api;
 
+use panix\engine\CMS;
 use Yii;
 use yii\base\BootstrapInterface;
 use yii\rest\UrlRule;
@@ -34,9 +35,33 @@ class Bootstrap implements BootstrapInterface
                 'GET,POST /' => 'index',
                 'GET,HEAD show' => 'show',
             ],
-
+        ];
+        $rules[] = [
+            'class' => 'yii\rest\UrlRule',
+            'controller' => 'shop/elastic',
+            'pluralize' => false,
+            'extraPatterns' => [
+                'GET,POST /' => 'index',
+                'GET,HEAD show' => 'show',
+            ],
         ];
 
+        $rules[] = [
+            'class' => 'yii\rest\UrlRule',
+            'controller' => 'shop/catalog',
+            'pluralize' => false,
+            'extraPatterns' => [
+                'GET categories' => 'categories',
+                'GET filter/<id>' => 'filter',
+                'GET,POST nav' => 'test-nav',
+                'GET search' => 'search',
+                // 'GET,HEAD show' => 'show',
+            ],
+            'tokens' => ['{id}' => '<id:\\w+>']
+        ];
+        // CMS::dump($rules);die;
+        //$rules['shop/search'] = 'shop/default/search';
+        //$rules['catalog2/filter-categories'] = 'shop/catalog/filter-categories';
 
         $rules[] = [
             'class' => 'panix\mod\shop\components\rules\BaseUrlRule',
@@ -76,40 +101,38 @@ class Bootstrap implements BootstrapInterface
         }
 
 
+        $rules[] = [
+            'class' => 'panix\mod\shop\components\rules\SearchUrlRule',
+            //'pattern'=>'products/search',
+            'route' => 'shop/search/index',
+            'defaults' => ['q' => Yii::$app->request->get('q')]
+        ];
 
-            $rules[] = [
-                'class' => 'panix\mod\shop\components\rules\SearchUrlRule',
-                //'pattern'=>'products/search',
-                'route' => 'shop/search/index',
-                'defaults' => ['q' => Yii::$app->request->get('q')]
-            ];
+        $rules[] = [
+            'class' => 'panix\mod\shop\components\rules\BaseUrlRule',
+            'route' => 'shop/catalog/sales',
+            'index' => 'sales',
+            'pattern' => 'sales/<params:.*>'
+        ];
+        $rules[] = [
+            'class' => 'panix\mod\shop\components\rules\BaseUrlRule',
+            'route' => 'shop/catalog/sales',
+            'index' => 'sales',
+            'pattern' => 'sales'
+        ];
 
-            $rules[] = [
-                'class' => 'panix\mod\shop\components\rules\BaseUrlRule',
-                'route' => 'shop/catalog/sales',
-                'index' => 'sales',
-                'pattern' => 'sales/<params:.*>'
-            ];
-            $rules[] = [
-                'class' => 'panix\mod\shop\components\rules\BaseUrlRule',
-                'route' => 'shop/catalog/sales',
-                'index' => 'sales',
-                'pattern' => 'sales'
-            ];
-
-            $rules[] = [
-                'class' => 'panix\mod\shop\components\rules\BaseUrlRule',
-                'route' => 'shop/catalog/new',
-                'index' => 'new',
-                'pattern' => 'new/<params:.*>'
-            ];
-            $rules[] = [
-                'class' => 'panix\mod\shop\components\rules\BaseUrlRule',
-                'route' => 'shop/catalog/new',
-                'index' => 'new',
-                'pattern' => 'new'
-            ];
-
+        $rules[] = [
+            'class' => 'panix\mod\shop\components\rules\BaseUrlRule',
+            'route' => 'shop/catalog/new',
+            'index' => 'new',
+            'pattern' => 'new/<params:.*>'
+        ];
+        $rules[] = [
+            'class' => 'panix\mod\shop\components\rules\BaseUrlRule',
+            'route' => 'shop/catalog/new',
+            'index' => 'new',
+            'pattern' => 'new'
+        ];
 
 
         $app->urlManager->addRules(

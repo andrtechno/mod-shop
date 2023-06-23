@@ -17,7 +17,15 @@ class Module extends \yii\base\Module
     public $host = false;
     public $ips = false;
     public $filterClass = 'panix\mod\shop\components\FilterPro';
-    
+    public $searchAttribute = 'sku';
+    public $ftpClient;
+    public $ftp = false;
+
+
+    public $imgSizeMedium = '400x400'; //goods list gallery,
+    public $imgSizeSmall = '100x100'; //admin panel, cart email
+    public $imgSizePreview = '500x500'; //catalog grid
+
     public function init()
     {
         parent::init();

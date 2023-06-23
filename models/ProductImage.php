@@ -132,55 +132,25 @@ class ProductImage extends ActiveRecord
         parent::afterDelete();
 
 
-        if ($module->ftp && YII_DEBUG) {
-            //try {
+        if ($module->ftp) {
             $ftpClient = ftp_connect($module->ftp['server']);
             ftp_login($ftpClient, $module->ftp['login'], $module->ftp['password']);
-            ftp_pasv($ftpClient, true);
+            @ftp_pasv($ftpClient, true);
+
+            $assetPather = "/assets/product/{$this->product_id}";
+            $deleted = @ftp_delete($ftpClient, "/uploads/product/{$this->product_id}_{$this->filename}");
+            $deleted = @ftp_delete($ftpClient, $assetPather . "/medium__{$this->filename}");
+            $deleted = @ftp_delete($ftpClient, $assetPather . "/small__{$this->filename}");
 
 
-            /*$deleted = $ftpClient->delete("/uploads/product/{$this->product_id}/{$this->filename}");
-
-            $assetsList = @$ftpClient->nlist("/assets/product/{$this->product_id}");
+            $assetsList = @ftp_nlist($ftpClient, $assetPather);
             if ($assetsList) {
+                sort($assetsList);
                 unset($assetsList[0], $assetsList[1]); //remove list ".."
-                foreach ($assetsList as $folder) {
-                    $deleted = $ftpClient->delete("{$folder}/{$this->filename}");
-
-                    if ($deleted) {
-                        $assetsFiles = @$ftpClient->nlist($folder);
-                        unset($assetsFiles[0], $assetsFiles[1]); //remove list ".."
-                        if (!$assetsFiles) {
-                            $ftpClient->rmdir($folder);
-                        }
-                    }
-                }
-            }*/
-            $deleted = @ftp_delete($ftpClient, "/uploads/product/{$this->product_id}/{$this->filename}");
-
-            $assetsList = @ftp_nlist($ftpClient, "/assets/product/{$this->product_id}");
-            //$assetsList = @ftp_rawlist($ftpClient,"/assets/product/{$this->product_id}");
-            sort($assetsList); //Сортируем, чтобы "точки(..)" были первыми в списке
-            //print_r($assetsList);die;
-            if ($assetsList) {
-                unset($assetsList[0], $assetsList[1]); //remove list ".."
-                foreach ($assetsList as $folder) {
-                    $deleted = @ftp_delete($ftpClient, "{$folder}/{$this->filename}");
-
-                    if ($deleted) {
-                        $assetsFiles = @ftp_nlist($ftpClient, $folder);
-                        unset($assetsFiles[0], $assetsFiles[1]); //remove list ".."
-                        if (!$assetsFiles) {
-                            @ftp_rmdir($ftpClient, $folder);
-                        }
-                    }
+                if (!$assetsList) {
+                    @ftp_rmdir($ftpClient, $assetPather);
                 }
             }
-
-            //} catch (Exception $e) {
-
-            //}
-            //$ftpClient->close();
             ftp_close($ftpClient);
         }
 
@@ -205,20 +175,24 @@ class ProductImage extends ActiveRecord
         }
 
         if (!$size) {
-            if ($module->ftp && in_array($_SERVER['REMOTE_ADDR'],['178.212.194.135!','5.53.113.69'])) {
-                return $module->ftp['host'] . "/uploads/product/{$this->product_id}_{$this->filename}";
-                //return $module->ftp['host'] . "/uploads/product/{$this->product_id}/{$this->filename}";
-            }
 
+            if (isset($_SERVER['REMOTE_ADDR'])) {
+                if ($module->ftp && in_array($_SERVER['REMOTE_ADDR'], ['127.0.0.1', '178.212.194.135', '5.53.113.69'])) {
+                    return $module->ftp['host'] . "/uploads/product/{$this->product_id}_{$this->filename}";
+                    //return $module->ftp['host'] . "/uploads/product/{$this->product_id}/{$this->filename}";
+                }
+            }
             $path = Yii::getAlias("@uploads/store/product/{$this->product_id}/{$this->filename}");
             if (!file_exists($path) || !is_file($path)) {
                 return $this->getNoImageUrl();
             }
             return "/uploads/store/product/{$this->product_id}/{$this->filename}";
         } else {
-            if ($module->ftp && in_array($_SERVER['REMOTE_ADDR'],['178.212.194.135!','5.53.113.69'])) {
-                //return $module->ftp['host'] . "/assets/product/{$this->product_id}/{$size}/{$this->filename}";
-                return $module->ftp['host'] . "/assets/product/{$this->product_id}/{$prefix}_{$this->filename}";
+            if (isset($_SERVER['REMOTE_ADDR'])) {
+                if ($module->ftp && in_array($_SERVER['REMOTE_ADDR'], ['127.0.0.1', '178.212.194.135', '5.53.113.69'])) {
+                    //return $module->ftp['host'] . "/assets/product/{$this->product_id}/{$size}/{$this->filename}";
+                    return $module->ftp['host'] . "/assets/product/{$this->product_id}/{$prefix}_{$this->filename}";
+                }
             }
             $path = Yii::getAlias("@uploads/store/product/{$this->product_id}/{$this->filename}");
             if (!file_exists($path) || !is_file($path)) {
@@ -255,8 +229,8 @@ class ProductImage extends ActiveRecord
         } elseif ($size == 'small') {
             $prefix = 'small_';
             //$size = $module->imgSizeSmall;
-        }else{
-            $prefix = $size.'_';
+        } else {
+            $prefix = $size . '_';
         }
 
 
@@ -294,11 +268,11 @@ class ProductImage extends ActiveRecord
         }
         $extension = $fileInfo[1];
 
-        if (!file_exists($imageAssetPath . DIRECTORY_SEPARATOR . $prefix.$filename . '.' . $extension)) {
+        if (!file_exists($imageAssetPath . DIRECTORY_SEPARATOR . $prefix . $filename . '.' . $extension)) {
             $isSaveFile = true;
             FileHelper::createDirectory($imageAssetPath, 0777);
         } else {
-            return $assetPath . '/' .$prefix. $filename . '.' . $extension;
+            return $assetPath . '/' . $prefix . $filename . '.' . $extension;
         }
 
         if ($sizes) {
@@ -345,7 +319,7 @@ class ProductImage extends ActiveRecord
         }
 
         if ($isSaveFile) {
-            $versionPath = $imageAssetPath . DIRECTORY_SEPARATOR . $prefix.$this->filename;
+            $versionPath = $imageAssetPath . DIRECTORY_SEPARATOR . $prefix . $this->filename;
             $img->save($versionPath);
             /*if ($ftp) {
                 $ftpPath = "/assets/product/{$this->product_id}";
@@ -359,7 +333,7 @@ class ProductImage extends ActiveRecord
                 $upload = $ftp->put("$ftpPath/{$this->filename}", $versionPath, FTP_IMAGE);
             }*/
         }
-        return $assetPath . '/'.$prefix . $this->filename;
+        return $assetPath . '/' . $prefix . $this->filename;
         // return $img;
 
     }

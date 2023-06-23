@@ -287,23 +287,23 @@ class ImageBehavior extends \yii\base\Behavior
 
 
         $module = Yii::$app->getModule('shop');
-        if ($module->ftp && YII_DEBUG) {
+        if ($module->ftp) {
             $ftpClient = ftp_connect($module->ftp['server']);
             ftp_login($ftpClient, $module->ftp['login'], $module->ftp['password']);
-            ftp_pasv($ftpClient, true);
+            @ftp_pasv($ftpClient, true);
 
             $image->ftp = $ftpClient;
-            $ftpPath = "/uploads/product/{$image->product_id}";
+            $ftpPath = "/uploads/product";
             if (!@ftp_mkdir($ftpClient, $ftpPath)) {
                 //echo "Не удалось создать директорию";
             }
             //$versionPath = Yii::getAlias("@uploads/store/product/{$image->product_id}/{$image->filename}");
-            $upload = ftp_put($ftpClient, "$ftpPath/{$image->filename}", $newAbsolutePath, FTP_BINARY);
+            $upload = ftp_put($ftpClient, "$ftpPath/{$image->product_id}_{$image->filename}", $newAbsolutePath, FTP_BINARY);
 
 
             $original2 = $image->createVersionFtp('small', ['watermark' => false]);
             $original3 = $image->createVersionFtp('medium', ['watermark' => false]);
-            $original4 = $image->createVersionFtp('preview', ['watermark' => false]);
+            //$original4 = $image->createVersionFtp('preview', ['watermark' => false]);
             ftp_close($ftpClient);
         }
 

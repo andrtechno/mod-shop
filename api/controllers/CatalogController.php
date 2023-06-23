@@ -2,6 +2,9 @@
 
 namespace panix\mod\shop\api\controllers;
 
+use panix\engine\api\ApiActiveController;
+use panix\engine\api\Serializer;
+use panix\engine\api\ApiHelpers;
 use panix\engine\CMS;
 use panix\engine\controllers\WebController;
 use panix\engine\data\ActiveDataProvider;
@@ -25,9 +28,12 @@ use panix\mod\shop\models\Category;
  *
  * @package panix\mod\shop\controllers
  */
-class CatalogController extends WebController
+class CatalogController extends ApiActiveController
 {
-
+    public $modelClass = 'panix\mod\shop\api\models\Category';
+    public $serializer = [
+        'class' => Serializer::class,
+    ];
     public $provider;
     public $currentUrl;
 
@@ -42,6 +48,43 @@ class CatalogController extends WebController
             $this->enableCsrfValidation = false;
         }
         return parent::beforeAction($action);
+    }
+
+    public function actionSearch()
+    {
+        $lang = Yii::$app->language;
+        $q = Yii::$app->request->get('q');
+        if (empty($q)) {
+            $q = '+';
+        }
+        $json = [];
+
+        if ($q) {
+            $model = Product::find()->published()->limit(16);
+            $model->applySearch($q);
+            $model->andWhere(["availability" => [Product::STATUS_IN_STOCK, Product::STATUS_PREORDER]]);
+            $model->sort(SORT_DESC);
+            //echo $model->createCommand()->rawSql;die;
+            $result = $model->all();
+            $json['data']['products'] = [];
+            foreach ($result as $m) {
+                /** @var Product $m */
+                $name = "name_{$lang}";
+                $json['data']['products'][] = [
+                    'id' => $m->id,
+                    'name' => $m->{$name},
+                    'price' => Yii::$app->currency->number_format($m->price, $m->currency_id),
+                    'currency' => Yii::$app->currency->getById($m->currency_id)->symbol,
+                    //'url' => ApiHelpers::url($m->getUrl()),
+                    'url' => ApiHelpers::url("/product/" . $m->slug . '-' . $m->id, true),
+                    'image' => $m->getMainImage('small')->url,
+                    'image_original' => $m->getMainImage()->url,
+                ];
+            }
+
+        }
+        $json['success'] = true;
+        return $this->asJson($json);
     }
 
     public function actionView()

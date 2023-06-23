@@ -1189,16 +1189,15 @@ class Product extends ActiveRecord
 
         parent::afterDelete();
         $module = Yii::$app->getModule('shop');
-        if ($module->ftp && YII_DEBUG) {
-            //try {
+        /*if ($module->ftp) {
             $ftpClient = ftp_connect($module->ftp['server']);
             ftp_login($ftpClient, $module->ftp['login'], $module->ftp['password']);
-            ftp_pasv($ftpClient, true);
-            $deleted = @ftp_rmdir($ftpClient, "/uploads/product/{$this->id}");
+            @ftp_pasv($ftpClient, true);
+            $deleted = @ftp_rmdir($ftpClient, "/uploads/product/{$this->id}_{$this->image}");
 
             $deletedAsset = @ftp_rmdir($ftpClient, "/assets/product/{$this->id}");
             ftp_close($ftpClient);
-        }
+        }*/
     }
 
     public function setConfigurable_attributes(array $ids)

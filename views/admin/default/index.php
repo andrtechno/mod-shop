@@ -1,62 +1,40 @@
 <?php
 
 use app\components\ImgFixerQueue;
+use panix\mod\forsage\components\ProductByIdQueue;
 use panix\mod\shop\models\ProductImage;
 use yii\data\Pagination;
 use yii\helpers\Json;
 use yii\web\UploadedFile;
 use FtpClient\FtpClient;
 use panix\engine\Html;
-/*
-$query = ProductImage::find();
-$total = $query->count();
 
-$query->where(['product_id'=>35737]);
 $module = Yii::$app->getModule('shop');
 
+$product_id = 34668;
+
+$array = [];
 $ftpClient = ftp_connect($module->ftp['server']);
 ftp_login($ftpClient, $module->ftp['login'], $module->ftp['password']);
-ftp_pasv($ftpClient, true);
+@ftp_pasv($ftpClient, true);
 
-foreach ($query->all() as $img) {
-    $img->ftp = $ftpClient;
-    $original2 = $img->createVersionFtp('small', ['watermark' => false]);
-    $original3 = $img->createVersionFtp('medium', ['watermark' => false]);
-    $original3 = $img->createVersionFtp('preview', ['watermark' => false]);
-
-    if ($ftpClient) {
-        $ftpPath = "/uploads/product/{$img->product_id}";
-        if (!ftp_mkdir($ftpClient,$ftpPath)) {
-            echo "Не удалось создать директорию";
-        }
-        $versionPath = Yii::getAlias("@uploads/store/product/{$img->product_id}/{$img->filename}");
-        echo $versionPath;
-        $upload = ftp_put($ftpClient,"$ftpPath/{$img->filename}", $versionPath, FTP_IMAGE);
-    }
-
+$assetPather = "/assets/product/{$product_id}";
+foreach ($array as $f) {
+    $deleted = @ftp_delete($ftpClient, "/uploads/product/{$product_id}_{$f}");
+    $deleted = @ftp_delete($ftpClient, $assetPather . "/medium__{$f}");
+    $deleted = @ftp_delete($ftpClient, $assetPather . "/small__{$f}");
 }
-ftp_close($ftpClient);*/
-/*
-Yii::$app->queue->push(new ImgFixerQueue([
-    'limit' => 10,
-    'page' => 1
-]));*/
 
 
-$limit = 50;
-$query = ProductImage::find();
-$total = $query->count();
-
-$total_pages = ceil($total / $limit);
-echo 'total pages: ' . $total_pages . PHP_EOL;
-
-for ($page_number = 1; $page_number <= $total_pages; $page_number++) {
-    Yii::$app->queue->push(new ImgFixerQueue([
-        'limit' => $limit,
-        'page' => $page_number
-    ]));
-    //break; //for test
+$assetsList = @ftp_nlist($ftpClient, $assetPather);
+sort($assetsList);
+unset($assetsList[0], $assetsList[1]); //remove list ".."
+if (!$assetsList) {
+    //@ftp_rmdir($ftpClient, $assetPather);
 }
+\panix\engine\CMS::dump($assetsList);
+ftp_close($ftpClient);
+
 ?>
 
 <div class="row">
