@@ -30,7 +30,7 @@ class Module extends WebModule implements BootstrapInterface
 
     public $imgSizeMedium = '400x400'; //goods list gallery,
     public $imgSizeSmall = '100x100'; //admin panel, cart email
-    public $imgSizePreview = '400x400'; //catalog grid
+    public $imgSizePreview = '500x500'; //catalog grid
 
     /**
      * @inheritdoc

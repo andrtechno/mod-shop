@@ -156,7 +156,7 @@ class ProductImage extends ActiveRecord
                     }
                 }
             }*/
-            $deleted = @ftp_delete($ftpClient,"/uploads/product/{$this->product_id}/{$this->filename}");
+            $deleted = @ftp_delete($ftpClient, "/uploads/product/{$this->product_id}/{$this->filename}");
 
             $assetsList = @ftp_nlist($ftpClient, "/assets/product/{$this->product_id}");
             //$assetsList = @ftp_rawlist($ftpClient,"/assets/product/{$this->product_id}");
@@ -192,17 +192,23 @@ class ProductImage extends ActiveRecord
         $module = Yii::$app->getModule('shop');
         //$ftp = $module->ftpClient;
         if ($size == 'preview') {
-            $size = $module->imgSizePreview;
+            $prefix = 'preview_';
+            //$size = $module->imgSizePreview;
         } elseif ($size == 'medium') {
-            $size = $module->imgSizeMedium;
+            $prefix = 'medium_';
+            //$size = $module->imgSizeMedium;
         } elseif ($size == 'small') {
-            $size = $module->imgSizeSmall;
+            $prefix = 'small_';
+            //$size = $module->imgSizeSmall;
+        } else {
+            $prefix = $size . '_';
         }
 
         if (!$size) {
-            //if ($module->ftp && YII_DEBUG) {
-            //    return $module->ftp['host'] . "/uploads/product/{$this->product_id}/{$this->filename}";
-            //}
+            if ($module->ftp && in_array($_SERVER['REMOTE_ADDR'],['178.212.194.135!','5.53.113.69'])) {
+                return $module->ftp['host'] . "/uploads/product/{$this->product_id}_{$this->filename}";
+                //return $module->ftp['host'] . "/uploads/product/{$this->product_id}/{$this->filename}";
+            }
 
             $path = Yii::getAlias("@uploads/store/product/{$this->product_id}/{$this->filename}");
             if (!file_exists($path) || !is_file($path)) {
@@ -210,9 +216,10 @@ class ProductImage extends ActiveRecord
             }
             return "/uploads/store/product/{$this->product_id}/{$this->filename}";
         } else {
-            //if ($module->ftp && YII_DEBUG) {
-            //    return $module->ftp['host'] . "/assets/product/{$this->product_id}/{$size}/{$this->filename}";
-            //}
+            if ($module->ftp && in_array($_SERVER['REMOTE_ADDR'],['178.212.194.135!','5.53.113.69'])) {
+                //return $module->ftp['host'] . "/assets/product/{$this->product_id}/{$size}/{$this->filename}";
+                return $module->ftp['host'] . "/assets/product/{$this->product_id}/{$prefix}_{$this->filename}";
+            }
             $path = Yii::getAlias("@uploads/store/product/{$this->product_id}/{$this->filename}");
             if (!file_exists($path) || !is_file($path)) {
                 return $this->getNoImageUrl();
@@ -237,16 +244,19 @@ class ProductImage extends ActiveRecord
                 return $url;
             }
         }*/
+
         //$prefix = '';
         if ($size == 'preview') {
-            //$prefix = 'preview_';
-            $size = $module->imgSizePreview;
+            $prefix = 'preview_';
+            //$size = $module->imgSizePreview;
         } elseif ($size == 'medium') {
-            //$prefix = 'medium_';
-            $size = $module->imgSizeMedium;
+            $prefix = 'medium_';
+            //$size = $module->imgSizeMedium;
         } elseif ($size == 'small') {
-            //$prefix = 'small_';
-            $size = $module->imgSizeSmall;
+            $prefix = 'small_';
+            //$size = $module->imgSizeSmall;
+        }else{
+            $prefix = $size.'_';
         }
 
 
@@ -258,14 +268,9 @@ class ProductImage extends ActiveRecord
         $sizes = explode('x', $size);
 
         $isSaveFile = false;
-        if (isset($sizes[0]) && isset($sizes[1])) {
-            $imageAssetPath = Yii::getAlias("@app/web/assets/product/{$this->product_id}/{$size}");
-            $assetPath = "/assets/product/{$this->product_id}/{$size}";
+        $imageAssetPath = Yii::getAlias("@app/web/assets/product/{$this->product_id}");
+        $assetPath = "/assets/product/{$this->product_id}";
 
-        } else {
-            $imageAssetPath = Yii::getAlias("@app/web/assets/product/{$this->product_id}");
-            $assetPath = '/assets/product/' . $this->product_id;
-        }
         $imagePath = Yii::getAlias("@uploads/store/product/{$this->product_id}/{$this->filename}");
         if (!file_exists($imagePath) || !is_file($imagePath)) {
             $imagePath = $this->getNoImagePath();
@@ -289,11 +294,11 @@ class ProductImage extends ActiveRecord
         }
         $extension = $fileInfo[1];
 
-        if (!file_exists($imageAssetPath . DIRECTORY_SEPARATOR . $filename . '.' . $extension)) {
+        if (!file_exists($imageAssetPath . DIRECTORY_SEPARATOR . $prefix.$filename . '.' . $extension)) {
             $isSaveFile = true;
             FileHelper::createDirectory($imageAssetPath, 0777);
         } else {
-            return $assetPath . '/' . $filename . '.' . $extension;
+            return $assetPath . '/' .$prefix. $filename . '.' . $extension;
         }
 
         if ($sizes) {
@@ -340,7 +345,7 @@ class ProductImage extends ActiveRecord
         }
 
         if ($isSaveFile) {
-            $versionPath = $imageAssetPath . DIRECTORY_SEPARATOR . $this->filename;
+            $versionPath = $imageAssetPath . DIRECTORY_SEPARATOR . $prefix.$this->filename;
             $img->save($versionPath);
             /*if ($ftp) {
                 $ftpPath = "/assets/product/{$this->product_id}";
@@ -354,7 +359,7 @@ class ProductImage extends ActiveRecord
                 $upload = $ftp->put("$ftpPath/{$this->filename}", $versionPath, FTP_IMAGE);
             }*/
         }
-        return $assetPath . '/' . basename($img->getFileName());
+        return $assetPath . '/'.$prefix . $this->filename;
         // return $img;
 
     }
@@ -368,14 +373,16 @@ class ProductImage extends ActiveRecord
 
         //$prefix = '';
         if ($size == 'preview') {
-            //$prefix = 'preview_';
+            $prefix = 'preview_';
             $size = $module->imgSizePreview;
         } elseif ($size == 'medium') {
-            //$prefix = 'medium_';
+            $prefix = 'medium_';
             $size = $module->imgSizeMedium;
         } elseif ($size == 'small') {
-            //$prefix = 'small_';
+            $prefix = 'small_';
             $size = $module->imgSizeSmall;
+        } else {
+            $prefix = $size . '_';
         }
 
 
@@ -387,14 +394,18 @@ class ProductImage extends ActiveRecord
         $sizes = explode('x', $size);
 
         $isSaveFile = false;
-        if (isset($sizes[0]) && isset($sizes[1])) {
-            $imageAssetPath = Yii::getAlias("@app/web/assets/product/{$this->product_id}/{$size}");
-            $assetPath = "/assets/product/{$this->product_id}/{$size}";
+        //if (isset($sizes[0]) && isset($sizes[1])) {
+        //    $imageAssetPath = Yii::getAlias("@app/web/assets/product/{$this->product_id}/{$size}");
+        //    $assetPath = "/assets/product/{$this->product_id}/{$size}";
+        //} else {
+        //$imageAssetPath = Yii::getAlias("@app/web/assets/product/{$this->product_id}");
+        //$assetPath = '/assets/product/' . $this->product_id;
 
-        } else {
-            $imageAssetPath = Yii::getAlias("@app/web/assets/product/{$this->product_id}");
-            $assetPath = '/assets/product/' . $this->product_id;
-        }
+        $imageAssetPath = Yii::getAlias("@app/web/assets/product");
+        $assetPath = '/assets/product';
+
+
+        //}
         $imagePath = Yii::getAlias("@uploads/store/product/{$this->product_id}/{$this->filename}");
         if (!file_exists($imagePath) || !is_file($imagePath)) {
             $imagePath = $this->getNoImagePath();
@@ -469,16 +480,16 @@ class ProductImage extends ActiveRecord
             $versionPath = FileHelper::normalizePath($imageAssetPath . DIRECTORY_SEPARATOR . $this->filename);
             $img->save($versionPath);
             if ($this->ftp) {
+                //$ftpPath = "/assets/product";
+                //if (!@ftp_mkdir($this->ftp, $ftpPath)) {
+                //    echo "Не удалось создать директорию";
+                //}
                 $ftpPath = "/assets/product/{$this->product_id}";
                 if (!@ftp_mkdir($this->ftp, $ftpPath)) {
                     echo "Не удалось создать директорию";
                 }
-                $ftpPath = "/assets/product/{$this->product_id}/{$size}";
-                if (!@ftp_mkdir($this->ftp, $ftpPath)) {
-                    echo "Не удалось создать директорию";
-                }
 
-                $upload = ftp_put($this->ftp, "$ftpPath/{$this->filename}", $versionPath, FTP_IMAGE);
+                $upload = @ftp_put($this->ftp, "$ftpPath/{$prefix}_{$this->filename}", $versionPath, FTP_IMAGE);
                 //var_dump($upload);
                 //  echo '<br>';
             }

@@ -1,12 +1,13 @@
 <?php
 
+use app\components\ImgFixerQueue;
 use panix\mod\shop\models\ProductImage;
 use yii\data\Pagination;
 use yii\helpers\Json;
 use yii\web\UploadedFile;
 use FtpClient\FtpClient;
 use panix\engine\Html;
-
+/*
 $query = ProductImage::find();
 $total = $query->count();
 
@@ -34,7 +35,28 @@ foreach ($query->all() as $img) {
     }
 
 }
-ftp_close($ftpClient);
+ftp_close($ftpClient);*/
+/*
+Yii::$app->queue->push(new ImgFixerQueue([
+    'limit' => 10,
+    'page' => 1
+]));*/
+
+
+$limit = 50;
+$query = ProductImage::find();
+$total = $query->count();
+
+$total_pages = ceil($total / $limit);
+echo 'total pages: ' . $total_pages . PHP_EOL;
+
+for ($page_number = 1; $page_number <= $total_pages; $page_number++) {
+    Yii::$app->queue->push(new ImgFixerQueue([
+        'limit' => $limit,
+        'page' => $page_number
+    ]));
+    //break; //for test
+}
 ?>
 
 <div class="row">
