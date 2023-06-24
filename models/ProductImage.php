@@ -179,24 +179,24 @@ class ProductImage extends ActiveRecord
 
         if (!$size) {
 
-            if (isset($_SERVER['REMOTE_ADDR'])) {
-                if ($module->ftp && in_array($_SERVER['REMOTE_ADDR'], ['127.0.0.1', '178.212.194.135', '5.53.113.69'])) {
+            //if (isset($_SERVER['REMOTE_ADDR'])) {
+            //    if ($module->ftp && in_array($_SERVER['REMOTE_ADDR'], ['127.0.0.1', '178.212.194.135', '5.53.113.69'])) {
                     return $module->ftp['host'] . "/uploads/product/{$this->product_id}_{$this->filename}";
                     //return $module->ftp['host'] . "/uploads/product/{$this->product_id}/{$this->filename}";
-                }
-            }
+            //    }
+            //}
             $path = Yii::getAlias("@uploads/store/product/{$this->product_id}/{$this->filename}");
             if (!file_exists($path) || !is_file($path)) {
                 return $this->getNoImageUrl();
             }
             return "/uploads/store/product/{$this->product_id}/{$this->filename}";
         } else {
-            if (isset($_SERVER['REMOTE_ADDR'])) {
-                if ($module->ftp && in_array($_SERVER['REMOTE_ADDR'], ['127.0.0.1', '178.212.194.135', '5.53.113.69'])) {
+            //if (isset($_SERVER['REMOTE_ADDR'])) {
+            //    if ($module->ftp && in_array($_SERVER['REMOTE_ADDR'], ['127.0.0.1', '178.212.194.135', '5.53.113.69'])) {
                     //return $module->ftp['host'] . "/assets/product/{$this->product_id}/{$size}/{$this->filename}";
                     return $module->ftp['host'] . "/assets/product/{$this->product_id}/{$prefix}_{$this->filename}";
-                }
-            }
+            //    }
+            //}
             $path = Yii::getAlias("@uploads/store/product/{$this->product_id}/{$this->filename}");
             if (!file_exists($path) || !is_file($path)) {
                 return $this->getNoImageUrl();
