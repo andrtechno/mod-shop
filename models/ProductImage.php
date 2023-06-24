@@ -159,6 +159,9 @@ class ProductImage extends ActiveRecord
 
     public function get($size = false, array $options = [])
     {
+        if(!$this->filename){
+            return $this->getNoImageUrl();
+        }
         $module = Yii::$app->getModule('shop');
         //$ftp = $module->ftpClient;
         if ($size == 'preview') {

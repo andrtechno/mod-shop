@@ -87,7 +87,6 @@ class m180917_193213_shop_product extends Migration
         $this->createIndex('max_price', Product::tableName(), 'max_price');
         $this->createIndex('switch', Product::tableName(), 'switch');
         $this->createIndex('created_at', Product::tableName(), 'created_at');
-        $this->createIndex('views', Product::tableName(), 'views');
         $this->createIndex('ordern', Product::tableName(), 'ordern');
         $this->createIndex('main_category_id', Product::tableName(), 'main_category_id');
         $this->loadSettings();

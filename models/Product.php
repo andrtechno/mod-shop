@@ -379,7 +379,7 @@ class Product extends ActiveRecord
         $result['url'] = $img;
         $result['title'] = $this->name;
 
-        return Html::a(Html::img($result['url'], ['alt' => $this->name, 'class' => 'img-thumbnail','style'=>'max-width:50px']), $result['big_url'], ['title' => $this->name, 'data-fancybox' => 'gallery']);
+        return Html::a(Html::img($result['url'], ['alt' => $this->name, 'class' => 'img-thumbnail', 'style' => 'max-width:50px']), $result['big_url'], ['title' => $this->name, 'data-fancybox' => 'gallery']);
     }
 
 
@@ -432,6 +432,14 @@ class Product extends ActiveRecord
         return "https://img.youtube.com/vi/" . CMS::parse_yturl($this->video) . "/{$img}.jpg";
     }
 
+    public function init()
+    {
+        parent::init();
+        if ($this->isNewRecord) {
+            $this->quantity = 1;
+            $this->quantity_min = 1;
+        }
+    }
 
     /**
      * @inheritdoc
@@ -440,7 +448,7 @@ class Product extends ActiveRecord
     {
 
         $rules = [];
-
+        $rules[] = [['quantity', 'quantity_min'], 'default', 'value' => 1];
 
         if (!$this->auto) {
             /*$rules[] = ['slug', '\panix\engine\validators\UrlValidator', 'attributeCompare' => 'name'];
@@ -458,6 +466,7 @@ class Product extends ActiveRecord
         $rules[] = [['name', 'slug', 'video'], 'string', 'max' => 255];
         $rules[] = ['video', 'url'];
         // $rules[] = [['image'], 'image'];
+
 
         $rules[] = [['name', 'slug'], 'trim'];
         $rules[] = [['full_description', 'length', 'width', 'height', 'weight'], 'string'];
