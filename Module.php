@@ -193,23 +193,28 @@ class Module extends WebModule implements BootstrapInterface
         }*/
     }
 
-    public function getFtpClient()
+    /*public function getFtpClient()
     {
         $this->_ftpClient = new \FtpClient\FtpClient();
         $this->_ftpClient->connect($this->ftp['server']);
         $this->_ftpClient->login($this->ftp['login'], $this->ftp['password']);
         $this->_ftpClient->pasv(true);
         return $this->_ftpClient;
-    }
+    }*/
 
-    public function getFtpClient2()
+    /*public function getFtpClient()
     {
+        if ($this->ftp) {
+            $this->_ftpClient = ftp_connect($this->ftp['server']);
+            ftp_login($this->_ftpClient, $this->ftp['login'], $this->ftp['password']);
+            ftp_pasv($this->_ftpClient, true);
+            return $this->_ftpClient;
+        } else {
+            return false;
+        }
 
-        $this->_ftpClient = ftp_connect($this->ftp['server']);
-        ftp_login($this->_ftpClient,$this->ftp['login'], $this->ftp['password']);
-        ftp_pasv($this->_ftpClient,true);
-        return $this->_ftpClient;
-    }
+    }*/
+
     /**
      * @param bool|int $current_id
      * @return array|\panix\mod\shop\models\Product[]

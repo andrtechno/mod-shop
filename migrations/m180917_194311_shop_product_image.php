@@ -26,7 +26,7 @@ class m180917_194311_shop_product_image extends Migration
             'filename' => $this->string(255),
             //'file_url'=>$this->text(),
             'alt_title' => $this->string(255),
-            'urlAlias' => $this->string(255),
+            //'urlAlias' => $this->string(255),
             'is_main' => $this->boolean()->defaultValue(false),
             'created_at' => $this->integer(),
             'switch' => $this->boolean()->defaultValue(true),

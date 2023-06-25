@@ -148,8 +148,6 @@ class ImageBehavior extends \yii\base\Behavior
 
         //return file of exsts path
         if (file_exists($saveTo)) {
-            Yii::info('img exist1 ' . $saveTo, 'forsage');
-            Yii::info('img exist2 ' . $url, 'forsage');
             return $saveTo;
         }
         try {
@@ -196,21 +194,6 @@ class ImageBehavior extends \yii\base\Behavior
         $isDownloaded = preg_match('/http(s?)\:\/\//i', $file);
 
 
-        /*if ($isDownloaded) {
-            $download = $this->downloadFile($file);
-            //var_dump($download);die;
-            if ($download) {
-                // $file = $download;
-                $newfile = Yii::getAlias('@runtime/') . $uniqueName . '.' . pathinfo($download, PATHINFO_EXTENSION);
-                rename($download, $newfile);
-                $file = $newfile;
-            }else{
-                Yii::info( 'img not download '.$file,'forsage');
-                return false;
-            }
-        }*/
-
-
         if (!$this->owner->primaryKey) {
             throw new \Exception('Owner must have primaryKey when you attach image!');
         }
@@ -233,11 +216,11 @@ class ImageBehavior extends \yii\base\Behavior
         }
 
         if (!is_object($file)) {
-            $pictureFileName = $uniqueName . '.' . pathinfo($file, PATHINFO_EXTENSION);
+            $extension = pathinfo($file, PATHINFO_EXTENSION);
         } else {
-            $pictureFileName = $uniqueName . '.' . $file->extension;
+            $extension = $file->extension;
         }
-
+        $pictureFileName = $uniqueName . '.' . $extension;
         $newAbsolutePath = BaseFileHelper::normalizePath($path . DIRECTORY_SEPARATOR . $pictureFileName);
 
         $createDir = BaseFileHelper::createDirectory($path, 0775, true);
@@ -246,8 +229,15 @@ class ImageBehavior extends \yii\base\Behavior
         $image->product_id = $this->owner->primaryKey;
         $image->filename = $pictureFileName;
         $image->alt_title = $alt;
+        /*if (in_array($extension, ['jpg'])) {
+            $exif = exif_read_data($file, 'FILE');
+            if ($exif) {
+                if (isset($exif['DateTimeOriginal'])) {
+                    $image->created_at = strtotime($exif['DateTimeOriginal']);
+                }
+            }
+        }*/
 
-        //$image->urlAlias = $this->getAlias($image);
 
         if (!$image->save()) {
             Yii::info('img not save ' . $file, 'forsage');
@@ -300,11 +290,11 @@ class ImageBehavior extends \yii\base\Behavior
             //$versionPath = Yii::getAlias("@uploads/store/product/{$image->product_id}/{$image->filename}");
             $upload = ftp_put($ftpClient, "$ftpPath/{$image->product_id}_{$image->filename}", $newAbsolutePath, FTP_BINARY);
 
-
             $original2 = $image->createVersionFtp('small', ['watermark' => false]);
             $original3 = $image->createVersionFtp('medium', ['watermark' => false]);
-            //$original4 = $image->createVersionFtp('preview', ['watermark' => false]);
+
             ftp_close($ftpClient);
+            FileHelper::unlink($newAbsolutePath);
         }
 
 

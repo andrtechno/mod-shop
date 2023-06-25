@@ -139,8 +139,8 @@ class ProductImage extends ActiveRecord
 
             $assetPather = "/assets/product/{$this->product_id}";
             $deleted = @ftp_delete($ftpClient, "/uploads/product/{$this->product_id}_{$this->filename}");
-            $deleted = @ftp_delete($ftpClient, $assetPather . "/medium__{$this->filename}");
-            $deleted = @ftp_delete($ftpClient, $assetPather . "/small__{$this->filename}");
+            $deleted = @ftp_delete($ftpClient, $assetPather . "/medium_{$this->filename}");
+            $deleted = @ftp_delete($ftpClient, $assetPather . "/small_{$this->filename}");
 
 
             $assetsList = @ftp_nlist($ftpClient, $assetPather);
@@ -181,7 +181,7 @@ class ProductImage extends ActiveRecord
 
             //if (isset($_SERVER['REMOTE_ADDR'])) {
             //    if ($module->ftp && in_array($_SERVER['REMOTE_ADDR'], ['127.0.0.1', '178.212.194.135', '5.53.113.69'])) {
-                    return $module->ftp['host'] . "/uploads/product/{$this->product_id}_{$this->filename}";
+                   // return $module->ftp['host'] . "/uploads/product/{$this->product_id}_{$this->filename}";
                     //return $module->ftp['host'] . "/uploads/product/{$this->product_id}/{$this->filename}";
             //    }
             //}
@@ -193,8 +193,7 @@ class ProductImage extends ActiveRecord
         } else {
             //if (isset($_SERVER['REMOTE_ADDR'])) {
             //    if ($module->ftp && in_array($_SERVER['REMOTE_ADDR'], ['127.0.0.1', '178.212.194.135', '5.53.113.69'])) {
-                    //return $module->ftp['host'] . "/assets/product/{$this->product_id}/{$size}/{$this->filename}";
-                    return $module->ftp['host'] . "/assets/product/{$this->product_id}/{$prefix}_{$this->filename}";
+                    //return $module->ftp['host'] . "/assets/product/{$this->product_id}/{$prefix}{$this->filename}";
             //    }
             //}
             $path = Yii::getAlias("@uploads/store/product/{$this->product_id}/{$this->filename}");
@@ -212,7 +211,7 @@ class ProductImage extends ActiveRecord
     public function createVersion($size = false, array $options = [])
     {
         $module = Yii::$app->getModule('shop');
-        $ftp = $module->ftpClient;
+        //$ftp = $module->ftpClient;
 
         /*$url = '';
         if(in_array($size,['small','medium','preview'])){
@@ -453,26 +452,22 @@ class ProductImage extends ActiveRecord
         }
 
         if ($isSaveFile) {
-            FileHelper::createDirectory($imageAssetPath);
-            $versionPath = FileHelper::normalizePath($imageAssetPath . DIRECTORY_SEPARATOR . $this->filename);
+            //FileHelper::createDirectory($imageAssetPath);
+            //$versionPath = FileHelper::normalizePath($imageAssetPath . DIRECTORY_SEPARATOR . $this->filename);
+
+            $versionPath = FileHelper::normalizePath(Yii::getAlias("@runtime/{$prefix}{$this->filename}"));
             $img->save($versionPath);
             if ($this->ftp) {
-                //$ftpPath = "/assets/product";
-                //if (!@ftp_mkdir($this->ftp, $ftpPath)) {
-                //    echo "Не удалось создать директорию";
-                //}
                 $ftpPath = "/assets/product/{$this->product_id}";
                 if (!@ftp_mkdir($this->ftp, $ftpPath)) {
-                    echo "Не удалось создать директорию";
+                    //echo "Не удалось создать директорию";
                 }
 
-                $upload = @ftp_put($this->ftp, "$ftpPath/{$prefix}_{$this->filename}", $versionPath, FTP_IMAGE);
-                //var_dump($upload);
-                //  echo '<br>';
+                $upload = @ftp_put($this->ftp, "$ftpPath/{$prefix}{$this->filename}", $versionPath, FTP_IMAGE);
+                FileHelper::unlink($versionPath);
             }
         }
         return $assetPath . '/' . basename($img->getFileName());
-        // return $img;
 
     }
 
