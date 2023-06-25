@@ -147,13 +147,12 @@ class CategoryController extends AdminController
     {
         /**
          * @var Category|NestedSetsBehavior $model
-         * @var Category|NestedSetsBehavior $model2
-         * @var Category|NestedSetsBehavior $model3
          **/
         Category::getDb()->createCommand()->truncateTable(Category::tableName())->execute();
 
         $model = new Category;
-        $model->name = 'Каталог продукции';
+        $model->name_ru = 'Каталог продукции';
+        $model->name_uk = 'Каталог продукції';
         $model->lft = 1;
         $model->rgt = 2;
         $model->depth = 1;
@@ -161,29 +160,6 @@ class CategoryController extends AdminController
         $model->full_path = '';
         if ($model->validate()) {
             $model->saveNode();
-
-            /*$model2 = new Category;
-            $model2->name = 'Category 1';
-            $model2->slug = CMS::slug($model2->name);
-            $model2->appendTo($model);
-
-
-            $model2 = new Category;
-            $model2->name = 'Category 2';
-            $model2->slug = CMS::slug($model2->name);
-            $model2->appendTo($model);
-
-
-            $model3 = new Category;
-            $model3->name = 'Category 2-1';
-            $model3->slug = CMS::slug($model3->name);
-            $model3->appendTo($model2);
-
-
-            $model2 = new Category;
-            $model2->name = 'Category 3';
-            $model2->slug = CMS::slug($model2->name);
-            $model2->appendTo($model);*/
             return $this->redirect(['index']);
         } else {
             print_r($model->getErrors());

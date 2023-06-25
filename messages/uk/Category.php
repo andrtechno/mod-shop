@@ -23,5 +23,5 @@ return [
     'META_TITLE' => 'Meta title',
     'META_DESCRIPTION' => 'Meta description',
     'ADD_TO_PARENT' => 'Додавання в категорію: {0}',
-    'NAME_MAIN_UK'=>'Название для главной страницы.'
+    'NAME_MAIN' => 'Назва головної сторінки',
 ];

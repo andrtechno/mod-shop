@@ -8,7 +8,6 @@ use yii\base\Exception;
 use yii\caching\TagDependency;
 use yii\db\ActiveRecord;
 use yii\db\Query;
-use yii\helpers\BaseFileHelper;
 use yii\helpers\FileHelper;
 use yii\httpclient\Client;
 use panix\engine\CMS;
@@ -66,7 +65,7 @@ class ImageBehavior extends \yii\base\Behavior
             }
 
             $path = Yii::getAlias($this->savePath) . DIRECTORY_SEPARATOR . $this->owner->primaryKey;
-            BaseFileHelper::removeDirectory($path);
+            FileHelper::removeDirectory($path);
         }
     }
 
@@ -167,13 +166,14 @@ class ImageBehavior extends \yii\base\Behavior
                 ->send();
             fclose($fh);
 //print_r($response->headers['last-modified']);die;
+
             if ($response->isOk) {
                 return $saveTo;
             } else {
                 return false;
             }
         } catch (\Exception $e) {
-            Yii::info('img catch ' . $url, 'forsage');
+            //var_dump($e->getMessage());die;
             return false;
         }
     }
@@ -221,9 +221,9 @@ class ImageBehavior extends \yii\base\Behavior
             $extension = $file->extension;
         }
         $pictureFileName = $uniqueName . '.' . $extension;
-        $newAbsolutePath = BaseFileHelper::normalizePath($path . DIRECTORY_SEPARATOR . $pictureFileName);
+        $newAbsolutePath = FileHelper::normalizePath($path . DIRECTORY_SEPARATOR . $pictureFileName);
 
-        $createDir = BaseFileHelper::createDirectory($path, 0775, true);
+        $createDir = FileHelper::createDirectory($path, 0775, true);
 
         $image = new ProductImage();
         $image->product_id = $this->owner->primaryKey;
@@ -381,7 +381,7 @@ class ImageBehavior extends \yii\base\Behavior
         $dirToRemove = Yii::getAlias($this->savePath) . '/' . $subdir;
 
         if (preg_match('/' . preg_quote(Yii::getAlias($this->savePath), '/') . '/', $dirToRemove)) {
-            BaseFileHelper::removeDirectory($dirToRemove);
+            FileHelper::removeDirectory($dirToRemove);
             //exec('rm -rf ' . $dirToRemove);
             return true;
         } else {

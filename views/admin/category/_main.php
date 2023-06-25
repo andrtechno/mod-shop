@@ -20,6 +20,7 @@ if (Yii::$app->request->get('parent_id')) {
 
 <?= $form->field($model, 'name')->textInput(['maxlength' => 255]) ?>
 <?= $form->field($model, 'slug')->textInput(['maxlength' => 255]) ?>
+<?= $form->field($model, 'name_main')->textInput(['maxlength' => 255]) ?>
 <?= $form->field($model, 'image', [
     'parts' => [
         '{buttons}' => $model->getFileHtmlButton('image')

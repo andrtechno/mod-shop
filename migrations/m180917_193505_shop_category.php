@@ -3,7 +3,7 @@
 /**
  * Generation migrate by PIXELION CMS
  * @author PIXELION CMS development team <dev@pixelion.com.ua>
- * 
+ *
  * Class m180917_193505_shop_category
  */
 
@@ -28,6 +28,8 @@ class m180917_193505_shop_category extends Migration {
             'icon' => $this->string(50)->null(),
             'name_ru' => $this->string(255)->null(),
             'name_uk' => $this->string(255)->null(),
+            'name_main_ru' => $this->string(255)->null(),
+            'name_main_uk' => $this->string(255)->null(),
             'description_ru' => $this->text()->null(),
             'description_uk' => $this->text()->null(),
             'meta_title_ru' => $this->string(255)->null(),

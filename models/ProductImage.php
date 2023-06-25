@@ -370,19 +370,12 @@ class ProductImage extends ActiveRecord
         $sizes = explode('x', $size);
 
         $isSaveFile = false;
-        //if (isset($sizes[0]) && isset($sizes[1])) {
-        //    $imageAssetPath = Yii::getAlias("@app/web/assets/product/{$this->product_id}/{$size}");
-        //    $assetPath = "/assets/product/{$this->product_id}/{$size}";
-        //} else {
-        //$imageAssetPath = Yii::getAlias("@app/web/assets/product/{$this->product_id}");
-        //$assetPath = '/assets/product/' . $this->product_id;
-
         $imageAssetPath = Yii::getAlias("@app/web/assets/product");
         $assetPath = '/assets/product';
 
 
-        //}
         $imagePath = Yii::getAlias("@uploads/store/product/{$this->product_id}/{$this->filename}");
+        //$imagePath = Yii::getAlias("@runtime/{$this->filename}");
         if (!file_exists($imagePath) || !is_file($imagePath)) {
             $imagePath = $this->getNoImagePath();
             $this->existImage = false;

@@ -61,12 +61,12 @@ class Category extends ActiveRecord
     /**
      * @return array
      */
-    public function getUrl($action='view')
+    public function getUrl($action = 'view')
     {
-        if($action=='view'){
-            return ['/shop/catalog/'.$action, 'slug' => $this->full_path];
-        }else{
-            return ['/shop/catalog/'.$action, 'category' => $this->id];
+        if ($action == 'view') {
+            return ['/shop/catalog/' . $action, 'slug' => $this->full_path];
+        } else {
+            return ['/shop/catalog/' . $action, 'category' => $this->id];
         }
     }
 
@@ -87,8 +87,8 @@ class Category extends ActiveRecord
             [['name', 'slug'], 'trim'],
             [['name', 'slug'], 'required'],
             ['use_seo_parents', 'boolean'],
-            [['description', 'image','icon'], 'default'],
-            [['name', 'meta_title', 'h1'], 'string', 'max' => 255],
+            [['description', 'image', 'icon'], 'default'],
+            [['name', 'meta_title', 'h1', 'name_main'], 'string', 'max' => 255],
             [['meta_description'], 'string'],
             ['description', 'safe']
         ];
@@ -153,7 +153,7 @@ class Category extends ActiveRecord
         ];
         $a['translate'] = [
             'class' => '\panix\mod\shop\components\TranslateBehavior',
-            'translationAttributes' => ['name', 'description', 'meta_title', 'meta_description', 'h1']
+            'translationAttributes' => ['name', 'description', 'meta_title', 'meta_description', 'h1','name_main']
         ];
         return ArrayHelper::merge($a, parent::behaviors());
     }
@@ -171,7 +171,7 @@ class Category extends ActiveRecord
     {
         $result = [];
         $categories = Category::find()->orderBy(['lft' => SORT_ASC])->excludeRoot()->all();
-      //  array_shift($categories);
+        //  array_shift($categories);
 
         foreach ($categories as $c) {
             /**
@@ -278,10 +278,10 @@ class Category extends ActiveRecord
             $parts[] = $this->slug;
             $partsName[] = $this->name_ru;
             $this->full_path = implode('/', array_filter($parts));
-            if($insert)
+            if ($insert)
                 $this->path_hash = md5(mb_strtolower(implode('/', array_filter($partsName))));
 
-           // echo mb_strtolower(implode('/', array_filter($partsName))).PHP_EOL;
+            // echo mb_strtolower(implode('/', array_filter($partsName))).PHP_EOL;
 
         }
 
@@ -292,7 +292,7 @@ class Category extends ActiveRecord
      * @param array $params
      * @return mixed
      */
-    public function h1($params=array())
+    public function h1($params = array())
     {
         if (!empty($this->h1)) {
             $value = $this->h1;
@@ -302,11 +302,12 @@ class Category extends ActiveRecord
 
         return $this->replaceMeta($value, $params);
     }
+
     /**
      * @param array $params
      * @return mixed
      */
-    public function title($params=array())
+    public function title($params = array())
     {
         if (!empty($this->meta_title)) {
             $value = $this->meta_title;
@@ -321,7 +322,7 @@ class Category extends ActiveRecord
      * @param array $params
      * @return mixed
      */
-    public function description($params=array())
+    public function description($params = array())
     {
         if (!empty($this->meta_description)) {
             $value = $this->meta_description;
@@ -336,7 +337,7 @@ class Category extends ActiveRecord
     {
 
         //$replace = [
-       //     "{name}" => $name,
+        //     "{name}" => $name,
         //    "{currency.symbol}" => Yii::$app->currency->active['symbol'],
         //];
         return CMS::textReplace($text, $params);

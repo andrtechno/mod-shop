@@ -22,5 +22,6 @@ return [
     'USE_SEO_PARENTS' => 'Apply to all child categories',
     'META_TITLE' => 'Meta title',
     'META_DESCRIPTION' => 'Meta description',
-    'ADD_TO_PARENT' => 'Add to category: {0}'
+    'ADD_TO_PARENT' => 'Add to category: {0}',
+    'NAME_MAIN' => 'Title for the main page',
 ];

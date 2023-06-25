@@ -22,5 +22,6 @@ return [
     'USE_SEO_PARENTS' => 'Применить ко всем дочерним категориям',
     'META_TITLE' => 'Meta title',
     'META_DESCRIPTION' => 'Meta description',
-    'ADD_TO_PARENT' => 'Добавление в категорию: {0}'
+    'ADD_TO_PARENT' => 'Добавление в категорию: {0}',
+    'NAME_MAIN' => 'Название для главной страницы',
 ];
