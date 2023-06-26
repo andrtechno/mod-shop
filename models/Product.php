@@ -312,7 +312,7 @@ class Product extends ActiveRecord
         parent::afterFind();
     }
 
-    public function getMainImage($size = false, array $options = [])
+    public function getMainImage($size = false, $options = [])
     {
         /** @var $image \panix\mod\shop\components\ImageBehavior|\panix\mod\shop\models\ProductImage */
 
