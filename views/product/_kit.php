@@ -28,7 +28,7 @@ foreach ($model->kit as $set) {
                             <div class="col-sm-5">
                                 <div style="height: 50px"><strong>Ваш товар:</strong></div>
                                 <div>
-                                    <?= Html::img($mainImage->get('300x200'), ['alt' => $model->name]); ?></div>
+                                    <?= Html::img($mainImage->get('medium'), ['alt' => $model->name]); ?></div>
                                 <div class="h6 mt-4"><?= $model->name; ?></div>
                                 <div>
                                 <span class="badge badge-light text-dark">

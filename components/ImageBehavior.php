@@ -113,6 +113,7 @@ class ImageBehavior extends \yii\base\Behavior
                 if ($currentMainId != $post) {
                     $customer->is_main = 1;
                     $customer->update();
+					Yii::$app->db->createCommand()->update(Product::tableName(), ['image' => $customer->filename], ['id' => $customer->product_id])->execute();
                     //$this->owner->main_image = $customer->filename;
                     // $this->owner->save(false);
                 }

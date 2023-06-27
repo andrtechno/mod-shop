@@ -430,6 +430,14 @@ class Product extends ActiveRecord
         return "https://img.youtube.com/vi/" . CMS::parse_yturl($this->video) . "/{$img}.jpg";
     }
 
+    public function init()
+    {
+        parent::init();
+        if ($this->isNewRecord) {
+            $this->quantity = 1;
+            $this->quantity_min = 1;
+        }
+    }
 
     /**
      * @inheritdoc
@@ -439,7 +447,7 @@ class Product extends ActiveRecord
 
         $rules = [];
 
-
+		$rules[] = [['quantity','quantity_min'], 'default','value'=>1];
         if (!$this->auto) {
             /*$rules[] = ['slug', '\panix\engine\validators\UrlValidator', 'attributeCompare' => 'name'];
             $rules[] = ['slug', 'match',

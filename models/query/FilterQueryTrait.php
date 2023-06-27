@@ -24,7 +24,7 @@ trait FilterQueryTrait
             $this->select(["{$function}(CASE WHEN ({$tableName}.currency_id IS NOT NULL)
                     THEN
                         (CASE WHEN ({$tableName}.discount::boolean) THEN
-                         ({$tableName}.price * ((SELECT rate::numeric FROM {$tableNameCur} WHERE id=currency_id) - discount::numeric))
+                         (({$tableName}.price - discount::numeric) * (SELECT rate::numeric FROM {$tableNameCur} WHERE id=currency_id))
                          ELSE
                           ({$tableName}.price * (SELECT rate::numeric FROM {$tableNameCur} WHERE id=currency_id))
                          END)
@@ -36,7 +36,7 @@ trait FilterQueryTrait
             $this->select(["{$function}(CASE WHEN ({$tableName}.currency_id IS NOT NULL)
                     THEN
                         (CASE WHEN ({$tableName}.discount) THEN
-                         ({$tableName}.price * ((SELECT rate FROM {$tableNameCur} WHERE {$tableNameCur}.id={$tableName}.currency_id) - {$tableName}.discount))
+                         (({$tableName}.price - {$tableName}.discount) * (SELECT rate FROM {$tableNameCur} WHERE {$tableNameCur}.id={$tableName}.currency_id))
                          ELSE
                           ({$tableName}.price * (SELECT rate FROM {$tableNameCur} WHERE {$tableNameCur}.id={$tableName}.currency_id))
                          END)
