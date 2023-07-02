@@ -835,11 +835,14 @@ class FilterElastic extends Component
     }
 
     /**
-     * @return string min price
+     * @return integer min price
      */
     public function getMinPrice()
     {
         $res = clone $this->query;
+        if($this->activeAttributes){
+            $res->applyAttributes($this->activeAttributes);
+        }
         $result = $res->aggregatePrice('MIN')->orderBy(false)->asArray()->one();
 
         if ($result) {
@@ -850,11 +853,14 @@ class FilterElastic extends Component
     }
 
     /**
-     * @return string max price
+     * @return integer max price
      */
     public function getMaxPrice()
     {
         $res = clone $this->query;
+        if($this->activeAttributes){
+            $res->applyAttributes($this->activeAttributes);
+        }
         $result = $res->aggregatePrice('MAX')->orderBy(false)->asArray()->one();
         if ($result) {
             return (int)$result['aggregation_price'];
