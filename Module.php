@@ -236,6 +236,24 @@ class Module extends WebModule implements BootstrapInterface
         return $list;
     }
 
+
+    public function getViewProductsByTime($current_id = false)
+    {
+        /** @var \panix\mod\shop\models\Product $productModel */
+        $productModel = Yii::$app->getModule('shop')->model('Product');
+        $list = [];
+        $session = Yii::$app->session->get('views_time');
+        if (!empty($session)) {
+            $ids = array_unique($session);
+            if ($current_id) {
+                $key = array_search($current_id, $ids);
+                unset($ids[$key]);
+            }
+            $list = $productModel::find()->where(['id' => $ids])->all();
+        }
+        return $list;
+    }
+
     public function getReviewsCount()
     {
         return ProductReviews::find()->where(['status' => ProductReviews::STATUS_WAIT])->count();

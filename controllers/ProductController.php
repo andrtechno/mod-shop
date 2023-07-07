@@ -192,6 +192,7 @@ class ProductController extends WebController
         $mainImage = $this->dataModel->getMainImageObject();
 
         $this->sessionViews($this->dataModel->id);
+        $this->sessionViewsByTime($this->dataModel->id);
         $this->view->registerMetaTag(['property' => 'og:image', 'content' => Url::toRoute($mainImage->get(), true)]);
         $this->view->registerMetaTag(['property' => 'og:description', 'content' => (!empty($this->dataModel->short_description)) ? $this->dataModel->short_description : $this->dataModel->name]);
         $this->view->registerMetaTag(['property' => 'og:title', 'content' => Html::encode($this->dataModel->name)]);
@@ -479,6 +480,20 @@ class ProductController extends WebController
         if (isset($session['views'])) {
             if (!in_array($id, $session['views'])) {
                 array_push($_SESSION['views'], $id);
+            }
+        }
+    }
+
+    protected function sessionViewsByTime($id = null)
+    {
+        $session = Yii::$app->session;
+        if (!isset($session['views_time'])) {
+            $session['views_time'] = [];
+        }
+
+        if (isset($session['views_time'])) {
+            if (!in_array($id, $session['views_time'])) {
+                array_push($_SESSION['views_time'], [time()=>$id]);
             }
         }
     }
