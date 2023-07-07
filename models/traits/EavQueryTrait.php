@@ -29,8 +29,7 @@ trait EavQueryTrait
 
                 //$this->join['eavb' . $i] = ['JOIN', '{{%shop__product_attribute_eav}} eavb' . $i, "$pk=`eavb$i`.`entity`"];
 
-                    $this->andwhere(["$attribute" => $values]);
-
+                $this->andwhere(["$attribute" => $values]);
 
 
                 // $this->join['eavb'] = ['JOIN', '{{%shop__product_attribute_eav}} eavb', "$pk=`eavb`.`entity`"];
@@ -48,16 +47,19 @@ trait EavQueryTrait
 
         // $this->distinct(true);
 
-         //$this->groupBy("{$pk}");
+        //$this->groupBy("{$pk}");
         //$this->addGroupBy("{$pk}");
-         //echo $this->createCommand()->rawsql;die;
+        //echo $this->createCommand()->rawsql;die;
         return $this;
     }
-public function applyRootAttributes(array $attributes){
-    if (empty($attributes))
-        return $this;
-    return $this->getFindByEavAttributesRoot($attributes);
-}
+
+    public function applyRootAttributes(array $attributes)
+    {
+        if (empty($attributes))
+            return $this;
+        return $this->getFindByEavAttributesRoot($attributes);
+    }
+
     public function applyAttributes(array $attributes)
     {
         if (empty($attributes))
@@ -153,6 +155,7 @@ public function applyRootAttributes(array $attributes){
         $class = $this->modelClass;
         $pk = $class::tableName() . '.`id`';
         $i = 0;
+        $valuesItems = [];
         unset($attributes['brand']);
         foreach ($attributes as $attribute => $values) {
             // Get attribute compare operator
@@ -169,7 +172,9 @@ public function applyRootAttributes(array $attributes){
 
                 //$this->join['eavb' . $i] = ['JOIN', '{{%shop__product_attribute_eav}} eavb' . $i, "$pk=`eavb$i`.`entity`"];
                 //$this->andwhere(['IN', "`eavb$i`.`value`", $values]);
-                $valuesItems = array_merge($values,$valuesItems);
+
+                //NEW
+                $valuesItems = array_merge($values, $valuesItems);
 
             } elseif (is_int($attribute)) { // If search models with attribute name with anything values.
                 $this->join('JOIN', ProductAttributesEav::tableName() . ' eavb' . $i, "$pk=`eavb$i`.`entity` AND eavb$i.attribute = '$values'");
@@ -180,8 +185,9 @@ public function applyRootAttributes(array $attributes){
 
 
         }
-        if($valuesItems){
-            //  print_r($valuesItems);die;
+
+        //NEW
+        if ($valuesItems) {
             $this->join['eavb'] = ['JOIN', '{{%shop__product_attribute_eav}} eavb', "$pk=`eavb`.`entity`"];
             $this->andwhere(['IN', "`eavb`.`value`", $valuesItems]);
         }
