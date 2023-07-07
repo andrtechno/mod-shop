@@ -155,7 +155,6 @@ trait EavQueryTrait
         $class = $this->modelClass;
         $pk = $class::tableName() . '.`id`';
         $i = 0;
-        $valuesItems = [];
         unset($attributes['brand']);
         foreach ($attributes as $attribute => $values) {
             // Get attribute compare operator
@@ -168,28 +167,13 @@ trait EavQueryTrait
             $values = array_intersect($attributes[$attribute], $values); //anti d-dos убирает лишние значение с запроса.
             // If search models with attribute name with specified values.
             if (is_string($attribute)) {
-
-
-                //$this->join['eavb' . $i] = ['JOIN', '{{%shop__product_attribute_eav}} eavb' . $i, "$pk=`eavb$i`.`entity`"];
-                //$this->andwhere(['IN', "`eavb$i`.`value`", $values]);
-
-                //NEW
-                $valuesItems = array_merge($values, $valuesItems);
-
+                $this->join['eavb' . $i] = ['JOIN', '{{%shop__product_attribute_eav}} eavb' . $i, "$pk=`eavb$i`.`entity`"];
+                $this->andwhere(['IN', "`eavb$i`.`value`", $values]);
             } elseif (is_int($attribute)) { // If search models with attribute name with anything values.
                 $this->join('JOIN', ProductAttributesEav::tableName() . ' eavb' . $i, "$pk=`eavb$i`.`entity` AND eavb$i.attribute = '$values'");
                 //$this->join('JOIN', ProductAttributesEav::tableName().' eavb', "$pk=`eavb`.`entity` AND eavb.attribute = '$values'");
-
             }
             $i++;
-
-
-        }
-
-        //NEW
-        if ($valuesItems) {
-            $this->join['eavb'] = ['JOIN', '{{%shop__product_attribute_eav}} eavb', "$pk=`eavb`.`entity`"];
-            $this->andwhere(['IN', "`eavb`.`value`", $valuesItems]);
         }
 
         // $this->distinct(true);
