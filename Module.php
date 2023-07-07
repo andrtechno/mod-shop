@@ -219,7 +219,10 @@ class Module extends WebModule implements BootstrapInterface
                 $key = array_search($current_id, $ids);
                 unset($ids[$key]);
             }
-            $list = $productModel::find()->where(['id' => $ids])->all();
+            $list = $productModel::find()
+                ->where(['id' => $ids])
+                ->orderBy([new \yii\db\Expression('FIELD (id, ' . implode(',', array_reverse(array_keys($ids))) . ')')])
+                ->all();
         }
         return $list;
     }
