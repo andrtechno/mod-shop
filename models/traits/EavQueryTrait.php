@@ -166,36 +166,10 @@ public function applyRootAttributes(array $attributes){
             // If search models with attribute name with specified values.
             if (is_string($attribute)) {
 
-                /*$this->join['eavbs' . $i] = ['JOIN', '{{%shop__product_attribute_eav}} eavbs' . $i, "$pk=`eavbs$i`.`entity`"];
-                if (count($values)) {
-                    $this->andwhere(['IN', "`eavbs$i`.`value`", $values]);
-                    $this->andwhere(['IN', "`eavbs$i`.`value`", $values]);
-                } else {
-                    $this->andwhere(["`eavbs$i`.`value`" => $values]);
-                }*/
 
-                $this->join['eavb' . $i] = ['JOIN', '{{%shop__product_attribute_eav}} eavb' . $i, "$pk=`eavb$i`.`entity`"];
-                $this->andwhere(['IN', "`eavb$i`.`value`", $values]);
-
-
-
-                /*
-                $this->join['eavb'] = ['JOIN', '{{%shop__product_attribute_eav}} eavb', "$pk=`eavb`.`entity`"];
-                if(is_array($values)){
-                    foreach ($values as $v){
-
-                    }
-                    $this->andwhere(['NOT IN',"`eavb`.`value`", 177]);
-                }else{
-                    $this->andwhere(["`eavb`.`value`" => $values]);
-                }
-                //$this->andwhere(['IN', "`eavb`.`value`", $values]);*/
-
-
-
-
-                // $this->join['eavb'] = ['JOIN', '{{%shop__product_attribute_eav}} eavb', "$pk=`eavb`.`entity`"];
-                // $this->andwhere(['IN', "`eavb`.`value`", $values]);
+                //$this->join['eavb' . $i] = ['JOIN', '{{%shop__product_attribute_eav}} eavb' . $i, "$pk=`eavb$i`.`entity`"];
+                //$this->andwhere(['IN', "`eavb$i`.`value`", $values]);
+                $valuesItems = array_merge($values,$valuesItems);
 
             } elseif (is_int($attribute)) { // If search models with attribute name with anything values.
                 $this->join('JOIN', ProductAttributesEav::tableName() . ' eavb' . $i, "$pk=`eavb$i`.`entity` AND eavb$i.attribute = '$values'");
@@ -206,7 +180,11 @@ public function applyRootAttributes(array $attributes){
 
 
         }
-
+        if($valuesItems){
+            //  print_r($valuesItems);die;
+            $this->join['eavb'] = ['JOIN', '{{%shop__product_attribute_eav}} eavb', "$pk=`eavb`.`entity`"];
+            $this->andwhere(['IN', "`eavb`.`value`", $valuesItems]);
+        }
 
         // $this->distinct(true);
 
