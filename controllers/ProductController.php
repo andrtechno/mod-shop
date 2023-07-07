@@ -191,8 +191,8 @@ class ProductController extends WebController
 
         $mainImage = $this->dataModel->getMainImageObject();
 
+
         $this->sessionViews($this->dataModel->id);
-        $this->sessionViewsByTime($this->dataModel->id);
         $this->view->registerMetaTag(['property' => 'og:image', 'content' => Url::toRoute($mainImage->get(), true)]);
         $this->view->registerMetaTag(['property' => 'og:description', 'content' => (!empty($this->dataModel->short_description)) ? $this->dataModel->short_description : $this->dataModel->name]);
         $this->view->registerMetaTag(['property' => 'og:title', 'content' => Html::encode($this->dataModel->name)]);
