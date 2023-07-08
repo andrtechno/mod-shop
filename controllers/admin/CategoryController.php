@@ -201,7 +201,7 @@ class CategoryController extends AdminController
                 $modelGRP->prompt = str_replace(['{current_category}', '{parent_category}'], [$category->name, $parent->name], $modelGRP->prompt);
 
 
-                /*$ai = Yii::$app->chatgpt;
+                $ai = Yii::$app->chatgpt;
                 $ai->setORG('org-JwpyHD3oO2fI7JMo49MbxUxM');
                 $gpt = $ai->completion([
                     'model' => 'text-davinci-003',
@@ -211,19 +211,19 @@ class CategoryController extends AdminController
                     'n' => 1,//(int)$modelGRP->n,
                     'frequency_penalty' => (float)$modelGRP->frequency_penalty,
                     'presence_penalty' => (float)$modelGRP->presence_penalty,
-                ]);*/
+                ]);
                 //\panix\engine\CMS::dump($gpt);die;
 
-                /*$result['success'] = false;
+                $result['success'] = false;
                 if (isset($gpt->error)) {
                     $result['message'] = $gpt->error->message;
                 }
                 if (isset($gpt->choices[0]->text)) {
                     $result['success'] = true;
                     $result['result'] = trim($gpt->choices[0]->text);
-                }*/
-                $result['success'] = true;
-                $result['result'] = 'ok result '.CMS::gen(5);
+                }
+                //$result['success'] = true;
+                //$result['result'] = 'ok result '.CMS::gen(5);
                 /*echo '<br><br><br>';
                 if (isset($gpt->usage)) {
                     echo '<div>запрос tokens: ' . $gpt->usage->prompt_tokens . '</div>';
