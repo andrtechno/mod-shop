@@ -484,19 +484,6 @@ class ProductController extends WebController
         }
     }
 
-    protected function sessionViewsByTime($id = null)
-    {
-        $session = Yii::$app->session;
-        if (!isset($session['views_time'])) {
-            $session['views_time'] = [];
-        }
-
-        if (isset($session['views_time'])) {
-            if (!in_array($id, $session['views_time'])) {
-                array_push($_SESSION['views_time'], [time()=>$id]);
-            }
-        }
-    }
 
     public function getConfigurableData()
     {

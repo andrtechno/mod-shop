@@ -35,4 +35,9 @@ if (Yii::$app->request->get('parent_id')) {
 ])->fileInput() ?>
 
 
-<?= $form->field($model, 'description')->widget(TinyMce::class, ['options' => ['rows' => 6]]); ?>
+<?= $form->field($model, 'description')->widget(TinyMce::class, ['options' => ['rows' => 6]])->hint(''); ?>
+<?php if(!$model->isNewRecord){ ?>
+<button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#exampleModal">
+    ChatGPT
+</button>
+<?php } ?>
