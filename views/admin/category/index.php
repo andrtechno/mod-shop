@@ -122,6 +122,48 @@ $this->registerJs("
     }).on('submit', function(e){
         e.preventDefault();
     });
+    
+    
+    
+    $(document).on('click', '#btn-changes', function(e) {
+        $('#dynamicmodel-result').attr('disabled',true).html('');
+        var form = $('#chatgpt-form');
+        var formData = form.serialize();
+
+        $.ajax({
+            url: form.attr('action'),
+            type: form.attr('method'),
+            data: formData,
+            dataType: 'json',
+            beforeSend: function () {
+                $('#exampleModal .modal-content').addClass('pjax-loading');
+
+            },
+            success: function (data) {
+                $('#exampleModal .modal-content').removeClass('pjax-loading');
+                if(data.success){
+
+                        $('#dynamicmodel-result').html(data.result);
+                        $('#dynamicmodel-result').attr('disabled',false);
+                        $('#btn-changes').removeClass('d-none');
+                        $('#btn-next').html('Применить');
+
+                    
+                }else{
+                    common.notify(data.message,'error');
+                }
+            },
+            error: function () {
+                console.log('Something went wrong');
+                $('#exampleModal .modal-content').removeClass('pjax-loading');
+            }
+        });
+
+    }).on('submit', function(e){
+        e.preventDefault();
+    });
+    
+    
 ");
 $this->registerCss('
 [data-notify="container"]{
@@ -194,7 +236,7 @@ z-index:2000 !important;
 
             </div>
             <div class="modal-footer">
-                <?php echo Html::button('Другой вариант', ['class' => 'btn btn-primary d-none','name'=>'change','id'=>'btn-changes']); ?>
+                <?php echo Html::button('Другой вариант', ['class' => 'btn btn-primary d-none','name'=>'change','id'=>'btn-changes','value'=>1]); ?>
                 <?php echo Html::submitButton('Далее', ['class' => 'btn btn-success','id'=>'btn-next','name'=>'next']); ?>
             </div>
             <?php ActiveForm::end(); ?>
