@@ -113,8 +113,8 @@ $this->registerJs("
                     common.notify(data.message,'error');
                 }
             },
-            error: function () {
-                console.log('Something went wrong');
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log(jqXHR, textStatus, errorThrown);
                 $('#exampleModal .modal-content').removeClass('pjax-loading');
             }
         });
@@ -153,8 +153,8 @@ $this->registerJs("
                     common.notify(data.message,'error');
                 }
             },
-            error: function () {
-                console.log('Something went wrong');
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log(jqXHR, textStatus, errorThrown);
                 $('#exampleModal .modal-content').removeClass('pjax-loading');
             }
         });
