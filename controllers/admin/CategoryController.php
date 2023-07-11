@@ -202,7 +202,6 @@ class CategoryController extends AdminController
 
 
                 $ai = Yii::$app->chatgpt;
-                $ai->setORG('org-JwpyHD3oO2fI7JMo49MbxUxM');
                 $gpt = $ai->completion([
                     'model' => 'text-davinci-003',
                     'prompt' => $modelGRP->prompt,
