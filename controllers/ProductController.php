@@ -193,12 +193,12 @@ class ProductController extends WebController
 
 
         $this->sessionViews($this->dataModel->id);
-        $this->view->registerMetaTag(['property' => 'og:image', 'content' => Url::toRoute($mainImage->get(), true)]);
-        $this->view->registerMetaTag(['property' => 'og:description', 'content' => (!empty($this->dataModel->short_description)) ? $this->dataModel->short_description : $this->dataModel->name]);
-        $this->view->registerMetaTag(['property' => 'og:title', 'content' => Html::encode($this->dataModel->name)]);
-        $this->view->registerMetaTag(['property' => 'og:image:alt', 'content' => Html::encode($this->dataModel->name)]);
-        $this->view->registerMetaTag(['property' => 'og:type', 'content' => 'product']);
-        $this->view->registerMetaTag(['property' => 'og:url', 'content' => Url::toRoute($this->dataModel->getUrl(), true)]);
+        $this->view->registerMetaTag(['property' => 'og:image', 'content' => Url::toRoute($mainImage->get(), true)], 'og:image');
+        //$this->view->registerMetaTag(['property' => 'og:description', 'content' => (!empty($this->dataModel->short_description)) ? $this->dataModel->short_description : $this->dataModel->name]);
+        $this->view->registerMetaTag(['property' => 'og:title', 'content' => Html::encode($this->dataModel->name)], 'og:title');
+        //$this->view->registerMetaTag(['property' => 'og:image:alt', 'content' => Html::encode($this->dataModel->name)]);
+        $this->view->registerMetaTag(['property' => 'og:type', 'content' => 'product'], 'og:type');
+        $this->view->registerMetaTag(['property' => 'og:url', 'content' => Url::toRoute($this->dataModel->getUrl(), true)], 'og:url');
 
         //Yii::app()->clientScript->registerScriptFile($this->module->assetsUrl . '/product.view.js', CClientScript::POS_END);
         $this->view->registerJs("
@@ -218,7 +218,7 @@ class ProductController extends WebController
         } else {
             $reviewsCount = 0;
         }
-       // var_dump($reviewsCount);die;
+        // var_dump($reviewsCount);die;
         return $this->render('view', ['model' => $this->dataModel, 'mainImage' => $mainImage, 'reviewsCount' => $reviewsCount]);
     }
 

@@ -57,10 +57,10 @@ class CatalogController extends FilterController
 
         $firstProduct = Product::find()->applyCategories($this->dataModel->id)->sort()->one();
         $mainImage = $firstProduct->getMainImageObject();
-        $this->view->registerMetaTag(['property' => 'og:image', 'content' => Url::to($mainImage->get(), true)]);
-        $this->view->registerMetaTag(['property' => 'og:title', 'content' => Html::encode($this->dataModel->name)]);
-        $this->view->registerMetaTag(['property' => 'og:type', 'content' => 'website']);
-        $this->view->registerMetaTag(['property' => 'og:url', 'content' => Url::toRoute($this->dataModel->getUrl(), true)]);
+        $this->view->registerMetaTag(['property' => 'og:image', 'content' => Url::to($mainImage->get(), true)], 'og:image');
+        $this->view->registerMetaTag(['property' => 'og:title', 'content' => Html::encode($this->dataModel->name)], 'og:title');
+        $this->view->registerMetaTag(['property' => 'og:type', 'content' => 'website'], 'og:type');
+        $this->view->registerMetaTag(['property' => 'og:url', 'content' => Url::toRoute($this->dataModel->getUrl(), true)], 'og:url');
 
 
         if (file_exists(Yii::getAlias('@theme/modules/shop/views/catalog/view2.php'))) {
