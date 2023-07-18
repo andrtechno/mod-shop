@@ -12,7 +12,7 @@ use panix\mod\shop\models\Category;
 use panix\engine\CMS;
 use panix\engine\data\ActiveDataProvider;
 use panix\mod\discounts\models\Discount;
-
+use panix\engine\Html;
 
 /**
  * Class CatalogController
@@ -53,6 +53,15 @@ class CatalogController extends FilterController
         //$this->query->applyCategories($this->dataModel, 'andWhere', $this->dataModel->children()->count());
         $this->query->applyCategories($this->dataModel, 'andWhere', $this->dataModel->children()->count());
 //echo $this->dataModel->children()->count();
+
+
+        $firstProduct = Product::find()->applyCategories($this->dataModel->id)->sort()->one();
+        $mainImage = $firstProduct->getMainImageObject();
+        $this->view->registerMetaTag(['property' => 'og:image', 'content' => Url::to($mainImage->get(), true)]);
+        $this->view->registerMetaTag(['property' => 'og:title', 'content' => Html::encode($this->dataModel->name)]);
+        $this->view->registerMetaTag(['property' => 'og:type', 'content' => 'website']);
+        $this->view->registerMetaTag(['property' => 'og:url', 'content' => Url::toRoute($this->dataModel->getUrl(), true)]);
+
 
         if (file_exists(Yii::getAlias('@theme/modules/shop/views/catalog/view2.php'))) {
             if ($this->dataModel->children()->count()) {
