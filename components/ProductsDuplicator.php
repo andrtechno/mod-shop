@@ -77,11 +77,17 @@ class ProductsDuplicator extends \yii\base\Component
         }
         $product->name .= $this->getSuffix();
         $product->slug .= CMS::slug($this->getSuffix()) . '-' . time();
-        $product->main_category_id = $model->mainCategory->id;
+        $product->main_category_id = $model->main_category_id;
         $product->views = 0;
         $product->added_to_cart_count = 0;
         $product->scenario = 'duplicate';
+
         if ($product->validate()) {
+            $tags = $model->getTagValues(true);
+            if($tags){
+                $product->setTagValues($tags);
+            }
+
             if ($product->save()) {
                 foreach ($this->duplicate as $feature) {
                     $method_name = 'copy' . ucfirst($feature);
@@ -97,6 +103,10 @@ class ProductsDuplicator extends \yii\base\Component
                     }
                 }
                 $product->setCategories($categories, $model->main_category_id);
+
+                //print_r($model->getTagValues());die;
+
+
                 return $product;
             } else {
                 die(__FUNCTION__ . ': Error save');
