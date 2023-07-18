@@ -6,13 +6,20 @@ use panix\mod\shop\models\Supplier;
 
 /** @var $form panix\engine\bootstrap\ActiveForm */
 ?>
+<?php
 
-<?=
-
-$form->field($model, 'supplier_id')->dropDownList(ArrayHelper::map(Supplier::find()->cache(3200, new DbDependency(['sql' => 'SELECT MAX(`updated_at`) FROM ' . Supplier::tableName()]))->all(), 'id', 'name'), [
-    'prompt' => html_entity_decode($model::t('SELECT_SUPPLIER_ID'))
+echo $form->field($model, 'supplier_id')->widget(\panix\ext\select2\Select2::class,[
+    'items' => ArrayHelper::map(Supplier::find()->cache(3200, new DbDependency(['sql' => 'SELECT MAX(`updated_at`) FROM ' . Supplier::tableName()]))->orderBy(['name' => SORT_ASC])->all(), 'id', 'name'),
+    'options' => [
+        'prompt' => html_entity_decode($model::t('SELECT_SUPPLIER_ID'))
+    ],
+    'clientOptions' => [
+        /// 'placeholder'=>Yii::t('app/default', 'EMPTY_LIST'),
+        'width' => '100%'
+    ]
 ]);
 ?>
+
 <?= $form->field($model, 'quantity_min')->textInput(['maxlength' => 255]) ?>
 <?= $form->field($model, 'in_box')->textInput(['maxlength' => 255]) ?>
 <?= $form->field($model, 'quantity')->textInput(['maxlength' => 255]) ?>
