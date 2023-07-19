@@ -192,7 +192,7 @@ class ImageBehavior extends \yii\base\Behavior
     {
         $uniqueName = mb_strtolower(\panix\engine\CMS::gen(10));
         $isDownloaded = preg_match('/http(s?)\:\/\//i', $file);
-
+        $module = Yii::$app->getModule('shop');
 
         if (!$this->owner->primaryKey) {
             throw new \Exception('Owner must have primaryKey when you attach image!');
@@ -221,7 +221,12 @@ class ImageBehavior extends \yii\base\Behavior
             $extension = $file->extension;
         }
         $pictureFileName = $uniqueName . '.' . $extension;
-        $newAbsolutePath = FileHelper::normalizePath($path . DIRECTORY_SEPARATOR . $pictureFileName);
+        if ($module->ftp) {
+            $newAbsolutePath = FileHelper::normalizePath(Yii::getAlias("@runtime/{$pictureFileName}"));
+        }else{
+            $newAbsolutePath = FileHelper::normalizePath($path . DIRECTORY_SEPARATOR . $pictureFileName);
+        }
+
 
         $createDir = FileHelper::createDirectory($path, 0775, true);
 
@@ -276,7 +281,7 @@ class ImageBehavior extends \yii\base\Behavior
         }
 
 
-        $module = Yii::$app->getModule('shop');
+
         if ($module->ftp) {
             $ftpClient = ftp_connect($module->ftp['server']);
             ftp_login($ftpClient, $module->ftp['login'], $module->ftp['password']);

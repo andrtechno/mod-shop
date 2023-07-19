@@ -178,7 +178,7 @@ class ProductImage extends ActiveRecord
         }
 
         if (!$size) {
-            if ($module->ftp && in_array($_SERVER['REMOTE_ADDR'], ['178.212.194.135'])) {
+            if ($module->ftp) {
                 return $module->ftp['host'] . "/uploads/product/{$this->product_id}_{$this->filename}";
             }
 
@@ -188,7 +188,7 @@ class ProductImage extends ActiveRecord
             }
             return "/uploads/store/product/{$this->product_id}/{$this->filename}";
         } else {
-            if ($module->ftp && in_array($_SERVER['REMOTE_ADDR'], ['178.212.194.135'])) {
+            if ($module->ftp) {
                 return $module->ftp['host'] . "/assets/product/{$this->product_id}/{$prefix}{$this->filename}";
             }
             $path = Yii::getAlias("@uploads/store/product/{$this->product_id}/{$this->filename}");
@@ -444,6 +444,7 @@ class ProductImage extends ActiveRecord
             //$versionPath = FileHelper::normalizePath($imageAssetPath . DIRECTORY_SEPARATOR . $this->filename);
 
             $versionPath = FileHelper::normalizePath(Yii::getAlias("@runtime/{$prefix}{$this->filename}"));
+
             $img->save($versionPath);
             if ($this->ftp) {
                 $ftpPath = "/assets/product/{$this->product_id}";
