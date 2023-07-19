@@ -131,6 +131,18 @@ class Module extends WebModule implements BootstrapInterface
                 'index' => 'new',
                 'pattern' => 'new'
             ];
+            /*$rules[] = [
+                'class' => 'panix\mod\shop\components\rules\BaseUrlRule',
+                'route' => 'shop/catalog/last',
+                'index' => 'last',
+                'pattern' => 'last/<params:.*>'
+            ];
+            $rules[] = [
+                'class' => 'panix\mod\shop\components\rules\BaseUrlRule',
+                'route' => 'shop/catalog/last',
+                'index' => 'last',
+                'pattern' => 'last'
+            ];*/
         }
 
         $app->urlManager->addRules(

@@ -542,4 +542,45 @@ class CatalogController extends FilterController
         }
     }
 
+
+
+    public function actionLast()
+    {
+        /** @var Product $dataModel */
+        $this->dataModel = Yii::$app->getModule('shop')->model('Product');
+
+        $this->query = Product::find()->published();
+        $this->currentUrl = Url::to(['/shop/catalog/sales']);
+
+        $this->pageName = Yii::t('shop/default', 'DISCOUNT');
+
+        $this->refreshUrl = $this->currentUrl;
+
+        $this->view->params['breadcrumbs'][] = $this->pageName;
+
+        $this->dataModel = $this->findModel('woman'); //for fix error!
+
+        $cacheKey = str_replace('/', '-', Yii::$app->controller->route);
+        if (Yii::$app->request->getQueryParam('category')) {
+            $cacheKey .= '-' . Yii::$app->request->getQueryParam('category');
+        }
+        $this->filter = new $this->filterClass($this->query, ['cacheKey' => 'ggggggg']);
+        $this->filter->resultQuery->sortAvailability();
+
+        $this->filterQuery = clone $this->filter->resultQuery;
+        $this->currentQuery = clone $this->query;
+
+        $this->filterQuery->addOrderBy(['updated_at' => SORT_DESC]);
+
+        $this->provider = new ActiveDataProvider([
+            'query' => $this->filterQuery,
+            'pagination' => [
+                'pageSize' => $this->per_page,
+            ],
+        ]);
+
+        return $this->_render();
+
+    }
+
 }
