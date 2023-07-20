@@ -159,8 +159,6 @@ $this->registerJs("
             }
         });
 
-    }).on('submit', function(e){
-        e.preventDefault();
     });
     
     

@@ -77,7 +77,7 @@ class Category extends ActiveRecord
     {
         return [
             [['image'], 'file', 'skipOnEmpty' => true, 'extensions' => ['png', 'jpg', 'jpeg']],
-            [['icon'], 'file', 'skipOnEmpty' => true, 'extensions' => ['png']],
+            [['icon'], 'file', 'skipOnEmpty' => true, 'extensions' => ['png', 'svg']],
             ['slug', '\panix\mod\shop\components\CategoryUrlValidator', 'attributeCompare' => 'name'],
             ['slug', 'fullPathValidator'],
             ['slug', 'match',
@@ -153,7 +153,7 @@ class Category extends ActiveRecord
         ];
         $a['translate'] = [
             'class' => '\panix\mod\shop\components\TranslateBehavior',
-            'translationAttributes' => ['name', 'description', 'meta_title', 'meta_description', 'h1','name_main']
+            'translationAttributes' => ['name', 'description', 'meta_title', 'meta_description', 'h1', 'name_main']
         ];
         return ArrayHelper::merge($a, parent::behaviors());
     }
