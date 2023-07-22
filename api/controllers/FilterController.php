@@ -117,11 +117,12 @@ class FilterController extends Controller
             $url = $category->getUrl();
         }
         $filterPost = Yii::$app->request->post('filter');
-
-        $filter = new FilterLite($query, [
+        $filterClass = Yii::$app->getModule('shop')->filterClass;
+        $filter = new $filterClass($query,['route'=>$url]);
+        /*$filter = new FilterLite($query, [
             'route' => $url,
             'cacheKey' => Yii::$app->request->post('cache')
-        ]);
+        ]);*/
 
         $filter->accessAttributes = $accessAttributes;
 
