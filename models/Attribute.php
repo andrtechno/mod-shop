@@ -358,6 +358,10 @@ class Attribute extends ActiveRecord
      */
     public function renderValue($value)
     {
+        $valueTo = 'value';
+        if(Yii::$app->language != 'ru'){
+            $valueTo = 'value_'.Yii::$app->language;
+        }
         switch ($this->type) {
             case self::TYPE_TEXT:
             case self::TYPE_TEXTAREA:
@@ -366,13 +370,13 @@ class Attribute extends ActiveRecord
             case self::TYPE_DROPDOWN:
             case self::TYPE_COLOR:
             case self::TYPE_RADIO_LIST:
-                $data = ArrayHelper::map($this->options, 'id', 'value');
+                $data = ArrayHelper::map($this->options, 'id', $valueTo);
                 if (!is_array($value) && isset($data[$value]))
                     return $data[$value];
                 break;
             case self::TYPE_SELECT_MANY:
             case self::TYPE_CHECKBOX_LIST:
-                $data = ArrayHelper::map($this->options, 'id', 'value');
+                $data = ArrayHelper::map($this->options, 'id', $valueTo);
                 $result = [];
 
                 if (!is_array($value))
