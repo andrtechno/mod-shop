@@ -272,7 +272,11 @@ class Category extends ActiveRecord
             $partsName = [];
             foreach ($ancestors as $ancestor) {
                 $parts[] = $ancestor->slug;
-                $partsName[] = $ancestor->name_ru;
+                if($key){
+                    $partsName[] = $ancestor->full_path;
+                }else{
+                    $partsName[] = $ancestor->name_ru;
+                }
             }
 
             $parts[] = $this->slug;
