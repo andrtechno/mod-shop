@@ -78,7 +78,7 @@ class CatalogController extends ApiActiveController
                 $json['data']['products'][] = [
                     'id' => $m->id,
                     'name' => $m->{$name},
-                    'price' => Yii::$app->currency->number_format($m->price, $m->currency_id),
+                    'price' => Yii::$app->currency->number_format($m->hasDiscount ? $m->discountPrice : $m->price, $m->currency_id),
                     'currency' => Yii::$app->currency->getById($m->currency_id)->symbol,
                     //'url' => ApiHelpers::url($m->getUrl()),
                     'url' => ApiHelpers::url("/product/" . $m->slug . '-' . $m->id, true),
