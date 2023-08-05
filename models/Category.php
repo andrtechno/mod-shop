@@ -282,10 +282,9 @@ class Category extends ActiveRecord
             $parts[] = $this->slug;
             $partsName[] = $this->name_ru;
             $this->full_path = implode('/', array_filter($parts));
-            if ($insert)
-                $this->path_hash = md5(mb_strtolower(implode('/', array_filter($partsName))));
+            //if ($insert)
+            //    $this->path_hash = md5(mb_strtolower(implode('/', array_filter($partsName))));
 
-            // echo mb_strtolower(implode('/', array_filter($partsName))).PHP_EOL;
 
         }
 

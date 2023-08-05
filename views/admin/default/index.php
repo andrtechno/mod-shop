@@ -9,6 +9,60 @@ use yii\web\UploadedFile;
 use FtpClient\FtpClient;
 use panix\engine\Html;
 
+
+$client = new \app\components\PromApi('33d6e6625b6104faf872880b117bb4c313cf4161');
+
+
+//$order = $client->get_product_list();
+// echo var_dump($order);
+//\panix\engine\CMS::dump($order);
+
+$data['id'] = 1895944445;
+$data['price'] = 3333;
+$data["presence"] = "available";
+$data["status"] = "on_display";
+$data["name"] = " 1111asd asdd sa dsad sa";
+$data["keywords"] = "tag1, tag2, dddd, dsa dsa";
+$data["description"] = "dsad asd ";
+$params[] = $data;
+\panix\engine\CMS::dump($params);
+//$order2 = $client->get_product_edit($params);
+
+$data=[];
+
+$data['url'] = 'https://docs.google.com/spreadsheets/d/15TRwLaWp4Y_yTR0mv6d04uBxcrQaKhpBxSlqZD1X-es';
+//$data['url'] = 'https://static.mirodejdy.com.ua/export-products.xlsx';
+$data["force_update"] = true;
+$data["only_available"] = false;
+$data["mark_missing_product_as"] = "none";
+$data["updated_fields"] = [
+    "price",
+    "presence"
+];
+$params=[];
+$params[] = $data;
+$import = $client->import_url($data);
+
+
+\panix\engine\CMS::dump($import);
+
+
+/*
+$client = new \yii\httpclient\Client();
+
+$response = $client->createRequest()
+    ->setMethod('POST')
+    ->setUrl('https://my.prom.ua/api/v1/products/edit')
+    ->setData($data)
+    ->setHeaders(['content-type' => 'application/json'])
+    ->addHeaders(['Authorization' => 'Bearer 33d6e6625b6104faf872880b117bb4c313cf4161'])
+    ->send();
+
+print_r($response->content);
+*/
+die;
+
+
 $module = Yii::$app->getModule('shop');
 /*
 $product_id = 1;
