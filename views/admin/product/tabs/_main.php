@@ -8,6 +8,7 @@ use panix\ext\tinymce\TinyMce;
 
 /**
  * @var panix\engine\bootstrap\ActiveForm $form
+ * @var \yii\web\View $this
  */
 
 ?>
@@ -35,7 +36,7 @@ echo $form->field($model, 'brand_id')->dropDownList(ArrayHelper::map(Brand::find
 ]);*/
 
 
-echo $form->field($model, 'brand_id')->widget(\panix\ext\select2\Select2::class,[
+echo $form->field($model, 'brand_id')->widget(\panix\ext\select2\Select2::class, [
     'items' => ArrayHelper::map(Brand::find()->cache(3200, new DbDependency(['sql' => 'SELECT MAX(`updated_at`) FROM ' . Brand::tableName()]))->orderBy(['name_' . Yii::$app->language => SORT_ASC])->all(), 'id', 'name'),
     'options' => [
         'prompt' => html_entity_decode($model::t('SELECT_BRAND_ID'))
@@ -45,9 +46,6 @@ echo $form->field($model, 'brand_id')->widget(\panix\ext\select2\Select2::class,
         'width' => '100%'
     ]
 ]);
-
-
-
 
 
 $model->label = $model->getLabel();
@@ -67,4 +65,4 @@ $form->field($model, 'full_description')->widget(TinyMce::class, [
 ]);
 
 ?>
-<?php echo $form->field($model, 'tagValues')->widget(\panix\ext\taginput\TagInput::class); ?>
+<?php echo $form->field($model, 'tagValues')->widget(\panix\ext\taginput\TagInput::class, ['suggestUrl' => '/admin/shop/json/tag-suggest']); ?>
