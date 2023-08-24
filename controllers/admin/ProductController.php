@@ -3,6 +3,7 @@
 namespace panix\mod\shop\controllers\admin;
 
 use panix\engine\CMS;
+use panix\engine\taggable\Tag;
 use panix\mod\shop\components\EavBehavior;
 use panix\mod\shop\models\Category;
 use panix\mod\shop\models\Kit;

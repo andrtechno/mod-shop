@@ -23,8 +23,10 @@ class SearchController extends FilterController
         $productModel = Yii::$app->getModule('shop')->model('Product');
         $this->query = $productModel::find()->published();
         //$this->query->andWhere(['!=', "{$productModel::tableName()}.availability", $productModel::STATUS_ARCHIVE]);
-        $this->query->andWhere(["{$productModel::tableName()}.availability" => [$productModel::STATUS_IN_STOCK, $productModel::STATUS_PREORDER]]);
-
+        $config = Yii::$app->settings->get('shop');
+        if (!empty($config->search_availability)) {
+            $this->query->andWhere(["{$productModel::tableName()}.availability" => $config->search_availability]);
+        }
         //$this->query->attachBehaviors((new $productModel)->behaviors());
         $q = Yii::$app->request->post('q');
 

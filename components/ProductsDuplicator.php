@@ -154,12 +154,14 @@ class ProductsDuplicator extends \yii\base\Component
                 if ($image_copy->validate()) {
                     if ($image_copy->save()) {
                         $created = BaseFileHelper::createDirectory($path, 0775, true);
+
                         if ($created && file_exists($absolutePath)){
                             if(!copy($absolutePath, $newAbsolutePath)){
                                 echo 'ERROR copy image';die;
                             }
                         }else{
-                            echo 'ERROR crated';die;
+                            echo 'ERROR crated'.$path;die;
+                            //return ['success'=>false];
                         }
 
                     }

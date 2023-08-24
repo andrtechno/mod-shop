@@ -29,4 +29,9 @@ return [
     'WM_POS_REPEAT' => 'Repeat on entire image',
     'ERROR_WM_NO_IMAGE' => 'Error. The watermark is not an image.',
     'ENABLE_REVIEWS' => 'Activate product reviews',
+    'SEARCH_AVAILABILITY' => 'Search Query',
+    'SEARCH_LIMIT' => 'Number of items in the result',
+    'TAB_MAIN' => 'General',
+    'TAB_IMAGE' => 'Image',
+    'TAB_SEARCH' => 'Search',
 ];

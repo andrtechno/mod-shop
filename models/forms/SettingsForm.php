@@ -30,6 +30,8 @@ class SettingsForm extends SettingsModel
     public $attachment_wm_offsety;
     public $enable_reviews;
 
+    public $search_availability;
+    public $search_limit;
     public static $extensionWatermark = ['png'];
 
     public function rules()
@@ -37,10 +39,10 @@ class SettingsForm extends SettingsModel
         return [
             [['per_page'], "required"],
             [['product_related_bilateral', 'group_attribute', 'smart_bc', 'smart_title', 'enable_reviews'], 'boolean'],
-            [['label_expire_new', 'added_to_cart_count'], 'integer'],
+            [['label_expire_new', 'added_to_cart_count', 'search_limit'], 'integer'],
             [['email_notify_reviews'], '\panix\engine\validators\EmailListValidator'],
             [['added_to_cart_period'], 'string'],
-
+            ['search_availability', 'each', 'rule' => ['integer']],
             [['watermark_enable'], 'boolean'],
             [['attachment_wm_corner', 'attachment_wm_offsety', 'attachment_wm_offsetx'], 'integer'],
             ['attachment_wm_path', 'validateWatermarkFile'],
@@ -68,7 +70,9 @@ class SettingsForm extends SettingsModel
             'attachment_wm_offsety' => 10,
             'attachment_wm_offsetx' => 10,
             'attachment_wm_corner' => 5,
-            'enable_reviews' => false
+            'enable_reviews' => false,
+            'search_availability' => '["1","2"]',
+            'search_limit' => '["1","2"]'
         ];
     }
 

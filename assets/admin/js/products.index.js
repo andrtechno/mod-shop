@@ -14,8 +14,7 @@
  $('#productsListGrid .filters :input').first().trigger('change');
  });
  */
-
-var grid = $('#grid-product');
+var grid = $('#grid-product'); //not used!!
 var pjax = '#pjax-grid-product';
 var uiDialog = $('.ui-dialog');
 var modal = $('#ProductSetModal');
@@ -27,7 +26,7 @@ var modal = $('#ProductSetModal');
  */
 function setProductsStatus(status_id, el) {
 
-    var selection = grid.yiiGridView('getSelectedRows');
+    var selection = $('#grid-product').yiiGridView('getSelectedRows');
     if (checkSelected()) {
         yii.confirm($(el).data('confirm-info'), function () {
             $.ajax({
@@ -165,7 +164,7 @@ function showCategoryAssignWindow(el_clicked) {
 }
 
 function ajax_save_set_categories() {
-    var selection = grid.yiiGridView('getSelectedRows');
+    var selection = $('#grid-product').yiiGridView('getSelectedRows');
     var checked = $("#CategoryAssignTreeDialog .jstree-checked");
     var ids = [];
 
@@ -206,7 +205,8 @@ function ajax_save_set_categories() {
 
 
 function ajax_save_copy() {
-    var selection = grid.yiiGridView('getSelectedRows');
+    var selection = $('#grid-product').yiiGridView('getSelectedRows');
+
     var button = modal.find('.modal-footer button');
     $.ajax(common.url('/admin/shop/product/duplicate-products'), {
         type: "POST",
@@ -295,7 +295,7 @@ function setProductsPrice(el_clicked) {
 }
 
 function ajax_save_set_prices() {
-    var selection = grid.yiiGridView('getSelectedRows');
+    var selection = $('#grid-product').yiiGridView('getSelectedRows');
     var button = modal.find('.modal-footer button');
     $.ajax(common.url('/admin/shop/product/set-products'), {
         type: "POST",

@@ -15,13 +15,17 @@ $form = ActiveForm::begin();
         echo yii\bootstrap4\Tabs::widget([
             'items' => [
                 [
-                    'label' => 'Общие',
+                    'label' => $model::t('TAB_MAIN'),
                     'content' => $this->render('_global', ['form' => $form, 'model' => $model]),
                     'active' => true,
                 ],
                 [
-                    'label' => 'Изображение',
+                    'label' => $model::t('TAB_IMAGE'),
                     'content' => $this->render('_images', ['form' => $form, 'model' => $model]),
+                ],
+                [
+                    'label' => $model::t('TAB_SEARCH'),
+                    'content' => $this->render('_search', ['form' => $form, 'model' => $model]),
                 ],
                /* [
                     'label' => 'SEO',

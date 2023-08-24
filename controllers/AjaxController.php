@@ -25,10 +25,6 @@ class AjaxController extends Controller
             return $this->goHome();
         }
     }
-    public function actionFilter2()
-    {
-        return $this->asJson(['ss'=>1]);
-    }
 
     public function actionFilter()
     {
