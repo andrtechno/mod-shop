@@ -53,6 +53,7 @@ class CatalogController extends ApiActiveController
     public function actionSearch()
     {
         $lang = Yii::$app->language;
+        $config = Yii::$app->settings->get('shop');
         $q = Yii::$app->request->get('q');
         if (empty($q)) {
             $q = '+';
@@ -62,7 +63,9 @@ class CatalogController extends ApiActiveController
         if ($q) {
             $model = Product::find()->published()->limit(16);
             $model->applySearch($q);
-            $model->andWhere(["availability" => [Product::STATUS_IN_STOCK, Product::STATUS_PREORDER]]);
+            if (!empty($config->search_availability)) {
+                $model->andWhere(["availability" => $config->search_availability]);
+            }
             $model->sort(SORT_DESC);
             //echo $model->createCommand()->rawSql;die;
             $result = $model->all();
@@ -97,7 +100,7 @@ class CatalogController extends ApiActiveController
         $productModel = Yii::$app->getModule('shop')->model('Product');
         $this->currentUrl = $this->dataModel->getUrl();
         $this->query = $productModel::find();
-        $this->query->andWhere(['!=',"{$productModel::tableName()}.availability", $productModel::STATUS_ARCHIVE]);
+        $this->query->andWhere(['!=', "{$productModel::tableName()}.availability", $productModel::STATUS_ARCHIVE]);
         $this->query->sortAvailability();
         $this->query->published();
 
@@ -162,7 +165,7 @@ class CatalogController extends ApiActiveController
             // echo $this->query->createCommand()->rawSql;die;
         }
 
-      //  echo  $this->filter->resultQuery->createCommand()->rawSql;die;
+        //  echo  $this->filter->resultQuery->createCommand()->rawSql;die;
 
         $this->provider = new \panix\engine\data\ActiveDataProvider([
             'query' => $this->filter->resultQuery,
@@ -406,7 +409,7 @@ class CatalogController extends ApiActiveController
         //    $brands = explode(',', Yii::$app->request->get('brand', ''));
         //    $this->query->applyBrands($brands);
         //}
-       // $this->query->applyRangePrices((isset($this->prices[0])) ? $this->prices[0] : 0, (isset($this->prices[1])) ? $this->prices[1] : 0);
+        // $this->query->applyRangePrices((isset($this->prices[0])) ? $this->prices[0] : 0, (isset($this->prices[1])) ? $this->prices[1] : 0);
 
         if (Yii::$app->request->get('sort') == 'price' || Yii::$app->request->get('sort') == '-price') {
             $this->filterQuery->aggregatePriceSelect((Yii::$app->request->get('sort') == 'price') ? SORT_ASC : SORT_DESC);
