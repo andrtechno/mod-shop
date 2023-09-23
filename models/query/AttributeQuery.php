@@ -19,7 +19,7 @@ class AttributeQuery extends ActiveQuery
 
     public function useInFilter()
     {
-        return $this->andWhere([$this->modelClass::tableName().'.use_in_filter' => 1]);
+        return $this->andWhere([$this->modelClass::tableName().'.use_in_filter' => true]);
     }
 
     /**
@@ -28,7 +28,7 @@ class AttributeQuery extends ActiveQuery
      */
     public function useInVariants()
     {
-        $this->andWhere([$this->modelClass::tableName().'.use_in_variants' => 1]);
+        $this->andWhere([$this->modelClass::tableName().'.use_in_variants' => true]);
         return $this;
     }
 
@@ -38,7 +38,7 @@ class AttributeQuery extends ActiveQuery
      */
     public function useInCompare()
     {
-        return $this->andWhere([$this->modelClass::tableName().'.use_in_compare' => 1]);
+        return $this->andWhere([$this->modelClass::tableName().'.use_in_compare' => true]);
     }
 
     /**
@@ -47,7 +47,7 @@ class AttributeQuery extends ActiveQuery
      */
     public function displayOnFront()
     {
-        return $this->andWhere([$this->modelClass::tableName().'.display_on_front' => 1]);
+        return $this->andWhere([$this->modelClass::tableName().'.display_on_front' => true]);
     }
 
     /**
@@ -56,7 +56,7 @@ class AttributeQuery extends ActiveQuery
      */
     public function displayOnList()
     {
-        return $this->andWhere([$this->modelClass::tableName().'.display_on_list' => 1]);
+        return $this->andWhere([$this->modelClass::tableName().'.display_on_list' => true]);
     }
 
     /**
@@ -65,7 +65,7 @@ class AttributeQuery extends ActiveQuery
      */
     public function displayOnGrid()
     {
-        return $this->andWhere([$this->modelClass::tableName().'.display_on_grid' => 1]);
+        return $this->andWhere([$this->modelClass::tableName().'.display_on_grid' => true]);
     }
 
     /**
@@ -74,7 +74,7 @@ class AttributeQuery extends ActiveQuery
      */
     public function displayOnCart()
     {
-        return $this->andWhere([$this->modelClass::tableName().'.display_on_cart' => 1]);
+        return $this->andWhere([$this->modelClass::tableName().'.display_on_cart' => true]);
     }
 
     /**
@@ -83,7 +83,7 @@ class AttributeQuery extends ActiveQuery
      */
     public function displayOnPdf()
     {
-        return $this->andWhere([$this->modelClass::tableName().'.display_on_pdf' => 1]);
+        return $this->andWhere([$this->modelClass::tableName().'.display_on_pdf' => true]);
     }
 
 }

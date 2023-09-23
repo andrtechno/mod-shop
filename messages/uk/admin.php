@@ -36,4 +36,12 @@ return [
     'MAIL_PRODUCT_NOTIFY_SUBJECT' => '{site_name} повідомляє про наявність цікавить Вас товару',
     'META_TPL' => '<p><code>{product_name}</code> - Назва товару.</p> <p><code>{product_price}</code> - Ціна товару. </p> <p> <code> {product_sku} </code> - Артикул товару. </p> <p> <code>{product_pcs}</code> - Кількість в ящику.</p> <p> <code>{product_brand}</code> - Виробник товару.</p> <p><code>{product_main_category}</code> - Головна категорія товару.</p> <p><code>{current_currency}</code> - Поточна валюта ({currency}). </p>',
     'META_CAT_TPL' => '<p><code>{category_name}</code> - Назва категорії.</p><p><code> {sub_category_name}</code> - Назва предка категорії. </p> <p> <code>{current_currency}</code> - Поточна валюта ({currency}). </p> ',
+    'ADD_BY' => 'Додав',
+    'MARKUP_APPLIED' => 'Застосовано націнку',
+    'GRAPH_PRICE_CHANGE' => 'Графік зміна ціни',
+    'WARN_NO_PRODUCT_TYPE' => 'Необхідно додати хоча б один Тип товарів.',
+    'DATE_CREATE' => 'Дата додавання',
+    'DATE_UPDATE' => 'Дата редагування',
+    'DATE_LAST_BUY' => 'Дата останньої покупки',
+    'BUYING' => 'Покупок',
 ];

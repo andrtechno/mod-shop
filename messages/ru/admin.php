@@ -36,4 +36,12 @@ return [
     'MAIL_PRODUCT_NOTIFY_SUBJECT' => '{site_name} уведомляет о наличии интересующего Вас товара',
     'META_TPL' => '<p><code>{product_name}</code> - Название товара.</p><p><code>{product_price}</code> - Цена товара.</p>        <p><code>{product_sku}</code> - Артикул товара.</p>        <p><code>{product_pcs}</code> - Количество в ящике.</p>        <p><code>{product_brand}</code> - Бренд товара.</p>        <p><code>{product_main_category}</code> - Главная категория товара.</p>        <p><code>{current_currency}</code> - Текущая валюта ({currency}).</p>',
     'META_CAT_TPL' => '<p><code>{category_name}</code> - Название категории.</p><p><code>{sub_category_name}</code> - Название предка категории.</p>        <p><code>{current_currency}</code> - Текущая валюта ({currency}).</p>',
+    'ADD_BY' => 'Добавил',
+    'MARKUP_APPLIED' => 'Применена наценка',
+    'GRAPH_PRICE_CHANGE' => 'График изменение цены',
+    'WARN_NO_PRODUCT_TYPE' => 'Необходимо добавить хотя бы один Тип товаров.',
+    'DATE_CREATE' => 'Дата добавление',
+    'DATE_UPDATE' => 'Дата редактирование',
+    'DATE_LAST_BUY' => 'Дата последней покупки',
+    'BUYING' => 'Покупок',
 ];

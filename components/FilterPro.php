@@ -538,7 +538,7 @@ class FilterPro extends Component
             //->where(['IN', '`types`.`type_id`', $typesIds])
             ->where(['IN', '`type`.`type_id`', $typesIds])
             ->andWhere(['IN', 'type', [Attribute::TYPE_DROPDOWN, Attribute::TYPE_SELECT_MANY, Attribute::TYPE_CHECKBOX_LIST, Attribute::TYPE_RADIO_LIST, Attribute::TYPE_COLOR]])
-            ->distinct(true)
+            ->distinct((Attribute::getDb()->driverName == 'pgsql') ? false : true) //@todo need test for postgres.
             ->useInFilter()
             ->sort()
             ->orderBy(null)
@@ -648,7 +648,7 @@ class FilterPro extends Component
             Brand::tableName() . '.slug',
             Brand::tableName() . '.image'
         ]);
-        $queryClone->cache(0, new TagDependency(['tags' => $this->cacheKey.'-brands']));
+        $queryClone->cache(0, new TagDependency(['tags' => $this->cacheKey . '-brands']));
 
         $brands = $queryClone->createCommand()->queryAll();
 
