@@ -132,7 +132,7 @@ trait ProductTrait
              'contentOptions' => ['class' => 'text-center'],
              'filter' => ArrayHelper::map(ProductType::find()
                  ->addOrderBy(['name' => SORT_ASC])
-                 // ->cache(3200, new DbDependency(['sql' => 'SELECT MAX(`updated_at`) FROM ' . Brand::tableName()]))
+                 // ->cache(3200, new DbDependency(['sql' => 'SELECT MAX(updated_at) FROM ' . Brand::tableName()]))
                  ->all(), 'id', 'name'),
              'filterInputOptions' => ['class' => 'form-control', 'prompt' => html_entity_decode('&mdash; выберите тип &mdash;')],
              'value' => 'type.name'
@@ -202,7 +202,7 @@ trait ProductTrait
         $columns['supplier_id'] = [
             'attribute' => 'supplier_id',
             'filter' => ArrayHelper::map(Supplier::find()
-                ->cache(3200, new DbDependency(['sql' => 'SELECT MAX(`updated_at`) FROM ' . Supplier::tableName()]))
+                ->cache(3200, new DbDependency(['sql' => 'SELECT MAX(updated_at) FROM ' . Supplier::tableName()]))
                 ->addOrderBy(['name' => SORT_ASC])
                 ->all(), 'id', 'name'),
             'filterInputOptions' => ['class' => 'form-control', 'prompt' => html_entity_decode('&mdash; выберите поставщика &mdash;')],
@@ -219,7 +219,7 @@ trait ProductTrait
             'attribute' => 'brand_id',
             'filter' => ArrayHelper::map(Brand::find()
                 ->addOrderBy(['name_' . Yii::$app->language => SORT_ASC])
-                // ->cache(3200, new DbDependency(['sql' => 'SELECT MAX(`updated_at`) FROM ' . Brand::tableName()]))
+                // ->cache(3200, new DbDependency(['sql' => 'SELECT MAX(updated_at) FROM ' . Brand::tableName()]))
                 ->all(), 'id', 'name_' . Yii::$app->language),
             'filterInputOptions' => ['class' => 'form-control', 'prompt' => html_entity_decode('&mdash; выберите бренд &mdash;')],
             'value' => function ($model) {

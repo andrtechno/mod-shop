@@ -127,14 +127,14 @@ class ProductController extends AdminController
 
 
         // Apply use_configurations, configurable_attributes, type_id
-        if (Yii::$app->request->get('Product'))
-            $model->attributes = Yii::$app->request->get('Product');
+        if (Yii::$app->request->get('Product')){
+           // $model->attributes = Yii::$app->request->get('Product');
+            $model->load(Yii::$app->request->get());
+        }
 
 
         // On create new product first display "Choose type" form first.
         if ($isNew && isset($_GET['Product']['type_id'])) {
-            // $type_id = $model->type_id;
-
             if (ProductType::find()->where(['id' => $model->type_id])->count() === 0)
                 $this->error404(Yii::t('shop/admin', 'ERR_PRODUCT_TYPE'));
         }
@@ -226,6 +226,13 @@ class ProductController extends AdminController
             if ($model->label)
                 $model->label = implode(",", $model->label);
 
+
+            if(Yii::$app->db->driverName == 'pgsql'){
+                // var_dump($reAttributes);die;
+                $model->options = Json::encode($this->processAttributes($model));
+            }
+
+
             if ($model->save()) {
                 //$model->processConfigurations(Yii::$app->request->post('ConfigurationsProduct', []));
                 $mainCategoryId = 1;
@@ -252,7 +259,10 @@ class ProductController extends AdminController
 
                 $model->setCategories($categories, $mainCategoryId);
                 $model->processPrices((isset(Yii::$app->request->post('Product')['prices'])) ? (array)Yii::$app->request->post('Product')['prices'] : []);
-                $this->processAttributes($model);
+                if(Yii::$app->db->driverName != 'pgsql'){
+                    $this->processAttributes($model);
+                }
+
                 // Process variants
                 $this->processVariants($model);
                 $this->processKits($model);
@@ -427,7 +437,6 @@ class ProductController extends AdminController
             }
         }*/
 
-
         $reAttributes = [];
         foreach ($attributes as $key => $val) {
 
@@ -476,7 +485,10 @@ class ProductController extends AdminController
         // CMS::dump($model->_old_eav);
         // die;
 
-
+        if(Yii::$app->db->driverName == 'pgsql'){
+           // var_dump($reAttributes);die;
+            return $reAttributes;
+        }
         return $model->setEavAttributes($reAttributes, true);
     }
 

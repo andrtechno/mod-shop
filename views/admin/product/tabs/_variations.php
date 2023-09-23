@@ -8,7 +8,7 @@ use yii\helpers\ArrayHelper;
 
 <div class="variants">
     <div class="form-group row">
-        <label class="col-form-label col-sm-4">Добавить атрибут</label>
+        <label class="col-form-label col-sm-4"><? Yii::t('shop/admin','CREATE_ATTRIBUTE'); ?></label>
         <div class="col-sm-8">
 
             <div class="input-group">

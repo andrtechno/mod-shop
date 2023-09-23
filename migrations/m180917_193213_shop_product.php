@@ -83,7 +83,7 @@ class m180917_193213_shop_product extends Migration
         $fields['switch'] = $this->boolean()->defaultValue(true)->notNull();
         $fields['ordern'] = $this->integer()->unsigned();
         if($this->db->getDriverName() == 'pgsql'){
-            $fields['attributes'] = $this->json();
+            $fields['options'] = $this->json();
         }
         $this->createTable(Product::tableName(), $fields);
 
