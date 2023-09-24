@@ -19,10 +19,10 @@ use panix\mod\shop\widgets\filters\FiltersWidget;
             'model' => $this->context->dataModel,
             'data' => $this->context->filter,
             'count' => false,
-            'priceView' => '@theme/widgets/filter/price',
-            'attributeView' => '@theme/widgets/filter/attributes',
-            'brandView' => '@theme/widgets/filter/brand',
-            'skin' => '@theme/widgets/filter/default',
+            //'priceView' => '@theme/widgets/filter/price',
+            //'attributeView' => '@theme/widgets/filter/attributes',
+            //'brandView' => '@theme/widgets/filter/brand',
+            //'skin' => '@theme/widgets/filter/default',
         ]);
 
         ?>

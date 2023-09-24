@@ -31,15 +31,15 @@ foreach ($attributes as $attrData) {
                         foreach ($attrData['filters'] as $filter) {
                             $queryData = explode(',', Yii::$app->request->getQueryParam($attrData['key']));
                             $checkBoxOptions=[];
-                            $checkBoxOptions['value'] = $filter['queryParam'];
+                            $checkBoxOptions['value'] = $filter['id'];
                             $checkBoxOptions['class']='custom-control-input';
-                            $checkBoxOptions['id'] = 'filter_' . $attrData['key'] . '_' . $filter['queryParam'];
-                            if (!$filter['count'] && !in_array($filter['queryParam'], $queryData)) {
+                            $checkBoxOptions['id'] = 'filter_' . $attrData['key'] . '_' . $filter['id'];
+                            if (!$filter['count'] && !in_array($filter['id'], $queryData)) {
                                 $checkBoxOptions['disabled']='disabled';
                             }
 
                             if ($filter['count'] > 0) {
-                                $url = Yii::$app->urlManager->addUrlParam('/' . Yii::$app->requestedRoute, [$attrData['key'] => $filter['queryParam']], $attrData['selectMany']);
+                                $url = Yii::$app->urlManager->addUrlParam('/' . Yii::$app->requestedRoute, [$attrData['key'] => $filter['id']], $attrData['selectMany']);
                                 //} else {
                                 //     $url = 'javascript:void(0)';
                                 //
@@ -48,10 +48,10 @@ foreach ($attributes as $attrData) {
                                 echo Html::beginTag('li');
                                 // Filter link was selected.
 
-                                if (in_array($filter['queryParam'], $queryData)) {
+                                if (in_array($filter['id'], $queryData)) {
                                     $checked = true;
                                     // Create link to clear current filter
-                                    $url = Yii::$app->urlManager->removeUrlParam('/' . Yii::$app->requestedRoute, $attrData['key'], $filter['queryParam']);
+                                    $url = Yii::$app->urlManager->removeUrlParam('/' . Yii::$app->requestedRoute, $attrData['key'], $filter['id']);
                                     //echo Html::a($filter['title'], $url, array('class' => 'active'));
                                 } else {
                                     $checked = false;
@@ -62,7 +62,7 @@ foreach ($attributes as $attrData) {
                                     $css = $this->context->generateGradientCss($filter['data']);
 
                                     $checkedHtml = ($checked) ? '<span class="filter-color-checked"></span>' : '<span></span>';
-                                    echo Html::label(Html::checkBox('filter[' . $attrData['key'] . '][]', $checked, ['class' => '', 'value' => $filter['queryParam'], 'id' => 'filter_' . $attrData['key'] . '_' . $filter['queryParam']]) . $checkedHtml, 'filter_' . $attrData['key'] . '_' . $filter['queryParam'], ['class' => 'filter-color', 'title' => $filter['title'] . ' (' . trim(strip_tags($this->context->getCount($filter))) . ')', 'style' => $css]);
+                                    echo Html::label(Html::checkBox('filter[' . $attrData['key'] . '][]', $checked, ['class' => '', 'value' => $filter['id'], 'id' => 'filter_' . $attrData['key'] . '_' . $filter['id']]) . $checkedHtml, 'filter_' . $attrData['key'] . '_' . $filter['id'], ['class' => 'filter-color', 'title' => $filter['title'] . ' (' . trim(strip_tags($this->context->getCount($filter))) . ')', 'style' => $css]);
 
 
                                 } else {
@@ -72,11 +72,11 @@ foreach ($attributes as $attrData) {
                                     if($attrData['selectMany']){
                                         echo '<div class="custom-control custom-checkbox">';
                                         echo Html::checkBox('filter[' . $attrData['key'] . '][]', $checked, $checkBoxOptions);
-                                        echo Html::label($filter['title'].(($checked)?'':$this->context->getCount($filter)), 'filter_' . $attrData['key'] . '_' . $filter['queryParam'], ['class' => 'custom-control-label','data-search'=>$filter['title']]);
+                                        echo Html::label($filter['title'].(($checked)?'':$this->context->getCount($filter)), 'filter_' . $attrData['key'] . '_' . $filter['id'], ['class' => 'custom-control-label','data-search'=>$filter['title']]);
                                         echo '</div>';
                                     }else{
                                         echo '<div class="radio">';
-                                        echo Html::label(Html::radio('filter[' . $attrData['key'] . '][]', $checked, ['class' => '', 'value' => $filter['queryParam'], 'id' => 'filter_' . $attrData['key'] . '_' . $filter['queryParam']]).$filter['title'].(($checked)?'':$this->context->getCount($filter)), 'filter_' . $attrData['key'] . '_' . $filter['queryParam'], ['class' => '']);
+                                        echo Html::label(Html::radio('filter[' . $attrData['key'] . '][]', $checked, ['class' => '', 'value' => $filter['id'], 'id' => 'filter_' . $attrData['key'] . '_' . $filter['id']]).$filter['title'].(($checked)?'':$this->context->getCount($attrData['key'], $filter)), 'filter_' . $attrData['key'] . '_' . $filter['id'], ['class' => '']);
                                         echo '</div>';
                                     }
 
