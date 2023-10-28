@@ -15,7 +15,19 @@ use yii\helpers\Html;
         <tr>
             <td><?= $result['title']; ?>:</td>
             <td>
-                <strong><?= ($result['use_in_filter']) ? Html::a(Html::encode($result['value']), ['/shop/catalog/view', 'slug' => ($model->mainCategory) ? $model->mainCategory->full_path : '', $key => $result['id']]) : Html::encode($result['value']); ?></strong>
+                <?php
+                if ($result['type'] == Attribute::TYPE_COLOR) {
+                    $colors = \yii\helpers\Json::decode($result['data'], true);
+                    echo Html::tag('span', '', ['class' => 'attribute-color-box', 'style' => Attribute::generateGradientCss($colors)]);
+                }
+                ?>
+                <?php
+                if ($result['hasUrl']) {
+                    echo Html::a(Html::encode($result['value']), ['/shop/catalog/view', 'slug' => ($model->mainCategory) ? $model->mainCategory->full_path : '', $key => $result['id']]);
+                } else {
+                    echo Html::encode($result['value']);
+                }
+                ?>
             </td>
         </tr>
     <?php } ?>
