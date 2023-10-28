@@ -51,6 +51,9 @@ class m180917_193505_shop_category extends Migration {
         $this->createIndex('full_path', Category::tableName(), 'full_path');
         $this->createIndex('switch', Category::tableName(), 'switch');
 
+        $this->batchInsert(Category::tableName(), ['lft', 'rgt', 'depth', 'slug', 'full_path', 'name_ru', 'name_uk','created_at','updated_at'], [
+            [1, 2, 1, 'root', '', 'Каталог продукции', 'Каталог продукції',time(),time()]
+        ]);
     }
 
     public function down()

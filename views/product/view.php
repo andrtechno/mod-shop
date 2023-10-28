@@ -48,15 +48,17 @@ if ($tags) {
     <div class="col-sm-6 col-xs-12">
         <?= Html::img($model->getMainImage('500x500')->url); ?>
 
+        <?php if(Yii::$app->hasModule('discounts')){ ?>
         <?php echo panix\mod\discounts\widgets\countdown\Countdown::widget(['model' => $model]) ?>
         <div class="dotsCont">
             <div>Fake Dot 1</div>
             <div>Fake Dot 2</div>
             <div>Fake Dot 3</div>
         </div>
+        <?php } ?>
         <div class="owl-carousel owl-theme">
-            <?php foreach ($model->getImages(['is_main' => 0]) as $k => $image) { ?>
-                <?= Html::img($image->getUrl('100x100'), ['data-hash' => $image->id, 'data-dot' => $k + 1]); ?>
+            <?php foreach ($model->getImages()->all() as $k => $image) { ?>
+                <?= Html::img($image->get('small'), ['data-hash' => $image->id, 'data-dot' => $k + 1]); ?>
             <?php } ?>
         </div>
     </div>
@@ -109,7 +111,7 @@ if ($tags) {
             'options' => ['class' => 'cart-spinner'],
         ]);
 
-        echo panix\mod\cart\widgets\buyOneClick\BuyOneClickWidget::widget();
+        //echo panix\mod\cart\widgets\buyOneClick\BuyOneClickWidget::widget();
 		//echo \panix\mod\shop\widgets\notify\NotifyWidget::widget(['model'=>$model]);
         ?>
         <?php

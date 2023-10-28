@@ -16,7 +16,9 @@ use panix\mod\shop\models\ProductType;
 if (!$model->isNewRecord && Yii::$app->settings->get('shop', 'auto_gen_url')) {
     echo Yii::t('shop/admin', 'ENABLE_AUTOURL_MODE');
 }
-
+if(Yii::$app->db->driverName == 'pgsql' && !$model->isNewRecord){
+    print_r($model->options);
+}
 ?>
 
 <?php
@@ -196,19 +198,19 @@ if (count($typesList) > 0) {
                             <div class="col-sm-4 col-md-6 font-weight-bold"><?= $model->id; ?></div>
                         </div>
                         <div class="form-group row">
-                            <div class="col-sm-8 col-md-6">Дата добавление</div>
+                            <div class="col-sm-8 col-md-6"><?= Yii::t('shop/admin','DATE_CREATE'); ?></div>
                             <div class="col-sm-4 col-md-6 font-weight-bold"><?= \panix\engine\CMS::date($model->created_at); ?></div>
                         </div>
                         <div class="form-group row">
-                            <div class="col-sm-8 col-md-6">Дата редактирование</div>
+                            <div class="col-sm-8 col-md-6"><?= Yii::t('shop/admin','DATE_UPDATE'); ?></div>
                             <div class="col-sm-4 col-md-6 font-weight-bold"><?= \panix\engine\CMS::date($model->updated_at); ?></div>
                         </div>
                         <div class="form-group row">
-                            <div class="col-sm-8 col-md-6">Дата последней покупки</div>
+                            <div class="col-sm-8 col-md-6"><?= Yii::t('shop/admin','DATE_LAST_BUY'); ?></div>
                             <div class="col-sm-4 col-md-6 font-weight-bold"><?= \panix\engine\CMS::date($model->added_to_cart_date); ?></div>
                         </div>
                         <div class="form-group row">
-                            <div class="col-sm-8 col-md-6">Покупок</div>
+                            <div class="col-sm-8 col-md-6"><?= Yii::t('shop/admin','BUYING'); ?></div>
                             <div class="col-sm-4 col-md-6 font-weight-bold"><?= $model->added_to_cart_count; ?></div>
                         </div>
                         <div class="form-group row">
@@ -239,13 +241,13 @@ if (count($typesList) > 0) {
                         <?php } ?>
                         <?php if ($model->user_id) { ?>
                             <div class="form-group row">
-                                <div class="col-sm-8 col-md-6">Добавил</div>
+                                <div class="col-sm-8 col-md-6"><?= Yii::t('shop/admin','ADD_BY'); ?></div>
                                 <div class="col-sm-4 col-md-6 font-weight-bold"><?= Html::a($model->user->username, $model->user->getUpdateUrl()); ?></div>
                             </div>
                         <?php } ?>
                         <?php if (is_object($model->hasMarkup)) { ?>
                             <div class="form-group row">
-                                <div class="col-sm-8 col-md-6">Применена наценка</div>
+                                <div class="col-sm-8 col-md-6"><?= Yii::t('shop/admin','MARKUP_APPLIED'); ?></div>
                                 <div class="col-sm-4 col-md-6">
                                     <?= $model->hasMarkup->name; ?>: <span
                                             class="font-weight-bold"><?= $model->hasMarkup->sum; ?></span>
@@ -283,7 +285,7 @@ if (count($typesList) > 0) {
 
                 <div class="card">
                     <div class="card-header">
-                        <h5>График изменение цены</h5>
+                        <h5><?= Yii::t('shop/admin','GRAPH_PRICE_CHANGE'); ?></h5>
                     </div>
                     <div class="card-body">
                         <?php
@@ -296,4 +298,6 @@ if (count($typesList) > 0) {
         </div>
 
     <?php } ?>
+<?php }else{ ?>
+    <div class="alert alert-warning"><?= Yii::t('shop/admin','WARN_NO_PRODUCT_TYPE'); ?></div>
 <?php } ?>

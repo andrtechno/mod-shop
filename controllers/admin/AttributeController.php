@@ -131,12 +131,13 @@ class AttributeController extends AdminController
         $post = Yii::$app->request->post('options');
         //CMS::dump($post);die;
         if ($post) {
+
             foreach ($post as $id => $data) {
 
                 if (isset($data[0]) && $data[0] != '' && !empty($data[0])) {
                     $index = 0;
                     $attributeOption = AttributeOption::find()
-                        ->where(['id' => $id, 'attribute_id' => $model->id])
+                        ->where(['id' => (int)$id, 'attribute_id' => $model->id])
                         ->one();
 
                     if (!$attributeOption) {

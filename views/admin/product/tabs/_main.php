@@ -37,7 +37,7 @@ echo $form->field($model, 'brand_id')->dropDownList(ArrayHelper::map(Brand::find
 
 
 echo $form->field($model, 'brand_id')->widget(\panix\ext\select2\Select2::class, [
-    'items' => ArrayHelper::map(Brand::find()->cache(3200, new DbDependency(['sql' => 'SELECT MAX(`updated_at`) FROM ' . Brand::tableName()]))->orderBy(['name_' . Yii::$app->language => SORT_ASC])->all(), 'id', 'name'),
+    'items' => ArrayHelper::map(Brand::find()->cache(3200, new DbDependency(['sql' => 'SELECT MAX(updated_at) FROM ' . Brand::tableName()]))->orderBy(['name_' . Yii::$app->language => SORT_ASC])->all(), 'id', 'name'),
     'options' => [
         'prompt' => html_entity_decode($model::t('SELECT_BRAND_ID'))
     ],

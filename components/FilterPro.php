@@ -536,9 +536,9 @@ class FilterPro extends Component
 
         $query = Attribute::find()
             //->where(['IN', '`types`.`type_id`', $typesIds])
-            ->where(['IN', '`type`.`type_id`', $typesIds])
+            ->where(['IN', 'type.type_id', $typesIds])
             ->andWhere(['IN', 'type', [Attribute::TYPE_DROPDOWN, Attribute::TYPE_SELECT_MANY, Attribute::TYPE_CHECKBOX_LIST, Attribute::TYPE_RADIO_LIST, Attribute::TYPE_COLOR]])
-            ->distinct(true)
+            ->distinct((Attribute::getDb()->driverName == 'pgsql') ? false : true) //@todo need test for postgres.
             ->useInFilter()
             ->sort()
             ->orderBy(null)
@@ -632,23 +632,29 @@ class FilterPro extends Component
         $queryClone->addSelect(['brand_id', Product::tableName() . '.id']);
         $queryClone->joinWith([
             'brand' => function (\yii\db\ActiveQuery $query) {
-                $query->andWhere([Brand::tableName() . '.switch' => 1]);
+                $query->andWhere([Brand::tableName() . '.switch' => true]);
             },
         ]);
 
         $sub_query = clone $this->query;
-        $sub_query->andwhere('`brand_id`=' . Brand::tableName() . '.`id`');
+        $sub_query->andWhere('brand_id=' . Brand::tableName() . '.id');
         $sub_query->select(['count(*)']);
 
         $queryClone->andWhere('brand_id IS NOT NULL');
-        $queryClone->groupBy('brand_id');
+        if(Yii::$app->db->driverName == 'pgsql'){
+            //$queryClone->groupBy(['brand_id', Product::tableName() . '.id']);
+            //@todo need test for postgres.
+        }else{
+            $queryClone->groupBy('brand_id');
+        }
+
         $queryClone->addSelect([
             'counter' => $sub_query,
-            Brand::tableName() . '.`name_' . Yii::$app->language . '` as name',
+            Brand::tableName() . '.name_' . Yii::$app->language . ' as name',
             Brand::tableName() . '.slug',
             Brand::tableName() . '.image'
         ]);
-        $queryClone->cache(0, new TagDependency(['tags' => $this->cacheKey.'-brands']));
+        $queryClone->cache(0, new TagDependency(['tags' => $this->cacheKey . '-brands']));
 
         $brands = $queryClone->createCommand()->queryAll();
 
@@ -688,7 +694,7 @@ class FilterPro extends Component
         ]);
 
         $sub_query = clone $this->query;
-        $sub_query->andWhere('`brand_id`=' . Brand::tableName() . '.`id`');
+        $sub_query->andWhere('brand_id=' . Brand::tableName() . '.id');
         $sub_query->select(['count(*)']);
         $newData = [];
         foreach ($this->activeAttributes as $key => $p) {
@@ -705,7 +711,7 @@ class FilterPro extends Component
 
         $queryClone->andWhere('brand_id IS NOT NULL');
         $queryClone->groupBy('brand_id');
-        $queryClone->addSelect(['counter' => $sub_query, Brand::tableName() . '.`name_' . Yii::$app->language . '` as name']);
+        $queryClone->addSelect(['counter' => $sub_query, Brand::tableName() . '.name_' . Yii::$app->language . ' as name']);
         //$queryClone->cache($this->cacheDuration);
 
         $brands = $queryClone->createCommand()->queryAll();

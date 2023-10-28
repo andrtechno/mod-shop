@@ -20,59 +20,72 @@ class m180917_193213_shop_product extends Migration
      */
     public function up()
     {
-        $this->createTable(Product::tableName(), [
-            'id' => $this->primaryKey()->unsigned(),
-            'user_id' => $this->integer()->unsigned(),
-            'brand_id' => $this->integer()->unsigned(),
-            'category_id' => $this->integer()->unsigned(),
-            'main_category_id' => $this->integer()->unsigned(),
-            'type_id' => $this->smallInteger()->unsigned(),
-            'supplier_id' => $this->integer()->unsigned(),
-            'currency_id' => $this->smallInteger()->unsigned(),
-            'weight_class_id' => $this->integer()->null(),
-            'length_class_id' => $this->integer()->null(),
-            'name_ru' => $this->string(255)->null(),
-            'name_uk' => $this->string(255)->null(),
-            'short_description_ru' => $this->text()->null(),
-            'short_description_uk' => $this->text()->null(),
-            'full_description_ru' => $this->text()->null(),
-            'full_description_uk' => $this->text()->null(),
-            'image' => $this->string(50)->null(),
-            //'image_url'=>$this->text(),
-            'use_configurations' => $this->boolean()->defaultValue(false),
-            'slug' => $this->string(255)->null(),
-            'price' => $this->money(10, 2),
-            'unit' => $this->tinyInteger(1)->unsigned()->defaultValue(1),
-            'max_price' => $this->money(10, 2),
-            'price_purchase' => $this->money(10, 2)->comment('Цена закупки'),
-            'is_condition' => $this->tinyInteger(1)->defaultValue(0)->comment('Состояние'),
-            'label' => $this->string(50)->null(),
-            'sku' => $this->string(50),
-            'weight' => $this->decimal(15, 4),
-            'length' => $this->decimal(15, 4),
-            'width' => $this->decimal(15, 4),
-            'height' => $this->decimal(15, 4),
-            'quantity' => $this->smallInteger(2)->unsigned()->defaultValue(1),
-            'quantity_min' => $this->smallInteger(2)->unsigned()->defaultValue(1),
-            'archive' => $this->boolean()->defaultValue(false),
-            'availability' => $this->tinyInteger(1)->unsigned()->defaultValue(1),
-            'auto_decrease_quantity' => $this->smallInteger(2)->unsigned()->defaultValue(0),
-            'views' => $this->integer()->unsigned()->defaultValue(0),
-            'added_to_cart_count' => $this->integer()->defaultValue(0),
-            'added_to_cart_date' => $this->integer()->null(),
-            'votes' => $this->integer()->unsigned()->defaultValue(0),
-            'rating' => $this->integer()->unsigned()->defaultValue(0),
-            'discount' => $this->string(5)->comment('Скидка'),
-            'markup' => $this->string(5)->comment('Наценка'),
-            'video' => $this->text(),
-            'in_box' => $this->integer()->unsigned()->defaultValue(1),
-            'enable_comments' => $this->tinyInteger(1)->defaultValue(1)->unsigned(),
-            'created_at' => $this->integer(),
-            'updated_at' => $this->integer(),
-            'switch' => $this->boolean()->defaultValue(true)->notNull(),
-            'ordern' => $this->integer()->unsigned(),
 
-        ]);
+        $fields = [];
+        $fields['id'] = $this->primaryKey()->unsigned();
+        $fields['user_id'] = $this->integer()->unsigned();
+        $fields['brand_id'] = $this->integer()->unsigned();
+        $fields['category_id'] = $this->integer()->unsigned();
+        $fields['main_category_id'] = $this->integer()->unsigned();
+        $fields['type_id'] = $this->smallInteger()->unsigned();
+        $fields['supplier_id'] = $this->integer()->unsigned();
+        $fields['currency_id'] = $this->smallInteger()->unsigned();
+        $fields['weight_class_id'] = $this->integer()->null();
+        $fields['length_class_id'] = $this->integer()->null();
+
+        if($this->db->getDriverName() == 'pgsql'){
+            $fields['name'] = $this->string(255)->null();
+        }else{
+            $fields['name_ru'] = $this->string(255)->null();
+            $fields['name_uk'] = $this->string(255)->null();
+        }
+        if($this->db->getDriverName() == 'pgsql'){
+            $fields['short_description'] = $this->text()->null();
+            $fields['full_description'] = $this->text()->null();
+        }else{
+            $fields['short_description_ru'] = $this->text()->null();
+            $fields['short_description_uk'] = $this->text()->null();
+            $fields['full_description_ru'] = $this->text()->null();
+            $fields['full_description_uk'] = $this->text()->null();
+        }
+
+        $fields['image'] = $this->string(50)->null();
+        $fields['use_configurations'] = $this->boolean()->defaultValue(false);
+        $fields['slug'] = $this->string(255)->null();
+        $fields['price'] = $this->money(10, 2);
+        $fields['unit'] = $this->tinyInteger(1)->unsigned()->defaultValue(1);
+        $fields['max_price'] = $this->money(10, 2);
+        $fields['price_purchase'] = $this->money(10, 2)->comment('Цена закупки');
+        $fields['is_condition'] = $this->tinyInteger(1)->defaultValue(0)->comment('Состояние');
+        $fields['label'] = $this->string(50)->null();
+        $fields['sku'] = $this->string(50);
+        $fields['weight'] = $this->decimal(15, 4);
+        $fields['length'] = $this->decimal(15, 4);
+        $fields['width'] = $this->decimal(15, 4);
+        $fields['height'] = $this->decimal(15, 4);
+        $fields['quantity'] = $this->smallInteger(2)->unsigned()->defaultValue(1);
+        $fields['quantity_min'] = $this->smallInteger(2)->unsigned()->defaultValue(1);
+        $fields['archive'] = $this->boolean()->defaultValue(false);
+        $fields['availability'] = $this->tinyInteger(1)->unsigned()->defaultValue(1);
+        $fields['auto_decrease_quantity'] = $this->smallInteger(2)->unsigned()->defaultValue(0);
+        $fields['views'] = $this->integer()->unsigned()->defaultValue(0);
+        $fields['added_to_cart_count'] = $this->integer()->defaultValue(0);
+        $fields['added_to_cart_date'] = $this->integer()->null();
+        $fields['votes'] = $this->integer()->unsigned()->defaultValue(0);
+        $fields['rating'] = $this->integer()->unsigned()->defaultValue(0);
+        $fields['discount'] = $this->string(5)->comment('Скидка');
+        $fields['markup'] = $this->string(5)->comment('Наценка');
+        $fields['video'] = $this->text();
+        $fields['in_box'] = $this->integer()->unsigned()->defaultValue(1);
+        $fields['enable_comments'] = $this->tinyInteger(1)->defaultValue(1)->unsigned();
+        $fields['created_at'] = $this->integer();
+        $fields['updated_at'] = $this->integer();
+        $fields['switch'] = $this->boolean()->defaultValue(true)->notNull();
+        $fields['ordern'] = $this->integer()->unsigned();
+        if($this->db->getDriverName() == 'pgsql'){
+            $fields['options'] = $this->json();
+        }
+        $this->createTable(Product::tableName(), $fields);
 
 
         $this->createIndex('user_id', Product::tableName(), 'user_id');

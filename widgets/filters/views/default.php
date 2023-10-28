@@ -48,13 +48,8 @@ use yii\helpers\Html;
             ?>
         </div>
     </div>
-    <div class="row2 no-gutters2 filter-buttons">
-        <?php
-        echo Html::a(Yii::t('shop/default', 'Сбросить'), $refreshUrl, ['class' => 'btn btn-outline-secondary pl-3 pr-3', 'id' => 'filter-reset'])
-        ?>
-        <?= Html::button('Применить', ['class' => ' col22 btn btn-danger pl-3 pr-3', 'id' => 'filter-apply']); ?>
-
-        <?php // Html::button('Стросить', ['class' => 'btn d-block btn-outline-secondary pl-3 pr-3', 'id' => 'filter-reset']); ?>
+    <div class="filter-buttons d-block d-lg-none tc dn">
+        <?= Html::button(Yii::t('default','APPLY'), ['class' => 'pl-3 pr-3 btn button clear_filter_js', 'id' => 'filter-apply']); ?>
     </div>
 
     <?= Html::endForm(); ?>

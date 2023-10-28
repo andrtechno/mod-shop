@@ -3,83 +3,62 @@
 use yii\helpers\Html;
 use panix\mod\shop\models\Product;
 
+/**
+ * @var $this \yii\web\View
+ * @var $priceMin int
+ * @var $priceMax int
+ */
 $cm = Yii::$app->currency;
 
 
-//if (($minPrice && $maxPrice) && ($minPrice !== $maxPrice)) {
-$getDefaultMin = floor($priceMin);
-$getDefaultMax = ceil($priceMax);
+$valueMin = (isset($currentPrice[0])) ? $currentPrice[0] : $priceMin;
+$valueMax = (isset($currentPrice[1])) ? $currentPrice[1] : $priceMax;
 
-
-
-$min = (int)floor($currentPriceMin); //$cm->convert()
-$max = (int)ceil($currentPriceMax);
-//echo $getDefaultMin;
-//echo '<br>';
-//echo $getDefaultMax;
-$valueMax = ($max) ? $max : $getDefaultMax;
-$valueMin = ($min) ? $min : $getDefaultMin;
-if ($getDefaultMin != $getDefaultMax) {
+if ($priceMin != $priceMax) {
     ?>
 
-    <div class="card filter-block filter-price">
-        <a class="card-header collapsed h5" data-toggle="collapse"
-           href="#collapse-<?= md5('prices') ?>" aria-expanded="true"
-           aria-controls="collapse-<?= md5('prices') ?>">
-            <?= Yii::t('shop/default', 'FILTER_BY_PRICE') ?>
-        </a>
-        <div class="card-collapse collapse in" id="collapse-<?= md5('prices') ?>">
-            <div class="card-body pb-3">
-                <?php
-                //echo Html::beginForm();
+    <div class="col-12 col-md-3 widget">
 
-                ?>
+        <h5 class="widget-title"><?= Yii::t('shop/default', 'FILTER_BY_PRICE') ?></h5>
 
+
+
+        <div class="loke_scroll">
+            <div class="filter-attribute filter-price" data-toggle="popover-price">
                 <?php echo \yii\jui\Slider::widget([
                     'id'=>'slider-price',
                     'clientOptions' => [
                         'range' => true,
                         // 'disabled' => $getDefaultMin === $getDefaultMax,
-                        'min' => $getDefaultMin, //$prices['min'],//$min,
-                        'max' => $getDefaultMax, //$prices['max'],//$max,
+                        'min' => $priceMin, //$prices['min'],//$min,
+                        'max' => $priceMax, //$prices['max'],//$max,
                         'values' => [$valueMin, $valueMax],
                     ],
                     'clientEvents' => [
 
                         'slide' => 'function(event, ui) {
-                            $("#min_price").val(ui.values[0]);
-                            $("#max_price").val(ui.values[1]);
-                            $("#mn").text(price_format(ui.values[0]));
-                            $("#mx").text(price_format(ui.values[1]));
-			            }',
+                                $("#min_price").val(ui.values[0]);
+                                $("#max_price").val(ui.values[1]);
+                                $("#mn").text(price_format(ui.values[0]));
+                                $("#mx").text(price_format(ui.values[1]));
+                            }',
                         'create' => 'function(event, ui){
-                            $("#min_price").val(' . $valueMin . ');
-                            $("#max_price").val(' . $valueMax . ');
-                            $("#mn").text("' . Yii::$app->currency->number_format($min) . '");
-                            $("#mx").text("' . Yii::$app->currency->number_format($max) . '");
-                        }'
+                                $("#min_price").val(' . $valueMin . ');
+                                $("#max_price").val(' . $valueMax . ');
+                                $("#mn").text("' . Yii::$app->currency->number_format($priceMin) . '");
+                                $("#mx").text("' . Yii::$app->currency->number_format($priceMax) . '");
+                            }'
                     ],
                 ]);
                 ?>
-                <?php
-                //echo Html::hiddenInput('slide[default_price][]', $getDefaultMin, ['id' => 'slide_default_price_min']);
-                //echo Html::hiddenInput('slide[default_price][]', $getDefaultMax, ['id' => 'slide_default_price_max']);
-                ?>
-                <span class="min-max">
-        от
+                <div class="slider-values">
                     <?php
-                    echo Html::textInput('slide[price][]', $valueMin, ['id' => 'min_price', 'data-default' => $getDefaultMin, 'class' => '']);
+                    echo Html::textInput('slide[price][]', $valueMin, ['id' => 'min_price', 'data-default' => $priceMin, 'class' => 'input-price']);
                     ?>
-                    до
                     <?php
-                    echo Html::textInput('slide[price][]', $valueMax, ['id' => 'max_price', 'data-default' => $getDefaultMax, 'class' => '']);
+                    echo Html::textInput('slide[price][]', $valueMax, ['id' => 'max_price', 'data-default' => $priceMax, 'class' => 'input-price']);
                     ?>
-                    <?= Yii::$app->currency->active['symbol'] ?></span>
-
-                <?php //echo Html::submitButton('OK', ['class' => 'btn btn-sm btn-warning']);
-                ?>
-                <?php //echo Html::endForm();
-                ?>
+                </div>
             </div>
         </div>
     </div>

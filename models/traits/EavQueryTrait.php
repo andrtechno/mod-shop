@@ -133,13 +133,13 @@ trait EavQueryTrait
                     $values = array_intersect($cache[$attribute], $values);
                 }
                 foreach ($values as $value) {
-                    $this->join('JOIN', ProductAttributesEav::tableName() . ' eavbg' . $i, "{$pk}=`eavbg{$i}`.`entity`");
-                    $this->andWhere(['IN', "`eavbg$i`.`value`", $values]);
+                    $this->join('JOIN', ProductAttributesEav::tableName() . ' eavbg' . $i, "{$pk}=eavbg{$i}.entity");
+                    $this->andWhere(['IN', "eavbg$i.value", $values]);
                     $i++;
                 }
             } // If search models with attribute name with anything values.
             elseif (is_int($attribute)) {
-                $this->join('JOIN', ProductAttributesEav::tableName() . ' eavbg' . $i, "$pk=`eavbg$i`.`entity` AND eavbg$i.attribute = '$values'");
+                $this->join('JOIN', ProductAttributesEav::tableName() . ' eavbg' . $i, "$pk=eavbg$i.entity AND eavbg$i.attribute = '$values'");
                 $i++;
             }
         }
@@ -153,7 +153,7 @@ trait EavQueryTrait
     public function getFindByEavAttributes2($attributes)
     {
         $class = $this->modelClass;
-        $pk = $class::tableName() . '.`id`';
+        $pk = $class::tableName() . '.id';
         $i = 0;
         unset($attributes['brand']);
         foreach ($attributes as $attribute => $values) {
@@ -167,10 +167,10 @@ trait EavQueryTrait
             $values = array_intersect($attributes[$attribute], $values); //anti d-dos убирает лишние значение с запроса.
             // If search models with attribute name with specified values.
             if (is_string($attribute)) {
-                $this->join['eavb' . $i] = ['JOIN', '{{%shop__product_attribute_eav}} eavb' . $i, "$pk=`eavb$i`.`entity`"];
-                $this->andwhere(["`eavb$i`.`value`" => $values]);
+                $this->join['eavb' . $i] = ['JOIN', '{{%shop__product_attribute_eav}} eavb' . $i, "$pk=eavb$i.entity"];
+                $this->andwhere(["eavb$i.value" => $values]);
             } elseif (is_int($attribute)) { // If search models with attribute name with anything values.
-                $this->join('JOIN', ProductAttributesEav::tableName() . ' eavb' . $i, "$pk=`eavb$i`.`entity` AND eavb$i.attribute = '$values'");
+                $this->join('JOIN', ProductAttributesEav::tableName() . ' eavb' . $i, "$pk=eavb$i.entity AND eavb$i.attribute = '$values'");
                 //$this->join('JOIN', ProductAttributesEav::tableName().' eavb', "$pk=`eavb`.`entity` AND eavb.attribute = '$values'");
             }
             $i++;
