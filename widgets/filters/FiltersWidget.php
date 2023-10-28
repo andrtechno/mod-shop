@@ -99,14 +99,14 @@ class FiltersWidget extends Widget
         ]);
         // var category_id = {$this->model->id};
         /*$this->view->registerJs("
-       
+
             $(function () {
                 var selector = $('.card .card-collapse');
                 selector.collapse({
                     toggle: false
                 });
                 var panels = $.cookie();
-            
+
                 for (var panel in panels) {
                     if (panel) {
                         var panelSelector = $('#' + panel);
@@ -124,16 +124,16 @@ class FiltersWidget extends Widget
                         }
                     }
                 }
-            
+
                 selector.on('show.bs.collapse', function () {
                     var active = $(this).attr('id');
                     $(this).parent().find('.card-header').addClass('collapsed');
 
-                    
+
                     $.cookie(active, '1');
-            
+
                 });
-            
+
                 selector.on('hide.bs.collapse', function () {
                     var active = $(this).attr('id');
                     $(this).parent().find('.card-header').removeClass('collapsed');
@@ -284,49 +284,6 @@ class FiltersWidget extends Widget
         }
 
     }
-
-    public function generateGradientCss($data)
-    {
-        $css = '';
-        if (isset($data['color'])) {
-            //if(isset($data['color'][0]) && !empty($data['color'][0])){
-            $css .= "background: {$data['color'][0]};";
-            //}
-
-            if (count($data['color']) > 1) {
-
-                $res_data = [];
-                foreach ($data['color'] as $k => $color) {
-                    $res_data[] = $color;
-                }
-                $res = implode(', ', $res_data);
-
-                if (count($data['color']) == 2) {
-                    $value = "45deg, {$data['color'][0]} 50%, {$data['color'][1]} 50%";
-                    $css .= "background: -moz-linear-gradient({$value});";
-                    $css .= "background: -webkit-linear-gradient({$value});";
-                    $css .= "background: linear-gradient({$value});";
-                } elseif (count($data['color']) == 3) {
-                    $value = "45deg, {$data['color'][0]} 0%, {$data['color'][0]} 33%, {$data['color'][1]} 33%, {$data['color'][1]} 66%, {$data['color'][2]} 66%, {$data['color'][2]} 100%";
-                    $css .= "background: -moz-linear-gradient({$value});";
-                    $css .= "background: -webkit-linear-gradient({$value});";
-                    $css .= "background: linear-gradient({$value});";
-                } elseif (count($data['color']) == 4) {
-                    $value = "45deg, {$data['color'][0]} 0%, {$data['color'][0]} 25%, {$data['color'][1]} 25%, {$data['color'][1]} 50%, {$data['color'][2]} 50%, {$data['color'][2]} 75%, {$data['color'][3]} 75%, {$data['color'][3]} 100%";
-                    $css .= "background: -moz-linear-gradient({$value});";
-                    $css .= "background: -webkit-linear-gradient({$value});";
-                    $css .= "background: linear-gradient({$value});";
-                } elseif (count($data['color']) >= 4) {
-                    $css .= "background: -moz-radial-gradient(farthest-corner at 0% 100%, {$res});";
-                    $css .= "background: -webkit-radial-gradient(farthest-corner at 0% 100%, {$res});";
-                    $css .= "background: radial-gradient(farthest-corner at 0% 100%, {$res});";
-                }
-                $css .= "filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='{$data['color'][0]}', endColorstr='{$data['color'][1]}',GradientType=1 );";
-            }
-        }
-        return $css;
-    }
-
 
     /**
      * @return mixed
