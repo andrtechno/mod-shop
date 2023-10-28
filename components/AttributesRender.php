@@ -62,7 +62,7 @@ class AttributesRender extends Widget
                         'name' => $model->title,
                         'hint' => $model->hint,
                         'value' => $value,
-                        'data' => $data_json[$this->_attributes[$model->name]]
+                        'data' => (isset($data_json[$this->_attributes[$model->name]])) ? $data_json[$this->_attributes[$model->name]] : false
                     ];
                 }
             }
@@ -74,7 +74,7 @@ class AttributesRender extends Widget
                 'hasUrl' => in_array($model->type, [Attribute::TYPE_CHECKBOX_LIST, Attribute::TYPE_SELECT_MANY, Attribute::TYPE_DROPDOWN]),
                 'title' => $model->title,
                 'value' => $value,
-                'data' => $data_json[$this->_attributes[$model->name]]
+                'data' => (isset($data_json[$this->_attributes[$model->name]])) ? $data_json[$this->_attributes[$model->name]] : false
             ];
         }
 
