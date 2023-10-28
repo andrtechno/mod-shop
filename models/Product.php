@@ -46,6 +46,8 @@ use yii\helpers\Url;
  * @property integer $label
  * @property integer $is_condition
  * @property integer $main_category_id
+ * @property integer $quantity_min
+ * @property integer $in_box
  * @property integer $auto_decrease_quantity
  * @property integer $views Views product on frontend
  * @property integer $created_at Date created
@@ -438,6 +440,7 @@ class Product extends ActiveRecord
         if ($this->isNewRecord) {
             $this->quantity = 1;
             $this->quantity_min = 1;
+            $this->in_box = 1;
         }
     }
 
@@ -449,6 +452,7 @@ class Product extends ActiveRecord
 
         $rules = [];
         $rules[] = [['quantity', 'quantity_min'], 'default', 'value' => 1];
+        $rules[] = [['in_box', 'quantity_min'], 'integer', 'min' => 1];
 
         if (!$this->auto) {
             /*$rules[] = ['slug', '\panix\engine\validators\UrlValidator', 'attributeCompare' => 'name'];
