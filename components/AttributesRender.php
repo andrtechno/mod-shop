@@ -8,6 +8,7 @@ use yii\base\Widget;
 use panix\engine\Html;
 use panix\mod\shop\models\Attribute;
 use panix\mod\shop\models\Product;
+use yii\helpers\ArrayHelper;
 
 class AttributesRender extends Widget
 {
@@ -52,6 +53,7 @@ class AttributesRender extends Widget
             $abbr = ($model->abbreviation) ? ' ' . $model->abbreviation : '';
 
             $value = $model->renderValue($this->_attributes[$model->name]) . $abbr;
+            $data_json = ArrayHelper::map($model->options, 'id', 'data');
 
             if (Yii::$app->settings->get('shop', 'group_attribute')) {
                 if ($model->group_id) {
@@ -59,7 +61,8 @@ class AttributesRender extends Widget
                         'id' => $model->id,
                         'name' => $model->title,
                         'hint' => $model->hint,
-                        'value' => $value
+                        'value' => $value,
+                        'data' => $data_json[$this->_attributes[$model->name]]
                     ];
                 }
             }
@@ -70,7 +73,8 @@ class AttributesRender extends Widget
                 'use_in_filter' => $model->use_in_filter,
                 'hasUrl' => in_array($model->type, [Attribute::TYPE_CHECKBOX_LIST, Attribute::TYPE_SELECT_MANY, Attribute::TYPE_DROPDOWN]),
                 'title' => $model->title,
-                'value' => $value
+                'value' => $value,
+                'data' => $data_json[$this->_attributes[$model->name]]
             ];
         }
 

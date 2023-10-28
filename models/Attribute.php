@@ -213,6 +213,49 @@ class Attribute extends ActiveRecord
         ];
     }
 
+    public static function generateGradientCss($data)
+    {
+
+        $css = '';
+        if (isset($data['color'])) {
+            //if(isset($data['color'][0]) && !empty($data['color'][0])){
+            $css .= "background: {$data['color'][0]};";
+            //}
+
+            if (count($data['color']) > 1) {
+
+                $res_data = [];
+                foreach ($data['color'] as $k => $color) {
+                    $res_data[] = $color;
+                }
+                $res = implode(', ', $res_data);
+
+                if (count($data['color']) == 2) {
+                    $value = "45deg, {$data['color'][0]} 50%, {$data['color'][1]} 50%";
+                    $css .= "background: -moz-linear-gradient({$value});";
+                    $css .= "background: -webkit-linear-gradient({$value});";
+                    $css .= "background: linear-gradient({$value});";
+                } elseif (count($data['color']) == 3) {
+                    $value = "45deg, {$data['color'][0]} 0%, {$data['color'][0]} 33%, {$data['color'][1]} 33%, {$data['color'][1]} 66%, {$data['color'][2]} 66%, {$data['color'][2]} 100%";
+                    $css .= "background: -moz-linear-gradient({$value});";
+                    $css .= "background: -webkit-linear-gradient({$value});";
+                    $css .= "background: linear-gradient({$value});";
+                } elseif (count($data['color']) == 4) {
+                    $value = "45deg, {$data['color'][0]} 0%, {$data['color'][0]} 25%, {$data['color'][1]} 25%, {$data['color'][1]} 50%, {$data['color'][2]} 50%, {$data['color'][2]} 75%, {$data['color'][3]} 75%, {$data['color'][3]} 100%";
+                    $css .= "background: -moz-linear-gradient({$value});";
+                    $css .= "background: -webkit-linear-gradient({$value});";
+                    $css .= "background: linear-gradient({$value});";
+                } elseif (count($data['color']) >= 4) {
+                    $css .= "background: -moz-radial-gradient(farthest-corner at 0% 100%, {$res});";
+                    $css .= "background: -webkit-radial-gradient(farthest-corner at 0% 100%, {$res});";
+                    $css .= "background: radial-gradient(farthest-corner at 0% 100%, {$res});";
+                }
+                $css .= "filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='{$data['color'][0]}', endColorstr='{$data['color'][1]}',GradientType=1 );";
+            }
+        }
+        return $css;
+    }
+    
     /**
      * Get sorting list
      * @return array
@@ -359,8 +402,8 @@ class Attribute extends ActiveRecord
     public function renderValue($value)
     {
         $valueTo = 'value';
-        if(Yii::$app->language != 'ru'){
-            $valueTo = 'value_'.Yii::$app->language;
+        if (Yii::$app->language != 'ru') {
+            $valueTo = 'value_' . Yii::$app->language;
         }
         switch ($this->type) {
             case self::TYPE_TEXT:
