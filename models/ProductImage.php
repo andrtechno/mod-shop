@@ -169,7 +169,7 @@ class ProductImage extends ActiveRecord
             //$size = $module->imgSizePreview;
         } elseif ($size == 'medium') {
             $prefix = 'medium_';
-            //$size = $module->imgSizeMedium;
+           // $size = $module->imgSizeMedium;
         } elseif ($size == 'small') {
             $prefix = 'small_';
             //$size = $module->imgSizeSmall;
@@ -219,13 +219,13 @@ class ProductImage extends ActiveRecord
         //$prefix = '';
         if ($size == 'preview') {
             $prefix = 'preview_';
-            //$size = $module->imgSizePreview;
+            $size = $module->imgSizePreview;
         } elseif ($size == 'medium') {
             $prefix = 'medium_';
-            //$size = $module->imgSizeMedium;
+            $size = $module->imgSizeMedium;
         } elseif ($size == 'small') {
             $prefix = 'small_';
-            //$size = $module->imgSizeSmall;
+            $size = $module->imgSizeSmall;
         } else {
             $prefix = $size . '_';
         }

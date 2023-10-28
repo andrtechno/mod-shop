@@ -125,7 +125,7 @@ class SearchController extends FilterController
                     'price' => $m->getFrontPrice(),
                     'currency' => Yii::$app->currency->active['symbol'],
                     'url' => Url::to($m->getUrl()),
-                    'image' => $m->getMainImage('80x80')->url,
+                    'image' => $m->getMainImage('small')->url,
                     'image_original' => $m->getMainImage()->url,
                 ];
             }
