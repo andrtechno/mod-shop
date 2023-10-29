@@ -15,6 +15,7 @@ class m180311_192100_functions extends Migration
 
     public function up()
     {
+        //SELECT SIMILARITY_STRING(SPLIT_STRING(column, ' ', 1), 'you string') AS score
         $functions['COMPARE_STRING'] = '
 CREATE FUNCTION `COMPARE_STRING`(s1 text, s2 text) RETURNS int(11)
     DETERMINISTIC
@@ -60,6 +61,7 @@ BEGIN
 RETURN ABS(((COMPARE_STRING(a, b) / greatest(length(a),length(b)) ) * 100) - 100);
 END';
 
+        //SPLIT_STRING(column, ' ', 1)
         $functions['SPLIT_STRING'] = '
 CREATE FUNCTION `SPLIT_STRING`(`str` VARCHAR(255), `delim` VARCHAR(12), `pos` INT) RETURNS varchar(255) CHARSET utf8mb4
 RETURN REPLACE(SUBSTRING(SUBSTRING_INDEX(str, delim, pos), CHAR_LENGTH(SUBSTRING_INDEX(str, delim, pos-1)) + 1), delim, \'\')
