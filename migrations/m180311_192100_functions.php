@@ -68,7 +68,7 @@ RETURN REPLACE(SUBSTRING(SUBSTRING_INDEX(str, delim, pos), CHAR_LENGTH(SUBSTRING
 ';
 
 
-        foreach ($functions as $key=>$fn){
+        foreach ($functions as $key => $fn) {
             $time = $this->beginCommand("create function {$key}");
             $this->db->createCommand($fn)->execute();
             $this->endCommand($time);
@@ -79,9 +79,12 @@ RETURN REPLACE(SUBSTRING(SUBSTRING_INDEX(str, delim, pos), CHAR_LENGTH(SUBSTRING
 
     public function down()
     {
-        $this->db->createCommand('DROP FUNCTION IF EXISTS COMPARE_STRING;')->execute();
-        $this->db->createCommand('DROP FUNCTION IF EXISTS SIMILARITY_STRING;')->execute();
-        $this->db->createCommand('DROP FUNCTION IF EXISTS SPLIT_STRING;')->execute();
+        $functions = ['COMPARE_STRING', 'SIMILARITY_STRING', 'SPLIT_STRING'];
+        foreach ($functions as $fn) {
+            $time = $this->beginCommand("create function {$fn}");
+            $this->db->createCommand("DROP FUNCTION IF EXISTS {$fn};")->execute();
+            $this->endCommand($time);
+        }
     }
 
 }
