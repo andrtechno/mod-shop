@@ -81,7 +81,7 @@ RETURN REPLACE(SUBSTRING(SUBSTRING_INDEX(str, delim, pos), CHAR_LENGTH(SUBSTRING
     {
         $functions = ['COMPARE_STRING', 'SIMILARITY_STRING', 'SPLIT_STRING'];
         foreach ($functions as $fn) {
-            $time = $this->beginCommand("create function {$fn}");
+            $time = $this->beginCommand("drop function {$fn}");
             $this->db->createCommand("DROP FUNCTION IF EXISTS {$fn};")->execute();
             $this->endCommand($time);
         }
