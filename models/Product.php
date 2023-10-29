@@ -969,6 +969,8 @@ class Product extends ActiveRecord
                 if (strpos($sum, '%')) {
                     $sum = (double)str_replace('%', '', $sum);
                     $this->price -= $this->price * ((double)$sum) / 100;
+                } else {
+                    $this->price -= $sum;
                 }
 
                 static::getDb()->createCommand()->insert('{{%shop__product_price_history}}', [
