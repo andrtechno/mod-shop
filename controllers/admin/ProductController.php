@@ -442,7 +442,8 @@ class ProductController extends AdminController
 
             if (in_array($key, [Attribute::TYPE_TEXT, Attribute::TYPE_TEXTAREA, Attribute::TYPE_YESNO])) {
                 foreach ($val as $k => $value) {
-                    $reAttributes[$k] = '"' . $value . '"';
+                    //$reAttributes[$k] = '"' . $value . '"';
+                    $reAttributes[$k] = $value;
                     if (is_string($value) && $value === '') {
                         unset($reAttributes[$k]);
                     }

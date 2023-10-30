@@ -255,7 +255,7 @@ class Attribute extends ActiveRecord
         }
         return $css;
     }
-    
+
     /**
      * Get sorting list
      * @return array
@@ -379,7 +379,7 @@ class Attribute extends ActiveRecord
                     1 => Yii::t('app/default', 'YES'),
                     2 => Yii::t('app/default', 'NO')
                 ];
-                return Html::dropDownList($name, $value, $data);
+                return Html::dropDownList($name, $value, $data, ['class' => 'custom-select ' . $inputClass]);
                 break;
             case self::TYPE_COLOR:
                 $data = ArrayHelper::map($this->getOptions()->orderBy(['value' => SORT_ASC])->all(), 'id', 'value');
