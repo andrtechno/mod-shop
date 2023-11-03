@@ -221,8 +221,14 @@ class Attribute extends ActiveRecord
             //if(isset($data['color'][0]) && !empty($data['color'][0])){
             $css .= "background: {$data['color'][0]};";
             //}
-
-            if (count($data['color']) > 1) {
+            $i = 0;
+            $colors = [];
+            foreach ($data['color'] as $color) {
+                $colors[$i] = $color;
+                $i++;
+            }
+            $count = count($colors);
+            if ($count > 1) {
 
                 $res_data = [];
                 foreach ($data['color'] as $k => $color) {
@@ -230,27 +236,27 @@ class Attribute extends ActiveRecord
                 }
                 $res = implode(', ', $res_data);
 
-                if (count($data['color']) == 2) {
-                    $value = "45deg, {$data['color'][0]} 50%, {$data['color'][1]} 50%";
+                if ($count == 2) {
+                    $value = "45deg, {$colors[0]} 50%, {$colors[1]} 50%";
                     $css .= "background: -moz-linear-gradient({$value});";
                     $css .= "background: -webkit-linear-gradient({$value});";
                     $css .= "background: linear-gradient({$value});";
-                } elseif (count($data['color']) == 3) {
-                    $value = "45deg, {$data['color'][0]} 0%, {$data['color'][0]} 33%, {$data['color'][1]} 33%, {$data['color'][1]} 66%, {$data['color'][2]} 66%, {$data['color'][2]} 100%";
+                } elseif ($count == 3) {
+                    $value = "45deg, {$colors[0]} 0%, {$colors[0]} 33%, {$colors[1]} 33%, {$colors[1]} 66%, {$colors[2]} 66%, {$colors[2]} 100%";
                     $css .= "background: -moz-linear-gradient({$value});";
                     $css .= "background: -webkit-linear-gradient({$value});";
                     $css .= "background: linear-gradient({$value});";
-                } elseif (count($data['color']) == 4) {
-                    $value = "45deg, {$data['color'][0]} 0%, {$data['color'][0]} 25%, {$data['color'][1]} 25%, {$data['color'][1]} 50%, {$data['color'][2]} 50%, {$data['color'][2]} 75%, {$data['color'][3]} 75%, {$data['color'][3]} 100%";
+                } elseif ($colors == 4) {
+                    $value = "45deg, {$colors[0]} 0%, {$colors[0]} 25%, {$colors[1]} 25%, {$colors[1]} 50%, {$colors[2]} 50%, {$colors[2]} 75%, {$colors[3]} 75%, {$colors[3]} 100%";
                     $css .= "background: -moz-linear-gradient({$value});";
                     $css .= "background: -webkit-linear-gradient({$value});";
                     $css .= "background: linear-gradient({$value});";
-                } elseif (count($data['color']) >= 4) {
+                } elseif ($colors >= 4) {
                     $css .= "background: -moz-radial-gradient(farthest-corner at 0% 100%, {$res});";
                     $css .= "background: -webkit-radial-gradient(farthest-corner at 0% 100%, {$res});";
                     $css .= "background: radial-gradient(farthest-corner at 0% 100%, {$res});";
                 }
-                $css .= "filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='{$data['color'][0]}', endColorstr='{$data['color'][1]}',GradientType=1 );";
+                $css .= "filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='{$colors[0]}', endColorstr='{$colors[1]}',GradientType=1 );";
             }
         }
         return $css;
