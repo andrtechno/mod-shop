@@ -215,26 +215,17 @@ class Attribute extends ActiveRecord
 
     public static function generateGradientCss($data)
     {
-
         $css = '';
         if (isset($data['color'])) {
-            //if(isset($data['color'][0]) && !empty($data['color'][0])){
             $css .= "background: {$data['color'][0]};";
-            //}
-            $i = 0;
-            $colors = [];
-            foreach ($data['color'] as $color) {
-                $colors[$i] = $color;
-                $i++;
-            }
-            $count = count($colors);
+            $count = count($data['color']);
             if ($count > 1) {
 
-                $res_data = [];
+                $colors = [];
                 foreach ($data['color'] as $k => $color) {
-                    $res_data[] = $color;
+                    $colors[] = $color;
                 }
-                $res = implode(', ', $res_data);
+                $res = implode(', ', $colors);
 
                 if ($count == 2) {
                     $value = "45deg, {$colors[0]} 50%, {$colors[1]} 50%";
@@ -246,12 +237,12 @@ class Attribute extends ActiveRecord
                     $css .= "background: -moz-linear-gradient({$value});";
                     $css .= "background: -webkit-linear-gradient({$value});";
                     $css .= "background: linear-gradient({$value});";
-                } elseif ($colors == 4) {
+                } elseif ($count == 4) {
                     $value = "45deg, {$colors[0]} 0%, {$colors[0]} 25%, {$colors[1]} 25%, {$colors[1]} 50%, {$colors[2]} 50%, {$colors[2]} 75%, {$colors[3]} 75%, {$colors[3]} 100%";
                     $css .= "background: -moz-linear-gradient({$value});";
                     $css .= "background: -webkit-linear-gradient({$value});";
                     $css .= "background: linear-gradient({$value});";
-                } elseif ($colors >= 4) {
+                } elseif ($count >= 4) {
                     $css .= "background: -moz-radial-gradient(farthest-corner at 0% 100%, {$res});";
                     $css .= "background: -webkit-radial-gradient(farthest-corner at 0% 100%, {$res});";
                     $css .= "background: radial-gradient(farthest-corner at 0% 100%, {$res});";
