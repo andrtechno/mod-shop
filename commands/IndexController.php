@@ -3,16 +3,15 @@
 namespace panix\mod\shop\commands;
 
 use panix\engine\CMS;
-use panix\mod\images\models\Image;
 use Yii;
 use yii\helpers\Console;
 use yii\helpers\Html;
 use yii\helpers\StringHelper;
 use yii\helpers\Url;
 use panix\mod\shop\components\SimpleXMLExtended;
-use panix\mod\shop\models\Product;
 use panix\engine\console\controllers\ConsoleController;
-
+use panix\mod\shop\models\Product;
+use panix\mod\shop\models\ProductImage;
 
 /**
  * IndexController
@@ -44,7 +43,7 @@ class IndexController extends ConsoleController
         $channel->addChildWithCDATA('title', Yii::$app->settings->get('app', 'sitename'));
         $channel->addChildWithCDATA('description', Yii::$app->settings->get('app', 'sitename'));
         $products = Product::find()
-            //->limit(50)
+            ->limit(50)
             ->where(['switch' => 1])
             //->andWhere(['use_configurations' => 1])
             //->andWhere(['availability'=>1])
@@ -68,15 +67,15 @@ class IndexController extends ConsoleController
             $item->addChild('link', $fullURL . Url::to($product->getUrl()), $ns);
 
 
-            $images = Image::find()
-                ->where(['object_id' => $product->id, 'handler_hash' => $product->getHash()])
+            $images = ProductImage::find()
+                ->where(['product_id' => $product->id])
                 ->all();
             foreach ($images as $image) {
-                if (file_exists(Yii::getAlias($image->path) . DIRECTORY_SEPARATOR . $product->id . DIRECTORY_SEPARATOR . $image->filePath)) {
+                if (file_exists(Yii::getAlias('@uploads/store/product') . DIRECTORY_SEPARATOR . $product->id . DIRECTORY_SEPARATOR . $image->filename)) {
                     if ($image->is_main) {
-                        $item->addChild('image_link', $fullURL . '/uploads/store/product/' . $product->id . '/' . $image->filePath, $ns);
+                        $item->addChild('image_link', $fullURL . '/uploads/store/product/' . $product->id . '/' . $image->filename, $ns);
                     } else {
-                        $item->addChild('additional_image_link', $fullURL . '/uploads/store/product/' . $product->id . '/' . $image->filePath, $ns);
+                        $item->addChild('additional_image_link', $fullURL . '/uploads/store/product/' . $product->id . '/' . $image->filename, $ns);
                     }
                 }
             }
@@ -222,7 +221,7 @@ class IndexController extends ConsoleController
         $products = Product::find()
             ->where(['availability'=>3])
             ->andWhere(['>', 'updated_at', strtotime(date('Y-m-d H:i:s', time() - (86400 * $days)))])
-       // echo $products->createCommand()->rawSql;die;
+            // echo $products->createCommand()->rawSql;die;
             ->all();
         foreach ($products as $product){
             echo 'UPD : '.date('Y-m-d H:i:s',$product->updated_at).PHP_EOL;
