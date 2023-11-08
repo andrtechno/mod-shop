@@ -116,7 +116,7 @@ class ProductSearch extends Product
         if (isset($configure['conf'])) {
             $query->andWhere(['IN', 'id', $configure['conf']]);
         }
-        if (strpos($this->id, ',')) {
+        if (isset($this->id) && strpos($this->id, ',')) {
             $query->andFilterWhere(['in',
                 self::tableName() . '.id', explode(',', $this->id),
             ]);
