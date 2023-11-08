@@ -155,6 +155,9 @@ class CurrencyManager extends Component
      */
     public function number_format($sum, $id = null)
     {
+        if (is_null($sum)) {
+            $sum = 0;
+        }
         $active = $this->_active;
         if ($id !== null && isset($this->_currencies[$id])) {
             $active = $this->_currencies[$id];
