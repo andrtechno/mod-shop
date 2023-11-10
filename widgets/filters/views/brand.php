@@ -19,7 +19,7 @@ use yii\helpers\Html;
                     <?php
                     foreach ($brands['filters'] as $filter) {
                         $url = Yii::$app->urlManager->addUrlParam('/' . Yii::$app->requestedRoute, [$filter['key'] => $filter['queryParam']], $brands['selectMany']);
-                        $queryData = explode(',', Yii::$app->request->getQueryParam($filter['key']));
+                        $queryData = explode(',', Yii::$app->request->getQueryParam($filter['key'],''));
                         // Filter link was selected.
 
                         $checkBoxOptions=[];

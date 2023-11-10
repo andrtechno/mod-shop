@@ -264,7 +264,7 @@ class FiltersWidget extends Widget
         return $sum;
     }
 
-    public function getCount($key = false, $filter)
+    public function getCount($filter, $key = false)
     {
         //$this->tagCountOptions=[];
         if ($key) {

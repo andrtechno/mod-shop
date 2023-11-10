@@ -206,7 +206,7 @@ class FilterPro extends Component
         $menuItems = [];
 
         if (in_array(Yii::$app->controller->route, ['shop/catalog/view', 'shop/catalog/sales', 'shop/catalog/new', 'shop/search/index'])) {
-            $brands = array_filter(explode(',', $request->getQueryParam('brand')));
+            $brands = array_filter(explode(',', $request->getQueryParam('brand','')));
             $brands = Brand::getDb()->cache(function ($db) use ($brands) {
                 return Brand::findAll($brands);
             }, 3600);
@@ -363,7 +363,7 @@ class FilterPro extends Component
 
         $data = Yii::$app->cache->get($this->cacheKey . '-attrs');
         if ($data === false) {
-            //$data = [];
+            $data = [];
             foreach ($this->_eavAttributes as $attribute) {
                 $data[$attribute->name] = [
                     'title' => $attribute->title,

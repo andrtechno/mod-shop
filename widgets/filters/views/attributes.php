@@ -29,7 +29,7 @@ foreach ($attributes as $attrData) {
                     <ul class="filter-list list-unstyled" id="filter-<?= $attrData['key']; ?>">
                         <?php
                         foreach ($attrData['filters'] as $filter) {
-                            $queryData = explode(',', Yii::$app->request->getQueryParam($attrData['key']));
+                            $queryData = explode(',', Yii::$app->request->getQueryParam($attrData['key'],''));
                             $checkBoxOptions=[];
                             $checkBoxOptions['value'] = $filter['id'];
                             $checkBoxOptions['class']='custom-control-input';
@@ -76,7 +76,7 @@ foreach ($attributes as $attrData) {
                                         echo '</div>';
                                     }else{
                                         echo '<div class="radio">';
-                                        echo Html::label(Html::radio('filter[' . $attrData['key'] . '][]', $checked, ['class' => '', 'value' => $filter['id'], 'id' => 'filter_' . $attrData['key'] . '_' . $filter['id']]).$filter['title'].(($checked)?'':$this->context->getCount($attrData['key'], $filter)), 'filter_' . $attrData['key'] . '_' . $filter['id'], ['class' => '']);
+                                        echo Html::label(Html::radio('filter[' . $attrData['key'] . '][]', $checked, ['class' => '', 'value' => $filter['id'], 'id' => 'filter_' . $attrData['key'] . '_' . $filter['id']]).$filter['title'].(($checked)?'':$this->context->getCount($filter, $attrData['key'])), 'filter_' . $attrData['key'] . '_' . $filter['id'], ['class' => '']);
                                         echo '</div>';
                                     }
 
