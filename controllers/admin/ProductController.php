@@ -127,8 +127,8 @@ class ProductController extends AdminController
 
 
         // Apply use_configurations, configurable_attributes, type_id
-        if (Yii::$app->request->get('Product')){
-           // $model->attributes = Yii::$app->request->get('Product');
+        if (Yii::$app->request->get('Product')) {
+            // $model->attributes = Yii::$app->request->get('Product');
             $model->load(Yii::$app->request->get());
         }
 
@@ -227,7 +227,7 @@ class ProductController extends AdminController
                 $model->label = implode(",", $model->label);
 
 
-            if(Yii::$app->db->driverName == 'pgsql'){
+            if (Yii::$app->db->driverName == 'pgsql') {
                 // var_dump($reAttributes);die;
                 $model->options = Json::encode($this->processAttributes($model));
             }
@@ -259,7 +259,7 @@ class ProductController extends AdminController
 
                 $model->setCategories($categories, $mainCategoryId);
                 $model->processPrices((isset(Yii::$app->request->post('Product')['prices'])) ? (array)Yii::$app->request->post('Product')['prices'] : []);
-                if(Yii::$app->db->driverName != 'pgsql'){
+                if (Yii::$app->db->driverName != 'pgsql') {
                     $this->processAttributes($model);
                 }
 
@@ -455,15 +455,16 @@ class ProductController extends AdminController
                     //  }
 
                     if (is_array($value)) {
-                        $diff = array_diff($model->_old_eav[$k], $reAttributes[$k]);
-                        if ($diff) {
-                            /* @todo need testing */
-                            foreach ($diff as $i) {
-                                TagDependency::invalidate(Yii::$app->cache, $k . '-' . $i);
+                        /*if (isset($model->_old_eav[$k], $reAttributes[$k])) {
+                            //CMS::dump($model->_old_eav);
+                            //CMS::dump($reAttributes);die;
+                            $diff = array_diff($model->_old_eav[$k], $reAttributes[$k]);
+                            if ($diff) {
+                                foreach ($diff as $i) {
+                                    TagDependency::invalidate(Yii::$app->cache, $k . '-' . $i);
+                                }
                             }
-
-
-                        }
+                        }*/
 
                     } else {
                         if ($model->_old_eav[$k] != $reAttributes[$k]) {
@@ -486,8 +487,8 @@ class ProductController extends AdminController
         // CMS::dump($model->_old_eav);
         // die;
 
-        if(Yii::$app->db->driverName == 'pgsql'){
-           // var_dump($reAttributes);die;
+        if (Yii::$app->db->driverName == 'pgsql') {
+            // var_dump($reAttributes);die;
             return $reAttributes;
         }
         return $model->setEavAttributes($reAttributes, true);

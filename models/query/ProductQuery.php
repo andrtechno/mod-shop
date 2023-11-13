@@ -84,9 +84,11 @@ class ProductQuery extends ActiveQuery
         $config = Yii::$app->settings->get('shop');
         if ($config->added_to_cart_count) {
             //$this->where(['like', 'label', 'hit_sale'])
-            $this->int2between(time() - (86400 * $offset), time(), 'added_to_cart_date');
-            $this->orWhere(['>=', 'added_to_cart_count', $config->added_to_cart_count]);
-            $this->orderBy(['added_to_cart_count' => SORT_DESC]);
+            //$this->int2between(time() - (86400 * $offset), time(), 'added_to_cart_date');
+            //$this->orWhere(['>=', 'added_to_cart_count', $config->added_to_cart_count]);
+            $this->where(['>=', 'added_to_cart_count', $config->added_to_cart_count]);
+            $this->andWhere(['>=', 'added_to_cart_date', time() - (86400 * $offset)]);
+            $this->addOrderBy(['added_to_cart_count' => SORT_DESC]);
             $this->andWhere(['!=', Product::tableName().".availability", Product::STATUS_OUT_STOCK]);
         }
         return $this;
