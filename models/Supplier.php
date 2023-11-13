@@ -109,12 +109,6 @@ class Supplier extends ActiveRecord
             $external = new ExternalFinder('{{%csv}}');
             $external->deleteObject(ExternalFinder::OBJECT_SUPPLIER, $this->id);
         }
-        if (Yii::$app->hasModule('forsage')) {
-            $external = new ExternalFinder('{{%forsage_studio}}');
-            $external->deleteObject(ExternalFinder::OBJECT_SUPPLIER, $this->id);
-        }
-
-
         parent::afterDelete();
     }
 
