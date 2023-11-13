@@ -93,11 +93,12 @@ class FilterController extends Controller
         if ($route == 'shop/catalog/sales') {
             $query->sales();
             $url = [$route];
-
         } elseif ($route == 'shop/catalog/new') {
             $query->new();
             $url = ['/' . $route];
-
+        } elseif ($route == 'shop/catalog/top-sales') {
+            $query->topSales();
+            $url = ['/' . $route];
         } elseif ($route == 'shop/search/index') {
             $query->applySearch($param);
             $url = ['/' . $route, 'q' => $param];
@@ -108,9 +109,8 @@ class FilterController extends Controller
             $url = $brand->getUrl();
         }
         $category = null;
-        if ($param && in_array($route, ['shop/catalog/new', 'shop/catalog/sales', 'shop/catalog/view'])) {
+        if ($param && in_array($route, ['shop/catalog/new', 'shop/catalog/sales', 'shop/catalog/top-sales', 'shop/catalog/view'])) {
             $category = Category::findOne($param);
-            // die('s');
             if (!$category)
                 $this->error404();
             $query->applyCategories($category, 'andWhere', $category->children()->count());

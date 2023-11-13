@@ -205,7 +205,7 @@ class FilterPro extends Component
         // Render links to cancel applied filters like prices, brands, attributes.
         $menuItems = [];
 
-        if (in_array(Yii::$app->controller->route, ['shop/catalog/view', 'shop/catalog/sales', 'shop/catalog/new', 'shop/search/index'])) {
+        if (in_array(Yii::$app->controller->route, ['shop/catalog/view', 'shop/catalog/sales', 'shop/catalog/new', 'shop/catalog/top-sales', 'shop/search/index'])) {
             $brands = array_filter(explode(',', $request->getQueryParam('brand','')));
             $brands = Brand::getDb()->cache(function ($db) use ($brands) {
                 return Brand::findAll($brands);
@@ -234,7 +234,7 @@ class FilterPro extends Component
         }
 
 
-        if (in_array(Yii::$app->controller->route, ['shop/catalog/view', 'shop/catalog/sales', 'shop/catalog/new', 'shop/search/index'])) {
+        if (in_array(Yii::$app->controller->route, ['shop/catalog/view', 'shop/catalog/sales', 'shop/catalog/top-sales', 'shop/catalog/new', 'shop/search/index'])) {
             if (!empty($brands)) {
                 $menuItems['brand'] = [
                     'name' => 'brand',

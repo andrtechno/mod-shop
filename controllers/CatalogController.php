@@ -411,7 +411,6 @@ class CatalogController extends FilterController
     public function actionSales()
     {
         /** @var Product $dataModel */
-        /** @var Product $dataModel */
         $this->dataModel = Yii::$app->getModule('shop')->model('Product');
 
 
@@ -533,15 +532,47 @@ class CatalogController extends FilterController
 
     }
 
-    protected function findModel($slug)
+    public function actionTopSales()
     {
-        if (($this->dataModel = Category::findOne(['full_path' => $slug])) !== null) {
-            return $this->dataModel;
-        } else {
-            $this->error404(Yii::t('shop/default', 'NOT_FOUND_CATEGORY'));
-        }
-    }
+        /** @var Product $dataModel */
+        $this->dataModel = Yii::$app->getModule('shop')->model('Product');
 
+        $this->query = Product::find()->published()->topSales();
+        $this->currentUrl = Url::to(['top-sales']);
+        $this->pageName = Yii::t('shop/default', 'TOP_SALES');
+        $this->refreshUrl = $this->currentUrl;
+
+        $this->view->params['breadcrumbs'][] = $this->pageName;
+        $this->view->canonical = Url::to($this->currentUrl, true);
+        $this->view->registerJs("var current_url = '" . $this->currentUrl . "';", yii\web\View::POS_HEAD, 'current_url');
+
+        $cacheKey = str_replace('/', '-', Yii::$app->controller->route);
+        $this->filter = new $this->filterClass($this->query, ['cacheKey' => $cacheKey]);
+        $this->filter->resultQuery->sortAvailability();
+
+        $this->filterQuery = clone $this->filter->resultQuery;
+        $this->currentQuery = clone $this->query;
+
+
+        if (Yii::$app->request->get('sort') == 'price' || Yii::$app->request->get('sort') == '-price') {
+            $this->filterQuery->aggregatePriceSelect((Yii::$app->request->get('sort') == 'price') ? SORT_ASC : SORT_DESC);
+        } else {
+            $this->filterQuery->addOrderBy(['updated_at' => SORT_DESC]);
+        }
+
+
+        $this->provider = new ActiveDataProvider([
+            'query' => $this->filterQuery,
+            'pagination' => [
+                'pageSize' => $this->per_page,
+            ],
+        ]);
+
+        return $this->_render('@shop/views/catalog/view', [
+
+        ]);
+
+    }
 
 
     public function actionLast()
@@ -583,4 +614,12 @@ class CatalogController extends FilterController
 
     }
 
+    protected function findModel($slug)
+    {
+        if (($this->dataModel = Category::findOne(['full_path' => $slug])) !== null) {
+            return $this->dataModel;
+        } else {
+            $this->error404(Yii::t('shop/default', 'NOT_FOUND_CATEGORY'));
+        }
+    }
 }

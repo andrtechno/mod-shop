@@ -72,7 +72,8 @@ class SettingsForm extends SettingsModel
             'attachment_wm_corner' => 5,
             'enable_reviews' => false,
             'search_availability' => '["1","2"]',
-            'search_limit' => '["1","2"]'
+            'search_limit' => '["1","2"]',
+            'top_sales_expire' => 30
         ];
     }
 

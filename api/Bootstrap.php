@@ -120,7 +120,18 @@ class Bootstrap implements BootstrapInterface
             'index' => 'sales',
             'pattern' => 'sales'
         ];
-
+        $rules[] = [
+            'class' => 'panix\mod\shop\components\rules\BaseUrlRule',
+            'route' => 'shop/catalog/top-sales',
+            'index' => 'top-sales',
+            'pattern' => 'top-sales/<params:.*>'
+        ];
+        $rules[] = [
+            'class' => 'panix\mod\shop\components\rules\BaseUrlRule',
+            'route' => 'shop/catalog/top-sales',
+            'index' => 'top-sales',
+            'pattern' => 'top-sales'
+        ];
         $rules[] = [
             'class' => 'panix\mod\shop\components\rules\BaseUrlRule',
             'route' => 'shop/catalog/new',

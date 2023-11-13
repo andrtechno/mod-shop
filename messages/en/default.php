@@ -15,6 +15,7 @@ return [
     'SEARCH' => 'Site search',
     'SEARCH_BY' => 'Search by {0}',
     'NEW' => 'New',
+    'TOP_SALES' => 'Top sales',
     'RATING_SCORE' => 'Rating: {0}/5',
     'DISCOUNT' => 'Discounts',
     'NOT_FOUND_CATEGORY' => 'Category not found.',

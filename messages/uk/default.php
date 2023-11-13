@@ -15,6 +15,7 @@ return [
     'SEARCH' => 'Пошук по сайту',
     'SEARCH_BY' => 'Пошук по {0}',
     'NEW' => 'Новинки',
+    'TOP_SALES' => 'Топ продажів',
     'RATING_SCORE' => 'Рейтинг: {0}/5',
     'DISCOUNT' => 'Знижки',
     'NOT_FOUND_CATEGORY' => 'Категорія не знайдена.',
