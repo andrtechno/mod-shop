@@ -19,7 +19,7 @@ class BrandController extends FilterController
 
     public function actionIndex()
     {
-        $model = Brand::find()->published()->all();
+        $model = Brand::find()->published()->orderBy(['name_uk' => SORT_ASC])->all();
         $this->currentUrl = '/';
         $this->pageName = Yii::t('shop/default', 'BRANDS');
         $this->view->params['breadcrumbs'][] = $this->pageName;
@@ -66,11 +66,11 @@ class BrandController extends FilterController
         $this->query->applyBrands($this->dataModel->id);
 
 
-        $this->filter = new $this->filterClass($this->query, ['cacheKey' => str_replace('/','-',Yii::$app->controller->route).'-' . $this->dataModel->id]);
+        $this->filter = new $this->filterClass($this->query, ['cacheKey' => str_replace('/', '-', Yii::$app->controller->route) . '-' . $this->dataModel->id]);
 
         $this->filterQuery = clone $this->query;
         $this->currentQuery = clone $this->query;
-       // $this->filter->resultQuery->orderBy(['id' => SORT_DESC]);
+        // $this->filter->resultQuery->orderBy(['id' => SORT_DESC]);
         //$this->query->applyAttributes($this->activeAttributes);
         //$this->filterQuery->addorderBy(['created_at'=>SORT_DESC]);
         //$this->currentQuery->orderBy(['created_at'=>SORT_DESC]);
