@@ -276,7 +276,7 @@ class FilterPro extends Component
                         if (isset($activeAttributes[$attribute->name]) && in_array($option->id, $activeAttributes[$attribute->name])) {
                             $menuItems[$attributeName]['items'][] = [
                                 'value' => $option->id,
-                                'label' => $option->value . (($attribute->abbreviation) ? ' ' . $attribute->abbreviation : ''),
+                                'label' => ((Yii::$app->language == 'uk') ? $option->value_uk : $option->value) . (($attribute->abbreviation) ? ' ' . $attribute->abbreviation : ''),
                                 'options' => [
                                     'class' => 'remove',
                                     'data-type' => 'checkbox',
