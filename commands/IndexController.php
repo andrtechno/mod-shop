@@ -221,7 +221,7 @@ class IndexController extends ConsoleController
         //echo 'DATE: '.date('Y-m-d H:i:s', time() - (86400 * $days)).PHP_EOL;
         $products = Product::find()
             ->where(['availability' => Product::STATUS_OUT_STOCK])
-            ->andWhere(['>=', 'updated_at', strtotime(date('Y-m-d H:i:s', time() - (86400 * $days)))])
+            ->andWhere(['<=', 'updated_at', time() - (86400 * $days)])
             // echo $products->createCommand()->rawSql;die;
             ->all();
         foreach ($products as $product) {
@@ -233,14 +233,10 @@ class IndexController extends ConsoleController
 
     public function actionArchive($days = 90)
     {
-       // $offest = date('Y-m-d H:i:s', time() - (86400 * $days));
-        //echo 'DATE: ' . $offest . PHP_EOL;
-
         $query = Product::find();
         $query->where(['availability' => Product::STATUS_OUT_STOCK]);
-        $query->andWhere(['>=', 'updated_at', (time() - (86400 * $days))]);
-        $query->limit(100);
-        //echo $query->createCommand()->rawSql;die;
+        $query->andWhere(['<', 'updated_at', (time() - (86400 * $days))]);
+        $query->limit(200);
         $products = $query->all();
         foreach ($products as $product) {
             $images = $product->getImages();
