@@ -24,10 +24,10 @@ trait ProductTrait
     public static function getAvailabilityItems()
     {
         return [
-            1 => self::t('AVAILABILITY_1'),
-            2 => self::t('AVAILABILITY_2'),
-            3 => self::t('AVAILABILITY_3'),
-            4 => self::t('AVAILABILITY_4'),
+            self::STATUS_IN_STOCK => self::t('AVAILABILITY_1'),
+            self::STATUS_PREORDER => self::t('AVAILABILITY_2'),
+            self::STATUS_OUT_STOCK => self::t('AVAILABILITY_3'),
+            self::STATUS_ARCHIVE => self::t('AVAILABILITY_4'),
         ];
     }
 
@@ -92,8 +92,21 @@ trait ProductTrait
                     if ($model->views > 0) {
                         $html .= " <small>(" . Yii::t('app/default', 'VIEWS', ['n' => $model->views]) . ")</small>";
                     }
+
                     if (true) {
+
                         $labels = [];
+                        $class='';
+                        if ($model->availability == $model::STATUS_OUT_STOCK) {
+                            $class='light';
+                        } elseif ($model->availability == $model::STATUS_PREORDER) {
+                            $class='warning';
+                        } elseif ($model->availability == $model::STATUS_ARCHIVE) {
+                            $class='secondary';
+                        }
+                        if(!empty($class)) {
+                            $labels[] = Html::tag('span', $model::getAvailabilityItems()[$model->availability], ['class' => 'badge badge-' . $class]);
+                        }
                         foreach ($model->labels() as $key => $label) {
                             $class = 'secondary';
                             if ($key == 'new') {

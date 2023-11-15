@@ -5,6 +5,7 @@ namespace panix\mod\shop\commands;
 use panix\engine\CMS;
 use Yii;
 use yii\helpers\Console;
+use yii\helpers\FileHelper;
 use yii\helpers\Html;
 use yii\helpers\StringHelper;
 use yii\helpers\Url;
@@ -217,16 +218,38 @@ class IndexController extends ConsoleController
      */
     public function actionDeleteAv($days = 90)
     {
-        echo 'DATE: '.date('Y-m-d H:i:s', time() - (86400 * $days)).PHP_EOL;
+        //echo 'DATE: '.date('Y-m-d H:i:s', time() - (86400 * $days)).PHP_EOL;
         $products = Product::find()
-            ->where(['availability'=>3])
-            ->andWhere(['>', 'updated_at', strtotime(date('Y-m-d H:i:s', time() - (86400 * $days)))])
+            ->where(['availability' => Product::STATUS_OUT_STOCK])
+            ->andWhere(['>=', 'updated_at', strtotime(date('Y-m-d H:i:s', time() - (86400 * $days)))])
             // echo $products->createCommand()->rawSql;die;
             ->all();
-        foreach ($products as $product){
-            echo 'UPD : '.date('Y-m-d H:i:s',$product->updated_at).PHP_EOL;
-            echo $product->id.PHP_EOL;
-            //$product->delete();
+        foreach ($products as $product) {
+            //echo 'UPD : '.date('Y-m-d H:i:s',$product->updated_at).PHP_EOL;
+            //echo $product->id.PHP_EOL;
+            $product->delete();
+        }
+    }
+
+    public function actionArchive($days = 90)
+    {
+       // $offest = date('Y-m-d H:i:s', time() - (86400 * $days));
+        //echo 'DATE: ' . $offest . PHP_EOL;
+
+        $query = Product::find();
+        $query->where(['availability' => Product::STATUS_OUT_STOCK]);
+        $query->andWhere(['>=', 'updated_at', (time() - (86400 * $days))]);
+        $query->limit(100);
+        //echo $query->createCommand()->rawSql;die;
+        $products = $query->all();
+        foreach ($products as $product) {
+            $images = $product->getImages();
+            foreach ($images->all() as $image) {
+                $product->removeImage($image);
+            }
+            $path = FileHelper::normalizePath(Yii::getAlias($product->savePath) . DIRECTORY_SEPARATOR . $product->id);
+            FileHelper::removeDirectory($path);
+            Yii::$app->db->createCommand()->update(Product::tableName(), ['availability' => Product::STATUS_ARCHIVE], ['id'=>$product->id])->execute();
         }
     }
 }

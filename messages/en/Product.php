@@ -33,7 +33,7 @@ return [
     'AVAILABILITY_1' => 'Available',
     'AVAILABILITY_2' => 'On order',
     'AVAILABILITY_3' => 'Out of stock',
-    'AVAILABILITY_4' => 'Archive (the product will be available via the link, but it will not be available for purchase)',
+    'AVAILABILITY_4' => 'Archive',
     'GRID_OPTION_COPY' => 'Copy',
     'GRID_OPTION_ACTIVE' => 'Active',
     'GRID_OPTION_DEACTIVE' => 'Not active',

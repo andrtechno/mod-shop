@@ -33,7 +33,7 @@ return [
     'AVAILABILITY_1' => 'Є в наявності',
     'AVAILABILITY_2' => 'Під замовлення',
     'AVAILABILITY_3' => 'Немає в наявності',
-    'AVAILABILITY_4' => 'Архів (товар буде доступний за посиланням, але його купити не можна)',
+    'AVAILABILITY_4' => 'Архів',
     'GRID_OPTION_COPY' => 'Копіювати',
     'GRID_OPTION_ACTIVE' => 'Активний',
     'GRID_OPTION_DEACTIVE' => 'Не активний ',
