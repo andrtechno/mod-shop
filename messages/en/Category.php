@@ -24,4 +24,7 @@ return [
     'META_DESCRIPTION' => 'Meta description',
     'ADD_TO_PARENT' => 'Add to category: {0}',
     'NAME_MAIN' => 'Title for the main page',
+    'META_CHILD_TITLE' => 'Meta title',
+    'META_CHILD_DESCRIPTION' => 'Meta description',
+    'H1_CHILD' => 'H1',
 ];
