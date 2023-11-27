@@ -231,4 +231,5 @@ class Brand extends ActiveRecord
         TagDependency::invalidate(Yii::$app->cache, 'brand-' . $this->id);
         parent::afterSave($insert, $changedAttributes);
     }
+
 }

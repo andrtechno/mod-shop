@@ -32,6 +32,14 @@ class SettingsForm extends SettingsModel
 
     public $search_availability;
     public $search_limit;
+
+    public $seo_brand_title_uk;
+    public $seo_brand_title_ru;
+    public $seo_brand_description_uk;
+    public $seo_brand_description_ru;
+    public $seo_brand_h1_uk;
+    public $seo_brand_h1_ru;
+
     public static $extensionWatermark = ['png'];
 
     public function rules()
@@ -41,13 +49,14 @@ class SettingsForm extends SettingsModel
             [['product_related_bilateral', 'group_attribute', 'smart_bc', 'smart_title', 'enable_reviews'], 'boolean'],
             [['label_expire_new', 'added_to_cart_count', 'search_limit'], 'integer'],
             [['email_notify_reviews'], '\panix\engine\validators\EmailListValidator'],
-            [['added_to_cart_period'], 'string'],
+            [['added_to_cart_period','seo_brand_h1_uk','seo_brand_h1_ru','seo_brand_title_uk','seo_brand_description_uk','seo_brand_title_ru','seo_brand_description_ru'], 'string'],
             ['search_availability', 'each', 'rule' => ['integer']],
             [['watermark_enable'], 'boolean'],
             [['attachment_wm_corner', 'attachment_wm_offsety', 'attachment_wm_offsetx'], 'integer'],
             ['attachment_wm_path', 'validateWatermarkFile'],
             [['attachment_wm_offsetx', 'attachment_wm_offsety', 'attachment_wm_corner'], "required"],
             [['attachment_wm_path'], 'file', 'skipOnEmpty' => true, 'extensions' => self::$extensionWatermark],
+            //[['added_to_cart_period','seo_brand_h1_uk','seo_brand_h1_ru','seo_brand_title_uk','seo_brand_description_uk','seo_brand_title_ru','seo_brand_description_ru'], 'default'],
         ];
     }
 
@@ -72,7 +81,7 @@ class SettingsForm extends SettingsModel
             'attachment_wm_corner' => 5,
             'enable_reviews' => false,
             'search_availability' => '["1","2"]',
-            'search_limit' => '["1","2"]',
+            'search_limit' => 20,
             'top_sales_expire' => 30
         ];
     }

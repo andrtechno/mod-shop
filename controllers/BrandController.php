@@ -55,7 +55,7 @@ class BrandController extends FilterController
      */
     public function actionView($slug)
     {
-
+        $config = Yii::$app->settings->get('shop');
         $this->findModel($slug);
         // $this->currentUrl = Url::to($this->dataModel->getUrl());
         /** @var Product $productModel */
@@ -79,9 +79,28 @@ class BrandController extends FilterController
         $this->pageName = $this->dataModel->name;
         $this->view->setModel($this->dataModel);
         $this->view->title = $this->dataModel->name;
-
         $this->view->text = $this->dataModel->description;
 
+
+        $vTitle = 'seo_brand_title_' . Yii::$app->language;
+        $vDesc = 'seo_brand_description_' . Yii::$app->language;
+        $vH1 = 'seo_brand_h1_' . Yii::$app->language;
+
+        if (isset($config->{$vTitle})) {
+            $this->view->title = CMS::textReplace($config->{$vTitle}, [
+                '{name}' => $this->dataModel->name
+            ]);
+        }
+        if (isset($config->{$vDesc})) {
+            $this->view->description = CMS::textReplace($config->{$vDesc}, [
+                '{name}' => $this->dataModel->name
+            ]);
+        }
+        if (isset($config->{$vH1})) {
+            $this->view->h1 = CMS::textReplace($config->{$vH1}, [
+                '{name}' => $this->dataModel->name
+            ]);
+        }
         // $this->query->applyRangePrices((isset($this->prices[0])) ? $this->prices[0] : 0, (isset($this->prices[1])) ? $this->prices[1] : 0);
 
 

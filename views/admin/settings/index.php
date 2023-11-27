@@ -27,16 +27,17 @@ $form = ActiveForm::begin();
                     'label' => $model::t('TAB_SEARCH'),
                     'content' => $this->render('_search', ['form' => $form, 'model' => $model]),
                 ],
-               /* [
-                    'label' => 'SEO',
-                    'items' => [
+                [
+                    'label' => 'SEO Brand',
+                    'content' => $this->render('_seo_brand', ['form' => $form, 'model' => $model]),
+                    /*'items' => [
                         [
                             'label' => 'Категорий',
-                            'contentOptions' => ['id' => 'seo_categories'],
-                            'content' => $this->render('_seo_categories', ['form' => $form, 'model' => $model]),
+                            'contentOptions' => ['id' => 'seo_brand'],
+                            'content' => $this->render('_seo_brand', ['form' => $form, 'model' => $model]),
                         ],
-                    ],
-                ],*/
+                    ],*/
+                ],
             ],
         ]);
         ?>

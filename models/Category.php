@@ -89,8 +89,10 @@ class Category extends ActiveRecord
             ['use_seo_parents', 'boolean'],
             [['description', 'image', 'icon'], 'default'],
             [['name', 'meta_title', 'h1', 'name_main'], 'string', 'max' => 255],
-            [['meta_description'], 'string'],
-            ['description', 'safe']
+            [['meta_child_title', 'h1_child'], 'string', 'max' => 255],
+            [['meta_description', 'meta_child_description'], 'string'],
+            ['description', 'safe'],
+            [['h1', 'meta_title', 'meta_child_title', 'meta_description', 'meta_child_description'], 'default']
         ];
     }
 
@@ -153,7 +155,16 @@ class Category extends ActiveRecord
         ];
         $a['translate'] = [
             'class' => '\panix\mod\shop\components\TranslateBehavior',
-            'translationAttributes' => ['name', 'description', 'meta_title', 'meta_description', 'h1', 'name_main']
+            'translationAttributes' => [
+                'name',
+                'description',
+                'meta_title',
+                'meta_description',
+                'h1',
+                'meta_child_title',
+                'meta_child_description',
+                'h1_child',
+                'name_main']
         ];
         return ArrayHelper::merge($a, parent::behaviors());
     }
@@ -232,8 +243,6 @@ class Category extends ActiveRecord
      */
     public function afterSave($insert, $changedAttributes)
     {
-
-
         $childrens = $this->descendants()->all();
         if ($childrens) {
             foreach ($childrens as $children) {
@@ -270,11 +279,11 @@ class Category extends ActiveRecord
 
             $parts = [];
             $partsName = [];
-            foreach ($ancestors as $key=>$ancestor) {
+            foreach ($ancestors as $key => $ancestor) {
                 $parts[] = $ancestor->slug;
-                if($key){
+                if ($key) {
                     $partsName[] = $ancestor->full_path;
-                }else{
+                } else {
                     $partsName[] = $ancestor->name_ru;
                 }
             }
@@ -293,12 +302,13 @@ class Category extends ActiveRecord
 
     /**
      * @param array $params
+     * @param string $attribute
      * @return mixed
      */
-    public function h1($params = array())
+    public function h1($params = [], $attribute = 'h1')
     {
-        if (!empty($this->h1)) {
-            $value = $this->h1;
+        if (!empty($this->{$attribute})) {
+            $value = $this->{$attribute};
         } else {
             $value = $this->name;
         }
@@ -308,12 +318,13 @@ class Category extends ActiveRecord
 
     /**
      * @param array $params
+     * @param string $attribute
      * @return mixed
      */
-    public function title($params = array())
+    public function title($params = [], $attribute = 'meta_title')
     {
-        if (!empty($this->meta_title)) {
-            $value = $this->meta_title;
+        if ($this->{$attribute}) {
+            $value = $this->{$attribute};
         } else {
             $value = $this->name;
         }
@@ -323,12 +334,13 @@ class Category extends ActiveRecord
 
     /**
      * @param array $params
+     * @param string $attribute
      * @return mixed
      */
-    public function description($params = array())
+    public function description($params = [], $attribute = 'meta_description')
     {
-        if (!empty($this->meta_description)) {
-            $value = $this->meta_description;
+        if (!empty($this->{$attribute})) {
+            $value = $this->{$attribute};
         } else {
             $value = $this->name;
         }
@@ -338,11 +350,6 @@ class Category extends ActiveRecord
 
     public function replaceMeta($text, $params)
     {
-
-        //$replace = [
-        //     "{name}" => $name,
-        //    "{currency.symbol}" => Yii::$app->currency->active['symbol'],
-        //];
         return CMS::textReplace($text, $params);
     }
 

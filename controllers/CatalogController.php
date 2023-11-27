@@ -88,6 +88,47 @@ class CatalogController extends FilterController
                         // 'pageSizeLimit' => $this->allowedPageLimit,
                     ]
                 ]);
+
+
+                $min_price = 0;
+                $meta_params['{name}'] = $this->dataModel->name;
+                $meta_params['{h1}'] = (empty($this->dataModel->h1)) ? $this->dataModel->name : $this->dataModel->h1;
+                $meta_params['{min_price}'] = ($min_price) ? Yii::$app->currency->number_format($min_price) : 0;
+                $meta_params['{currency.symbol}'] = Yii::$app->currency->active['symbol'];
+                $this->view->title = $this->dataModel->title($meta_params);
+                $this->view->description = $this->dataModel->description($meta_params);
+                $this->view->h1 = $this->dataModel->h1($meta_params);
+
+//echo $this->dataModel->id;
+//echo '<br>';
+                /*$s = $this->dataModel->parent()
+                    ->andWhere(['use_seo_parents' => 1])
+                    ->addOrderBy(['depth' => SORT_DESC])
+                    ->one();
+               // print_r($s->id);die;
+                if ($s) {
+
+
+                    if($this->dataModel->meta_title){
+                        $this->view->title = $this->dataModel->title($meta_params);
+                    }elseif($s->meta_child_title){
+                        $this->view->title = $s->title($meta_params,'meta_child_title');
+                    }
+                    if($this->dataModel->meta_description){
+                        $this->view->description = $this->dataModel->description($meta_params);
+                    }elseif($s->meta_child_description){
+                        $this->view->description = $s->description($meta_params,'meta_child_description');
+                    }
+                    if($this->dataModel->h1){
+                        $this->view->h1 = $this->dataModel->h1($meta_params);
+                    }elseif($s->h1_child){
+                        $this->view->h1 = $s->h1($meta_params,'h1_child');
+                    }
+
+                }*/
+
+
+
                 return $this->render('view2', [
                     'provider' => $this->provider,
                     'itemView' => $this->itemView,
@@ -193,51 +234,28 @@ class CatalogController extends FilterController
         $meta_params['{h1}'] = (empty($this->dataModel->h1)) ? $this->dataModel->name : $this->dataModel->h1;
         $meta_params['{min_price}'] = ($min_price) ? Yii::$app->currency->number_format($min_price) : 0;
         $meta_params['{currency.symbol}'] = Yii::$app->currency->active['symbol'];
+        $this->view->title = $this->dataModel->title($meta_params);
+        $this->view->description = $this->dataModel->description($meta_params);
+        $this->view->h1 = $this->dataModel->h1($meta_params);
 
-        if ($this->dataModel->use_seo_parents) {
 
-            $this->view->title = $this->dataModel->title($meta_params);
-            $this->view->description = $this->dataModel->description($meta_params);
-            $this->view->h1 = $this->dataModel->h1($meta_params);
-        } else {
+        //if ($this->dataModel->use_seo_parents) {
+
+
+        //} else {
             $s = $this->dataModel->parent()
-                ->andWhere(['use_seo_parents' => 1])
+                //->andWhere(['use_seo_parents' => 1])
                 ->addOrderBy(['depth' => SORT_DESC])
                 ->one();
             if ($s) {
-                if (!empty($this->dataModel->meta_title)) {
-                    $this->view->title = $this->dataModel->title($meta_params);
-                } else {
-                    $this->view->title = $s->title($meta_params);
-                }
-                if (!empty($this->dataModel->meta_description)) {
-                    $this->view->description = $this->dataModel->description($meta_params);
-                } else {
-                    $this->view->description = $s->description($meta_params);
-                }
-
-                if (!empty($this->dataModel->h1)) {
-                    $this->view->h1 = $this->dataModel->h1($meta_params);
-                } else {
-                    $this->view->h1 = (!empty($s->h1)) ? $s->h1($meta_params) : $this->dataModel->h1($meta_params);
-                }
-
-
-            } else {
-                $this->view->title = $this->dataModel->title($meta_params);
-                $this->view->description = $this->dataModel->description($meta_params);
-                $this->view->h1 = $this->dataModel->h1($meta_params);
+                $this->view->title = ($s->meta_child_title) ? $s->title($meta_params, 'meta_child_title') : $this->dataModel->title($meta_params);
+                $this->view->description = ($s->meta_child_description) ? $s->description($meta_params, 'meta_child_description') : $this->dataModel->description($meta_params);
+                $this->view->h1 = ($s->h1_child) ? $s->h1($meta_params, 'h1_child') : $this->dataModel->h1($meta_params);
             }
 
-        }
+       // }
 
         //}
-
-
-        /* $this->view->params['breadcrumbs'][] = [
-             'label' => Yii::t('shop/default', 'CATALOG'),
-             'url' => ['/catalog']
-         ];*/
 
         $ancestors = $this->dataModel->ancestors()->addOrderBy('depth')->excludeRoot()->cache(3600)->all();
         if ($ancestors) {
