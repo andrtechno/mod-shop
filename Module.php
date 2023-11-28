@@ -31,7 +31,7 @@ class Module extends WebModule implements BootstrapInterface
     public $imgSizeMedium = '400x400'; //goods list gallery,
     public $imgSizeSmall = '100x100'; //admin panel, cart email
     public $imgSizePreview = '500x500'; //catalog grid
-
+    public $elasticIndex = 'product';
     /**
      * @inheritdoc
      */
@@ -63,41 +63,42 @@ class Module extends WebModule implements BootstrapInterface
             'pattern' => 'brand/<slug:[0-9a-zA-Z_\-]+>'
         ];
 
+        foreach ($this->getAllPaths() as $path) {
+
+            $pattern = [];
+            $pathNew = explode('/', $path);
+
+            foreach ($pathNew as $pat) {
+                $pattern[] = '[0-9a-zA-Z_\-]+';
+            }
+            $pattern = implode('\/', $pattern);
+
+            /* $rules22[] = [
+                 'class' => 'panix\mod\shop\components\rules\CategoryUrlRule',
+                 'route' => 'shop/catalog/view',
+                 'defaults' => ['slug' => $path],
+                 //'suffix'=>'.html',
+                 'pattern' => "catalog/<slug:[0-9a-zA-Z_\-]+>",
+             ];*/
+
+            //testing now
+            $rules[] = [
+                'class' => 'panix\mod\shop\components\rules\BaseUrlRule',
+                'route' => 'shop/catalog/view',
+                'index' => 'catalog',
+                'pattern' => 'catalog/<slug:' . $path . '>/<params:.*>'
+            ];
+            $rules[] = [
+                'class' => 'panix\mod\shop\components\rules\BaseUrlRule',
+                'route' => 'shop/catalog/view',
+                'index' => 'catalog',
+                'pattern' => 'catalog/<slug:' . $path . '>'
+            ];
+        }
 
         if ($app->id != 'console') {
 
-            foreach ($this->getAllPaths() as $path) {
 
-                $pattern = [];
-                $pathNew = explode('/', $path);
-
-                foreach ($pathNew as $pat) {
-                    $pattern[] = '[0-9a-zA-Z_\-]+';
-                }
-                $pattern = implode('\/', $pattern);
-
-                /* $rules22[] = [
-                     'class' => 'panix\mod\shop\components\rules\CategoryUrlRule',
-                     'route' => 'shop/catalog/view',
-                     'defaults' => ['slug' => $path],
-                     //'suffix'=>'.html',
-                     'pattern' => "catalog/<slug:[0-9a-zA-Z_\-]+>",
-                 ];*/
-
-                //testing now
-                $rules[] = [
-                    'class' => 'panix\mod\shop\components\rules\BaseUrlRule',
-                    'route' => 'shop/catalog/view',
-                    'index' => 'catalog',
-                    'pattern' => 'catalog/<slug:' . $path . '>/<params:.*>'
-                ];
-                $rules[] = [
-                    'class' => 'panix\mod\shop\components\rules\BaseUrlRule',
-                    'route' => 'shop/catalog/view',
-                    'index' => 'catalog',
-                    'pattern' => 'catalog/<slug:' . $path . '>'
-                ];
-            }
 
             $rules[] = [
                 'class' => 'panix\mod\shop\components\rules\SearchUrlRule',

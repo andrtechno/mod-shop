@@ -5,9 +5,11 @@ namespace panix\mod\shop\commands;
 use panix\engine\CMS;
 use panix\engine\console\controllers\ConsoleController;
 use panix\mod\shop\models\Product;
+use panix\mod\sitemap\components\Sitemap;
 use Yii;
 use yii\console\ExitCode;
 use yii\helpers\Console;
+use yii\helpers\Url;
 
 /**
  * Generate sitemap for shop
@@ -45,57 +47,84 @@ class SitemapController extends ConsoleController
     public function actionIndex()
     {
 
-        $file = Yii::getAlias($this->rootDir.'/'.$this->sitemapFile);
+        $file = Yii::getAlias($this->rootDir . '/' . $this->sitemapFile);
 
-        //   $module = $this->module;
-
-        //if (!$sitemapData = Yii::$app->cache->get('sitemap')) {
-        //    $sitemapData = Yii::$app->getModule('sitemap')->buildSitemap();
-        // }
-
-
-        // print_r($sitemapData);die;
-
-
-        $this->stdout("Generate sitemap file.".PHP_EOL, Console::FG_PURPLE);
-        $this->stdout("Rendering sitemap...".PHP_EOL, Console::FG_PURPLE);
+        $this->stdout("Generate sitemap file." . PHP_EOL, Console::FG_PURPLE);
+        $this->stdout("Rendering sitemap..." . PHP_EOL, Console::FG_PURPLE);
         $sitemap = Yii::$app->sitemap->render();
 
-        $this->stdout("Writing sitemap to $file".PHP_EOL, Console::FG_PURPLE);
+        $this->stdout("Writing sitemap to $file" . PHP_EOL, Console::FG_PURPLE);
         file_put_contents($file, $sitemap[0]['xml']);
         $sitemap_count = count($sitemap);
         for ($i = 1; $i < $sitemap_count; $i++) {
-            $file = Yii::getAlias($this->rootDir.'/'.trim($sitemap[$i]['file'], '/'));
-            $this->stdout("Writing sitemap to $file".PHP_EOL, Console::FG_PURPLE);
+            $file = Yii::getAlias($this->rootDir . '/' . trim($sitemap[$i]['file'], '/'));
+            $this->stdout("Writing sitemap to $file" . PHP_EOL, Console::FG_PURPLE);
             file_put_contents($file, $sitemap[$i]['xml']);
         }
-        $this->stdout("Done!".PHP_EOL, Console::FG_GREEN);
+        $this->stdout("Done!" . PHP_EOL, Console::FG_GREEN);
         return ExitCode::OK;
     }
-
-
 
 
     public function actionQueue()
     {
         ini_set('memory_limit', '3096M');
-        $file = Yii::getAlias($this->rootDir.'/'.$this->sitemapFile);
+        $file = Yii::getAlias($this->rootDir . '/' . $this->sitemapFile);
 
 
-        $this->stdout("Generate sitemap files.".PHP_EOL, Console::FG_PURPLE);
+        $this->stdout("Generate sitemap files." . PHP_EOL, Console::FG_PURPLE);
         $sitemap = Yii::$app->sitemap->queue();
 
-        $this->stdout("Generate sitemap to $file".PHP_EOL, Console::FG_PURPLE);
+        $this->stdout("Generate sitemap to $file" . PHP_EOL, Console::FG_PURPLE);
         file_put_contents($file, $sitemap[0]['xml']);
         $sitemap_count = count($sitemap);
         for ($i = 1; $i < $sitemap_count; $i++) {
-            $file = Yii::getAlias($this->rootDir.'/'.trim($sitemap[$i]['file'], '/'));
-            $this->stdout("Generate sitemap file $file".PHP_EOL, Console::FG_PURPLE);
+            $file = Yii::getAlias($this->rootDir . '/' . trim($sitemap[$i]['file'], '/'));
+            $this->stdout("Generate sitemap file $file" . PHP_EOL, Console::FG_PURPLE);
             file_put_contents($file, "");
         }
-        $this->stdout("Done! Memory_usage: ".memory_get_usage()."".PHP_EOL, Console::FG_GREEN);
+        $this->stdout("Done! Memory_usage: " . CMS::fileSize(memory_get_usage()) . "" . PHP_EOL, Console::FG_GREEN);
 
 
         return ExitCode::OK;
+    }
+
+
+    public function actionQueue2()
+    {
+        $file = Yii::getAlias($this->rootDir . '/' . $this->sitemapFile);
+
+
+        $this->stdout("Generate $this->sitemapFile." . PHP_EOL, Console::FG_PURPLE);
+
+
+        $xml = new \XMLWriter();
+        if (false) {
+            $xml->preserveWhiteSpace = true;
+            $xml->formatOutput = true;
+        }
+
+        $xml->openMemory();
+        $xml->startDocument('1.0', 'UTF-8');
+        $xml->startElement('sitemapindex');
+        $xml->writeAttribute('xmlns', Yii::$app->sitemap->schemas['xmlns']);
+
+
+        $sitemap = Yii::$app->sitemap->queue2();
+        foreach ($sitemap as $maps) {
+            foreach ($maps as $filename) {
+                $this->stdout("Generate sitemap file $filename" . PHP_EOL, Console::FG_YELLOW);
+                $xml->startElement('sitemap');
+                $xml->writeElement('loc', Url::to('uploads/' . $filename . '.xml', true));
+                $xml->endElement();
+            }
+        }
+
+
+        $xml->endElement();
+
+        file_put_contents($file, $xml->outputMemory());
+        return ExitCode::OK;
+
     }
 }
