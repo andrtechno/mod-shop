@@ -3,6 +3,7 @@
 namespace panix\mod\shop\controllers;
 
 use panix\engine\controllers\WebController;
+use panix\mod\shop\models\Brand;
 use Yii;
 use yii\helpers\Url;
 use yii\web\Response;
@@ -241,7 +242,6 @@ class CatalogController extends FilterController
 
         //if ($this->dataModel->use_seo_parents) {
 
-
         //} else {
             $s = $this->dataModel->parent()
                 //->andWhere(['use_seo_parents' => 1])
@@ -275,7 +275,7 @@ class CatalogController extends FilterController
 
         $currentUrl[] = '/shop/catalog/view';
         $currentUrl['slug'] = $this->dataModel->full_path;
-        $this->view->canonical = Url::to($currentUrl, true);
+        //$this->view->canonical = Url::to($currentUrl, true);
         foreach ($filterData as $name => $filter) {
             if (isset($filter['name'])) { //attributes
                 $currentUrl[$filter['name']] = [];
@@ -288,7 +288,7 @@ class CatalogController extends FilterController
                 }
             }
         }
-
+        $this->view->canonical = Url::to($currentUrl, true);
 
         $this->currentUrl = Url::to($currentUrl);
 
@@ -345,6 +345,28 @@ class CatalogController extends FilterController
 
         }
 
+
+
+        if (Yii::$app->request->get('brand')) {
+            $brands = explode(',', Yii::$app->request->get('brand', ''));
+            $brand = Brand::findOne($brands[0]);
+            $meta_params['{category}'] = $this->dataModel->name;
+            $meta_params['{name}'] = ($brand->name) ? $brand->name : $this->dataModel->h1;
+
+            $title = $brand->title($meta_params);
+            if($title){
+                $this->view->title = $title;
+            }
+            $description = $brand->description($meta_params);
+            if($description){
+                $this->view->description = $description;
+            }
+            $h1 = $brand->h1($meta_params);
+            if($h1){
+                $this->view->h1 = $h1;
+            }
+
+        }
 
         return $this->_render();
     }

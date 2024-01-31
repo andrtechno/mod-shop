@@ -43,4 +43,13 @@ return [
     'SEO_BRAND_H1_RU'=>'H1 (RU)',
     'SEO_BRAND_H1_UK'=>'H1 (UA)',
     'SEO_BRAND_H1_EN'=>'H1 (EN)',
+    'SEO_CATALOG_BRAND_TITLE_UK'=>'meta title (UA)',
+    'SEO_CATALOG_BRAND_TITLE_RU'=>'meta title (RU)',
+    'SEO_CATALOG_BRAND_TITLE_EN'=>'meta title (EN)',
+    'SEO_CATALOG_BRAND_DESCRIPTION_UK'=>'meta description (UA)',
+    'SEO_CATALOG_BRAND_DESCRIPTION_RU'=>'meta description (RU)',
+    'SEO_CATALOG_BRAND_DESCRIPTION_EN'=>'meta description (EN)',
+    'SEO_CATALOG_BRAND_H1_RU'=>'H1 (RU)',
+    'SEO_CATALOG_BRAND_H1_UK'=>'H1 (UA)',
+    'SEO_CATALOG_BRAND_H1_EN'=>'H1 (EN)',
 ];

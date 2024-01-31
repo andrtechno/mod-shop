@@ -40,6 +40,14 @@ class SettingsForm extends SettingsModel
     public $seo_brand_h1_uk;
     public $seo_brand_h1_ru;
 
+
+    public $seo_catalog_brand_title_uk;
+    public $seo_catalog_brand_title_ru;
+    public $seo_catalog_brand_description_uk;
+    public $seo_catalog_brand_description_ru;
+    public $seo_catalog_brand_h1_uk;
+    public $seo_catalog_brand_h1_ru;
+
     public static $extensionWatermark = ['png'];
 
     public function rules()
@@ -50,6 +58,7 @@ class SettingsForm extends SettingsModel
             [['label_expire_new', 'added_to_cart_count', 'search_limit'], 'integer'],
             [['email_notify_reviews'], '\panix\engine\validators\EmailListValidator'],
             [['added_to_cart_period','seo_brand_h1_uk','seo_brand_h1_ru','seo_brand_title_uk','seo_brand_description_uk','seo_brand_title_ru','seo_brand_description_ru'], 'string'],
+            [['seo_catalog_brand_h1_uk','seo_catalog_brand_h1_ru','seo_catalog_brand_title_uk','seo_catalog_brand_description_uk','seo_catalog_brand_title_ru','seo_catalog_brand_description_ru'], 'string'],
             ['search_availability', 'each', 'rule' => ['integer']],
             [['watermark_enable'], 'boolean'],
             [['attachment_wm_corner', 'attachment_wm_offsety', 'attachment_wm_offsetx'], 'integer'],
