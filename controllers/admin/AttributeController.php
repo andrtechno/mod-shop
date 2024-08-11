@@ -112,7 +112,10 @@ class AttributeController extends AdminController
 
         }
 
-        return $this->render('update', ['model' => $model]);
+        $modelOptions = new \yii\base\DynamicModel(['name_uk','name_ru']);
+        $modelOptions->addRule(['name_uk', 'name_ru'], 'string', ['max' => 128]);
+
+        return $this->render('update', ['model' => $model, 'modelOptions'=>$modelOptions]);
     }
 
     public function actionTest()

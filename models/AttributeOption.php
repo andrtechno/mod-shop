@@ -58,19 +58,7 @@ class AttributeOption extends ActiveRecord
 
     public function getProductsCount()
     {
-        //  echo $this->hasMany(ProductAttributesEav::class, ['value' => 'id'])->createCommand()->rawSql;die;
         return $this->hasMany(ProductAttributesEav::class, ['value' => 'id'])->count();
-
-
-        //$dependencyQuery = $query;
-        //$dependencyQuery->select('COUNT(*)');
-        //$dependency = new DbDependency([
-        //    'sql' => $dependencyQuery->createCommand()->rawSql,
-        //]);
-
-
-        //print_r($query->createCommand()->rawSql);die;
-        //return $query; //->cache(3200, $dependency)
     }
 
 

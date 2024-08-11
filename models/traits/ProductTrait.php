@@ -96,15 +96,15 @@ trait ProductTrait
                     if (true) {
 
                         $labels = [];
-                        $class='';
+                        $class = '';
                         if ($model->availability == $model::STATUS_OUT_STOCK) {
-                            $class='light';
+                            $class = 'light';
                         } elseif ($model->availability == $model::STATUS_PREORDER) {
-                            $class='warning';
+                            $class = 'warning';
                         } elseif ($model->availability == $model::STATUS_ARCHIVE) {
-                            $class='secondary';
+                            $class = 'secondary';
                         }
-                        if(!empty($class)) {
+                        if (!empty($class)) {
                             $labels[] = Html::tag('span', $model::getAvailabilityItems()[$model->availability], ['class' => 'badge badge-' . $class]);
                         }
                         foreach ($model->labels() as $key => $label) {
@@ -253,18 +253,21 @@ trait ProductTrait
             'value' => function ($model) {
                 /** @var $model Product */
                 $result = NULL;
+                $categories = $model->categories;
+                if ($categories) {
+                    foreach ($categories as $category) {
 
-                foreach ($model->categories as $category) {
-                    $options = [];
-                    $options['title'] = $category->name;
-                    if ($category->id == $model->main_category_id) {
-                        $options['class'] = 'badge badge-secondary';
-                    } else {
-                        $options['class'] = 'badge badge-light';
+                        $options = [];
+                        $options['title'] = $category->name;
+                        if ($category->id == $model->main_category_id) {
+                            $options['class'] = 'badge badge-secondary';
+                        } else {
+                            $options['class'] = 'badge badge-light';
+                        }
+                        $options['data-pjax'] = 0;
+                        $options['target'] = '_blank';
+                        $result .= Html::a($category->name, $category->getUrl(), $options);
                     }
-                    $options['data-pjax'] = 0;
-                    $options['target'] = '_blank';
-                    $result .= Html::a($category->name, $category->getUrl(), $options);
                 }
                 return $result;
             }

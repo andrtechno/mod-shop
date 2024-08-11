@@ -29,7 +29,7 @@ class FiltersWidget extends Widget
     //public $countBrand = true;
     //public $prices = [];
     public $count = false;
-    public $tagCount = 'sup';
+    public $tagCount = 'span';
     public $tagCountOptions = ['class' => 'filter-count'];
     //public $showEmpty = false;
     public $searchItem = 20;
@@ -273,9 +273,9 @@ class FiltersWidget extends Widget
         $result = ($filter['count'] > 0) ? $filter['count'] : 0;
         if ($this->count) {
             if (Yii::$app->getModule('shop')->filterClass == 'panix\mod\shop\components\FilterElastic') {
-                return Html::tag($this->tagCount, '(' . $result . ')', $this->tagCountOptions);
+                return Html::tag($this->tagCount, $result, $this->tagCountOptions);
             } elseif (Yii::$app->getModule('shop')->filterClass == 'panix\mod\shop\components\FilterPro') {
-                return Html::tag($this->tagCount, '(' . $result . ')', $this->tagCountOptions);
+                return Html::tag($this->tagCount, $result, $this->tagCountOptions);
             } else {
                 return '';
             }

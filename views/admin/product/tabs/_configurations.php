@@ -11,6 +11,7 @@ use panix\mod\shop\models\search\ProductSearch;
 use panix\engine\grid\GridView;
 use panix\engine\data\ActiveDataProvider;
 use panix\engine\widgets\Pjax;
+
 //Product::updateAll(['brand_id' => 1]);
 //use yii\widgets\Pjax;
 use panix\mod\shop\models\search\ProductConfigureSearch;
@@ -130,7 +131,7 @@ foreach ($attributeModels as $attribute) {
 
 
         $columns[] = [
-          //  'attribute' => 'eav_' . $attribute->name . '.value',
+            //  'attribute' => 'eav_' . $attribute->name . '.value',
             'header' => $attribute->title,
             'contentOptions' => ['class' => 'eav text-center'],
 
@@ -139,7 +140,7 @@ foreach ($attributeModels as $attribute) {
                 'class' => 'custom-select w-auto'
             ]),
             'value' => function ($model) use ($attribute) {
-            //print_r($model);die;
+                //print_r($model);die;
                 $query = new \yii\db\Query();
 
                 $query->from(\panix\mod\shop\models\AttributeOption::tableName())
@@ -147,7 +148,7 @@ foreach ($attributeModels as $attribute) {
                     ->cache(Yii::$app->db->queryCacheDuration);
                 $item = $query->one();
 
-               // return ($item['data'])?\panix\engine\CMS::dump($item):null;
+                return ($item) ? $item['value'] : null;
             }
         ];
     }

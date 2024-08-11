@@ -108,19 +108,11 @@ class Attribute extends ActiveRecord
 
     public function getOptions()
     {
-        // $table = self::tableName();
-        // $dependency = new DbDependency();
-        // $dependency->sql = "SELECT MAX(updated_at) FROM {$table}";
-
-        return $this->hasMany(AttributeOption::class, ['attribute_id' => 'id']);//->orderBy([AttributeOption::tableName().".ordern" => SORT_DESC]);//->cache(3600, $dependency);
+        return $this->hasMany(AttributeOption::class, ['attribute_id' => 'id']);
     }
-
 
     public function getOptionsArray()
     {
-        // $table = self::tableName();
-        // $dependency = new DbDependency();
-        // $dependency->sql = "SELECT MAX(updated_at) FROM {$table}";
         return $this->hasMany(AttributeOption::class, ['attribute_id' => 'id'])->asArray();//->cache(3600, $dependency);
     }
 
@@ -480,6 +472,8 @@ class Attribute extends ActiveRecord
 
         parent::afterSave($insert, $changedAttributes);
         TagDependency::invalidate(Yii::$app->cache, 'attribute-' . $this->name);
+        TagDependency::invalidate(Yii::$app->cache, 'attributes-list-slugToId');
+        TagDependency::invalidate(Yii::$app->cache, 'attributes-list-idToSlug');
     }
 
     /**
@@ -495,13 +489,41 @@ class Attribute extends ActiveRecord
         TypeAttribute::deleteAll(['attribute_id' => $this->id]);
 
         // Delete attributes assigned to products
-        self::getDb()->createCommand()->delete(ProductAttributesEav::tableName(), "`attribute`='{$this->name}'")->execute();
+        self::getDb()->createCommand()->delete(ProductAttributesEav::tableName(), "attribute='{$this->name}'")->execute();
         if (Yii::$app->hasModule('csv')) {
             $external = new ExternalFinder('{{%csv}}');
             $external->deleteObject(ExternalFinder::OBJECT_ATTRIBUTE, $this->id);
         }
 
         return parent::afterDelete();
+    }
+
+    public static function idToSlug()
+    {
+        $data = Yii::$app->cache->get('attributes-list-idToSlug');
+        if ($data === false) {
+            $list = static::find()->asArray()->orderBy('id')->all();
+            foreach ($list as $item) {
+                $data[$item['id']] = $item['name'];
+            }
+            Yii::$app->cache->set('attributes-list-idToSlug', $data, 0, new TagDependency(['tags' => 'attributes-list-idToSlug']));
+        }
+
+        return $data;
+    }
+
+    public static function slugToId()
+    {
+        $data = Yii::$app->cache->get('attributes-list-slugToId');
+        if ($data === false) {
+            $list = static::find()->asArray()->orderBy('id')->all();
+            foreach ($list as $item) {
+                $data[$item['name']] = $item['id'];
+            }
+            Yii::$app->cache->set('attributes-list-slugToId', $data, 0, new TagDependency(['tags' => 'attributes-list-slugToId']));
+        }
+
+        return $data;
     }
 
 }

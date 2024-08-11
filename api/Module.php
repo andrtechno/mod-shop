@@ -20,7 +20,7 @@ class Module extends \yii\base\Module
     public $searchAttribute = 'sku';
     public $ftpClient;
     public $ftp = false;
-
+    public $elasticIndex = 'product';
 
     public $imgSizeMedium = '400x400'; //goods list gallery,
     public $imgSizeSmall = '100x100'; //admin panel, cart email

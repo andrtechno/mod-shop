@@ -20,11 +20,20 @@ return [
     'PRODUCT_NAME' => 'Product name',
     'PRODUCT_PRICE' => 'Product price',
     'USE_SEO_PARENTS' => 'Apply to all child categories',
-    'META_TITLE' => 'Meta title',
-    'META_DESCRIPTION' => 'Meta description',
+    'META_TITLE_UK' => 'Meta title',
+    'META_DESCRIPTION_UK' => 'Meta description',
+    'H1_UK' => 'H1',
+
+    'META_TITLE_RU' => 'Meta title',
+    'META_DESCRIPTION_RU' => 'Meta description',
+    'H1_RU' => 'H1',
+
     'ADD_TO_PARENT' => 'Add to category: {0}',
     'NAME_MAIN' => 'Title for the main page',
     'META_CHILD_TITLE' => 'Meta title',
     'META_CHILD_DESCRIPTION' => 'Meta description',
     'H1_CHILD' => 'H1',
+    'META_CHILD_TITLE_RU' => 'Meta title',
+    'META_CHILD_DESCRIPTION_RU' => 'Meta description',
+    'H1_CHILD_RU' => 'H1',
 ];

@@ -33,21 +33,21 @@ class m180917_193213_shop_product extends Migration
         $fields['weight_class_id'] = $this->integer()->null();
         $fields['length_class_id'] = $this->integer()->null();
 
-        if($this->db->getDriverName() == 'pgsql'){
-            $fields['name'] = $this->string(255)->null();
-        }else{
+        //if($this->db->getDriverName() == 'pgsql'){
+        //    $fields['name'] = $this->string(255)->null();
+        //}else{
             $fields['name_ru'] = $this->string(255)->null();
             $fields['name_uk'] = $this->string(255)->null();
-        }
-        if($this->db->getDriverName() == 'pgsql'){
-            $fields['short_description'] = $this->text()->null();
-            $fields['full_description'] = $this->text()->null();
-        }else{
+        //}
+        //if($this->db->getDriverName() == 'pgsql'){
+        //    $fields['short_description'] = $this->text()->null();
+        //    $fields['full_description'] = $this->text()->null();
+        //}else{
             $fields['short_description_ru'] = $this->text()->null();
             $fields['short_description_uk'] = $this->text()->null();
             $fields['full_description_ru'] = $this->text()->null();
             $fields['full_description_uk'] = $this->text()->null();
-        }
+        //}
 
         $fields['image'] = $this->string(50)->null();
         $fields['use_configurations'] = $this->boolean()->defaultValue(false);

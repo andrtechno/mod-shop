@@ -41,32 +41,44 @@ if (count($model->processVariants())) { ?>
         //	var jsVariantsData = ' . CJavaScript::jsonEncode($jsVariantsData) . ';
         //', CClientScript::POS_END);
 
-        // Display product configurations
-        if ($model->use_configurations) {
-            // Get data
-            $confData = $this->context->getConfigurableData();
 
-            // Register configuration script
-
-            $this->registerJs(strtr('var productPrices = {prices};', ['{prices}' => Json::encode($confData['prices'])]), \yii\web\View::POS_END);
-
-//echo CVarDumper::dump($confData,10,true);
-            foreach ($confData['attributes'] as $attr) {
-                // $attr->name .= $confData['prices'];
-                if (isset($confData['data'][$attr->name])) {
-                    echo '<div class="form-group row">';
-                    echo Html::label($attr->title . ':', 'conf-' . $attr->name, ['class' => 'col-sm-3 col-form-label attr_name']);
-                    echo ' <div class="col-sm-9">';
-                    echo Html::dropDownList('configurations[' . $attr->name . ']', null, array_flip($confData['data'][$attr->name]), [
-                        'id' => 'conf-' . $attr->name,
-                        'data-product_id'=>$model->id,
-                        'class' => 'eavData custom-select w-auto'
-                    ]);
-                    echo '</div></div>';
-                }
-            }
-        }
         ?>
     </div>
 
 <?php } ?>
+<?php
+// Display product configurations
+if ($model->use_configurations) {
+    // Get data
+    $confData = $this->context->getConfigurableData();
+
+    // Register configuration script
+
+    $this->registerJs(strtr('var productPrices = {prices};', ['{prices}' => Json::encode($confData['prices'])]), \yii\web\View::POS_END);
+    //\panix\engine\CMS::dump($confData);die;
+
+    foreach ($confData['attributes'] as $attr) {
+        // $attr->name .= $confData['prices'];
+
+        if (isset($confData['data'][$attr->name])) {
+            echo '<div class="form-group row">';
+            echo Html::label($attr->title . ':', 'conf-' . $attr->name, ['class' => 'col-sm-3 col-form-label attr_name']);
+            echo ' <div class="col-sm-9">';
+            echo Html::dropDownList('configurations[' . $attr->name . ']', null, array_flip($confData['data'][$attr->name]), [
+                'id' => 'conf-' . $attr->name,
+                'data-product_id'=>$model->id,
+                'class' => 'eavData custom-select w-auto'
+            ]);
+            echo '</div></div>';
+        }
+    }
+
+    $products = \panix\mod\shop\models\Product::find()->where(['id'=>array_keys($confData['prices'])])->all();
+    foreach ($products as $product){
+        echo Html::a($product->name,$product->getUrl());
+    }
+    //print_r(array_keys($confData['prices']));
+    //foreach ($confData['prices'] as $prodouct_id => $price2) {
+
+    //}
+}

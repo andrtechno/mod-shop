@@ -99,7 +99,7 @@ if ($model->isNewRecord && !$model->type) {
                     'label' => (isset($model->tab_errors['options'])) ? Html::icon('warning', ['class' => 'text-danger', 'title' => $model->tab_errors['options']]) . ' ' . $model::t('TAB_OPTIONS') : $model::t('TAB_OPTIONS'),
                     'encode' => false,
                     'options' => ['id' => 'tab-options'],
-                    'content' => $this->render('tabs/_options', ['form' => $form, 'model' => $model]),
+                    'content' => $this->render('tabs/_options', ['form' => $form, 'model' => $model, 'modelOptions'=>$modelOptions]),
                     'headerOptions' => [],
 
                 ];

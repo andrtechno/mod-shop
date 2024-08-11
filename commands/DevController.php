@@ -179,5 +179,55 @@ class DevController extends ConsoleController
             : array($array[array_rand($array)]);
     }
 
+    /**
+     * Create Elasticsearch index
+     */
+    public function actionCreateIndex()
+    {
 
+        $command = Yii::$app->elasticsearch->createCommand();
+        $mappings = [];
+        $mappings['properties'] = [];
+
+        $mappings['properties']["name"] = ["type" => "text"];
+        $mappings['properties']["name_ru"] = ["type" => "text"];
+        $mappings['properties']["name_uk"] = ["type" => "text"];
+        $mappings['properties']["slug"] = ["type" => "text"];
+        $mappings['properties']["sku"] = ["type" => "text"];
+        $mappings['properties']["price"] = ["type" => "double"];
+        $mappings['properties']["currency_id"] = ["type" => "integer"];
+        $mappings['properties']["type_id"] = ["type" => "integer"];
+        $mappings['properties']["brand_id"] = ["type" => "integer"];
+        $mappings['properties']["supplier_id"] = ["type" => "integer"];
+        $mappings['properties']["created_at"] = ["type" => "integer"];
+        $mappings['properties']["availability"] = ["type" => "integer"];
+        $mappings['properties']["switch"] = ["type" => "integer"];
+        $mappings['properties']["options"] = ["type" => "keyword"];
+        $mappings['properties']["categories"] = ["type" => "keyword"];
+        $mappings['properties']["discount"] = ["type" => "integer"];
+        //$mappings['properties']["price_calc"] = ["type" => "integer_range"];
+        $mappings['properties']["price_calc"] = ["type" => "double"];
+
+        $command->createIndex($this->module->elasticIndex, [
+            //'aliases' => [],
+            'mappings' => $mappings,
+            'settings' => [
+                //For total hits
+                "index" => [
+                    "number_of_shards" => 1,
+                    "number_of_replicas" => 0
+                ]
+            ],
+        ]);
+        //print_r($command);
+    }
+
+    /**
+     * Delete Elasticsearch index
+     */
+    public function actionDeleteIndex()
+    {
+        $res = Yii::$app->elasticsearch->delete($this->module->elasticIndex);
+        print_r($res);
+    }
 }

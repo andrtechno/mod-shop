@@ -12,6 +12,7 @@ use yii\helpers\ArrayHelper;
 use panix\engine\db\ActiveRecord;
 use panix\mod\shop\models\query\BrandQuery;
 use panix\mod\shop\models\translate\BrandTranslate;
+use panix\engine\CMS;
 
 /**
  * Class Brand
@@ -36,6 +37,7 @@ class Brand extends ActiveRecord
     {
         return new BrandQuery(get_called_class());
     }
+
     /**
      * @return array
      */
@@ -232,4 +234,50 @@ class Brand extends ActiveRecord
         parent::afterSave($insert, $changedAttributes);
     }
 
+    /**
+     * @param array $params
+     * @return mixed
+     */
+    public function h1($params = [])
+    {
+        $lang = Yii::$app->language;
+        $value = Yii::$app->settings->get('shop', 'seo_catalog_brand_h1_' . $lang);
+        if(!$value){
+            return false;
+        }
+        return $this->replaceMeta($value, $params);
+    }
+
+    /**
+     * @param array $params
+     * @return mixed
+     */
+    public function title($params = [])
+    {
+        $lang = Yii::$app->language;
+        $value = Yii::$app->settings->get('shop', 'seo_catalog_brand_title_' . $lang);
+        if(!$value){
+            return false;
+        }
+        return $this->replaceMeta($value, $params);
+    }
+
+    /**
+     * @param array $params
+     * @return mixed
+     */
+    public function description($params = [])
+    {
+        $lang = Yii::$app->language;
+        $value = Yii::$app->settings->get('shop', 'seo_catalog_brand_description_' . $lang);
+        if(!$value){
+            return false;
+        }
+        return $this->replaceMeta($value, $params);
+    }
+
+    public function replaceMeta($text, $params)
+    {
+        return CMS::textReplace($text, $params);
+    }
 }

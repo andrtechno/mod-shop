@@ -70,6 +70,7 @@ class BrandController extends FilterController
 
         $this->filterQuery = clone $this->query;
         $this->currentQuery = clone $this->query;
+        $this->filter->resultQuery->sortAvailability();
         // $this->filter->resultQuery->orderBy(['id' => SORT_DESC]);
         //$this->query->applyAttributes($this->activeAttributes);
         //$this->filterQuery->addorderBy(['created_at'=>SORT_DESC]);

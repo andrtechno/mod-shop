@@ -25,7 +25,7 @@ class ProductReviewsQuery extends ActiveQuery
     {
         $modelClass = $this->modelClass;
         $tableName = $modelClass::tableName();
-        $this->andWhere([$tableName . '.`status`' => $status]);
+        $this->andWhere([$tableName . '.status' => $status]);
         return $this;
     }
 
@@ -34,7 +34,7 @@ class ProductReviewsQuery extends ActiveQuery
         $modelClass = $this->modelClass;
         $tableName = $modelClass::tableName();
 
-        $this->addSelect(["SUM({$tableName}.`rate`) AS rate"])->where(['>', 'rate', 0]);
+        $this->addSelect(["SUM({$tableName}.rate) AS rate"])->where(['>', 'rate', 0]);
         return $this;
     }
 

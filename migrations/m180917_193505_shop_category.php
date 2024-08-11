@@ -38,9 +38,19 @@ class m180917_193505_shop_category extends Migration {
             'meta_description_uk' => $this->text()->null(),
             'h1_ru' => $this->string(255)->null(),
             'h1_uk' => $this->string(255)->null(),
+
+
+            'meta_child_title_ru' => $this->string(255)->null(),
+            'meta_child_title_uk' => $this->string(255)->null(),
+            'meta_child_description_ru' => $this->text()->null(),
+            'meta_child_description_uk' => $this->text()->null(),
+            'h1_child_ru' => $this->string(255)->null(),
+            'h1_child_uk' => $this->string(255)->null(),
+
+
             'created_at' => $this->integer(),
             'updated_at' => $this->integer(),
-            'use_seo_parents'=>$this->boolean()->defaultValue(false),
+            //'use_seo_parents'=>$this->boolean()->defaultValue(false),
             'switch' => $this->boolean()->defaultValue(true),
         ]);
 

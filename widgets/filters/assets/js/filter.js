@@ -205,6 +205,7 @@ function filterCallback(e, objects, target) {
                 if (filters.changeCount) {
                     $('#filter-' + name + ' input[type="checkbox"]:not(:checked)').attr('disabled', 'disabled');
                     $('#filter-' + name + ' li').addClass('disabled');
+                    $('#filter-' + name + ' li').find('.filter-count').html('0');
                 }
                 $.each(filters.filters, function (index, data) {
                     var count = data.count;
@@ -213,7 +214,7 @@ function filterCallback(e, objects, target) {
                     if (filters.changeCount) {
                         if (data.count) {
                             if (selector.prop('checked')) {
-                                $('#filter-count-' + name + '-' + data.id).html('');
+                                $('#filter-count-' + name + '-' + data.id).html(data.count);
                             } else {
                                 $('#filter-count-' + name + '-' + data.id).html(data.count);
                             }

@@ -96,9 +96,9 @@ class CatalogController extends FilterController
                 $meta_params['{h1}'] = (empty($this->dataModel->h1)) ? $this->dataModel->name : $this->dataModel->h1;
                 $meta_params['{min_price}'] = ($min_price) ? Yii::$app->currency->number_format($min_price) : 0;
                 $meta_params['{currency.symbol}'] = Yii::$app->currency->active['symbol'];
-                $this->view->title = $this->dataModel->title($meta_params);
-                $this->view->description = $this->dataModel->description($meta_params);
-                $this->view->h1 = $this->dataModel->h1($meta_params);
+                $this->view->title = $this->dataModel->title($meta_params,'meta_title_'.Yii::$app->language);
+                $this->view->description = $this->dataModel->description($meta_params,'meta_description_'.Yii::$app->language);
+                $this->view->h1 = $this->dataModel->h1($meta_params,'h1_'.Yii::$app->language);
 
 //echo $this->dataModel->id;
 //echo '<br>';
@@ -248,9 +248,14 @@ class CatalogController extends FilterController
                 ->addOrderBy(['depth' => SORT_DESC])
                 ->one();
             if ($s) {
-                $this->view->title = ($s->meta_child_title) ? $s->title($meta_params, 'meta_child_title') : $this->dataModel->title($meta_params);
-                $this->view->description = ($s->meta_child_description) ? $s->description($meta_params, 'meta_child_description') : $this->dataModel->description($meta_params);
-                $this->view->h1 = ($s->h1_child) ? $s->h1($meta_params, 'h1_child') : $this->dataModel->h1($meta_params);
+
+                $fieldTitle = 'meta_child_title_'.Yii::$app->language;
+                $fieldDescription = 'meta_child_description_'.Yii::$app->language;
+                $fieldH1 = 'h1_child_'.Yii::$app->language;
+
+                $this->view->title = ($s->{$fieldTitle}) ? $s->title($meta_params, $fieldTitle) : $this->dataModel->title($meta_params);
+                $this->view->description = ($s->{$fieldDescription}) ? $s->description($meta_params, $fieldDescription) : $this->dataModel->description($meta_params);
+                $this->view->h1 = ($s->{$fieldH1}) ? $s->h1($meta_params, $fieldH1) : $this->dataModel->h1($meta_params);
             }
 
        // }
@@ -288,7 +293,7 @@ class CatalogController extends FilterController
                 }
             }
         }
-        $this->view->canonical = Url::to($currentUrl, true);
+        $this->view->canonical = Url::to(Yii::$app->request->baseUrl, true);
 
         $this->currentUrl = Url::to($currentUrl);
 

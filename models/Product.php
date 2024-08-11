@@ -22,6 +22,7 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use panix\engine\db\ActiveRecord;
 use yii\helpers\Url;
+use yii\helpers\Json;
 
 /**
  * Class Product
@@ -678,7 +679,16 @@ class Product extends ActiveRecord
 
     public function getCategories()
     {
-        return $this->hasMany(Category::class, ['id' => 'category'])->cache(self::getDb()->queryCacheDuration, new TagDependency(['tags' => 'categories']))->via('categorization');
+        if (Yii::$app->db->driverName == 'pgsql') {
+            return $this->hasMany(Category::class, ['id' => 'category'])->orderBy(['lft' => SORT_ASC])
+                ->cache(self::getDb()->queryCacheDuration, new TagDependency(['tags' => 'categories']))
+                ->via('categorization');
+        } else {
+            return $this->hasMany(Category::class, ['id' => 'category'])
+                ->cache(self::getDb()->queryCacheDuration, new TagDependency(['tags' => 'categories']))
+                ->via('categorization');
+        }
+
     }
 
     public function getPrices()
@@ -1345,8 +1355,8 @@ class Product extends ActiveRecord
                 'scope' => function ($model) {
                     /** @var \yii\db\ActiveQuery $model */
                     $model->select(['slug', 'updated_at', 'id']);
-                    $model->where(['switch' => 1]);
-                    $model->andWhere(['<>', 'availability', self::STATUS_OUT_STOCK]);
+                    $model->where(['switch' => true]);
+                    $model->andWhere(['availability' => [self::STATUS_IN_STOCK, self::STATUS_PREORDER]]);
                 },
                 'dataClosure' => function ($model) {
                     /** @var self $model */
@@ -1606,4 +1616,58 @@ class Product extends ActiveRecord
 
     }
 
+
+    public function elastic(array $eav = [])
+    {
+        if (Yii::$app->has('elasticsearch')) {
+            $optionse = [];
+            $optionse['name'] = $this->name;
+            $optionse['name_ru'] = $this->name_ru;
+            $optionse['name_uk'] = $this->name_uk;
+            if ($this->currency_id) {
+                $currency = Currency::findOne($this->currency_id);
+                $optionse['price'] = (double)$this->price * $currency->rate;
+            } else {
+                $optionse['price'] = (double)$this->price;
+            }
+
+            $optionse['brand_id'] = $this->brand_id;
+            $optionse['slug'] = $this->slug;
+            $optionse['created_at'] = (int)$this->created_at;
+            $optionse['availability'] = (int)$this->availability;
+            $optionse['sku'] = $this->sku;
+            $optionse['switch'] = (int)$this->switch;
+            $optionse['discount'] = (int)$this->discount;
+            //$optionse['leather'] = (int)$this->leather;
+            //$optionse['ukraine'] = (int)$this->ukraine;
+            $optionse['options'] = [];
+            /*$eav = $this->getEavAttributes();
+            print_r($eav);die;
+            if (!$eav) {
+                $attributes = Yii::$app->request->post('Attribute', []);
+                if ($attributes) {
+                    foreach ($attributes as $val) {
+                        foreach ($val as $k => $value) {
+                            if (is_string($value) && $value !== '') {
+                                $optionse['options'][] = (int)$value;
+                            }
+
+                        }
+                    }
+                }
+                // print_r(array_values($attributes));die;
+            }else{
+                $optionse['options'] = array_values($eav);
+            }*/
+            $optionse['options'] = array_values($eav);
+            //Yii::info('elastic save','forsage');
+            //print_r(array_values($eav));die;
+            $optionse['categories'][] = (int)$this->main_category_id;
+            foreach ($this->categorization as $category) {
+                $optionse['categories'][] = (int)$category->category;
+            }
+            $optionse['categories'] = array_values(array_unique($optionse['categories']));
+            $result = Yii::$app->elasticsearch->put(Yii::$app->getModule('shop')->elasticIndex . '/_doc/' . $this->id, [], Json::encode($optionse));
+        }
+    }
 }

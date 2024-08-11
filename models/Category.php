@@ -88,11 +88,17 @@ class Category extends ActiveRecord
             [['name', 'slug'], 'required'],
             ['use_seo_parents', 'boolean'],
             [['description', 'image', 'icon'], 'default'],
-            [['name', 'meta_title', 'h1', 'name_main'], 'string', 'max' => 255],
-            [['meta_child_title', 'h1_child'], 'string', 'max' => 255],
-            [['meta_description', 'meta_child_description'], 'string'],
+
+  //          [['name', 'meta_title', 'h1', 'name_main'], 'string', 'max' => 255],
+            [['name', 'name_main', 'name_main_ru'], 'string', 'max' => 255],
+
+            [['meta_child_title_uk', 'h1_child_uk','meta_child_title_ru', 'h1_child_ru'], 'string', 'max' => 255],
+            [['meta_description_uk', 'meta_child_description_uk','meta_description_ru', 'meta_child_description_ru'], 'string'],
             ['description', 'safe'],
-            [['h1', 'meta_title', 'meta_child_title', 'meta_description', 'meta_child_description'], 'default']
+           // [['h1', 'meta_title', 'meta_child_title', 'meta_description', 'meta_child_description'], 'default'],
+
+            [['h1_uk', 'meta_title_uk', 'meta_child_title_uk', 'meta_description_uk', 'meta_child_description_uk'], 'default'],
+            [['h1_ru', 'meta_title_ru', 'meta_child_title_ru', 'meta_description_ru', 'meta_child_description_ru'], 'default']
         ];
     }
 
@@ -132,8 +138,8 @@ class Category extends ActiveRecord
                 //'batchSize' => 100,
                 'scope' => function ($model) {
                     /** @var \yii\db\ActiveQuery $model */
-                    $model->select(['full_path', 'updated_at']);
-                    $model->andWhere(['switch' => 1])->andWhere(['!=', 'id', 1]);
+                    $model->select(['full_path', 'updated_at', 'slug']);
+                    $model->andWhere(['switch' => true])->andWhere(['!=', 'id', 1]);
                 },
                 'dataClosure' => function ($model) {
                     /** @var self $model */
@@ -158,13 +164,15 @@ class Category extends ActiveRecord
             'translationAttributes' => [
                 'name',
                 'description',
-                'meta_title',
-                'meta_description',
-                'h1',
-                'meta_child_title',
-                'meta_child_description',
-                'h1_child',
-                'name_main']
+//                'meta_title',
+//                'meta_description',
+//                'h1',
+//                'meta_child_title',
+//                'meta_child_description',
+//                'h1_child',
+                'name_main',
+
+            ]
         ];
         return ArrayHelper::merge($a, parent::behaviors());
     }
@@ -305,7 +313,7 @@ class Category extends ActiveRecord
      * @param string $attribute
      * @return mixed
      */
-    public function h1($params = [], $attribute = 'h1')
+    public function h1($params = [], $attribute = 'h1_uk')
     {
         if (!empty($this->{$attribute})) {
             $value = $this->{$attribute};
@@ -321,7 +329,7 @@ class Category extends ActiveRecord
      * @param string $attribute
      * @return mixed
      */
-    public function title($params = [], $attribute = 'meta_title')
+    public function title($params = [], $attribute = 'meta_title_uk')
     {
         if ($this->{$attribute}) {
             $value = $this->{$attribute};
@@ -337,7 +345,7 @@ class Category extends ActiveRecord
      * @param string $attribute
      * @return mixed
      */
-    public function description($params = [], $attribute = 'meta_description')
+    public function description($params = [], $attribute = 'meta_description_uk')
     {
         if (!empty($this->{$attribute})) {
             $value = $this->{$attribute};

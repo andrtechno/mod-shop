@@ -7,6 +7,7 @@ use panix\engine\CMS;
 use panix\mod\shop\api\models\Product;
 use panix\engine\api\Serializer;
 use panix\mod\shop\components\FilterLite;
+use panix\mod\shop\models\Attribute;
 use panix\mod\shop\models\Brand;
 use panix\mod\shop\models\Category;
 use Yii;
@@ -29,12 +30,6 @@ class FilterController extends Controller
     public $serializer = [
         'class' => Serializer::class,
     ];
-
-    public function actionMain()
-    {
-
-        return $this->asJson(['sad' => 1]);
-    }
 
     public function behaviors()
     {
@@ -100,7 +95,12 @@ class FilterController extends Controller
             $query->topSales();
             $url = ['/' . $route];
         } elseif ($route == 'shop/search/index') {
+            $config = Yii::$app->settings->get('shop');
+            if (!empty($config->search_availability)) {
+                $query->andWhere([Product::tableName().".availability" => $config->search_availability]);
+            }
             $query->applySearch($param);
+
             $url = ['/' . $route, 'q' => $param];
         } elseif ($route == 'shop/brand/view') {
             $brand = Brand::findOne($param);
@@ -108,6 +108,7 @@ class FilterController extends Controller
             $query->applyBrands($brand->id);
             $url = $brand->getUrl();
         }
+        $cacheKey = 'none';
         $category = null;
         if ($param && in_array($route, ['shop/catalog/new', 'shop/catalog/sales', 'shop/catalog/top-sales', 'shop/catalog/view'])) {
             $category = Category::findOne($param);
@@ -115,25 +116,44 @@ class FilterController extends Controller
                 $this->error404();
             $query->applyCategories($category, 'andWhere', $category->children()->count());
             $url = $category->getUrl();
+
+            $cacheKey = str_replace('/', '-', $route) . '-' . $category->id;
+
         }
+
+       // Yii::$app->db->createCommand('CREATE INDEX filter_index ON cms_shop_product USING gin (options->"1");')->execute();
+
         $filterPost = Yii::$app->request->post('filter');
         $filterClass = Yii::$app->getModule('shop')->filterClass;
-        $filter = new $filterClass($query,['route'=>$url]);
-        /*$filter = new FilterLite($query, [
-            'route' => $url,
-            'cacheKey' => Yii::$app->request->post('cache')
-        ]);*/
+        if (Yii::$app->db->driverName == 'pgsql') {
+            if($filterPost){
+                $newData = [];
+                $slugToId = Attribute::slugToId();
+                foreach ($filterPost as $key=>$values){
+
+                   // $query->andWhere(["(options->>'" . $slugToId[$key] . "')" => $values]);
+                }
+
+            }
+        }
+
+        $filter = new $filterClass($query, ['route' => $url, 'cacheKey' => $cacheKey]);
 
         $filter->accessAttributes = $accessAttributes;
 
         $attributes = [];
         $brands = [];
-        //FOR PRO FILTER!!!!111
-        //$attributes = $filter->getCategoryAttributesCallback();
-        //if (!in_array($route, ['shop/brand/view'])) {
-        //    $brands = $filter->getCategoryBrandsCallback();
-        //}
-
+        if (Yii::$app->db->driverName == 'pgsql') {
+            //FOR PRO FILTER!!!!111
+            $attributes = $filter->getCategoryAttributesCallback();
+            if (!in_array($route, ['shop/brand/view'])) {
+                $brands = $filter->getCategoryBrandsCallbackPostgress();
+            }
+        }else{
+            if(Yii::$app->db->getServerVersion() == '8.0.30'){
+                //$attributes = $filter->getCategoryAttributesCallback();
+            }
+        }
 
         $total = $filter->resultQuery->count();
 

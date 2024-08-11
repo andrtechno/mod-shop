@@ -67,6 +67,9 @@ CREATE FUNCTION `SPLIT_STRING`(`str` VARCHAR(255), `delim` VARCHAR(12), `pos` IN
 RETURN REPLACE(SUBSTRING(SUBSTRING_INDEX(str, delim, pos), CHAR_LENGTH(SUBSTRING_INDEX(str, delim, pos-1)) + 1), delim, \'\')
 ';
 
+        if($this->db->getDriverName() == 'pgsql'){
+            $functions = [];
+        }
 
         foreach ($functions as $key => $fn) {
             $time = $this->beginCommand("create function {$key}");
@@ -80,6 +83,9 @@ RETURN REPLACE(SUBSTRING(SUBSTRING_INDEX(str, delim, pos), CHAR_LENGTH(SUBSTRING
     public function down()
     {
         $functions = ['COMPARE_STRING', 'SIMILARITY_STRING', 'SPLIT_STRING'];
+        if($this->db->getDriverName() == 'pgsql'){
+            $functions = [];
+        }
         foreach ($functions as $fn) {
             $time = $this->beginCommand("drop function {$fn}");
             $this->db->createCommand("DROP FUNCTION IF EXISTS {$fn};")->execute();

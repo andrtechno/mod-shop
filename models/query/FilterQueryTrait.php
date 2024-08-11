@@ -9,6 +9,7 @@ use yii\db\Exception;
 
 trait FilterQueryTrait
 {
+
     public function aggregatePrice($function = 'MIN')
     {
         $tableName = Product::tableName();
@@ -23,14 +24,14 @@ trait FilterQueryTrait
         if (Yii::$app->db->driverName === 'pgsql') {
             $this->select(["{$function}(CASE WHEN ({$tableName}.currency_id IS NOT NULL)
                     THEN
-                        (CASE WHEN ({$tableName}.discount::boolean) THEN
-                         (({$tableName}.price - discount::numeric) * (SELECT rate::numeric FROM {$tableNameCur} WHERE id=currency_id))
+                        (CASE WHEN ({$tableName}.discount IS NOT NULL) THEN
+                         (({$tableName}.price - discount::numeric(10,2)) * (SELECT rate::numeric(10,2) FROM {$tableNameCur} WHERE id=currency_id))
                          ELSE
-                          ({$tableName}.price * (SELECT rate::numeric FROM {$tableNameCur} WHERE id=currency_id))
+                          ({$tableName}.price * (SELECT rate::numeric(10,2) FROM {$tableNameCur} WHERE id=currency_id))
                          END)
                         
                     ELSE
-                        (CASE WHEN ({$tableName}.discount::boolean) THEN (({$tableName}.price::numeric - {$tableName}.discount::numeric)) ELSE {$tableName}.price::numeric END)
+                        (CASE WHEN ({$tableName}.discount::int::bool) THEN (({$tableName}.price::numeric(10,2) - {$tableName}.discount::numeric(10,2))) ELSE {$tableName}.price::numeric(10,2) END)
                 END) AS aggregation_price"]);
         }else{
             $this->select(["{$function}(CASE WHEN ({$tableName}.currency_id IS NOT NULL)
@@ -70,10 +71,10 @@ trait FilterQueryTrait
         $tableName = Product::tableName();
         $tableNameCur = Currency::tableName();
         if ($value) {
-            $this->andWhere("CASE WHEN {$tableName}.`currency_id` IS NOT NULL THEN
-            {$tableName}.`price` {$operator} ({$value} / (SELECT rate FROM {$tableNameCur} WHERE {$tableNameCur}.`id`={$tableName}.`currency_id`))
+            $this->andWhere("CASE WHEN {$tableName}.currency_id IS NOT NULL THEN
+            {$tableName}.price {$operator} ({$value} / (SELECT rate FROM {$tableNameCur} WHERE {$tableNameCur}.id={$tableName}.currency_id))
         ELSE
-        	{$tableName}.`price` {$operator} {$value}
+        	{$tableName}.price {$operator} {$value}
         END");
         }
         return $this;
@@ -92,11 +93,11 @@ trait FilterQueryTrait
                         {$tableName}.`price`
                 END) AS aggregation_price"]);*/
 
-        $this->select([$tableName . '.*',"(CASE WHEN {$tableName}.`currency_id` IS NOT NULL
+        $this->select([$tableName . '.*',"(CASE WHEN {$tableName}.currency_id IS NOT NULL
                     THEN
-                        ({$tableName}.`price` * (SELECT rate FROM {$tableNameCur} WHERE {$tableNameCur}.`id`={$tableName}.`currency_id`))
+                        ({$tableName}.price * (SELECT rate FROM {$tableNameCur} WHERE {$tableNameCur}.id={$tableName}.currency_id))
                     ELSE
-                        {$tableName}.`price`
+                        {$tableName}.price
                 END) AS aggregation_price"]);
 
         $this->addOrderBy(["aggregation_price" => $order]); //i change to orderby to addorderby

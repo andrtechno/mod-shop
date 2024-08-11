@@ -7,4 +7,7 @@ return [
     'PRODUCT_NAME' => 'Шаблон авто-генерації назва товару',
     'PRODUCT_TITLE' => 'Шаблон Title товарів',
     'PRODUCT_DESCRIPTION' => 'Шаблон Description товарів',
+    'PRODUCT_NAME_RU' => 'Шаблон авто-генерації назва товару',
+    'PRODUCT_TITLE_RU' => 'Шаблон Title товарів',
+    'PRODUCT_DESCRIPTION_RU' => 'Шаблон Description товарів',
     'ALERT_INFO' => 'Тут ви можете вказати категорії, які будуть автоматично обрані при створенні продукту. <br/> Натисніть на назву категорії, щоб зробити її головною.'];

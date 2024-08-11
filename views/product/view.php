@@ -23,6 +23,9 @@ echo \yii\helpers\Inflector::ordinalize(15);
 
 $words = ['Spain', 'France', 'Украина'];
 echo \yii\helpers\Inflector::sentence($words);
+
+
+
 ?>
 <?php
 $tags = $model->tags;

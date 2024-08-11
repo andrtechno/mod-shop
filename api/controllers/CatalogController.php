@@ -13,6 +13,7 @@ use panix\mod\pages\models\Pages;
 use panix\mod\shop\components\Filter;
 use panix\mod\shop\components\FilterV2;
 use panix\mod\shop\models\ProductCategoryRef;
+use panix\mod\shop\models\SearchResult;
 use Yii;
 use yii\helpers\Url;
 use yii\web\Response;
@@ -37,11 +38,6 @@ class CatalogController extends ApiActiveController
     public $provider;
     public $currentUrl;
 
-    public function actionFilterCallback()
-    {
-        return $this->asJson(['ok' => true]);
-    }
-
     public function beforeAction($action)
     {
         if (Yii::$app->request->headers->has('filter-ajax')) {
@@ -63,11 +59,13 @@ class CatalogController extends ApiActiveController
         if ($q) {
             $model = Product::find()->published()->limit(16);
             $model->applySearch($q);
+            //$model->addSelect(['*','JSON_EXTRACT(name_json, "$.fr") as name_result']);
             if (!empty($config->search_availability)) {
                 $model->andWhere(["availability" => $config->search_availability]);
             }
+
             $model->sort(SORT_DESC);
-            //echo $model->createCommand()->rawSql;die;
+            //$model->orderBy(['name_result'=>SORT_DESC]);
             $result = $model->all();
             $json['data']['products'] = [];
             foreach ($result as $m) {
@@ -84,6 +82,11 @@ class CatalogController extends ApiActiveController
                     'image_original' => $m->getMainImage()->url,
                 ];
             }
+
+            $search_result = new SearchResult;
+            $search_result->query = $q;
+            $search_result->result = count($result);
+            $search_result->save(false);
 
         }
         $json['success'] = true;

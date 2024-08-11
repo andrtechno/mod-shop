@@ -165,6 +165,7 @@ class FilterPro extends Component
         $this->activeAttributes = $this->getActiveAttributes();
 
         //Apply attributes
+
         $this->resultQuery->applyAttributes($this->activeAttributes);
 
         //Apply Brand's
@@ -206,7 +207,7 @@ class FilterPro extends Component
         $menuItems = [];
 
         if (in_array(Yii::$app->controller->route, ['shop/catalog/view', 'shop/catalog/sales', 'shop/catalog/new', 'shop/catalog/top-sales', 'shop/search/index'])) {
-            $brands = array_filter(explode(',', $request->getQueryParam('brand','')));
+            $brands = array_filter(explode(',', $request->getQueryParam('brand', '')));
             $brands = Brand::getDb()->cache(function ($db) use ($brands) {
                 return Brand::findAll($brands);
             }, 3600);
@@ -360,13 +361,13 @@ class FilterPro extends Component
     public function getRootCategoryAttributes()
     {
 
-
-        $data = Yii::$app->cache->get($this->cacheKey . '-attrs');
+        $data = Yii::$app->cache->get($this->cacheKey . '-attrs-'.Yii::$app->language);
         if ($data === false) {
             $data = [];
             foreach ($this->_eavAttributes as $attribute) {
+                /** @var $attribute Attribute */
                 $data[$attribute->name] = [
-                    'title' => $attribute->title,
+                    'title' => (Yii::$app->language == 'uk')?$attribute->title:$attribute->title_ru,
                     'selectMany' => (boolean)$attribute->select_many,
                     'type' => (int)$attribute->type,
                     'key' => $attribute->name,
@@ -375,9 +376,19 @@ class FilterPro extends Component
 
                 $totalCount = 0;
                 $filtersCount = 0;
-                foreach ($attribute->getOptions()->cache(0, new TagDependency(['tags' => 'attribute-' . $attribute->name]))->all() as $option) {
-                    $count = $this->countRootAttributeProducts($attribute, $option);
+                if (Yii::$app->db->driverName == 'pgsql') {
+                    $items = $attribute
+                        ->getOptions()
+                        ->all();
+                } else {
+                    $items = $attribute
+                        ->getOptions()
+                        ->cache(0, new TagDependency(['tags' => 'attribute-' . $attribute->name]))
+                        ->all();
+                }
 
+                foreach ($items as $option) {
+                    $count = $this->countRootAttributeProducts($attribute, $option);
 
                     if ($count > 0) {
                         $totalCount += $count;
@@ -400,8 +411,10 @@ class FilterPro extends Component
                     rsort($data[$attribute->name]['filters']);
                 }
             }
-            Yii::$app->cache->set($this->cacheKey . '-attrs', $data, 3600 * 24 * 7);
+            Yii::$app->cache->set($this->cacheKey . '-attrs-'.Yii::$app->language, $data, 3600 * 24);
+
         }
+
         return $data;
     }
 
@@ -423,7 +436,6 @@ class FilterPro extends Component
             foreach ($this->activeAttributes as $key => $p) {
                 if ($key != $attribute->name) {
                     $newData[$key] = $p;
-
                 }
             }
         }
@@ -435,9 +447,16 @@ class FilterPro extends Component
         }
 
         /** @var EavQueryTrait|ActiveQuery $model */
-        if ($newData)
-            $model->getFindByEavAttributes2($newData);
 
+        if (Yii::$app->db->driverName == 'pgsql') {
+            foreach ($newData as $key2 => $kkk) {
+                //$model->andWhere(["(options->>'" . $key2 . "')" => $kkk]); //Work!!
+                $model->andWhere('('.$kkk.' = ANY(options3))'); //Work!!
+            }
+        } else {
+            if ($newData)
+                $model->getFindByEavAttributes2($newData);
+        }
         return $model->createCommand()->queryScalar();
     }
 
@@ -450,29 +469,44 @@ class FilterPro extends Component
         $model->orderBy = false;
         $model->select('COUNT(*)');
 
+        $slugToId = Attribute::slugToId();
+
         $newData = [];
-        $newData[$attribute->name][] = $option->id;
+        if (Yii::$app->db->driverName == 'pgsql') {
+            $newData[$slugToId[$attribute->name]][] = $option->id;
+        }else{
+            $newData[$attribute->name][] = $option->id;
+        }
+
+
 
         foreach ($this->activeAttributes as $key => $p) {
             if ($key != $attribute->name) {
-                $newData[$key] = $p;
+                if (Yii::$app->db->driverName == 'pgsql') {
+                    $newData[$slugToId[$key]] = $p;
+                }else{
+                    $newData[$key] = $p;
+                }
             }
         }
 
-        if ($newData)
-            $model->getFindByEavAttributes2($newData);
+        if (Yii::$app->db->driverName == 'pgsql') {
+            foreach ($newData as $key2 => $kkk) {
+               // $model->andWhere(["(options->>'" . $key2 . "')" => $kkk]); //Work!!
+                $model->andWhere('('.$kkk[0].' = ANY(options3))'); //Work!!
+            }
 
-        /*$model->cache(999999, new TagDependency([
-            'tags' => [
-                'attribute-' . $attribute->name,
-                'attribute-' . $attribute->name . '-' . $option->id
-            ]
-        ]));*/
-        //echo $this->cacheKey;die;
-        //$model->cache(999999, new TagDependency(['tags'=>'attribute-' . $attribute->name]));
-        $data2 = Yii::$app->cache->getOrSet($this->cacheKey . '-' . $option->id, function () use ($model) {
-            return $model->createCommand()->queryScalar();
-        }, 0);
+//echo $model->createCommand()->rawSql;die;
+            $data2 = $model->createCommand()->queryScalar();
+        } else {
+            if ($newData)
+                $model->getFindByEavAttributes2($newData);
+
+            $data2 = Yii::$app->cache->getOrSet($this->cacheKey . '-' . $option->id, function () use ($model) {
+                return $model->createCommand()->queryScalar();
+            }, 0);
+        }
+
         return $data2; //$model->createCommand()->queryScalar();
     }
 
@@ -484,15 +518,27 @@ class FilterPro extends Component
         $this->query->orderBy = false;
         $model = clone $this->query;
         $model->select('COUNT(*)');
+        $slugToId = Attribute::slugToId();
 
         $newData = [];
-        //$newData[$attribute->name][] = $option->id;
-        $newData[$attribute['key']][] = $option['id'];
+        if (Yii::$app->db->driverName == 'pgsql' || Yii::$app->db->getServerVersion() == '8.0.30') {
+            $newData[$slugToId[$attribute['key']]][] = $option['id'];
+        }else{
+            $newData[$attribute['key']][] = $option['id'];
+        }
+
+
+
         foreach ($this->activeAttributes as $key => $p) {
             if ($key != $attribute['key']) {
-                $newData[$key] = $p;
+                if (Yii::$app->db->driverName == 'pgsql' || Yii::$app->db->getServerVersion() == '8.0.30') {
+                    $newData[$slugToId[$key]] = $p;
+                }else{
+                    $newData[$key] = $p;
+                }
             }
         }
+
         $filter = Yii::$app->request->post('filter');
         if ((isset($filter['brand']) || Yii::$app->request->get('brand')) && !in_array(Yii::$app->controller->route, ['shop/brand/view'])) {
             if (Yii::$app->request->get('brand')) {
@@ -513,8 +559,30 @@ class FilterPro extends Component
         }
 
         /** @var EavQueryTrait|ActiveQuery $model */
-        $model->getFindByEavAttributes2($newData);
-        $model->cache(0, new TagDependency(['tags' => 'attribute-' . $attribute['key'] . '-' . $option['id']]));
+        if (Yii::$app->db->driverName == 'pgsql') {
+            $pp = [];
+            foreach ($newData as $key2 => $kkk) {
+                //  $model->andWhere(["(options->>'" . $key2 . "')" => $kkk]); //Work!!
+                 $model->andWhere('('.$kkk[0].' = ANY(options3))'); //Work!!
+               // foreach ($kkk as $sss){
+                    //$pp[]=$kkk;
+               // }
+            }
+            //print_r($newData);die;
+            //$model->andWhere('options3 && ARRAY['.implode(',',$pp).']');
+        } else {
+            //if(Yii::$app->db->getServerVersion() == '8.0.30'){
+            //    foreach ($newData as $key2 => $kkk) {
+            //        $model->andWhere(["(properties->>'$.\"" . $key2 . "\"')" => $kkk]); //Work!!
+            //    }
+            //}else{
+                $model->getFindByEavAttributes2($newData);
+                $model->cache(0, new TagDependency(['tags' => 'attribute-' . $attribute['key'] . '-' . $option['id']]));
+            //}
+
+        }
+
+//echo $model->createCommand()->rawSql;die;
         return $model->createCommand()->queryScalar();
     }
 
@@ -523,7 +591,6 @@ class FilterPro extends Component
     {
         if (is_array($this->_eavAttributes))
             return $this->_eavAttributes;
-
 
         $queryCategoryTypes = clone $this->query; //Product::find();
         $queryCategoryTypes->select(Product::tableName() . '.type_id');
@@ -541,10 +608,21 @@ class FilterPro extends Component
             ->distinct((Attribute::getDb()->driverName == 'pgsql') ? false : true) //@todo need test for postgres.
             ->useInFilter()
             ->sort()
-            ->orderBy(null)
-            ->joinWith(['types type', 'options']);
+            //->orderBy(null)
+            ->joinWith(['types type', 'options'=>function($q){
+                $q->orderBy(null);
+            }]);
 
+        /*if (Yii::$app->db->driverName == 'pgsql') {
+            $newData=[];
+            foreach ($this->activeAttributes as $key => $p) {
+                $newData[$key] = $p;
+            }
 
+            if($newData){
+                $this->query->applyAttributes($newData);
+            }
+        }*/
         $result = $query->all();
 
         $this->_eavAttributes = [];
@@ -627,56 +705,117 @@ class FilterPro extends Component
     //быстрее работает.
     public function getCategoryBrands()
     {
-        $this->query->orderBy = false;
-        $queryClone = clone $this->query;
-        $queryClone->addSelect(['brand_id', Product::tableName() . '.id']);
-        $queryClone->joinWith([
-            'brand' => function (\yii\db\ActiveQuery $query) {
-                $query->andWhere([Brand::tableName() . '.switch' => true]);
-            },
-        ]);
 
-        $sub_query = clone $this->query;
-        $sub_query->andWhere('brand_id=' . Brand::tableName() . '.id');
-        $sub_query->select(['count(*)']);
+        if (Yii::$app->db->driverName == 'pgsql') {
+            $this->query->orderBy = false;
+            $queryClone = clone $this->query;
+            $queryClone->addSelect(['brand_id', Brand::tableName() . '.name_uk as name']);
+            $queryClone->joinWith([
+                'brand' => function (\yii\db\ActiveQuery $query) {
+                    $query->andWhere([Brand::tableName() . '.switch' => true]);
+                },
+            ]);
 
-        $queryClone->andWhere('brand_id IS NOT NULL');
-        if(Yii::$app->db->driverName == 'pgsql'){
-            //$queryClone->groupBy(['brand_id', Product::tableName() . '.id']);
-            //@todo need test for postgres.
-        }else{
-            $queryClone->groupBy('brand_id');
-        }
 
-        $queryClone->addSelect([
-            'counter' => $sub_query,
-            Brand::tableName() . '.name_' . Yii::$app->language . ' as name',
-            Brand::tableName() . '.slug',
-            Brand::tableName() . '.image'
-        ]);
-        $queryClone->cache(0, new TagDependency(['tags' => $this->cacheKey . '-brands']));
+            $queryClone->andWhere('brand_id IS NOT NULL');
+            $queryClone->groupBy(['brand_id', 'name']);
 
-        $brands = $queryClone->createCommand()->queryAll();
+            $newData = [];
+            foreach ($this->activeAttributes as $key => $p) {
+                $newData[$key] = $p;
+            }
 
-        $data = [
-            'title' => Yii::t('shop/default', 'FILTER_BY_BRAND'),
-            'selectMany' => true,
-            'filters' => []
-        ];
+            foreach ($newData as $key2 => $kkk) {
+                //$queryClone->andWhere(["(options->>'" . $key2 . "')" => $kkk]); //Work!!
+                $queryClone->andWhere('('.$kkk[0].' = ANY(options3))'); //Work!!
+            }
+            $brands = $queryClone->createCommand()->queryAll();
 
-        foreach ($brands as $m) {
-            $data['filters'][] = [
-                'title' => $m['name'],
-                'count' => (int)$m['counter'],
-                'count_text' => (int)$m['counter'],
-                'key' => 'brand',
-                'id' => (int)$m['brand_id'],
-                'slug' => $m['slug'],
-                'image' => $m['image'],
+            $data = [
+                'title' => Yii::t('shop/default', 'FILTER_BY_BRAND'),
+                'selectMany' => true,
+                'filters' => []
             ];
-            sort($data['filters']);
-        }
 
+            foreach ($brands as $m) {
+                $sub_query = clone $this->query;
+                $sub_query->andWhere(['brand_id' => $m['brand_id']]);
+                foreach ($newData as $key2 => $kkk) {
+                    //$sub_query->andWhere(["(options->>'" . $key2 . "')" => $kkk]);
+                    $sub_query->andWhere('('.$kkk[0].' = ANY(options3))'); //Work!!
+                }
+
+                $counter = $sub_query->count();
+                $data['filters'][] = [
+                    'title' => $m['name'],
+                    'count' => (int)$counter,
+                    'count_text' => (int)$counter,
+                    'key' => 'brand',
+                    'id' => (int)$m['brand_id'],
+                    //'slug' => $m['slug'],
+                    'image' => '',
+                ];
+                sort($data['filters']);
+            }
+        } else {
+            $this->query->orderBy = false;
+            $queryClone = clone $this->query;
+            $queryClone->addSelect([
+                'brand_id',
+                'brand.name_' . Yii::$app->language . ' as name',
+                'brand.slug',
+                'brand.image'
+            ]);
+            $queryClone->joinWith([
+                'brand' => function (\yii\db\ActiveQuery $query) {
+                    $query->alias('brand')->andWhere(['brand.switch' => true]);
+                },
+            ]);
+
+            //$sub_query = clone $this->query;
+            //$sub_query->andWhere('brand_id=' . Brand::tableName() . '.id');
+            //$sub_query->select(['count(*)']);
+
+            $queryClone->andWhere('brand_id IS NOT NULL');
+            if (Yii::$app->db->driverName == 'pgsql') {
+                //$queryClone->groupBy([Product::tableName() . '.brand_id']);
+                //@todo need test for postgres.
+                //$queryClone->groupBy(['brand_id','id']);
+            } else {
+                $queryClone->groupBy('brand_id');
+            }
+
+
+            $queryClone->cache(86400, new TagDependency(['tags' => $this->cacheKey . '-brands']));
+
+            $brands = $queryClone->createCommand()->queryAll();
+
+            $data = [
+                'title' => Yii::t('shop/default', 'FILTER_BY_BRAND'),
+                'selectMany' => true,
+                'filters' => []
+            ];
+
+            foreach ($brands as $m) {
+
+                $sub_query = clone $this->query;
+                $sub_query->andWhere(['brand_id' => $m['brand_id']]);
+                $sub_query->cache(86400, new TagDependency(['tags' => $this->cacheKey . '-brands-'.$m['brand_id']]));
+                $counter = $sub_query->count();
+
+
+                $data['filters'][] = [
+                    'title' => $m['name'],
+                    'count' => (int)$counter,
+                    'count_text' => (int)$counter,
+                    'key' => 'brand',
+                    'id' => (int)$m['brand_id'],
+                    'slug' => $m['slug'],
+                    'image' => $m['image'],
+                ];
+                sort($data['filters']);
+            }
+        }
 
         return $data;
     }
@@ -689,7 +828,7 @@ class FilterPro extends Component
         $queryClone->addSelect(['brand_id', Product::tableName() . '.id']);
         $queryClone->joinWith([
             'brand' => function (\yii\db\ActiveQuery $query) {
-                $query->andWhere([Brand::tableName() . '.switch' => 1]);
+                $query->andWhere([Brand::tableName() . '.switch' => true]);
             },
         ]);
 
@@ -700,8 +839,15 @@ class FilterPro extends Component
         foreach ($this->activeAttributes as $key => $p) {
             $newData[$key] = $p;
         }
+        if (Yii::$app->db->driverName == 'pgsql') {
+            foreach ($newData as $key2 => $kkk) {
+                //$sub_query->andWhere(["(options->>'" . $key2 . "')" => $kkk]); //Work!!
+                $sub_query->andWhere('('.$kkk[0].' = ANY(options3))'); //Work!!
+            }
+        } else {
+            $sub_query->getFindByEavAttributes2($newData);
+        }
 
-        $sub_query->getFindByEavAttributes2($newData);
         $sliders = Yii::$app->request->post('slide');
         if ($sliders) {
             if (isset($sliders['price'])) {
@@ -710,7 +856,13 @@ class FilterPro extends Component
         }
 
         $queryClone->andWhere('brand_id IS NOT NULL');
-        $queryClone->groupBy('brand_id');
+        if (Yii::$app->db->driverName == 'pgsql') {
+            //$queryClone->groupBy(['brand_id','id']);
+
+        } else {
+            $queryClone->groupBy('brand_id');
+        }
+
         $queryClone->addSelect(['counter' => $sub_query, Brand::tableName() . '.name_' . Yii::$app->language . ' as name']);
         //$queryClone->cache($this->cacheDuration);
 
@@ -727,6 +879,84 @@ class FilterPro extends Component
                 'title' => $m['name'],
                 'count' => (int)$m['counter'],
                 'count_text' => (int)$m['counter'],
+                'key' => 'brand',
+                'id' => $m['brand_id'],
+            ];
+            sort($data['filters']);
+        }
+
+        return $data;
+    }
+
+    public function getCategoryBrandsCallbackPostgress()
+    {
+        $this->query->orderBy = false;
+        $queryClone = clone $this->query;
+        $queryClone->addSelect(['brand_id', Brand::tableName() . '.name_uk as name']);
+        $queryClone->joinWith([
+            'brand' => function (\yii\db\ActiveQuery $query) {
+                $query->andWhere([Brand::tableName() . '.switch' => true]);
+            },
+        ]);
+//echo $queryClone->createCommand()->rawSql;die;
+        $slugToId = Attribute::slugToId();
+        $newData = [];
+        foreach ($this->activeAttributes as $key => $p) {
+            if (Yii::$app->db->driverName == 'pgsql') {
+                $newData[$slugToId[$key]] = $p;
+            }else{
+                $newData[$key] = $p;
+            }
+        }
+
+        //foreach ($newData as $key2 => $kkk) {
+            //$queryClone->andWhere(["(options->>'" . $key2 . "')" => $kkk]); //Work!!
+           // $queryClone->andWhere('('.$kkk[0].' = ANY(options3))'); //Work!!
+       // }
+
+
+        $sliders = Yii::$app->request->post('slide');
+        if ($sliders) {
+            if (isset($sliders['price'])) {
+                $queryClone->applyRangePrices($sliders['price'][0], $sliders['price'][1]);
+            }
+        }
+
+        $queryClone->andWhere('brand_id IS NOT NULL');
+        $queryClone->groupBy(['brand_id', 'name']);
+
+
+        $brands = $queryClone->createCommand()->queryAll();
+
+        $data = [
+            'title' => Yii::t('shop/default', 'FILTER_BY_BRAND'),
+            'selectMany' => true,
+            'changeCount' => true,
+            'filters' => []
+        ];
+
+
+        foreach ($brands as $m) {
+            $sub_query = clone $this->query;
+            $sub_query->andWhere(['brand_id' => $m['brand_id']]);
+//print_r($newData);die;
+
+            foreach ($newData as $key2 => $kkk) {
+                $sub_query->andWhere(["(options->>'" . $key2 . "')" => $kkk]);
+
+                foreach ($kkk as $k2 => $k) {
+                   // $sub_query->andWhere(''.$k.' = ANY(options3)'); //Work!!
+                   // $sub_query->andWhere(["(options->>'" . $key2 . "')" => $k]);
+                }
+            }
+
+         //   print_r($newData);
+//echo $sub_query->createCommand()->rawSql;die;
+            $counter = $sub_query->count();
+            $data['filters'][] = [
+                'title' => $m['name'],
+                'count' => (int)$counter,
+                'count_text' => (int)$counter,
                 'key' => 'brand',
                 'id' => $m['brand_id'],
             ];

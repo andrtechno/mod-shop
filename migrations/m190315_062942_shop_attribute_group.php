@@ -11,7 +11,6 @@
 
 use panix\engine\db\Migration;
 use panix\mod\shop\models\AttributeGroup;
-use panix\mod\shop\models\translate\AttributeGroupTranslate;
 
 class m190315_062942_shop_attribute_group extends Migration
 {
@@ -24,14 +23,8 @@ class m190315_062942_shop_attribute_group extends Migration
             'switch' => $this->boolean()->notNull()->defaultValue(null),
             'ordern' => $this->integer()->unsigned(),
         ]);
-
-
-
-
         $this->createIndex('switch', AttributeGroup::tableName(), 'switch');
         $this->createIndex('ordern', AttributeGroup::tableName(), 'ordern');
-
-
     }
 
     public function down()

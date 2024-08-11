@@ -216,7 +216,6 @@ class ProductController extends AdminController
                 ];
             }
         }
-//CMS::dump($eavList);die;
 
 
         if ($model->load($post) && $model->validate() && $this->validateAttributes($model) && $this->validatePrices($model)) {
@@ -228,8 +227,7 @@ class ProductController extends AdminController
 
 
             if (Yii::$app->db->driverName == 'pgsql') {
-                // var_dump($reAttributes);die;
-                $model->options = Json::encode($this->processAttributes($model));
+                $model->options = $this->processAttributes($model);
             }
 
 
@@ -442,7 +440,6 @@ class ProductController extends AdminController
 
             if (in_array($key, [Attribute::TYPE_TEXT, Attribute::TYPE_TEXTAREA, Attribute::TYPE_YESNO])) {
                 foreach ($val as $k => $value) {
-                    //$reAttributes[$k] = '"' . $value . '"';
                     $reAttributes[$k] = $value;
                     if (is_string($value) && $value === '') {
                         unset($reAttributes[$k]);
@@ -481,15 +478,13 @@ class ProductController extends AdminController
                 }
             }
         }
-
-
-        //CMS::dump($reAttributes);
-        // CMS::dump($model->_old_eav);
-        // die;
-
         if (Yii::$app->db->driverName == 'pgsql') {
-            // var_dump($reAttributes);die;
-            return $reAttributes;
+            $slugToId = Attribute::slugToId();
+            $pg = [];
+            foreach ($reAttributes as $k=>$a){
+                $pg[$slugToId[$k]]=$a;
+            }
+            return $pg;
         }
         return $model->setEavAttributes($reAttributes, true);
     }

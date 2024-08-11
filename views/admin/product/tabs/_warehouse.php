@@ -4,7 +4,10 @@ use yii\helpers\ArrayHelper;
 use yii\caching\DbDependency;
 use panix\mod\shop\models\Supplier;
 
-/** @var $form panix\engine\bootstrap\ActiveForm */
+/**
+ * @var $form panix\engine\bootstrap\ActiveForm
+ * @var $this \yii\web\View
+ */
 ?>
 <?php
 
@@ -35,13 +38,5 @@ $form->field($model, 'auto_decrease_quantity')->dropDownList([
     //'prompt' => 'Укажите бренд'
 ])->hint($model::t('HINT_AUTO_DECREASE_QUANTITY'));
 ?>
-<?=
-
-$form->field($model, 'is_condition')->dropDownList($model->getConditions());
-?>
-<?=
-
-$form->field($model, 'availability')->dropDownList($model::getAvailabilityItems(), [
-    //'prompt' => 'Укажите бренд'
-]);
-?>
+<?= $form->field($model, 'is_condition')->dropDownList($model->getConditions()); ?>
+<?= $form->field($model, 'availability')->dropDownList($model::getAvailabilityItems()); ?>

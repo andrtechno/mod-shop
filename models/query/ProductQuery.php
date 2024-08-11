@@ -34,6 +34,7 @@ class ProductQuery extends ActiveQuery
             TaggableQueryBehavior::class,
         ];
     }
+
     /**
      * Default sorting
      */
@@ -52,7 +53,7 @@ class ProductQuery extends ActiveQuery
 
         $this->andWhere(['IS NOT', Product::tableName() . '.discount', null])
             ->andWhere(['!=', Product::tableName() . '.discount', '']);
-        $this->andWhere(['!=', Product::tableName().".availability", Product::STATUS_OUT_STOCK]);
+        $this->andWhere(['!=', Product::tableName() . ".availability", Product::STATUS_OUT_STOCK]);
         return $this;
     }
 
@@ -64,10 +65,10 @@ class ProductQuery extends ActiveQuery
         $config = Yii::$app->settings->get('shop');
         if ($config->label_expire_new) {
             $date_utc = new \DateTime("now", new \DateTimeZone("UTC"));
-            $now =$date_utc->getTimestamp();
+            $now = $date_utc->getTimestamp();
             $modelClass = $this->modelClass;
             $tableName = $modelClass::tableName();
-            $this->andWhere(['!=', Product::tableName().".availability", Product::STATUS_OUT_STOCK]);
+            $this->andWhere(['!=', Product::tableName() . ".availability", Product::STATUS_OUT_STOCK]);
             $this->andWhere(['>=', $tableName . '.created_at', ($date_utc->getTimestamp() - (86400 * $config->label_expire_new))]);
         } else {
             //$this->int2between(-1, -1);
@@ -86,10 +87,13 @@ class ProductQuery extends ActiveQuery
             //$this->where(['like', 'label', 'hit_sale'])
             //$this->int2between(time() - (86400 * $offset), time(), 'added_to_cart_date');
             //$this->orWhere(['>=', 'added_to_cart_count', $config->added_to_cart_count]);
-            $this->where(['>=', 'added_to_cart_count', $config->added_to_cart_count]);
-            $this->andWhere(['>=', 'added_to_cart_date', time() - (86400 * (int)$config->added_to_cart_period)]);
+            $this->where(['label' => 'top_sale']);
+            $this->orWhere(['>=', 'added_to_cart_count', $config->added_to_cart_count]);
+            //$this->andWhere(['>=', 'added_to_cart_date', time() - (86400 * (int)$config->added_to_cart_period)]);
+            $this->andWhere(['!=', Product::tableName() . ".availability", Product::STATUS_OUT_STOCK]);
+            //$this->addOrderBy(['label' => SORT_ASC]);
+            //$this->addOrderBy('FIELD(label, "top_sale")');
             $this->addOrderBy(['added_to_cart_count' => SORT_DESC]);
-            $this->andWhere(['!=', Product::tableName().".availability", Product::STATUS_OUT_STOCK]);
         }
         return $this;
     }
@@ -150,8 +154,8 @@ class ProductQuery extends ActiveQuery
             $this->$whereType(['main_category_id' => $categories]);
         } else {
             //  $tableName = ($this->modelClass)->tableName();
-            $this->leftJoin(ProductCategoryRef::tableName(), ProductCategoryRef::tableName() . '.`product`=' . $this->modelClass::tableName() . '.`id`');
-            $this->$whereType([ProductCategoryRef::tableName() . '.`category`' => $categories]);
+            $this->leftJoin(ProductCategoryRef::tableName(), ProductCategoryRef::tableName() . '.product=' . $this->modelClass::tableName() . '.id');
+            $this->$whereType([ProductCategoryRef::tableName() . '.category' => $categories]);
         }
         return $this;
     }
@@ -179,8 +183,20 @@ class ProductQuery extends ActiveQuery
         if ($q) {
             $modelClass = $this->modelClass;
             $tableName = $modelClass::tableName();
-            $this->andWhere(['LIKE', $tableName . '.' . Yii::$app->getModule('shop')->searchAttribute, $q])
-                ->orWhere(['LIKE', $tableName . '.name_' . $language, $q]);
+            if (Yii::$app->db->serverVersion == '8.0.30') {
+                //$q = mb_strtolower($q);
+
+                /*$this->andWhere(['LIKE', $tableName . '.' . Yii::$app->getModule('shop')->searchAttribute, $q])
+                    ->orWhere(['LIKE', 'LOWER(name_json->>"$.fr")', $q])
+                    ->orWhere(['LIKE', 'LOWER(name_json->>"$.uk")', $q]);*/
+
+                $this->andWhere(['LIKE', $tableName . '.' . Yii::$app->getModule('shop')->searchAttribute, $q])
+                    ->orWhere(['LIKE', $tableName . '.name_' . $language, $q]);
+            } else {
+                $this->andWhere(['LIKE', $tableName . '.' . Yii::$app->getModule('shop')->searchAttribute, $q])
+                    ->orWhere(['LIKE', $tableName . '.name_' . $language, $q]);
+            }
+
 
         }
         return $this;

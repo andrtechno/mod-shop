@@ -3,6 +3,8 @@
 namespace panix\mod\shop\controllers;
 
 use panix\engine\CMS;
+use panix\mod\admin\models\Timeline;
+use panix\mod\shop\components\TimelineEvent;
 use panix\mod\shop\models\Attribute;
 use panix\mod\shop\models\ProductImage;
 use panix\mod\shop\models\ProductReviews;
@@ -131,13 +133,17 @@ class ProductController extends WebController
                 $this->view->params['breadcrumbs'][] = $this->dataModel->name;
             }
         }
-
-
+        $codes = [];
+        $this->view->description = $this->dataModel->description($codes);
+        $this->view->title = $this->dataModel->title($codes);
         if ($this->dataModel->type_id) {
-            $codes = [];
-            if (!empty($this->dataModel->type->product_description)) {
 
-                if (preg_match_all('/{([0-9a-zA-Z_\-]+)\.(name|value)}/', $this->dataModel->type->product_description, $matchDesc)) {
+            $language= Yii::$app->language;
+            $product_title_field = 'product_title'.(($language != 'uk') ? '_' . $language : '');
+            $product_description_field = 'product_description'.(($language != 'uk') ? '_' . $language : '');
+            if (!empty($this->dataModel->type->{$product_description_field})) {
+
+                if (preg_match_all('/{([0-9a-zA-Z_\-]+)\.(name|value)}/', $this->dataModel->type->{$product_description_field}, $matchDesc)) {
                     foreach (array_unique($matchDesc[1]) as $name) {
 
                         if (!isset($codes["{{$name}.value}"])) {
@@ -159,11 +165,11 @@ class ProductController extends WebController
 
                     }
                 }
-                $this->view->description = $this->dataModel->replaceMeta($this->dataModel->type->product_description, $codes);
+                $this->view->description = $this->dataModel->replaceMeta($this->dataModel->type->{$product_description_field}, $codes);
             }
 
-            if (!empty($this->dataModel->type->product_title)) {
-                if (preg_match_all('/{([0-9a-zA-Z_\-]+)\.(name|value)}/', $this->dataModel->type->product_title, $matchTitle)) {
+            if ($this->dataModel->type->{$product_title_field}) {
+                if (preg_match_all('/{([0-9a-zA-Z_\-]+)\.(name|value)}/', $this->dataModel->type->{$product_title_field}, $matchTitle)) {
 
                     foreach (array_unique($matchTitle[1]) as $name) {
                         if (!isset($codes["{{$name}.value}"])) {
@@ -180,14 +186,14 @@ class ProductController extends WebController
 
                     }
                 }
-                $this->view->title = $this->dataModel->replaceMeta($this->dataModel->type->product_title, $codes);
+                $this->view->title = $this->dataModel->replaceMeta($this->dataModel->type->{$product_title_field}, $codes);
             }
 
         }
 
 
-        $this->view->description = $this->dataModel->description($codes);
-        $this->view->title = $this->dataModel->title($codes);
+
+
 
         $mainImage = $this->dataModel->getMainImageObject();
 
@@ -382,6 +388,14 @@ class ProductController extends WebController
 
 
                     $model->saveNode();
+
+                    /*$event = new TimelineEvent();
+                    $event->params = [
+                        'id' => $model->id,
+                        'product_id' => $model->product_id,
+                    ];
+                    $event->callback = 'onAddReview';
+                    Timeline::add($event);*/
 
                     if ($model->user_id && $model->status == ProductReviews::STATUS_PUBLISHED && !$model->apply_points) {
                         $has = ProductReviews::find()->where(['apply_points' => 0, 'product_id' => $model->product_id])->count();
