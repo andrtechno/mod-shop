@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Html;
+use panix\mod\shop\models\Attribute;
 
 /**
  * @var $data \panix\mod\shop\models\Attribute
