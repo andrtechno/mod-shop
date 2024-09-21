@@ -121,6 +121,135 @@ class FilterController extends Controller
 
         }
 
+        // Yii::$app->db->createCommand('CREATE INDEX filter_index ON cms_shop_product USING gin (options->"1");')->execute();
+
+        $filterPost = Yii::$app->request->post('filter');
+        $filterClass = Yii::$app->getModule('shop')->filterClass;
+        if (Yii::$app->db->driverName == 'pgsql') {
+            if($filterPost){
+                $newData = [];
+                $slugToId = Attribute::slugToId();
+                foreach ($filterPost as $key=>$values){
+
+                    // $query->andWhere(["(options->>'" . $slugToId[$key] . "')" => $values]);
+                }
+
+            }
+        }
+
+        $filter = new $filterClass($query, ['route' => $url, 'cacheKey' => $cacheKey]);
+
+        $filter->accessAttributes = $accessAttributes;
+
+        $attributes = [];
+        $brands = [];
+        if (Yii::$app->db->driverName == 'pgsql') {
+            //FOR PRO FILTER!!!!111
+            $attributes = $filter->getCategoryAttributesCallback();
+            if (!in_array($route, ['shop/brand/view'])) {
+                $brands = $filter->getCategoryBrandsCallbackPostgress();
+            }
+        }else{
+            if(Yii::$app->db->getServerVersion() == '8.0.30'){
+                //$attributes = $filter->getCategoryAttributesCallback();
+            }
+        }
+
+        $total = $filter->resultQuery->count();
+
+
+        $sliders = [];
+        $sliders2 = Yii::$app->request->post('slide');
+        if ($sliders2) {
+            if (isset($sliders2['price'])) {
+
+            }
+            $sliders = [
+                'price' => [
+                    'min' => floor($sliders2['price'][0]),
+                    'max' => ceil($sliders2['price'][1]),
+                    'default' => [
+                        'min' => $filter->min,
+                        'max' => $filter->max
+                    ],
+                ]
+            ];
+        }
+
+
+        $results = ArrayHelper::merge($attributes, ['brand' => $brands]);
+
+        $route = $filter->getResultRoute();
+
+        return $this->asJson([
+            'textTotal' => Yii::t('shop/default', 'FILTER_BUTTON_TEXT', $total),
+            'totalCount' => (int)$total,
+            'filters' => $results,
+            'sliders' => $sliders,
+            'url' => ApiHelpers::url($filter->getResultRoute())
+        ]);
+    }
+	
+    public function actionIndexOld()
+    {
+        $route = Yii::$app->request->post('route');
+        $param = Yii::$app->request->post('param');
+        $accessAttributes = Yii::$app->request->post('attributes');
+
+        //if (!Yii::$app->request->isAjax) {
+        //    throw new ForbiddenHttpException('Acesss denied.');
+        //}
+        //if (!$route) {
+        //    throw new ForbiddenHttpException('required POST route.');
+        //}
+
+        $productModel = Product::find();
+        $query = $productModel->published();
+
+        /*$requestParams = Yii::$app->getRequest()->getBodyParams();
+        $params = Yii::$app->getRequest()->bodyParams;
+        if (empty($requestParams)) {
+            $requestParams = Yii::$app->getRequest()->getQueryParams();
+        }*/
+
+
+        $url = [];
+        if ($route == 'shop/catalog/sales') {
+            $query->sales();
+            $url = [$route];
+        } elseif ($route == 'shop/catalog/new') {
+            $query->new();
+            $url = ['/' . $route];
+        } elseif ($route == 'shop/catalog/top-sales') {
+            $query->topSales();
+            $url = ['/' . $route];
+        } elseif ($route == 'shop/search/index') {
+            $config = Yii::$app->settings->get('shop');
+            if (!empty($config->search_availability)) {
+                $query->andWhere([Product::tableName().".availability" => $config->search_availability]);
+            }
+            $query->applySearch($param);
+
+            $url = ['/' . $route, 'q' => $param];
+        } elseif ($route == 'shop/brand/view') {
+            $brand = Brand::findOne($param);
+
+            $query->applyBrands($brand->id);
+            $url = $brand->getUrl();
+        }
+        $cacheKey = 'none';
+        $category = null;
+        if ($param && in_array($route, ['shop/catalog/new', 'shop/catalog/sales', 'shop/catalog/top-sales', 'shop/catalog/view'])) {
+            $category = Category::findOne($param);
+            if (!$category)
+                $this->error404();
+            $query->applyCategories($category, 'andWhere', $category->children()->count());
+            $url = $category->getUrl();
+
+            $cacheKey = str_replace('/', '-', $route) . '-' . $category->id;
+
+        }
+
        // Yii::$app->db->createCommand('CREATE INDEX filter_index ON cms_shop_product USING gin (options->"1");')->execute();
 
         $filterPost = Yii::$app->request->post('filter');

@@ -494,7 +494,7 @@ class CatalogController extends FilterController
         if ($brands || Yii::$app->request->get('brand')) {
             if (!$brands)
                 $brands = explode(',', Yii::$app->request->get('brand', ''));
-            $this->query->applyBrands(array_unique($brands), 'orWhere');
+            $this->query->applyBrands(array_unique($brands), 'andWhere'); //changed 21-09-2024 from orWhere to andWhere
         }
         if ($categories) {
             $this->query->applyCategories(array_unique($categories), 'orWhere');
