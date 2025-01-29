@@ -50,7 +50,7 @@ class m180917_193505_shop_category extends Migration {
 
             'created_at' => $this->integer(),
             'updated_at' => $this->integer(),
-            //'use_seo_parents'=>$this->boolean()->defaultValue(false),
+            'use_seo_parents'=>$this->boolean()->defaultValue(false),
             'switch' => $this->boolean()->defaultValue(true),
         ]);
 
