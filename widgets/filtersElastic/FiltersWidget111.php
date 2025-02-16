@@ -18,7 +18,7 @@ use panix\engine\data\Widget;
  * Class FiltersWidget
  * @package panix\mod\shop\widgets\filters
  */
-class FiltersWidget extends Widget
+class FiltersWidget111 extends Widget
 {
     public $data;
     /**
