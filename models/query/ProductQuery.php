@@ -90,7 +90,7 @@ class ProductQuery extends ActiveQuery
             $this->where(['label' => 'top_sale']);
             $this->orWhere(['>=', 'added_to_cart_count', $config->added_to_cart_count]);
             //$this->andWhere(['>=', 'added_to_cart_date', time() - (86400 * (int)$config->added_to_cart_period)]);
-            $this->andWhere(['not in', Product::tableName() . ".availability", [Product::STATUS_OUT_STOCK,Product::STATUS_OUT_ARCHIVE]]);
+            $this->andWhere(['not in', Product::tableName() . ".availability", [Product::STATUS_OUT_STOCK, Product::STATUS_ARCHIVE]]);
             //$this->addOrderBy(['label' => SORT_ASC]);
             //$this->addOrderBy('FIELD(label, "top_sale")');
             $this->addOrderBy(['added_to_cart_count' => SORT_DESC]);
