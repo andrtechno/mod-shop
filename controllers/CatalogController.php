@@ -293,8 +293,8 @@ class CatalogController extends FilterController
                 }
             }
         }
-        $this->view->canonical = Url::to(Yii::$app->request->baseUrl, true);
-
+        //$this->view->canonical = Url::to(Yii::$app->request->baseUrl, true);
+        $this->view->canonical = Url::to(['/shop/catalog/view', 'slug' => $this->dataModel->full_path], true);
         $this->currentUrl = Url::to($currentUrl);
 
         /*unset($filterData['price']);
