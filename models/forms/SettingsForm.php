@@ -39,6 +39,7 @@ class SettingsForm extends SettingsModel
     public $seo_brand_description_ru;
     public $seo_brand_h1_uk;
     public $seo_brand_h1_ru;
+    public $product_redirect_404;
 
 
     public $seo_catalog_brand_title_uk;
@@ -57,8 +58,8 @@ class SettingsForm extends SettingsModel
             [['product_related_bilateral', 'group_attribute', 'smart_bc', 'smart_title', 'enable_reviews'], 'boolean'],
             [['label_expire_new', 'added_to_cart_count', 'search_limit'], 'integer'],
             [['email_notify_reviews'], '\panix\engine\validators\EmailListValidator'],
-            [['added_to_cart_period','seo_brand_h1_uk','seo_brand_h1_ru','seo_brand_title_uk','seo_brand_description_uk','seo_brand_title_ru','seo_brand_description_ru'], 'string'],
-            [['seo_catalog_brand_h1_uk','seo_catalog_brand_h1_ru','seo_catalog_brand_title_uk','seo_catalog_brand_description_uk','seo_catalog_brand_title_ru','seo_catalog_brand_description_ru'], 'string'],
+            [['added_to_cart_period', 'seo_brand_h1_uk', 'seo_brand_h1_ru', 'seo_brand_title_uk', 'seo_brand_description_uk', 'seo_brand_title_ru', 'seo_brand_description_ru'], 'string'],
+            [['seo_catalog_brand_h1_uk', 'seo_catalog_brand_h1_ru', 'seo_catalog_brand_title_uk', 'seo_catalog_brand_description_uk', 'seo_catalog_brand_title_ru', 'seo_catalog_brand_description_ru', 'product_redirect_404'], 'string'],
             ['search_availability', 'each', 'rule' => ['integer']],
             [['watermark_enable'], 'boolean'],
             [['attachment_wm_corner', 'attachment_wm_offsety', 'attachment_wm_offsetx'], 'integer'],
@@ -69,7 +70,7 @@ class SettingsForm extends SettingsModel
         ];
     }
 
-    /**
+    /** 1
      * @inheritdoc
      */
     public static function defaultSettings()
@@ -91,7 +92,8 @@ class SettingsForm extends SettingsModel
             'enable_reviews' => false,
             'search_availability' => '["1","2"]',
             'search_limit' => 20,
-            'top_sales_expire' => 30
+            'top_sales_expire' => 30,
+            'product_redirect_404' => NULL,
         ];
     }
 
@@ -143,6 +145,14 @@ class SettingsForm extends SettingsModel
             12 => self::t('LABEL_NEW_DAYS', ['n' => 12]),
             13 => self::t('LABEL_NEW_DAYS', ['n' => 13]),
             14 => self::t('LABEL_NEW_DAYS', ['n' => 14]),
+        ];
+    }
+
+    public static function getProductRedirect404()
+    {
+        return [
+            '/sales' => 'Перенаправлять на скидки',
+            '/new' => 'Перенеправлять на новинки'
         ];
     }
 }

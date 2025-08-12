@@ -19,6 +19,7 @@ $form->field($model, 'email_notify_reviews')
 <?php echo $form->field($model, 'smart_bc')->checkbox(); ?>
 <?php echo $form->field($model, 'smart_title')->checkbox(); ?>
 <?php echo $form->field($model, 'label_expire_new')->dropDownList($model::labelExpireNew(), ['prompt' => Yii::t('app/default', 'OFF')]); ?>
+<?php echo $form->field($model, 'product_redirect_404')->dropDownList($model::getProductRedirect404(), ['prompt' => 'Страница не найден (404)']); ?>
 <?php echo $form->field($model, 'added_to_cart_count') ?>
 <?php echo $form->field($model, 'added_to_cart_period') ?>
 <?php echo $form->field($model, 'enable_reviews')->checkbox(); ?>
