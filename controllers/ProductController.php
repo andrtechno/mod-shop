@@ -76,7 +76,11 @@ class ProductController extends WebController
     public function actionView($slug, $id)
     {
 
-        $this->dataModel = $this->findModel($slug, $id);
+        try {
+            $this->dataModel = $this->findModel($slug, $id);
+        } catch (Exception $e) {
+            return $this->redirect(['/sales']);
+        }
         $this->dataModel->preload = true;
         if (Yii::$app->settings->get('seo', 'google_tag_manager')) {
             $dataLayer['ecomm_pagetype'] = 'offerdetail';
@@ -138,9 +142,9 @@ class ProductController extends WebController
         $this->view->title = $this->dataModel->title($codes);
         if ($this->dataModel->type_id) {
 
-            $language= Yii::$app->language;
-            $product_title_field = 'product_title'.(($language != 'uk') ? '_' . $language : '');
-            $product_description_field = 'product_description'.(($language != 'uk') ? '_' . $language : '');
+            $language = Yii::$app->language;
+            $product_title_field = 'product_title' . (($language != 'uk') ? '_' . $language : '');
+            $product_description_field = 'product_description' . (($language != 'uk') ? '_' . $language : '');
             if (!empty($this->dataModel->type->{$product_description_field})) {
 
                 if (preg_match_all('/{([0-9a-zA-Z_\-]+)\.(name|value)}/', $this->dataModel->type->{$product_description_field}, $matchDesc)) {
@@ -190,9 +194,6 @@ class ProductController extends WebController
             }
 
         }
-
-
-
 
 
         $mainImage = $this->dataModel->getMainImageObject();
